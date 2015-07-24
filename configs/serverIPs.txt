@@ -1,0 +1,16 @@
+FrontendServer
+5000
+TournamentServer
+5001
+GameServer
+5002
+AccountServer
+5003
+BalanceServer
+5004
+AdminServer
+5005
+MoneyServer
+5006
+DBServer
+5007
