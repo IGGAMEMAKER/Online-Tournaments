@@ -34,6 +34,8 @@ process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });
 
+console.log("More changes");
+
 var port = queryProcessor.getPort(serverName);
 console.log("Port " + port);
 console.log(queryProcessor.area(5));
