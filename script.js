@@ -85,13 +85,42 @@ function KillServer(){
 	console.log("Stoping Server");
 	/*exec("exit");*/
 }
+var funcArray = {'/stop' : AnswerAndKill};//["/stop"]
+//funcArray[1] = {'/register' : RegisterUser};
+funcArray["/register"] = RegisterUser;
+
+
+function RegisterUser(data, res){
+	console.log("Port=" + queryProcessor.getPort('AccountServer'));
+	sender.sendRequest("register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
+		function (res1) {
+		    res1.setEncoding('utf8');
+		    res1.on('data', function (chunk) {
+				console.log("body: " + chunk);
+				///analyse and return answer to client-bot
+				res.end("THX for register");
+		    });
+
+		    /*req.on('error', function(e) {
+			console.log('problem with request: ' + e.message);
+			});*/
+		}
+	);
+}
+function AnswerAndKill(data, res) {
+	res.end("Finish");
+	KillServer();
+}
+
 function Respond(command, data, res){///res=response
 	res.setHeader('Content-Type', 'application/json');
 	res.write(JSON.stringify(cars));
         switch(command){
         	case '/stop':
-        		res.end("Finish");
-        		KillServer();
+        		//funcArray[command](data, res);
+        		funcArray[command](data, res);
+        		/*res.end("Finish");
+        		KillServer();*/
         	break;
 			case '/start':
 				//sender.sendRequest("register", options, user1,   );
@@ -101,21 +130,7 @@ function Respond(command, data, res){///res=response
 				//res.end("Hola");
 			break;
 			case '/register':
-				console.log("Port=" + queryProcessor.getPort('AccountServer'));
-				sender.sendRequest("register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
-					function (res1) {
-					    res1.setEncoding('utf8');
-					    res1.on('data', function (chunk) {
-							console.log("body: " + chunk);
-							///analyse and return answer to client-bot
-							res.end("THX for register");
-					    });
-
-					    /*req.on('error', function(e) {
-						console.log('problem with request: ' + e.message);
-						});*/
-					}
-				);
+				funcArray[command](data, res);
 			break;
 			default:
 				res.end("Chiao");
