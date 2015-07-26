@@ -8,9 +8,9 @@ var serverName = "FrontendServer";
 var qs = require('querystring');
 var sender = require('./requestSender');
 
-process.argv.forEach(function (val, index, array) {
+/*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
-});
+});*/
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
 
 funcArray["/register"] = RegisterUser;

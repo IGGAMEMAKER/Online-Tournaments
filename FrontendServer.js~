@@ -3,16 +3,14 @@
 var http = require('http');
 var url = require('url');
 var queryProcessor = require('./test');
-var server = require('./script');
-//var server = new http.Server();
+var server = require('./script'); //var server = new http.Server();
 var serverName = "FrontendServer";
-//console.log(queryProcessor.getOwnPropertyNames());
 var qs = require('querystring');
 var sender = require('./requestSender');
 
-process.argv.forEach(function (val, index, array) {
+/*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
-});
+});*/
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
 
 funcArray["/register"] = RegisterUser;

@@ -25,14 +25,16 @@ grep.on('close', function (code, signal) {
 grep.kill('SIGHUP');*/
 
 
-
-process.argv.forEach(function (val, index, array) {
-  log(index + ': ' + val);
-});
-
 var cars = ["Saab", "Volvo", "BMW"]; cars.push("LADADADADADA");
 
+function PrintConsoleParameters(){
+	process.argv.forEach(function (val, index, array) {
+  		console.log(index + ': ' + val);
+	});
+}
+
 function SetServer(serverName, serverUrl, functionArray) {
+	//PrintConsoleParameters();
 	var port = queryProcessor.getPort(serverName);
 	log("Starting " + serverName + " on port " + port);
 	
