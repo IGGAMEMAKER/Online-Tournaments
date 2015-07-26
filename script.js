@@ -83,6 +83,9 @@ function KillServer(){
 }
 function TryToStopServer (data, res){
 	log("Checking Sender.... Sender is valid! (TODO FIX IT!!! do a proper Checking) ");
+	//if (data['sender'] == 'admin' && data['senderPass']== 'truePassword'){ AnswerAndKill(data, res); }
+	//
+
 	AnswerAndKill(data, res);
 }
 function AnswerAndKill(data, res) {

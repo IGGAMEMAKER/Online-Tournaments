@@ -13,7 +13,26 @@ var sender = require('./requestSender');
 });*/
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
 
-funcArray["/register"] = RegisterUser;
+funcArray["/Register"] = RegisterUser;
+funcArray["/Login"] = Login;
+funcArray["/ChangePassword"] = ChangePassword;
+funcArray["/RememberPassword"] = RememberPassword;
+/*funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+
+funcArray["/GetTournaments"] = GetTournaments;
+funcArray["/RegisterInTournament"] = RegisterInTournament;
+funcArray["/WakeUsers"] = WakeUsers;
+funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;*/
+
+/*funcArray["/Cashout"] = Cashout;
+funcArray["/Deposit"] = Deposit;
+
+
+funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
+
+
+
+
 
 var user1 = qs.stringify({
       login: 'Dinesh',
@@ -21,9 +40,47 @@ var user1 = qs.stringify({
 	job   : [ 'language', 'PHP' ]
     });
 
-function RegisterUser(data, res){
-	console.log("Port=" + queryProcessor.getPort('AccountServer'));
-	sender.sendRequest("register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
+
+
+function ChangePassword( data, res){
+	res.end("OK");
+	console.log("You must send changePass to Account Server");
+}
+
+function RememberPassword( data, res){
+	res.end("Try to remember");
+	console.log("You must send rememberPass to Account Server");
+}
+function log(str){ console.log(str);}
+function Login( data, res){
+	sender.sendRequest("Login", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
+		function (res1) {
+		    res1.setEncoding('utf8');
+		    res1.on('data', function (chunk) {
+				console.log("body: " + chunk);
+				///analyse and return answer to client-bot
+				var post = qs.parse(chunk);
+				/*log(post);
+				log("stringifying:" + JSON.stringify(post));
+				log("Value: " + post['"result']);*/
+				console.log("Checking Data taking: " + post['result']);
+				if (post['result'] === 'success'){
+					res.end("You are logged in!!");
+				}
+				else{
+					res.end("Login or password are invalid");
+				}
+		    });
+
+		    //req.on('error', function(e) {
+			//console.log('problem with request: ' + e.message);
+			//});
+		}
+	);
+}
+function RegisterUser( data, res){
+	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
+	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
 		function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
