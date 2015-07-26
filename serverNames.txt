@@ -1,4 +1,4 @@
 node
-script.js
+FrontendServer.js
 AccountServer.js
 client-bot.js
