@@ -54,10 +54,32 @@ var options = {
 };
 
 var b = "";
-
+var arr = {asd: 'old'}
+var i = new Object();
+i.Zi = 3;
+prt();
+function setVal( res){
+	i.Zi=10;
+	//i=10;
+	prt();
+	/*i=10;
+	for (var j=0;j<5;++j){
+		console.log("WRITING "+ j + " : " + i);
+	}*/
+}
+function prt(){
+	console.log(i.Zi);
+}
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
-sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
+/*sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
+sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
+sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
+sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, setVal);
+var timerId = setInterval(function() {
+  prt();
+}, 2000);
+
 //sendRequest("signIn", options);
 //sendRequest("", options);
 /*function sendRequest(urlPath, options, curData){

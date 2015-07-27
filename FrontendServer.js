@@ -17,11 +17,11 @@ funcArray["/Register"] = RegisterUser;
 funcArray["/Login"] = Login;
 funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;
-/*funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+//funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 funcArray["/GetTournaments"] = GetTournaments;
 funcArray["/RegisterInTournament"] = RegisterInTournament;
-funcArray["/WakeUsers"] = WakeUsers;
+/*funcArray["/WakeUsers"] = WakeUsers;
 funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;*/
 
 /*funcArray["/Cashout"] = Cashout;
@@ -30,7 +30,11 @@ funcArray["/Deposit"] = Deposit;
 
 funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
 
-
+var tournament1 = qs.stringify({
+	ID: 1,
+	game: "SeaWar1",
+	structure: {}
+});
 
 
 
@@ -45,6 +49,15 @@ var user1 = qs.stringify({
 function ChangePassword( data, res){
 	res.end("OK");
 	console.log("You must send changePass to Account Server");
+}
+
+function GetTournaments( data, res){
+	log(tournament1);
+	res.end(tournament1);
+}
+function RegisterInTournament( data, res){
+	log(tournament1);
+	res.end(tournament1);
 }
 
 function RememberPassword( data, res){
