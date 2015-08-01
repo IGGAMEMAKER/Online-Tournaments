@@ -27,16 +27,16 @@ console.log(dataS);*/
 request.post({url:'http://127.0.0.1:5000', form: {key:'value'}}, function(err,httpResponse,body){             console.log(body + "Pew!") })*/
 sender = require('./requestSender');
 
-var querystring = require('querystring');
+var qs = require('querystring');
 var http = require('http');
 
-var user2 = querystring.stringify({
+var user2 = qs.stringify({
       login: 'Raja',
       password: 'Kumar',
 	job   : [ 'language', 'PHP' ]
     });
 
-var user1 = querystring.stringify({
+var user1 = qs.stringify({
       login: 'Dinesh',
       password: 'Kumar',
 	job   : [ 'language', 'PHP' ]
@@ -57,7 +57,7 @@ var b = "";
 var arr = {asd: 'old'}
 var i = new Object();
 i.Zi = 3;
-prt();
+//prt();
 function setVal( res){
 	i.Zi=10;
 	//i=10;
@@ -70,15 +70,21 @@ function setVal( res){
 function prt(){
 	console.log(i.Zi);
 }
+
+var regTournament = qs.stringify({
+	tournamentID: 2
+});
+
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
 /*sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
-sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, setVal);
-var timerId = setInterval(function() {
+sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5007, sender.printer);//setVal);
+//sender.sendRequest("RegisterInTournament", regTournament,'127.0.0.1', 5000, setVal);
+/*var timerId = setInterval(function() {
   prt();
-}, 2000);
+}, 2000);*/
 
 //sendRequest("signIn", options);
 //sendRequest("", options);

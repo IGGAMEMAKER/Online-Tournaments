@@ -30,12 +30,10 @@ funcArray["/Deposit"] = Deposit;
 
 funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
 
-var tournament1 = qs.stringify({
-	ID: 1,
-	game: "SeaWar1",
-	structure: {}
-});
 
+
+/*var tournament2 = {};
+tournament*/
 
 
 var user1 = qs.stringify({
@@ -51,9 +49,96 @@ function ChangePassword( data, res){
 	console.log("You must send changePass to Account Server");
 }
 
+function get(str, parameter){
+	return JSON.stringify(str[parameter]);
+}
+function get2(str, par, par2){
+	return JSON.stringify(str[par][par2]);
+}
+function get3(str, par, par2, par3){
+	return JSON.stringify(str[par][par2][par3]);
+}
 function GetTournaments( data, res){
-	log(tournament1);
-	res.end(tournament1);
+	var obj = qs.stringify({
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID']
+	});
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), 
+		function (res1) {
+		    res1.setEncoding('utf8');
+		    res1.on('data', function (chunk) {
+				console.log("body: " + chunk);
+
+				///analyse and return answer to client-bot
+				var post = JSON.parse("" + chunk);
+				/*console.log("Checking Data taking: " + JSON.stringify(post['tournaments']));*/
+				console.log("Checking Data taking: " + get2(post, 'tournaments', 't1'));
+				res.end(get(post,'tournaments'));
+
+
+				/*console.log("body: " + chunk);
+
+				///analyse and return answer to client-bot
+				var a = new Object();
+				a = "" + chunk;
+				//console.log(JSON.parse(a)['tournaments']['t1']);
+				//var post = new Object();
+				var post = JSON.stringify(JSON.parse(chunk)['tournaments']['t1']);
+				console.log(post);
+				console.log("Checking Data taking: " + post);
+				res.end(post);*/
+				//res.end(post['tournaments']);
+		    });
+
+		    //req.on('error', function(e) {
+			//console.log('problem with request: ' + e.message);
+			//});
+		}
+	);
+
+	/*
+	var tournaments = {};
+	tournaments["z0"] = tournament1;
+	//tournaments["z1"] = tournament2;
+	var tournaments1 = qs.stringify(tournaments);
+	log(tournaments1);
+	res.end(tournaments1);*/
+}
+function GetTournServerIP(tournamentID){
+	return '127.0.0.1';
+}
+function RegisterInTournament( data, res){
+	var obj = qs.stringify({
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID']
+	});
+	log("Trying to register in tournament " + data['tournamentID']);
+	sender.sendRequest("RegisterInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), 
+		function (res1) {
+		    res1.setEncoding('utf8');
+		    res1.on('data', function (chunk) {
+				console.log("body: " + chunk);
+				///analyse and return answer to client-bot
+				var post = qs.parse(chunk);
+				/*log(post);
+				log("stringifying:" + JSON.stringify(post));
+				log("Value: " + post['"result']);*/
+				console.log("Checking Data taking: " + post['result']);
+				if (post['result'] === 'success'){
+					res.end("You are Registered in tournament!!");
+				}
+				else{
+					res.end("Tournament Register error:" + post['result']);
+				}
+		    });
+
+		    //req.on('error', function(e) {
+			//console.log('problem with request: ' + e.message);
+			//});
+		}
+	);
+	/*log(tournament1);
+	res.end(tournament1);*/
 }
 
 function RememberPassword( data, res){
