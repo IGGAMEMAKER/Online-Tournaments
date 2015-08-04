@@ -59,8 +59,10 @@ function SetServer(serverName, serverUrl, functionArray) {
 	            }
 	        });
 	        req.on('end', function () {
-	            var post = qs.parse(body);
-	            log(post);
+	        	//console.log("naked data:");
+	        	//console.log(body);
+	            var post = JSON.parse(body);
+	            //log(post);
 	            log("stringifying:" + JSON.stringify(post));
 	            /*log("Url= " + command);
 	            log("Key =" + post['login']);

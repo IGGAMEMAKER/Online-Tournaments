@@ -19,16 +19,23 @@ function ServeTournament (data, res){
 	console.log("----");
 	//var a = new Object();
 	//a = JSON.parse(data) ;
-	console.log(data['structure']);
+	console.log("ServeTournament :");
+	console.log(data);
+
 	//console.log((JSON.parse(data))["ID"] );
-	AnalyzeStructure(data['structure'])
+	//AnalyzeStructure(data['structure']);
 	console.log("----");
+	//JSON.parse(data);
+	var val = data['structure'];
+	console.log("I can print: ");
+	//console.log(val1);
+	console.log(val);
 	/*var d = data['buyIn'];
 	console.log(d);*/
 
 
 
-	console.log("ServeTournament " + JSON.stringify(data));
+	//console.log("ServeTournament " + data);
 	res.end("Serving OK");
 }
 

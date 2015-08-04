@@ -58,9 +58,9 @@ var tourns1 = {
 var currTournaments = JSON.stringify({
 	tournaments: tourns1
 });
-console.log(qs.stringify(tournament1));
+/*console.log(qs.stringify(tournament1));
 console.log("**************");
-console.log(JSON.stringify(tournament1));
+console.log(JSON.stringify(tournament1));*/
 SendTournament(tournament1);
 
 function GetGameFrontendAdress(gameNameId){
@@ -75,9 +75,10 @@ function GetGameFrontendAdress(gameNameId){
 function SendTournament(tournament){
 	//JSON.stringify(tournament)
 	//queryProcessor.getPort('GameFrontendServer')
+	console.log("Sending Tournament...");
 	console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
-	sender.sendRequest("ServeTournament", JSON.stringify(tournament), adress['IP'], adress['port'], //sender.printer
+	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], //sender.printer
 		function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
