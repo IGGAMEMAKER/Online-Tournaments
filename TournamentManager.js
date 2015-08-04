@@ -40,9 +40,14 @@ var tournament1 = {
 	winners: 2,
 
 	structure: {
+		rounds: 1,
+		goNext: [10, 2]
+	}
+
+	/*structure: {
 		rounds: 2,
 		goNext: [10, 5, 2]
-	}
+	}*/
 };
 var tournament2 = {
 	ID: 2,

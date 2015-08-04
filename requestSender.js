@@ -57,8 +57,8 @@ function sendRequest(urlPath, curData, host, port, responseCallBack){
 }
 function callback(error, response, body) {
     if (!error) {
-    	console.log('printing:');
-    	console.log(body);
+    	/*console.log('printing:');
+    	console.log(body);*/
         var info = JSON.parse(JSON.stringify(body));
         console.log(info);
     }
