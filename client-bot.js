@@ -71,6 +71,15 @@ function prt(){
 	console.log(i.Zi);
 }
 
+var movement1= {
+	playerID:1,
+	tournamentID:1,
+	gameID:1,
+	token:'qwzs',
+	movement:100
+}
+
+
 var regTournament = qs.stringify({
 	tournamentID: 2
 });
@@ -80,7 +89,9 @@ var regTournament = qs.stringify({
 sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
-sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
+//sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
+sender.sendRequest("Move", movement1,'127.0.0.1', 5009, sender.printer);//setVal);
+
 //sender.sendRequest("RegisterInTournament", regTournament,'127.0.0.1', 5000, setVal);
 /*var timerId = setInterval(function() {
   prt();

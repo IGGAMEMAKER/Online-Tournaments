@@ -21,7 +21,7 @@ serverList['GameServer'] = 5009;
 
 var gameNameIDList = {};
 
-gameNameIDList['1'] = 5000;
+gameNameIDList['1'] = 5009;
 gameNameIDList['2'] = 5001;
 gameNameIDList['3'] = 5002;
 gameNameIDList['4'] = 5003;

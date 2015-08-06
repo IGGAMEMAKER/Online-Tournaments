@@ -9,7 +9,7 @@ var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NE
 
 var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
-
+var status = new Object();
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
@@ -26,33 +26,34 @@ function ServeTournament (data, res){
 	/*var val = data['structure'];
 	console.log("I can print: ");
 	console.log(val);*/
-	var object = AnalyzeStructure(data['structure']);
+	AnalyzeStructure(data['structure'], res);
 
 
 	//console.log("ServeTournament " + data);
-	res.end();//"Serving OK");
+	//res.end("Serving OK");//"Serving OK");//status
 }
 
-function AnalyzeStructure(structure){
+function AnalyzeStructure(structure, res){
 	console.log(structure);
 	var numberOfRounds = structure['rounds'];
 	console.log("numberOfRounds= " + numberOfRounds);
 	var query = {
-		numberOfRounds: numberOfRounds;
+		numberOfRounds: numberOfRounds
 	};
 	for (var i = 0; i <= numberOfRounds; ++i) {
 		//var roundI = structure['round'+i];
-		query['round'+(i+1)] = {
-
-		};
+		/*query['round'+(i+1)] = {
+			
+		};*/
 		console.log("nextS[" + i + "] = " + structure['goNext'][i])
 	};
-	console.log(query);
-	sender.sendRequest("ServeGames", tournament, queryProcessor.getPort('GameServer') adress['IP'], , //sender.printer
+	console.log(structure);
+	sender.sendRequest("ServeGames", structure, '127.0.0.1', queryProcessor.getPort('GameServer'), //sender.printer
 		function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
+				res.end('OK');
 		    });
 		}
 	);

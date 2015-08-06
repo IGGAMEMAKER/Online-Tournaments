@@ -38,10 +38,27 @@ var tournament1 = {
 	gameNameID: 1,
 	playerTotalCount: 10,
 	winners: 2,
-
+	minPlayersPerGame: 2,
+	maxPlayersPerGame: 3,
+	lucky:1,
 	structure: {
 		rounds: 1,
-		goNext: [10, 2]
+		goNext: [10, 2],
+		//winners per whole round
+		round1:{
+			subRound1:{
+				ID:1,
+				players: 3,
+				games: 3,
+				winners: 3
+			},
+			subRound2:{
+				ID:2,
+				players: 2,
+				games: 2,
+				winners: 2
+			}
+		}
 	}
 
 	/*structure: {
@@ -83,21 +100,15 @@ function SendTournament(tournament){
 	console.log("Sending Tournament...");
 	console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
+	//sender.sendRequest("ServeTournament",)
+
 	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], //sender.printer
 		function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
-				
-				///analyse and return answer to client-bot
-				//var post = JSON.parse("" + chunk);
-
 		    });
-
-		    //req.on('error', function(e) {
-			//console.log('problem with request: ' + e.message);
-			//});
-		}/**/
+		}
 	);
 }
 

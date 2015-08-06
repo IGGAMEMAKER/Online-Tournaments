@@ -20,11 +20,11 @@ function sendRequest(urlPath, curData, host, port, responseCallBack){
 	//host = "localhost";
 	var url = "http://" + host+':'+port+'/'+urlPath;
 	//url1 = "http://" + "127.0.0.1:5008/ServeTournament";
-	console.log("*****");
+	/*console.log("*****");
 	console.log("reqSender: Trying to send...");
-	console.log(curData);
+	console.log(JSON.stringify(curData));
 	console.log("request url = " + url);
-	console.log("*****");
+	console.log("*****");*/
 		var options = {
 		url: url,
 		method: 'POST',
@@ -50,7 +50,7 @@ function sendRequest(urlPath, curData, host, port, responseCallBack){
 	  console.log('problem with request: ' + e.message);
 	});*/
 
-	request(options, callback);
+	request(options, callback);//
 
 	//req.write(curData);
 	//request.end();
