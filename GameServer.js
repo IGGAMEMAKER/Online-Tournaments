@@ -115,7 +115,7 @@ function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 		console.log("########################################################");
 		console.log("Game " + gameID + "in tournament " + tournamentID + " ends. " + playerID + " wins!!");
 		console.log("////////////////////////////////////////////////////////");
-		Answer(res, GAME_FINISH);
+		Answer(res, JSON.stringify(curGame));//GAME_FINISH
 		//res.end(GAME_FINISH);
 
 	}

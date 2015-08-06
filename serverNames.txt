@@ -1,4 +1,5 @@
 node
-FrontendServer.js
-AccountServer.js
+GameFrontendServer.js
+GameServer.js
+TournamentManager.js
 client-bot.js
