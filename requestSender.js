@@ -4,6 +4,7 @@ var request = require('request');
 this.sendRequest = sendRequest;
 //this.sendRequest1 = sendRequest1;
 this.printer = printer;
+this.Answer = Answer;
 
 function printer(error, response, body) {
 	if (!error) {
@@ -20,6 +21,11 @@ function printer(error, response, body) {
 /*function sendRequest(urlPath, options, curData, responseCallBack){
 	
 }*/
+
+function Answer(res, JSONObject){
+	res.end(JSON.stringify(JSONObject));
+}
+
 function sendRequest(urlPath, curData, host, port, responseCallBack){
 	//application/x-www-form-urlencoded
 	//host = "localhost";

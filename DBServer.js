@@ -16,8 +16,11 @@ funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT'
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 function GetTournaments (data, res){
+
 	console.log("GetTournaments " + data['login']);
-	res.end(currTournaments);
+	console.log(data);
+	sender.Answer(res, currTournaments);
+	//res.end(currTournaments);
 }
 
 /*
@@ -61,13 +64,16 @@ var tourns1 = {
 	t1: tournament1,
 	t2: tournament2
 };
+//console.log("Checking Data taking: " + get2(post, 'tournaments', 't1'));
+				//res.end(get(post,'tournaments'));
+
 
 /*var currTournaments = qs.stringify({
 	tournaments: tourns1
 });*/
-var currTournaments = JSON.stringify({
+var currTournaments = {
 	tournaments: tourns1
-});
+};
 /*console.log(currTournaments);
 console.log(JSON.parse(currTournaments) );*/
 

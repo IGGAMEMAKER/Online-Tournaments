@@ -1,5 +1,4 @@
 node
 FrontendServer.js
 AccountServer.js
-DBServer.js
 client-bot.js

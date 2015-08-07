@@ -60,6 +60,8 @@ function RegisterUser(data, res){
 	res.end("Registered!!!");
 }
 function LoginUser( data, res){
-	res.end(loginSuccess);
+	console.log("AccountServer LoginUser...");
+	console.log(data);
+	res.end(JSON.stringify(loginSuccess));
 }
 server.SetServer(serverName, '127.0.0.1', funcArray);

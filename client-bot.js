@@ -91,11 +91,11 @@ var regTournament = {
 };
 
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
-sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
-//sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
+//sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
+sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
 /*sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
-//sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
+sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);*/
