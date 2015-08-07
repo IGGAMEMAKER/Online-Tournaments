@@ -20,7 +20,7 @@ funcArray["/RememberPassword"] = RememberPassword;
 //funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 funcArray["/GetTournaments"] = GetTournaments;
-funcArray["/RegisterInTournament"] = RegisterInTournament;
+funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
 /*funcArray["/WakeUsers"] = WakeUsers;
 funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;*/
 
@@ -58,51 +58,13 @@ function get2(str, par, par2){
 function get3(str, par, par2, par3){
 	return JSON.stringify(str[par][par2][par3]);
 }
+
 function GetTournaments( data, res){
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID']
 	};
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), Magic(res, GetTournamentsHandler));
-	/*	function (res1) {
-		    res1.setEncoding('utf8');
-		    res1.on('data', function (chunk) {
-				console.log("body: " + chunk);
-
-				///analyse and return answer to client-bot
-				var post = JSON.parse("" + chunk);
-				//console.log("Checking Data taking: " + JSON.stringify(post['tournaments']));
-				console.log("Checking Data taking: " + get2(post, 'tournaments', 't1'));
-				res.end(get(post,'tournaments'));
-
-
-				console.log("body: " + chunk);
-
-				///analyse and return answer to client-bot
-				var a = new Object();
-				a = "" + chunk;
-				//console.log(JSON.parse(a)['tournaments']['t1']);
-				//var post = new Object();
-				var post = JSON.stringify(JSON.parse(chunk)['tournaments']['t1']);
-				console.log(post);
-				console.log("Checking Data taking: " + post);
-				res.end(post);
-				//res.end(post['tournaments']);
-		    });
-
-		    //req.on('error', function(e) {
-			//console.log('problem with request: ' + e.message);
-			//});
-		}
-	);*/
-
-	/*
-	var tournaments = {};
-	tournaments["z0"] = tournament1;
-	//tournaments["z1"] = tournament2;
-	var tournaments1 = qs.stringify(tournaments);
-	log(tournaments1);
-	res.end(tournaments1);*/
 }
 
 function GetTournamentsHandler( error, response, body, res ){
@@ -113,35 +75,16 @@ function GetTournamentsHandler( error, response, body, res ){
 function GetTournServerIP(tournamentID){
 	return '127.0.0.1';
 }
-function RegisterInTournament( data, res){
+function RegisterUserInTournament( data, res){
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID']
 	};
-	log(data);
+	//log(data);
 	log("Trying to register in tournament " + data['tournamentID']);
-	sender.sendRequest("RegisterInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), Magic(res, RegisterInTournamentHandler));
-	/*function (res1) {
-		    res1.setEncoding('utf8');
-		    res1.on('data', function (chunk) {
-				console.log("body: " + chunk);
-				///analyse and return answer to client-bot
-				var post = JSON.parse(chunk);
-				//log(post);
-				log("stringifying:" + JSON.stringify(post));
-				log("Value: " + post['"result']);
-				
-		    });
-
-		    //req.on('error', function(e) {
-			//console.log('problem with request: ' + e.message);
-			//});
-		}
-	);*/
-	/*log(tournament1);
-	res.end(tournament1);*/
+	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), Magic(res, RegisterUserInTournamentHandler));
 }
-function RegisterInTournamentHandler(error, response, body, res){
+function RegisterUserInTournamentHandler(error, response, body, res){
 	console.log("Checking Data taking: " + body['result']);
 	if (body['result'] === 'success'){
 		res.end("You are Registered in tournament!!");

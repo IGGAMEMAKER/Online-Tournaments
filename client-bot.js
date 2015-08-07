@@ -102,7 +102,7 @@ sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-//sender.sendRequest("RegisterInTournament", regTournament,'127.0.0.1', 5000, setVal);
+//sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
 /*var timerId = setInterval(function() {
   prt();
 }, 2000);*/

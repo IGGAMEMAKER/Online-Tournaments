@@ -8,7 +8,7 @@ var server = require('./script');
 var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
 var funcArray = {};
-funcArray["/RegisterInTournament"] = RegisterInTournament; //start all comands with '/'. IT's a URL to serve
+funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
 var tournament1 = {
 	ID: 1,
 	buyIn: 100,
@@ -46,11 +46,11 @@ function showTournaments(){
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
-//you NEED TO FINISH YOUR ANSWERS WITH res.end();
-function RegisterInTournament (data, res){
+//you NEED TO FINISH YOUR ANSWERS WITH sender.Answer(res,();
+function RegisterUserInTournament (data, res){
 	//console.log("Sender = " + data['sender']);
 	console.log("Registering in tournament: " + data['tournamentID']);
-	res.end(Success);
+	sender.Answer(res,Success);
 //	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
 	AddPlayerToTournament(data['tournamentID']);
 }
