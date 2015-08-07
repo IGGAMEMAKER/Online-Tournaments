@@ -76,13 +76,13 @@ var timerId = setInterval(function() {
   }
 }, 2000);
 
-var Success = qs.stringify({
+var Success = {
 	result: 'success'
-});
+};
 
-var Fail = qs.stringify({
+var Fail = {
 	result: 'fail'
-});
+};
 
 
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

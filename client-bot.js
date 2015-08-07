@@ -30,17 +30,17 @@ sender = require('./requestSender');
 var qs = require('querystring');
 var http = require('http');
 
-var user2 = qs.stringify({
+var user2 = {
       login: 'Raja',
       password: 'Kumar',
 	job   : [ 'language', 'PHP' ]
-    });
+    };
 
-var user1 = qs.stringify({
+var user1 = {
       login: 'Dinesh',
       password: 'Kumar',
 	job   : [ 'language', 'PHP' ]
-    });
+    };
 
 var options = {
     host: '127.0.0.1',
@@ -76,7 +76,7 @@ var movement1= {
 	tournamentID:1,
 	gameID:1,
 	token:'qwzs',
-	movement:100
+	movement:150
 }
 var movement2= {
 	playerID:2,
@@ -86,18 +86,20 @@ var movement2= {
 	movement:100
 }
 
-var regTournament = qs.stringify({
+var regTournament = {
 	tournamentID: 2
-});
+};
 
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
-/*sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
-sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
-sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
+sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
+//sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
+/*sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
 //sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
-//sender.sendRequest("Move", movement1,'127.0.0.1', 5009, sender.printer);//setVal);
-sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
+
+/*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, sender.printer);//setVal);
+sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);*/
+
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
 //sender.sendRequest("RegisterInTournament", regTournament,'127.0.0.1', 5000, setVal);

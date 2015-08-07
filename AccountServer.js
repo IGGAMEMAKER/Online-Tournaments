@@ -7,11 +7,11 @@ var server = require('./script'); //var server = new http.Server();
 
 var serverName = "AccountServer"; //console.log(queryProcessor.getOwnPropertyNames());
 
-var user1 = qs.stringify({
+var user1 = {
       login: 'Dinesh',
       password: 'Kumar',
-	job   : [ 'language', 'PHP' ]
-    });
+      job   : [ 'language', 'PHP' ]
+    };
 var cars = ["Saab", "Volvo", "BMW"]; cars.push("LADADADADADA");
 /*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
@@ -25,21 +25,21 @@ funcArray["/Ban"] = Ban;*/
 funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;
 
-/*var loginSuccess = qs.stringify({
+var loginSuccess = {
 	result: 'success'
-});
+};
 
-var loginFail = qs.stringify({
+var loginFail = {
 	result: 'fail'
-});*/
+};
 
-var Success = qs.stringify({
+var Success = {
 	result: 'success'
-});
+};
 
-var Fail = qs.stringify({
+var Fail = {
 	result: 'fail'
-});
+};
 
 
 function ChangePassword(data, res){

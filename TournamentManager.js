@@ -77,12 +77,6 @@ var tourns1 = {
 	t1: tournament1,
 	t2: tournament2
 };
-var currTournaments = JSON.stringify({
-	tournaments: tourns1
-});
-/*console.log(qs.stringify(tournament1));
-console.log("**************");
-console.log(JSON.stringify(tournament1));*/
 SendTournament(tournament1);
 
 function GetGameFrontendAdress(gameNameId){

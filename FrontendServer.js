@@ -36,11 +36,11 @@ funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
 tournament*/
 
 
-var user1 = qs.stringify({
+var user1 = {
       login: 'Dinesh',
       password: 'Kumar',
 	job   : [ 'language', 'PHP' ]
-    });
+    };
 
 
 
@@ -59,10 +59,10 @@ function get3(str, par, par2, par3){
 	return JSON.stringify(str[par][par2][par3]);
 }
 function GetTournaments( data, res){
-	var obj = qs.stringify({
+	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID']
-	});
+	};
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), 
 		function (res1) {
 		    res1.setEncoding('utf8');
@@ -108,10 +108,10 @@ function GetTournServerIP(tournamentID){
 	return '127.0.0.1';
 }
 function RegisterInTournament( data, res){
-	var obj = qs.stringify({
+	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID']
-	});
+	};
 	log("Trying to register in tournament " + data['tournamentID']);
 	sender.sendRequest("RegisterInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), 
 		function (res1) {
@@ -119,7 +119,7 @@ function RegisterInTournament( data, res){
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
 				///analyse and return answer to client-bot
-				var post = qs.parse(chunk);
+				var post = JSON.parse(chunk);
 				/*log(post);
 				log("stringifying:" + JSON.stringify(post));
 				log("Value: " + post['"result']);*/
@@ -153,7 +153,7 @@ function Login( data, res){
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
 				///analyse and return answer to client-bot
-				var post = qs.parse(chunk);
+				var post = JSON.parse(chunk);
 				/*log(post);
 				log("stringifying:" + JSON.stringify(post));
 				log("Value: " + post['"result']);*/
@@ -172,10 +172,62 @@ function Login( data, res){
 		}
 	);
 }
+function universalAnswer(error, response, body, res, method){//response is a response, which we get from request sender. res is a response
+	//to the server, which called this server
+	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
+	//We analyze this response and give an answer by the object 'res' in method 'method'
+	if (!error) {
+    	console.log(body);
+
+        var info = JSON.parse(JSON.stringify(body));
+        console.log(info);
+        
+        method(error, response, body, res);
+        /*console.log("Got answer from AccountServer");
+        res.end("THX for register");*/
+    }
+    else {
+        console.log('Error happened: '+ error);
+    }
+}
+
+function RegisterUserHandler( error, response, body, res) {
+	console.log("Got answer from AccountServer");
+        res.end("THX for register");
+
+	/*if (!error) {
+    	console.log(body);
+
+        var info = JSON.parse(JSON.stringify(body));
+        console.log(info);
+
+        console.log("Got answer from AccountServer");
+        res.end("THX for register");
+    }
+    else {
+        console.log('Error happened: '+ error);
+    }*/
+}
+//function
+
+function Magic(res, method){
+	return function (error, response, body) {
+		    universalAnswer(error, response, body, res, method );
+		};
+}
+
 function RegisterUser( data, res){
 	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
-	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), 
-		function (res1) {
+	//console.log("FrontendServer tries to register user");
+
+	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'),  
+		Magic(res, RegisterUserHandler )
+		/*function (error, response, body) {
+		    universalAnswer(error, response, body, res, RegisterUserHandler );
+		}*/
+	);
+	/*	function (res1) {
+			console.log("Got answer from AccountServer");
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
@@ -188,6 +240,8 @@ function RegisterUser( data, res){
 			//console.log('problem with request: ' + e.message);
 			//});
 		}
-	);
+	);*/
 }
+
+
 server.SetServer(serverName, '127.0.0.1', funcArray);

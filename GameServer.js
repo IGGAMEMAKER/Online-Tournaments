@@ -16,6 +16,8 @@ if (gameServerType ==='Sync'){
 }
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
+
+const PREPARED = "PREPARED";
 /*funcArray["/PauseGame"] = PauseGame;
 funcArray["/AbortGame"] = AbortGame;
 funcArray["/UnSetGame"] = UnSetGame;*/
@@ -23,8 +25,8 @@ funcArray["/UnSetGame"] = UnSetGame;*/
 var game1 = {
 	ID:1,
 	tournamentID:1,
-	playerCount:10,
-	players: {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
+	playerCount:3,
+	players: {0:0, 1:0, 2:0}//, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
 }
 
 var game2 = {
@@ -49,20 +51,28 @@ console.log(JSON.stringify(games));
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 function SetGame (data, res){
-	console.log("SetGame " + data);
-	
-	res.end("Game " + data + " Is Set");
+	console.log("SetGame ")
+	console.log(data);
+	//+ data + 
+	res.end("Game " +" Is Set");
 }
 
 function ServeGames (data, res){
 	console.log("ServeGame " + data);
-	games[1].curPlayerID=1;
-	games[2].curPlayerID=1;
-	games[3].curPlayerID=1;
+	initGame(1);
+	initGame(2);
+	initGame(3);
 	
-	res.end("serving games");
+	/*games[2].curPlayerID=1;
+	games[3].curPlayerID=1;*/
+	res.write("serving games");
+	//res.end("serving games");
+	res.end();
 }
-
+function initGame(ID){
+	games[ID].curPlayerID=1;
+	games[ID].status=PREPARED;
+}
 function Move (data, res){
 	console.log("************************");
 	console.log("Movement:");
@@ -81,6 +91,7 @@ function Move (data, res){
 		if (curGame.curPlayerID==playerID){
 			curGame.players[playerID]+= pointsAdd;
 			console.log("Player " + playerID + " has " + curGame.players[playerID] + " points");
+			SwitchPlayer(curGame);
 		}
 		else{
 			console.log("Player " + playerID + 
@@ -89,13 +100,24 @@ function Move (data, res){
 		CheckForTheWinner(tournamentID, gameID, playerID, res);
 	}
 	else{
-		Answer(res, tournamentFAIL);
+		Answer(res, JSON.stringify(getGameStatus(gameID)));
 		//res.end(tournamentFAIL);
+	}
+}
+function getGameStatus(ID){
+	return games[ID].status;
+}
+function SwitchPlayer( curGame){
+	if (curGame.curPlayerID<curGame.playerCount-1){
+		curGame.curPlayerID++;
+	}
+	else{
+		curGame.curPlayerID=1;
 	}
 }
 
 function tournamentIsValid(tournamentID, gameID){
-	return true;
+	return games[gameID].status === PREPARED;//
 }
 
 function Answer(res, code){
@@ -108,13 +130,17 @@ function StartGame (data, res){
 
 	res.end("Starting game:" + data['ID']);
 }
-
+function FinishGame(ID){
+	games[ID].status = GAME_FINISH;
+}
 function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 	var curGame = games[gameID];
+
 	if (curGame.players[playerID]>500){
 		console.log("########################################################");
 		console.log("Game " + gameID + "in tournament " + tournamentID + " ends. " + playerID + " wins!!");
 		console.log("////////////////////////////////////////////////////////");
+		FinishGame(gameID);
 		Answer(res, JSON.stringify(curGame));//GAME_FINISH
 		//res.end(GAME_FINISH);
 

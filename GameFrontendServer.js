@@ -27,7 +27,7 @@ function ServeTournament (data, res){
 	console.log("I can print: ");
 	console.log(val);*/
 	AnalyzeStructure(data['structure'], res);
-
+	res.end('OK');
 
 	//console.log("ServeTournament " + data);
 	//res.end("Serving OK");//"Serving OK");//status
@@ -53,7 +53,8 @@ function AnalyzeStructure(structure, res){
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
-				res.end('OK');
+				console.log("Answer from GameServer comes here!!!");
+				//res.end('OK');
 		    });
 		}
 	);

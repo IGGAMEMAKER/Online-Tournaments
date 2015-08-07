@@ -63,7 +63,7 @@ function SetServer(serverName, serverUrl, functionArray) {
 	        	//console.log(body);
 	            var post = JSON.parse(body);
 	            //log(post);
-	            log("stringifying:" + JSON.stringify(post));
+	        ////log("stringifying:" + JSON.stringify(post));
 	            /*log("Url= " + command);
 	            log("Key =" + post['login']);
 	            log("Key =" + post['job']);*/

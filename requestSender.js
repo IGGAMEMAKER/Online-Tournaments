@@ -5,12 +5,17 @@ this.sendRequest = sendRequest;
 //this.sendRequest1 = sendRequest1;
 this.printer = printer;
 
-function printer(res) {
-	    res.setEncoding('utf8');
-	    res.on('data', function (chunk) {
-		console.log("body: " + chunk);
-	    });
-	};
+function printer(error, response, body) {
+	if (!error) {
+    	/*console.log('printing:');
+    	console.log(body);*/
+        var info = JSON.parse(JSON.stringify(body));
+        console.log(info);
+    }
+    else {
+        console.log('Error happened: '+ error);
+    }
+};
 
 /*function sendRequest(urlPath, options, curData, responseCallBack){
 	
@@ -50,7 +55,7 @@ function sendRequest(urlPath, curData, host, port, responseCallBack){
 	  console.log('problem with request: ' + e.message);
 	});*/
 
-	request(options, callback);//
+	request(options, responseCallBack);//callback
 
 	//req.write(curData);
 	//request.end();
