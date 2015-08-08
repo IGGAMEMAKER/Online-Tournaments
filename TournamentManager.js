@@ -100,7 +100,7 @@ function SendTournament(tournament){
 	console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 	//sender.sendRequest("ServeTournament",)
-
+	
 	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], null, SendTournamentHandler);//sender.printer
 	/*	function (res1) {
 		    res1.setEncoding('utf8');
