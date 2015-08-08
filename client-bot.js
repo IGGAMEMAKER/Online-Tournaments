@@ -73,36 +73,39 @@ function prt(){
 
 var movement1= {
 	playerID:1,
-	tournamentID:1,
-	gameID:1,
+	tournamentID:2,
+	gameID:2,
 	token:'qwzs',
 	movement:150
 }
 var movement2= {
 	playerID:2,
-	tournamentID:1,
-	gameID:1,
+	tournamentID:2,
+	gameID:2,
 	token:'qwzs',
-	movement:100
+	movement:200
 }
 
 var regTournament = {
 	tournamentID: 2
 };
 
+/*
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
 //sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
-sender.sendRequest("Login", user1, '127.0.0.1', 5000, sender.printer);
-/*sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
-sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);*/
-sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, sender.printer);//setVal);
+sender.sendRequest("Login", user1, '127.0.0.1', 5000, null ,sender.printer);
+///sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
+///sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);
+sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
 
-/*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, sender.printer);//setVal);
-sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);*/
+sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);*/
+
+
+sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
+sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-//sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
 /*var timerId = setInterval(function() {
   prt();
 }, 2000);*/

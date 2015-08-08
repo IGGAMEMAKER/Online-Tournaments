@@ -41,6 +41,7 @@ var game3 = {
 }
 
 var games = {
+	count:3, 
 	1:game1,
 	2:game2,
 	3:game3
@@ -54,15 +55,21 @@ function SetGame (data, res){
 	console.log("SetGame ")
 	console.log(data);
 	//+ data + 
+	games[++(game.count)]= data;
 	res.end("Game " +" Is Set");
 }
 
 function ServeGames (data, res){
-	console.log("ServeGame " + data);
+	console.log("ServeGame ")
+	console.log(data);
+	
 	initGame(1);
 	initGame(2);
 	initGame(3);
-	
+
+	games[++(games.count)]= data;
+	initGame(games.count);
+	console.log(games);
 	/*games[2].curPlayerID=1;
 	games[3].curPlayerID=1;*/
 	res.write("serving games");
@@ -70,6 +77,7 @@ function ServeGames (data, res){
 	res.end();
 }
 function initGame(ID){
+
 	games[ID].curPlayerID=1;
 	games[ID].status=PREPARED;
 }
@@ -138,7 +146,7 @@ function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 
 	if (curGame.players[playerID]>500){
 		console.log("########################################################");
-		console.log("Game " + gameID + "in tournament " + tournamentID + " ends. " + playerID + " wins!!");
+		console.log("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
 		console.log("////////////////////////////////////////////////////////");
 		FinishGame(gameID);
 		Answer(res, JSON.stringify(curGame));//GAME_FINISH

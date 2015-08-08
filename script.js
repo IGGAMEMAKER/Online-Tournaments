@@ -46,13 +46,13 @@ function SetServer(serverName, serverUrl, functionArray) {
 		//////res.write(JSON.stringify({ a: 1 }));
 
 		var urlParsed = url.parse(req.url);
-		log(urlParsed.query);
+	//log(urlParsed.query);
 
 		var command = urlParsed.pathname;
 		var body = '';
 	        req.on('data', function (data) {
 	            body += data;
-	            log("incoming data: " + data + " \n");
+	        //log("incoming data: " + data + " \n");
 	            // Too much POST data, kill the connection!
 	            if (body.length > 1e6){
 	                req.connection.destroy();

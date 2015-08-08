@@ -77,10 +77,10 @@ var currTournaments = {
 /*console.log(currTournaments);
 console.log(JSON.parse(currTournaments) );*/
 
-var z = new Object();
+/*var z = new Object();
 z = '{"tournaments":{"t1":{"ID":1,"buyIn":100,"gameNameID":1,"playerTotalCount":10,"structure":{}},"t2":{"ID":2,"buyIn":100,"gameNameID":1,"playerTotalCount":100,"structure":{}}}}';
 var c = JSON.parse(z);
-console.log(c['tournaments']['t1']);
+console.log(c['tournaments']['t1']);*/
 
 /*
 var tz = {

@@ -64,7 +64,7 @@ function GetTournaments( data, res){
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID']
 	};
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), Magic(res, GetTournamentsHandler));
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetTournamentsHandler);
 }
 
 function GetTournamentsHandler( error, response, body, res ){
@@ -82,7 +82,7 @@ function RegisterUserInTournament( data, res){
 	};
 	//log(data);
 	log("Trying to register in tournament " + data['tournamentID']);
-	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), Magic(res, RegisterUserInTournamentHandler));
+	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
 }
 function RegisterUserInTournamentHandler(error, response, body, res){
 	console.log("Checking Data taking: " + body['result']);
@@ -100,7 +100,7 @@ function RememberPassword( data, res){
 }
 function log(str){ console.log(str);}
 function Login( data, res){
-	sender.sendRequest("Login", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), Magic(res, LoginHandler));
+	sender.sendRequest("Login", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), res, LoginHandler);
 }
 function LoginHandler( error, response, body, res){
 	if (body['result'] === 'success'){
@@ -118,33 +118,11 @@ function RegisterUserHandler( error, response, body, res) {
 function RegisterUser( data, res){
 	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
 	//console.log("FrontendServer tries to register user");
-	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'),  Magic(res, RegisterUserHandler ));
+	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'),  res, RegisterUserHandler );
 }
 
 
-function Magic(res, method){
-	return function (error, response, body) {
-		    universalAnswer(error, response, body, res, method );
-		};
-}
-function universalAnswer(error, response, body, res, method){//response is a response, which we get from request sender. res is a response
-	//to the server, which called this server
-	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
-	//We analyze this response and give an answer by the object 'res' in method 'method'
-	if (!error) {
-    	console.log(body);
 
-        //var info = JSON.parse(JSON.stringify(body));
-        //console.log(info);
-        
-        method(error, response, body, res);
-        /*console.log("Got answer from AccountServer");
-        res.end("THX for register");*/
-    }
-    else {
-        console.log('Error happened: '+ error);
-    }
-}
 
 
 

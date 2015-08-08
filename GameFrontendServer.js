@@ -9,6 +9,7 @@ var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NE
 
 var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
+funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
 var status = new Object();
 
 //------------------Writing EventHandlers---------------------------------
@@ -27,12 +28,25 @@ function ServeTournament (data, res){
 	console.log("I can print: ");
 	console.log(val);*/
 	AnalyzeStructure(data['structure'], res);
-	res.end('OK');
+	
 
 	//console.log("ServeTournament " + data);
 	//res.end("Serving OK");//"Serving OK");//status
 }
 
+function HaveEnoughResourcesForTournament (data, res){
+	console.log("We have resources for " + data['playerCount'] + " divided in " + data['gameNums'] + " groups. HARDCODED success");
+	var result = {
+		result:"success"
+	}
+	res.end(result);
+}
+
+function ServeTournamentCallback( error, response, body, res) {
+	console.log("Answer from GameServer comes here!!!");
+	res.end('OK');
+    //    res.end("GameServed");
+}
 function AnalyzeStructure(structure, res){
 	console.log(structure);
 	var numberOfRounds = structure['rounds'];
@@ -48,8 +62,8 @@ function AnalyzeStructure(structure, res){
 		console.log("nextS[" + i + "] = " + structure['goNext'][i])
 	};
 	console.log(structure);
-	sender.sendRequest("ServeGames", structure, '127.0.0.1', queryProcessor.getPort('GameServer'), //sender.printer
-		function (res1) {
+	sender.sendRequest("ServeGames", structure, '127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
+	/*	function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
@@ -57,7 +71,7 @@ function AnalyzeStructure(structure, res){
 				//res.end('OK');
 		    });
 		}
-	);
+	);*/
 }
 
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

@@ -77,7 +77,7 @@ var tourns1 = {
 	t1: tournament1,
 	t2: tournament2
 };
-SendTournament(tournament1);
+var curTournamentID=0;
 
 function GetGameFrontendAdress(gameNameId){
 	console.log("rewrite TournamentManager.GetGameFrontendAdress");
@@ -87,7 +87,12 @@ function GetGameFrontendAdress(gameNameId){
 	};
 	return adress;
 }
-
+function SendTournamentHandler( error, response, body, res) {
+	console.log("Answer from GameServer comes here!!!");
+	res.end('OK');
+    //    res.end("GameServed");
+}
+//SendTournament(tournament1);
 function SendTournament(tournament){
 	//JSON.stringify(tournament)
 	//queryProcessor.getPort('GameFrontendServer')
@@ -96,14 +101,14 @@ function SendTournament(tournament){
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 	//sender.sendRequest("ServeTournament",)
 
-	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], //sender.printer
-		function (res1) {
+	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], null, SendTournamentHandler);//sender.printer
+	/*	function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
 				console.log("body: " + chunk);
 		    });
 		}
-	);
+	);*/
 }
 
 //------------------Writing EventHandlers---------------------------------
@@ -113,9 +118,20 @@ function SendTournament(tournament){
 function ServeTournament (data, res){
 	console.log("ServeTournament " + data['tournamentID']);//['tournamentStructure']);
 	
+	console.log("Sending Tournament...");
+	var tournament = data;
+	tournament.ID = curTournamentID++
+	console.log(tournament);
+	var adress = GetGameFrontendAdress(tournament.gameNameID);
+
+	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], res, SendTournamentHandler);//sender.printer
 	
-	res.end("ServeTournament");
+	//SendTournament(data);
+	
+	//res.end("ServeTournament");
 }
+
+
 function StartTournament (data, res){
 	console.log("StartTournament " + data['ID']);//['tournamentStructure']);
 	
