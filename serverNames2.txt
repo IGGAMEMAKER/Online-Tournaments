@@ -1,9 +1,10 @@
 node
 FrontendServer.js
+AccountServer.js
+DBServer.js
+
 GameFrontendServer.js
 GameServer.js
 TournamentManager.js
-BalanceServer.js
-DBServer.js
-TournamentServer.js
 initializer.js
+client-bot.js

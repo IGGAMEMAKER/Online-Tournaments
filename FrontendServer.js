@@ -68,8 +68,9 @@ function GetTournaments( data, res){
 }
 
 function GetTournamentsHandler( error, response, body, res ){
-	console.log("Checking Data taking: " + get2(body, 'tournaments', 't1'));
-	res.end(get(body,'tournaments'));
+	//console.log("Checking Data taking: " + get2(body, 'tournaments', 't1'));
+	sender.Answer(res, body);
+	//res.end(get(body,'tournaments'));
 }
 
 function GetTournServerIP(tournamentID){

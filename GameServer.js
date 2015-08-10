@@ -40,11 +40,14 @@ var game3 = {
 	players: {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0}
 }
 
-var games = {
+/*var games = {
 	count:3, 
 	1:game1,
 	2:game2,
 	3:game3
+}*/
+var games = {
+	count:0,
 }
 console.log(JSON.stringify(games));
 //------------------Writing EventHandlers---------------------------------
@@ -62,14 +65,18 @@ function SetGame (data, res){
 function ServeGames (data, res){
 	console.log("ServeGame ")
 	console.log(data);
-	
-	initGame(1);
+	var tournamentID = data['tournamentID'];
+
+	/*initGame(1);
 	initGame(2);
-	initGame(3);
+	initGame(3);*/
 
 	games[++(games.count)]= data;
 	initGame(games.count);
 	console.log(games);
+
+
+
 	/*games[2].curPlayerID=1;
 	games[3].curPlayerID=1;*/
 	res.write("serving games");

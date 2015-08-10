@@ -9,7 +9,9 @@ var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF 
 
 var funcArray = {};
 funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
-
+funcArray["/AddTournament"] = AddTournament;
+var currentTournamentCounter=0;
+var tournaments = {};
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
@@ -19,9 +21,23 @@ function GetTournaments (data, res){
 
 	console.log("GetTournaments " + data['login']);
 	console.log(data);
-	sender.Answer(res, currTournaments);
+	sender.Answer(res, tournaments);
 	//res.end(currTournaments);
 }
+
+function AddTournament (data, res){
+	var tournament = data;
+	var tournID = ++currentTournamentCounter;
+	tournament.tournamentID = tournID;
+	tournaments[tournID] = tournament;
+	console.log('Added tournament ' + tournID);
+	console.log('++++++++++++++++++++++++++++');
+	console.log(tournament);
+	console.log('----------------------------');
+
+	sender.Answer(res, tournament);
+}
+
 
 /*
 var tournament1 = qs.stringify({
@@ -43,7 +59,7 @@ var tournament2 = qs.stringify({
 });*/
 
 
-var tournament1 = {
+/*var tournament1 = {
 	ID: 1,
 	buyIn: 100,
 	gameNameID: 1,
@@ -59,11 +75,11 @@ var tournament2 = {
 	gameNameID: 1,
 	playerTotalCount: 100,
 	structure: {}
-};
-var tourns1 = {
+};*/
+/*var tourns1 = {
 	t1: tournament1,
 	t2: tournament2
-};
+};*/
 //console.log("Checking Data taking: " + get2(post, 'tournaments', 't1'));
 				//res.end(get(post,'tournaments'));
 
@@ -71,9 +87,14 @@ var tourns1 = {
 /*var currTournaments = qs.stringify({
 	tournaments: tourns1
 });*/
-var currTournaments = {
+/*var tournaments = {
+	1: tournament1,
+	2: tournament2
+}*/
+
+/*var currTournaments = {
 	tournaments: tourns1
-};
+};*/
 /*console.log(currTournaments);
 console.log(JSON.parse(currTournaments) );*/
 

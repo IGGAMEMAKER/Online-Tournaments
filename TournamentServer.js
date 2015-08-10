@@ -9,7 +9,9 @@ var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW 
 
 var funcArray = {};
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
-var tournament1 = {
+funcArray["/ServeTournament"] = ServeTournament;
+
+/*var tournament1 = {
 	ID: 1,
 	buyIn: 100,
 	gameNameID: 1,
@@ -28,11 +30,13 @@ var tournament2 = {
 	playerTotalCount: 10,
 	playersRegistered:0,
 	structure: {}
-};
-console.log(tournament1);
-var tournaments = new Object();
-initTournaments();
-showTournaments();
+};*/
+//console.log(tournament1);
+var tournaments = {
+	count:0
+}
+//initTournaments();
+//showTournaments();
 function initTournaments(){
 	
 	tournaments[tournament1.ID]= tournament1;
@@ -54,6 +58,20 @@ function RegisterUserInTournament (data, res){
 //	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
 	AddPlayerToTournament(data['tournamentID']);
 }
+
+function ServeTournament (data, res){
+	console.log('TS tries to serve:');
+	console.log(data);
+	tournaments[data['tournamentID']] = data;
+
+	sender.sendRequest("ServeTournament", data, '127.0.0.1', queryProcessor.getPort('TournamentManager'), res, ServeTournamentTMProxy );
+}
+function ServeTournamentTMProxy ( error, response, body, res){
+
+
+	sender.Answer(res, body);
+}
+
 function AddPlayerToTournament(tournamentID){
 	if (tournaments[tournamentID].playerTotalCount> tournaments[tournamentID].playersRegistered){
 		tournaments[tournamentID].playersRegistered++;
@@ -66,7 +84,9 @@ function AddPlayerToTournament(tournamentID){
 	}
 }
 
-var timerId = setInterval(function() {
+
+////TIMERS!!!!
+/*var timerId = setInterval(function() {
   if (tournaments[2].playerTotalCount === tournaments[2].playersRegistered){
 	console.log("Tournament " + 2 + " starts");	
   }
@@ -74,7 +94,7 @@ var timerId = setInterval(function() {
  	//console.log("Registered in 2: " + tournaments[2].playersRegistered);
 	console.log("Registered :" +tournaments[2].playersRegistered +" / " + tournaments[2].playerTotalCount);
   }
-}, 2000);
+}, 2000);*/
 
 var Success = {
 	result: 'success'

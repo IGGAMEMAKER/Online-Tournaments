@@ -100,7 +100,7 @@ sender.sendRequest("Login", user1, '127.0.0.1', 5000, null ,sender.printer);
 sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
 
 sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);*/
-sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('TournamentManager'), null, sender.printer);
+sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);*/
