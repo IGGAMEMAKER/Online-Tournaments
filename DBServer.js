@@ -32,7 +32,7 @@ function AddTournament (data, res){
 	tournaments[tournID] = tournament;
 	console.log('Added tournament ' + tournID);
 	console.log('++++++++++++++++++++++++++++');
-	console.log(tournament);
+	console.log(JSON.stringify(tournament));
 	console.log('----------------------------');
 
 	sender.Answer(res, tournament);

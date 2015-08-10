@@ -32,6 +32,8 @@ round1: {
 		}
 
 */
+
+/*
 var tournament1 = {
 	ID: 1,
 	buyIn: 100,
@@ -61,10 +63,10 @@ var tournament1 = {
 		}
 	}
 
-	/*structure: {
-		rounds: 2,
-		goNext: [10, 5, 2]
-	}*/
+	//structure: {
+	//	rounds: 2,
+	//	goNext: [10, 5, 2]
+	//}
 };
 var tournament2 = {
 	ID: 2,
@@ -76,7 +78,7 @@ var tournament2 = {
 var tourns1 = {
 	t1: tournament1,
 	t2: tournament2
-};
+};*/
 var curTournamentID=0;
 
 function GetGameFrontendAdress(gameNameId){
@@ -97,7 +99,7 @@ function SendTournament(tournament){
 	//JSON.stringify(tournament)
 	//queryProcessor.getPort('GameFrontendServer')
 	console.log("Sending Tournament...");
-	console.log(tournament);
+	//console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 	//sender.sendRequest("ServeTournament",)
 	
@@ -121,7 +123,7 @@ function ServeTournament (data, res){
 	console.log("Sending Tournament...");
 	var tournament = data;
 	tournament.ID = curTournamentID++
-	console.log(tournament);
+	//console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 
 	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], res, SendTournamentHandler);//sender.printer

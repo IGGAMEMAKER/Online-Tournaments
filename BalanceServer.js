@@ -24,7 +24,7 @@ console.log(undefined>=1);
 
 function ServeTournament (data, res){
 	console.log('income tournament');
-	console.log(data);
+	console.log(JSON.stringify(data));
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
 

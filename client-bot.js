@@ -1,6 +1,6 @@
 //var data = {val1:"hello", val2:{val3:"world"}};
 //var dataS = JSON.stringify(data);   // stringify from object
-
+var proc = require('./test');
 /*$.ajax({
         url:"127.0.0.1:5000",
         type:"POST",
@@ -68,9 +68,19 @@ function setVal( res){
 	}*/
 }
 function prt(){
-	console.log(i.Zi);
+	//console.log(i.Zi);
+	sender.sendRequest("GetGames", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);
 }
-
+var movements = {};
+for (i=1;i<15;i++){
+	movements[i] = {
+		playerID:i,
+		tournamentID:3,
+		gameID:3,
+		token:'qwzs',
+		movement:150+i*15
+	}
+}
 var movement1= {
 	playerID:1,
 	tournamentID:2,
@@ -99,16 +109,24 @@ sender.sendRequest("Login", user1, '127.0.0.1', 5000, null ,sender.printer);
 sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
 
 sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);*/
-sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
+//sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
+var currentPlayer=0;
 
-//sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
-//sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);
+//sender.sendRequest("GetGames", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
+
+//sender.sendRequest("Move", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
+//sender.sendRequest("Move", movement2,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-/*var timerId = setInterval(function() {
-  prt();
-}, 2000);*/
+var timerId = setInterval(function() {
+  //prt();
+  currentPlayer++;
+  //currentPlayer=1;
+  if (currentPlayer>13){currentPlayer=1;}
+  console.log('turn of player '+ currentPlayer);
+  sender.sendRequest("Move", movements[currentPlayer],'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
+}, 500);
 
 //sendRequest("signIn", options);
 //sendRequest("", options);

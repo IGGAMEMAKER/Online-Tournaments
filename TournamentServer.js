@@ -60,8 +60,8 @@ function RegisterUserInTournament (data, res){
 }
 
 function ServeTournament (data, res){
-	console.log('TS tries to serve:');
-	console.log(data);
+	console.log('TS tries to serve:' + data['tournamentID']);
+	//console.log(data);
 	tournaments[data['tournamentID']] = data;
 
 	sender.sendRequest("ServeTournament", data, '127.0.0.1', queryProcessor.getPort('TournamentManager'), res, ServeTournamentTMProxy );

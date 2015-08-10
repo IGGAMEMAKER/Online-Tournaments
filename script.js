@@ -10,7 +10,7 @@ this.SetServer = SetServer;
 var qs = require('querystring');
 
 var server = new http.Server();
-//var serverName = "FrontendServer";
+var curServerName;// = "FrontendServer";
 //log(queryProcessor.getOwnPropertyNames());
 //exec("exit");
 
@@ -35,8 +35,9 @@ function PrintConsoleParameters(){
 
 function SetServer(serverName, serverUrl, functionArray) {
 	//PrintConsoleParameters();
+	curServerName = serverName;
 	var port = queryProcessor.getPort(serverName);
-	log("Starting " + serverName + " on port " + port);
+	log("Starting " + curServerName + " on port " + port);
 	
 	//log(queryProcessor.area(5));
 	server.listen(port, serverUrl);//'127.0.0.1'
@@ -109,7 +110,7 @@ function Respond(command, data, res){///res=response
 	if (command == '/stop') { TryToStopServer(data, res); }
 	else{
 		try{
-			log("Trying to execute: " + command);
+			log("(" + curServerName + ") Trying to execute: " + command);
 			funcArray[command](data,res);
 		}
 		catch(error){
