@@ -71,6 +71,22 @@ function prt(){
 	//console.log(i.Zi);
 	sender.sendRequest("GetGames", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);
 }
+
+
+
+var registerInTournaments = {count:0};
+for (j=1;j<3;j++){
+	for (i=1;i<15;i++){
+		var id = registerInTournaments.count+1;
+		registerInTournaments[id] = {
+			userID:i,
+			tournamentID:j,
+			token:'qwzs'
+		}
+		registerInTournaments.count++;
+	}
+}
+
 var movements = {};
 for (i=1;i<15;i++){
 	movements[i] = {
@@ -113,21 +129,33 @@ sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, 
 var currentPlayer=0;
 
 //sender.sendRequest("GetGames", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
+//sender.sendRequest("GetUsers", user1,'127.0.0.1', proc.getPort('DBServer'), null,sender.printer);//setVal);
+
+sender.sendRequest("GetUserProfileInfo", {'userID':1},'127.0.0.1', proc.getPort('FrontendServer'), null,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 //sender.sendRequest("Move", movement2,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-var timerId = setInterval(function() {
+/*var timerId = setInterval(function() {
   //prt();
   currentPlayer++;
   //currentPlayer=1;
   if (currentPlayer>13){currentPlayer=1;}
   console.log('turn of player '+ currentPlayer);
   sender.sendRequest("Move", movements[currentPlayer],'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
-}, 500);
-
+}, 500);*/
+var registerInTournamentsCounter=0;
+var timerId2 = setInterval(function() {
+  //prt();
+  registerInTournamentsCounter++;
+  //currentPlayer=1;
+  if (registerInTournamentsCounter>13){registerInTournamentsCounter=1; clearInterval(timerId2); }
+  console.log('turn of player '+ registerInTournamentsCounter);
+  sender.sendRequest("RegisterUserInTournament", registerInTournaments[registerInTournamentsCounter],
+  	'127.0.0.1', proc.getPort('FrontendServer'), null ,sender.printer);//setVal);
+}, 50);
 //sendRequest("signIn", options);
 //sendRequest("", options);
 /*function sendRequest(urlPath, options, curData){

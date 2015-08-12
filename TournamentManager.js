@@ -135,7 +135,7 @@ function ServeTournament (data, res){
 
 
 function StartTournament (data, res){
-	console.log("StartTournament " + data['ID']);//['tournamentStructure']);
+	console.log("StartTournament " + data['tournamentID']);//['tournamentStructure']);
 	
 	res.end("StartTournament");
 }

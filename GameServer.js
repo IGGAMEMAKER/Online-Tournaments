@@ -187,7 +187,12 @@ function StartGame (data, res){
 }
 function FinishGame(ID){
 	games[ID].status = GAME_FINISH;
+	sender.sendRequest("FinishGame", tournament, '127.0.0.1', 
+			queryProcessor.getPort('GameFrontendServer'), res, ServeTournamentHandler );
 }
+
+
+
 function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 	var curGame = games[gameID];
 

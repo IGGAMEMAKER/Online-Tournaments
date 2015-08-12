@@ -17,10 +17,12 @@ funcArray["/Register"] = RegisterUser;
 funcArray["/Login"] = Login;
 funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;
-//funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 funcArray["/GetTournaments"] = GetTournaments;
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
+
+
 /*funcArray["/WakeUsers"] = WakeUsers;
 funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;*/
 
@@ -42,7 +44,12 @@ var user1 = {
 	job   : [ 'language', 'PHP' ]
     };
 
-
+function GetUserProfileInfo(data , res){
+	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
+}
+function GetUserProfileInfoHandler ( error, response, body, res){
+	sender.Answer(res, body);
+}
 
 function ChangePassword( data, res){
 	res.end("OK");
@@ -79,11 +86,13 @@ function GetTournServerIP(tournamentID){
 function RegisterUserInTournament( data, res){
 	var obj = {
 		sender: "FrontendServer",
-		tournamentID: data['tournamentID']
+		tournamentID: data['tournamentID'],
+		userID: data['userID']
 	};
 	//log(data);
 	log("Trying to register in tournament " + data['tournamentID']);
-	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
+	sender.sendRequest("RegisterUserInTournament", obj, 
+		'127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
 }
 function RegisterUserInTournamentHandler(error, response, body, res){
 	console.log("Checking Data taking: " + body['result']);
@@ -113,13 +122,14 @@ function LoginHandler( error, response, body, res){
 }
 
 function RegisterUserHandler( error, response, body, res) {
-	console.log("Got answer from AccountServer");
-        res.end("THX for register");
+	console.log("Got answer from DBServer");
+	sender.Answer(res, body);
+        //res.end("THX for register");
 }
 function RegisterUser( data, res){
 	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
 	//console.log("FrontendServer tries to register user");
-	sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'),  res, RegisterUserHandler );
+	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, RegisterUserHandler );
 }
 
 

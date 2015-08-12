@@ -90,16 +90,19 @@ var tournament1 = {
 
 
 */
-
+//console.log(user2);
 /*
 //sendRequest("start", options, b);///urlPath, curData, host, port, responseCallBack
-//sender.sendRequest("Register", user1, '127.0.0.1', 5000, sender.printer);
+
 sender.sendRequest("Login", user1, '127.0.0.1', 5000, null ,sender.printer);
 ///sender.sendRequest("ChangePassword", user1, '127.0.0.1', 5000, sender.printer);
 ///sender.sendRequest("RememberPassword", user1, '127.0.0.1', 5000, sender.printer);
 sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
+*/
+//sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
+sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
+sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
 
-sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);*/
 sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);

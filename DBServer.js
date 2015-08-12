@@ -9,14 +9,72 @@ var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF 
 
 var funcArray = {};
 funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
+funcArray["/GetUsers"] = GetUsers;
 funcArray["/AddTournament"] = AddTournament;
+funcArray["/Register"] = Register;
+
+funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+
 var currentTournamentCounter=0;
 var tournaments = {};
-
+var users= {count:0 };
+var IDToLoginConverter = {count:0};
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
+
+
+function GetUsers( data,res){
+	sender.Answer(res, users);
+}
+
+function GetUserProfileInfo(data , res){
+
+	var userID = data['userID'];
+	console.log('-----------USER PROFILE INFO -----ID=' + userID + '------');
+	var user = {};
+	var login = IDToLoginConverter[userID];
+	for (var key in users[login]) {
+		user[key] = users[login][key];
+	}
+	//user = users[login];
+	console.log(JSON.stringify(user));
+	user.password = '****';
+	console.log(user);
+	console.log('------EX-----');
+	console.log(users[login]);
+	sender.Answer(res, user);
+	//sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
+}
+
+function Register (data, res){
+	var login = data['login'];
+	console.log('adding user :' + login + '. (' + JSON.stringify(data) + ')');
+	console.log('Check the data WHILE adding USER!!! need to write Checker');
+	if (UserExists(login)){
+		console.log('Sorry, user ' + login + ' Exists');
+		sender.Answer(res, {result: 'UserExists'});
+	}
+	else{
+		console.log('Added user ' + login + ' !!!');
+		users[login] = data;
+		users[login].userID = ++users.count;
+		users[login].money = 100;
+		IDToLoginConverter[users[login].userID]= login;
+		sender.Answer(res, {result: 'OK'});
+	}
+
+}
+function UserExists(login){
+	var a = users[login];//(users[login]===undefined);
+	console.log(a);
+	return a;
+}
+/*function GetUserProfileInfoHandler ( error, response, body, res){
+	
+}*/
+
 function GetTournaments (data, res){
 
 	console.log("GetTournaments " + data['login']);

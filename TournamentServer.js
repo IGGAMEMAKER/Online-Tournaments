@@ -54,15 +54,19 @@ function showTournaments(){
 function RegisterUserInTournament (data, res){
 	//console.log("Sender = " + data['sender']);
 	console.log("Registering in tournament: " + data['tournamentID']);
-	sender.Answer(res,Success);
+	var tournamentID = data['tournamentID'];
+	var userID = data['userID'];
 //	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
-	AddPlayerToTournament(data['tournamentID']);
+	AddPlayerToTournament(tournamentID, userID,res);
 }
 
 function ServeTournament (data, res){
-	console.log('TS tries to serve:' + data['tournamentID']);
+	var tournamentID = data['tournamentID'];
+	console.log('TS tries to serve:' + tournamentID);
 	//console.log(data);
-	tournaments[data['tournamentID']] = data;
+	tournaments[tournamentID] = data;
+	tournaments[tournamentID].players = [];
+	tournaments[tournamentID].playersRegistered=0;
 
 	sender.sendRequest("ServeTournament", data, '127.0.0.1', queryProcessor.getPort('TournamentManager'), res, ServeTournamentTMProxy );
 }
@@ -72,16 +76,35 @@ function ServeTournamentTMProxy ( error, response, body, res){
 	sender.Answer(res, body);
 }
 
-function AddPlayerToTournament(tournamentID){
-	if (tournaments[tournamentID].playerTotalCount> tournaments[tournamentID].playersRegistered){
-		tournaments[tournamentID].playersRegistered++;
+function AddPlayerToTournament(tournamentID, userID, res){
+	var tournament = tournaments[tournamentID];
+
+	if (tournament.playerTotalCount> tournament.playersRegistered){
+		if (tournament.players[userID]){
+			console.log('User ' + userID + ' is already Registered in ' + tournamentID)
+			sender.Answer(res,Fail);
+		}
+		else{
+			tournament.playersRegistered++;
+			/*console.log(tournaments[tournamentID].playersRegistered);
+			console.log(tournament.playersRegistered);*/
+			tournament.players.push(userID);
+			sender.Answer(res,Success);
+			console.log('User ' + userID + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+tournament.playerTotalCount+')');
+			if (tournament.playerTotalCount === tournament.playersRegistered){
+				console.log("Tournament " + tournamentID + " starts");
+				console.log(tournament.players);
+				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID}, 
+					'127.0.0.1', queryProcessor.getPort('TournamentManager'), null, sender.printer );
+				//sender.Answer(res,Success);
+			}
+		}
 	}
 	else{
-		console.log("Sorry, tournament os Full");
+		console.log("Sorry, tournament is Full:"+ tournament.playerTotalCount+'/'+tournament.playersRegistered);
+		sender.Answer(res,Fail);
 	}
-	if (tournaments[tournamentID].playerTotalCount === tournaments[tournamentID].playersRegistered){
-		console.log("Tournament " + tournamentID + " starts");
-	}
+	
 }
 
 

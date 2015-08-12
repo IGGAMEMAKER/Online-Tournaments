@@ -10,12 +10,16 @@ var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NE
 var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
 funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
+funcArray["/FinishGame"] = FinishGame;
 var status = new Object();
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
+
+
+
 function ServeTournament (data, res){
 	console.log("----");
 	console.log("ServeTournament :");
@@ -72,6 +76,10 @@ function AnalyzeStructure(structure, res){
 		    });
 		}
 	);*/
+}
+
+function FinishGame (data,res){
+	
 }
 
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
