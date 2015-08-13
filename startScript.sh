@@ -15,3 +15,5 @@ gnome-terminal -x sh -c 'node /home/gaginho/project/NODE/BalanceServer.js; exec 
 echo 'SCRIPT BalanceServer.js WORKS!!'
 gnome-terminal -x sh -c 'node /home/gaginho/project/NODE/initializer.js; exec bash'
 echo 'SCRIPT initializer.js WORKS!!'
+gnome-terminal -x sh -c 'node /home/gaginho/project/NODE/client-bot.js; exec bash'
+echo 'SCRIPT client-bot.js WORKS!!'

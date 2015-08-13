@@ -9,6 +9,7 @@ var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NE
 
 var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
+funcArray["/StartTournament"] = StartTournament;
 funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
 funcArray["/FinishGame"] = FinishGame;
 var status = new Object();
@@ -36,6 +37,12 @@ function ServeTournament (data, res){
 
 	//console.log("ServeTournament " + data);
 	//res.end("Serving OK");//"Serving OK");//status
+}
+
+function StartTournament (data, res){
+	sender.Answer(res, {status:'OK', message:'StartTournament'});
+	sender.sendRequest("StartGame", data, 
+		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer
 }
 
 function HaveEnoughResourcesForTournament (data, res){
@@ -66,7 +73,8 @@ function AnalyzeStructure(structure, res){
 		console.log("nextS[" + i + "] = " + structure['goNext'][i])
 	};
 	console.log(structure);
-	sender.sendRequest("ServeGames", structure, '127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
+	sender.sendRequest("ServeGames", structure, 
+		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
 	/*	function (res1) {
 		    res1.setEncoding('utf8');
 		    res1.on('data', function (chunk) {
@@ -79,7 +87,10 @@ function AnalyzeStructure(structure, res){
 }
 
 function FinishGame (data,res){
-	
+	console.log(data);
+	res.end('OK');
+	sender.sendRequest("FinishGame", data, 
+		'127.0.0.1', queryProcessor.getPort('TournamentManager'), res, sender.printer);
 }
 
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

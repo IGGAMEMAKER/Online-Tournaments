@@ -102,16 +102,18 @@ function ServeGames (data, res){
   console.log(games['1']);
 }, 3500);*/
 
+var INIT = 'INIT';
 function initGame(ID){
 
 	games[ID].curPlayerID=1;
-	games[ID].status=PREPARED;
+	
 	console.log('initGame: totalPlayerCount = ' + games[ID].goNext[0]);
 	games[ID].players = {};
 	games[ID].players.count=games[ID].goNext[0];
-	for (i=0;i<games[ID].players.count;++i){
+	games[ID].status = INIT;
+	/*for (i=0;i<games[ID].players.count;++i){
 		games[ID].players[i]=0;
-	}
+	}*/
 	console.log(games[ID]);
 }
 function Move (data, res){
@@ -122,6 +124,7 @@ function Move (data, res){
 	var tournamentID = data['tournamentID'];
 	var gameID = data['gameID'];
 	console.log('input: playerID=' + playerID + ' tournamentID=' + tournamentID + ' gameID=' + gameID);
+
 	if (tournamentIsValid(tournamentID, gameID))
 	{
 		console.log(data);
@@ -137,10 +140,10 @@ function Move (data, res){
 		console.log('Getting game: ');
 		//console.log(JSON.stringify(curGame));
 		console.log('curGame.curPlayerID= '+ curPlayerID+' ')
-		if (curPlayerID==playerID){
+		if (PlayerTurn(gameID, playerID) && playerExists(gameID, playerID)) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
 			console.log('I am here ' + JSON.stringify(curGame.players));
-			curGame.players[playerID]+= pointsAdd;
-			console.log("Player " + playerID + " has " + curGame.players[playerID] + " points");
+			curGame.scores[playerID]+= pointsAdd;
+			console.log("Player " + playerID + " has " + curGame.scores[playerID] + " points");
 			SwitchPlayer(curGame);
 		}
 		else{
@@ -151,17 +154,30 @@ function Move (data, res){
 		console.log('CheckedForTheWinner');
 	}
 	else{
-		Answer(res, JSON.stringify(getGameStatus(gameID)));
+		sender.Answer(res, getGameStatus(gameID));
+		//Answer(res, JSON.stringify(getGameStatus(gameID)));
 		//res.end(tournamentFAIL);
 	}
 }
+function playerExists(gameID, playerID){
+	console.log('playerExists:'+games[gameID].players.UIDtoGID[playerID]);
+	return games[gameID].players.UIDtoGID[playerID] ;
+}
+function PlayerTurn(gameID, playerID){
+	console.log(gameID);
+	console.log(playerID);
+	var a = getUID(gameID, games[gameID].curPlayerID) == playerID;
+	console.log('PlayerTurn:'+a);
+	return getUID(gameID, games[gameID].curPlayerID) == playerID;
+	//return getUID(curGame.curPlayerID) curGame.players[curGame.curPlayerID].playerID ==playerID;//curPlayerID==playerID
+}
+
 function getGameStatus(ID){
 	return games[ID].status;
 }
 function SwitchPlayer( curGame){
-	console.log('SwitchPlayer. Current is:');
-	console.log(curGame.curPlayerID);
-	console.log(curGame.players.count);
+	//console.log(JSON.stringify(curGame));
+	console.log('SwitchPlayer. Current was:' + curGame.curPlayerID + '/' + curGame.players.count);
 	if (curGame.curPlayerID<curGame.players.count-1){
 		curGame.curPlayerID++;
 	}
@@ -180,30 +196,75 @@ function Answer(res, code){
 	//console.log(write);//, write
 	console.log("......................");//, write
 }
-function StartGame (data, res){
-	console.log("start game: " + data);
 
-	res.end("Starting game:" + data['ID']);
+
+
+function StartGame (data, res){
+	console.log("start game: " + JSON.stringify(data));
+	var ID = data['tournamentID'];
+	if (!games[ID]){
+		var message = 'Cannot find tournament with ID='+ ID;
+		console.log(message);
+		sender.Answer(res, {result:'fail', message:message });
+	}
+	else{
+		games[ID].status=PREPARED;
+		//games[ID].players = {};
+		games[ID].players.UIDtoGID = {};
+		games[ID].players.GIDtoUID = {};
+
+		games[ID].scores = {};
+		var i=1;
+		var userIDs = data['userIDs'];
+		//console.log(userIDs);
+		for (var playerID in data['userIDs']){
+			//console.log(playerID);
+			games[ID].players.UIDtoGID[userIDs[playerID]] = i;
+			games[ID].players.GIDtoUID[i] = userIDs[playerID];
+			games[ID].scores[userIDs[playerID]] = 0;
+			i++;
+			//games[ID].players.push(playerID);// = playerID;
+			//games[ID].scores.push(0);
+			//games[ID].players[i++]={playerID:playerID , score:0 };
+		}
+		console.log(games[ID].players);
+		sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+	}
+	//res.end();
 }
+
+function getUID(gameID, GID){//GID= GamerID, UID= UserID
+	return games[gameID].players.GIDtoUID[GID];
+}
+
+function getGID(gameID, UID){//GID= GamerID, UID= UserID
+	return games[gameID].players.UIDtoGID[UID];
+}
+
 function FinishGame(ID){
 	games[ID].status = GAME_FINISH;
-	sender.sendRequest("FinishGame", tournament, '127.0.0.1', 
-			queryProcessor.getPort('GameFrontendServer'), res, ServeTournamentHandler );
+	var sortedPlayers = Sort(games[ID].players);
+	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
+			queryProcessor.getPort('GameFrontendServer'), null, sender.printer );
+}
+function Sort(players){
+	return players;
 }
 
-
+function ScoreOfPlayer(gameID, UID){
+	return games[gameID].scores[UID];
+}
 
 function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 	var curGame = games[gameID];
 
-	if (curGame.players[playerID]>500){
+	if (ScoreOfPlayer(gameID, playerID)>500){
 		console.log("########################################################");
 		console.log("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
 		console.log("////////////////////////////////////////////////////////");
 		FinishGame(gameID);
 		Answer(res, JSON.stringify(curGame));//GAME_FINISH
 		//res.end(GAME_FINISH);
-
 	}
 	else{
 		Answer(res, "no Winner");

@@ -94,7 +94,7 @@ function AddPlayerToTournament(tournamentID, userID, res){
 			if (tournament.playerTotalCount === tournament.playersRegistered){
 				console.log("Tournament " + tournamentID + " starts");
 				console.log(tournament.players);
-				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID}, 
+				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, userIDs:tournament.players}, 
 					'127.0.0.1', queryProcessor.getPort('TournamentManager'), null, sender.printer );
 				//sender.Answer(res,Success);
 			}

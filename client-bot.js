@@ -91,10 +91,10 @@ var movements = {};
 for (i=1;i<15;i++){
 	movements[i] = {
 		playerID:i,
-		tournamentID:3,
-		gameID:3,
+		tournamentID:1,
+		gameID:1,
 		token:'qwzs',
-		movement:150+i*15
+		movement:150+i*35
 	}
 }
 var movement1= {
@@ -138,14 +138,14 @@ sender.sendRequest("GetUserProfileInfo", {'userID':1},'127.0.0.1', proc.getPort(
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-/*var timerId = setInterval(function() {
+var timerId = setInterval(function() {
   //prt();
   currentPlayer++;
   //currentPlayer=1;
-  if (currentPlayer>13){currentPlayer=1;}
+  if (currentPlayer>13){currentPlayer=1;  clearInterval(timerId);}
   console.log('turn of player '+ currentPlayer);
   sender.sendRequest("Move", movements[currentPlayer],'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
-}, 500);*/
+}, 500);
 var registerInTournamentsCounter=0;
 var timerId2 = setInterval(function() {
   //prt();

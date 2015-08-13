@@ -122,7 +122,7 @@ function ServeTournament (data, res){
 	
 	console.log("Sending Tournament...");
 	var tournament = data;
-	tournament.ID = curTournamentID++
+	tournament.ID = curTournamentID++;
 	//console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 
@@ -136,7 +136,7 @@ function ServeTournament (data, res){
 
 function StartTournament (data, res){
 	console.log("StartTournament " + data['tournamentID']);//['tournamentStructure']);
-	
+	sender.sendRequest("StartTournament", data, '127.0.0.1', queryProcessor.getPort('GameFrontendServer'), null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
 

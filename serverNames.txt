@@ -7,3 +7,4 @@ GameServer.js
 TournamentManager.js
 BalanceServer.js
 initializer.js
+client-bot.js
