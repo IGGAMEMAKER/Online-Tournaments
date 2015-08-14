@@ -10,6 +10,7 @@ var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW 
 var funcArray = {};
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
 funcArray["/ServeTournament"] = ServeTournament;
+funcArray["/FinishGame"] = FinishGame;
 
 /*var tournament1 = {
 	ID: 1,
@@ -58,6 +59,87 @@ function RegisterUserInTournament (data, res){
 	var userID = data['userID'];
 //	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
 	AddPlayerToTournament(tournamentID, userID,res);
+}
+
+function FinishGame (data, res){
+	console.log(data);
+	var gameID = data['gameID'];
+	var tournamentID = data['tournamentID'];
+	var scores = data['scores'];
+	
+	console.log('******************* game Finishes *********' + gameID + '****************');
+	if (gameWasLast(gameID)){
+		console.log('EndTournament: ' + tournamentID);
+		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
+		EndTournament(scores, gameID, tournamentID);
+	}
+	else{
+		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
+		console.log('Middle results: ' + JSON.stringify(data));
+	}	
+}
+var sort_by = function(field, reverse, primer){
+
+   var key = primer ? 
+       function(x) {return primer(x[field])} : 
+       function(x) {return x[field]};
+
+   reverse = !reverse ? 1 : -1;
+
+   return function (a, b) {
+       return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+     } 
+}
+
+function EndTournament( scores, gameID, tournamentID){
+	var obj = [];
+	for (var a in scores){
+		obj.push( {value:scores[a], userID: a} );
+	}
+	var winners=3;
+	console.log('Prizes will go to ' + winners + ' first users');
+	console.log(obj);
+	/*var obj = [
+	{
+		value:3
+	},
+	{
+		value:1
+	},
+	{
+		value:2
+	}
+	];*/
+	/*function (a,b)
+	{
+		return a['value']>b['value'];
+	}*/
+	obj.sort(sort_by('value', false, parseInt));
+	console.log(obj);
+	
+	obj.sort(sort_by('value', true, parseInt));
+	console.log(obj);
+	console.log(tournaments[tournamentID]);
+	for (i=0;i<winners;++i){
+
+		console.log('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );
+		var winnerObject = {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] };
+		sender.sendRequest("WinPrize", winnerObject, '127.0.0.1', 
+			queryProcessor.getPort('DBServer'), null, sender.printer );
+		/*sender.initRequest("WinPrize", {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] }, 
+			'127.0.0.1', queryProcessor.getPort('DBServer'));*/
+	}
+	//scores.sort(Comparator);
+	console.log(scores);
+}
+
+function Comparator(a, b){
+	return a>b;
+}
+
+function gameWasLast(gameID){
+	console.log('WRITE CONDITION: IF GAME WAS LAST');
+	return true;
 }
 
 function ServeTournament (data, res){

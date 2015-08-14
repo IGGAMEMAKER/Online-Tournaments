@@ -68,6 +68,7 @@ function SetGame (data, res){
 	console.log(data);
 	//+ data + 
 	games[++(game.count)]= data;
+	games[game.count-1].tournamentID= data['tournamentID'];
 	res.end("Game " +" Is Set");
 }
 
@@ -243,7 +244,11 @@ function getGID(gameID, UID){//GID= GamerID, UID= UserID
 
 function FinishGame(ID){
 	games[ID].status = GAME_FINISH;
-	var sortedPlayers = Sort(games[ID].players);
+	var sortedPlayers = {};
+	sortedPlayers.scores = games[ID].scores;// Sort(games[ID].scores);
+	sortedPlayers.gameID = ID;
+	console.log('FIX IT!!! GAMEID=tournamentID');
+	sortedPlayers.tournamentID = ID;// games[ID].tournamentID;
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
 			queryProcessor.getPort('GameFrontendServer'), null, sender.printer );
 }

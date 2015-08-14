@@ -50,6 +50,10 @@ function Answer(res, JSONObject){
 	res.end(JSON.stringify(JSONObject));
 }
 
+function initRequest(urlPath, curData, host, port){
+	sendRequest(urlPath, curData, host, port, null, printer);
+}
+
 function sendRequest(urlPath, curData, host, port, res, responseCallBack){
 	//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server

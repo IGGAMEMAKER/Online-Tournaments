@@ -86,6 +86,18 @@ for (j=1;j<3;j++){
 		registerInTournaments.count++;
 	}
 }
+var names = ['Raja', 'Kumar', 'Djavaka', 'Danda', 
+			 'Indrajit', 'Luckshman', 'Pandia', 'Rama',
+			 'Tara', 'Ushira', 'Hiriankashipu', 'Yadu',
+			 'Baka', 'Brahma', 'Vajara' , 'Vishaliakarani'];
+var users = {};
+for (i=1;i<15;i++){
+	users[i]= {
+	    login: names[i],
+		password: 'Kumar',
+		job   : [ 'language', 'PHP' ]
+	}
+}
 
 var movements = {};
 for (i=1;i<15;i++){
@@ -145,7 +157,7 @@ var timerId = setInterval(function() {
   if (currentPlayer>13){currentPlayer=1;  clearInterval(timerId);}
   console.log('turn of player '+ currentPlayer);
   sender.sendRequest("Move", movements[currentPlayer],'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
-}, 500);
+}, 50);
 var registerInTournamentsCounter=0;
 var timerId2 = setInterval(function() {
   //prt();

@@ -10,7 +10,7 @@ var serverName = "TournamentManager"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW
 var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament;
 funcArray["/StartTournament"] = StartTournament;
-
+funcArray["/FinishGame"] = FinishGame;
 
 
 
@@ -80,6 +80,11 @@ var tourns1 = {
 	t2: tournament2
 };*/
 var curTournamentID=0;
+
+function FinishGame( data, res){
+	sender.Answer(res, {result:'OK', message:'FinishGame'});
+	sender.sendRequest("FinishGame", data, '127.0.0.1', queryProcessor.getPort('TournamentServer'), null, sender.printer);
+}
 
 function GetGameFrontendAdress(gameNameId){
 	console.log("rewrite TournamentManager.GetGameFrontendAdress");

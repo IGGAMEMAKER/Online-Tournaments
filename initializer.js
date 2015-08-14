@@ -57,6 +57,7 @@ var tournament1 = {
 	minPlayersPerGame: 2,
 	maxPlayersPerGame: 3,
 	lucky:1,
+	Prizes: [100,50, 25],
 	structure: {
 		rounds: 1,
 		goNext: [10, 2],

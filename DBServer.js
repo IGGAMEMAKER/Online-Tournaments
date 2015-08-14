@@ -13,6 +13,8 @@ funcArray["/GetUsers"] = GetUsers;
 funcArray["/AddTournament"] = AddTournament;
 funcArray["/Register"] = Register;
 
+funcArray["/WinPrize"] = WinPrize;
+
 funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 var currentTournamentCounter=0;
@@ -29,6 +31,27 @@ function GetUsers( data,res){
 	sender.Answer(res, users);
 }
 
+function WinPrize( data,res){
+	var userID = data['userID'];
+	var incr = data['prize'];
+	console.log('uID= '+ userID + ' incr=' + incr);
+	console.log(users);
+	console.log('000000');
+	var user = getUserByID(userID);
+	console.log(user);
+	user.money+= incr;
+	console.log('money now=' + user.money);
+}
+function getUserByID(ID){
+	return users[getLoginByID(ID)];
+}
+function getLoginByID(ID){
+	return IDToLoginConverter[ID]?IDToLoginConverter[ID]:'defaultLogin';
+	/*for (var userIndex in users){
+		users[userIndex]
+	}
+	return 0;*/
+}
 function GetUserProfileInfo(data , res){
 
 	var userID = data['userID'];
