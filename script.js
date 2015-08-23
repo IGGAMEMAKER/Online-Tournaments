@@ -107,7 +107,26 @@ function log(data){
 function Respond(command, data, res){///res=response
 	res.setHeader('Content-Type', 'application/json');
 	//res.write(JSON.stringify(cars));
-	if (command == '/stop') { TryToStopServer(data, res); }
+	switch(command){
+		case '/stop':
+			TryToStopServer(data, res);
+		break;
+		case '/alive':
+			res.end('Alive');
+		break;
+
+		default:
+			try{
+				log("(" + curServerName + ") Trying to execute: " + command);
+				funcArray[command](data,res);
+			}
+			catch(error){
+				log("funcArray execution Exception: " + error);
+				res.end("Chiao");
+			}
+		break;
+	}
+	/*if (command == '/stop') { TryToStopServer(data, res); }
 	else{
 		try{
 			log("(" + curServerName + ") Trying to execute: " + command);
@@ -117,5 +136,5 @@ function Respond(command, data, res){///res=response
 			log("funcArray execution Exception: " + error);
 			res.end("Chiao");
 		}
-	}
+	}*/
 }

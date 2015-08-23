@@ -11,6 +11,7 @@ var funcArray = {};
 funcArray["/register"] = DefaultFunction; //start all comands with '/'. IT's a URL to serve
 funcArray["/FreeTournamentServerIP"] = FreeTournamentServerIP;
 funcArray["/ServeTournament"] = ServeTournament;
+funcArray["/RestartTournament"] = RestartTournament;
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
@@ -30,18 +31,20 @@ function ServeTournament (data, res){
 
 	sender.sendRequest("AddTournament", tournament, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
 }
+function RestartTournament (data, res){
+	if (data['login']){
+		sender.sendRequest("RestartTournament", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
+	}
+}
 function DBAddTournamentHandler( error, response, body, res){
-	var tournamentID = body['tournamentID'];
+	//var tournamentID = body['tournamentID'];
+
 	var tournament = body;
-	console.log("added tournament " + tournamentID + " to DB");
-	if (tournamentID>0){
-		sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.structure), 
+
+	console.log("added tournament to DB");
+	console.log(tournament);
+	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.structure), 
 			queryProcessor.getPort('TournamentServer'),  res, ServeTournamentHandler );
-	}
-	else{
-		res.end(error+ " adding to DB Failed");
-	}
-	//console.log(body);
 }
 
 function ServeTournamentHandler( error, response, body, res){
@@ -64,5 +67,10 @@ function GetFreeTournamentServerIP(tournamentStructure){
 	console.log("analyze tournamentStructure and TS IP will be localhost");
 	return '127.0.0.1';
 }
+
+/*var timer = setInterval(function(){
+
+
+}, 5000);*/
 
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

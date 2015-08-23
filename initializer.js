@@ -24,7 +24,8 @@ var options = {
         'Content-Length': Buffer.byteLength(user2)
     }
 };
-
+var COUNT_FIXED = 1;
+var COUNT_FLOATING = 2;
 function prt(){
 	console.log(i.Zi);
 }
@@ -43,11 +44,137 @@ var movement2= {
 	token:'qwzs',
 	movement:100
 }
-
+var GM_ABSTRACT_SYNC=1;
 var regTournament = {
 	tournamentID: 2
 };
 
+//pricingType:
+/*
+	1 - TAKE ALL AND PAY PRIZES
+	2 - TAKE COMISSION; REST GOES IN TOURNAMENT FUND
+	3 - GUARANTEED + USERS
+	////4 - FREE = GUARANTEED WITH 0 BUY IN
+	////5 - TRAINING = FREE WITH 0 PRIZES
+
+*/
+
+var PRICE_FREE = 4;
+var PRICE_TRAINING = 5;
+
+var PRICE_GUARANTEED = 3;
+var PRICE_NO_EXTRA_FUND = 2;
+var PRICE_CUSTOM = 1;  //
+
+function MakeFreeTournament( initFund, gameNameID, pricingType, goNext, rounds){
+	return {
+		buyIn:0,
+		gameNameID:gameNameID,
+		initFund:initFund,
+		pricingType:pricingType,
+		goNext:goNext,
+		playersCountStatus:COUNT_FIXED,
+
+	};
+}
+/*
+	функции создания турниров изменяют следующие данные:
+		buyIn,
+		initFund,
+		places,
+		Prizes
+	принимают buyIn, pricingType, initFund
+
+
+*/
+
+
+var tournament3 = {
+	//ID: 1,
+	buyIn: 100,
+	gameNameID: GM_ABSTRACT_SYNC,
+	//playerTotalCount: 10,
+	/*winners: 2,
+	minPlayersPerGame: 2,
+	maxPlayersPerGame: 3,*/
+	initFund: 0,
+	pricingType: PRICE_CUSTOM,
+		places: [1  ],		//Я не должен считать это руками!!!
+		Prizes: [270],		//И это тоже!!!
+	rounds: 1,
+	goNext: [3, 1],
+	
+	/*roundsList: [
+		{
+			lucky:1,
+			players: 3,
+			games: 3,
+			winners: 3
+		},
+		{
+			players: 2,
+			games: 2,
+			winners: 3
+		}
+	],*/
+	playersCountStatus: COUNT_FIXED
+};
+var tournament2 = {
+	buyIn: 0,
+	gameNameID: GM_ABSTRACT_SYNC,
+	pricingType: PRICE_FREE,
+	places: [1  , 2  , 3  ],
+	Prizes: [300, 200, 150],
+	rounds: 1,
+	goNext: [20, 3],
+	playersCountStatus: COUNT_FIXED
+};
+
+var tournament1 = {
+	buyIn: 			100,
+	initFund: 		0,
+	gameNameID: 	GM_ABSTRACT_SYNC,
+
+	pricingType: 	PRICE_NO_EXTRA_FUND,
+
+	rounds: 		1,
+	goNext: 		[3,1],
+		places: 		[1],
+		Prizes: 		[270],
+		prizePools: 	[1],
+
+	comment: 		'Yo',
+	
+	playersCountStatus: COUNT_FIXED,///Fixed or float
+		startDate: 		null,
+		status: 		null,	
+		players: 		[]
+}
+
+
+/*
+	buyIn:Number,
+	gameNameID: Number,
+	playerTotalCount: Number,
+	winners: Number,
+	minPlayersPerGame: Number,
+	maxPlayersPerGame: Number,
+	lucky:Number,
+	//Prizes: Array,
+	Comment:String,
+	rounds:Number,
+	goNext: Array,
+	prizes: Array,
+
+	playersCountStatus:Number,///Fixed or float
+	roundsList: Array
+*/
+
+
+
+
+
+/*
 var tournament1 = {
 	//ID: 1,
 	buyIn: 100,
@@ -58,6 +185,7 @@ var tournament1 = {
 	maxPlayersPerGame: 3,
 	lucky:1,
 	Prizes: [100,50, 25],
+
 	structure: {
 		rounds: 1,
 		goNext: [10, 2],
@@ -78,6 +206,13 @@ var tournament1 = {
 		}
 	}
 };
+
+
+
+*/
+
+
+
 
 /*
 	WHAT DO I NEED?
@@ -101,10 +236,17 @@ sender.sendRequest("Login", user1, '127.0.0.1', 5000, null ,sender.printer);
 sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printer);//setVal);
 */
 //sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
-sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
-sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
 
-sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+/*sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
+sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
+
+//sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+sender.sendRequest("RestartTournament", {tournamentID:15}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+
+
+
+
+
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);*/

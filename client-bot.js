@@ -86,6 +86,11 @@ for (j=1;j<3;j++){
 		registerInTournaments.count++;
 	}
 }
+
+/*function RegForTournament(){
+
+}*/
+
 var names = ['Raja', 'Kumar', 'Djavaka', 'Danda', 
 			 'Indrajit', 'Luckshman', 'Pandia', 'Rama',
 			 'Tara', 'Ushira', 'Hiriankashipu', 'Yadu',
@@ -99,14 +104,35 @@ for (i=1;i<15;i++){
 	}
 }
 
+function getMovement(tournamentID, gameID, playerID){
+	var move = {
+		login: names[playerID],
+		playerID:playerID,
+		tournamentID:tournamentID,
+		gameID:gameID,
+		token:'qwzs',
+		movement:150+playerID*25
+	}
+	return move;
+}
+
+function getRegisterInTournaments(userID, tournamentID, token){
+	var regInTournament = {
+		userID:names[userID],
+		tournamentID:tournamentID,
+		token:'qwzs'
+	}
+	return regInTournament;
+}
+
 var movements = {};
 for (i=1;i<15;i++){
 	movements[i] = {
 		playerID:i,
-		tournamentID:1,
-		gameID:1,
+		tournamentID:2,
+		gameID:2,
 		token:'qwzs',
-		movement:150+i*35
+		movement:150+i*25
 	}
 }
 var movement1= {
@@ -143,31 +169,58 @@ var currentPlayer=0;
 //sender.sendRequest("GetGames", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 //sender.sendRequest("GetUsers", user1,'127.0.0.1', proc.getPort('DBServer'), null,sender.printer);//setVal);
 
-sender.sendRequest("GetUserProfileInfo", {'userID':1},'127.0.0.1', proc.getPort('FrontendServer'), null,sender.printer);//setVal);
+//sender.sendRequest("GetUserProfileInfo", {'login':'Rama'},'127.0.0.1', proc.getPort('FrontendServer'), null,sender.printer);//setVal);
+//sender.sendRequest("Register", {login:'Гага', password:'Zi'}, '127.0.0.1', proc.getPort('FrontendServer'), null, sender.printer);
+//sender.sendRequest("IncreaseMoney", {login:'Гага', cash:200}, '127.0.0.1', proc.getPort('DBServer'), null, sender.printer);
 
 //sender.sendRequest("Move", movement1,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 //sender.sendRequest("Move", movement2,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
+var curTournAndGameID = 15;
+var repetitions = 4;
 var timerId = setInterval(function() {
   //prt();
   currentPlayer++;
   //currentPlayer=1;
-  if (currentPlayer>13){currentPlayer=1;  clearInterval(timerId);}
+  if (currentPlayer>repetitions){currentPlayer=1;  clearInterval(timerId);}
   console.log('turn of player '+ currentPlayer);
-  sender.sendRequest("Move", movements[currentPlayer],'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
+  //console.log(JSON.stringify(movements[currentPlayer]));
+  
+  var move = getMovement(curTournAndGameID,curTournAndGameID,currentPlayer);
+  console.log(JSON.stringify(move));
+  sender.sendRequest("Move", move,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 }, 50);
+
+
+
 var registerInTournamentsCounter=0;
-var timerId2 = setInterval(function() {
+/*var timerId2 = setInterval(function() {
   //prt();
   registerInTournamentsCounter++;
   //currentPlayer=1;
-  if (registerInTournamentsCounter>13){registerInTournamentsCounter=1; clearInterval(timerId2); }
-  console.log('turn of player '+ registerInTournamentsCounter);
-  sender.sendRequest("RegisterUserInTournament", registerInTournaments[registerInTournamentsCounter],
+  if (registerInTournamentsCounter>repetitions){registerInTournamentsCounter=1; clearInterval(timerId2); }
+  console.log('Reg user '+ registerInTournamentsCounter + ' in tournamentID');
+  sender.sendRequest("RegisterUserInTournament", getRegisterInTournaments(registerInTournamentsCounter, curTournAndGameID, 'crrToken'),//registerInTournaments[registerInTournamentsCounter]
+  	'127.0.0.1', proc.getPort('FrontendServer'), null , sender.printer);//setVal);
+}, 50);*/
+
+
+/*
+var j=0;
+var timerId3 = setInterval(function() {
+  //prt();
+  j++;
+  //currentPlayer=1;
+  if (j>13){j=1; clearInterval(timerId3); }
+  console.log('Register User '+ users[j].login);
+  sender.sendRequest("Register", users[j],
   	'127.0.0.1', proc.getPort('FrontendServer'), null ,sender.printer);//setVal);
-}, 50);
+}, 50);*/
+
+
+
 //sendRequest("signIn", options);
 //sendRequest("", options);
 /*function sendRequest(urlPath, options, curData){

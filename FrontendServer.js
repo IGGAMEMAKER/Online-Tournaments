@@ -45,6 +45,7 @@ var user1 = {
     };
 
 function GetUserProfileInfo(data , res){
+	console.log(data);
 	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
 }
 function GetUserProfileInfoHandler ( error, response, body, res){

@@ -22,4 +22,6 @@ function DefaultFunction (data, res){
 
 
 
+
+
 server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

@@ -100,7 +100,7 @@ function SendTournamentHandler( error, response, body, res) {
     //    res.end("GameServed");
 }
 //SendTournament(tournament1);
-function SendTournament(tournament){
+/*function SendTournament(tournament){
 	//JSON.stringify(tournament)
 	//queryProcessor.getPort('GameFrontendServer')
 	console.log("Sending Tournament...");
@@ -109,33 +109,39 @@ function SendTournament(tournament){
 	//sender.sendRequest("ServeTournament",)
 	
 	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], null, SendTournamentHandler);//sender.printer
-	/*	function (res1) {
-		    res1.setEncoding('utf8');
-		    res1.on('data', function (chunk) {
-				console.log("body: " + chunk);
-		    });
-		}
-	);*/
-}
+}*/
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write.
 //you can get the object from POST request by typing data['parameterName'].
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 function ServeTournament (data, res){
-	console.log("ServeTournament " + data['tournamentID']);//['tournamentStructure']);
+	console.log("ServeTournament ")
+	console.log(JSON.stringify(data));//['tournamentStructure']);
 	
 	console.log("Sending Tournament...");
 	var tournament = data;
-	tournament.ID = curTournamentID++;
+	//tournament.ID = curTournamentID++;
 	//console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 
-	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], res, SendTournamentHandler);//sender.printer
+	sender.sendRequest("ServeTournament", getTournamentStructure(tournament), 
+		adress['IP'], adress['port'], res, SendTournamentHandler);//sender.printer
 	
 	//SendTournament(data);
 	
 	//res.end("ServeTournament");
+}
+
+function getTournamentStructure( tournament){
+	/*return {
+		gameNameID: tournament.gameNameID,
+		goNext: tournament.goNext,
+		players: tournament.players,
+		tournamentID: tournament.tournamentID,
+		numberOfRounds: tournament.numberOfRounds
+	};*/
+	return tournament;
 }
 
 

@@ -12,6 +12,7 @@ funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. I
 funcArray["/StartTournament"] = StartTournament;
 funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
 funcArray["/FinishGame"] = FinishGame;
+
 var status = new Object();
 
 //------------------Writing EventHandlers---------------------------------
@@ -32,7 +33,7 @@ function ServeTournament (data, res){
 	/*var val = data['structure'];
 	console.log("I can print: ");
 	console.log(val);*/
-	AnalyzeStructure(data['structure'], res);
+	AnalyzeStructure(data, res);
 	
 
 	//console.log("ServeTournament " + data);
@@ -58,32 +59,12 @@ function ServeTournamentCallback( error, response, body, res) {
 	res.end('OK');
     //    res.end("GameServed");
 }
-function AnalyzeStructure(structure, res){
-	console.log(structure);
-	var numberOfRounds = structure['rounds'];
+function AnalyzeStructure(tournament, res){
+	var numberOfRounds = tournament['rounds'];
 	console.log("numberOfRounds= " + numberOfRounds);
-	var query = {
-		numberOfRounds: numberOfRounds
-	};
-	for (var i = 0; i <= numberOfRounds; ++i) {
-		//var roundI = structure['round'+i];
-		/*query['round'+(i+1)] = {
-			
-		};*/
-		console.log("nextS[" + i + "] = " + structure['goNext'][i])
-	};
-	console.log(structure);
-	sender.sendRequest("ServeGames", structure, 
+	
+	sender.sendRequest("ServeGames", tournament, 
 		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
-	/*	function (res1) {
-		    res1.setEncoding('utf8');
-		    res1.on('data', function (chunk) {
-				console.log("body: " + chunk);
-				console.log("Answer from GameServer comes here!!!");
-				//res.end('OK');
-		    });
-		}
-	);*/
 }
 
 function FinishGame (data,res){

@@ -5,6 +5,7 @@ this.sendRequest = sendRequest;
 //this.sendRequest1 = sendRequest1;
 this.printer = printer;
 this.Answer = Answer;
+this.Proxy = Proxy;
 
 function printer(error, response, body) {
 	if (!error) {
@@ -17,6 +18,10 @@ function printer(error, response, body) {
         console.log('Error happened: '+ error);
     }
 };
+
+function Proxy(error, response, body, res){
+	
+}
 
 /*function sendRequest(urlPath, options, curData, responseCallBack){
 	
