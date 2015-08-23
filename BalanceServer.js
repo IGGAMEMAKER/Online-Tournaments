@@ -32,8 +32,11 @@ function ServeTournament (data, res){
 	sender.sendRequest("AddTournament", tournament, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
 }
 function RestartTournament (data, res){
-	if (data['login']){
+	if (data['tournamentID']){
 		sender.sendRequest("RestartTournament", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
+	}
+	else{
+		sender.Answer(res, {result:'error'});
 	}
 }
 function DBAddTournamentHandler( error, response, body, res){
@@ -42,7 +45,7 @@ function DBAddTournamentHandler( error, response, body, res){
 	var tournament = body;
 
 	console.log("added tournament to DB");
-	console.log(tournament);
+	console.log(JSON.stringify(tournament));
 	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.structure), 
 			queryProcessor.getPort('TournamentServer'),  res, ServeTournamentHandler );
 }

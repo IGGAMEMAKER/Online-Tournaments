@@ -117,23 +117,30 @@ function FinishGame (data, res){
 		console.log('Middle results: ' + JSON.stringify(data));
 	}	
 }
-
+function last (Arr){
+	return Arr[Arr.length-1];
+}
 
 function EndTournament( scores, gameID, tournamentID){
 	var obj = [];
 	for (var a in scores){
 		obj.push( {value:scores[a], login: a} );
 	}
-	var winnersCount=3;
+	var winnersCount= last(tournaments[tournamentID].goNext);
 	console.log('Prizes will go to ' + winnersCount + ' first users');
 	console.log(obj);
+	console.log('------');
 	
+	console.log('SortUP');
 	obj.sort(sort_by('value', false, parseInt));
 	console.log(obj);
+	console.log('------');
 	
+	console.log('SortDown');
 	obj.sort(sort_by('value', true, parseInt));
 	console.log(obj);
 	console.log(tournaments[tournamentID]);
+	console.log('------');
 	
 	var winners = [];
 	for (i=0;i<winnersCount;++i){

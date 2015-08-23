@@ -111,7 +111,7 @@ function getMovement(tournamentID, gameID, playerID){
 		tournamentID:tournamentID,
 		gameID:gameID,
 		token:'qwzs',
-		movement:150+playerID*25
+		movement:150+playerID*125
 	}
 	return move;
 }
@@ -178,7 +178,7 @@ var currentPlayer=0;
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
 
-var curTournAndGameID = 15;
+var curTournAndGameID = 17;
 var repetitions = 4;
 var timerId = setInterval(function() {
   //prt();
@@ -196,7 +196,7 @@ var timerId = setInterval(function() {
 
 
 var registerInTournamentsCounter=0;
-/*var timerId2 = setInterval(function() {
+var timerId2 = setInterval(function() {
   //prt();
   registerInTournamentsCounter++;
   //currentPlayer=1;
@@ -204,7 +204,7 @@ var registerInTournamentsCounter=0;
   console.log('Reg user '+ registerInTournamentsCounter + ' in tournamentID');
   sender.sendRequest("RegisterUserInTournament", getRegisterInTournaments(registerInTournamentsCounter, curTournAndGameID, 'crrToken'),//registerInTournaments[registerInTournamentsCounter]
   	'127.0.0.1', proc.getPort('FrontendServer'), null , sender.printer);//setVal);
-}, 50);*/
+}, 50);
 
 
 /*

@@ -185,6 +185,7 @@ function IncreaseMoney(data,res){
 	incrMoney(res, login, cash);
 }
 function incrMoney(res, login, cash){
+	console.log('trying to give ' + cash + ' points to ' + login);
 	User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
 		if (err){
 			console.log(err);
@@ -193,6 +194,7 @@ function incrMoney(res, login, cash){
 		else{
 			console.log('IncreaseMoney----- count= ');
 			console.log(count);
+			console.log(login);
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					console.log(err);
@@ -218,20 +220,21 @@ function WinPrize( data,res){
 		data[i]
 	};*/
 	console.log(JSON.stringify(data));
-	for (var player in data){
-		incrMoney(res, player.login, player.prize);
-		/*User.update( {login:player.login}, {$inc: { money: player.prize } }, function (err, count){
-			if (err){
-				console.log('WinPrize error: ');
-				console.log(err);
-			}
-			else{
-				if (count==1){
-
-				}
-			}
-		});*/
+	var player = {};
+	for (i=0; i< data.length;i++){
+		player = data[i];
+		console.log('WinPrize:')
+		console.log(player);
+		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
+			if (err){ console.log(err); }
+			else{ console.log(count);}
+		});
 	}
+	sender.Answer(res, {result:'WinPrize_OK'});
+	/*for (var player in data){
+		incrMoney(res, player.login, player.prize);
+		
+	}*/
 
 	/*var user = getUserByID(userID);
 	console.log(user);
