@@ -1,0 +1,9 @@
+---------------------------info.txt-----------------------------
+1) Starting system
+mono startSystem.exe - starts system. Takes scripts from serverNames.txt
+it edits the startScript.sh. Needs to be executed from terminal
+
+2)server ports are in test.js file 
+
+3) make unique login in users
+4) make unique game in games
