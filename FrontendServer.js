@@ -13,6 +13,7 @@ var sender = require('./requestSender');
 });*/
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
 
+funcArray['/Alive'] = Alive;
 funcArray["/Register"] = RegisterUser;
 funcArray["/Login"] = Login;
 funcArray["/ChangePassword"] = ChangePassword;
@@ -44,6 +45,10 @@ var user1 = {
 	job   : [ 'language', 'PHP' ]
     };
 
+function Alive(data, res){
+	res.json({result:'OK'});
+}
+
 function GetUserProfileInfo(data , res){
 	console.log(data);
 	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
@@ -68,9 +73,12 @@ function get3(str, par, par2, par3){
 }
 
 function GetTournaments( data, res){
+	console.log(data);
 	var obj = {
 		sender: "FrontendServer",
-		tournamentID: data['tournamentID']
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
 	};
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetTournamentsHandler);
 }

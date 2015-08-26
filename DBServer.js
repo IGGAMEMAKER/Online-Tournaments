@@ -9,6 +9,8 @@ var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF 
 
 var funcArray = {};
 funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
+//funcArray["/TournamentInfo"] = TournamentInfo;
+
 funcArray["/GetUsers"] = GetUsers;
 
 funcArray["/AddTournament"] = AddTournament;
@@ -314,18 +316,20 @@ function Register (data, res){
 function GetTournaments (data, res){
 
 	console.log("GetTournaments ");// + data['login']);
-	var query;
+	var query = {};
+	var queryFields = '';//'id buyIn goNext gameNameID';
 	
-	if (data['query']){
-		query = data['query'];
-	}
-	else{
+	if (data['query']) {query = data['query'];}
+	if (data['queryFields']) {queryFields = data['queryFields']; console.log('Got it!');}
+
+	/*else{
 		query = {};
-	}
+	}*/
 
-	console.log(data);
-
-	Tournament.find(query,'' , function (err, tournaments){
+	console.log(query);
+	console.log(queryFields);
+	
+	Tournament.find(query,queryFields , function (err, tournaments){
 		console.log(tournaments);
 		sender.Answer(res, tournaments);
 	});
@@ -333,6 +337,9 @@ function GetTournaments (data, res){
 	
 	//res.end(currTournaments);
 }
+
+
+
 var COUNT_FIXED = 1;
 function AddTournament (data, res){
 	var tournament = data;

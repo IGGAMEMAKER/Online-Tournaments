@@ -241,7 +241,7 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
 
 //sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:17}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+//sender.sendRequest("RestartTournament", {tournamentID:3}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 
 
 

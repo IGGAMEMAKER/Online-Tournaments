@@ -1,6 +1,8 @@
 var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
 
+var parseurl = require('parseurl');
+
 var jade = require('jade');
 
 var app = express();
@@ -28,38 +30,100 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.get('*', function (req, res){
   console.log(req.url);
-  var url = {};
-  url = req.url;
-  var data = {};
-  data = req.body;
-  url = url.substr(1);
+  var data = req.body;
+
+  /*var url = req.url;
   console.log(url);
+
+  //url = url.substr(1);
+  
+  //if (url.indexOf("?")>-1){
+  //  url = url.substr(0,url.indexOf("?"));
+  //}
+
+  if (url!='/favicon.ico'){
+    console.log(url);
+    console.log(req.params);
+    var pathname = parseurl(req).pathname;
+    pathname = pathname.substr(1);
+    console.log('pathname :'+ pathname);
+    url = pathname;
+  }*/
+
+  var url = (parseurl(req).pathname).substr(1);
+
+  console.log(url);
+  var FSUrl = url;
   switch(url){
     case 'Tournaments':
-      url = 'GetTournaments';
+      url = FSUrl = 'GetTournaments';
+      data.queryFields = 'tournamentID buyIn goNext gameNameID';
+    break;
+    case 'TournamentInfo':
+      FSUrl = 'GetTournaments';
+      data.query = {tournamentID:2};
+      data.queryFields = 'tournamentID buyIn goNext gameNameID';
+      console.log('Logging');
+      console.log(data.query);
     break;
     case 'favicon.ico':
-      sender.Answer(res, { result:'fucken favicon'});
-    break;
-    default:
-
+      res.json({ result:'fucken favicon'});
+      //sender.Answer(res, { result:'fucken favicon'});
     break;
   }
+
   if (url!='favicon.ico'){
-  sender.sendRequest(url, data, '127.0.0.1', 
+    //console.log(req);
+    console.log('req to FrontendServer: ' + FSUrl);
+    console.log(data);
+    sender.sendRequest(FSUrl, data, '127.0.0.1', 
       proc.getPort('FrontendServer'), res, function (error, response, body, res1){
+
         if (!error){
-          res1.render(url, { title: 'Hey', message: JSON.stringify(body)})
-        }
-        else{
+          var msg = getData(body, url, req);
+          //console.log(JSON.stringify(msg));
+          //switch (url) {case 'TournamentInfo': url = 'TournamentInfo'; console.log('ssss'); break;}
+
+          console.log('Trying to get url ' + url);
+          res1.render(url, { title: 'Hey', message: msg});//JSON.stringify()})
+        } else{
           sender.Answer(res, { result:'fucken favicon'});
         }
-      }
-  );
+      });
   }
 
   //res.render('page1', { title: 'Hey', message: url});
 })
+
+function getData(body,url, req){
+  console.log('getData: ' + url);
+  var obj = body;
+  switch (url){
+    case 'GetTournaments':
+      obj.queryFields = 'id buyIn goNext gameNameID';
+      for (i=0;i<body.length;i++){
+        
+      }
+      console.log(body.length);
+    break;
+    case 'TournamentInfo':
+    console.log('TournamentInfo ' + body.length);
+    obj.query = {TournamentID:2};
+    obj.queryFields = 'id buyIn goNext gameNameID';
+      /*for (i=0;i<body.length;i++){
+        
+      }*/
+      /*console.log(body.length);
+      obj.query= {};// { _id:'55d8e26d5e611a42512a21e4'};
+      obj.queryFields = 'id buyIn goNext gameNameID';*/
+      
+      /*if (req.params) {console.log(req.params.tID);}
+      console.log(1111);
+      if (req.param) {console.log(req.param.tID);}*/
+    break;
+  }
+  return obj;
+}
 
 /*function showPage (error, response, body, res){
   res.render('page1', { title: 'Hey', message: url})

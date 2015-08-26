@@ -1,0 +1,36 @@
+html
+	head
+		title!= title
+	body
+		- //for (var item in message){
+		p!= message.length
+		p!= JSON.stringify(message)
+		table
+			tr
+				td.
+					ID
+				td.
+					Players count
+				td.
+					Buy In
+				td.
+					Game Name ID
+				td.
+					TournamentInfo
+			tr
+				td
+					p!= message[0].tournamentID
+				td
+					p!= message[0].goNext[0]
+				td
+					p!= message[0].buyIn
+				td
+					p!= message[0].gameNameID
+				td
+					Tournament Info
+		script.
+			function func(){
+				alert(1);
+			}
+		button(onclick="func()" style="width:100px;height:20px;" value='REGISTER').
+			REGISTER
