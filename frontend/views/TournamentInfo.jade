@@ -1,6 +1,7 @@
 html
 	head
 		title!= title
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
 	body
 		- //for (var item in message){
 		p!= message.length
@@ -30,7 +31,23 @@ html
 					Tournament Info
 		script.
 			function func(){
-				alert(1);
+				$.ajax({
+				  url: 'http://localhost:3000/Alive',
+				  method: 'POST',
+				  data: { f1:'ololo' },
+				  success: function( data ) {
+					var msg = JSON.stringify(data);
+					alert(msg);
+					console.log(msg);
+				    //$( "#weather-temp" ).html( "<strong>" + data + "</strong> degrees" );
+				  }
+				});
+
+				/*jQuery.post('http://localhost:3000/Alive', {f1:'ololo'}, function(data){
+					console.log(data);
+					alert(JSON.stringify(data));
+					alert(1);
+				});*/
 			}
 		button(onclick="func()" style="width:100px;height:20px;" value='REGISTER').
 			REGISTER

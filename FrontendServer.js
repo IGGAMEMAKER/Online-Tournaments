@@ -46,7 +46,10 @@ var user1 = {
     };
 
 function Alive(data, res){
-	res.json({result:'OK'});
+	console.log(data);
+	sender.Answer(res, {result:'OK'});
+	//res.json({result:'OK'});
+	//res.end();
 }
 
 function GetUserProfileInfo(data , res){

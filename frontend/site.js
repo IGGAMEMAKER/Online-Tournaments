@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   res.send('Hello World!');
 });*/
 
-app.get('*', function (req, res){
+app.all('*', function (req, res){
   console.log(req.url);
   var data = req.body;
 
@@ -61,7 +61,8 @@ app.get('*', function (req, res){
     break;
     case 'TournamentInfo':
       FSUrl = 'GetTournaments';
-      data.query = {tournamentID:2};
+      console.log(req.query);
+      data.query = {tournamentID:req.query.tID};
       data.queryFields = 'tournamentID buyIn goNext gameNameID';
       console.log('Logging');
       console.log(data.query);
@@ -85,7 +86,12 @@ app.get('*', function (req, res){
           //switch (url) {case 'TournamentInfo': url = 'TournamentInfo'; console.log('ssss'); break;}
 
           console.log('Trying to get url ' + url);
-          res1.render(url, { title: 'Hey', message: msg});//JSON.stringify()})
+          if (url!='Alive'){
+            res1.render(url, { title: 'Hey', message: msg});//JSON.stringify()})
+          }
+          else{
+            res.json(msg);
+          }
         } else{
           sender.Answer(res, { result:'fucken favicon'});
         }
