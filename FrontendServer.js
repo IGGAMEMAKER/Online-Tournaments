@@ -23,6 +23,8 @@ funcArray["/RememberPassword"] = RememberPassword;
 funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 funcArray["/GetTournaments"] = GetTournaments;
+funcArray['/GetUsers'] = GetUsers;
+
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
 funcArray["/StartTournament"]=StartTournament;
 
@@ -53,6 +55,24 @@ function Alive(data, res){
 	sender.Answer(res, {result:'OK'});
 	//res.json({result:'OK'});
 	//res.end();
+}
+
+function GetUsers (data, res){
+	//res.end('GetUsers OK');
+	console.log(data);
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
+	};
+	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUsersHandler);
+}
+
+function GetUsersHandler( error, response, body, res ){
+	//console.log("Checking Data taking: " + get2(body, 'tournaments', 't1'));
+	sender.Answer(res, body);
+	//res.end(get(body,'tournaments'));
 }
 
 function StartTournament (data, res){

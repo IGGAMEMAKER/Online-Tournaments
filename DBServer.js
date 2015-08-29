@@ -166,7 +166,22 @@ function RestartTournament(data, res){
 }
 
 function GetUsers( data,res){
-	var usr1 = User.find({}, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
+	var query = {};
+	var queryFields = '';//'id buyIn goNext gameNameID';
+	
+	if (data['query']) {query = data['query'];}
+	if (data['queryFields']) {queryFields = data['queryFields']; console.log('Got it!');}
+
+
+	console.log(query);
+	console.log(queryFields);
+
+	/*Tournament.find(query,queryFields , function (err, tournaments){
+		console.log(tournaments);
+		sender.Answer(res, tournaments);
+	});*/
+
+	var usr1 = User.find(query, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
 	    if (err) {
 	    	console.log('GetUsersError ');
 	    	console.log(err);
@@ -328,7 +343,7 @@ function GetTournaments (data, res){
 
 	console.log(query);
 	console.log(queryFields);
-	
+
 	Tournament.find(query,queryFields , function (err, tournaments){
 		console.log(tournaments);
 		sender.Answer(res, tournaments);

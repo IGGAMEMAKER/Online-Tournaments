@@ -37,7 +37,16 @@ app.all('/StartTournament', function (req, res){
   console.log('Site starts tournament');
   console.log(req.body);
   io.emit('StartTournament', 'StartTournament'+ req.body.tournamentID);//+req.body.tournamentID
-  //res.end();
+  res.end();
+});
+
+app.get('/Users' , function (req, res){
+
+  var data = req.body;
+  data.query = {tournamentID:req.query.tID};
+  data.queryFields = 'login money';
+
+  siteAnswer(res, 'GetUsers', data, 'Users');
 });
 
 app.get('/Tournaments', function (req,res){
