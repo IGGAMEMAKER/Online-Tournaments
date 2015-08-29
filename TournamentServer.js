@@ -73,6 +73,10 @@ function RegisterUserInTournament (data, res){
 			if (maxPlayersInTournament === tournament.playersRegistered){
 				console.log("Tournament " + tournamentID + " starts");
 				console.log(tournament.players);
+				console.log('To FrontendServer');
+				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
+					'127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
+				console.log('To TournamentManager');
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
 					'127.0.0.1', queryProcessor.getPort('TournamentManager'), null, sender.printer );
 				//sender.Answer(res,Success);

@@ -8,6 +8,8 @@ var serverName = "FrontendServer";
 var qs = require('querystring');
 var sender = require('./requestSender');
 
+var sitePort = 3000;
+
 /*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });*/
@@ -22,6 +24,7 @@ funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 funcArray["/GetTournaments"] = GetTournaments;
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
+funcArray["/StartTournament"]=StartTournament;
 
 
 /*funcArray["/WakeUsers"] = WakeUsers;
@@ -50,6 +53,12 @@ function Alive(data, res){
 	sender.Answer(res, {result:'OK'});
 	//res.json({result:'OK'});
 	//res.end();
+}
+
+function StartTournament (data, res){
+	res.end('FrontendServer Starts Tournament!');
+	console.log(data);
+	sender.sendRequest("StartTournament", data, '127.0.0.1', sitePort, null, sender.printer);
 }
 
 function GetUserProfileInfo(data , res){

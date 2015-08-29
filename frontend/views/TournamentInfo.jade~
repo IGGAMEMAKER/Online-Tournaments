@@ -32,8 +32,7 @@ html
 		script.
 			function func(){
 				var btn = document.getElementById("reg");
-				console.log(btn);
-				//btn.html = 'UNREG';
+				btn.html = 'UNREG';
 				//$.("button.reg").value='UNREGISTER';
 				$.ajax({
 				  url: 'Alive',

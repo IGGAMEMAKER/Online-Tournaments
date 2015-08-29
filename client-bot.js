@@ -177,10 +177,22 @@ var currentPlayer=0;
 //sender.sendRequest("Move", movement2,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
 
 //sender.sendRequest("Move", movement2,'127.0.0.1', 5009, sender.printer);//setVal);
+var curTournAndGameID = 2;
 
-var curTournAndGameID = 17;
-var repetitions = 4;
-var timerId = setInterval(function() {
+var args = process.argv.slice(2);
+//console.log(args.length);
+if (args.length>0){//} || args.length=='0'){
+	curTournAndGameID = args[0];
+}
+console.log(curTournAndGameID);
+/*else{
+	console.log( args);
+}*/
+//var curTournAndGameID = 2;
+var repetitions = 3;
+
+
+/*var timerId = setInterval(function() {
   //prt();
   currentPlayer++;
   //currentPlayer=1;
@@ -191,7 +203,7 @@ var timerId = setInterval(function() {
   var move = getMovement(curTournAndGameID,curTournAndGameID,currentPlayer);
   console.log(JSON.stringify(move));
   sender.sendRequest("Move", move,'127.0.0.1', proc.getPort('GameServer'), null ,sender.printer);//setVal);
-}, 50);
+}, 50);*/
 
 
 
