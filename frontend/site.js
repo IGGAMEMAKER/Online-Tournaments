@@ -16,12 +16,19 @@ var MongoStore = require('connect-mongo');//(express);
 console.log('ololo');
 app.use(express.static('public'));
 
+/*var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test');*/
+
 app.use(cookieParser());
 app.use(session({
   secret: '1234567890QWERTY'/*,
   resave: true,
   saveUninitialized: true,*/
 }));
+app.use(function(req,res,next){
+    res.locals.session = req.session;
+    next();
+});
 /*app.use(session({
   store: new MongoStore({
     url: 'mongodb://root:myPassword@mongo.onmodulus.net:27017/3xam9l3'
@@ -71,7 +78,7 @@ app.get('/Users' , function (req, res){
   data.queryFields = 'login money';
 
   //siteAnswer(res, 'GetUsers', data, 'tAuth', {login: req.session.login} );
-  siteAnswer(res, 'GetUsers', data, 'Users', {login: req.session.login?req.session.login:''} );//Users
+  siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
 });
 
 app.get('/Tournaments', function (req,res){
