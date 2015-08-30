@@ -2,11 +2,21 @@ html
 	head
 		title!= title
 	body
+		include tAuth
+		- console.log('incoming message Browser:');
+		- console.log(message);
+		- //console.log(JSON.stringify(message));
+
+		- //p!= JSON.stringify(message);
+		- var login = extra.login;
+		- console.log('Browser login =' + login);
+		- //if(login) { alert(login); console.log('login = ' + login); }
+		
 		- //for (var item in message){
 		p!= message.length
 		-//p!= JSON.stringify(message);
 		center
-					h1 Users
+			h1 Users
 			table
 				tr
 					td.

@@ -7,15 +7,28 @@ var jade = require('jade');
 
 var app = express();
 
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+
+var MongoStore = require('connect-mongo');//(express);
 //var io = require('socket.io')(app);
 
-
-/*var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');*/
-//var Restraunt = mongoose.model('Restraunt', { name: String, description: String, photoURL: String });
-
-
+console.log('ololo');
 app.use(express.static('public'));
+
+app.use(cookieParser());
+app.use(session({
+  secret: '1234567890QWERTY'/*,
+  resave: true,
+  saveUninitialized: true,*/
+}));
+/*app.use(session({
+  store: new MongoStore({
+    url: 'mongodb://root:myPassword@mongo.onmodulus.net:27017/3xam9l3'
+  }),
+  secret: '1234567890QWERTY'
+}));*/
+
 app.set('views', './views');
 app.set('view engine', 'jade');
 
@@ -41,12 +54,24 @@ app.all('/StartTournament', function (req, res){
 });
 
 app.get('/Users' , function (req, res){
+  if(req.session.login) {
+    console.log('Saved login is: ' + req.session.login);
+    //res.write('Last page was: ' + req.session.user + '. ');
+  }
+  console.log(req.params);
+  if (req.query.login){
+    console.log(req.query);
+    console.log('Getting login: ' + req.query.login);
+    req.session.login = req.query.login;
 
+  }
+  
   var data = req.body;
-  data.query = {tournamentID:req.query.tID};
+  data.query = {};//tournamentID:req.query.tID};
   data.queryFields = 'login money';
 
-  siteAnswer(res, 'GetUsers', data, 'Users');
+  //siteAnswer(res, 'GetUsers', data, 'tAuth', {login: req.session.login} );
+  siteAnswer(res, 'GetUsers', data, 'Users', {login: req.session.login?req.session.login:''} );//Users
 });
 
 app.get('/Tournaments', function (req,res){
@@ -76,18 +101,20 @@ app.get('/TournamentInfo', function (req, res){
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 });
 
-function siteAnswer( res, FSUrl, data, renderPage, title){
-  console.log('*****************');
-  console.log('****siteAnswer***');
-  console.log('*****************');
+function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
+
   if (FSUrl && res){
     sender.sendRequest(FSUrl, data?data:{}, '127.0.0.1', 
         proc.getPort('FrontendServer'), res, function (error, response, body, res1){
           if (!error){
-            res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
-          } else{
-            sender.Answer(res1, { result:error});
+
+            res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
+          } else {
+            sender.Answer(res1, { result:error });
           }
+            console.log('*****************');
+            console.log('***SITE_ANSWER***');
+            console.log('*****************');
         });
   }
   else {
