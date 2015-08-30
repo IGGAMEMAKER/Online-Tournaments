@@ -1,0 +1,27 @@
+{
+  "name": "tournaments",
+  "version": "0.4.0",
+  "description": "tournamentsDescription",
+  "main": "FrontendServer.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "blah"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IGGAMEMAKER/TestRepo.git"
+  },
+  "keywords": [
+    "tournaments",
+    "games",
+    "prizes"
+  ],
+  "author": "IGGAMEMAKER",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IGGAMEMAKER/TestRepo/issues"
+  },
+  "homepage": "https://github.com/IGGAMEMAKER/TestRepo#readme"
+}
