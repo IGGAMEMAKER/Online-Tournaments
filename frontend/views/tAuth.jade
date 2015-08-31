@@ -1,10 +1,11 @@
 p!= 'PARTITION ADDED'
 - if (session.login && session.login.length>0) {
-	p!= 'Hello, ' + session.login	
+	p!= 'Hello, ' + session.login
+	a(href = "Logout") Logout
 - }
-- var a = JSON.stringify(session);
+- var ab = JSON.stringify(session);
 - console.log(session);
-- console.log('session :' + a);
+- console.log('session :' + ab);
 p #{session.login}
 p!= session.login
 -//p JSON.stringify(#{session})

@@ -1,4 +1,4 @@
-script(src= "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" );
+script(src= "ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
 script.
 	function OpenInNewTab(url) {
 		alert(url);
@@ -26,11 +26,12 @@ html
 				p.
 				input(type="submit", value="Login")
 				script.
-					alert('5');
+					//alert('5');
 					//document.getElementsByClassName('loginbox');
 					//var i = document.getElementsByClassName('loginbox')[0];;//getElementById('loginbox');
 					/*var i = document.getElementById('loginbox');
 					console.log(i);
 					i.innerHTML = '';*/
-					var tmr = setInterval(send,5000);
+					//window.open('http://google.com');
+					//var tmr = setInterval(send,5000);
 					//OpenInNewTab('localhost:3000/Tournaments');

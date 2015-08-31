@@ -150,6 +150,7 @@ function RememberPassword( data, res){
 	console.log("You must send rememberPass to Account Server");
 }
 function log(str){ console.log(str);}
+
 function Login( data, res){
 	sender.sendRequest("Login", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), res, LoginHandler);
 }

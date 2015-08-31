@@ -52,6 +52,55 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   res.send('Hello World!');
 });*/
 
+app.get('/Logout', function (req, res){
+  req.session.destroy(function (err){
+    if (err){ console.log('Session destroying error:' + err);}
+  });
+  res.render('Login',{});
+});
+
+/*app.get('/Login', function (req, res){
+  res.render('Login',{});
+})
+
+app.post('/Login', function (req, res){
+
+});*/
+
+app.post('/Register', function (req, res){
+  var data = req.body;
+  console.log('Login: ' + data.login);
+  console.log('Pass: ' + data.password);
+  //res.redirect('Tournaments');
+  
+  sender.sendRequest('Register', data?data:{}, '127.0.0.1', 
+        proc.getPort('FrontendServer'), res, 
+        function (error, response, body, res1){
+          switch (body.result){
+            case 'OK':
+              req.session.login = data.login;
+              res.redirect('Tournaments');
+            break;
+            default:
+              res.render('Register',{err:body.result});
+            break;
+          }
+          /*if (body.result=='OK'){
+            //res.render('')
+            
+          }
+          else{
+            
+          }*/
+        }
+  //siteAnswer(res, 'Register', data);
+  );
+});
+
+app.get('/Register', function (req, res){
+  res.render('Register');
+})
+
 app.all('/StartTournament', function (req, res){
   console.log(req.url);
   console.log('Site starts tournament');
