@@ -59,13 +59,39 @@ app.get('/Logout', function (req, res){
   res.render('Login',{});
 });
 
-/*app.get('/Login', function (req, res){
+app.get('/Login', function (req, res){
   res.render('Login',{});
 })
 
 app.post('/Login', function (req, res){
-
-});*/
+  var data = req.body;
+  console.log('Login: ' + data.login);
+  console.log('Pass: ' + data.password);
+  //res.redirect('Tournaments');
+  
+  sender.sendRequest('Login', data?data:{}, '127.0.0.1', 
+        proc.getPort('FrontendServer'), res, 
+        function (error, response, body, res1){
+          switch (body.result){
+            case 'OK':
+              req.session.login = data.login;
+              res.redirect('Tournaments');
+            break;
+            default:
+              res.render('Login',{err:body.result});
+            break;
+          }
+          /*if (body.result=='OK'){
+            //res.render('')
+            
+          }
+          else{
+            
+          }*/
+        }
+  //siteAnswer(res, 'Register', data);
+  );
+});
 
 app.post('/Register', function (req, res){
   var data = req.body;

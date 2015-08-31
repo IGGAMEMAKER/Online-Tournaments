@@ -149,18 +149,24 @@ function RememberPassword( data, res){
 	res.end("Try to remember");
 	console.log("You must send rememberPass to Account Server");
 }
+
 function log(str){ console.log(str);}
 
 function Login( data, res){
-	sender.sendRequest("Login", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'), res, LoginHandler);
+	console.log('FrontendServer login:');
+	console.log(data);
+	sender.sendRequest("Login", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, LoginHandler);
 }
 function LoginHandler( error, response, body, res){
-	if (body['result'] === 'success'){
+	console.log('LoginHandler call');
+	sender.Answer(res, body);
+	//res.end(body);
+	/*if (body['result'] === 'OK'){
 		res.end("You are logged in!!");
 	}
 	else{
 		res.end("Login or password are invalid");
-	}
+	}*/
 }
 
 function RegisterUserHandler( error, response, body, res) {

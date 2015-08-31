@@ -22,6 +22,33 @@ funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 funcArray['/IncreaseMoney'] = IncreaseMoney;
 funcArray['/RestartTournament'] = RestartTournament;
 
+
+funcArray["/Login"] = LoginUser;
+/*funcArray["/Ban"] = Ban;
+funcArray["/ChangePassword"] = ChangePassword;
+funcArray["/RememberPassword"] = RememberPassword;*/
+
+var loginSuccess = {
+	result: 'success'
+};
+
+var loginFail = {
+	result: 'fail'
+};
+
+var Success = {
+	result: 'success'
+};
+
+var Fail = {
+	result: 'fail'
+};
+
+
+
+
+
+
 var currentTournamentCounter=0;
 var tournaments = {};
 var users= {count:0 };
@@ -137,6 +164,70 @@ var Tournament = mongoose.model('Tournament', {
 		status: 		Number,	
 		players: 		Array
 	});*/
+
+function ChangePassword(data, res){
+	console.log("check current auth");
+	console.log("ChangePass of User " + data['login']);
+	res.end(Fail);
+}
+
+function RememberPassword(data, res){
+	console.log("Send mail and reset pass");
+	console.log("Remember pass of User " + data['login']);
+	res.end(Fail);
+}
+
+function LoginUser( data, res){
+	console.log("LoginUser...");
+	console.log(data);
+	//res.end(JSON.stringify(loginSuccess));
+
+	var USER_EXISTS = 11000;
+	var login = data['login'];
+	var password = data['password'];
+	console.log('Try to login :' + login + '. (' + JSON.stringify(data) + ')');
+
+	var usr1 = User.findOne({login:login, password:password}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
+	    if (err) {
+	    	console.log('GetUsersError ');
+	    	console.log(err);
+	    	sender.Answer(res, {result: err});
+	    }
+	    else{
+	    	if (user){
+		    	console.log(JSON.stringify(user));
+			    sender.Answer(res, {result:'OK'});
+			    console.log('Logged in');
+			}
+			else{
+				console.log('Invalid login/password : ' + login);
+				sender.Answer(res, {result:'Invalid reg'});
+			}
+		}
+ 	});
+	/*var user = new User({ login:login, password:password, money:100 });
+	user.save(function (err) {
+		if (err){
+			switch (err.code){
+				case USER_EXISTS:
+					console.log('Sorry, user ' + login + ' Exists');
+					sender.Answer(res, {result: 'UserExists'});
+				break;
+				default:
+					console.log(err);
+					sender.Answer(res, {result: 'UnknownError'});
+				break;
+			}
+		}
+		else{
+			//showRestraunt(res, name);
+			sender.Answer(res, {result: 'OK'});
+			console.log('added User'); 
+		}
+	});*/
+
+}
+
 
 function GetGameParametersByGameName (gameName){
 	console.log('GetGameParametersByGameName... HERE MUST BE REAL REQUEST TO DATABASE');
