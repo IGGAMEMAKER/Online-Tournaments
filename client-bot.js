@@ -118,7 +118,7 @@ function getMovement(tournamentID, gameID, playerID){
 
 function getRegisterInTournaments(userID, tournamentID, token){
 	var regInTournament = {
-		userID:names[userID],
+		login:names[userID],
 		tournamentID:tournamentID,
 		token:'qwzs'
 	}

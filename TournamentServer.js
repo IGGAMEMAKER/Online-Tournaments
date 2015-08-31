@@ -52,24 +52,40 @@ function showTournaments(){
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH sender.Answer(res,();
+
+function playerIsRegistered (tournament, login){
+	return tournament.logins[login];
+}
+
 function RegisterUserInTournament (data, res){
 	//console.log("Sender = " + data['sender']);
 	console.log("Registering in tournament: " + data['tournamentID']);
 	var tournamentID = data['tournamentID'];
-	var login = data['userID'];//data['login'];
+	var login = data['login'];//data['login'];
 //	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
 	var tournament = tournaments[tournamentID];
 	var maxPlayersInTournament = tournament.goNext[0];
+
 	if (maxPlayersInTournament> tournament.playersRegistered){
-		if (tournament.players[login]){
-			console.log('User ' + login + ' is already Registered in ' + tournamentID)
+		console.log('Current players:');
+		console.log(tournament.players);
+		console.log(tournament);
+		if (playerIsRegistered(tournament, login)){ // tournament.players[login])
+			console.log('User ' + login + ' is already Registered in ' + tournamentID);
+			
 			sender.Answer(res,Fail);
 		}
 		else{
 			tournament.playersRegistered++;
 			tournament.players.push(login);
+			tournament.logins[login]=1;
+			console.log('Logins list');
+			console.log(tournament.logins);
+
 			sender.Answer(res,Success);
+
 			console.log('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
+			
 			if (maxPlayersInTournament === tournament.playersRegistered){
 				console.log("Tournament " + tournamentID + " starts");
 				console.log(tournament.players);
@@ -196,6 +212,7 @@ function ServeTournament (data, res){
 	tournaments[tournamentID] = data;
 	tournaments[tournamentID].players = [];
 	tournaments[tournamentID].playersRegistered=0;
+	tournaments[tournamentID].logins = {};
 
 	sender.sendRequest("ServeTournament", data, '127.0.0.1', queryProcessor.getPort('TournamentManager'), res, ServeTournamentTMProxy );
 }
@@ -216,7 +233,7 @@ function ServeTournamentTMProxy ( error, response, body, res){
 }, 2000);*/
 
 var Success = {
-	result: 'success'
+	result: 'OK'
 };
 
 var Fail = {

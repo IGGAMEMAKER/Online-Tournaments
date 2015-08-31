@@ -2,10 +2,47 @@ html
 	head
 		title!= title
 		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
+		script(id= "RegUsr").
+			function func(login, tID){
+				console.log(login);
+				console.log(tID);
+				//console.log(btn);
+				
+				/*$.ajax({
+				  url: 'Alive',
+				  method: 'POST',
+				  data: { f1:'ololo' },
+				  success: function( data ) {
+					var msg = JSON.stringify(data);
+					alert(msg);
+					console.log(msg);
+				  }
+				});*/
+
+				$.ajax({
+				  url: 'RegisterInTournament',
+				  method: 'POST',
+				  //data: { login: 'Alvaro_Fernandez', tournamentID:1 },
+				  data: { login: login, tournamentID:tID },
+				  success: function( data ) {
+					var msg = data;//JSON.stringify(data);
+					var txt='';
+					switch(data){
+						case 'OK': txt='You registered successfully!!'; break;
+						case 'fail': txt='Register failed :(('; break;
+					}
+					alert(txt);
+					console.log(msg);
+				  }
+				});
+			}
 	body
-		- //for (var item in message){
-		p!= message.length
 		p!= JSON.stringify(message)
+		- if (session.login && session.login.length>0) {
+			p!= 'Hello, ' + session.login
+			a(href = "Logout") Logout
+		- }
+		- //onclick="func('Alvaro_Fernandes',4)"		
 		table
 			tr
 				td.
@@ -29,28 +66,12 @@ html
 					p!= message[0].gameNameID
 				td
 					Tournament Info
-		script.
-			function func(){
-				var btn = document.getElementById("reg");
-				btn.html = 'UNREG';
-				//$.("button.reg").value='UNREGISTER';
-				$.ajax({
-				  url: 'Alive',
-				  method: 'POST',
-				  data: { f1:'ololo' },
-				  success: function( data ) {
-					var msg = JSON.stringify(data);
-					alert(msg);
-					console.log(msg);
-				    //$( "#weather-temp" ).html( "<strong>" + data + "</strong> degrees" );
-				  }
-				});
-
-				/*jQuery.post('http://localhost:3000/Alive', {f1:'ololo'}, function(data){
-					console.log(data);
-					alert(JSON.stringify(data));
-					alert(1);
-				});*/
-			}
-		button(id="reg" onclick="func()" style="width:100px;height:20px;").
+		button(id="reg" style="width:100px;height:20px;").
 			REGISTER
+		script.
+			var aaa = "#{session.login}";
+			var bbb = "#{message[0].tournamentID}";
+			alert('login:' + bbb);
+			//var btn = document.getElementById("reg");
+			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+		

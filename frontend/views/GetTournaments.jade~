@@ -3,8 +3,6 @@ html
 		title!= title
 	body
 		- //for (var item in message){
-		p!= message;
-		p!= JSON.stringify(message);
 		p!= message.length
 		table
 			tr
@@ -21,7 +19,7 @@ html
 			- if (message.length>0){ for (i=0; i<message.length;i++){
 				tr
 					td
-						p!= i
+						p!= message[i].tournamentID
 					td
 						p!= message[i].goNext[0]
 					td

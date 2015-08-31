@@ -1,5 +1,6 @@
 html
-  head
-    title!= 'Alive!!'
-  body
-    p!= message
+	head
+		title!= 'Alive!!'
+	body
+		h1 'SITE IS ALIVE'
+		p!= JSON.stringify(message)

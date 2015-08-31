@@ -242,19 +242,11 @@ sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('Front
 
 //sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 
-/*for (i=1;i<8;++i){
+for (i=1;i<5;++i){
 	sender.sendRequest("RestartTournament", {tournamentID:i}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-}*/
+}
 
-sender.sendRequest("RestartTournament", {tournamentID:1}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:2}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:3}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:4}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
-
-/*sender.sendRequest("RestartTournament", {tournamentID:5}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:6}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:7}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("RestartTournament", {tournamentID:8}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
+/*sender.sendRequest("RestartTournament", {tournamentID:1}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
 
 
 

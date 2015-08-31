@@ -8,12 +8,12 @@ html
 		- //console.log(JSON.stringify(message));
 
 		- //p!= JSON.stringify(message);
-		- var login = extra.login;
+		- var login = session.login;
 		- console.log('Browser login =' + login);
 		- //if(login) { alert(login); console.log('login = ' + login); }
 		
 		- //for (var item in message){
-		p!= message.length
+		- //p!= message.length
 		-//p!= JSON.stringify(message);
 		center
 			h1 Users
@@ -23,8 +23,6 @@ html
 						login
 					td.
 						money
-					td.
-						something
 				- if (message.length>0){ for (i=0; i<message.length;i++){
 					tr
 						td
@@ -36,3 +34,5 @@ html
 								Tournament Info
 					//p!= message
 				- }}
+			a(href='Tournaments')
+				Show Tournaments

@@ -52,6 +52,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   res.send('Hello World!');
 });*/
 
+app.get('/Alive', function (req, res){
+  res.render('Alive');
+})
+
 app.get('/Logout', function (req, res){
   req.session.destroy(function (err){
     if (err){ console.log('Session destroying error:' + err);}
@@ -93,6 +97,30 @@ app.post('/Login', function (req, res){
   );
 });
 
+app.post('/RegisterInTournament', function (req, res){
+  console.log('REG USER IN TOURN');
+  var data = req.body;
+  console.log(data.login);
+  console.log(data.tournamentID);
+
+    sender.sendRequest('RegisterUserInTournament', data?data:{}, '127.0.0.1', 
+        proc.getPort('FrontendServer'), res, 
+        function (error, response, body, res1){
+          res.send(body.result);
+          /*switch (body.result){
+            case 'OK':
+              res.send(body.result);
+            break;
+            default:
+              res.render('Register',{err:body.result});
+            break;
+          }*/
+        }
+  );
+
+  console.log('WRITE Socket emitter!!!')
+})
+
 app.post('/Register', function (req, res){
   var data = req.body;
   console.log('Login: ' + data.login);
@@ -111,13 +139,6 @@ app.post('/Register', function (req, res){
               res.render('Register',{err:body.result});
             break;
           }
-          /*if (body.result=='OK'){
-            //res.render('')
-            
-          }
-          else{
-            
-          }*/
         }
   //siteAnswer(res, 'Register', data);
   );
@@ -136,7 +157,7 @@ app.all('/StartTournament', function (req, res){
 });
 
 app.get('/Users' , function (req, res){
-  if(req.session.login) {
+  /*if(req.session.login) {
     console.log('Saved login is: ' + req.session.login);
     //res.write('Last page was: ' + req.session.user + '. ');
   }
@@ -146,7 +167,7 @@ app.get('/Users' , function (req, res){
     console.log('Getting login: ' + req.query.login);
     req.session.login = req.query.login;
 
-  }
+  }*/
   
   var data = req.body;
   data.query = {};//tournamentID:req.query.tID};

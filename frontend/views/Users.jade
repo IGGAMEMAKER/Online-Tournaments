@@ -13,7 +13,7 @@ html
 		- //if(login) { alert(login); console.log('login = ' + login); }
 		
 		- //for (var item in message){
-		p!= message.length
+		- //p!= message.length
 		-//p!= JSON.stringify(message);
 		center
 			h1 Users
@@ -23,16 +23,13 @@ html
 						login
 					td.
 						money
-					td.
-						something
 				- if (message.length>0){ for (i=0; i<message.length;i++){
 					tr
 						td
 							p!= message[i].login
 						td
 							p!= message[i].money
-						td
-							a(href='TournamentInfo?tID='+i)
-								Tournament Info
 					//p!= message
 				- }}
+			a(href='Tournaments')
+				Show Tournaments

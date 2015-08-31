@@ -2,3 +2,8 @@ node
 DBServer.js
 FrontendServer.js
 BalanceServer.js
+TournamentServer.js
+GameFrontendServer.js
+GameServer.js
+TournamentManager.js
+initializer.js

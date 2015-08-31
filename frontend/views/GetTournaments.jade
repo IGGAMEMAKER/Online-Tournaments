@@ -19,7 +19,7 @@ html
 			- if (message.length>0){ for (i=0; i<message.length;i++){
 				tr
 					td
-						p!= i
+						p!= message[i].tournamentID
 					td
 						p!= message[i].goNext[0]
 					td
@@ -31,5 +31,8 @@ html
 							Tournament Info
 				//p!= message
 			- }}
-			
+		- if (session.login && session.login.length>0) {
+			p!= 'Hello, ' + session.login
+			a(href = "Logout") Logout
+		- }
 

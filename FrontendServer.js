@@ -128,7 +128,7 @@ function RegisterUserInTournament( data, res){
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID'],
-		userID: data['userID']
+		login: data['login']
 	};
 	//log(data);
 	log("Trying to register in tournament " + data['tournamentID']);
@@ -137,12 +137,14 @@ function RegisterUserInTournament( data, res){
 }
 function RegisterUserInTournamentHandler(error, response, body, res){
 	console.log("Checking Data taking: " + body['result']);
-	if (body['result'] === 'success'){
+	sender.Answer(res, body);
+
+	/*if (body['result'] === 'OK'){
 		res.end("You are Registered in tournament!!");
 	}
 	else{
 		res.end("Tournament Register error:" + body['result']);
-	}
+	}*/
 }
 
 function RememberPassword( data, res){
@@ -169,16 +171,17 @@ function LoginHandler( error, response, body, res){
 	}*/
 }
 
-function RegisterUserHandler( error, response, body, res) {
-	console.log("Got answer from DBServer");
-	sender.Answer(res, body);
-        //res.end("THX for register");
-}
 function RegisterUser( data, res){
 	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
 	//console.log("FrontendServer tries to register user");
 	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, RegisterUserHandler );
 }
+function RegisterUserHandler( error, response, body, res) {
+	console.log("Got answer from DBServer");
+	sender.Answer(res, body);
+        //res.end("THX for register");
+}
+
 
 
 
