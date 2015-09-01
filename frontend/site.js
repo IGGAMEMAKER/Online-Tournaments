@@ -15,6 +15,8 @@ var MongoStore = require('connect-mongo');//(express);
 
 console.log('ololo');
 app.use(express.static('public'));
+//app.use(express.static('games'));
+app.use(express.static('games/PingPong'));
 
 /*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');*/
@@ -47,6 +49,13 @@ app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+
+
+
+app.get('/Game', function (req, res){
+  console.log(__dirname);
+  res.sendFile(__dirname + '/games/PingPong/game.html');
+})
 
 /*app.get('/', function (req, res) {
   res.send('Hello World!');
