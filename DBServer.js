@@ -249,9 +249,14 @@ function RestartTournament(data, res){
 			sender.Answer(res, errObject);
 		}
 		else{
-			console.log('RestartTournament: ' + tournamentID);
-			console.log(JSON.stringify(tournament));
-			sender.Answer(res, tournament);
+			if (tournament){
+				console.log('RestartTournament: ' + tournamentID);
+				console.log(JSON.stringify(tournament));
+				sender.Answer(res, tournament);
+			}
+			else{
+				sender.Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
+			}
 		}
 	});
 }

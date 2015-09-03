@@ -41,12 +41,12 @@ function RestartTournament (data, res){
 }
 function DBAddTournamentHandler( error, response, body, res){
 	//var tournamentID = body['tournamentID'];
-
+	if (body.result=='fail') {sender.Answer(res, {result:'fail' }); return;}
 	var tournament = body;
 
 	console.log("added tournament to DB");
 	console.log(JSON.stringify(tournament));
-	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.structure), 
+	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
 			queryProcessor.getPort('TournamentServer'),  res, ServeTournamentHandler );
 }
 

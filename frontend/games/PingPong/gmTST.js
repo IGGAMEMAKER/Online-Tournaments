@@ -18,8 +18,8 @@ window.cancelRequestAnimFrame = ( function() {
 		window.msCancelRequestAnimationFrame        ||
 		clearTimeout
 } )();
-alert('This instance!');
-console.log('This instance!');
+
+
 // Initialize canvas and required variables
 var canvas = document.getElementById("canvas"),
 		ctx = canvas.getContext("2d"), // Create canvas context
@@ -114,57 +114,6 @@ startBtn = {
 		ctx.fillText("Start", W/2, H/2 );
 	}
 };
-//var tournamentID = "#{tournamentID}";
-console.log('AZAZA ' + tournamentID);
-//alert('AZAZA ' + tournamentID);
-var room = io('/'+tournamentID);
-var socket = io();
-socket.emit('event1', {data:'tratata'});
-
-
-console.log(io.sockets);
-
-room.on('azz', function(msg){
-	//alert(msg);
-	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
-});
-/*room.on('azz', function(msg){
-	alert(msg);
-	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
-});*/
-
-console.log(room);
-
-
-/*io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-  	console.log(msg);
-    io.emit('chat message', msg);
-  });
-});*/
-
-/*
-timer = setInterval(function (){
-	$.ajax({
-		url: 'Alive',
-		method: 'POST',
-		data: { f1:'ololo' },
-		success: function( data ) {
-			var msg = JSON.stringify(data);
-			//alert(msg);
-			console.log(msg);
-		}});
-}, 10050);
-*/
-
-var tmr1 = setInterval(function(){
-	console.log('tmr1');
-	//room.emit('event1', 'TIMER message');
-	socket.emit('event1', {data:'tratata'});
-	//io.to('/'+tournamentID).emit('event1', { dat1: 'datatata'});
-	//room.emit('/111' ,'AZAZA ROOOOOOOOOM');
-}, 3000);
-
 
 // Restart Button object
 restartBtn = {
@@ -309,9 +258,23 @@ function update() {
 	// reset flag
 	flag = 0;
 }
+var DOMAIN = 'localhost';
+var GAME_SOCKET = '5010';
 
-
-
+timer = setInterval(function (){
+	$.ajax({
+		url: DOMAIN + ':'+GAME_SOCKET+'/Move',
+		method: 'POST',
+		data: { 
+			mouse:mouse, 
+			tournamentID:tournamentID,
+			login:login },
+		success: function( data ) {
+			var msg = JSON.stringify(data);
+			alert(msg);
+			console.log(msg);
+		}});
+}, 50);
 
 //Function to check collision between ball and one of
 //the paddles

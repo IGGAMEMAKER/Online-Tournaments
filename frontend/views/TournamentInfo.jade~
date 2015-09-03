@@ -2,6 +2,9 @@ html
 	head
 		title!= title
 		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
+		script( src="https://cdn.socket.io/socket.io-1.2.0.js").
+		script( src="http://code.jquery.com/jquery-1.11.1.js")
+		script(src="sockets.js").
 		script(id= "RegUsr").
 			function func(login, tID){
 				console.log(login);
@@ -72,6 +75,8 @@ html
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			alert('login:' + bbb);
-			//var btn = document.getElementById("reg");
-			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+			var btn = document.getElementById("reg");
+			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+		#news
+			p!= aza
 		

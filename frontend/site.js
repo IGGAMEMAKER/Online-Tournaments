@@ -23,10 +23,11 @@ mongoose.connect('mongodb://localhost/test');*/
 
 app.use(cookieParser());
 app.use(session({
-  secret: '1234567890QWERTY'/*,
+  secret: '1234567890QWERTY',
   resave: true,
-  saveUninitialized: true,*/
+  saveUninitialized: true,/**/
 }));
+
 app.use(function(req,res,next){
     res.locals.session = req.session;
     next();
@@ -39,6 +40,9 @@ app.use(function(req,res,next){
 }));*/
 
 app.set('views', './views');
+app.set('views', './games/PingPong');
+//app.set('games/PingPong', './views');
+
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
@@ -54,7 +58,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.get('/Game', function (req, res){
   console.log(__dirname);
-  res.sendFile(__dirname + '/games/PingPong/game.html');
+  res.render('game', {tournamentID:111} );
+  //res.render('/games/PingPong/game', {tournamentID:111} );
+  //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })
 
 /*app.get('/', function (req, res) {
@@ -63,6 +69,11 @@ app.get('/Game', function (req, res){
 
 app.get('/Alive', function (req, res){
   res.render('Alive');
+})
+
+app.post('/Alive', function (req, res){
+  res.json('I hear you, helpless baby!');
+  //console.log('PRINTIIIIIIIIIIIIIIIIIIING!!!!');
 })
 
 app.get('/Logout', function (req, res){
@@ -94,13 +105,6 @@ app.post('/Login', function (req, res){
               res.render('Login',{err:body.result});
             break;
           }
-          /*if (body.result=='OK'){
-            //res.render('')
-            
-          }
-          else{
-            
-          }*/
         }
   //siteAnswer(res, 'Register', data);
   );
@@ -235,96 +239,6 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
   }
 }
 
-/*app.all('*', function (req, res){
-  console.log(req.url);
-  var data = req.body;*/
-
-  /*var url = req.url;
-  console.log(url);
-
-  //url = url.substr(1);
-  
-  //if (url.indexOf("?")>-1){
-  //  url = url.substr(0,url.indexOf("?"));
-  //}
-
-  if (url!='/favicon.ico'){
-    console.log(url);
-    console.log(req.params);
-    var pathname = parseurl(req).pathname;
-    pathname = pathname.substr(1);
-    console.log('pathname :'+ pathname);
-    url = pathname;
-  }*/
-
-/*  var url = (parseurl(req).pathname).substr(1);
-
-  console.log(url);
-  var FSUrl = url;
-  switch(url){
-    case 'Tournaments':
-      url = FSUrl = 'GetTournaments';
-      data.queryFields = 'tournamentID buyIn goNext gameNameID';
-    break;
-    case 'TournamentInfo':
-      FSUrl = 'GetTournaments';
-      console.log(req.query);
-      data.query = {tournamentID:req.query.tID};
-      data.queryFields = 'tournamentID buyIn goNext gameNameID';
-      console.log('Logging');
-      console.log(data.query);
-    break;
-    case 'favicon.ico':
-      res.json({ result:'fucken favicon'});
-      //sender.Answer(res, { result:'fucken favicon'});
-    break;
-  }
-
-  if (url!='favicon.ico'){
-    //console.log(req);
-    console.log('req to FrontendServer: ' + FSUrl);
-    console.log(data);
-    sender.sendRequest(FSUrl, data, '127.0.0.1', 
-      proc.getPort('FrontendServer'), res, function (error, response, body, res1){
-
-        if (!error){
-          var msg = getData(body, url, req);
-          //console.log(JSON.stringify(msg));
-          //switch (url) {case 'TournamentInfo': url = 'TournamentInfo'; console.log('ssss'); break;}
-
-          console.log('Trying to get url ' + url);
-          if (url!='Alive'){
-            res1.render(url, { title: 'Hey', message: msg});//JSON.stringify()})
-          }
-          else{
-            res.json(msg);
-          }
-        } else{
-          sender.Answer(res, { result:'fucken favicon'});
-        }
-      });
-  }
-})*/
-
-
-/*function getData(body,url, req){
-  console.log('getData: ' + url);
-  var obj = body;
-  switch (url){
-    case 'GetTournaments':
-      obj.queryFields = 'id buyIn goNext gameNameID';
-      console.log(body.length);
-    break;
-    case 'TournamentInfo':
-    console.log('TournamentInfo ' + body.length);
-    obj.query = {TournamentID:2};
-    obj.queryFields = 'id buyIn goNext gameNameID';
-    break;
-  }
-  return obj;
-}*/
-
-
 app.get('/', function(req, res){
   //var i=0;
   //io.emit('chat message', { hello: 'Gaga the great!' });
@@ -334,6 +248,8 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/sock.html');
 });
 
+
+
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
@@ -341,13 +257,70 @@ var server = app.listen(3000, function () {
   console.log('Example app listening at http://%s:%s', host, port);
 });
 
+var clients = [];
+
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
+  console.log('IO connection');
+  //socket.join('/111');
   socket.on('chat message', function(msg){
     console.log(msg);
     io.emit('chat message', msg);
   });
+  socket.on('event1', function(data){
+    /*console.log('io.on connection--> socket.on event1');
+    console.log(data);*/
+    SendToRoom('/111', 'azz', 'LALKI', socket);
+    //io.of('/111').emit('azz','LALKI');
+  });
 });
+var tmr2 = setTimeout(function(){
+  console.log(io.sockets.server.nsps['/111'].sockets);
+}, 11000);
+
+io.of('/111').on('connection', function(socket){
+  console.log('ololo222');
+  socket.on('event1', function(data){
+    console.log('ololo111');
+    console.log(data);
+  })
+})
+
+function SendToRoom( room, event, msg, socket){
+  io.of(room).emit(event, msg);
+}
+
+/*io.of('/111').on('connection', function() {
+  console.log("client connected");
+});*/
+
+/*app.post('/hello', function(req, res) {
+  io.of('/hello').emit('hello');
+});*/
+
+/*io.on('event1', function(data){
+  console.log('io.on event1');
+  console.log(data); 
+});*/
+
+/*var nsp = io.of('/111');
+nsp.on('connection', function(socket){
+  console.log('nsp connection');
+  console.log('someone connected TO 111');
+  socket.join('/111');
+  socket.join('111');
+  nsp.on('event1', function(data){
+    console.log(data);
+  });
+
+});*/
+
+
+
+/*tmr1 = setInterval(function(){
+  nsp.emit('azz', 'Gaga');
+}, 10000);*/
+
 
 /*io.on('connection', function (socket) {
   socket.emit('TournamentReg', { hello: 'world' });

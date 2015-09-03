@@ -150,6 +150,26 @@ var tournament1 = {
 		status: 		null,	
 		players: 		[]
 }
+var tournament4 = {
+	buyIn: 			100,
+	initFund: 		0,
+	gameNameID: 	GM_ABSTRACT_SYNC,
+
+	pricingType: 	PRICE_NO_EXTRA_FUND,
+
+	rounds: 		1,
+	goNext: 		[2,1],
+		places: 		[1],
+		Prizes: 		[180],
+		prizePools: 	[1],
+
+	comment: 		'Yo',
+	
+	playersCountStatus: COUNT_FIXED,///Fixed or float
+		startDate: 		null,
+		status: 		null,	
+		players: 		[]
+}
 
 
 /*
@@ -240,9 +260,9 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 /*sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
 sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
 
-//sender.sendRequest("ServeTournament", tournament1, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+//sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 
-for (i=1;i<5;++i){
+for (i=1;i<8;++i){
 	sender.sendRequest("RestartTournament", {tournamentID:i}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 }
 
