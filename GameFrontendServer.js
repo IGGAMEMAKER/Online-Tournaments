@@ -42,8 +42,11 @@ function ServeTournament (data, res){
 
 function StartTournament (data, res){
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
-	sender.sendRequest("StartGame", data, 
+	sender.expressSendRequest("StartGame", data, 
 		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer
+
+	/*sender.sendRequest("StartGame", data, 
+		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer*/
 }
 
 function HaveEnoughResourcesForTournament (data, res){
@@ -62,9 +65,11 @@ function ServeTournamentCallback( error, response, body, res) {
 function AnalyzeStructure(tournament, res){
 	var numberOfRounds = tournament['rounds'];
 	console.log("numberOfRounds= " + numberOfRounds);
-	
-	sender.sendRequest("ServeGames", tournament, 
+	sender.expressSendRequest("ServeGames", tournament, 
 		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
+
+	/*sender.sendRequest("ServeGames", tournament, 
+		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer*/
 }
 
 function FinishGame (data,res){

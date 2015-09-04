@@ -208,7 +208,7 @@ var repetitions = 3;
 
 
 var registerInTournamentsCounter=0;
-var timerId2 = setInterval(function() {
+/*var timerId2 = setInterval(function() {
   //prt();
   registerInTournamentsCounter++;
   //currentPlayer=1;
@@ -216,7 +216,7 @@ var timerId2 = setInterval(function() {
   console.log('Reg user '+ registerInTournamentsCounter + ' in tournamentID');
   sender.sendRequest("RegisterUserInTournament", getRegisterInTournaments(registerInTournamentsCounter, curTournAndGameID, 'crrToken'),//registerInTournaments[registerInTournamentsCounter]
   	'127.0.0.1', proc.getPort('FrontendServer'), null , sender.printer);//setVal);
-}, 50);
+}, 50);*/
 
 
 /*
@@ -231,7 +231,23 @@ var timerId3 = setInterval(function() {
   	'127.0.0.1', proc.getPort('FrontendServer'), null ,sender.printer);//setVal);
 }, 50);*/
 
+//sender.sendRequest('ServeGames', {tournamentID:1, blah:'blah blah'}, '127.0.0.1', proc.getPort('GameServer'), null, sender.printer);
 
+var request = require('request');
+
+var myJSONObject = {tournamentID:1, blah:'blah blah'};
+
+sender.expressSendRequest('ServeGames', myJSONObject, '127.0.0.1', proc.getPort('GameServer'), null, sender.printer);
+
+/*request({
+    url: "http://127.0.0.1:5009/ServeGames",
+    method: "POST",
+    json: true,   // <--Very important!!!
+    body: myJSONObject
+}, function (error, response, body){
+	if (error){console.log(error); }
+    console.log(response.body);
+});*/
 
 //sendRequest("signIn", options);
 //sendRequest("", options);

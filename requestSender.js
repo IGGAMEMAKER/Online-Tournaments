@@ -2,7 +2,7 @@ var http = require('http');
 var request = require('request');
 
 this.sendRequest = sendRequest;
-//this.sendRequest1 = sendRequest1;
+this.expressSendRequest = expressSendRequest;
 this.printer = printer;
 this.Answer = Answer;
 this.Proxy = Proxy;
@@ -59,16 +59,29 @@ function initRequest(urlPath, curData, host, port){
 	sendRequest(urlPath, curData, host, port, null, printer);
 }
 
+function expressSendRequest(urlPath, curData, host, port, res, responseCallBack){
+	request({
+		url: "http://" + host+':'+port+'/'+urlPath,
+	    //url: "http://127.0.0.1:5009/ServeGames",
+	    method: "POST",
+	    json: true,   // <--Very important!!!
+	    body: curData
+	}, Magic(res,responseCallBack));
+
+}
+
 function sendRequest(urlPath, curData, host, port, res, responseCallBack){
 	//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
 	//We analyze this response and give an answer by the object 'res' in method 'method'
-
+	/*console.log('Sending :');
+	console.log(curData);*/
 
 	//application/x-www-form-urlencoded
 	//host = "localhost";
 	var url = "http://" + host+':'+port+'/'+urlPath;
+	//console.log(url);
 	//url1 = "http://" + "127.0.0.1:5008/ServeTournament";
 	/*console.log("*****");
 	console.log("reqSender: Trying to send...");

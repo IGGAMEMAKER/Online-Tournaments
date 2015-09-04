@@ -15,16 +15,51 @@ var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE O
 var curGameNameID = 1;
 
 var funcArray = {};
-funcArray["/SetGame"] = SetGame;
+/*funcArray["/SetGame"] = SetGame;
 funcArray["/StartGame"] = StartGame;
 funcArray["/ServeGames"] = ServeGames;
 
-funcArray["/GetGames"] = GetGames;
+funcArray["/GetGames"] = GetGames;*/
 
-/*app.get('/SetGame', SetGame);
-app.get('/StartGame', StartGame);
-app.post('/ServeGames', ServeGames);
-app.get('/GetGames', GetGames);*/
+
+
+//var fs = require('fs');
+
+
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+app.all('/SetGame', SetGame);
+app.all('/StartGame', StartGame);
+app.all('/ServeGames', ServeGames);
+app.all('/GetGames', GetGames);
+
+//var outputFilename = 'RQW.txt';
+
+	/*fs.writeFile(outputFilename, JSON.stringify(req), function(err) {
+	    if(err) {
+	      console.log(err);
+	    } else {
+	      console.log("JSON saved to " + outputFilename);
+	    }
+	}); */
+
+/*app.all('/ServeGames', function (req, res){
+	console.log('ServeGames app!!!!');
+	//console.log(req);
+	if (req.body){ 
+		console.log('Body');
+		console.log(req.body); }
+	if (req.query){
+	console.log(req.query);}
+	
+	res.end('Served');
+});*/
+
+//app.all('/')
 
 if (gameServerType ==='Sync'){
 	app.get('/Move', Move);
@@ -50,19 +85,20 @@ nsp.emit('hi', 'everyone!');*/
 var games = {
 	count:0,
 }
-console.log(JSON.stringify(games));
+
+//console.log(JSON.stringify(games));
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 
-function GetGames ( data,res){
-	//var data = req.body;
+function GetGames ( req,res){
+	var data = req.body;
 	sender.Answer(res, games);
 }
 
-function SetGame (data, res){
-	//var data = req.body;
+function SetGame (req, res){
+	var data = req.body;
 	console.log("SetGame ");
 	console.log(data);
 	var gameID = data['tournamentID'];
@@ -73,10 +109,12 @@ function SetGame (data, res){
 	res.end("Game " + gameID + " Is Set");
 }
 
-function ServeGames (data, res){
+console.log('pp Server starts!!');
+
+function ServeGames (req, res){
 	console.log('PP Server serves games');
 	//console.log(req);
-	//var data = req.body;
+	var data = req.body;
 	console.log("ServeGame ")
 	console.log(data);
 	var tournamentID = data['tournamentID'];
@@ -115,8 +153,8 @@ function initGame(ID){
 	console.log(games[ID]);
 }
 
-function Move (data, res){
-	//var data = req.body;
+function Move (req, res){
+	var data = req.body;
 	console.log("************************");
 	console.log("Movement:");
 	var userName = data['login'];
@@ -183,8 +221,8 @@ function Answer(res, code){
 
 
 
-function StartGame (data, res){
-	//var data = req.body;
+function StartGame (req, res){
+	var data = req.body;
 	console.log("start game: " + JSON.stringify(data));
 	var ID = data['tournamentID'];
 	if (!games[ID]){
@@ -282,16 +320,16 @@ function CheckForTheWinner(tournamentID, gameID, playerID, res) {
 		//res.end("no Winner");
 	}
 }
-/*var server = app.listen(5009, function () {
+var server = app.listen(5009, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
-});*/
+});
 
 var clients = [];
 
-var io = require('socket.io')(server1);
+var io = require('socket.io')(server);
 io.on('connection', function(socket){
   console.log('IO connection');
   //socket.join('/111');
@@ -322,6 +360,7 @@ function SendToRoom( room, event, msg, socket){
 	console.log('SendToRoom:' + room + ' ' + event + ' '+ JSON.stringify(msg));
 	io.of(room).emit(event, msg);
 }
-var server = require('./script');
+
+//var server = require('./script');
 //queryProcessor.getGamePort(curGameNameID)
-server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
+//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
