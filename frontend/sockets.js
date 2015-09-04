@@ -12,13 +12,17 @@ socket.on('chat message', function(msg){
 });
 socket.on('StartTournament', function(msg){
   alert(JSON.stringify(msg));
-  
+  alert('StartTournament socket works!!');
   var tournamentID = msg['tournamentID'];
   var gameURL = 'PingPong';
-  var text = '<button href="Game"> Play in Tournament</button>';
+  var text = '<button onclick="startGame()"> Play in Tournament</button>';
   $('#news').append(text);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
+
+function startGame(){
+  window.open('/Game');
+}
 
 function drawHrefButton (){
 

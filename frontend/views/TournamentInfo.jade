@@ -35,6 +35,7 @@ html
 					switch(data){
 						case 'OK': txt='You registered successfully!!'; break;
 						case 'fail': txt='Register failed :(('; break;
+						default : txt='Sorry, you need to login first :(('; break;
 					}
 					alert(txt);
 					console.log(msg);
@@ -43,11 +44,9 @@ html
 			}
 	body
 		p!= JSON.stringify(message)
-		- if (session.login && session.login.length>0) {
-			p!= 'Hello, ' + session.login
-			a(href = "Logout") Logout
-		- }
+		include tAuth
 		- //onclick="func('Alvaro_Fernandes',4)"		
+		h1!= 'Tournament : ' + message[0].tournamentID
 		table
 			tr
 				td.
@@ -73,10 +72,14 @@ html
 					Tournament Info
 		button(id="reg" style="width:100px;height:20px;").
 			REGISTER
+		br
+		br
+		a( href='Tournaments').
+			Back To tournaments
 		script.
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
-			alert('login:' + bbb);
+			//alert('login:' + bbb);
 			var btn = document.getElementById("reg");
 			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
 		#news

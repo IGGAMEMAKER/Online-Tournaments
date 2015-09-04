@@ -10,15 +10,32 @@ socket.on('chat message', function(msg){
   alert(JSON.stringify(msg));
   //$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+var currentTID=0;
+var curLogins=[];
+
 socket.on('StartTournament', function(msg){
-  alert(JSON.stringify(msg));
-  
+  //alert('StartTournament with ID: ' + JSON.stringify(msg));
+  //alert('StartTournament socket works!!');
   var tournamentID = msg['tournamentID'];
+  alert('StartTournament with ID: ' + tournamentID);
+  console.log('Jugadores:' + msg.logins);
+  curLogins = msg.logins;
+  
+  
+  
+  currentTID = tournamentID;
+  console.log('tID = ' + currentTID);
   var gameURL = 'PingPong';
-  var text = '<button href="Game"> Play in Tournament</button>';
+  var text = '<button onclick="startGame()" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
+  //startGame();
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
+
+function startGame(gameURL){
+  var a = window.open(gameURL?gameURL:'/Game?tournamentID='+currentTID);
+  a.logins= curLogins;
+}
 
 function drawHrefButton (){
 

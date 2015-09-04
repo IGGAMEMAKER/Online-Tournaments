@@ -3,7 +3,10 @@ html
 		title!= title
 	body
 		- //for (var item in message){
-		p!= message.length
+		//p!= message.length
+		include tAuth
+		br
+		br
 		table
 			tr
 				td.
@@ -31,5 +34,5 @@ html
 							Tournament Info
 				//p!= message
 			- }}
-			
+
 

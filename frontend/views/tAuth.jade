@@ -1,8 +1,11 @@
--//p!= 'PARTITION ADDED'
-- if (session.login && session.login.length>0) {
+//p!= 'PARTITION ADDED'
+if (session.login && session.login.length>0)
 	p!= 'Hello, ' + session.login
 	a(href = "Logout") Logout
-- }
+else
+	p!= 'You need to register if you want to play in tournaments'
+	a(href = "Login") Login
+
 - var ab = JSON.stringify(session);
 - console.log(session);
 - console.log('session :' + ab);

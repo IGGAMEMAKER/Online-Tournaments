@@ -3,7 +3,11 @@ html
 		title!= title
 	body
 		- //for (var item in message){
-		p!= message.length
+		//p!= message.length
+		include tAuth
+		br
+		br
+		h1 List of Tournaments
 		table
 			tr
 				td.
@@ -31,8 +35,5 @@ html
 							Tournament Info
 				//p!= message
 			- }}
-		- if (session.login && session.login.length>0) {
-			p!= 'Hello, ' + session.login
-			a(href = "Logout") Logout
-		- }
+
 

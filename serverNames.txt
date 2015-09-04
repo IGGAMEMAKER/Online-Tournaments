@@ -4,6 +4,6 @@ FrontendServer.js
 BalanceServer.js
 TournamentServer.js
 GameFrontendServer.js
-GameServer.js
+PingPongServer.js
 TournamentManager.js
 initializer.js

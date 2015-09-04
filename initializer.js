@@ -260,11 +260,24 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 /*sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
 sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
 
-//sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+/*sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
 
-for (i=1;i<8;++i){
-	sender.sendRequest("RestartTournament", {tournamentID:i}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-}
+var tournCounter=8;
+
+tournamentAddingTimer = setInterval(function(){
+	if (tournCounter>0){
+			//sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/			
+			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+			tournCounter--;
+	}
+	else{
+		clearInterval(tournamentAddingTimer);
+	}
+}, 200);
+
+/*for (i=1;i<8;++i){
+}*/
 
 /*sender.sendRequest("RestartTournament", {tournamentID:1}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
 

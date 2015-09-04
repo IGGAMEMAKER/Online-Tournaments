@@ -39,8 +39,9 @@ app.use(function(req,res,next){
   secret: '1234567890QWERTY'
 }));*/
 
-app.set('views', './views');
-app.set('views', './games/PingPong');
+/*app.set('views', './views');
+app.set('views', './games/PingPong');*/
+app.set('views', ['./views', './games/PingPong']);
 //app.set('games/PingPong', './views');
 
 app.set('view engine', 'jade');
@@ -58,7 +59,9 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.get('/Game', function (req, res){
   console.log(__dirname);
-  res.render('game', {tournamentID:111} );
+  var tID = req.query.tournamentID;
+  console.log(req.query.tournamentID);
+  res.render('game', {tournamentID:tID?tID:111} );
   //res.render('/games/PingPong/game', {tournamentID:111} );
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })
@@ -165,7 +168,7 @@ app.all('/StartTournament', function (req, res){
   console.log(req.url);
   console.log('Site starts tournament');
   console.log(req.body);
-  io.emit('StartTournament', 'StartTournament'+ req.body.tournamentID);//+req.body.tournamentID
+  io.emit('StartTournament', {tournamentID : req.body.tournamentID, logins : req.body.logins});//+req.body.tournamentID
   res.end();
 });
 

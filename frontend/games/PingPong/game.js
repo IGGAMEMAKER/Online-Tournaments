@@ -18,8 +18,8 @@ window.cancelRequestAnimFrame = ( function() {
 		window.msCancelRequestAnimationFrame        ||
 		clearTimeout
 } )();
-alert('This instance!');
-console.log('This instance!');
+/*alert('This instance!');
+console.log('This instance!');*/
 // Initialize canvas and required variables
 var canvas = document.getElementById("canvas"),
 		ctx = canvas.getContext("2d"), // Create canvas context
@@ -114,26 +114,54 @@ startBtn = {
 		ctx.fillText("Start", W/2, H/2 );
 	}
 };
+alert(window.logins);
+var logins = window.logins;
+
 //var tournamentID = "#{tournamentID}";
 console.log('AZAZA ' + tournamentID);
-//alert('AZAZA ' + tournamentID);
+alert('AZAZA ' + tournamentID);
 var room = io('/'+tournamentID);
 var socket = io();
 socket.emit('event1', {data:'tratata'});
+//var login;
+var opponentLogin;
 
-
-console.log(io.sockets);
-
+//console.log(io.sockets);
 room.on('azz', function(msg){
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+
+room.on('startGame', function(msg){
+	printText('startGame in '+ msg['tick'] + ' seconds');
+	if (msg['tick']==0){
+		Redraw();
+	}
+	//alert(msg);
+	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
+});
+
+room.on('update', function(msg){
+	/*var opponentX = msg['opponentX'];
+	var sBallX = msg['bX'];
+	var sBallY = msg['bY'];
+	ball.X = sBallX;
+	ball.Y = sBallY;*/
+});
+
+room.on('statusChange', function(msg){
+	var myScore = msg[login];
+	var opponentScore = msg[opponentLogin];
+	var gameStatus = msg['gameStatus'];
+});
+
+
 /*room.on('azz', function(msg){
 	alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });*/
 
-console.log(room);
+//console.log(room);
 
 
 /*io.on('connection', function(socket){
@@ -142,6 +170,31 @@ console.log(room);
     io.emit('chat message', msg);
   });
 });*/
+
+timer = setInterval(function (){
+	sendGameData(mouse);
+	/*$.ajax({
+		url: 'Move',
+		method: 'POST',
+		data: mouse,
+		success: function( data ) {
+			var msg = JSON.stringify(data);
+			//alert(msg);
+			console.log(msg);
+		}});*/
+}, 100);
+
+function sendGameData(data1, url){
+	$.ajax({
+	url: url?url:'Move',
+	method: 'POST',
+	data: data1,
+	success: function( data ) {
+		var msg = JSON.stringify(data);
+		//alert(msg);
+		console.log(msg);
+	}});
+}
 
 /*
 timer = setInterval(function (){
@@ -157,14 +210,21 @@ timer = setInterval(function (){
 }, 10050);
 */
 
-var tmr1 = setInterval(function(){
+/*var tmr1 = setInterval(function(){
 	console.log('tmr1');
 	//room.emit('event1', 'TIMER message');
 	socket.emit('event1', {data:'tratata'});
 	//io.to('/'+tournamentID).emit('event1', { dat1: 'datatata'});
 	//room.emit('/111' ,'AZAZA ROOOOOOOOOM');
-}, 3000);
+}, 3000);*/
 
+function printText(text, startX, startY, colour) {
+	ctx.fillStlye = colour?colour:"white";
+	ctx.font = "16px Arial, sans-serif";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText(text, startX?startX:50, startY?startY:50 );
+}
 
 // Restart Button object
 restartBtn = {
@@ -237,6 +297,14 @@ function update() {
 	// Update scores
 	updateScore(); 
 	
+	/*// Move the paddles on mouse move
+	if(mouse.x && mouse.y) {
+		for(var i = 1; i < paddles.length; i++) {
+			p = paddles[i];
+			p.x = mouse.x - p.w/2;
+		}		
+	}*/
+	//DUBLICATE
 	// Move the paddles on mouse move
 	if(mouse.x && mouse.y) {
 		for(var i = 1; i < paddles.length; i++) {
@@ -244,7 +312,7 @@ function update() {
 			p.x = mouse.x - p.w/2;
 		}		
 	}
-	
+
 	// Move the ball
 	ball.x += ball.vx;
 	ball.y += ball.vy;
@@ -309,6 +377,7 @@ function update() {
 	// reset flag
 	flag = 0;
 }
+
 
 
 
@@ -392,6 +461,23 @@ function updateScore() {
 	ctx.fillText("Score: " + points, 20, 20 );
 }
 
+function nextRound(){
+	ctx.fillStlye = "white";
+	ctx.font = "20px Arial, sans-serif";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillText("Game Over - You scored "+points+" points!", W/2, H/2 + 25 );
+	
+	// Stop the Animation
+	cancelRequestAnimFrame(init);
+	
+	// Set the over flag
+	over = 1;
+	
+	// Show the restart button
+	restartBtn.draw();
+}
+
 // Function to run when the game overs
 function gameOver() {
 	ctx.fillStlye = "white";
@@ -450,6 +536,18 @@ function btnClick(e) {
 			over = 0;
 		}
 	}
+}
+
+function Redraw(){
+	ball.x = 20;
+			ball.y = 20;
+			points = 0;
+			ball.vx = 4;
+			ball.vy = 8;
+			animloop();
+			
+			over = 0;
+			startBtn = {};
 }
 
 // Show the start screen
