@@ -263,7 +263,7 @@ sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('Front
 /*sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
 sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
 
-var tournCounter=8;
+var tournCounter=5;
 
 tournamentAddingTimer = setInterval(function(){
 	if (tournCounter>0){

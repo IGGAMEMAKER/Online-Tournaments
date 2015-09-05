@@ -114,14 +114,15 @@ startBtn = {
 		ctx.fillText("Start", W/2, H/2 );
 	}
 };
-alert(window.logins);
+//alert(window.logins);
 var logins = window.logins;
 
 //var tournamentID = "#{tournamentID}";
 console.log('AZAZA ' + tournamentID);
-alert('AZAZA ' + tournamentID);
-var room = io('/'+tournamentID);
+//alert('AZAZA ' + tournamentID);
+var room = io('http://localhost:5009' + '/'+tournamentID);
 var socket = io();
+
 socket.emit('event1', {data:'tratata'});
 //var login;
 var opponentLogin;
@@ -131,11 +132,23 @@ room.on('azz', function(msg){
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+var drawObjects = {};
+
+//room.on('')
 
 room.on('startGame', function(msg){
-	printText('startGame in '+ msg['tick'] + ' seconds');
-	if (msg['tick']==0){
-		Redraw();
+	//alert('alert, MOTHERFUCKER!!' + JSON.stringify(msg));
+	var ticks = msg['ticks'];
+	
+	console.log(ticks);
+	if (ticks==0){
+		//Redraw();
+		//animloop();
+		myStartGame();
+	}
+	else{
+		printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
+		draw();
 	}
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
@@ -162,7 +175,10 @@ room.on('statusChange', function(msg){
 });*/
 
 //console.log(room);
-
+function myStartGame(){
+	alert('MY START Game!!!');
+	animloop();
+}
 
 /*io.on('connection', function(socket){
   socket.on('chat message', function(msg){
@@ -171,22 +187,13 @@ room.on('statusChange', function(msg){
   });
 });*/
 
-timer = setInterval(function (){
+/*timer = setInterval(function (){
 	sendGameData(mouse);
-	/*$.ajax({
-		url: 'Move',
-		method: 'POST',
-		data: mouse,
-		success: function( data ) {
-			var msg = JSON.stringify(data);
-			//alert(msg);
-			console.log(msg);
-		}});*/
-}, 100);
+}, 500);*/
 
 function sendGameData(data1, url){
 	$.ajax({
-	url: url?url:'Move',
+	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
 	data: data1,
 	success: function( data ) {
@@ -218,12 +225,24 @@ timer = setInterval(function (){
 	//room.emit('/111' ,'AZAZA ROOOOOOOOOM');
 }, 3000);*/
 
-function printText(text, startX, startY, colour) {
-	ctx.fillStlye = colour?colour:"white";
-	ctx.font = "16px Arial, sans-serif";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText(text, startX?startX:50, startY?startY:50 );
+function printText(name, text, startX, startY, colour) {
+	drawObjects[name] = {text:text, startX: startX, startY: startY, colour:colour};
+	texts.push({text:text, startX: startX, startY: startY, colour:colour});
+}
+
+function drawText(obj){
+	if (obj){
+		var colour = obj.colour;
+		var startX = obj.startX;
+		var startY = obj.startY;
+		var text = obj.text;
+
+		ctx.fillStlye = colour?colour:"white";
+		ctx.font = "16px Arial, sans-serif";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillText(text, startX?startX:50, startY?startY:50 );
+	}
 }
 
 // Restart Button object
@@ -256,6 +275,7 @@ function createParticles(x, y, m) {
 	this.vx = -1.5 + Math.random()*3;
 	this.vy = m * Math.random()*1.5;
 }
+var jjj=0;
 
 // Draw everything on canvas
 function draw() {
@@ -266,11 +286,33 @@ function draw() {
 		ctx.fillStyle = "white";
 		ctx.fillRect(p.x, p.y, p.w, p.h);
 	}
-	
+	for (var index in drawObjects){
+		drawText(drawObjects[index]);
+	}
+	/*for (var i = texts.length - 1; i >= 0; i--) {
+		drawText(texts[i]);
+	};*/
 	ball.draw();
 	update();
 }
+var texts = [];
 
+printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
+printText('user1' , logins[0], 20, 50+2*20);
+printText('user2' , logins[1], 20, 50+3*20);
+
+//animloop();
+/*var tmr0 = setInterval(function(){
+	//printText('Gaga Campeon ')
+	//alert(1);
+	
+	//printText('Gaga Campeon ' + jjj++, 20, 50+jjj*20);
+	draw();
+}, 2500);*/
+
+function clearTexts(){
+	texts = [];
+}
 // Function to increase speed after every 5 points
 function increaseSpd() {
 	if(points % 4 == 0) {

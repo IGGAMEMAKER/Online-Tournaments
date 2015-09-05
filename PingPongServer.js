@@ -124,7 +124,7 @@ function ServeGames (req, res){
 	//+ data + 
 	games[gameID]= data;
 	initGame(gameID);
-	console.log(games);
+	//console.log(games);
 
 	res.write("serving games");
 	//res.end("serving games");
@@ -150,7 +150,7 @@ function initGame(ID){
 	/*for (i=0;i<games[ID].players.count;++i){
 		games[ID].players[i]=0;
 	}*/
-	console.log(games[ID]);
+	//console.log(games[ID]);
 }
 
 function Move (req, res){
@@ -181,9 +181,9 @@ function Move (req, res){
 
 		if (PlayerTurn(gameID, userName) && playerExists(gameID, userName)) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
 			console.log('I am here ' + JSON.stringify(curGame.players));
-			curGame.scores[userName]+= pointsAdd;
+			//curGame.scores[userName]+= pointsAdd;
 			console.log("Player " + userName + " has " + curGame.scores[userName] + " points");
-			SwitchPlayer(curGame);
+			//SwitchPlayer(curGame);
 		}
 		else{
 			console.log("Player " + userName + 
@@ -227,7 +227,7 @@ function StartGame (req, res){
 	var ID = data['tournamentID'];
 	if (!games[ID]){
 		var message = 'Cannot find tournament with ID='+ ID;
-		console.log(games);
+		//console.log(games);
 		console.log(message);
 		sender.Answer(res, {result:'fail', message:message });
 	}
@@ -250,25 +250,33 @@ function StartGame (req, res){
 			//games[ID].players[i++]={playerID:playerID , score:0 };
 		}
 		games[ID].tick= STANDARD_PREPARE_TICK_COUNT;
-		games[ID].timer = setInterval(prepare(ID), 1000);
+		//oneTournID = ID;
+		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
 		games[ID].userIDs = userIDs;
-		games[ID].socketRoom = io.of('/'+ID);
-
+		//games[ID].socketRoom = io.of('/'+ID);
+		console.log('Players');
 		console.log(games[ID].players);
+
 		sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+		console.log('Answered');
 	}
 	//res.end();
 }
+var oneTournID;
 function prepare(gameID){
 	if (games[gameID].tick>0){
+		console.log(gameID);
 		games[gameID].tick--;
-		SendToRoom('/'+gameID, 'startGame', games[gameID].tick);
+		SendToRoom('/'+gameID, 'startGame', {ticks:games[gameID].tick} );
+		//SendToRoom('/'+oneTournID, 'startGame', {ticks:games[oneTournID].tick} );
 
 		//games[gameID].socketRoom.emit('');
 	}
 	else{
+		console.log('Trying to stop timer');
 		clearInterval(games[gameID].timer);
+		console.log('Stopped timer');
 		//games[gameID].timer = setInterval(update(gameID), UPDATE_TIME);
 	}
 }
@@ -356,9 +364,11 @@ io.on('connection', function(socket){
   })
 })*/
 
-function SendToRoom( room, event, msg, socket){
-	console.log('SendToRoom:' + room + ' ' + event + ' '+ JSON.stringify(msg));
-	io.of(room).emit(event, msg);
+function SendToRoom( room, event1, msg, socket){
+	console.log('SendToRoom:' + room + ' ' + event1 + ' ');
+	//console.log('Message:' + JSON.stringify(msg));
+	io.of(room).emit(event1, msg);
+	//console.log('Emitted');
 }
 
 //var server = require('./script');

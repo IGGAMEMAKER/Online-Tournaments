@@ -1,4 +1,4 @@
-alert('Sockets included');
+//alert('Sockets included');
 var socket = io();
 /*$('form').submit(function(){
   socket.emit('chat message', $('#m').val());
@@ -20,15 +20,15 @@ socket.on('StartTournament', function(msg){
   alert('StartTournament with ID: ' + tournamentID);
   console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
-  
-  
-  
+
+
+
   currentTID = tournamentID;
   console.log('tID = ' + currentTID);
   var gameURL = 'PingPong';
   var text = '<button onclick="startGame()" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
-  //startGame();
+  startGame();
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
 
@@ -36,11 +36,6 @@ function startGame(gameURL){
   var a = window.open(gameURL?gameURL:'/Game?tournamentID='+currentTID);
   a.logins= curLogins;
 }
-
-function drawHrefButton (){
-
-}
-
 
 /* CLIENT SIDE INFO:
   Login Password
