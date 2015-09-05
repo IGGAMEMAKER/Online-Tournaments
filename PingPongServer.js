@@ -66,8 +66,8 @@ app.all('/GetGames', GetGames);
 }*/
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 15;
-const UPDATE_TIME = 1000/50; //50 times per second = 20ms
+const STANDARD_PREPARE_TICK_COUNT = 5;
+const UPDATE_TIME = 1000*20/50; //50 times per second = 20ms
 const PREPARED = "PREPARED";
 
 
@@ -153,7 +153,26 @@ function initGame(ID){
 	//console.log(games[ID]);
 }
 
-function Move (req, res){
+function Move( tournamentID, gameID, movement, userName){
+	if (tournamentIsValid(tournamentID, gameID))
+	{
+		if (playerExists(gameID, userName)) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
+			//console.log('I am here ' + JSON.stringify(curGame.players));
+			//curGame.scores[userName]+= pointsAdd;
+			//console.log("Player " + userName + " has " + curGame.scores[userName] + " points");
+			//SwitchPlayer(curGame);
+			games[gameID].gameDatas[getGID(gameID,userName)].padX = movement.X;
+			//games[gameID].gameDatas[getGID(gameID,userName)].padY = movement.X;
+		}
+		else{
+			console.log("Player " + userName + 
+				" Not your turn! Player " + curGame.curPlayerID + " must play");
+		}
+		//CheckForTheWinner(tournamentID, gameID, userName);
+	}
+}
+
+function Move1 (req, res){
 	var data = req.body;
 	console.log("************************");
 	console.log("Movement:");
@@ -219,7 +238,9 @@ function Answer(res, code){
 	console.log("......................");//, write
 }
 
-
+function mod2(val){
+	return val%2==0?'top':'bottom';
+}
 
 function StartGame (req, res){
 	var data = req.body;
@@ -237,6 +258,12 @@ function StartGame (req, res){
 		games[ID].players.UIDtoGID = {};
 
 		games[ID].scores = {};
+
+		//***********
+		games[ID].gameDatas = {};
+		//***********
+
+
 		var i=1;
 		var userIDs = data['logins'];
 		//console.log(userIDs);
@@ -248,8 +275,13 @@ function StartGame (req, res){
 			//games[ID].players.push(playerID);// = playerID;
 			//games[ID].scores.push(0);
 			//games[ID].players[i++]={playerID:playerID , score:0 };
+
+			//***********
+			games[ID].gameDatas[playerID] = { padX:50, padY: mod2(playerID), score:0 };
+			games[ID].ball = {x:15, y:15};
+			//***********
 		}
-		games[ID].tick= STANDARD_PREPARE_TICK_COUNT;
+		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
 		//oneTournID = ID;
 		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
@@ -281,11 +313,15 @@ function prepare(gameID){
 	}
 }
 function update(gameID){
-	
-	SendToRoom('/'+gameID, 'update', {opponentX:10, bX:10, bY:60});
+
+	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:10, bY:60, gameDatas:games[gameID].gameDatas});
+	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:games[gameID].ball.x, bY:games[gameID].ball.y, gameDatas:games[gameID].gameDatas });
+	SendToRoom('/'+gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
 }
 
-
+/*function getOpponentGID(gameID, userName, count){
+	if (count)
+}*/
 
 function getUID(gameID, GID){//GID= GamerID, UID= UserID
 	return games[gameID].userIDs[GID];
@@ -350,6 +386,14 @@ io.on('connection', function(socket){
     //console.log('io.on connection--> socket.on event1'); console.log(data);
     SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
+  });
+  socket.on('movement', function(data){
+  	var tournamentID = data.tournamentID;
+  	var gameID = data.gameID;
+  	var movement = data.movement;
+  	var userLogin = data.login;
+
+  	Move(tournamentID, gameID, movement, userLogin);
   });
 });
 

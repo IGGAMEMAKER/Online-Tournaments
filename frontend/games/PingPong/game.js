@@ -6,7 +6,7 @@ window.requestAnimFrame = (function(){
 		window.oRequestAnimationFrame      || 
 		window.msRequestAnimationFrame     ||  
 		function( callback ){
-			return window.setTimeout(callback, 1000 / 60);
+			return window.setTimeout(callback, 1000 / 60 / 10);
 		};
 })();
 
@@ -119,6 +119,14 @@ startBtn = {
 //alert(window.logins);
 var logins = window.logins;
 
+const STATUS_WAITING=1;
+const STATUS_RUNNING=2;
+const STATUS_RESTART_ROUND=3;
+const STATUS_FINISHING=4;
+
+var gameStatus = STATUS_WAITING;
+
+
 //var tournamentID = "#{tournamentID}";
 console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
@@ -145,31 +153,29 @@ room.on('startGame', function(msg){
 	
 	console.log(ticks);
 	if (ticks==0){
-		//Redraw();
-		//animloop();
 		starter=1;
-		
 	}
 	else{
 		printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
-		draw();
+		Draw();
 	}
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+var gameDatas;// = [];
 
 room.on('update', function(msg){
 	if (starter==1){ starter = 2; myStartGame();}
 	//alert(JSON.stringify(msg));
 	var opponentX = msg['opponentX'];
-	var sBallX = msg['bX'];
-	var sBallY = msg['bY'];
+	var sBallX = (msg['ball']).x;
+	var sBallY = (msg['ball']).y;
 	ball.x = sBallX*canvas.width / 100;
 	ball.y = sBallY*canvas.height / 100;
+
+	gameDatas = msg.gameDatas;
 	//console.log(ball);
 	printText('coordinates', JSON.stringify(msg), 400, 175);
-	animloop();
-	//draw();
 });
 
 room.on('statusChange', function(msg){
@@ -177,6 +183,7 @@ room.on('statusChange', function(msg){
 	var opponentScore = msg[opponentLogin];
 	var gameStatus = msg['gameStatus'];
 });
+
 function deleteText(name){
 	delete drawObjects[name];
 }
@@ -195,10 +202,10 @@ function getNormalizedCoords(mouseCoords){
 function myStartGame(){
 	deleteText('startAfter');
 	//alert('MY START Game!!!');
-	animloop();
-	timer = setInterval(function (){
+	//animloop();
+	/*timer = setInterval(function (){
 		sendGameData(getNormalizedCoords(mouse));
-	}, 500);
+	}, 500);*/
 }
 
 /*io.on('connection', function(socket){
@@ -211,7 +218,7 @@ function myStartGame(){
 /**/
 
 function sendGameData(data1, url){
-	socket.emit('move', data1);
+	socket.emit('movement', {movement : data1, tournamentID:tournamentID, gameID:tournamentID, login:login } );
 	/*$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
@@ -299,15 +306,85 @@ function createParticles(x, y, m) {
 }
 var jjj=0;
 
-// Draw everything on canvas
-function draw() {
-	paintCanvas();
-	for(var i = 0; i < paddles.length; i++) {
+/*function drPad(id){
+	p = paddles[i];
+		//console.log('length=' + paddles.length);
+		if (gameDatas){
+			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;
+			if (gameDatas[i-1]){
+				var a = gameDatas[i-1];
+				//console.log(JSON.stringify(a));
+				var padX = a.padX;
+				//console.log('i: ' + i + ' ' + padX);
+
+				p.x = padX * canvas.width/100  - p.w/2;//(gameDatas[i])['padX']
+			}
+			else{
+				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);
+			}
+		}
+		//p.y = gameDatas[i].padY =='top'? 0:500;
+		//ctx.fillStyle = 'red';
+		//if (i==0) 
+		ctx.fillStyle = "white";// (i==0?"white":"red");
+		if (i==0) { printText('AZAZA', p.x, 400, 300); }
+		ctx.fillRect(p.x, p.y, p.w, p.h);
+}*/
+
+function drawPaddles(){
+	/*for(var i = 0; i < paddles.length; i++) {
 		p = paddles[i];
 		
 		ctx.fillStyle = "white";
 		ctx.fillRect(p.x, p.y, p.w, p.h);
+	}*/
+
+	//console.log(JSON.stringify(paddles));
+	
+	for(var i = 1; i < paddles.length; i++) {
+		//alert('i(' + i + ')' + JSON.stringify(paddles[i]));
+		
+		p = paddles[i];
+		printText(i, JSON.stringify(p));
+		//console.log('length=' + paddles.length);
+		if (gameDatas){
+			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;
+			if (gameDatas[i-1]){
+				var a = gameDatas[i-1];
+				//console.log(JSON.stringify(a));
+				var padX = a.padX;
+				//console.log('i: ' + i + ' ' + padX);
+
+				p.x = padX * canvas.width/100  - p.w/2;//(gameDatas[i])['padX']
+			}
+			else{
+				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);
+			}
+		}
+		//p.y = gameDatas[i].padY =='top'? 0:500;
+		//ctx.fillStyle = 'red';
+		//if (i==0) ctx.fillStyle = "white";// (i==0?"white":"red");
+		ctx.fillStyle = "white";// (i==0?"white":"red");
+		if (i==0) { printText('AZAZA', p.x, 400, 300); }
+		ctx.fillRect(p.x, p.y, p.w, p.h);
+
+		//ctx.fillRect(p.x, p.y, p.w, p.h);
 	}
+}
+
+// Draw everything on canvas
+function Draw() {
+	/*switch(gameStatus){
+		case STATUS_WAITING:
+
+		break;
+		case STATUS_RUNNING
+	}*/
+
+	paintCanvas();
+
+	drawPaddles();
+	
 	for (var index in drawObjects){
 		drawText(drawObjects[index]);
 	}
@@ -323,13 +400,12 @@ printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
 printText('user1' , logins[0], 20, 50+2*20);
 printText('user2' , logins[1], 20, 50+3*20);
 
-//animloop();
 /*var tmr0 = setInterval(function(){
 	//printText('Gaga Campeon ')
 	//alert(1);
 	
 	//printText('Gaga Campeon ' + jjj++, 20, 50+jjj*20);
-	draw();
+	Draw();
 }, 2500);*/
 
 function clearTexts(){
@@ -349,7 +425,7 @@ function increaseSpd() {
 function trackPosition(e) {
 	mouse.x = e.pageX;
 	mouse.y = e.pageY;
-	console.log('Mouse move : trackPosition function');
+	//console.log('Mouse move : trackPosition function');
 }
 
 
@@ -563,12 +639,12 @@ function gameOver() {
 // Function for running the whole animation
 function animloop() {
 	init = requestAnimFrame(animloop);
-	draw();
+	Draw();
 }
 
 // Function to execute at startup
 function startScreen() {
-	draw();
+	Draw();
 	startBtn.draw();
 }
 
@@ -616,3 +692,4 @@ function Redraw(){
 
 // Show the start screen
 startScreen();
+animloop();

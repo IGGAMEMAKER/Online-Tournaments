@@ -20,7 +20,7 @@ socket.on('StartTournament', function(msg){
   alert('StartTournament with ID: ' + tournamentID);
   console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
-
+  
 
 
   currentTID = tournamentID;
