@@ -60,6 +60,8 @@ function paintCanvas() {
 
 var playerPaddle= 'bottom';
 
+
+
 // Function for creating paddles
 function Paddle(pos) {
 	// Height and width
@@ -132,10 +134,11 @@ room.on('azz', function(msg){
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+
 var drawObjects = {};
 
 //room.on('')
-
+var starter=0;
 room.on('startGame', function(msg){
 	//alert('alert, MOTHERFUCKER!!' + JSON.stringify(msg));
 	var ticks = msg['ticks'];
@@ -144,7 +147,8 @@ room.on('startGame', function(msg){
 	if (ticks==0){
 		//Redraw();
 		//animloop();
-		myStartGame();
+		starter=1;
+		
 	}
 	else{
 		printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
@@ -155,11 +159,17 @@ room.on('startGame', function(msg){
 });
 
 room.on('update', function(msg){
-	/*var opponentX = msg['opponentX'];
+	if (starter==1){ starter = 2; myStartGame();}
+	//alert(JSON.stringify(msg));
+	var opponentX = msg['opponentX'];
 	var sBallX = msg['bX'];
 	var sBallY = msg['bY'];
-	ball.X = sBallX;
-	ball.Y = sBallY;*/
+	ball.x = sBallX*canvas.width / 100;
+	ball.y = sBallY*canvas.height / 100;
+	//console.log(ball);
+	printText('coordinates', JSON.stringify(msg), 400, 175);
+	animloop();
+	//draw();
 });
 
 room.on('statusChange', function(msg){
@@ -167,17 +177,28 @@ room.on('statusChange', function(msg){
 	var opponentScore = msg[opponentLogin];
 	var gameStatus = msg['gameStatus'];
 });
-
+function deleteText(name){
+	delete drawObjects[name];
+}
 
 /*room.on('azz', function(msg){
 	alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });*/
-
+function getNormalizedCoords(mouseCoords){
+	return { 
+		X:mouseCoords.X*100/canvas.width, 
+		Y:mouseCoords.Y*100/canvas.height
+	}
+}
 //console.log(room);
 function myStartGame(){
-	alert('MY START Game!!!');
+	deleteText('startAfter');
+	//alert('MY START Game!!!');
 	animloop();
+	timer = setInterval(function (){
+		sendGameData(getNormalizedCoords(mouse));
+	}, 500);
 }
 
 /*io.on('connection', function(socket){
@@ -187,12 +208,11 @@ function myStartGame(){
   });
 });*/
 
-/*timer = setInterval(function (){
-	sendGameData(mouse);
-}, 500);*/
+/**/
 
 function sendGameData(data1, url){
-	$.ajax({
+	socket.emit('move', data1);
+	/*$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
 	data: data1,
@@ -200,7 +220,7 @@ function sendGameData(data1, url){
 		var msg = JSON.stringify(data);
 		//alert(msg);
 		console.log(msg);
-	}});
+	}});*/
 }
 
 /*
@@ -216,6 +236,8 @@ timer = setInterval(function (){
 		}});
 }, 10050);
 */
+var curBallX=0;
+var curBallY=0;
 
 /*var tmr1 = setInterval(function(){
 	console.log('tmr1');
@@ -356,8 +378,8 @@ function update() {
 	}
 
 	// Move the ball
-	ball.x += ball.vx;
-	ball.y += ball.vy;
+	/*ball.x += ball.vx;
+	ball.y += ball.vy;*/
 	
 	// Collision with paddles
 	p1 = paddles[1];
@@ -407,14 +429,14 @@ function update() {
 	
 	
 	// If flag is set, push the particles
-	if(flag == 1) { 
+	/*if(flag == 1) { 
 		for(var k = 0; k < particlesCount; k++) {
 			particles.push(new createParticles(particlePos.x, particlePos.y, multiplier));
 		}
 	}	
 	
 	// Emit particles/sparks
-	emitParticles();
+	emitParticles();*/
 	
 	// reset flag
 	flag = 0;

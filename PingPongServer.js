@@ -60,10 +60,10 @@ app.all('/GetGames', GetGames);
 });*/
 
 //app.all('/')
-
-if (gameServerType ==='Sync'){
+//app.get('/Move', Move);
+/*if (gameServerType ==='Sync'){
 	app.get('/Move', Move);
-}
+}*/
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
 const STANDARD_PREPARE_TICK_COUNT = 15;
@@ -277,10 +277,11 @@ function prepare(gameID){
 		console.log('Trying to stop timer');
 		clearInterval(games[gameID].timer);
 		console.log('Stopped timer');
-		//games[gameID].timer = setInterval(update(gameID), UPDATE_TIME);
+		games[gameID].timer = setInterval(function() {update(gameID) }, UPDATE_TIME);
 	}
 }
 function update(gameID){
+	
 	SendToRoom('/'+gameID, 'update', {opponentX:10, bX:10, bY:60});
 }
 
