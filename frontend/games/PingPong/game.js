@@ -141,12 +141,7 @@ console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
 var room = io.connect('http://localhost:5009' + '/'+tournamentID);
 
-for (var i=0;i<50000;i++){
-	ajaXSend({msg: 'I am ' + window.login}, 'http://localhost:5009/Sender');
-	/*var a = io.connect('http://localhost:5009' + '/'+tournamentID);
-	a.emit('movement', {da:123} );*/
-	//room.emit('movement', {da:123} );
-}
+
 
 //room.emit('')
 //var socket = io.connect();// io('http://localhost:5009');  'http://localhost:5009/Special'
@@ -198,11 +193,11 @@ room.on('update', function(msg){
 	printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 
-room.on('statusChange', function(msg){
+/*room.on('statusChange', function(msg){
 	var myScore = msg[login];
 	var opponentScore = msg[opponentLogin];
 	var gameStatus = msg['gameStatus'];
-});
+});*/
 
 function deleteText(name){
 	delete drawObjects[name];
@@ -217,7 +212,7 @@ function getNormalizedCoords(mouseCoords){
 var timer;
 
 function initSender(){
-	timer = setInterval(function(){ sendGameData();} , 1000);
+	//timer = setInterval(function(){ sendGameData();} , 1000);
 }
 //console.log(room);
 
@@ -229,9 +224,6 @@ function myStartGame(){
 	//animloop();
 
 	initSender();
-	/*timer = setInterval(function (){
-		sendGameData();
-	}, 1000);*/
 }
 
 /*io.on('connection', function(socket){
@@ -246,14 +238,23 @@ function myStartGame(){
 function sendGameData(data1, url){
 	//room.emit('movement', {movement : getNormalizedCoords(mouse), tournamentID:tournamentID, gameID:tournamentID, login:login } );
 	var mvm = getNormalizedCoords(mouse);
-	printText('MOUSE', JSON.stringify(mvm), 0, 350);
+	//printText('MOUSE', JSON.stringify(mvm), 0, 350);
 	
-	var sendData = {movement : mvm, tournamentID:tournamentID, gameID:tournamentID, login:login };
+	var sendData = { 
+		movement: mvm, 
+		tournamentID: tournamentID, 
+		gameID: tournamentID, 
+		login: window.login 
+	};
 	
 	//mvm.x = curX;
 	//console.log()
 	//room.emit('movement', sendData );
+
 	ajaXSend(sendData, 'http://localhost:5009/Move');
+	printText('SENDED', JSON.stringify(sendData) , 0, 450);
+	//alert('Sended :' + JSON.stringify(sendData));
+
 	/*console.log(sendData);
 	$.ajax({
 	url: url?url:'http://localhost:5009/Move',
@@ -265,6 +266,18 @@ function sendGameData(data1, url){
 		console.log(msg);
 	}});*/
 }
+
+var tmr0 = setInterval(sendGameData , 500);
+
+/*for (var i=0;i<1000;i++){
+
+	sendGameData();*/
+	//ajaXSend({msg: 'I am ' + window.login}, 'http://localhost:5009/Sender');
+
+	/*var a = io.connect('http://localhost:5009' + '/'+tournamentID);
+	a.emit('movement', {da:123} );*/
+	//room.emit('movement', {da:123} );
+//}
 
 function ajaXSend(dat, url){
 	$.ajax({
@@ -391,12 +404,6 @@ function drawPaddles(){
 
 // Draw everything on canvas
 function Draw() {
-	/*switch(gameStatus){
-		case STATUS_WAITING:
-
-		break;
-		case STATUS_RUNNING
-	}*/
 
 	paintCanvas();
 
@@ -405,9 +412,7 @@ function Draw() {
 	for (var index in drawObjects){
 		drawText(drawObjects[index]);
 	}
-	/*for (var i = texts.length - 1; i >= 0; i--) {
-		drawText(texts[i]);
-	};*/
+	
 	ball.draw();
 	update();
 }
@@ -442,6 +447,7 @@ function increaseSpd() {
 function trackPosition(e) {
 	mouse.x = e.pageX;
 	mouse.y = e.pageY;
+	//ajaXSend(  )
 	//console.log('Mouse move : trackPosition function');
 }
 

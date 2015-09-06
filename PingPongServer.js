@@ -43,6 +43,7 @@ app.get('/Alive', function (req, res){
 app.get('/Move', function (req, res){
 	res.end('Move GET works');
 });
+
 app.post('/Sender', function (req, res){
 	strLog('POST Sender ' + JSON.stringify(req.body));
 	res.json({obj:'lul'});
@@ -52,6 +53,7 @@ app.post('/Move', function (req,res){
 	var data = req.body;
 	console.log( 'app.use Movement');
 	console.log('Getting movement DATA!  APP');
+
   	var tournamentID = data.tournamentID;
   	var gameID = data.gameID;
   	var movement = data.movement;
@@ -83,7 +85,7 @@ app.post('/Move', function (req,res){
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
 const STANDARD_PREPARE_TICK_COUNT = 10;
-const UPDATE_TIME = 1000*50/50; //50 times per second = 20ms
+const UPDATE_TIME = 1000*150/50; //50 times per second = 20ms
 const PREPARED = "PREPARED";
 
 
@@ -281,6 +283,7 @@ function StartGame (req, res){
 			strLog('Room <' + ID + '> got new player');
 		})
 		games[ID].socketRoom.on('movement', function (data) {
+			
 			strLog('Getting movement DATA!2');
 		  	var tournamentID = data.tournamentID;
 		  	var gameID = data.gameID;
