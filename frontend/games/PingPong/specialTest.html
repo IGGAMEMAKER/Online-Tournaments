@@ -1,0 +1,14 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+	var specSocket = io.connect('http://localhost:5009/Special');
+	specSocket.emit('echo', { asd:'Answer from html!'});
+	specSocket.on('event2', function(msg){
+		alert(JSON.stringify(msg));
+		//specSocket.emit('echo', { asd:'Answer from html!'});
+	});
+	specSocket.on('event3', function(msg){
+		alert(JSON.stringify(msg));
+	});
+</script>

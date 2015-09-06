@@ -141,7 +141,13 @@ console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
 var room = io('http://localhost:5009' + '/'+tournamentID);
 
-var socket = io.connect();// io('http://localhost:5009');
+var socket = io.connect();// io('http://localhost:5009');  'http://localhost:5009/Special'
+var specSocket = io.connect('http://localhost:5009/Special');
+
+specSocket.on('event2', function(msg){
+	alert(JSON.stringify(msg));
+	//setTimeout( function() { specSocket.emit('') } )
+})
 
 socket.emit('event1', {data:'tratata'});
 //var login;

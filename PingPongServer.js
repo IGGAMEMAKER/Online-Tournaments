@@ -161,7 +161,7 @@ function initGame(ID){
 function strLog(text){
 
 	fs.appendFile('message.txt', "\n" + text + "\n", function (err) {
-		console.log('err: ' + JSON.stringify(err));
+		if (err) console.log('err: ' + JSON.stringify(err));
 	});
 	//stream.write(text);
 	console.log('strLog: ' + text);
@@ -399,6 +399,37 @@ io.on('connection', function(socket){
   });
 
 });
+
+/*var specialRoom = io.of('/Special')
+	.on('connection', function(socket){
+		strLog('/Special connection');
+
+		socket.emit('event2', {data2:'specialRoom message'} );
+		socket.on('echo', function (msg){
+			strLog('ECHO Message: ' + JSON.stringify(msg));
+			//socket.emit('event2', {data2:'specialRoom ECHO message!!'} );
+		})
+	})
+	.on('echo', function (msg){
+		strLog('Got echo!!');
+		console.log(JSON.stringify(msg));
+	});*/
+var specialRoom = io.of('/Special');
+
+	specialRoom.on('connection', function(socket){
+		strLog('/Special connection');
+
+		socket.emit('event2', {data2:'specialRoom message'} );
+		socket.on('echo', function (msg){
+			strLog('ECHO Message: ' + JSON.stringify(msg));
+			//socket.emit('event2', {data2:'specialRoom ECHO message!!'} );
+		})
+	})
+	specialRoom.on('echo', function (msg){
+		strLog('Got echo!!');
+		console.log(JSON.stringify(msg));
+	});
+setTimeout(function() {specialRoom.emit('event3', { asd:'TIMEOUT SEND FROM ROOM'} ) } , 3000 );
 
 /*io.on('movement', function(data){
   	console.log('Getting movement DATA!2');
