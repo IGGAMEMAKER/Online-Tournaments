@@ -139,42 +139,43 @@ var gameStatus = STATUS_WAITING;
 //var tournamentID = "#{tournamentID}";
 console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
-var room = io('http://localhost:5009' + '/'+tournamentID);
+var room = io.connect('http://localhost:5009' + '/'+tournamentID);
 
-var socket = io.connect();// io('http://localhost:5009');  'http://localhost:5009/Special'
-var specSocket = io.connect('http://localhost:5009/Special');
+for (var i=0;i<50000;i++){
+	ajaXSend({msg: 'I am ' + window.login}, 'http://localhost:5009/Sender');
+	/*var a = io.connect('http://localhost:5009' + '/'+tournamentID);
+	a.emit('movement', {da:123} );*/
+	//room.emit('movement', {da:123} );
+}
 
-specSocket.on('event2', function(msg){
-	alert(JSON.stringify(msg));
-	//setTimeout( function() { specSocket.emit('') } )
-})
+//room.emit('')
+//var socket = io.connect();// io('http://localhost:5009');  'http://localhost:5009/Special'
 
-socket.emit('event1', {data:'tratata'});
-//var login;
+//socket.emit('event1', {data:'tratata'});
+
 var opponentLogin;
 
-//console.log(io.sockets);
 room.on('azz', function(msg){
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
 
 var drawObjects = {};
-/*socket.emit('chat message', window.login);
-socket.emit('chat message', window.login);*/
-//room.on('')
+
 var starter=0;
+
 room.on('startGame', function(msg){
 	//alert('alert, MOTHERFUCKER!!' + JSON.stringify(msg));
 	var ticks = msg['ticks'];
 	
 	console.log(ticks);
 	if (ticks==0){
+		gameStatus = STATUS_RUNNING;
 		starter=1;
 	}
 	else{
 		printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
-		Draw();
+		//Draw();
 	}
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
@@ -194,7 +195,7 @@ room.on('update', function(msg){
 	gameDatas = msg.gameDatas;
 	//console.log(ball);
 	//printText('coordinates', JSON.stringify(msg), 400, 175);
-	printText('coordinates', JSON.stringify(gameDatas), 75, 805);
+	printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 
 room.on('statusChange', function(msg){
@@ -207,29 +208,27 @@ function deleteText(name){
 	delete drawObjects[name];
 }
 
-/*room.on('azz', function(msg){
-	alert(msg);
-	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
-});*/
-
 function getNormalizedCoords(mouseCoords){
 	return { 
 		x:mouseCoords.x*100/canvas.width, 
 		y:mouseCoords.y*100/canvas.height
 	}
 }
+var timer;
+
 function initSender(){
-	timer = setInterval(function (){
-		sendGameData();
-	}, 1000);
+	timer = setInterval(function(){ sendGameData();} , 1000);
 }
 //console.log(room);
+
+
+
 function myStartGame(){
 	deleteText('startAfter');
 	//alert('MY START Game!!!');
 	//animloop();
 
-	//initSender();
+	initSender();
 	/*timer = setInterval(function (){
 		sendGameData();
 	}, 1000);*/
@@ -250,14 +249,28 @@ function sendGameData(data1, url){
 	printText('MOUSE', JSON.stringify(mvm), 0, 350);
 	
 	var sendData = {movement : mvm, tournamentID:tournamentID, gameID:tournamentID, login:login };
-	console.log(sendData);
+	
 	//mvm.x = curX;
-	//socket.emit('movement', sendData );
-
+	//console.log()
+	//room.emit('movement', sendData );
+	ajaXSend(sendData, 'http://localhost:5009/Move');
+	/*console.log(sendData);
 	$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
 	data: sendData,
+	success: function( data ) {
+		var msg = JSON.stringify(data);
+		alert(msg);
+		console.log(msg);
+	}});*/
+}
+
+function ajaXSend(dat, url){
+	$.ajax({
+	url: url?url:'http://localhost:5009/Move',
+	method: 'POST',
+	data: dat,
 	success: function( data ) {
 		var msg = JSON.stringify(data);
 		//alert(msg);
@@ -265,29 +278,22 @@ function sendGameData(data1, url){
 	}});
 }
 
-/*
-timer = setInterval(function (){
+
+/*var timer2 = setInterval(function (){
 	$.ajax({
-		url: 'Alive',
+		//url: 'Alive',
+		url: 'http://localhost:5009/Move',
 		method: 'POST',
 		data: { f1:'ololo' },
 		success: function( data ) {
 			var msg = JSON.stringify(data);
-			//alert(msg);
-			console.log(msg);
+			alert(msg);
+			//console.log(msg);
 		}});
-}, 10050);
-*/
+}, 3050);*/
+
 var curBallX=0;
 var curBallY=0;
-
-/*var tmr1 = setInterval(function(){
-	console.log('tmr1');
-	//room.emit('event1', 'TIMER message');
-	socket.emit('event1', {data:'tratata'});
-	//io.to('/'+tournamentID).emit('event1', { dat1: 'datatata'});
-	//room.emit('/111' ,'AZAZA ROOOOOOOOOM');
-}, 3000);*/
 
 function printText(name, text, startX, startY, colour) {
 	drawObjects[name] = {text:'<'+name+'> ' + text, startX: startX, startY: startY, colour:colour};
@@ -700,7 +706,7 @@ function Redraw(){
 			over = 0;
 			startBtn = {};
 }
-printText('Usr', 'I am ' + login, 500, 20);
+printText('User', 'I am ' + login, 500, 20);
 // Show the start screen
-startScreen();
+//startScreen();
 animloop();

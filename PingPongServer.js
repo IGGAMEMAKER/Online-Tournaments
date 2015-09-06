@@ -23,7 +23,7 @@ funcArray["/GetGames"] = GetGames;*/
 
 
 
-//var fs = require('fs');
+var fs = require('fs');
 
 
 var bodyParser = require('body-parser')
@@ -37,15 +37,26 @@ app.all('/StartGame', StartGame);
 app.all('/ServeGames', ServeGames);
 app.all('/GetGames', GetGames);
 
+app.get('/Alive', function (req, res){
+	res.end('GET METHOD WORKED');
+});
+app.get('/Move', function (req, res){
+	res.end('Move GET works');
+});
+app.post('/Sender', function (req, res){
+	strLog('POST Sender ' + JSON.stringify(req.body));
+	res.json({obj:'lul'});
+});
 
-app.all('/Move', function (req,res){
+app.post('/Move', function (req,res){
 	var data = req.body;
-
+	console.log( 'app.use Movement');
 	console.log('Getting movement DATA!  APP');
   	var tournamentID = data.tournamentID;
   	var gameID = data.gameID;
   	var movement = data.movement;
   	var userLogin = data.login;
+
   	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
 
   	Move(tournamentID, gameID, movement, userLogin);
@@ -80,11 +91,6 @@ const PREPARED = "PREPARED";
 funcArray["/AbortGame"] = AbortGame;
 funcArray["/UnSetGame"] = UnSetGame;*/
 
-/*var nsp = io.of('/my-namespace');
-nsp.on('connection', function(socket){
-  console.log('someone connected'):
-});
-nsp.emit('hi', 'everyone!');*/
 
 
 var games = {
@@ -159,8 +165,9 @@ function initGame(ID){
 }
 
 function strLog(text){
-
-	fs.appendFile('message.txt', "\n" + text + "\n", function (err) {
+	var time = new Date();
+	console.log(time);
+	fs.appendFile('message.txt', time+' ' + text + "\n", function (err) {
 		if (err) console.log('err: ' + JSON.stringify(err));
 	});
 	//stream.write(text);
@@ -170,7 +177,7 @@ function strLog(text){
 function Move( tournamentID, gameID, movement, userName){
 	if (tournamentIsValid(tournamentID, gameID))
 	{
-		if (playerExists(gameID, userName)) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
+		if (playerExists(gameID, userName)>=0) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
 			//console.log('I am here ' + JSON.stringify(curGame.players));
 			//curGame.scores[userName]+= pointsAdd;
 			//console.log("Player " + userName + " has " + curGame.scores[userName] + " points");
@@ -264,11 +271,27 @@ function StartGame (req, res){
 			//***********
 		}
 		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
-		//oneTournID = ID;
 		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
 		games[ID].userIDs = userIDs;
-		//games[ID].socketRoom = io.of('/'+ID);
+
+		games[ID].socketRoom = io.of('/'+ID);
+		//var room = games[ID].socketRoom;
+		games[ID].socketRoom.on('connection', function (socket){
+			strLog('Room <' + ID + '> got new player');
+		})
+		games[ID].socketRoom.on('movement', function (data) {
+			strLog('Getting movement DATA!2');
+		  	var tournamentID = data.tournamentID;
+		  	var gameID = data.gameID;
+		  	var movement = data.movement;
+		  	var userLogin = data.login;
+
+		  	Move(tournamentID, gameID, movement, userLogin);
+		})
+
+		//SetGameListenerRoom(ID);
+
 		console.log('Players');
 		console.log(games[ID].players);
 
@@ -277,13 +300,42 @@ function StartGame (req, res){
 	}
 	//res.end();
 }
-var oneTournID;
+
+function SetGameListenerRoom(ID){//gameID
+	/*var room = games[ID].socketRoom;
+	room.on('connection', function (socket){
+		strLog('Room <' + ID + '> got new player');
+	});
+
+	room.on('movement', function (data) {
+		strLog('Getting movement DATA!2');
+	  	var tournamentID = data.tournamentID;
+	  	var gameID = data.gameID;
+	  	var movement = data.movement;
+	  	var userLogin = data.login;
+
+	  	Move(tournamentID, gameID, movement, userLogin);
+	});*/
+	/*var room = games[ID].socketRoom;
+	room.on('connection', function (socket){
+		strLog('Room <' + ID + '> got new player');
+	});
+	room.on('movement', function (data) {
+		strLog('Getting movement DATA!2');
+	  	var tournamentID = data.tournamentID;
+	  	var gameID = data.gameID;
+	  	var movement = data.movement;
+	  	var userLogin = data.login;
+
+	  	Move(tournamentID, gameID, movement, userLogin);
+	});*/
+}
+
 function prepare(gameID){
 	if (games[gameID].tick>0){
 		console.log(gameID);
 		games[gameID].tick--;
-		SendToRoom('/'+gameID, 'startGame', {ticks:games[gameID].tick} );
-		//SendToRoom('/'+oneTournID, 'startGame', {ticks:games[oneTournID].tick} );
+		SendToRoom(gameID, 'startGame', {ticks:games[gameID].tick} );
 
 		//games[gameID].socketRoom.emit('');
 	}
@@ -296,19 +348,19 @@ function prepare(gameID){
 	}
 }
 
-var fs = require('fs');
+/*var fs = require('fs');
 var stream = fs.createWriteStream("my_file.txt");
 stream.once('open', function(fd) {
   stream.write("My first row\n");
   stream.write("My second row\n");
   stream.end();
-});
+});*/
 
 function update(gameID){
 
 	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:10, bY:60, gameDatas:games[gameID].gameDatas});
 	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:games[gameID].ball.x, bY:games[gameID].ball.y, gameDatas:games[gameID].gameDatas });
-	SendToRoom('/'+gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
+	SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
 	games[gameID].ball.x+=1;
 	//games[gameID].ball.y+=2;
 }
@@ -382,12 +434,12 @@ io.on('connection', function(socket){
     io.emit('chat message', msg);
   });
   socket.on('event1', function(data){
-    //console.log('io.on connection--> socket.on event1'); console.log(data);
-    SendToRoom('/111', 'azz', 'LALKI', socket);
+    console.log('io.on connection--> socket.on event1'); console.log(data);
+
+    //SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
   });
-
-  socket.on('movement', function(data){
+  /*socket.on('movement', function(data){
   	console.log('Getting movement DATA!1');
   	var tournamentID = data.tournamentID;
   	var gameID = data.gameID;
@@ -396,7 +448,7 @@ io.on('connection', function(socket){
   	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
 
   	Move(tournamentID, gameID, movement, userLogin);
-  });
+  });*/
 
 });
 
@@ -414,7 +466,8 @@ io.on('connection', function(socket){
 		strLog('Got echo!!');
 		console.log(JSON.stringify(msg));
 	});*/
-var specialRoom = io.of('/Special');
+
+/*var specialRoom = io.of('/Special');
 
 	specialRoom.on('connection', function(socket){
 		strLog('/Special connection');
@@ -429,7 +482,7 @@ var specialRoom = io.of('/Special');
 		strLog('Got echo!!');
 		console.log(JSON.stringify(msg));
 	});
-setTimeout(function() {specialRoom.emit('event3', { asd:'TIMEOUT SEND FROM ROOM'} ) } , 3000 );
+setTimeout(function() {specialRoom.emit('event3', { asd:'TIMEOUT SEND FROM ROOM'} ) } , 3000 );*/
 
 /*io.on('movement', function(data){
   	console.log('Getting movement DATA!2');
@@ -457,9 +510,12 @@ function SendToRoom( room, event1, msg, socket){
 	//console.log('SendToRoom:' + room + ' ' + event1 + ' ');
 	//strLog('SendToRoom:' + room + ' ' + event1 + ' ' + JSON.stringify(msg));
 	//console.log('Send Message:' + JSON.stringify(msg));
-
-
-	io.of(room).emit(event1, msg);
+	//strLog('Trying to send to room ' + room +' event= '+ event1 + ' msg= ' + JSON.stringify(msg));
+	//console.log('00000000000000000000000000000000000');
+	games[room].socketRoom.emit(event1, msg);
+	//strLog('Я отправиль...');
+	
+	//io.of(room).emit(event1, msg);
 	//console.log('Emitted');
 }
 
