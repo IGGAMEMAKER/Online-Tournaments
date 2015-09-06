@@ -1,4 +1,8 @@
 //alert('Sockets included');
+//alert("#{session.login}");
+
+//alert(login);
+
 var socket = io();
 /*$('form').submit(function(){
   socket.emit('chat message', $('#m').val());
@@ -20,7 +24,7 @@ socket.on('StartTournament', function(msg){
   alert('StartTournament with ID: ' + tournamentID);
   console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
-  
+
 
 
   currentTID = tournamentID;
@@ -32,9 +36,14 @@ socket.on('StartTournament', function(msg){
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
 
+socket.on('update', function(msg){
+  alert.stringify(JSON.stringify(msg));
+} )
+
 function startGame(gameURL){
   var a = window.open(gameURL?gameURL:'/Game?tournamentID='+currentTID);
   a.logins= curLogins;
+  a.login = login;
 }
 
 /* CLIENT SIDE INFO:

@@ -6,7 +6,7 @@ window.requestAnimFrame = (function(){
 		window.oRequestAnimationFrame      || 
 		window.msRequestAnimationFrame     ||  
 		function( callback ){
-			return window.setTimeout(callback, 1000 / 60 / 10);
+			return window.setTimeout(callback, 1000 / 60);
 		};
 })();
 
@@ -78,6 +78,11 @@ function Paddle(pos) {
 paddles.push(new Paddle("bottom"));
 paddles.push(new Paddle("top"));
 
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+var curX = getRandomArbitrary(0,99);
+
 // Ball object
 ball = {
 	x: 50,
@@ -118,6 +123,10 @@ startBtn = {
 };
 //alert(window.logins);
 var logins = window.logins;
+var login = window.login;
+
+var myID=0;
+var oppID=1;
 
 const STATUS_WAITING=1;
 const STATUS_RUNNING=2;
@@ -131,7 +140,8 @@ var gameStatus = STATUS_WAITING;
 console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
 var room = io('http://localhost:5009' + '/'+tournamentID);
-var socket = io();
+
+var socket = io.connect();// io('http://localhost:5009');
 
 socket.emit('event1', {data:'tratata'});
 //var login;
@@ -144,7 +154,8 @@ room.on('azz', function(msg){
 });
 
 var drawObjects = {};
-
+/*socket.emit('chat message', window.login);
+socket.emit('chat message', window.login);*/
 //room.on('')
 var starter=0;
 room.on('startGame', function(msg){
@@ -166,8 +177,9 @@ var gameDatas;// = [];
 
 room.on('update', function(msg){
 	if (starter==1){ starter = 2; myStartGame();}
+
 	//alert(JSON.stringify(msg));
-	var opponentX = msg['opponentX'];
+
 	var sBallX = (msg['ball']).x;
 	var sBallY = (msg['ball']).y;
 	ball.x = sBallX*canvas.width / 100;
@@ -175,7 +187,8 @@ room.on('update', function(msg){
 
 	gameDatas = msg.gameDatas;
 	//console.log(ball);
-	printText('coordinates', JSON.stringify(msg), 400, 175);
+	//printText('coordinates', JSON.stringify(msg), 400, 175);
+	printText('coordinates', JSON.stringify(gameDatas), 75, 805);
 });
 
 room.on('statusChange', function(msg){
@@ -192,20 +205,28 @@ function deleteText(name){
 	alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });*/
+
 function getNormalizedCoords(mouseCoords){
 	return { 
-		X:mouseCoords.X*100/canvas.width, 
-		Y:mouseCoords.Y*100/canvas.height
+		x:mouseCoords.x*100/canvas.width, 
+		y:mouseCoords.y*100/canvas.height
 	}
+}
+function initSender(){
+	timer = setInterval(function (){
+		sendGameData();
+	}, 1000);
 }
 //console.log(room);
 function myStartGame(){
 	deleteText('startAfter');
 	//alert('MY START Game!!!');
 	//animloop();
+
+	//initSender();
 	/*timer = setInterval(function (){
-		sendGameData(getNormalizedCoords(mouse));
-	}, 500);*/
+		sendGameData();
+	}, 1000);*/
 }
 
 /*io.on('connection', function(socket){
@@ -218,16 +239,24 @@ function myStartGame(){
 /**/
 
 function sendGameData(data1, url){
-	socket.emit('movement', {movement : data1, tournamentID:tournamentID, gameID:tournamentID, login:login } );
-	/*$.ajax({
+	//room.emit('movement', {movement : getNormalizedCoords(mouse), tournamentID:tournamentID, gameID:tournamentID, login:login } );
+	var mvm = getNormalizedCoords(mouse);
+	printText('MOUSE', JSON.stringify(mvm), 0, 350);
+	
+	var sendData = {movement : mvm, tournamentID:tournamentID, gameID:tournamentID, login:login };
+	console.log(sendData);
+	//mvm.x = curX;
+	//socket.emit('movement', sendData );
+
+	$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
-	data: data1,
+	data: sendData,
 	success: function( data ) {
 		var msg = JSON.stringify(data);
 		//alert(msg);
 		console.log(msg);
-	}});*/
+	}});
 }
 
 /*
@@ -255,8 +284,8 @@ var curBallY=0;
 }, 3000);*/
 
 function printText(name, text, startX, startY, colour) {
-	drawObjects[name] = {text:text, startX: startX, startY: startY, colour:colour};
-	texts.push({text:text, startX: startX, startY: startY, colour:colour});
+	drawObjects[name] = {text:'<'+name+'> ' + text, startX: startX, startY: startY, colour:colour};
+	//texts.push({text:text, startX: startX, startY: startY, colour:colour});
 }
 
 function drawText(obj){
@@ -306,31 +335,6 @@ function createParticles(x, y, m) {
 }
 var jjj=0;
 
-/*function drPad(id){
-	p = paddles[i];
-		//console.log('length=' + paddles.length);
-		if (gameDatas){
-			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;
-			if (gameDatas[i-1]){
-				var a = gameDatas[i-1];
-				//console.log(JSON.stringify(a));
-				var padX = a.padX;
-				//console.log('i: ' + i + ' ' + padX);
-
-				p.x = padX * canvas.width/100  - p.w/2;//(gameDatas[i])['padX']
-			}
-			else{
-				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);
-			}
-		}
-		//p.y = gameDatas[i].padY =='top'? 0:500;
-		//ctx.fillStyle = 'red';
-		//if (i==0) 
-		ctx.fillStyle = "white";// (i==0?"white":"red");
-		if (i==0) { printText('AZAZA', p.x, 400, 300); }
-		ctx.fillRect(p.x, p.y, p.w, p.h);
-}*/
-
 function drawPaddles(){
 	/*for(var i = 0; i < paddles.length; i++) {
 		p = paddles[i];
@@ -340,12 +344,13 @@ function drawPaddles(){
 	}*/
 
 	//console.log(JSON.stringify(paddles));
-	
+	//paddles.push(new Paddle("bottom"));
+	//paddles.push(new Paddle("top"));
 	for(var i = 1; i < paddles.length; i++) {
 		//alert('i(' + i + ')' + JSON.stringify(paddles[i]));
 		
 		p = paddles[i];
-		printText(i, JSON.stringify(p));
+		printText(i, JSON.stringify(p), 125, 500);
 		//console.log('length=' + paddles.length);
 		if (gameDatas){
 			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;
@@ -365,7 +370,7 @@ function drawPaddles(){
 		//ctx.fillStyle = 'red';
 		//if (i==0) ctx.fillStyle = "white";// (i==0?"white":"red");
 		ctx.fillStyle = "white";// (i==0?"white":"red");
-		if (i==0) { printText('AZAZA', p.x, 400, 300); }
+		//if (i==0) { printText('AZAZA', p.x, 400, 300); }
 		ctx.fillRect(p.x, p.y, p.w, p.h);
 
 		//ctx.fillRect(p.x, p.y, p.w, p.h);
@@ -689,7 +694,7 @@ function Redraw(){
 			over = 0;
 			startBtn = {};
 }
-
+printText('Usr', 'I am ' + login, 500, 20);
 // Show the start screen
 startScreen();
 animloop();
