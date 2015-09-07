@@ -212,6 +212,7 @@ function getNormalizedCoords(mouseCoords){
 var timer;
 
 function initSender(){
+	var tmr0 = setInterval(sendGameData , 20);
 	//timer = setInterval(function(){ sendGameData();} , 1000);
 }
 //console.log(room);
@@ -223,7 +224,7 @@ function myStartGame(){
 	//alert('MY START Game!!!');
 	//animloop();
 
-	initSender();
+	//initSender();
 }
 
 /*io.on('connection', function(socket){
@@ -280,7 +281,8 @@ var tmr0 = setInterval(sendGameData , 500);
 //}
 
 function ajaXSend(dat, url){
-	$.ajax({
+
+	/*$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
 	data: dat,
@@ -288,7 +290,9 @@ function ajaXSend(dat, url){
 		var msg = JSON.stringify(data);
 		//alert(msg);
 		console.log(msg);
-	}});
+	}});*/
+	room.emit('movement', dat );
+
 }
 
 
@@ -375,7 +379,7 @@ function drawPaddles(){
 		//alert('i(' + i + ')' + JSON.stringify(paddles[i]));
 		
 		p = paddles[i];
-		printText(i, JSON.stringify(p), 125, 500);
+		printText(i, JSON.stringify(p), 25, 400+40*i);
 		//console.log('length=' + paddles.length);
 		if (gameDatas){
 			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;

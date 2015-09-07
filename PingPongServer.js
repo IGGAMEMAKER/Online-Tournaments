@@ -51,10 +51,13 @@ app.post('/Sender', function (req, res){
 
 app.post('/Move', function (req,res){
 	var data = req.body;
-	console.log( 'app.use Movement');
-	console.log('Getting movement DATA!  APP');
+	//console.log( 'app.use Movement');
+	//console.log('Getting movement DATA!  APP');
+	MoveHead(data);
+	var gameID = data.gameID;
+	res.json(games[gameID].gameDatas);
 
-  	var tournamentID = data.tournamentID;
+  	/*var tournamentID = data.tournamentID;
   	var gameID = data.gameID;
   	var movement = data.movement;
   	var userLogin = data.login;
@@ -62,8 +65,20 @@ app.post('/Move', function (req,res){
   	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
 
   	Move(tournamentID, gameID, movement, userLogin);
-  	res.json(games[gameID].gameDatas);
+  	res.json(games[gameID].gameDatas);*/
+
 });
+
+function MoveHead(data){
+	var tournamentID = data.tournamentID;
+  	var gameID = data.gameID;
+  	var movement = data.movement;
+  	var userLogin = data.login;
+
+  	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
+
+  	Move(tournamentID, gameID, movement, userLogin);
+}
 
 /*app.all('/ServeGames', function (req, res){
 	console.log('ServeGames app!!!!');
@@ -85,7 +100,7 @@ app.post('/Move', function (req,res){
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
 const STANDARD_PREPARE_TICK_COUNT = 10;
-const UPDATE_TIME = 1000*150/50; //50 times per second = 20ms
+const UPDATE_TIME = 1;//1000/50; //50 times per second = 20ms
 const PREPARED = "PREPARED";
 
 
@@ -191,13 +206,15 @@ function Move( tournamentID, gameID, movement, userName){
 			
 			//console.log('plID = ' + JSON.stringify(playerID));
 
-			var gameCur = games[gameID].gameDatas[playerID];
-			strLog(JSON.stringify(gameCur));
+			//var gameCur = games[gameID].gameDatas[playerID];
+			//strLog(JSON.stringify(gameCur));
+			
 			//console.log();
 			//console.log(gameID+'_' + userName);
 			games[gameID].gameDatas[playerID].padX = movement.x;
 		}
 		else{
+			strLog('#####PLAYER DOESNT exist#####');
 			console.log("Player " + userName + 
 				" Not your turn! Player " + curGame.curPlayerID + " must play");
 		}
@@ -281,16 +298,21 @@ function StartGame (req, res){
 		//var room = games[ID].socketRoom;
 		games[ID].socketRoom.on('connection', function (socket){
 			strLog('Room <' + ID + '> got new player');
+			socket.on('movement', function (data){
+				strLog('Getting socketRoom socket.on Movement');
+				MoveHead(data);
+			});
 		})
-		games[ID].socketRoom.on('movement', function (data) {
-			
-			strLog('Getting movement DATA!2');
-		  	var tournamentID = data.tournamentID;
+		.on('movement', function (data) {
+
+			strLog('Getting socketRoom Movement');
+			MoveHead(data);
+		  	/*var tournamentID = data.tournamentID;
 		  	var gameID = data.gameID;
 		  	var movement = data.movement;
 		  	var userLogin = data.login;
 
-		  	Move(tournamentID, gameID, movement, userLogin);
+		  	Move(tournamentID, gameID, movement, userLogin);*/
 		})
 
 		//SetGameListenerRoom(ID);
@@ -442,6 +464,9 @@ io.on('connection', function(socket){
     //SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
   });
+  socket.on('movement', function (data){
+  	strLog('io.socket.on => ' + JSON.stringify(data));
+  })
   /*socket.on('movement', function(data){
   	console.log('Getting movement DATA!1');
   	var tournamentID = data.tournamentID;
