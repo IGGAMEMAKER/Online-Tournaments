@@ -49,6 +49,12 @@ canvas.addEventListener("mousedown", btnClick, true);
 collision = document.getElementById("collide");
 
 // Set the canvas's height and width to full screen
+H=W*3/4;
+if (H>window.innerHeight){
+	H = window.innerHeight;
+	W = H * 4 / 3;
+}
+
 canvas.width = W;
 canvas.height = H;
 
@@ -65,12 +71,12 @@ var playerPaddle= 'bottom';
 // Function for creating paddles
 function Paddle(pos) {
 	// Height and width
-	this.h = 5;
-	this.w = 150;
+	this.h = H*0.05;
+	this.w = W*0.2;//150;
 	
 	// Paddle's position
 	this.x = W/2 - this.w/2;
-	this.y = (pos == "top") ? 0 : H - this.h - 50 ;
+	this.y = (pos == "top") ? 0 : H*0.95;// - this.h - 50 ;
 	
 }
 
@@ -81,7 +87,7 @@ paddles.push(new Paddle("top"));
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
-var curX = getRandomArbitrary(0,99);
+//var curX = getRandomArbitrary(0,99);
 
 // Ball object
 ball = {
@@ -170,7 +176,6 @@ room.on('startGame', function(msg){
 	}
 	else{
 		printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
-		//Draw();
 	}
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
@@ -188,16 +193,14 @@ room.on('update', function(msg){
 	ball.y = sBallY*canvas.height / 100;
 
 	gameDatas = msg.gameDatas;
-	//console.log(ball);
-	//printText('coordinates', JSON.stringify(msg), 400, 175);
 	printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 
-/*room.on('statusChange', function(msg){
+room.on('statusChange', function(msg){
 	var myScore = msg[login];
 	var opponentScore = msg[opponentLogin];
 	var gameStatus = msg['gameStatus'];
-});*/
+});
 
 function deleteText(name){
 	delete drawObjects[name];
@@ -224,7 +227,7 @@ function myStartGame(){
 	//alert('MY START Game!!!');
 	//animloop();
 
-	//initSender();
+	initSender();
 }
 
 /*io.on('connection', function(socket){
@@ -268,7 +271,7 @@ function sendGameData(data1, url){
 	}});*/
 }
 
-var tmr0 = setInterval(sendGameData , 500);
+//var tmr0 = setInterval(sendGameData , 500);
 
 /*for (var i=0;i<1000;i++){
 
@@ -281,7 +284,6 @@ var tmr0 = setInterval(sendGameData , 500);
 //}
 
 function ajaXSend(dat, url){
-
 	/*$.ajax({
 	url: url?url:'http://localhost:5009/Move',
 	method: 'POST',
@@ -294,8 +296,6 @@ function ajaXSend(dat, url){
 	room.emit('movement', dat );
 
 }
-
-
 /*var timer2 = setInterval(function (){
 	$.ajax({
 		//url: 'Alive',
@@ -314,7 +314,6 @@ var curBallY=0;
 
 function printText(name, text, startX, startY, colour) {
 	drawObjects[name] = {text:'<'+name+'> ' + text, startX: startX, startY: startY, colour:colour};
-	//texts.push({text:text, startX: startX, startY: startY, colour:colour});
 }
 
 function drawText(obj){
@@ -365,14 +364,6 @@ function createParticles(x, y, m) {
 var jjj=0;
 
 function drawPaddles(){
-	/*for(var i = 0; i < paddles.length; i++) {
-		p = paddles[i];
-		
-		ctx.fillStyle = "white";
-		ctx.fillRect(p.x, p.y, p.w, p.h);
-	}*/
-
-	//console.log(JSON.stringify(paddles));
 	//paddles.push(new Paddle("bottom"));
 	//paddles.push(new Paddle("top"));
 	for(var i = 1; i < paddles.length; i++) {
@@ -386,7 +377,7 @@ function drawPaddles(){
 			if (gameDatas[i-1]){
 				var a = gameDatas[i-1];
 				//console.log(JSON.stringify(a));
-				var padX = a.padX;
+				var padX = a.x;
 				//console.log('i: ' + i + ' ' + padX);
 
 				p.x = padX * canvas.width/100  - p.w/2;//(gameDatas[i])['padX']
@@ -398,11 +389,10 @@ function drawPaddles(){
 		//p.y = gameDatas[i].padY =='top'? 0:500;
 		//ctx.fillStyle = 'red';
 		//if (i==0) ctx.fillStyle = "white";// (i==0?"white":"red");
-		ctx.fillStyle = "white";// (i==0?"white":"red");
-		//if (i==0) { printText('AZAZA', p.x, 400, 300); }
-		ctx.fillRect(p.x, p.y, p.w, p.h);
 
-		//ctx.fillRect(p.x, p.y, p.w, p.h);
+		ctx.fillStyle = "white";// (i==0?"white":"red");
+
+		ctx.fillRect(p.x, p.y, p.w, p.h);
 	}
 }
 
@@ -426,17 +416,10 @@ printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
 printText('user1' , logins[0], 20, 50+2*20);
 printText('user2' , logins[1], 20, 50+3*20);
 
-/*var tmr0 = setInterval(function(){
-	//printText('Gaga Campeon ')
-	//alert(1);
-	
-	//printText('Gaga Campeon ' + jjj++, 20, 50+jjj*20);
-	Draw();
-}, 2500);*/
-
 function clearTexts(){
 	texts = [];
 }
+
 // Function to increase speed after every 5 points
 function increaseSpd() {
 	if(points % 4 == 0) {
@@ -451,39 +434,9 @@ function increaseSpd() {
 function trackPosition(e) {
 	mouse.x = e.pageX;
 	mouse.y = e.pageY;
-	//ajaXSend(  )
-	//console.log('Mouse move : trackPosition function');
 }
 
-
-
-// Function to update positions, score and everything.
-// Basically, the main game logic is defined here
-function update() {
-	
-	// Update scores
-	updateScore(); 
-	
-	/*// Move the paddles on mouse move
-	if(mouse.x && mouse.y) {
-		for(var i = 1; i < paddles.length; i++) {
-			p = paddles[i];
-			p.x = mouse.x - p.w/2;
-		}		
-	}*/
-	//DUBLICATE
-	// Move the paddles on mouse move
-	if(mouse.x && mouse.y) {
-		for(var i = 1; i < paddles.length; i++) {
-			p = paddles[i];
-			p.x = mouse.x - p.w/2;
-		}		
-	}
-
-	// Move the ball
-	/*ball.x += ball.vx;
-	ball.y += ball.vy;*/
-	
+function UpdateCollisions(){
 	// Collision with paddles
 	p1 = paddles[1];
 	p2 = paddles[2];
@@ -494,6 +447,7 @@ function update() {
 	// save collision's position so that sparks can be
 	// emitted from that position, set the flag variable,
 	// and change the multiplier
+
 	if(collides(ball, p1)) {
 		collideAction(ball, p1);
 	}
@@ -506,6 +460,7 @@ function update() {
 	else {
 		// Collide with walls, If the ball hits the top/bottom,
 		// walls, run gameOver() function
+
 		if(ball.y + ball.r > H) {
 			ball.y = H - ball.r;
 			gameOver();
@@ -528,18 +483,49 @@ function update() {
 			ball.x = ball.r;
 		}
 	}
+}
+
+// Function to update positions, score and everything.
+// Basically, the main game logic is defined here
+function update() {
+	
+	// Update scores
+	updateScore(); 
+	
+	/*// Move the paddles on mouse move
+	if(mouse.x && mouse.y) {
+		for(var i = 1; i < paddles.length; i++) {
+			p = paddles[i];
+			p.x = mouse.x - p.w/2;
+		}		
+	}*/
+	//DUBLICATE
+	// Move the paddles on mouse move
+	
+	/*if(mouse.x && mouse.y) {
+		for(var i = 1; i < paddles.length; i++) {
+			p = paddles[i];
+			p.x = mouse.x - p.w/2;
+		}		
+	}*/
+
+	// Move the ball
+	/*ball.x += ball.vx;
+	ball.y += ball.vy;*/
+	//UpdateCollisions();
+	
 	
 	
 	
 	// If flag is set, push the particles
-	/*if(flag == 1) { 
+	if(flag == 1) { 
 		for(var k = 0; k < particlesCount; k++) {
 			particles.push(new createParticles(particlePos.x, particlePos.y, multiplier));
 		}
 	}	
 	
 	// Emit particles/sparks
-	emitParticles();*/
+	emitParticles();
 	
 	// reset flag
 	flag = 0;
@@ -583,9 +569,15 @@ function collideAction(ball, p) {
 		multiplier = 1;	
 	}
 	
-	points++;
-	increaseSpd();
+
+	//points++;
+	//increaseSpd();
 	
+	
+	
+	particlePos.x = ball.x;
+	flag = 1;
+
 	if(collision) {
 		if(points > 0) 
 			collision.pause();
@@ -593,10 +585,8 @@ function collideAction(ball, p) {
 		collision.currentTime = 0;
 		collision.play();
 	}
-	
-	particlePos.x = ball.x;
-	flag = 1;
 }
+
 
 // Function for emitting particles
 function emitParticles() { 
@@ -669,6 +659,10 @@ function animloop() {
 	Draw();
 }
 
+
+
+
+
 // Function to execute at startup
 function startScreen() {
 	Draw();
@@ -676,8 +670,9 @@ function startScreen() {
 }
 
 // On button click (Restart and start)
+
 function btnClick(e) {
-	
+/*	
 	// Variables for storing mouse position on click
 	var mx = e.pageX,
 			my = e.pageY;
@@ -703,20 +698,11 @@ function btnClick(e) {
 			over = 0;
 		}
 	}
+*/
 }
 
-function Redraw(){
-	ball.x = 20;
-			ball.y = 20;
-			points = 0;
-			ball.vx = 4;
-			ball.vy = 8;
-			animloop();
-			
-			over = 0;
-			startBtn = {};
-}
 printText('User', 'I am ' + login, 500, 20);
+
 // Show the start screen
 //startScreen();
 animloop();

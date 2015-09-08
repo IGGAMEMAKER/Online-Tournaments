@@ -75,7 +75,7 @@ function MoveHead(data){
   	var movement = data.movement;
   	var userLogin = data.login;
 
-  	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
+  	//strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
 
   	Move(tournamentID, gameID, movement, userLogin);
 }
@@ -99,8 +99,8 @@ function MoveHead(data){
 }*/
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 10;
-const UPDATE_TIME = 1;//1000/50; //50 times per second = 20ms
+const STANDARD_PREPARE_TICK_COUNT = 5;
+const UPDATE_TIME = 1000/50; //50 times per second = 20ms
 const PREPARED = "PREPARED";
 
 
@@ -111,7 +111,8 @@ funcArray["/UnSetGame"] = UnSetGame;*/
 
 
 var games = {
-	count:0,
+	count:0
+
 }
 
 //console.log(JSON.stringify(games));
@@ -211,7 +212,7 @@ function Move( tournamentID, gameID, movement, userName){
 			
 			//console.log();
 			//console.log(gameID+'_' + userName);
-			games[gameID].gameDatas[playerID].padX = movement.x;
+			games[gameID].gameDatas[playerID].x = movement.x;
 		}
 		else{
 			strLog('#####PLAYER DOESNT exist#####');
@@ -224,10 +225,11 @@ function Move( tournamentID, gameID, movement, userName){
 
 function playerExists(gameID, userName){
 	var playerExistsVal = getGID(gameID, userName);// games[gameID].players.UIDtoGID[userName]; //userIDs[playerID];// games[gameID].players.UIDtoGID[playerID]
-	strLog('player ' + userName + 'in (' + gameID + ') exists= ' + playerExistsVal);
-	if (!playerExistsVal){
+	//strLog('player ' + userName + 'in (' + gameID + ') exists= ' + playerExistsVal);
+	
+	/*if (!playerExistsVal){
 		strLog('UID to GID list : ' + JSON.stringify(games[gameID].players.UIDtoGID));
-	}
+	}*/
 	//console.log('playerExists:'+playerExistsVal);
 	return playerExistsVal ;
 }
@@ -247,7 +249,8 @@ function Answer(res, code){
 }
 
 function mod2(val){
-	return val%2==0?'top':'bottom';
+	//return val%2==0?'top':'bottom';
+	return val%2==0?0:95;
 }
 
 function StartGame (req, res){
@@ -280,13 +283,14 @@ function StartGame (req, res){
 			games[ID].players.UIDtoGID[userIDs[playerID]] = i;
 			games[ID].scores[userIDs[playerID]] = 0;
 			i++;
+
 			//games[ID].players.push(playerID);// = playerID;
 			//games[ID].scores.push(0);
 			//games[ID].players[i++]={playerID:playerID , score:0 };
-
+			var speed = 0.4/4;
 			//***********
-			games[ID].gameDatas[playerID] = { padX:50, padY: mod2(playerID), score:0 };
-			games[ID].ball = {x:15, y:15};
+			games[ID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20 };
+			games[ID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
 			//***********
 		}
 		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
@@ -299,23 +303,10 @@ function StartGame (req, res){
 		games[ID].socketRoom.on('connection', function (socket){
 			strLog('Room <' + ID + '> got new player');
 			socket.on('movement', function (data){
-				strLog('Getting socketRoom socket.on Movement');
+				//strLog('Getting socketRoom socket.on Movement');
 				MoveHead(data);
 			});
-		})
-		.on('movement', function (data) {
-
-			strLog('Getting socketRoom Movement');
-			MoveHead(data);
-		  	/*var tournamentID = data.tournamentID;
-		  	var gameID = data.gameID;
-		  	var movement = data.movement;
-		  	var userLogin = data.login;
-
-		  	Move(tournamentID, gameID, movement, userLogin);*/
-		})
-
-		//SetGameListenerRoom(ID);
+		});
 
 		console.log('Players');
 		console.log(games[ID].players);
@@ -326,43 +317,11 @@ function StartGame (req, res){
 	//res.end();
 }
 
-function SetGameListenerRoom(ID){//gameID
-	/*var room = games[ID].socketRoom;
-	room.on('connection', function (socket){
-		strLog('Room <' + ID + '> got new player');
-	});
-
-	room.on('movement', function (data) {
-		strLog('Getting movement DATA!2');
-	  	var tournamentID = data.tournamentID;
-	  	var gameID = data.gameID;
-	  	var movement = data.movement;
-	  	var userLogin = data.login;
-
-	  	Move(tournamentID, gameID, movement, userLogin);
-	});*/
-	/*var room = games[ID].socketRoom;
-	room.on('connection', function (socket){
-		strLog('Room <' + ID + '> got new player');
-	});
-	room.on('movement', function (data) {
-		strLog('Getting movement DATA!2');
-	  	var tournamentID = data.tournamentID;
-	  	var gameID = data.gameID;
-	  	var movement = data.movement;
-	  	var userLogin = data.login;
-
-	  	Move(tournamentID, gameID, movement, userLogin);
-	});*/
-}
-
 function prepare(gameID){
 	if (games[gameID].tick>0){
 		console.log(gameID);
 		games[gameID].tick--;
 		SendToRoom(gameID, 'startGame', {ticks:games[gameID].tick} );
-
-		//games[gameID].socketRoom.emit('');
 	}
 	else{
 		console.log('Trying to stop timer');
@@ -373,21 +332,9 @@ function prepare(gameID){
 	}
 }
 
-/*var fs = require('fs');
-var stream = fs.createWriteStream("my_file.txt");
-stream.once('open', function(fd) {
-  stream.write("My first row\n");
-  stream.write("My second row\n");
-  stream.end();
-});*/
-
 function update(gameID){
-
-	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:10, bY:60, gameDatas:games[gameID].gameDatas});
-	//SendToRoom('/'+gameID, 'update', { opponentX:10, bX:games[gameID].ball.x, bY:games[gameID].ball.y, gameDatas:games[gameID].gameDatas });
+	UpdateCollisions(gameID, gameID);
 	SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
-	games[gameID].ball.x+=1;
-	//games[gameID].ball.y+=2;
 }
 
 /*function getOpponentGID(gameID, userName, count){
@@ -404,13 +351,22 @@ function getGID(gameID, UID){//GID= GamerID, UID= UserID
 	return games[gameID].players.UIDtoGID[UID];
 }
 
-function FinishGame(ID){
+function FinishGame(ID, playerID){
+	var gameID = ID;
+	var tournamentID = ID;
+	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
 	games[ID].status = GAME_FINISH;
-	var sortedPlayers = {};
-	sortedPlayers.scores = games[ID].scores;// Sort(games[ID].scores);
+	var sortedPlayers = { 
+		scores: Sort(games[ID].scores),
+		gameID: ID,
+		tournamentID:ID
+	};
+	//games[ID].
+	/*sortedPlayers.scores = Sort(games[ID].scores);//games[ID].scores;// Sort(games[ID].scores);
 	sortedPlayers.gameID = ID;
-	console.log('FIX IT!!! GAMEID=tournamentID');
-	sortedPlayers.tournamentID = ID;// games[ID].tournamentID;
+	sortedPlayers.tournamentID = ID;// games[ID].tournamentID;*/
+	clearInterval(games[gameID].timer);
+	strLog('FIX IT!!! GAMEID=tournamentID');
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
 			queryProcessor.getPort('GameFrontendServer'), null, sender.printer );
 }
@@ -418,24 +374,16 @@ function Sort(players){
 	return players;
 }
 
-function ScoreOfPlayer(gameID, UID){
-	return games[gameID].scores[UID];
+function ScoreOfPlayer(gameID, i) {
+	return games[gameID].scores[getUID(gameID, i)];//games[gameID].scores[UID];
 }
 
-function CheckForTheWinner(tournamentID, gameID, playerID, res) {
-	var curGame = games[gameID];
-
-	if (ScoreOfPlayer(gameID, playerID)>500){
-		console.log("########################################################");
-		console.log("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
-		console.log("////////////////////////////////////////////////////////");
-		FinishGame(gameID);
-		Answer(res, JSON.stringify(curGame));//GAME_FINISH
-		//res.end(GAME_FINISH);
-	}
-	else{
-		Answer(res, "no Winner");
-		//res.end("no Winner");
+function CheckForTheWinner(tournamentID, gameID) {
+	for (var i = 0; i < 2; i++) {
+		if (ScoreOfPlayer(gameID, i) == 3){ 
+			strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
+			FinishGame(gameID);
+		}
 	}
 }
 
@@ -460,25 +408,197 @@ io.on('connection', function(socket){
   });
   socket.on('event1', function(data){
     console.log('io.on connection--> socket.on event1'); console.log(data);
-
     //SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
   });
-  socket.on('movement', function (data){
-  	strLog('io.socket.on => ' + JSON.stringify(data));
-  })
-  /*socket.on('movement', function(data){
-  	console.log('Getting movement DATA!1');
-  	var tournamentID = data.tournamentID;
-  	var gameID = data.gameID;
-  	var movement = data.movement;
-  	var userLogin = data.login;
-  	strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
-
-  	Move(tournamentID, gameID, movement, userLogin);
-  });*/
-
 });
+
+function incr(gameID, i){
+	var userName = getUID(gameID, i);
+	var game = games[gameID];
+
+	strLog('increment score of ' + userName + ' in game ' + gameID);
+
+	game.scores[userName]++;
+
+	if( game.scores[userName] == 3){ 
+		FinishGame(gameID, userName);
+	}
+	else{
+		strLog('Drag me!');
+		game.ball.x = 50;
+		game.ball.y = 50;
+	}
+}
+
+function UpdateCollisions(tournamentID,gameID){
+	var game = games[gameID];
+	var gameDatas = game.gameDatas;
+	// Collision with paddles
+	/*p0 = paddles[1];
+	p1 = paddles[2];*/
+	var ball = game.ball;
+
+	/*var ballRadius = 2;
+	ball.r = ballRadius;*/
+	//strLog('Movement : vy=' + ball.vy + ' vx =' + ball.vx + ";; \n" + JSON.stringify(ball));
+	ball.y += ball.vy;
+	ball.x += ball.vx;
+	strLog('Result : y=' + ball.y + ' x=' + ball.x);
+
+	H=100;
+	W=100;
+	//SICK!
+
+	var p0 = gameDatas[0];
+	var p1 = gameDatas[1];
+
+	// If the ball strikes with paddles,
+	// invert the y-velocity vector of ball,
+	// increment the points, play the collision sound,
+	// save collision's position so that sparks can be
+	// emitted from that position, set the flag variable,
+	// and change the multiplier
+	var flag = 0;
+
+	if(collides(ball, p0, 'p0')) {
+		flag = 1;
+		strLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );
+	}
+	
+	
+	else if(collides(ball, p1, 'p1')) {
+		flag = 1;
+		strLog("# Collision with p1, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p1) );
+	} 
+	
+	else {
+		//strLog('No collision');
+		// Collide with walls, If the ball hits the top/bottom,
+		// walls, run gameOver() function
+		//strLog('ball.y=' + ball.y + ' ball.r=' + ball.r);
+
+		if(ball.y + ball.r > H) {
+			ball.y = H - ball.r;
+			incr(gameID, 1);
+			
+			//gameDatas[1].score++;
+			//CheckForTheWinner(tournamentID, gameID);
+			//gameOver();
+		} 
+		
+		else if(ball.y < 0) {
+			ball.y = ball.r;
+			incr(gameID, 0);
+			//game.scores[getUID(gameID, 0)]++;
+			//CheckForTheWinner(tournamentID, gameID);
+			//gameDatas[0].score++;
+			//gameOver();
+		}
+		
+		// If ball strikes the vertical walls, invert the 
+		// x-velocity vector of ball
+		if(ball.x + ball.r > W) {
+			strLog ('# HIT Right');
+			ball.vx = -ball.vx;
+			ball.x = W - ball.r;
+		}
+		
+		else if(ball.x - ball.r < 0) {
+			strLog ('# HIT Left');
+			ball.vx = -ball.vx;
+			ball.x = ball.r;
+		}
+	}
+}
+
+function collides(b, p, padName) {
+	strLog('padName: ' + padName);
+	strLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
+	strLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h)
+	if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <=p.x + p.w/2) {
+		//strLog('Fits width');
+		if(b.y >= (p.y - p.h) && p.y > 0){
+			//paddleHit = 1;
+			
+			b.vy = -b.vy;
+			b.y = p.y - p.h;
+			return true;
+		}
+		
+		else if(b.y <= p.h && p.y == 0) {
+			//paddleHit = 2;
+
+			b.vy = -b.vy;
+			b.y = p.h + b.r;
+			return true;
+		}
+		
+		else return false;
+	}
+	else{
+		strLog('DOESNT fit width');
+	}
+}
+
+//Do this when collides == true
+/*function collideAction(ball, p) {
+	ball.vy = -ball.vy;
+	
+	if(paddleHit == 1) {
+		ball.y = p.y - p.h;
+		//particlePos.y = ball.y + ball.r;
+		//multiplier = -1;	
+	}
+	
+	else if(paddleHit == 2) {
+		ball.y = p.h + ball.r;
+		//particlePos.y = ball.y - ball.r;
+		//multiplier = 1;	
+	}
+	
+	flag = 1;
+}*/
+
+
+//Function to check collision between ball and one of
+//the paddles
+/*function collides(b, p) {
+	if(b.x + ball.r >= p.x && b.x - ball.r <=p.x + p.w) {
+		if(b.y >= (p.y - p.h) && p.y > 0){
+			paddleHit = 1;
+			return true;
+		}
+		
+		else if(b.y <= p.h && p.y == 0) {
+			paddleHit = 2;
+			return true;
+		}
+		
+		else return false;
+	}
+}
+
+//Do this when collides == true
+function collideAction(ball, p) {
+	ball.vy = -ball.vy;
+	
+	if(paddleHit == 1) {
+		ball.y = p.y - p.h;
+		//particlePos.y = ball.y + ball.r;
+		//multiplier = -1;	
+	}
+	
+	else if(paddleHit == 2) {
+		ball.y = p.h + ball.r;
+		//particlePos.y = ball.y - ball.r;
+		//multiplier = 1;	
+	}
+	
+	flag = 1;
+}*/
+
+
 
 /*var specialRoom = io.of('/Special')
 	.on('connection', function(socket){
@@ -495,58 +615,15 @@ io.on('connection', function(socket){
 		console.log(JSON.stringify(msg));
 	});*/
 
-/*var specialRoom = io.of('/Special');
-
-	specialRoom.on('connection', function(socket){
-		strLog('/Special connection');
-
-		socket.emit('event2', {data2:'specialRoom message'} );
-		socket.on('echo', function (msg){
-			strLog('ECHO Message: ' + JSON.stringify(msg));
-			//socket.emit('event2', {data2:'specialRoom ECHO message!!'} );
-		})
-	})
-	specialRoom.on('echo', function (msg){
-		strLog('Got echo!!');
-		console.log(JSON.stringify(msg));
-	});
-setTimeout(function() {specialRoom.emit('event3', { asd:'TIMEOUT SEND FROM ROOM'} ) } , 3000 );*/
-
-/*io.on('movement', function(data){
-  	console.log('Getting movement DATA!2');
-  	var tournamentID = data.tournamentID;
-  	var gameID = data.gameID;
-  	var movement = data.movement;
-  	var userLogin = data.login;
-
-  	Move(tournamentID, gameID, movement, userLogin);
-  });*/
-
-/*var tmr2 = setTimeout(function(){
-  console.log(io.sockets.server.nsps['/111'].sockets);
-}, 11000);*/
-
-/*io.of('/111').on('connection', function(socket){
-  console.log('ololo222');
-  socket.on('event1', function(data){
-    console.log('ololo111');
-    console.log(data);
-  })
-})*/
-
 function SendToRoom( room, event1, msg, socket){
 	//console.log('SendToRoom:' + room + ' ' + event1 + ' ');
 	//strLog('SendToRoom:' + room + ' ' + event1 + ' ' + JSON.stringify(msg));
 	//console.log('Send Message:' + JSON.stringify(msg));
 	//strLog('Trying to send to room ' + room +' event= '+ event1 + ' msg= ' + JSON.stringify(msg));
-	//console.log('00000000000000000000000000000000000');
+
 	games[room].socketRoom.emit(event1, msg);
 	//strLog('Я отправиль...');
 	
 	//io.of(room).emit(event1, msg);
 	//console.log('Emitted');
 }
-
-//var server = require('./script');
-//queryProcessor.getGamePort(curGameNameID)
-//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

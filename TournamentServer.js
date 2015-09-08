@@ -144,7 +144,7 @@ function last (Arr){
 function EndTournament( scores, gameID, tournamentID){
 	var obj = [];
 	for (var a in scores){
-		obj.push( {value:scores[a], login: a} );
+		obj.push( { value:scores[a], login: a } );
 	}
 	var winnersCount= last(tournaments[tournamentID].goNext);
 	console.log('Prizes will go to ' + winnersCount + ' first users');
@@ -167,6 +167,7 @@ function EndTournament( scores, gameID, tournamentID){
 		winners[i] = { login:obj[i].login, prize:tournaments[tournamentID].Prizes[i] };
 	}
 	console.log(winners);
+
 	sender.sendRequest("WinPrize", winners, '127.0.0.1', 
 			queryProcessor.getPort('DBServer'), null, sender.printer );
 

@@ -5,8 +5,8 @@ html
 
 		script( src="https://cdn.socket.io/socket.io-1.2.0.js").
 		script( src="http://code.jquery.com/jquery-1.11.1.js")
-		//script.
-			//var cc = "#{session.login}"; 
+		script.
+			var login = "#{session.login}"; 
 			//alert("#{session.login}");
 		script(src="sockets.js").
 		script(id= "RegUsr").
@@ -76,8 +76,14 @@ html
 			REGISTER
 		br
 		br
-		a( href='Tournaments').
-			Back To tournaments
+		div
+			a( href='TournamentInfo?tID='+(message[0].tournamentID-1)).
+				Back
+			a( href='Tournaments').
+				Back To tournaments
+			br
+			a( href='TournamentInfo?tID='+(message[0].tournamentID+1)).
+				Next
 		script.
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";

@@ -76,8 +76,15 @@ html
 			REGISTER
 		br
 		br
-		a( href='Tournaments').
-			Back To tournaments
+		div
+			a( href='TournamentInfo?tID='+(message[0].tournamentID-1)).
+				Back
+			br
+			a( href='Tournaments').
+				Back To tournaments
+			br
+			a( href='TournamentInfo?tID='+(message[0].tournamentID+1)).
+				Next
 		script.
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
