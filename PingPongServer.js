@@ -289,7 +289,7 @@ function StartGame (req, res){
 			//games[ID].players[i++]={playerID:playerID , score:0 };
 			var speed = 0.4/4;
 			//***********
-			games[ID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20 };
+			games[ID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
 			games[ID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
 			//***********
 		}
@@ -420,6 +420,7 @@ function incr(gameID, i){
 	strLog('increment score of ' + userName + ' in game ' + gameID);
 
 	game.scores[userName]++;
+	game.gameDatas[i].score++;
 
 	if( game.scores[userName] == 3){ 
 		FinishGame(gameID, userName);
@@ -460,6 +461,9 @@ function UpdateCollisions(tournamentID,gameID){
 	// emitted from that position, set the flag variable,
 	// and change the multiplier
 	var flag = 0;
+
+
+
 
 	if(collides(ball, p0, 'p0')) {
 		flag = 1;
@@ -513,9 +517,11 @@ function UpdateCollisions(tournamentID,gameID){
 }
 
 function collides(b, p, padName) {
-	strLog('padName: ' + padName);
-	strLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
-	strLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h)
+	if (padName=='p0'){
+		strLog('padName: ' + padName);
+		strLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
+		strLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
+	}
 	if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <=p.x + p.w/2) {
 		//strLog('Fits width');
 		if(b.y >= (p.y - p.h) && p.y > 0){

@@ -47,12 +47,13 @@ canvas.addEventListener("mousedown", btnClick, true);
 
 // Initialise the collision sound
 collision = document.getElementById("collide");
-
+var resize =0;
 // Set the canvas's height and width to full screen
 H=W*3/4;
 if (H>window.innerHeight){
 	H = window.innerHeight;
 	W = H * 4 / 3;
+	resize = 1;
 }
 
 canvas.width = W;
@@ -123,7 +124,7 @@ startBtn = {
 		ctx.font = "18px Arial, sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
-		ctx.fillStlye = "white";
+		ctx.fillStyle = "white";
 		ctx.fillText("Start", W/2, H/2 );
 	}
 };
@@ -189,10 +190,14 @@ room.on('update', function(msg){
 
 	var sBallX = (msg['ball']).x;
 	var sBallY = (msg['ball']).y;
-	ball.x = sBallX*canvas.width / 100;
-	ball.y = sBallY*canvas.height / 100;
+	ball.x = sBallX*W / 100;
+	ball.y = sBallY*H / 100;
 
 	gameDatas = msg.gameDatas;
+	
+	printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
+	printText('u1', gameDatas[1].score, 200, 50+3*20);
+	
 	printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 
@@ -208,8 +213,8 @@ function deleteText(name){
 
 function getNormalizedCoords(mouseCoords){
 	return { 
-		x:mouseCoords.x*100/canvas.width, 
-		y:mouseCoords.y*100/canvas.height
+		x:mouseCoords.x*100/W, 
+		y:mouseCoords.y*100/H
 	}
 }
 var timer;
@@ -313,23 +318,22 @@ var curBallX=0;
 var curBallY=0;
 
 function printText(name, text, startX, startY, colour) {
-	drawObjects[name] = {text:'<'+name+'> ' + text, startX: startX, startY: startY, colour:colour};
-}
-
-function drawText(obj){
-	if (obj){
-		var colour = obj.colour;
-		var startX = obj.startX;
-		var startY = obj.startY;
-		var text = obj.text;
-
-		ctx.fillStlye = colour?colour:"white";
-		ctx.font = "16px Arial, sans-serif";
-		ctx.textAlign = "left";
-		ctx.textBaseline = "top";
-		ctx.fillText(text, startX?startX:50, startY?startY:50 );
+	var nameStr=' ';
+	switch(name){
+		case 'user0':
+		case 'user1':
+		case 'u0':
+		case 'u1':
+		break;
+			
+		default:
+			nameStr = '<'+name+'> ';
+		break;
 	}
+	drawObjects[name] = {text: nameStr + text, startX: startX, startY: startY, colour:colour};
 }
+
+
 
 // Restart Button object
 restartBtn = {
@@ -346,7 +350,7 @@ restartBtn = {
 		ctx.font = "18px Arial, sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
-		ctx.fillStlye = "white";
+		ctx.fillStyle = "white";
 		ctx.fillText("Restart", W/2, H/2 - 25 );
 	}
 };
@@ -368,19 +372,23 @@ function drawPaddles(){
 	//paddles.push(new Paddle("top"));
 	for(var i = 1; i < paddles.length; i++) {
 		//alert('i(' + i + ')' + JSON.stringify(paddles[i]));
-		
+		var colour = "red";
+		if (i==2) { colour = "white"; }
+
 		p = paddles[i];
-		printText(i, JSON.stringify(p), 25, 400+40*i);
+		//printText(i, JSON.stringify(p), 25, 400+40*i);
 		//console.log('length=' + paddles.length);
 		if (gameDatas){
-			//p.x = (gameDatas[i].padX?gameDatas[i].padX:50)*canvas.width/100  - p.w/2;
 			if (gameDatas[i-1]){
 				var a = gameDatas[i-1];
 				//console.log(JSON.stringify(a));
 				var padX = a.x;
 				//console.log('i: ' + i + ' ' + padX);
 
-				p.x = padX * canvas.width/100  - p.w/2;//(gameDatas[i])['padX']
+				p.x = padX * W/100  - p.w/2;//(gameDatas[i])['padX']
+				//zzz
+				off = 0.1;
+				printText(logins[i-1], '', p.x, p.y==0? H*off: H*(1-off-0.05), colour);
 			}
 			else{
 				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);
@@ -388,9 +396,9 @@ function drawPaddles(){
 		}
 		//p.y = gameDatas[i].padY =='top'? 0:500;
 		//ctx.fillStyle = 'red';
-		//if (i==0) ctx.fillStyle = "white";// (i==0?"white":"red");
-
-		ctx.fillStyle = "white";// (i==0?"white":"red");
+		
+		ctx.fillStyle = colour;// (i==0?"white":"red");
+		// ctx.fillStyle = "white";// (i==0?"white":"red");
 
 		ctx.fillRect(p.x, p.y, p.w, p.h);
 	}
@@ -402,7 +410,10 @@ function Draw() {
 	paintCanvas();
 
 	drawPaddles();
-	
+	/*if (resize){
+		printText('resize', 'res', 0, 0);
+	}*/
+	//ctx.fillStyle
 	for (var index in drawObjects){
 		drawText(drawObjects[index]);
 	}
@@ -412,9 +423,11 @@ function Draw() {
 }
 var texts = [];
 
-printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
-printText('user1' , logins[0], 20, 50+2*20);
-printText('user2' , logins[1], 20, 50+3*20);
+//printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
+printText('user0' , logins[0], 20, 50+2*20, 'red');
+printText('user1' , logins[1], 20, 50+3*20, '');
+
+
 
 function clearTexts(){
 	texts = [];
@@ -490,7 +503,7 @@ function UpdateCollisions(){
 function update() {
 	
 	// Update scores
-	updateScore(); 
+	//updateScore(); 
 	
 	/*// Move the paddles on mouse move
 	if(mouse.x && mouse.y) {
@@ -611,15 +624,29 @@ function emitParticles() {
 
 // Function for updating score
 function updateScore() {
-	ctx.fillStlye = "white";
+	ctx.fillStyle = "white";
 	ctx.font = "16px Arial, sans-serif";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Score: " + points, 20, 20 );
 }
+function drawText(obj){
+	if (obj){
+		var colour = obj.colour;
+		var startX = obj.startX;
+		var startY = obj.startY;
+		var text = obj.text;
+
+		ctx.fillStyle = colour?colour:"white";
+		ctx.font = "16px Arial, sans-serif";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillText(text, startX?startX:50, startY?startY:50 );
+	}
+}
 
 function nextRound(){
-	ctx.fillStlye = "white";
+	ctx.fillStyle = "white";
 	ctx.font = "20px Arial, sans-serif";
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
@@ -637,7 +664,7 @@ function nextRound(){
 
 // Function to run when the game overs
 function gameOver() {
-	ctx.fillStlye = "white";
+	ctx.fillStyle = "white";
 	ctx.font = "20px Arial, sans-serif";
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
@@ -701,7 +728,7 @@ function btnClick(e) {
 */
 }
 
-printText('User', 'I am ' + login, 500, 20);
+//printText('User', 'I am ' + login, 0, 20);
 
 // Show the start screen
 //startScreen();
