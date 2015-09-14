@@ -1,25 +1,16 @@
-//var startServer = require('./script');
 
-var http = require('http');
-var url = require('url');
 var queryProcessor = require('./test');
-var server = require('./script'); //var server = new http.Server();
+
 var serverName = "FrontendServer";
-var qs = require('querystring');
 var sender = require('./requestSender');
 
 var sitePort = 80;
 
+
 var express         = require('express');
-var path            = require('path'); // модуль для парсинга пути
-
-var parseurl = require('parseurl');
-
-var jade = require('jade');
-
 var app = express();
 var bodyParser = require('body-parser')
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
@@ -53,17 +44,6 @@ app.post('/Register', function (req, res){
 	//sender.Answer(res, {result:'OK'});
 });
 
-/*function RegisterUser( data, res){
-	//strLog("Port=" + queryProcessor.getPort('AccountServer'));
-	//strLog("FrontendServer tries to register user");
-	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, RegisterUserHandler );
-}
-function RegisterUserHandler( error, response, body, res) {
-	strLog("Got answer from DBServer");
-	sender.Answer(res, body);
-        //res.end("THX for register");
-}*/
-
 //funcArray["/Login"] = Login;
 app.post('/Login', function (req, res){
 	var data = req.body;
@@ -83,13 +63,6 @@ function Login( data, res){
 function LoginHandler( error, response, body, res){
 	strLog('LoginHandler call');
 	sender.Answer(res, body);
-	//res.end(body);
-	/*if (body['result'] === 'OK'){
-		res.end("You are logged in!!");
-	}
-	else{
-		res.end("Login or password are invalid");
-	}*/
 }
 
 /*funcArray["/ChangePassword"] = ChangePassword;
@@ -244,15 +217,3 @@ function RememberPassword( data, res){
 }
 
 function log(str){ strLog(str);}
-
-
-
-
-
-
-
-
-
-
-
-//server.SetServer(serverName, '127.0.0.1', funcArray);

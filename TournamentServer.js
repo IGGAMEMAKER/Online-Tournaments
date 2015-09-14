@@ -8,45 +8,16 @@ var server = require('./script');
 var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
 var funcArray = {};
+
+
+
 funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
 funcArray["/ServeTournament"] = ServeTournament;
 funcArray["/FinishGame"] = FinishGame;
 
-/*var tournament1 = {
-	ID: 1,
-	buyIn: 100,
-	gameNameID: 1,
-	playerTotalCount: 10,
-	structure: {
-		round1:5,
-		round2:2,
-		round3:1
-	},
-	playersRegistered:0
-};
-var tournament2 = {
-	ID: 2,
-	buyIn: 100,
-	gameNameID: 1,
-	playerTotalCount: 10,
-	playersRegistered:0,
-	structure: {}
-};*/
-//console.log(tournament1);
 var tournaments = {
 	count:0
 }
-//initTournaments();
-//showTournaments();
-/*function initTournaments(){
-	
-	tournaments[tournament1.ID]= tournament1;
-	tournaments[tournament2.ID]= tournament2;
-}
-function showTournaments(){
-	console.log(tournaments[1]);
-	console.log(tournaments[2]);
-}*/
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write

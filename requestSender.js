@@ -56,6 +56,7 @@ function Answer(res, JSONObject){
 }
 
 function initRequest(urlPath, curData, host, port){
+	//port = getPort(servName)
 	sendRequest(urlPath, curData, host, port, null, printer);
 }
 
