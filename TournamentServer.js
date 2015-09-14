@@ -97,7 +97,7 @@ function RegisterUserInTournament (req, res){
 
 }
 
-function FinishGame (data, res){
+function FinishGame (req, res){
 	var data = req.body;
 	console.log(data);
 	var gameID = data['gameID'];

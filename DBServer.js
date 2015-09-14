@@ -1,44 +1,37 @@
-var http = require('http');
-var url = require('url');
 var queryProcessor = require('./test');
 var sender = require('./requestSender');
-var qs = require('querystring');
-var server = require('./script');
+var express         = require('express');
+var app = express();
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
-var funcArray = {};
-funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
+//var funcArray = {};
+app.post('/GetTournaments',GetTournaments); //funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
 //funcArray["/TournamentInfo"] = TournamentInfo;
 
-funcArray["/GetUsers"] = GetUsers;
+app.post('/GetUsers', GetUsers);// funcArray["/GetUsers"] = GetUsers;
 
-funcArray["/AddTournament"] = AddTournament;
-funcArray["/Register"] = Register;
+app.post('/AddTournament', AddTournament); //funcArray["/AddTournament"] = AddTournament;
+app.post('/Register', Register);//funcArray["/Register"] = Register;
 
-funcArray["/WinPrize"] = WinPrize;
+app.post('/WinPrize', WinPrize); //funcArray["/WinPrize"] = WinPrize;
 
-funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
-funcArray['/IncreaseMoney'] = IncreaseMoney;
-funcArray['/RestartTournament'] = RestartTournament;
+app.post('/GetUserProfileInfo', GetUserProfileInfo);// funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+app.post('/IncreaseMoney', IncreaseMoney); //funcArray['/IncreaseMoney'] = IncreaseMoney;
+app.post('/RestartTournament', RestartTournament); //funcArray['/RestartTournament'] = RestartTournament;
 
 
-funcArray["/Login"] = LoginUser;
+app.post('/Login', LoginUser); //funcArray["/Login"] = LoginUser;
+
+
 /*funcArray["/Ban"] = Ban;
 funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;*/
-
-var loginSuccess = {
-	result: 'success'
-};
-
-var loginFail = {
-	result: 'fail'
-};
-
-var Success = {
-	result: 'success'
-};
 
 var Fail = {
 	result: 'fail'
@@ -165,22 +158,24 @@ var Tournament = mongoose.model('Tournament', {
 		players: 		Array
 	});*/
 
-function ChangePassword(data, res){
+function ChangePassword(req, res){
+	var data = req.body;
 	console.log("check current auth");
 	console.log("ChangePass of User " + data['login']);
 	res.end(Fail);
 }
 
-function RememberPassword(data, res){
+function RememberPassword(req, res){
+	var data = req.body;
 	console.log("Send mail and reset pass");
 	console.log("Remember pass of User " + data['login']);
 	res.end(Fail);
 }
 
-function LoginUser( data, res){
+function LoginUser(req, res){
+	var data = req.body;
 	console.log("LoginUser...");
 	console.log(data);
-	//res.end(JSON.stringify(loginSuccess));
 
 	var USER_EXISTS = 11000;
 	var login = data['login'];
@@ -241,7 +236,8 @@ function GetGameParametersByGameName (gameName){
 	}
 }
 
-function RestartTournament(data, res){
+function RestartTournament(req, res){
+	var data = req.body;
 	var tournamentID = data['tournamentID'];
 	Tournament.findOne({tournamentID: tournamentID}, '', function (err, tournament){
 		if (err){
@@ -261,7 +257,8 @@ function RestartTournament(data, res){
 	});
 }
 
-function GetUsers( data,res){
+function GetUsers( req,res){
+	var data = req.body;
 	var query = {};
 	var queryFields = '';//'id buyIn goNext gameNameID';
 	
@@ -292,7 +289,8 @@ function GetUsers( data,res){
 	//sender.Answer(res, users);
 }
 
-function IncreaseMoney(data,res){
+function IncreaseMoney(req,res){
+	var data = req.body;
 	var login = data['login'];
 	var cash = data['cash'];
 	incrMoney(res, login, cash);
@@ -323,7 +321,8 @@ function incrMoney(res, login, cash){
 	});
 }
 
-function WinPrize( data,res){
+function WinPrize( req,res){
+	var data = req.body;
 	/*var userID = data['userID'];
 	var incr = data['prize'];
 	console.log('uID= '+ userID + ' incr=' + incr);*/
@@ -363,7 +362,8 @@ function WinPrize( data,res){
 function getLoginByID(ID){
 	return IDToLoginConverter[ID]?IDToLoginConverter[ID]:'defaultLogin';
 }*/
-function GetUserProfileInfo(data , res){
+function GetUserProfileInfo(req , res){
+	var data = req.body;
 	console.log('Write Checker for sender validity');
 	var login = data['login'];
 	console.log('-----------USER PROFILE INFO -----ID=' + login + '------');
@@ -386,7 +386,8 @@ function GetUserProfileInfo(data , res){
  	});
 }
 
-function Register (data, res){
+function Register (req, res){
+	var data = req.body;
 	var USER_EXISTS = 11000;
 	var login = data['login'];
 	var password = data['password'];
@@ -424,7 +425,8 @@ function Register (data, res){
 	
 }*/
 
-function GetTournaments (data, res){
+function GetTournaments (req, res){
+	var data = req.body;
 
 	console.log("GetTournaments ");// + data['login']);
 	var query = {};
@@ -441,8 +443,13 @@ function GetTournaments (data, res){
 	console.log(queryFields);
 
 	Tournament.find(query,queryFields , function (err, tournaments){
-		console.log(tournaments);
-		sender.Answer(res, tournaments);
+		if(!err){
+			console.log(tournaments);
+			sender.Answer(res, tournaments);
+		}
+		else{
+			console.log(err);
+		}
 	});
 
 	
@@ -452,7 +459,8 @@ function GetTournaments (data, res){
 
 
 var COUNT_FIXED = 1;
-function AddTournament (data, res){
+function AddTournament (req, res){
+	var data = req.body;
 	var tournament = data;
 	console.log('Adding tournament ');
 	console.log('++++++++++++++++++++++++++++');
@@ -500,4 +508,10 @@ function AddTournament (data, res){
 	//sender.Answer(res, tournament);
 }
 
-server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
+var server = app.listen(5007, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log(serverName + ' is listening at http://%s:%s', host, port);
+});
+//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
