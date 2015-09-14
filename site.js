@@ -41,12 +41,12 @@ app.use(function(req,res,next){
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
-app.set('views', ['./views', './games/PingPong']);
+app.set('views', ['./frontend/views', './frontend/games/PingPong']);
 //app.set('games/PingPong', './views');
 
 app.set('view engine', 'jade');
 
-var sender = require('../requestSender');
+var sender = require('./requestSender');
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies

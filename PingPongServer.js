@@ -1,13 +1,6 @@
-var http = require('http');
-var url = require('url');
 var sender = require('./requestSender');
-
-
 var express = require('express');
 var app = express();
-
-
-var qs = require('querystring');
 //var gameServer = require('../gameServer');
 var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE

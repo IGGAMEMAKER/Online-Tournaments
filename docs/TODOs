@@ -1,0 +1,39 @@
+игра
+хостинг + разворачиваемый образ
+
+сохранение регистраций на турнир, 
+Выдача актуального Profile Info (current tournaments), 
+сохранение кук при перезагрузке сервака
+
+****многораундовые турниры
+ЛОГГИРОВАНИЕ
+ЗАЩИТНОЕ ПРОГРАММИРОВАНИЕ (во всех функциях проверяй входные данные на длину, пустоту и корректность)
+!!!!создание автоматических тестов
+Упрощение структуры Серверов (все запросы на фронтенд сервер, Турнирный мэнеджер - аут)
+РЕФАКТОРИНГ
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+<script>
+  var socket = io('http://localhost');
+  socket.on('connect', function(){});
+  socket.on('event', function(data){});
+  socket.on('disconnect', function(){});
+</script>
+
+Need polling for:
+1)TournamentStart
+2)
+
+
+!=partial('documents/fields', { locals: { d: d } })
+
+
+TournamentServer.js
+GameFrontendServer.js
+GameServer.js
+TournamentManager.js
+initializer.js
