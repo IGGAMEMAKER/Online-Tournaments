@@ -1,4 +1,3 @@
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 var express         = require('express');
 var app = express();
@@ -46,10 +45,10 @@ function StartTournament (req, res){
 	var data = req.body;
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
 	sender.expressSendRequest("StartGame", data, 
-		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer
+		'127.0.0.1', 'GameServer', null, sender.printer);//sender.printer
 
 	/*sender.sendRequest("StartGame", data, 
-		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer*/
+		'127.0.0.1', 'GameServer', null, sender.printer);//sender.printer*/
 }
 
 function HaveEnoughResourcesForTournament (req, res){
@@ -70,10 +69,10 @@ function AnalyzeStructure(tournament, res){
 	var numberOfRounds = tournament['rounds'];
 	console.log("numberOfRounds= " + numberOfRounds);
 	sender.expressSendRequest("ServeGames", tournament, 
-		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer
+		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer
 
 	/*sender.sendRequest("ServeGames", tournament, 
-		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer*/
+		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer*/
 }
 
 function FinishGame (req,res){
@@ -81,7 +80,7 @@ function FinishGame (req,res){
 	console.log(data);
 	res.end('OK');
 	sender.sendRequest("FinishGame", data, 
-		'127.0.0.1', queryProcessor.getPort('TournamentManager'), res, sender.printer);
+		'127.0.0.1', 'TournamentManager', res, sender.printer);
 }
 
 var server = app.listen(5008, function () {

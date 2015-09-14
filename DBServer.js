@@ -1,4 +1,3 @@
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 var express         = require('express');
 var app = express();

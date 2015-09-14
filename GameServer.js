@@ -263,7 +263,7 @@ function FinishGame(ID){
 	console.log('FIX IT!!! GAMEID=tournamentID');
 	sortedPlayers.tournamentID = ID;// games[ID].tournamentID;
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
-			queryProcessor.getPort('GameFrontendServer'), null, sender.printer );
+			'GameFrontendServer', null, sender.printer );
 }
 function Sort(players){
 	return players;

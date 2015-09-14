@@ -1,5 +1,4 @@
 var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 
 var express         = require('express');
@@ -10,7 +9,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-var funcArray = {};
+//var funcArray = {};
 
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 app.post('/ServeTournament', ServeTournament);
@@ -68,10 +67,10 @@ function RegisterUserInTournament (req, res){
 				console.log(tournament.players);
 				console.log('To FrontendServer');
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
-					'127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
+					'127.0.0.1', 'FrontendServer', null, sender.printer);
 				console.log('To TournamentManager');
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
-					'127.0.0.1', queryProcessor.getPort('TournamentManager'), null, sender.printer );
+					'127.0.0.1', 'TournamentManager', null, sender.printer );
 				//sender.Answer(res,Success);
 			}
 		}
@@ -147,7 +146,7 @@ function EndTournament( scores, gameID, tournamentID){
 	console.log(winners);
 
 	sender.sendRequest("WinPrize", winners, '127.0.0.1', 
-			queryProcessor.getPort('DBServer'), null, sender.printer );
+			'DBServer', null, sender.printer );
 
 	/*for (i=0;i<winnersCount;++i){
 
@@ -155,7 +154,7 @@ function EndTournament( scores, gameID, tournamentID){
 		var winnerObject = {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] };
 		
 		sender.sendRequest("WinPrize", winnerObject, '127.0.0.1', 
-			queryProcessor.getPort('DBServer'), null, sender.printer );
+			'DBServer', null, sender.printer );
 	}*/
 	//scores.sort(Comparator);
 	console.log(scores);
@@ -194,7 +193,7 @@ function ServeTournament (req, res){
 	tournaments[tournamentID].playersRegistered=0;
 	tournaments[tournamentID].logins = {};
 
-	sender.sendRequest("ServeTournament", data, '127.0.0.1', queryProcessor.getPort('TournamentManager'), res, ServeTournamentTMProxy );
+	sender.sendRequest("ServeTournament", data, '127.0.0.1', 'TournamentManager', res, ServeTournamentTMProxy );
 }
 
 function ServeTournamentTMProxy ( error, response, body, res){

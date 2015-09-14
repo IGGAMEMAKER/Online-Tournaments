@@ -1,4 +1,4 @@
-var http = require('http');
+//var http = require('http');
 var request = require('request');
 
 this.sendRequest = sendRequest;
@@ -6,6 +6,39 @@ this.expressSendRequest = expressSendRequest;
 this.printer = printer;
 this.Answer = Answer;
 this.Proxy = Proxy;
+
+var serverList = {};
+
+serverList['FrontendServer'] = 5000;
+serverList['TournamentServer'] = 5001;
+serverList['TournamentManager'] = 5002;
+serverList['AccountServer'] = 5003;
+serverList['BalanceServer'] = 5004;
+serverList['AdminServer'] = 5005;
+serverList['MoneyServer'] = 5006;
+serverList['DBServer'] = 5007;
+
+serverList['GameFrontendServer'] = 5008;
+serverList['GameServer'] = 5009;
+
+serverList['site'] = 80;
+//console.log(serverList['DBServer']);
+
+var gameNameIDList = {};
+
+gameNameIDList['1'] = 5009;
+gameNameIDList['2'] = 5001;
+gameNameIDList['3'] = 5002;
+gameNameIDList['4'] = 5003;
+
+function getPort (r){
+	return serverList[r];
+}
+
+function getGamePort (r){
+	return gameNameIDList[r];
+}
+
 
 function printer(error, response, body) {
 	if (!error) {
@@ -22,10 +55,6 @@ function printer(error, response, body) {
 function Proxy(error, response, body, res){
 	
 }
-
-/*function sendRequest(urlPath, options, curData, responseCallBack){
-	
-}*/
 
 function Magic(res, method){
 	return function (error, response, body) {
@@ -55,12 +84,13 @@ function Answer(res, JSONObject){
 	res.end(JSON.stringify(JSONObject));
 }
 
-function initRequest(urlPath, curData, host, port){
-	//port = getPort(servName)
+function initRequest(urlPath, curData, host, servName){
+	port = getPort(servName);
 	sendRequest(urlPath, curData, host, port, null, printer);
 }
 
-function expressSendRequest(urlPath, curData, host, port, res, responseCallBack){
+function expressSendRequest(urlPath, curData, host, servName, res, responseCallBack){
+	port = getPort(servName);
 	request({
 		url: "http://" + host+':'+port+'/'+urlPath,
 	    //url: "http://127.0.0.1:5009/ServeGames",
@@ -71,7 +101,7 @@ function expressSendRequest(urlPath, curData, host, port, res, responseCallBack)
 
 }
 
-function sendRequest(urlPath, curData, host, port, res, responseCallBack){
+function sendRequest(urlPath, curData, host, servName, res, responseCallBack){
 	//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
@@ -81,6 +111,7 @@ function sendRequest(urlPath, curData, host, port, res, responseCallBack){
 
 	//application/x-www-form-urlencoded
 	//host = "localhost";
+	port = getPort(servName);
 	var url = "http://" + host+':'+port+'/'+urlPath;
 	//console.log(url);
 	//url1 = "http://" + "127.0.0.1:5008/ServeTournament";

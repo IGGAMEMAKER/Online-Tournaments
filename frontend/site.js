@@ -47,7 +47,6 @@ app.set('views', ['./views', './games/PingPong']);
 app.set('view engine', 'jade');
 
 var sender = require('../requestSender');
-var proc = require('../test');
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -59,7 +58,7 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
-        proc.getPort('FrontendServer'), res, function (error, response, body, res1){
+        'FrontendServer', res, function (error, response, body, res1){
           if (!error){
 
             res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
@@ -118,7 +117,7 @@ app.post('/Login', function (req, res){
   //res.redirect('Tournaments');
   
   sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
-        proc.getPort('FrontendServer'), res, 
+        'FrontendServer', res, 
         function (error, response, body, res1){
           switch (body.result){
             case 'OK':
@@ -141,7 +140,7 @@ app.post('/RegisterInTournament', function (req, res){
   console.log(data.tournamentID);
 
     sender.sendRequest('RegisterUserInTournament', data?data:{}, '127.0.0.1', 
-        proc.getPort('FrontendServer'), res, 
+        'FrontendServer', res, 
         function (error, response, body, res1){
           res.send(body.result);
         }
@@ -157,7 +156,7 @@ app.post('/Register', function (req, res){
   //res.redirect('Tournaments');
   
   sender.sendRequest('Register', data?data:{}, '127.0.0.1', 
-        proc.getPort('FrontendServer'), res, 
+        'FrontendServer', res, 
         function (error, response, body, res1){
           switch (body.result){
             case 'OK':
@@ -187,7 +186,7 @@ app.all('/StartTournament', function (req, res){
 
 app.get('/CheckServer', function (req, res){
   var serv = req.query.serv;
-  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', proc.getPort(serv), res, sender.printer);
+  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
 
 });
 
@@ -220,7 +219,7 @@ app.all('/Tournaments', function (req,res){
   siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
 
   /*sender.sendRequest('GetTournaments', data, '127.0.0.1', 
-      proc.getPort('FrontendServer'), res, function (error, response, body, res1){
+      'FrontendServer', res, function (error, response, body, res1){
 
         if (!error){
           //var msg = body;

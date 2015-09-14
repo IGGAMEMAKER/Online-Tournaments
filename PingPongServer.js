@@ -1,6 +1,5 @@
 var http = require('http');
 var url = require('url');
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 
 
@@ -368,7 +367,7 @@ function FinishGame(ID, playerID){
 	clearInterval(games[gameID].timer);
 	strLog('FIX IT!!! GAMEID=tournamentID');
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
-			queryProcessor.getPort('GameFrontendServer'), null, sender.printer );
+			'GameFrontendServer', null, sender.printer );
 }
 function Sort(players){
 	return players;

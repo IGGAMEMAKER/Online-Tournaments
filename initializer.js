@@ -257,7 +257,7 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 */
 //sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
 
-/*sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);
+/*sender.sendRequest("Register", user1, '127.0.0.1', 'FrontendServer', null, sender.printer);
 sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
 
 /*sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
@@ -268,7 +268,7 @@ var tournCounter=8;
 tournamentAddingTimer = setInterval(function(){
 	if (tournCounter>0){
 			//sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/			
-			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
+			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', 'BalanceServer', null, sender.printer);//TournamentManager
 			tournCounter--;
 	}
 	else{

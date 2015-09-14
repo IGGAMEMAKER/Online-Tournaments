@@ -1,4 +1,3 @@
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 
 var express         = require('express');
@@ -38,12 +37,12 @@ function ServeTournament (data, res){
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
 
-	sender.sendRequest("AddTournament", tournament, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
+	sender.sendRequest("AddTournament", tournament, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 }
 function RestartTournament (req, res){
 	var data = req.body;
 	if (data['tournamentID']){
-		sender.sendRequest("RestartTournament", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, DBAddTournamentHandler );
+		sender.sendRequest("RestartTournament", data, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 	}
 	else{
 		sender.Answer(res, {result:'error'});
@@ -57,7 +56,7 @@ function DBAddTournamentHandler( error, response, body, res){
 	console.log("added tournament to DB");
 	console.log(JSON.stringify(tournament));
 	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
-			queryProcessor.getPort('TournamentServer'),  res, ServeTournamentHandler );
+			'TournamentServer',  res, ServeTournamentHandler );
 }
 
 function ServeTournamentHandler( error, response, body, res){
@@ -72,7 +71,7 @@ function ServeTournamentHandler( error, response, body, res){
 
 function FreeTournamentServerIP(req, res){
 	var data = req.body;
-	//sender.sendRequest("Register", user1, '127.0.0.1', queryProcessor.getPort('AccountServer'),  res, RegisterUserHandler );
+	//sender.sendRequest("Register", user1, '127.0.0.1', 'AccountServer',  res, RegisterUserHandler );
 
 	res.end(GetFreeTournamentServerIP(null));
 }

@@ -1,4 +1,3 @@
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 
 var express         = require('express');
@@ -30,14 +29,14 @@ var curTournamentID=0;
 function FinishGame(req, res){
 	var data = req.body;
 	sender.Answer(res, {result:'OK', message:'FinishGame'});
-	sender.sendRequest("FinishGame", data, '127.0.0.1', queryProcessor.getPort('TournamentServer'), null, sender.printer);
+	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
 }
 
 function GetGameFrontendAdress(gameNameId){
 	console.log("rewrite TournamentManager.GetGameFrontendAdress");
 	var adress = {
 		IP: '127.0.0.1',
-		port: 5008
+		port: 'GameFrontendServer'
 	};
 	return adress;
 }
@@ -49,7 +48,7 @@ function SendTournamentHandler( error, response, body, res) {
 //SendTournament(tournament1);
 /*function SendTournament(tournament){
 	//JSON.stringify(tournament)
-	//queryProcessor.getPort('GameFrontendServer')
+	//'GameFrontendServer'
 	console.log("Sending Tournament...");
 	//console.log(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
@@ -96,7 +95,7 @@ function getTournamentStructure( tournament){
 function StartTournament (req, res){
 	var data = req.body;
 	console.log("StartTournament " + data['tournamentID']);//['tournamentStructure']);
-	sender.sendRequest("StartTournament", data, '127.0.0.1', queryProcessor.getPort('GameFrontendServer'), null, sender.printer);//sender.printer
+	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
 var server = app.listen(5002, function () {

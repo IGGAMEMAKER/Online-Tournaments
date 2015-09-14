@@ -1,6 +1,4 @@
 var serverName = "FrontendServer";
-
-var queryProcessor = require('./test');
 var sender = require('./requestSender');
 
 var express         = require('express');
@@ -31,7 +29,7 @@ app.get('/Alive', function (req, res){
 //funcArray["/Register"] = RegisterUser;
 app.post('/Register', function (req, res){
 	var data = req.body;
-	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, 
+	sender.sendRequest("Register", data, '127.0.0.1', 'DBServer',  res, 
 		function ( error, response, body, res) {
 		strLog("Got answer from DBServer");
 		sender.Answer(res, body);
@@ -44,7 +42,7 @@ app.post('/Register', function (req, res){
 app.post('/Login', function (req, res){
 	var data = req.body;
 	console.log(data);
-	sender.expressSendRequest("Login", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, 
+	sender.expressSendRequest("Login", data, '127.0.0.1', 'DBServer', res, 
 		function (error, response, body, res){
 			sender.Answer(res, body);
 		});
@@ -54,7 +52,7 @@ app.post('/Login', function (req, res){
 function Login( data, res){
 	strLog('FrontendServer login:');
 	strLog(data);
-	sender.sendRequest("Login", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, LoginHandler);
+	sender.sendRequest("Login", data, '127.0.0.1', 'DBServer', res, LoginHandler);
 }
 function LoginHandler( error, response, body, res){
 	strLog('LoginHandler call');
@@ -74,7 +72,7 @@ app.post('/GetTournaments', function (req, res){
 		query: data['query'],
 		queryFields: data['queryFields'],
 	};
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, 
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, 
 		function ( error, response, body, res ){
 		sender.Answer(res, body);
 	});
@@ -93,7 +91,7 @@ app.post('/GetUsers', function (req, res){
 		query: data['query'],
 		queryFields: data['queryFields'],
 	};
-	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, function ( error, response, body, res ){
+	sender.sendRequest("GetUsers", obj, '127.0.0.1', 'DBServer', res, function ( error, response, body, res ){
 		sender.Answer(res, body);
 	});
 });
@@ -144,7 +142,7 @@ function GetUsers (data, res){
 		query: data['query'],
 		queryFields: data['queryFields'],
 	};
-	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUsersHandler);
+	sender.sendRequest("GetUsers", obj, '127.0.0.1', 'DBServer', res, GetUsersHandler);
 }
 
 function GetUsersHandler( error, response, body, res ){
@@ -157,12 +155,12 @@ function StartTournament (req, res){
 	var data = req.body;
 	res.end('FrontendServer Starts Tournament!');
 	strLog(data);
-	sender.sendRequest("StartTournament", data, '127.0.0.1', sitePort, null, sender.printer);
+	sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
 }
 
 function GetUserProfileInfo(data , res){
 	strLog(data);
-	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
+	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, GetUserProfileInfoHandler);
 }
 function GetUserProfileInfoHandler ( error, response, body, res){
 	sender.Answer(res, body);
@@ -182,7 +180,7 @@ function GetTournaments( data, res){
 		query: data['query'],
 		queryFields: data['queryFields'],
 	};
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetTournamentsHandler);
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, GetTournamentsHandler);
 }
 
 
@@ -199,7 +197,7 @@ function RegisterUserInTournament( req, res){
 	//log(data);
 	log("Trying to register in tournament " + data['tournamentID']);
 	sender.sendRequest("RegisterUserInTournament", obj, 
-		'127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
+		'127.0.0.1', 'TournamentServer', res, RegisterUserInTournamentHandler);
 }
 
 function RegisterUserInTournamentHandler(error, response, body, res){
