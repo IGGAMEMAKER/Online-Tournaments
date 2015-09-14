@@ -1,17 +1,26 @@
-var http = require('http');
-var url = require('url');
 var queryProcessor = require('./test');
 var sender = require('./requestSender');
-var qs = require('querystring');
-var server = require('./script');
+var express         = require('express');
+var app = express();
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
-var funcArray = {};
-funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
+//var funcArray = {};
+
+app.post('/ServeTournament', ServeTournament);
+app.post('/StartTournament', StartTournament);
+app.post('/HaveEnoughResourcesForTournament', HaveEnoughResourcesForTournament);
+app.post('/FinishGame', FinishGame);
+
+/*funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
 funcArray["/StartTournament"] = StartTournament;
 funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
-funcArray["/FinishGame"] = FinishGame;
+funcArray["/FinishGame"] = FinishGame;*/
 
 var status = new Object();
 
@@ -22,25 +31,19 @@ var status = new Object();
 
 
 
-function ServeTournament (data, res){
+function ServeTournament (req, res){
+	var data = req.body;
 	console.log("----");
 	console.log("ServeTournament :");
 
 	console.log(data);
 	
 	console.log("----");
-
-	/*var val = data['structure'];
-	console.log("I can print: ");
-	console.log(val);*/
 	AnalyzeStructure(data, res);
-	
-
-	//console.log("ServeTournament " + data);
-	//res.end("Serving OK");//"Serving OK");//status
 }
 
-function StartTournament (data, res){
+function StartTournament (req, res){
+	var data = req.body;
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
 	sender.expressSendRequest("StartGame", data, 
 		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer
@@ -49,7 +52,8 @@ function StartTournament (data, res){
 		'127.0.0.1', queryProcessor.getPort('GameServer'), null, sender.printer);//sender.printer*/
 }
 
-function HaveEnoughResourcesForTournament (data, res){
+function HaveEnoughResourcesForTournament (req, res){
+	var data = req.body;
 	console.log("We have resources for " + data['playerCount'] + " divided in " + data['gameNums'] + " groups. HARDCODED success");
 	var result = {
 		result:"success"
@@ -72,11 +76,18 @@ function AnalyzeStructure(tournament, res){
 		'127.0.0.1', queryProcessor.getPort('GameServer'), res, ServeTournamentCallback);//sender.printer*/
 }
 
-function FinishGame (data,res){
+function FinishGame (req,res){
+	var data = req.body;
 	console.log(data);
 	res.end('OK');
 	sender.sendRequest("FinishGame", data, 
 		'127.0.0.1', queryProcessor.getPort('TournamentManager'), res, sender.printer);
 }
 
-server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
+var server = app.listen(5008, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log(serverName + ' is listening at http://%s:%s', host, port);
+});
+//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
