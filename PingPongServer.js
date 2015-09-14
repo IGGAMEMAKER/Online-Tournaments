@@ -445,7 +445,7 @@ function UpdateCollisions(tournamentID,gameID){
 	//strLog('Movement : vy=' + ball.vy + ' vx =' + ball.vx + ";; \n" + JSON.stringify(ball));
 	ball.y += ball.vy;
 	ball.x += ball.vx;
-	strLog('Result : y=' + ball.y + ' x=' + ball.x);
+	//strLog('Result : y=' + ball.y + ' x=' + ball.x);
 
 	H=100;
 	W=100;

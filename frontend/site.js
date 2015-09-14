@@ -46,8 +46,8 @@ app.set('views', ['./views', './games/PingPong']);
 
 app.set('view engine', 'jade');
 
-var sender = require('./requestSender');
-var proc = require('./test');
+var sender = require('../requestSender');
+var proc = require('../test');
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -55,6 +55,27 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
+function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
+
+  if (FSUrl && res){
+    sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
+        proc.getPort('FrontendServer'), res, function (error, response, body, res1){
+          if (!error){
+
+            res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
+          } else {
+            sender.Answer(res1, { result:error });
+          }
+            console.log('*****************');
+            console.log('***SITE_ANSWER***');
+            console.log('*****************');
+        });
+  }
+  else {
+    console.log('INVALID siteAnswer');
+    //try{ console.log(FSUrl)}
+  }
+}
 
 
 app.get('/Game', function (req, res){
@@ -96,7 +117,7 @@ app.post('/Login', function (req, res){
   console.log('Pass: ' + data.password);
   //res.redirect('Tournaments');
   
-  sender.sendRequest('Login', data?data:{}, '127.0.0.1', 
+  sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
         proc.getPort('FrontendServer'), res, 
         function (error, response, body, res1){
           switch (body.result){
@@ -123,14 +144,6 @@ app.post('/RegisterInTournament', function (req, res){
         proc.getPort('FrontendServer'), res, 
         function (error, response, body, res1){
           res.send(body.result);
-          /*switch (body.result){
-            case 'OK':
-              res.send(body.result);
-            break;
-            default:
-              res.render('Register',{err:body.result});
-            break;
-          }*/
         }
   );
 
@@ -172,6 +185,12 @@ app.all('/StartTournament', function (req, res){
   res.end();
 });
 
+app.get('/CheckServer', function (req, res){
+  var serv = req.query.serv;
+  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', proc.getPort(serv), res, sender.printer);
+
+});
+
 app.get('/Users' , function (req, res){
   /*if(req.session.login) {
     console.log('Saved login is: ' + req.session.login);
@@ -193,12 +212,12 @@ app.get('/Users' , function (req, res){
   siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
 });
 
-app.get('/Tournaments', function (req,res){
-  /*var data = req.body;
-  data.queryFields = 'tournamentID buyIn goNext gameNameID';*/
+app.all('/Tournaments', function (req,res){
+  var data = req.body;
+  data.queryFields = 'tournamentID buyIn goNext gameNameID';
 
   //siteAnswer(res,'GetTournaments', 'GetTournaments', data, 'GetTournaments');
-  siteAnswer(res,'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
+  siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
 
   /*sender.sendRequest('GetTournaments', data, '127.0.0.1', 
       proc.getPort('FrontendServer'), res, function (error, response, body, res1){
@@ -220,27 +239,7 @@ app.get('/TournamentInfo', function (req, res){
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 });
 
-function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
-  if (FSUrl && res){
-    sender.sendRequest(FSUrl, data?data:{}, '127.0.0.1', 
-        proc.getPort('FrontendServer'), res, function (error, response, body, res1){
-          if (!error){
-
-            res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
-          } else {
-            sender.Answer(res1, { result:error });
-          }
-            console.log('*****************');
-            console.log('***SITE_ANSWER***');
-            console.log('*****************');
-        });
-  }
-  else {
-    console.log('INVALID siteAnswer');
-    //try{ console.log(FSUrl)}
-  }
-}
 
 app.get('/', function(req, res){
   //var i=0;
@@ -253,7 +252,7 @@ app.get('/', function(req, res){
 
 
 
-var server = app.listen(3000, function () {
+var server = app.listen(80, function () {
   var host = server.address().address;
   var port = server.address().port;
 
@@ -277,9 +276,9 @@ io.on('connection', function(socket){
     //io.of('/111').emit('azz','LALKI');
   });
 });
-var tmr2 = setTimeout(function(){
+/*var tmr2 = setTimeout(function(){
   console.log(io.sockets.server.nsps['/111'].sockets);
-}, 11000);
+}, 11000);*/
 
 io.of('/111').on('connection', function(socket){
   console.log('ololo222');

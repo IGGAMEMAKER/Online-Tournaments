@@ -8,159 +8,80 @@ var serverName = "FrontendServer";
 var qs = require('querystring');
 var sender = require('./requestSender');
 
-var sitePort = 3000;
+var sitePort = 80;
+
+var express         = require('express');
+var path            = require('path'); // модуль для парсинга пути
+
+var parseurl = require('parseurl');
+
+var jade = require('jade');
+
+var app = express();
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
 
 /*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });*/
+
+function strLog(data){
+	console.log(data);
+}
+
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
 
-funcArray['/Alive'] = Alive;
-funcArray["/Register"] = RegisterUser;
-funcArray["/Login"] = Login;
-funcArray["/ChangePassword"] = ChangePassword;
-funcArray["/RememberPassword"] = RememberPassword;
-funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
-
-funcArray["/GetTournaments"] = GetTournaments;
-funcArray['/GetUsers'] = GetUsers;
-
-funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
-funcArray["/StartTournament"]=StartTournament;
-
-
-/*funcArray["/WakeUsers"] = WakeUsers;
-funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;*/
-
-/*funcArray["/Cashout"] = Cashout;
-funcArray["/Deposit"] = Deposit;
-
-
-funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
-
-
-
-/*var tournament2 = {};
-tournament*/
-
-
-var user1 = {
-      login: 'Dinesh',
-      password: 'Kumar',
-	job   : [ 'language', 'PHP' ]
-    };
-
-function Alive(data, res){
-	console.log(data);
+//funcArray['/Alive'] = Alive;
+app.get('/Alive', function (req, res){
+	strLog(data);
 	sender.Answer(res, {result:'OK'});
-	//res.json({result:'OK'});
-	//res.end();
-}
+});
 
-function GetUsers (data, res){
-	//res.end('GetUsers OK');
-	console.log(data);
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-	};
-	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUsersHandler);
-}
+//funcArray["/Register"] = RegisterUser;
+app.post('/Register', function (req, res){
+	var data = req.body;
+	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, 
+		function ( error, response, body, res) {
+		strLog("Got answer from DBServer");
+		sender.Answer(res, body);
+	});
+	//strLog(data);
+	//sender.Answer(res, {result:'OK'});
+});
 
-function GetUsersHandler( error, response, body, res ){
-	//console.log("Checking Data taking: " + get2(body, 'tournaments', 't1'));
+/*function RegisterUser( data, res){
+	//strLog("Port=" + queryProcessor.getPort('AccountServer'));
+	//strLog("FrontendServer tries to register user");
+	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, RegisterUserHandler );
+}
+function RegisterUserHandler( error, response, body, res) {
+	strLog("Got answer from DBServer");
 	sender.Answer(res, body);
-	//res.end(get(body,'tournaments'));
-}
+        //res.end("THX for register");
+}*/
 
-function StartTournament (data, res){
-	res.end('FrontendServer Starts Tournament!');
+//funcArray["/Login"] = Login;
+app.post('/Login', function (req, res){
+	var data = req.body;
 	console.log(data);
-	sender.sendRequest("StartTournament", data, '127.0.0.1', sitePort, null, sender.printer);
-}
+	sender.expressSendRequest("Login", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, 
+		function (error, response, body, res){
+			sender.Answer(res, body);
+		});
+});
 
-function GetUserProfileInfo(data , res){
-	console.log(data);
-	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
-}
-function GetUserProfileInfoHandler ( error, response, body, res){
-	sender.Answer(res, body);
-}
-
-function ChangePassword( data, res){
-	res.end("OK");
-	console.log("You must send changePass to Account Server");
-}
-
-function get(str, parameter){
-	return JSON.stringify(str[parameter]);
-}
-function get2(str, par, par2){
-	return JSON.stringify(str[par][par2]);
-}
-function get3(str, par, par2, par3){
-	return JSON.stringify(str[par][par2][par3]);
-}
-
-function GetTournaments( data, res){
-	console.log(data);
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-	};
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetTournamentsHandler);
-}
-
-function GetTournamentsHandler( error, response, body, res ){
-	//console.log("Checking Data taking: " + get2(body, 'tournaments', 't1'));
-	sender.Answer(res, body);
-	//res.end(get(body,'tournaments'));
-}
-
-function GetTournServerIP(tournamentID){
-	return '127.0.0.1';
-}
-function RegisterUserInTournament( data, res){
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		login: data['login']
-	};
-	//log(data);
-	log("Trying to register in tournament " + data['tournamentID']);
-	sender.sendRequest("RegisterUserInTournament", obj, 
-		'127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
-}
-function RegisterUserInTournamentHandler(error, response, body, res){
-	console.log("Checking Data taking: " + body['result']);
-	sender.Answer(res, body);
-
-	/*if (body['result'] === 'OK'){
-		res.end("You are Registered in tournament!!");
-	}
-	else{
-		res.end("Tournament Register error:" + body['result']);
-	}*/
-}
-
-function RememberPassword( data, res){
-	res.end("Try to remember");
-	console.log("You must send rememberPass to Account Server");
-}
-
-function log(str){ console.log(str);}
 
 function Login( data, res){
-	console.log('FrontendServer login:');
-	console.log(data);
+	strLog('FrontendServer login:');
+	strLog(data);
 	sender.sendRequest("Login", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, LoginHandler);
 }
 function LoginHandler( error, response, body, res){
-	console.log('LoginHandler call');
+	strLog('LoginHandler call');
 	sender.Answer(res, body);
 	//res.end(body);
 	/*if (body['result'] === 'OK'){
@@ -171,21 +92,167 @@ function LoginHandler( error, response, body, res){
 	}*/
 }
 
-function RegisterUser( data, res){
-	//console.log("Port=" + queryProcessor.getPort('AccountServer'));
-	//console.log("FrontendServer tries to register user");
-	sender.sendRequest("Register", data, '127.0.0.1', queryProcessor.getPort('DBServer'),  res, RegisterUserHandler );
+/*funcArray["/ChangePassword"] = ChangePassword;
+funcArray["/RememberPassword"] = RememberPassword;*/
+funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+
+app.post('/GetTournaments', function (req, res){
+	var data = req.body;
+	strLog(data);
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
+	};
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, 
+		function ( error, response, body, res ){
+		sender.Answer(res, body);
+	});
+});
+
+//funcArray["/GetTournaments"] = GetTournaments;
+
+
+//funcArray['/GetUsers'] = GetUsers;
+app.post('/GetUsers', function (req, res){
+	var data = req.body;
+	strLog(data);
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
+	};
+	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, function ( error, response, body, res ){
+		sender.Answer(res, body);
+	});
+});
+
+
+//funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
+app.post('/RegisterUserInTournament', RegisterUserInTournament);
+
+//funcArray["/StartTournament"]=StartTournament;
+app.post('/StartTournament', StartTournament);
+
+/*funcArray["/WakeUsers"] = WakeUsers;
+funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;
+
+funcArray["/Cashout"] = Cashout;
+funcArray["/Deposit"] = Deposit;
+
+
+funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
+
+
+var server = app.listen(5000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+
+var user1 = {
+      login: 'Dinesh',
+      password: 'Kumar',
+	job   : [ 'language', 'PHP' ]
+    };
+
+function Alive(data, res){
+	strLog(data);
+	sender.Answer(res, {result:'OK'});
+	//res.json({result:'OK'});
+	//res.end();
 }
-function RegisterUserHandler( error, response, body, res) {
-	console.log("Got answer from DBServer");
+
+function GetUsers (data, res){
+	//res.end('GetUsers OK');
+	strLog(data);
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
+	};
+	sender.sendRequest("GetUsers", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUsersHandler);
+}
+
+function GetUsersHandler( error, response, body, res ){
+	//strLog("Checking Data taking: " + get2(body, 'tournaments', 't1'));
 	sender.Answer(res, body);
-        //res.end("THX for register");
+	//res.end(get(body,'tournaments'));
+}
+
+function StartTournament (req, res){
+	var data = req.body;
+	res.end('FrontendServer Starts Tournament!');
+	strLog(data);
+	sender.sendRequest("StartTournament", data, '127.0.0.1', sitePort, null, sender.printer);
+}
+
+function GetUserProfileInfo(data , res){
+	strLog(data);
+	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetUserProfileInfoHandler);
+}
+function GetUserProfileInfoHandler ( error, response, body, res){
+	sender.Answer(res, body);
+}
+
+function ChangePassword( data, res){
+	res.end("OK");
+	strLog("You must send changePass to Account Server");
 }
 
 
+function GetTournaments( data, res){
+	strLog(data);
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		query: data['query'],
+		queryFields: data['queryFields'],
+	};
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', queryProcessor.getPort('DBServer'), res, GetTournamentsHandler);
+}
+
+
+function GetTournServerIP(tournamentID){
+	return '127.0.0.1';
+}
+function RegisterUserInTournament( req, res){
+	var data = req.body;
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		login: data['login']
+	};
+	//log(data);
+	log("Trying to register in tournament " + data['tournamentID']);
+	sender.sendRequest("RegisterUserInTournament", obj, 
+		'127.0.0.1', queryProcessor.getPort('TournamentServer'), res, RegisterUserInTournamentHandler);
+}
+
+function RegisterUserInTournamentHandler(error, response, body, res){
+	strLog("Checking Data taking: " + body['result']);
+	sender.Answer(res, body);
+}
+
+function RememberPassword( data, res){
+	res.end("Try to remember");
+	strLog("You must send rememberPass to Account Server");
+}
+
+function log(str){ strLog(str);}
 
 
 
 
 
-server.SetServer(serverName, '127.0.0.1', funcArray);
+
+
+
+
+
+
+//server.SetServer(serverName, '127.0.0.1', funcArray);
