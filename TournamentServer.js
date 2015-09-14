@@ -1,19 +1,24 @@
-var http = require('http');
-var url = require('url');
+var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 var queryProcessor = require('./test');
 var sender = require('./requestSender');
-var qs = require('querystring');
-var server = require('./script');
 
-var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
+var express         = require('express');
+var app = express();
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var funcArray = {};
 
+app.post('/RegisterUserInTournament', RegisterUserInTournament);
+app.post('/ServeTournament', ServeTournament);
+app.post('/FinishGame', FinishGame);
 
-
-funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
+/*funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
 funcArray["/ServeTournament"] = ServeTournament;
-funcArray["/FinishGame"] = FinishGame;
+funcArray["/FinishGame"] = FinishGame;*/
 
 var tournaments = {
 	count:0
@@ -28,7 +33,8 @@ function playerIsRegistered (tournament, login){
 	return tournament.logins[login];
 }
 
-function RegisterUserInTournament (data, res){
+function RegisterUserInTournament (req, res){
+	var data = req.body;
 	//console.log("Sender = " + data['sender']);
 	console.log("Registering in tournament: " + data['tournamentID']);
 	var tournamentID = data['tournamentID'];
@@ -92,6 +98,7 @@ function RegisterUserInTournament (data, res){
 }
 
 function FinishGame (data, res){
+	var data = req.body;
 	console.log(data);
 	var gameID = data['gameID'];
 	var tournamentID = data['tournamentID'];
@@ -175,7 +182,8 @@ function gameWasLast(gameID){
 	return true;
 }
 
-function ServeTournament (data, res){
+function ServeTournament (req, res){
+	var data = req.body;
 	//console.log(data);
 	var tournamentID = data['tournamentID'];
 	console.log('TS tries to serve:' + tournamentID);
@@ -212,5 +220,11 @@ var Fail = {
 	result: 'fail'
 };
 
+var server = app.listen(5001, function () {
+  var host = server.address().address;
+  var port = server.address().port;
 
-server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
+  console.log(serverName + ' is listening at http://%s:%s', host, port);
+});
+
+//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

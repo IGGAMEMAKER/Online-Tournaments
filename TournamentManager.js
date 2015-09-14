@@ -1,87 +1,34 @@
-var http = require('http');
-var url = require('url');
 var queryProcessor = require('./test');
 var sender = require('./requestSender');
-var qs = require('querystring');
-var server = require('./script');
+
+var express         = require('express');
+var app = express();
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 var serverName = "TournamentManager"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
-var funcArray = {};
+/*var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament;
 funcArray["/StartTournament"] = StartTournament;
-funcArray["/FinishGame"] = FinishGame;
+funcArray["/FinishGame"] = FinishGame;*/
 
+app.post('/ServeTournament', ServeTournament);
+app.post('/StartTournament', StartTournament);
+app.post('/FinishGame', FinishGame);
 
 
 /*funcArray["/DeleteTournament"] = DeleteTournament;
 funcArray["/PauseTournament"] = PauseTournament;
 funcArray["/AbortTournament"] = AbortTournament;*/
 
-
-/*
-round1: {
-			R: 1,
-			players: 10,
-			nextRound: 5
-		}
-		round2: {
-			R: 2,
-			players: 5,
-			nextRound: 2
-		}
-
-*/
-
-/*
-var tournament1 = {
-	ID: 1,
-	buyIn: 100,
-	gameNameID: 1,
-	playerTotalCount: 10,
-	winners: 2,
-	minPlayersPerGame: 2,
-	maxPlayersPerGame: 3,
-	lucky:1,
-	structure: {
-		rounds: 1,
-		goNext: [10, 2],
-		//winners per whole round
-		round1:{
-			subRound1:{
-				ID:1,
-				players: 3,
-				games: 3,
-				winners: 3
-			},
-			subRound2:{
-				ID:2,
-				players: 2,
-				games: 2,
-				winners: 2
-			}
-		}
-	}
-
-	//structure: {
-	//	rounds: 2,
-	//	goNext: [10, 5, 2]
-	//}
-};
-var tournament2 = {
-	ID: 2,
-	buyIn: 100,
-	gameNameID: 1,
-	playerTotalCount: 100,
-	structure: {}
-};
-var tourns1 = {
-	t1: tournament1,
-	t2: tournament2
-};*/
 var curTournamentID=0;
 
-function FinishGame( data, res){
+function FinishGame(req, res){
+	var data = req.body;
 	sender.Answer(res, {result:'OK', message:'FinishGame'});
 	sender.sendRequest("FinishGame", data, '127.0.0.1', queryProcessor.getPort('TournamentServer'), null, sender.printer);
 }
@@ -115,7 +62,8 @@ function SendTournamentHandler( error, response, body, res) {
 //YOU NEED data,res parameters for each handler, that you want to write.
 //you can get the object from POST request by typing data['parameterName'].
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
-function ServeTournament (data, res){
+function ServeTournament (req, res){
+	var data = req.body;
 	console.log("ServeTournament ")
 	console.log(JSON.stringify(data));//['tournamentStructure']);
 	
@@ -145,11 +93,17 @@ function getTournamentStructure( tournament){
 }
 
 
-function StartTournament (data, res){
+function StartTournament (req, res){
+	var data = req.body;
 	console.log("StartTournament " + data['tournamentID']);//['tournamentStructure']);
 	sender.sendRequest("StartTournament", data, '127.0.0.1', queryProcessor.getPort('GameFrontendServer'), null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
+var server = app.listen(5002, function () {
+  var host = server.address().address;
+  var port = server.address().port;
 
+  console.log(serverName + ' is listening at http://%s:%s', host, port);
+});
 
-server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE
+//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

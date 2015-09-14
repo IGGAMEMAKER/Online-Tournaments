@@ -1,11 +1,7 @@
+var serverName = "FrontendServer";
 
 var queryProcessor = require('./test');
-
-var serverName = "FrontendServer";
 var sender = require('./requestSender');
-
-var sitePort = 80;
-
 
 var express         = require('express');
 var app = express();
@@ -15,7 +11,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-
+var sitePort = 80;
 /*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });*/
@@ -123,7 +119,7 @@ var server = app.listen(5000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log(serverName + ' is listening at http://%s:%s', host, port);
 });
 
 var user1 = {
