@@ -8,7 +8,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 //var funcArray = {};
 app.post('/GetTournaments',GetTournaments); //funcArray["/GetTournaments"] = GetTournaments; //start all comands with '/'. IT's a URL to serve
 //funcArray["/TournamentInfo"] = TournamentInfo;

@@ -22,7 +22,7 @@ html
 				input(type="text", name="login")
 				p.
 					Pass
-				input(type="password", name="pass")				
+				input(type="password", name="password")				
 				p.
 				input(type="submit", value="Login")
 				script.

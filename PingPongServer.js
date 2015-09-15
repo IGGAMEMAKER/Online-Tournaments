@@ -23,6 +23,10 @@ app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 
 app.all('/SetGame', SetGame);
 app.all('/StartGame', StartGame);

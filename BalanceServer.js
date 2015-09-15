@@ -9,7 +9,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "BalanceServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 /*var funcArray = {};
 
 //funcArray["/register"] = DefaultFunction; //start all comands with '/'. IT's a URL to serve
@@ -30,7 +33,7 @@ function DefaultFunction (data, res){
 }
 console.log(undefined>=1);
 
-function ServeTournament (data, res){
+function ServeTournament (req, res){
 	var data = req.body;
 	console.log('income tournament');
 	console.log(JSON.stringify(data));

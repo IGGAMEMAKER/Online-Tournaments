@@ -9,7 +9,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "TournamentManager"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 /*var funcArray = {};
 funcArray["/ServeTournament"] = ServeTournament;
 funcArray["/StartTournament"] = StartTournament;
@@ -26,11 +29,7 @@ funcArray["/AbortTournament"] = AbortTournament;*/
 
 var curTournamentID=0;
 
-function FinishGame(req, res){
-	var data = req.body;
-	sender.Answer(res, {result:'OK', message:'FinishGame'});
-	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
-}
+
 
 function GetGameFrontendAdress(gameNameId){
 	console.log("rewrite TournamentManager.GetGameFrontendAdress");
@@ -45,22 +44,30 @@ function SendTournamentHandler( error, response, body, res) {
 	res.end('OK');
     //    res.end("GameServed");
 }
-//SendTournament(tournament1);
-/*function SendTournament(tournament){
-	//JSON.stringify(tournament)
-	//'GameFrontendServer'
-	console.log("Sending Tournament...");
-	//console.log(tournament);
-	var adress = GetGameFrontendAdress(tournament.gameNameID);
-	//sender.sendRequest("ServeTournament",)
-	
-	sender.sendRequest("ServeTournament", tournament, adress['IP'], adress['port'], null, SendTournamentHandler);//sender.printer
-}*/
 
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write.
 //you can get the object from POST request by typing data['parameterName'].
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
+
+
+function getTournamentStructure( tournament){
+	/*return {
+		gameNameID: tournament.gameNameID,
+		goNext: tournament.goNext,
+		players: tournament.players,
+		tournamentID: tournament.tournamentID,
+		numberOfRounds: tournament.numberOfRounds
+	};*/
+	return tournament;
+}
+
+function FinishGame(req, res){
+	var data = req.body;
+	sender.Answer(res, {result:'OK', message:'FinishGame'});
+	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+}
+
 function ServeTournament (req, res){
 	var data = req.body;
 	console.log("ServeTournament ")
@@ -76,21 +83,7 @@ function ServeTournament (req, res){
 		adress['IP'], adress['port'], res, SendTournamentHandler);//sender.printer
 	
 	//SendTournament(data);
-	
-	//res.end("ServeTournament");
 }
-
-function getTournamentStructure( tournament){
-	/*return {
-		gameNameID: tournament.gameNameID,
-		goNext: tournament.goNext,
-		players: tournament.players,
-		tournamentID: tournament.tournamentID,
-		numberOfRounds: tournament.numberOfRounds
-	};*/
-	return tournament;
-}
-
 
 function StartTournament (req, res){
 	var data = req.body;
@@ -98,6 +91,7 @@ function StartTournament (req, res){
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
+
 var server = app.listen(5002, function () {
   var host = server.address().address;
   var port = server.address().port;

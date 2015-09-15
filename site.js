@@ -14,9 +14,9 @@ var MongoStore = require('connect-mongo');//(express);
 //var io = require('socket.io')(app);
 
 console.log('ololo');
-app.use(express.static('public'));
+app.use(express.static('frontend/public'));
 //app.use(express.static('games'));
-app.use(express.static('games/PingPong'));
+app.use(express.static('frontend/games/PingPong'));
 
 /*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');*/
@@ -29,6 +29,7 @@ app.use(session({
 }));
 
 app.use(function(req,res,next){
+    console.log('Site: Request!');
     res.locals.session = req.session;
     next();
 });

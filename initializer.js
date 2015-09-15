@@ -267,8 +267,8 @@ var tournCounter=8;
 
 tournamentAddingTimer = setInterval(function(){
 	if (tournCounter>0){
-			//sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/			
-			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', 'BalanceServer', null, sender.printer);//TournamentManager
+			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);//TournamentManager
+			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', 'BalanceServer', null, sender.printer);
 			tournCounter--;
 	}
 	else{

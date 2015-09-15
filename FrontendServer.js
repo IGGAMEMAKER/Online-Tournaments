@@ -13,6 +13,10 @@ var sitePort = 80;
 /*process.argv.forEach(function (val, index, array) {
   console.log(index + ': ' + val);
 });*/
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 
 function strLog(data){
 	console.log(data);

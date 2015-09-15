@@ -10,7 +10,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 //var funcArray = {};
-
+app.use(function(req,res,next){
+    console.log(serverName + ': Request!');
+    next();
+});
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 app.post('/ServeTournament', ServeTournament);
 app.post('/FinishGame', FinishGame);
@@ -65,10 +68,10 @@ function RegisterUserInTournament (req, res){
 			if (maxPlayersInTournament === tournament.playersRegistered){
 				console.log("Tournament " + tournamentID + " starts");
 				console.log(tournament.players);
-				console.log('To FrontendServer');
+				
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
 					'127.0.0.1', 'FrontendServer', null, sender.printer);
-				console.log('To TournamentManager');
+				
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
 					'127.0.0.1', 'TournamentManager', null, sender.printer );
 				//sender.Answer(res,Success);
@@ -91,9 +94,6 @@ function RegisterUserInTournament (req, res){
 		register()
 		if (tournamentCanStart(tournamentID))
 	}*/
-
-
-
 }
 
 function FinishGame (req, res){
@@ -125,15 +125,15 @@ function EndTournament( scores, gameID, tournamentID){
 	}
 	var winnersCount= last(tournaments[tournamentID].goNext);
 	console.log('Prizes will go to ' + winnersCount + ' first users');
-	console.log(obj);
-	console.log('------');
+	/*//console.log(obj);
+	//console.log('------');
 	
 	console.log('SortUP');
 	obj.sort(sort_by('value', false, parseInt));
 	console.log(obj);
 	console.log('------');
 	
-	console.log('SortDown');
+	console.log('SortDown');*/
 	obj.sort(sort_by('value', true, parseInt));
 	console.log(obj);
 	console.log(tournaments[tournamentID]);
