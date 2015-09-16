@@ -8,10 +8,10 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
-
+var strLog = sender.strLog;
 //var funcArray = {};
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    strLog(serverName + ': Request!');
     next();
 });
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
@@ -37,20 +37,20 @@ function playerIsRegistered (tournament, login){
 
 function RegisterUserInTournament (req, res){
 	var data = req.body;
-	//console.log("Sender = " + data['sender']);
-	console.log("Registering in tournament: " + data['tournamentID']);
+	//strLog("Sender = " + data['sender']);
+	strLog("Registering in tournament: " + data['tournamentID']);
 	var tournamentID = data['tournamentID'];
 	var login = data['login'];//data['login'];
-//	console.log("AddPlayerToTournament(); WRITE THIS CODE!!");
+//	strLog("AddPlayerToTournament(); WRITE THIS CODE!!");
 	var tournament = tournaments[tournamentID];
 	var maxPlayersInTournament = tournament.goNext[0];
 
 	if (maxPlayersInTournament> tournament.playersRegistered){
-		console.log('Current players:');
-		console.log(tournament.players);
-		console.log(tournament);
+		strLog('Current players:');
+		strLog(tournament.players);
+		strLog(tournament);
 		if (playerIsRegistered(tournament, login)){ // tournament.players[login])
-			console.log('User ' + login + ' is already Registered in ' + tournamentID);
+			strLog('User ' + login + ' is already Registered in ' + tournamentID);
 			
 			sender.Answer(res,Fail);
 		}
@@ -58,16 +58,16 @@ function RegisterUserInTournament (req, res){
 			tournament.playersRegistered++;
 			tournament.players.push(login);
 			tournament.logins[login]=1;
-			console.log('Logins list');
-			console.log(tournament.logins);
+			strLog('Logins list');
+			strLog(tournament.logins);
 
 			sender.Answer(res,Success);
 
-			console.log('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
+			strLog('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
 			
 			if (maxPlayersInTournament === tournament.playersRegistered){
-				console.log("Tournament " + tournamentID + " starts");
-				console.log(tournament.players);
+				strLog("Tournament " + tournamentID + " starts");
+				strLog(tournament.players);
 				
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
 					'127.0.0.1', 'FrontendServer', null, sender.printer);
@@ -79,7 +79,7 @@ function RegisterUserInTournament (req, res){
 		}
 	}
 	else{
-		console.log("Sorry, tournament is Full:"+ maxPlayersInTournament+'/'+tournament.playersRegistered);
+		strLog("Sorry, tournament is Full:"+ maxPlayersInTournament+'/'+tournament.playersRegistered);
 		sender.Answer(res,Fail);
 	}
 
@@ -98,20 +98,20 @@ function RegisterUserInTournament (req, res){
 
 function FinishGame (req, res){
 	var data = req.body;
-	console.log(data);
+	strLog(data);
 	var gameID = data['gameID'];
 	var tournamentID = data['tournamentID'];
 	var scores = data['scores'];
 	
-	console.log('******************* game Finishes *********' + gameID + '****************');
+	strLog('******************* game Finishes *********' + gameID + '****************');
 	if (gameWasLast(gameID)){
-		console.log('EndTournament: ' + tournamentID);
+		strLog('EndTournament: ' + tournamentID);
 		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 		EndTournament(scores, gameID, tournamentID);
 	}
 	else{
 		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
-		console.log('Middle results: ' + JSON.stringify(data));
+		strLog('Middle results: ' + JSON.stringify(data));
 	}	
 }
 function last (Arr){
@@ -124,40 +124,40 @@ function EndTournament( scores, gameID, tournamentID){
 		obj.push( { value:scores[a], login: a } );
 	}
 	var winnersCount= last(tournaments[tournamentID].goNext);
-	console.log('Prizes will go to ' + winnersCount + ' first users');
-	/*//console.log(obj);
-	//console.log('------');
+	strLog('Prizes will go to ' + winnersCount + ' first users');
+	/*//strLog(obj);
+	//strLog('------');
 	
-	console.log('SortUP');
+	strLog('SortUP');
 	obj.sort(sort_by('value', false, parseInt));
-	console.log(obj);
-	console.log('------');
+	strLog(obj);
+	strLog('------');
 	
-	console.log('SortDown');*/
+	strLog('SortDown');*/
 	obj.sort(sort_by('value', true, parseInt));
-	console.log(obj);
-	console.log(tournaments[tournamentID]);
-	console.log('------');
+	strLog(obj);
+	strLog(tournaments[tournamentID]);
+	strLog('------');
 	
 	var winners = [];
 	for (i=0;i<winnersCount;++i){
 		winners[i] = { login:obj[i].login, prize:tournaments[tournamentID].Prizes[i] };
 	}
-	console.log(winners);
+	strLog(winners);
 
 	sender.sendRequest("WinPrize", winners, '127.0.0.1', 
 			'DBServer', null, sender.printer );
 
 	/*for (i=0;i<winnersCount;++i){
 
-		console.log('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );
+		strLog('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );
 		var winnerObject = {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] };
 		
 		sender.sendRequest("WinPrize", winnerObject, '127.0.0.1', 
 			'DBServer', null, sender.printer );
 	}*/
 	//scores.sort(Comparator);
-	console.log(scores);
+	strLog(scores);
 }
 
 var sort_by = function(field, reverse, primer){
@@ -177,16 +177,16 @@ function Comparator(a, b){
 }
 
 function gameWasLast(gameID){
-	console.log('WRITE CONDITION: IF GAME WAS LAST');
+	strLog('WRITE CONDITION: IF GAME WAS LAST');
 	return true;
 }
 
 function ServeTournament (req, res){
 	var data = req.body;
-	//console.log(data);
+	//strLog(data);
 	var tournamentID = data['tournamentID'];
-	console.log('TS tries to serve:' + tournamentID);
-	//console.log(data);
+	strLog('TS tries to serve:' + tournamentID);
+	//strLog(data);
 
 	tournaments[tournamentID] = data;
 	tournaments[tournamentID].players = [];
@@ -203,11 +203,11 @@ function ServeTournamentTMProxy ( error, response, body, res){
 ////TIMERS!!!!
 /*var timerId = setInterval(function() {
   if (tournaments[2].playerTotalCount === tournaments[2].playersRegistered){
-	console.log("Tournament " + 2 + " starts");	
+	strLog("Tournament " + 2 + " starts");	
   }
   else{
- 	//console.log("Registered in 2: " + tournaments[2].playersRegistered);
-	console.log("Registered :" +tournaments[2].playersRegistered +" / " + tournaments[2].playerTotalCount);
+ 	//strLog("Registered in 2: " + tournaments[2].playersRegistered);
+	strLog("Registered :" +tournaments[2].playersRegistered +" / " + tournaments[2].playerTotalCount);
   }
 }, 2000);*/
 
@@ -223,7 +223,7 @@ var server = app.listen(5001, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log(serverName + ' is listening at http://%s:%s', host, port);
+  strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 
 //server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

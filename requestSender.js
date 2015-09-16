@@ -6,8 +6,11 @@ this.expressSendRequest = expressSendRequest;
 this.printer = printer;
 this.Answer = Answer;
 this.Proxy = Proxy;
+this.strLog = strLog;
 
 var serverList = {};
+
+var fs = require('fs');
 
 serverList['FrontendServer'] = 5000;
 serverList['TournamentServer'] = 5001;
@@ -38,7 +41,15 @@ function getPort (r){
 function getGamePort (r){
 	return gameNameIDList[r];
 }
-
+function strLog(text){
+	var time = new Date();
+	//console.log(time);
+	fs.appendFile('message.txt', time+' ' + text + "\n", function (err) {
+		if (err) console.log('err: ' + JSON.stringify(err));
+	});
+	//stream.write(text);
+	console.log('strLog: ' + text);
+}
 
 function printer(error, response, body) {
 	if (!error) {
@@ -66,7 +77,7 @@ function universalAnswer(error, response, body, res, method){//response is a res
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
 	//We analyze this response and give an answer by the object 'res' in method 'method'
 	if (!error) {
-    	console.log(body);
+    	console.log(JSON.stringify(body));
 
         //var info = JSON.parse(JSON.stringify(body));
         //console.log(info);

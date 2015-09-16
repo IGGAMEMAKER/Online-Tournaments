@@ -8,7 +8,7 @@ html
 		script.
 			var login = "#{session.login}"; 
 			//alert("#{session.login}");
-		script(src="sockets.js").
+		script(src="http://127.0.0.1/sockets.js").
 		script(id= "RegUsr").
 			function func(login, tID){
 				console.log(login);
@@ -79,6 +79,7 @@ html
 		div
 			a( href='TournamentInfo?tID='+(message[0].tournamentID-1)).
 				Back
+			br
 			a( href='Tournaments').
 				Back To tournaments
 			br

@@ -1,8 +1,4 @@
-//alert('Sockets included');
-//alert("#{session.login}");
-
-//alert(login);
-
+alert('Sockets included');
 var socket = io();
 /*$('form').submit(function(){
   socket.emit('chat message', $('#m').val());

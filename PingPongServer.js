@@ -13,7 +13,7 @@ funcArray["/ServeGames"] = ServeGames;
 
 funcArray["/GetGames"] = GetGames;*/
 
-
+var strLog = sender.strLog;
 
 var fs = require('fs');
 
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    strLog(serverName + ': Request!');
     next();
 });
 
@@ -40,6 +40,16 @@ app.get('/Move', function (req, res){
 	res.end('Move GET works');
 });
 
+function FastLog(text){
+	var time = new Date();
+	//strLog(time);
+	fs.appendFile('PPLog.txt', time+' ' + text + "\n", function (err) {
+		if (err) strLog('err: ' + JSON.stringify(err));
+	});
+	//stream.write(text);
+	//strLog('FastLog: ' + text);
+}
+
 app.post('/Sender', function (req, res){
 	strLog('POST Sender ' + JSON.stringify(req.body));
 	res.json({obj:'lul'});
@@ -47,8 +57,8 @@ app.post('/Sender', function (req, res){
 
 app.post('/Move', function (req,res){
 	var data = req.body;
-	//console.log( 'app.use Movement');
-	//console.log('Getting movement DATA!  APP');
+	//strLog( 'app.use Movement');
+	//strLog('Getting movement DATA!  APP');
 	MoveHead(data);
 	var gameID = data.gameID;
 	res.json(games[gameID].gameDatas);
@@ -76,23 +86,6 @@ function MoveHead(data){
   	Move(tournamentID, gameID, movement, userLogin);
 }
 
-/*app.all('/ServeGames', function (req, res){
-	console.log('ServeGames app!!!!');
-	//console.log(req);
-	if (req.body){ 
-		console.log('Body');
-		console.log(req.body); }
-	if (req.query){
-	console.log(req.query);}
-	
-	res.end('Served');
-});*/
-
-//app.all('/')
-//app.get('/Move', Move);
-/*if (gameServerType ==='Sync'){
-	app.get('/Move', Move);
-}*/
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
 const STANDARD_PREPARE_TICK_COUNT = 5;
@@ -111,7 +104,7 @@ var games = {
 
 }
 
-//console.log(JSON.stringify(games));
+//strLog(JSON.stringify(games));
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
@@ -124,32 +117,32 @@ function GetGames ( req,res){
 
 function SetGame (req, res){
 	var data = req.body;
-	console.log("SetGame ");
-	console.log(data);
+	strLog("SetGame ");
+	//strLog(data);
 	var gameID = data['tournamentID'];
-	console.log('FIX IT!!!!   var gameID = data[tournamentID];'  );
+	strLog('****FIX IT!!!!   var gameID = data[tournamentID];'  );
 	//+ data + 
 	games[gameID] = data;
 	games[gameID].tournamentID = data['tournamentID'];
 	res.end("Game " + gameID + " Is Set");
 }
 
-console.log('pp Server starts!!');
+strLog('pp Server starts!!');
 
 function ServeGames (req, res){
-	console.log('PP Server serves games');
-	//console.log(req);
+	strLog('PP Server serves games');
+	//strLog(req);
 	var data = req.body;
-	console.log("ServeGame ")
-	console.log(data);
+	//strLog("ServeGame ")
+	//strLog(data);
 	var tournamentID = data['tournamentID'];
 
 	var gameID = data['tournamentID'];
-	console.log('FIX IT!!!!   var gameID = data[tournamentID];'  );
+	strLog('FIX IT!!!!   var gameID = data[tournamentID];'  );
 	//+ data + 
 	games[gameID]= data;
 	initGame(gameID);
-	//console.log(games);
+	//strLog(games);
 
 	res.write("serving games");
 	//res.end("serving games");
@@ -157,10 +150,10 @@ function ServeGames (req, res){
 }
 
 /*var timerId = setInterval(function() {
-  console.log(games[1]);
+  strLog(games[1]);
 }, 4000);*/
 /*var timerId = setInterval(function() {
-  console.log(games['1']);
+  strLog(games['1']);
 }, 3500);*/
 
 var INIT = 'INIT';
@@ -168,51 +161,43 @@ function initGame(ID){
 
 	games[ID].curPlayerID=1;
 	
-	console.log('initGame: totalPlayerCount = ' + games[ID].goNext[0]);
+	//strLog('initGame: totalPlayerCount = ' + games[ID].goNext[0]);
 	games[ID].players = {};
 	games[ID].players.count=games[ID].goNext[0];
 	games[ID].status = INIT;
 	/*for (i=0;i<games[ID].players.count;++i){
 		games[ID].players[i]=0;
 	}*/
-	//console.log(games[ID]);
+	//strLog(games[ID]);
 }
 
-function strLog(text){
-	var time = new Date();
-	console.log(time);
-	fs.appendFile('message.txt', time+' ' + text + "\n", function (err) {
-		if (err) console.log('err: ' + JSON.stringify(err));
-	});
-	//stream.write(text);
-	console.log('strLog: ' + text);
-}
+
 
 function Move( tournamentID, gameID, movement, userName){
 	if (tournamentIsValid(tournamentID, gameID))
 	{
 		if (playerExists(gameID, userName)>=0) { // curGame.players[playerID] ){//&& curGame.players[playerID]  ---- check if player is regitered in tournament
-			//console.log('I am here ' + JSON.stringify(curGame.players));
+			//strLog('I am here ' + JSON.stringify(curGame.players));
 			//curGame.scores[userName]+= pointsAdd;
-			//console.log("Player " + userName + " has " + curGame.scores[userName] + " points");
+			//strLog("Player " + userName + " has " + curGame.scores[userName] + " points");
 			//SwitchPlayer(curGame);
-			//console.log(JSON.stringify(movement));
+			//strLog(JSON.stringify(movement));
 
 			var playerID = getGID(gameID,userName);
 			//strLog('Movement of '+ userName + ' with plID=' + playerID+' is: '+ JSON.stringify(movement));
 			
-			//console.log('plID = ' + JSON.stringify(playerID));
+			//strLog('plID = ' + JSON.stringify(playerID));
 
 			//var gameCur = games[gameID].gameDatas[playerID];
 			//strLog(JSON.stringify(gameCur));
 			
-			//console.log();
-			//console.log(gameID+'_' + userName);
+			//strLog();
+			//strLog(gameID+'_' + userName);
 			games[gameID].gameDatas[playerID].x = movement.x;
 		}
 		else{
 			strLog('#####PLAYER DOESNT exist#####');
-			console.log("Player " + userName + 
+			strLog("Player " + userName + 
 				" Not your turn! Player " + curGame.curPlayerID + " must play");
 		}
 		//CheckForTheWinner(tournamentID, gameID, userName);
@@ -226,7 +211,7 @@ function playerExists(gameID, userName){
 	/*if (!playerExistsVal){
 		strLog('UID to GID list : ' + JSON.stringify(games[gameID].players.UIDtoGID));
 	}*/
-	//console.log('playerExists:'+playerExistsVal);
+	//strLog('playerExists:'+playerExistsVal);
 	return playerExistsVal ;
 }
 
@@ -240,8 +225,8 @@ function tournamentIsValid(tournamentID, gameID){
 
 function Answer(res, code){
 	res.end(code);
-	//console.log(write);//, write
-	console.log("......................");//, write
+	//strLog(write);//, write
+	strLog("......................");//, write
 }
 
 function mod2(val){
@@ -251,12 +236,12 @@ function mod2(val){
 
 function StartGame (req, res){
 	var data = req.body;
-	console.log("start game: " + JSON.stringify(data));
+	strLog("start game: " + JSON.stringify(data));
 	var ID = data['tournamentID'];
 	if (!games[ID]){
 		var message = 'Cannot find tournament with ID='+ ID;
-		//console.log(games);
-		console.log(message);
+		//strLog(games);
+		strLog(message);
 		sender.Answer(res, {result:'fail', message:message });
 	}
 	else{
@@ -273,9 +258,9 @@ function StartGame (req, res){
 
 		var i=0;
 		var userIDs = data['logins'];
-		//console.log(userIDs);
+		//strLog(userIDs);
 		for (var playerID in userIDs){
-			//console.log(playerID);
+			//strLog(playerID);
 			games[ID].players.UIDtoGID[userIDs[playerID]] = i;
 			games[ID].scores[userIDs[playerID]] = 0;
 			i++;
@@ -304,27 +289,27 @@ function StartGame (req, res){
 			});
 		});
 
-		console.log('Players');
-		console.log(games[ID].players);
+		strLog('Players');
+		strLog(games[ID].players);
 
 		sender.Answer(res, {result:'success', message:"Starting game:" + ID });
-		console.log('Answered');
+		strLog('Answered');
 	}
 	//res.end();
 }
 
 function prepare(gameID){
 	if (games[gameID].tick>0){
-		console.log(gameID);
+		strLog(gameID);
 		games[gameID].tick--;
 		SendToRoom(gameID, 'startGame', {ticks:games[gameID].tick} );
 	}
 	else{
-		console.log('Trying to stop timer');
+		strLog('Trying to stop timer');
 		clearInterval(games[gameID].timer);
-		console.log('Stopped timer');
+		strLog('Stopped timer');
 		games[gameID].timer = setInterval(function() {update(gameID) }, UPDATE_TIME);
-		//setTimeout( function(){ stream.end(); console.log('File closed');} , 15000 );
+		//setTimeout( function(){ stream.end(); strLog('File closed');} , 15000 );
 	}
 }
 
@@ -342,8 +327,8 @@ function getUID(gameID, GID){//GID= GamerID, UID= UserID
 }
 
 function getGID(gameID, UID){//GID= GamerID, UID= UserID
-	/*console.log('UID=' + UID);
-	console.log(games[gameID].players.UIDtoGID);*/
+	/*strLog('UID=' + UID);
+	strLog(games[gameID].players.UIDtoGID);*/
 	return games[gameID].players.UIDtoGID[UID];
 }
 
@@ -388,7 +373,7 @@ var server = app.listen(5009, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  strLog('Example app listening at http://%s:%s', host, port);
 });
 
 var clients = [];
@@ -396,14 +381,14 @@ var clients = [];
 var io = require('socket.io')(server);
 
 io.on('connection', function(socket){
-  console.log('IO connection');
+  strLog('IO connection');
   //socket.join('/111');
   socket.on('chat message', function(msg){
-    console.log(msg);
+    strLog(msg);
     io.emit('chat message', msg);
   });
   socket.on('event1', function(data){
-    console.log('io.on connection--> socket.on event1'); console.log(data);
+    strLog('io.on connection--> socket.on event1'); strLog(data);
     //SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
   });
@@ -438,10 +423,10 @@ function UpdateCollisions(tournamentID,gameID){
 
 	/*var ballRadius = 2;
 	ball.r = ballRadius;*/
-	//strLog('Movement : vy=' + ball.vy + ' vx =' + ball.vx + ";; \n" + JSON.stringify(ball));
+	//FastLog('Movement : vy=' + ball.vy + ' vx =' + ball.vx + ";; \n" + JSON.stringify(ball));
 	ball.y += ball.vy;
 	ball.x += ball.vx;
-	//strLog('Result : y=' + ball.y + ' x=' + ball.x);
+	//FastLog('Result : y=' + ball.y + ' x=' + ball.x);
 
 	H=100;
 	W=100;
@@ -463,20 +448,20 @@ function UpdateCollisions(tournamentID,gameID){
 
 	if(collides(ball, p0, 'p0')) {
 		flag = 1;
-		strLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );
+		FastLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );
 	}
 	
 	
 	else if(collides(ball, p1, 'p1')) {
 		flag = 1;
-		strLog("# Collision with p1, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p1) );
+		FastLog("# Collision with p1, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p1) );
 	} 
 	
 	else {
-		//strLog('No collision');
+		//FastLog('No collision');
 		// Collide with walls, If the ball hits the top/bottom,
 		// walls, run gameOver() function
-		//strLog('ball.y=' + ball.y + ' ball.r=' + ball.r);
+		//FastLog('ball.y=' + ball.y + ' ball.r=' + ball.r);
 
 		if(ball.y + ball.r > H) {
 			ball.y = H - ball.r;
@@ -499,13 +484,13 @@ function UpdateCollisions(tournamentID,gameID){
 		// If ball strikes the vertical walls, invert the 
 		// x-velocity vector of ball
 		if(ball.x + ball.r > W) {
-			strLog ('# HIT Right');
+			FastLog ('# HIT Right');
 			ball.vx = -ball.vx;
 			ball.x = W - ball.r;
 		}
 		
 		else if(ball.x - ball.r < 0) {
-			strLog ('# HIT Left');
+			FastLog ('# HIT Left');
 			ball.vx = -ball.vx;
 			ball.x = ball.r;
 		}
@@ -514,12 +499,12 @@ function UpdateCollisions(tournamentID,gameID){
 
 function collides(b, p, padName) {
 	if (padName=='p0'){
-		strLog('padName: ' + padName);
-		strLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
-		strLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
+		FastLog('padName: ' + padName);
+		FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
+		FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
 	}
 	if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <=p.x + p.w/2) {
-		//strLog('Fits width');
+		//FastLog('Fits width');
 		if(b.y >= (p.y - p.h) && p.y > 0){
 			//paddleHit = 1;
 			
@@ -539,7 +524,7 @@ function collides(b, p, padName) {
 		else return false;
 	}
 	else{
-		strLog('DOESNT fit width');
+		FastLog('DOESNT fit width');
 	}
 }
 
@@ -604,28 +589,28 @@ function collideAction(ball, p) {
 
 /*var specialRoom = io.of('/Special')
 	.on('connection', function(socket){
-		strLog('/Special connection');
+		FastLog('/Special connection');
 
 		socket.emit('event2', {data2:'specialRoom message'} );
 		socket.on('echo', function (msg){
-			strLog('ECHO Message: ' + JSON.stringify(msg));
+			FastLog('ECHO Message: ' + JSON.stringify(msg));
 			//socket.emit('event2', {data2:'specialRoom ECHO message!!'} );
 		})
 	})
 	.on('echo', function (msg){
-		strLog('Got echo!!');
-		console.log(JSON.stringify(msg));
+		FastLog('Got echo!!');
+		strLog(JSON.stringify(msg));
 	});*/
 
 function SendToRoom( room, event1, msg, socket){
-	//console.log('SendToRoom:' + room + ' ' + event1 + ' ');
-	//strLog('SendToRoom:' + room + ' ' + event1 + ' ' + JSON.stringify(msg));
-	//console.log('Send Message:' + JSON.stringify(msg));
-	//strLog('Trying to send to room ' + room +' event= '+ event1 + ' msg= ' + JSON.stringify(msg));
+	//strLog('SendToRoom:' + room + ' ' + event1 + ' ');
+	//FastLog('SendToRoom:' + room + ' ' + event1 + ' ' + JSON.stringify(msg));
+	//strLog('Send Message:' + JSON.stringify(msg));
+	//FastLog('Trying to send to room ' + room +' event= '+ event1 + ' msg= ' + JSON.stringify(msg));
 
 	games[room].socketRoom.emit(event1, msg);
-	//strLog('Я отправиль...');
+	//FastLog('Я отправиль...');
 	
 	//io.of(room).emit(event1, msg);
-	//console.log('Emitted');
+	//strLog('Emitted');
 }

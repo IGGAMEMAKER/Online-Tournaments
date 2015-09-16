@@ -8,18 +8,18 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
-
+var strLog = sender.strLog;
 var sitePort = 80;
 /*process.argv.forEach(function (val, index, array) {
-  console.log(index + ': ' + val);
+  strLog(index + ': ' + val);
 });*/
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    strLog(serverName + ': Request!');
     next();
 });
 
 function strLog(data){
-	console.log(data);
+	strLog(data);
 }
 
 var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
@@ -45,7 +45,7 @@ app.post('/Register', function (req, res){
 //funcArray["/Login"] = Login;
 app.post('/Login', function (req, res){
 	var data = req.body;
-	console.log(data);
+	strLog(data);
 	sender.expressSendRequest("Login", data, '127.0.0.1', 'DBServer', res, 
 		function (error, response, body, res){
 			sender.Answer(res, body);
@@ -69,7 +69,7 @@ funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
 
 app.post('/GetTournaments', function (req, res){
 	var data = req.body;
-	strLog(data);
+	//strLog(data);
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID'],
@@ -88,7 +88,7 @@ app.post('/GetTournaments', function (req, res){
 //funcArray['/GetUsers'] = GetUsers;
 app.post('/GetUsers', function (req, res){
 	var data = req.body;
-	strLog(data);
+	//strLog(data);
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID'],
@@ -121,7 +121,7 @@ var server = app.listen(5000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log(serverName + ' is listening at http://%s:%s', host, port);
+  strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 
 var user1 = {
@@ -133,8 +133,6 @@ var user1 = {
 function Alive(data, res){
 	strLog(data);
 	sender.Answer(res, {result:'OK'});
-	//res.json({result:'OK'});
-	//res.end();
 }
 
 function GetUsers (data, res){
@@ -150,9 +148,7 @@ function GetUsers (data, res){
 }
 
 function GetUsersHandler( error, response, body, res ){
-	//strLog("Checking Data taking: " + get2(body, 'tournaments', 't1'));
 	sender.Answer(res, body);
-	//res.end(get(body,'tournaments'));
 }
 
 function StartTournament (req, res){

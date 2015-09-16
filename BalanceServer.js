@@ -7,10 +7,10 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
-
+var strLog = sender.strLog;
 var serverName = "BalanceServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    strLog(serverName + ': Request!');
     next();
 });
 /*var funcArray = {};
@@ -28,15 +28,15 @@ app.post('/RestartTournament', RestartTournament);
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 function DefaultFunction (data, res){
-	console.log("DefaultFunction " + data['login']);
+	strLog("DefaultFunction " + data['login']);
 	res.end("DefaultFunction!!!");
 }
-console.log(undefined>=1);
+strLog(undefined>=1);
 
 function ServeTournament (req, res){
 	var data = req.body;
-	console.log('income tournament');
-	console.log(JSON.stringify(data));
+	strLog('income tournament');
+	//strLog(JSON.stringify(data));
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
 
@@ -56,20 +56,19 @@ function DBAddTournamentHandler( error, response, body, res){
 	if (body.result=='fail') {sender.Answer(res, {result:'fail' }); return;}
 	var tournament = body;
 
-	console.log("added tournament to DB");
-	console.log(JSON.stringify(tournament));
+	strLog("added tournament to DB");
+	//strLog(JSON.stringify(tournament));
 	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
 			'TournamentServer',  res, ServeTournamentHandler );
 }
 
 function ServeTournamentHandler( error, response, body, res){
-	console.log('if all is OK (ServeTournamentHandler.BalanceServer)');
+	strLog('if all is OK (ServeTournamentHandler.BalanceServer)');
 	var answer = {
 		message:'tournament adding COMPLETED',
 		status:'OK'
 	}
 	sender.Answer(res, answer);
-	//res.end('');
 }
 
 function FreeTournamentServerIP(req, res){
@@ -80,7 +79,7 @@ function FreeTournamentServerIP(req, res){
 }
 
 function GetFreeTournamentServerIP(tournamentStructure){
-	console.log("analyze tournamentStructure and TS IP will be localhost");
+	strLog("analyze tournamentStructure and TS IP will be localhost");
 	return '127.0.0.1';
 }
 
@@ -92,6 +91,6 @@ var server = app.listen(5004, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log(serverName + ' is listening at http://%s:%s', host, port);
+  strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 //server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

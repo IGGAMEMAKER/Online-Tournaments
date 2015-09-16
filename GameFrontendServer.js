@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-
+var strLog = sender.strLog;
 //var funcArray = {};
 
 app.post('/ServeTournament', ServeTournament);
@@ -32,13 +32,12 @@ var status = new Object();
 
 function ServeTournament (req, res){
 	var data = req.body;
-	console.log("----");
-	console.log("ServeTournament :");
+	strLog("----");
+	strLog("ServeTournament :");
 
-	console.log(data);
-	
-	console.log("----");
+	//strLog(data);
 	AnalyzeStructure(data, res);
+	strLog("----");
 }
 
 function StartTournament (req, res){
@@ -53,7 +52,7 @@ function StartTournament (req, res){
 
 function HaveEnoughResourcesForTournament (req, res){
 	var data = req.body;
-	console.log("We have resources for " + data['playerCount'] + " divided in " + data['gameNums'] + " groups. HARDCODED success");
+	strLog("We have resources for " + data['playerCount'] + " divided in " + data['gameNums'] + " groups. HARDCODED success");
 	var result = {
 		result:"success"
 	}
@@ -61,13 +60,13 @@ function HaveEnoughResourcesForTournament (req, res){
 }
 
 function ServeTournamentCallback( error, response, body, res) {
-	console.log("Answer from GameServer comes here!!!");
+	strLog("Answer from GameServer comes here!!!");
 	res.end('OK');
     //    res.end("GameServed");
 }
 function AnalyzeStructure(tournament, res){
 	var numberOfRounds = tournament['rounds'];
-	console.log("numberOfRounds= " + numberOfRounds);
+	strLog("numberOfRounds= " + numberOfRounds);
 	sender.expressSendRequest("ServeGames", tournament, 
 		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer
 
@@ -77,7 +76,7 @@ function AnalyzeStructure(tournament, res){
 
 function FinishGame (req,res){
 	var data = req.body;
-	console.log(data);
+	strLog(data);
 	res.end('OK');
 	sender.sendRequest("FinishGame", data, 
 		'127.0.0.1', 'TournamentManager', res, sender.printer);
@@ -87,6 +86,6 @@ var server = app.listen(5008, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log(serverName + ' is listening at http://%s:%s', host, port);
+  strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 //server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

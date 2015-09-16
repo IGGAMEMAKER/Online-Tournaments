@@ -3,6 +3,8 @@ var sender = require('./requestSender');
 var express         = require('express');
 var app = express();
 var bodyParser = require('body-parser')
+var strLog = sender.strLog;
+
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
@@ -10,7 +12,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 var serverName = "TournamentManager"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    strLog(serverName + ': Request!');
     next();
 });
 /*var funcArray = {};
@@ -32,7 +34,7 @@ var curTournamentID=0;
 
 
 function GetGameFrontendAdress(gameNameId){
-	console.log("rewrite TournamentManager.GetGameFrontendAdress");
+	strLog("rewrite TournamentManager.GetGameFrontendAdress");
 	var adress = {
 		IP: '127.0.0.1',
 		port: 'GameFrontendServer'
@@ -40,7 +42,7 @@ function GetGameFrontendAdress(gameNameId){
 	return adress;
 }
 function SendTournamentHandler( error, response, body, res) {
-	console.log("Answer from GameServer comes here!!!");
+	strLog("Answer from GameServer comes here!!!");
 	res.end('OK');
     //    res.end("GameServed");
 }
@@ -70,13 +72,13 @@ function FinishGame(req, res){
 
 function ServeTournament (req, res){
 	var data = req.body;
-	console.log("ServeTournament ")
-	console.log(JSON.stringify(data));//['tournamentStructure']);
+	strLog("ServeTournament ")
+	//strLog(JSON.stringify(data));//['tournamentStructure']);
 	
-	console.log("Sending Tournament...");
+	//strLog("Sending Tournament...");
 	var tournament = data;
 	//tournament.ID = curTournamentID++;
-	//console.log(tournament);
+	//strLog(tournament);
 	var adress = GetGameFrontendAdress(tournament.gameNameID);
 
 	sender.sendRequest("ServeTournament", getTournamentStructure(tournament), 
@@ -87,7 +89,7 @@ function ServeTournament (req, res){
 
 function StartTournament (req, res){
 	var data = req.body;
-	console.log("StartTournament " + data['tournamentID']);//['tournamentStructure']);
+	strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
@@ -96,7 +98,7 @@ var server = app.listen(5002, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log(serverName + ' is listening at http://%s:%s', host, port);
+  strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 
 //server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

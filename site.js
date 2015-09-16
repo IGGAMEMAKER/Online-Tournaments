@@ -14,9 +14,9 @@ var MongoStore = require('connect-mongo');//(express);
 //var io = require('socket.io')(app);
 
 console.log('ololo');
-app.use(express.static('frontend/public'));
+app.use(express.static('./frontend/public'));
 //app.use(express.static('games'));
-app.use(express.static('frontend/games/PingPong'));
+app.use(express.static('./frontend/games/PingPong'));
 
 /*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');*/
@@ -77,6 +77,9 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
   }
 }
 
+app.get('/console', function (req, res){
+  res.render('Logs');
+});
 
 app.get('/Game', function (req, res){
   console.log(__dirname);
@@ -120,14 +123,18 @@ app.post('/Login', function (req, res){
   sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
         'FrontendServer', res, 
         function (error, response, body, res1){
-          switch (body.result){
-            case 'OK':
-              req.session.login = data.login;
-              res.redirect('Tournaments');
-            break;
-            default:
-              res.render('Login',{err:body.result});
-            break;
+          if (error){
+            console.log('error :' + JSON.stringify(error));
+          }else{
+            switch (body.result){
+              case 'OK':
+                req.session.login = data.login;
+                res.redirect('Tournaments');
+              break;
+              default:
+                res.render('Login',{err:body.result});
+              break;
+            }
           }
         }
   //siteAnswer(res, 'Register', data);
@@ -178,9 +185,9 @@ app.get('/Register', function (req, res){
 })
 
 app.all('/StartTournament', function (req, res){
-  console.log(req.url);
+  //console.log(req.url);
   console.log('Site starts tournament');
-  console.log(req.body);
+  //console.log(req.body);
   io.emit('StartTournament', {tournamentID : req.body.tournamentID, logins : req.body.logins});//+req.body.tournamentID
   res.end();
 });
