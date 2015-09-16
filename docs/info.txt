@@ -7,3 +7,8 @@ it edits the startScript.sh. Needs to be executed from terminal
 
 3) make unique login in users
 4) make unique game in games
+
+1) UPD: cd rootDir
+	sh start.sh
+	node initializer.js
+5) Change socket.io IP in GameServers: (localhost in client and 46.101.157.129 on the server)

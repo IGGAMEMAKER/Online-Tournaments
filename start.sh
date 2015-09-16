@@ -1,9 +1,8 @@
-forever start -e Logs/err.txt DBServer.js
-forever start -e Logs/err.txt FrontendServer.js
-forever start -e Logs/err.txt BalanceServer.js
-forever start -e Logs/err.txt TournamentServer.js
-forever start -e Logs/err.txt GameFrontendServer.js
-forever start -e Logs/err.txt PingPongServer.js
-forever start -e Logs/err.txt TournamentManager.js
-sudo forever start -e Logs/err.txt site.js
-node initializer.js
+sudo forever start site.js
+forever start DBServer.js
+forever start FrontendServer.js
+forever start BalanceServer.js
+forever start TournamentServer.js
+forever start GameFrontendServer.js
+forever start PingPongServer.js
+forever start TournamentManager.js

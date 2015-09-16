@@ -247,12 +247,10 @@ function RestartTournament(req, res){
 	Tournament.findOne({tournamentID: tournamentID}, '', function (err, tournament){
 		if (err){
 			strLog('RestartTournament: ' + JSON.stringify(err));
-			strLog('RestartTournament: ' + JSON.stringify(err));
 			sender.Answer(res, errObject);
 		}
 		else{
 			if (tournament){
-				strLog('RestartTournament: ' + tournamentID);
 				strLog('RestartTournament: ' + tournamentID);
 				//strLog(JSON.stringify(tournament));
 				sender.Answer(res, tournament);
