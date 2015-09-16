@@ -32,7 +32,7 @@
         $('#messages').append($('<li>').text(JSON.stringify(msg)));
       });
       socket.on('StartTournament', function(msg){
-	
+	alert('BINGO');
         $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
         $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
         $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
