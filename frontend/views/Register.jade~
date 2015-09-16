@@ -1,4 +1,4 @@
-script(src= "ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+script(src= "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
 script.
 	function OpenInNewTab(url) {
 		alert(url);
@@ -15,6 +15,7 @@ script.
 		$.post('Tournaments', {message:"I am cool!"} , onAjaxSuccess );
 	}
 html
+	h1 != 'Register'
 	div#loginbox
 			form(name="Register", action="/Register", method="post")
 				p.

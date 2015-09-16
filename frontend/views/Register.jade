@@ -15,6 +15,7 @@ script.
 		$.post('Tournaments', {message:"I am cool!"} , onAjaxSuccess );
 	}
 html
+	h1!= 'Register'
 	div#loginbox
 			form(name="Register", action="/Register", method="post")
 				p.

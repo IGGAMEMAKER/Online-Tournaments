@@ -18,6 +18,7 @@
     <form action="">
       <!--input id="m" autocomplete="off" /><button>Send</button-->
     </form>
+    <div id="bottom">bottom</div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -30,13 +31,13 @@
       socket.on('Logs', function(msg){
 	
         $('#messages').append($('<li>').text(JSON.stringify(msg)));
+	document.getElementById( 'bottom' ).scrollIntoView();
       });
       socket.on('StartTournament', function(msg){
 	alert('BINGO');
         $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
         $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
-        $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
-        $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
+	document.getElementById( 'bottom' ).scrollIntoView();
       });
       socket.on('event1', function(msg){
 	
