@@ -44,8 +44,18 @@ function getGamePort (r){
 function strLog(text){
 	var time = new Date();
 	//console.log(time);
-	fs.appendFile('message.txt', time+' ' + text + "\n", function (err) {
-		if (err) console.log('err: ' + JSON.stringify(err));
+	var txt = time+' ' + text;// + "\n";
+	var host = '127.0.0.1';
+	
+
+	fs.appendFile('message.txt', txt, function (err) {
+		if (err) {
+			console.log('err: ' + JSON.stringify(err)); 
+			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
+		}
+		else{
+			sendRequest('Log', {msg:txt}, host, 'site', null, printer);
+		}
 	});
 	//stream.write(text);
 	console.log('strLog: ' + text);

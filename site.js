@@ -76,9 +76,14 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
+app.post('/Log', function (req, res){
+  res.end('sended');
+  var msg = req.body;
+  io.emit('Logs', JSON.stringify(msg));
+});
 
-app.get('/console', function (req, res){
-  res.render('Logs');
+app.get('/Log', function (req, res){
+  res.sendFile(__dirname + '/Logs.html');
 });
 
 app.get('/Game', function (req, res){
@@ -286,6 +291,7 @@ io.on('connection', function(socket){
 /*var tmr2 = setTimeout(function(){
   console.log(io.sockets.server.nsps['/111'].sockets);
 }, 11000);*/
+
 
 io.of('/111').on('connection', function(socket){
   console.log('ololo222');
