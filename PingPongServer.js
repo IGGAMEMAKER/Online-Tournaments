@@ -6,12 +6,7 @@ var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 var curGameNameID = 1;
 
-var funcArray = {};
-/*funcArray["/SetGame"] = SetGame;
-funcArray["/StartGame"] = StartGame;
-funcArray["/ServeGames"] = ServeGames;
-
-funcArray["/GetGames"] = GetGames;*/
+var gameModule = require('./gameModule');
 
 var strLog = sender.strLog;
 
@@ -274,6 +269,7 @@ function StartGame (req, res){
 			games[ID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
 			//***********
 		}
+		
 		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
 		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
