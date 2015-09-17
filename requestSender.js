@@ -87,7 +87,7 @@ function universalAnswer(error, response, body, res, method){//response is a res
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
 	//We analyze this response and give an answer by the object 'res' in method 'method'
 	if (!error) {
-    	console.log(JSON.stringify(body));
+		if (body) console.log(JSON.stringify(body));
 
         //var info = JSON.parse(JSON.stringify(body));
         //console.log(info);

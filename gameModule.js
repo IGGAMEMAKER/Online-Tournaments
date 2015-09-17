@@ -141,7 +141,7 @@ function Move( tournamentID, gameID, movement, userName){//Must get move from Re
 		if (playerExists(gameID, userName)>=0) { 
 			var playerID = getGID(gameID,userName);
 			
-			Action(gameID, playerID);//GET ACTION FROM GAMESERVER
+			Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
 		}
 		else{
 			strLog('#####PLAYER DOESNT exist#####');
@@ -261,9 +261,9 @@ function prepare(gameID){
 }
 
 function update(gameID){
-
+	customUpdate();
 	//UpdateCollisions(gameID, gameID);
-	SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
+	//SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
 }
 
 
@@ -311,17 +311,28 @@ function CheckForTheWinner(tournamentID, gameID) {
 	}
 }
 
-function StartGameServer(options){
+
+function StartGameServer(options, initF, updateF){
 	//if (options.port)
-	var server = app.listen(options.port, function () {
-	  var host = server.address().address;
-	  var port = server.address().port;
-
-	  strLog('Example app listening at http://'+ host+':'+ port);
-	});
+	strLog('Trying to StartGameServer');
+	if (options && initF){
+		customInit = initF;
+		customUpdate = updateF;
+		var server = app.listen(options.port, function () {
+		  var host = server.address().address;
+		  var port = server.address().port;
+		  //console.log('listening');
+		  strLog('Example app listening at http://'+ host+':'+ port);
+		});
+	}
 }
+var tmr = setInterval(function(){
+	if (customInit){
+		customInit(1,132);
+	}
+}, 3000)
 
-function incr(gameID, i){
+/*function incr(gameID, i){
 	var userName = getUID(gameID, i);
 	var game = games[gameID];
 
@@ -336,8 +347,14 @@ function incr(gameID, i){
 	else{
 		incrAction();
 	}
-}
+}*/
 
-function SendToRoom( room, event1, msg, socket){
+function SendToRoom( room, event1, msg){
 	games[room].socketRoom.emit(event1, msg);
 }
+
+this.StartGameServer = StartGameServer;
+this.app = app;
+this.games = games;
+this.SendToRoom = SendToRoom;
+this.strLog = strLog;

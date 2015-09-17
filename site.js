@@ -77,7 +77,8 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
   }
 }
 app.post('/Log', function (req, res){
-  res.end('sended');
+  //res.end('sended');
+  res.end('');
   var msg = req.body;
   io.emit('Logs', JSON.stringify(msg));
 });
