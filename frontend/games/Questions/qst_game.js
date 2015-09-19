@@ -41,10 +41,14 @@ const STATUS_FINISHING=4;
 var gameStatus = STATUS_WAITING;
 
 function drawRB(val, ans){
-		var rb = document.getElementById(val);
-		rb.innerHTML='<input type="radio" value='+val+', name="answer"/> ';
-		rb.innerHTML+= ans;
-	}
+	var rb = document.getElementById(val);
+	rb.innerHTML='<input type="radio" onclick=sendGameData('+val+') value='+val+', name="answer"/> ';
+	rb.innerHTML+= ans;
+}
+function setQuestionTab(question){
+	var q = document.getElementById('Question');
+	q.innerHTML = question;	
+}
 
 //var tournamentID = "#{tournamentID}";
 //console.log('AZAZA ' + tournamentID);
@@ -54,6 +58,7 @@ function drawRB(val, ans){
 	//alert('answs');
 	//answs.innerHTML='';
 	drawRB(1,'bar');
+	setQuestionTab('Question TROLOLO');
 	/*var rb = document.getElementById('1');
 	rb.innerHTML='<input type="radio" value=1, name="answer"/> ';
 	rb.innerHTML+= 'bar';*/
@@ -76,11 +81,13 @@ room.on('startGame', function(msg){
 	
 	console.log(ticks);
 	if (ticks==0){
-		$('#Question').innerHTML = 'startGame in '+ ticks + ' seconds';
+
+		//$('#Question').innerHTML = 'startGame in '+ ticks + ' seconds';
 		gameStatus = STATUS_RUNNING;
 		starter=1;
 	}
 	else{
+		setQuestionTab('startGame in '+ ticks + ' seconds');
 		//printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
 	}
 	//alert(msg);
@@ -89,9 +96,10 @@ room.on('startGame', function(msg){
 var gameDatas;// = [];
 
 room.on('update', function(msg){
-	alert(JSON.stringify(msg));
+	//alert(JSON.stringify(msg));
+	setQuestionTab(msg.question);
 
-	for (i=0;i<msg.answers.Length;++i){
+	for (var i=0;i<msg.answers.length;++i){
 		drawRB(i+1, msg.answers[i]);
 	}
 	//if (starter==1){ starter = 2;}
@@ -106,18 +114,6 @@ room.on('statusChange', function(msg){
 	var gameStatus = msg['gameStatus'];
 });
 
-/*var timer;
-
-function initSender(){
-	var tmr0 = setInterval(sendGameData , 20);
-	//timer = setInterval(function(){ sendGameData();} , 1000);
-}
-
-function myStartGame(){
-	initSender();
-}*/
-
-
 function sendGameData(data1, url){
 	var sendData = { 
 		movement: {answer:data1}, 
@@ -125,7 +121,7 @@ function sendGameData(data1, url){
 		gameID: tournamentID, 
 		login: window.login 
 	};
-
+	//alert(JSON.stringify(sendData));
 	ajaXSend(sendData, 'http://localhost:' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }

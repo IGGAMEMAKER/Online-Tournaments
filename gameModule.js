@@ -349,6 +349,7 @@ function StartGameServer(options, initF, updateF, action, updateTime){
 }*/
 
 function SendToRoom( room, event1, msg){
+	strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
 	games[room].socketRoom.emit(event1, msg);
 }
 

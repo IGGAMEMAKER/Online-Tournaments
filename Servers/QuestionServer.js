@@ -21,15 +21,16 @@ var Questions = [
 
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
-	games[gameID].questIndex = 0;
+	games[gameID].questIndex = -1;
 	//games[gameID].players
 }
 
 function AsyncUpdate(gameID){
-	send(gameID, 'Questions', getQuestions(gameID));
+	
 	strLog('AsyncUpdate. be aware of  Questions.length!!! it must be games[gameID].Questions' );
 	if (games[gameID].questIndex < Questions.length-1){
 		games[gameID].questIndex++;
+		send(gameID, 'update', getQuestions(gameID));
 	}
 	else{
 		FinishGame(gameID, FindWinner(gameID) );
@@ -37,7 +38,7 @@ function AsyncUpdate(gameID){
 }
 function FindWinner(gameID){
 	var game = games[gameID];
-	strLog(game.scores);
+	strLog(JSON.stringify(game.scores));
 	var userName = getUID(gameID, 0);
 	strLog('Winner is: ' + userName);
 	return userName;
@@ -49,8 +50,8 @@ function FindWinner(gameID){
 function getCurrentQuestion(gameID){
 	if (games[gameID]){
 		var a = Questions[games[gameID].questIndex];
-		strLog(JSON.stringify(a));
 		strLog('questIndex = ' + games[gameID].questIndex);
+		strLog(JSON.stringify(a));
 		return a;//Questions[games[gameID].questIndex];
 	}
 	else{
@@ -61,7 +62,7 @@ function getCurrentQuestion(gameID){
 function getQuestions(gameID){
 	strLog('Rewrite getQuestions function!!');
 	var curQuest = getCurrentQuestion(gameID);
-	return {question: curQuest.question , answers:curQuest.answers };
+	return { question: curQuest.question , answers:curQuest.answers };
 	//return games[gameID].Questions;
 }
 
@@ -69,12 +70,14 @@ function getQuestions(gameID){
 	send()
 }, SendPeriod);*/
 function Action(gameID, playerID, movement, userName){
+	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
 	if (AnswerIsCorrect(gameID, movement.answer)){
 		games[gameID].scores[userName]++;	
 	}
 }
 
 function AnswerIsCorrect(gameID, answer){
+	strLog('Player answer = ' + answer + ' , while correct is :' + getCurrentQuestion(gameID).correct );
 	if (answer && answer == getCurrentQuestion(gameID).correct ){
 		return true;
 	}

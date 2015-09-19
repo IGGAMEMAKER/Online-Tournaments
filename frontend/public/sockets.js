@@ -32,9 +32,9 @@ socket.on('StartTournament', function(msg){
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
 
-socket.on('update', function(msg){
+/*socket.on('update', function(msg){
   alert.stringify(JSON.stringify(msg));
-} )
+} )*/
 
 function startGame(gameURL){
   var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
