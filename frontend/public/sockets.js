@@ -25,7 +25,7 @@ socket.on('StartTournament', function(msg){
 
   currentTID = tournamentID;
   console.log('tID = ' + currentTID);
-  var gameURL = 'PingPong';
+  //var gameURL = 'PingPong';
   var text = '<button onclick="startGame()" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
   startGame();
@@ -37,7 +37,7 @@ socket.on('update', function(msg){
 } )
 
 function startGame(gameURL){
-  var a = window.open(gameURL?gameURL:'/Game?tournamentID='+currentTID);
+  var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
   a.logins= curLogins;
   a.login = login;
 }

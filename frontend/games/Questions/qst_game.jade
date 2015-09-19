@@ -1,0 +1,25 @@
+mixin radioButton(val, ans)
+	div(id=val)
+		input(type="radio", value=val, name='answer').
+		| #{ans}
+		br
+html
+head
+	link(rel="stylesheet" type="text/css" href="qst_game.css")
+center
+	h1!= Questions
+	div#Question
+		p Question will be here
+	div#Answers
+		+radioButton(1, 'Answer1')
+		+radioButton(2, 'Answer2')
+		+radioButton(3, 'Answer3')
+		+radioButton(4, 'Answer4')
+		+radioButton(5, 'Gaga best')
+script( src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
+script( src="https://cdn.socket.io/socket.io-1.2.0.js").
+script( src="http://code.jquery.com/jquery-1.11.1.js").
+
+script.
+	var tournamentID= "#{tournamentID}";
+script( src="qst_game.js").

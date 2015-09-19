@@ -17,6 +17,7 @@ console.log('ololo');
 app.use(express.static('./frontend/public'));
 //app.use(express.static('games'));
 app.use(express.static('./frontend/games/PingPong'));
+app.use(express.static('./frontend/games/Questions'));
 
 /*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');*/
@@ -29,7 +30,7 @@ app.use(session({
 }));
 
 app.use(function(req,res,next){
-    console.log('Site: Request!');
+    console.log('Site: Request! ' + req.url);
     res.locals.session = req.session;
     next();
 });
@@ -42,7 +43,7 @@ app.use(function(req,res,next){
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
-app.set('views', ['./frontend/views', './frontend/games/PingPong']);
+app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
 //app.set('games/PingPong', './views');
 
 app.set('view engine', 'jade');
@@ -91,7 +92,8 @@ app.get('/Game', function (req, res){
   console.log(__dirname);
   var tID = req.query.tournamentID;
   console.log(req.query.tournamentID);
-  res.render('game', {tournamentID:tID?tID:111} );
+  res.render('qst_game', {tournamentID:tID?tID:111} );
+  
   //res.render('/games/PingPong/game', {tournamentID:111} );
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })

@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 app.use(function(req,res,next){
-    strLog(serverName + ': Request!');
+    strLog(serverName + ': Request/' + req.url);
     next();
 });
 
@@ -64,7 +64,7 @@ function MoveHead(data){
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
 const STANDARD_PREPARE_TICK_COUNT = 5;
-const UPDATE_TIME = 1000/50; //50 times per second = 20ms
+var UPDATE_TIME = 3000;
 const PREPARED = "PREPARED";
 
 
@@ -178,7 +178,6 @@ function mod2(val){
 
 }*/
 var customInit;
-var customWinningCondition;
 var Action;
 //var customMove
 
@@ -215,9 +214,6 @@ function StartGame (req, res){
 			
 			//***********
 			customInit(ID, playerID);
-			/*var speed = 0.4/4;
-			games[ID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
-			games[ID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };*/
 			//***********
 		}
 		
@@ -227,6 +223,7 @@ function StartGame (req, res){
 		games[ID].userIDs = userIDs;
 
 		games[ID].socketRoom = io.of('/'+ID);
+
 		//var room = games[ID].socketRoom;
 		games[ID].socketRoom.on('connection', function (socket){
 			strLog('Room <' + ID + '> got new player');
@@ -255,16 +252,15 @@ function prepare(gameID){
 		strLog('Trying to stop timer');
 		clearInterval(games[gameID].timer);
 		strLog('Stopped timer');
-		games[gameID].timer = setInterval(function() {update(gameID) }, UPDATE_TIME);
-		//setTimeout( function(){ stream.end(); strLog('File closed');} , 15000 );
+		games[gameID].timer = setInterval(function() {customUpdate(gameID) }, UPDATE_TIME);//update(gameID)
 	}
 }
 
-function update(gameID){
-	customUpdate();
+/*function update(gameID){
+	customUpdate(gameID);
 	//UpdateCollisions(gameID, gameID);
 	//SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
-}
+}*/
 
 
 
@@ -311,26 +307,29 @@ function CheckForTheWinner(tournamentID, gameID) {
 	}
 }
 
-
-function StartGameServer(options, initF, updateF){
+var io;
+function StartGameServer(options, initF, updateF, action, updateTime){
 	//if (options.port)
 	strLog('Trying to StartGameServer');
-	if (options && initF){
+	if (options && initF && action){
 		customInit = initF;
 		customUpdate = updateF;
+		UPDATE_TIME = updateTime;
+		Action = action;
 		var server = app.listen(options.port, function () {
 		  var host = server.address().address;
 		  var port = server.address().port;
 		  //console.log('listening');
 		  strLog('Example app listening at http://'+ host+':'+ port);
 		});
+		io = require('socket.io')(server);
 	}
 }
-var tmr = setInterval(function(){
+/*var tmr = setInterval(function(){
 	if (customInit){
 		customInit(1,132);
 	}
-}, 3000)
+}, 3000)*/
 
 /*function incr(gameID, i){
 	var userName = getUID(gameID, i);
@@ -358,3 +357,5 @@ this.app = app;
 this.games = games;
 this.SendToRoom = SendToRoom;
 this.strLog = strLog;
+this.getUID = getUID;
+this.FinishGame = FinishGame;
