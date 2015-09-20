@@ -40,11 +40,17 @@ function FindWinner(gameID){
 	var game = games[gameID];
 	strLog(JSON.stringify(game.scores));
 	var userName = getUID(gameID, 0);
+	var maxScore=0;
+	for (var playerID in game.userIDs){
+		var uName = getUID(gameID,playerID);
+		var curScore = game.scores[uName];
+		if (curScore > maxScore){
+			maxScore = curScore;
+			userName = uName;
+		}
+	}
 	strLog('Winner is: ' + userName);
 	return userName;
-	/*for (var playerID in userIDs){
-		return 
-	}*/
 }
 
 function getCurrentQuestion(gameID){
