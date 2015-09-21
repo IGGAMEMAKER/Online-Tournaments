@@ -1,38 +1,11 @@
-// RequestAnimFrame: a browser API for getting smooth animations
-/*window.requestAnimFrame = (function(){
-	return  window.requestAnimationFrame       || 
-		window.webkitRequestAnimationFrame || 
-		window.mozRequestAnimationFrame    || 
-		window.oRequestAnimationFrame      || 
-		window.msRequestAnimationFrame     ||  
-		function( callback ){
-			return window.setTimeout(callback, 1000 / 60);
-		};
-})();
 
-window.cancelRequestAnimFrame = ( function() {
-	return window.cancelAnimationFrame          ||
-		window.webkitCancelRequestAnimationFrame    ||
-		window.mozCancelRequestAnimationFrame       ||
-		window.oCancelRequestAnimationFrame     ||
-		window.msCancelRequestAnimationFrame        ||
-		clearTimeout
-} )();*/
-//alert('This instance!');
-
-// Add mousemove and mousedown events to the canvas
-//canvas.addEventListener("mousemove", trackPosition, true);
-
-//canvas.addEventListener("mousedown", btnClick, true);
-
-var gamePort=5009;
-
+//var gamePort=5009;
+//var gameHost='46.101.157.129';//'127.0.0.1';
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
 var login = window.login;
-
 const STATUS_WAITING=1;
 const STATUS_RUNNING=2;
 const STATUS_RESTART_ROUND=3;
@@ -69,8 +42,9 @@ function setQuestionTab(question){
 	}
 	drawAnswers();*/
 	
-
-var room = io.connect('http://localhost:' + gamePort + '/'+tournamentID);
+/*var gameHost = 'localhost';
+var gamePort = 5009;*/
+var room = io.connect('http://' + gameHost+':' + gamePort + '/'+tournamentID);
 
 
 var starter=0;
@@ -93,6 +67,14 @@ room.on('startGame', function(msg){
 	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+room.on('finish', function(msg){
+	setQuestionTab('Game Finished. Thank you for participation!');
+	drawRB(1,'');
+	drawRB(2,'');
+	drawRB(3,'');
+	drawRB(4,'');
+	alert('Winner is :' + msg.winner);
+})
 var gameDatas;// = [];
 
 room.on('update', function(msg){

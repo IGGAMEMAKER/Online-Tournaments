@@ -11,6 +11,7 @@ center
 	div#Question
 		p Question will be here
 	br
+	br
 	div#Answers
 		+radioButton(1, 'Answer1')
 		+radioButton(2, 'Answer2')
@@ -22,4 +23,7 @@ script( src="http://code.jquery.com/jquery-1.11.1.js").
 
 script.
 	var tournamentID= "#{tournamentID}";
+	var gameHost = "#{gameHost}";
+	var gamePort = "#{gamePort}";
+	alert('Host= ' + gameHost + '/n Port= '+gamePort);
 script( src="qst_game.js").

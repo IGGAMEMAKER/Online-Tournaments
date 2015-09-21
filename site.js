@@ -12,6 +12,21 @@ var cookieParser = require('cookie-parser');
 
 var MongoStore = require('connect-mongo');//(express);
 //var io = require('socket.io')(app);
+var fs = require('fs');
+var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
+console.log(file);
+var configs =  JSON.parse(file);
+/*{ 
+  msg:'superhero!',
+  gamePort:5009,
+  gameHost:'localhost',
+  gameHost2:'46.101.157.129'
+}*/
+console.log(JSON.stringify(configs));
+
+//console.log(configs)
+var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
+var gamePort = configs.gamePort? configs.gamePort : '5009';
 
 console.log('ololo');
 app.use(express.static('./frontend/public'));
@@ -92,7 +107,11 @@ app.get('/Game', function (req, res){
   console.log(__dirname);
   var tID = req.query.tournamentID;
   console.log(req.query.tournamentID);
-  res.render('qst_game', {tournamentID:tID?tID:111} );
+  res.render('qst_game', {
+    tournamentID:tID?tID:111,
+    gameHost:gameHost,
+    gamePort:gamePort
+  });
   
   //res.render('/games/PingPong/game', {tournamentID:111} );
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });

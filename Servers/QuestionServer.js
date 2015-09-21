@@ -72,9 +72,6 @@ function getQuestions(gameID){
 	//return games[gameID].Questions;
 }
 
-/*var sender = setInterval(function(){
-	send()
-}, SendPeriod);*/
 function Action(gameID, playerID, movement, userName){
 	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
 	if (AnswerIsCorrect(gameID, movement.answer)){

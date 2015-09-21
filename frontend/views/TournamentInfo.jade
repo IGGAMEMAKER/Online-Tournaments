@@ -29,7 +29,6 @@ html
 				$.ajax({
 				  url: 'RegisterInTournament',
 				  method: 'POST',
-				  //data: { login: 'Alvaro_Fernandez', tournamentID:1 },
 				  data: { login: login, tournamentID:tID },
 				  success: function( data ) {
 					var msg = data;//JSON.stringify(data);

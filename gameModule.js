@@ -6,12 +6,16 @@ var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 var curGameNameID = 1;
 
-var gameModule = require('./gameModule');
+//var gameModule = require('./gameModule');
 
 var strLog = sender.strLog;
 
 var fs = require('fs');
-
+const GAME_FINISH = "GAME_FINISH";
+const tournamentFAIL="tournamentFAIL";
+const STANDARD_PREPARE_TICK_COUNT = 5;
+var UPDATE_TIME = 3000;
+const PREPARED = "PREPARED";
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -61,11 +65,7 @@ function MoveHead(data){
   	Move(tournamentID, gameID, movement, userLogin);
 }
 
-const GAME_FINISH = "GAME_FINISH";
-const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 5;
-var UPDATE_TIME = 3000;
-const PREPARED = "PREPARED";
+
 
 
 /*funcArray["/PauseGame"] = PauseGame;
@@ -284,7 +284,7 @@ function FinishGame(ID, playerID){
 		gameID: ID,
 		tournamentID:ID
 	};
-
+	SendToRoom(ID, 'finish', { winner:playerID });
 	clearInterval(games[gameID].timer);
 	strLog('FIX IT!!! GAMEID=tournamentID');
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
