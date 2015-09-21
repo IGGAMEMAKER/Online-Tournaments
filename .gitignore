@@ -4,3 +4,7 @@
 node_modules
 *~
 configs/siteConfigs.txt
+message.txt
+my_file.txt
+Logs/
+PPLog.txt
