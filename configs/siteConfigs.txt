@@ -1,0 +1,6 @@
+{
+	"msg":"superhero!",
+	"gamePort":5009,
+	"gameHost1":"localhost",
+	"gameHost":"46.101.157.129"
+}
