@@ -44,6 +44,14 @@ function playerIsRegistered (tournament, login){
 	return tournament.logins[login];
 }
 
+function regPlayer(tournament, login){
+	tournament.playersRegistered++;
+	tournament.players.push(login);
+	tournament.logins[login]=1;
+	/*strLog('Logins list');
+	strLog(tournament.logins);*/
+}
+
 function RegisterUserInTournament (req, res){
 	var data = req.body;
 	//strLog("Sender = " + data['sender']);
@@ -57,21 +65,18 @@ function RegisterUserInTournament (req, res){
 	if (maxPlayersInTournament> tournament.playersRegistered){
 		strLog('Current players:');
 		strLog(tournament.players);
-		strLog(tournament);
+		//strLog(tournament);
 		if (playerIsRegistered(tournament, login)){ // tournament.players[login])
 			strLog('User ' + login + ' is already Registered in ' + tournamentID);
 			
 			sender.Answer(res,Fail);
 		}
 		else{
-			tournament.playersRegistered++;
-			tournament.players.push(login);
-			tournament.logins[login]=1;
-			strLog('Logins list');
-			strLog(tournament.logins);
+			regPlayer(tournament, login);
+			
 
 			sender.Answer(res,Success);
-
+			sender.sendRequest('RegisterUserInTournament', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', null, sender.printer);
 			strLog('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
 			
 			if (maxPlayersInTournament === tournament.playersRegistered){
@@ -191,6 +196,14 @@ function getTournament(tournamentID, data){
 	tournaments[tournamentID].players = [];
 	tournaments[tournamentID].playersRegistered=0;
 	tournaments[tournamentID].logins = {};
+	sender.sendRequest('GetPlayers', {tournamentID:tournamentID}, '127.0.0.1', 'DBServer', null, function (error, response, body, res){
+		for (var i = body.length - 1; i >= 0; i--) {
+			regPlayer(tournaments[tournamentID], body[i].userID);
+			strLog(JSON.stringify(tournaments[tournamentID].players));
+		};
+		
+		//strLog(JSON.stringify(body));
+	});
 }
 function ServeTournament (data, res){
 	//var data = req.body;

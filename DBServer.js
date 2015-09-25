@@ -34,6 +34,8 @@ app.post('/RestartTournament', RestartTournament);
 app.post('/Login', LoginUser);
 app.post('/GetTournaments', GetTournaments);
 
+app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
+app.post('/GetPlayers', GetPlayers);
 
 /*funcArray["/Ban"] = Ban;
 funcArray["/ChangePassword"] = ChangePassword;
@@ -72,7 +74,7 @@ var Game = mongoose.model('Game', {
 });
 
 var TournamentRegs = mongoose.model('TournamentRegs', {
-	tID: String, uID: String, promo:String
+	tournamentID: String, userID: String, promo:String
 });
 
 /*var Server = mongoose.model('Server'{
@@ -171,6 +173,42 @@ var Tournament = mongoose.model('Tournament', {
 		status: 		Number,	
 		players: 		Array
 	});*/
+
+function RegisterUserInTournament(data, res){
+	var tournamentID = data.tournamentID;
+
+	var reg = new TournamentRegs({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
+	reg.save(function (err) {
+		if (err){
+			switch (err.code){
+				case OBJ_EXITS:
+					strLog('Sorry, User ' + data.login + ' Exists in tournament ' + tournamentID);
+					sender.Answer(res, {result: 'TournamentExists??!!!'});
+				break;
+				default:
+					strLog(err);
+					sender.Answer(res, {result: 'UnknownError'});
+				break;
+			}
+		}
+		else{
+			sender.Answer(res, {result:'OK'} );
+			strLog('added user to tournament'); 
+		}
+	});
+}
+
+function GetPlayers (req, res){
+	var query = req.body;
+	TournamentRegs.find({tournamentID:query.tournamentID},'', function (err, players){
+		if (!err){
+			sender.Answer(res, players);
+		}
+		else{
+			sender.Answer(res, Fail);
+		}
+	});
+}
 
 function ChangePassword(req, res){
 	var data = req.body;
@@ -343,7 +381,7 @@ function incrMoney(res, login, cash){
 	User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
 		if (err){
 			strLog(err);
-			sender.Answer(res, {result: 'fail'});
+			sender.Answer(res, Fail);
 		}
 		else{
 			strLog('IncreaseMoney----- count= ');
@@ -352,7 +390,7 @@ function incrMoney(res, login, cash){
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					strLog(err);
-					sender.Answer(res, {result: 'fail'});
+					sender.Answer(res, Fail);
 				}
 				else{
 					strLog(user);

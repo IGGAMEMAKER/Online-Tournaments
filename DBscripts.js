@@ -9,9 +9,10 @@ print(db.getCollectionNames());
 while ( cursor.hasNext() ) {
    printjson( cursor.next() );
 }*/
-db.createCollection('games');
-db.games.createIndex( { gameName: 1 }, { unique: true } )
 
+/*db.createCollection('games');
+db.games.createIndex( { gameName: 1 }, { unique: true } )*/
+//db.tournamentregs.createIndex({tournamentID: 1, userID: 1}, {unique: true, name:'OneRegisterPerTournament'});
 
 print('lol');
 /*var a = db.users.find();

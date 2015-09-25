@@ -30,9 +30,18 @@ function GameServerStarts(req, res){
 	var data = req.body;
 	strLog('GameServerStarts:' + JSON.stringify(data));
 	sender.sendRequest('GetTournaments', data, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
-		var games = body;
 		for (var i = body.length - 1; i >= 0; i--) {
-			AnalyzeStructure(body[i], res);
+
+			var tournament = body[i];
+			strLog('AnalyzeStructure. SENDING GAME TO GameServer');
+			
+			var numberOfRounds = tournament['rounds'];
+			var gameName = tournament.gameName;
+			if (!gameName) gameName = 1;
+			strLog("numberOfRounds= " + numberOfRounds);
+			sendToGameServer("ServeGames", tournament, null, gameName, null, sender.printer);
+
+			//AnalyzeStructure(body[i], res);
 		};
 	});
 }
@@ -69,6 +78,7 @@ function ServeTournamentCallback( error, response, body, res) {
     //    res.end("GameServed");
 }
 function AnalyzeStructure(tournament, res){
+	strLog('AnalyzeStructure. SENDING GAME TO GameServer');
 	var numberOfRounds = tournament['rounds'];
 	var gameName = tournament.gameName;
 	if (!gameName) gameName = 1;
@@ -88,6 +98,7 @@ function FinishGame (req,res){
 }
 
 function sendToGameServer(command, data, host, gameName, res, callback){
+	strLog(' GAME_NAME IS :' + gameName);
 	sender.expressSendRequest(command, data, 
 		host?host:'127.0.0.1', gameName, res, callback);//sender.printer
 }

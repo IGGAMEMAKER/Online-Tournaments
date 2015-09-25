@@ -42,7 +42,7 @@ app.get('/Move', function (req, res){
 function FastLog(text){
 	var time = new Date();
 	//strLog(time);
-	fs.appendFile('GMLog.txt', time+' ' + text + "\n", function (err) {
+	fs.appendFile('GMLog.txt', '\r\n' + time+' ' + text + "\n", function (err) {
 		if (err) strLog('err: ' + JSON.stringify(err));
 	});
 	//stream.write(text);
@@ -187,7 +187,7 @@ function StartGame (req, res){
 	var ID = data['tournamentID'];
 	if (!games[ID]){
 		var message = 'Cannot find tournament with ID='+ ID;
-		//strLog(games);
+		strLog(games);
 		strLog(message);
 		sender.Answer(res, {result:'fail', message:message });
 	}

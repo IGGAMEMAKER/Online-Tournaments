@@ -26,7 +26,7 @@ serverList['GameServer'] = 5009;
 
 serverList['site'] = 80;
 
-serverList['1']=5010;//Questions and Answers
+serverList['1']=5009;//Questions and Answers
 serverList['2']=5009;//Ping Pong
 
 //console.log(serverList['DBServer']);
@@ -52,7 +52,7 @@ function strLog(text){
 	var host = '127.0.0.1';
 	
 
-	fs.appendFile('message.txt', txt, function (err) {
+	fs.appendFile('message.txt', '\r\n' + txt, function (err) {
 		if (err) {
 			console.log('err: ' + JSON.stringify(err)); 
 			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
@@ -182,7 +182,7 @@ function callback(error, response, body) {
     	/*console.log('printing:');
     	console.log(body);*/
         var info = JSON.parse(JSON.stringify(body));
-        console.log(info);
+        //console.log(info);
     }
     else {
         console.log('Error happened: '+ error);
