@@ -13,12 +13,6 @@ app.use(function(req,res,next){
     strLog(serverName + ': Request!');
     next();
 });
-/*var funcArray = {};
-
-//funcArray["/register"] = DefaultFunction; //start all comands with '/'. IT's a URL to serve
-funcArray["/FreeTournamentServerIP"] = FreeTournamentServerIP;
-funcArray["/ServeTournament"] = ServeTournament;
-funcArray["/RestartTournament"] = RestartTournament;*/
 
 app.post('/FreeTournamentServerIP', FreeTournamentServerIP);
 app.post('/ServeTournament', ServeTournament);
@@ -51,7 +45,13 @@ function RestartTournament (req, res){
 		sender.Answer(res, {result:'error'});
 	}
 }
+
+function GetExecutor(req, res){
+	var data = req.body;
+}
+
 function DBAddTournamentHandler( error, response, body, res){
+	strLog('DBAddTournamentHandler');
 	//var tournamentID = body['tournamentID'];
 	if (body.result=='fail') {sender.Answer(res, {result:'fail' }); return;}
 	var tournament = body;

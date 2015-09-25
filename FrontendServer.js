@@ -22,15 +22,13 @@ function strLog(data){
 	strLog(data);
 }
 
-var funcArray = {};//["/stop"] //'/stop' : AnswerAndKill
+//["/stop"] //'/stop' : AnswerAndKill
 
-//funcArray['/Alive'] = Alive;
 app.get('/Alive', function (req, res){
 	strLog(data);
 	sender.Answer(res, {result:'OK'});
 });
 
-//funcArray["/Register"] = RegisterUser;
 app.post('/Register', function (req, res){
 	var data = req.body;
 	sender.sendRequest("Register", data, '127.0.0.1', 'DBServer',  res, 
@@ -42,7 +40,10 @@ app.post('/Register', function (req, res){
 	//sender.Answer(res, {result:'OK'});
 });
 
-//funcArray["/Login"] = Login;
+app.post('/FinishGame', FinishGame);
+app.post('/StartTournament', StartTournament);
+
+
 app.post('/Login', function (req, res){
 	var data = req.body;
 	strLog(data);
@@ -51,6 +52,43 @@ app.post('/Login', function (req, res){
 			sender.Answer(res, body);
 		});
 });
+
+app.post('/ServeTournament', ServeTournament);
+
+///********************** 	TournamentManager
+function GetGameFrontendAdress(gameNameId){
+	strLog("rewrite FS.GetGameFrontendAdress");
+	var adress = {
+		IP: '127.0.0.1',
+		port: 'GameFrontendServer'
+	};
+	return adress;
+}
+function SendTournamentHandler( error, response, body, res) {
+	strLog("Answer from GameServer comes here!!!");
+	res.end('OK');
+}
+
+function getTournamentStructure( tournament){
+	return tournament;
+}
+
+function ServeTournament (req, res){
+	var data = req.body;
+	strLog("ServeTournament ")
+	//strLog(JSON.stringify(data));//['tournamentStructure']);
+	
+	//strLog("Sending Tournament...");
+	var tournament = data;
+	var adress = GetGameFrontendAdress(tournament.gameNameID);
+
+	sender.sendRequest("ServeTournament", getTournamentStructure(tournament), 
+		adress['IP'], adress['port'], res, SendTournamentHandler);
+}
+
+///**********************
+
+
 
 
 function Login( data, res){
@@ -65,7 +103,7 @@ function LoginHandler( error, response, body, res){
 
 /*funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;*/
-funcArray["/GetUserProfileInfo"] = GetUserProfileInfo;
+app.post('/GetUserProfileInfo', GetUserProfileInfo);
 
 app.post('/GetTournaments', function (req, res){
 	var data = req.body;
@@ -101,10 +139,8 @@ app.post('/GetUsers', function (req, res){
 });
 
 
-//funcArray["/RegisterUserInTournament"] = RegisterUserInTournament;
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 
-//funcArray["/StartTournament"]=StartTournament;
 app.post('/StartTournament', StartTournament);
 
 /*funcArray["/WakeUsers"] = WakeUsers;
@@ -153,12 +189,15 @@ function GetUsersHandler( error, response, body, res ){
 
 function StartTournament (req, res){
 	var data = req.body;
-	res.end('FrontendServer Starts Tournament!');
-	strLog(data);
+
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
+	strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
+	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+	res.end("StartTournament");
 }
 
-function GetUserProfileInfo(data , res){
+function GetUserProfileInfo(req , res){
+	var data = req.body;
 	strLog(data);
 	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, GetUserProfileInfoHandler);
 }
@@ -170,7 +209,11 @@ function ChangePassword( data, res){
 	res.end("OK");
 	strLog("You must send changePass to Account Server");
 }
-
+function FinishGame(req, res){
+	var data = req.body;
+	sender.Answer(res, {result:'OK', message:'FinishGame'});
+	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+}
 
 function GetTournaments( data, res){
 	strLog(data);

@@ -25,6 +25,10 @@ serverList['GameFrontendServer'] = 5008;
 serverList['GameServer'] = 5009;
 
 serverList['site'] = 80;
+
+serverList['1']=5010;//Questions and Answers
+serverList['2']=5009;//Ping Pong
+
 //console.log(serverList['DBServer']);
 
 var gameNameIDList = {};
@@ -88,7 +92,9 @@ function universalAnswer(error, response, body, res, method){//response is a res
 	//We analyze this response and give an answer by the object 'res' in method 'method'
 	if (!error) {
 		if (body) console.log(JSON.stringify(body));
-
+		/*if (!body) {
+			console.log('body is NULL!!!!');
+		}*/
         //var info = JSON.parse(JSON.stringify(body));
         //console.log(info);
         

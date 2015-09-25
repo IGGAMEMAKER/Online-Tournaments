@@ -275,7 +275,7 @@ app.get('/TournamentInfo', function (req, res){
 
 
 
-app.get('/', function(req, res){
+app.get('/chat', function(req, res){
   //var i=0;
   //io.emit('chat message', { hello: 'Gaga the great!' });
   /*var abd = setInterval(function(){
@@ -284,6 +284,9 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/sock.html');
 });
 
+app.get('/', function (req,res){
+  res.render('Login');
+})
 
 
 var server = app.listen(80, function () {
@@ -326,45 +329,3 @@ io.of('/111').on('connection', function(socket){
 function SendToRoom( room, event, msg, socket){
   io.of(room).emit(event, msg);
 }
-
-/*io.of('/111').on('connection', function() {
-  console.log("client connected");
-});*/
-
-/*app.post('/hello', function(req, res) {
-  io.of('/hello').emit('hello');
-});*/
-
-/*io.on('event1', function(data){
-  console.log('io.on event1');
-  console.log(data); 
-});*/
-
-/*var nsp = io.of('/111');
-nsp.on('connection', function(socket){
-  console.log('nsp connection');
-  console.log('someone connected TO 111');
-  socket.join('/111');
-  socket.join('111');
-  nsp.on('event1', function(data){
-    console.log(data);
-  });
-
-});*/
-
-
-
-/*tmr1 = setInterval(function(){
-  nsp.emit('azz', 'Gaga');
-}, 10000);*/
-
-
-/*io.on('connection', function (socket) {
-  socket.emit('TournamentReg', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log('Socket Event, bro!!!');
-    console.log(data);
-  });
-});*/
-//var io = require('socket.io')(app);
-//var io = require('socket.io')(server);

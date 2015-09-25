@@ -9,18 +9,16 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 var strLog = sender.strLog;
-//var funcArray = {};
+
 app.use(function(req,res,next){
     strLog(serverName + ': Request!');
     next();
 });
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
-app.post('/ServeTournament', ServeTournament);
+app.post('/ServeTournament', function (req, res){ 
+	ServeTournament(req.body, res);
+});
 app.post('/FinishGame', FinishGame);
-
-/*funcArray["/RegisterUserInTournament"] = RegisterUserInTournament; //start all comands with '/'. IT's a URL to serve
-funcArray["/ServeTournament"] = ServeTournament;
-funcArray["/FinishGame"] = FinishGame;*/
 
 var tournaments = {
 	count:0
@@ -30,7 +28,18 @@ var tournaments = {
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH sender.Answer(res,();
+function Initialize(){
+	sender.sendRequest('GetTournaments', {query:2}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
+		if (error){strLog(JSON.stringify(error)); }
+		else{
+			for (var i = body.length - 1; i >= 0; i--) {
+				getTournament(body[i].tournamentID, body[i]);
+			}
+		}
+	});
+}
 
+Initialize();
 function playerIsRegistered (tournament, login){
 	return tournament.logins[login];
 }
@@ -71,9 +80,6 @@ function RegisterUserInTournament (req, res){
 				
 				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
 					'127.0.0.1', 'FrontendServer', null, sender.printer);
-				
-				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
-					'127.0.0.1', 'TournamentManager', null, sender.printer );
 				//sender.Answer(res,Success);
 			}
 		}
@@ -180,20 +186,22 @@ function gameWasLast(gameID){
 	strLog('WRITE CONDITION: IF GAME WAS LAST');
 	return true;
 }
-
-function ServeTournament (req, res){
-	var data = req.body;
-	//strLog(data);
-	var tournamentID = data['tournamentID'];
-	strLog('TS tries to serve:' + tournamentID);
-	//strLog(data);
-
+function getTournament(tournamentID, data){
 	tournaments[tournamentID] = data;
 	tournaments[tournamentID].players = [];
 	tournaments[tournamentID].playersRegistered=0;
 	tournaments[tournamentID].logins = {};
+}
+function ServeTournament (data, res){
+	//var data = req.body;
+	//strLog(data);
+	var tournamentID = data['tournamentID'];
+	strLog('TS tries to serve:' + tournamentID);
+	//strLog(data);
+	getTournament(tournamentID, data);
+	
 
-	sender.sendRequest("ServeTournament", data, '127.0.0.1', 'TournamentManager', res, ServeTournamentTMProxy );
+	sender.sendRequest("ServeTournament", data, '127.0.0.1', 'FrontendServer', res, ServeTournamentTMProxy );
 }
 
 function ServeTournamentTMProxy ( error, response, body, res){

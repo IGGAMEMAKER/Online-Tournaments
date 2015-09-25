@@ -1,5 +1,4 @@
 sender = require('./requestSender');
-var queryProcessor = require('./test');
 //var http = require('http');
 
 var user2 = {
@@ -258,19 +257,16 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 //sender.sendRequest("RegisterUserInTournament", regTournament,'127.0.0.1', 5000, setVal);
 
 /*sender.sendRequest("Register", user1, '127.0.0.1', 'FrontendServer', null, sender.printer);
-sender.sendRequest("Register", user2, '127.0.0.1', queryProcessor.getPort('FrontendServer'), null, sender.printer);*/
-
-/*sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager
-sender.sendRequest("ServeTournament", tournament4, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
+sender.sendRequest("Register", user2, '127.0.0.1',  'FrontendServer', null, sender.printer);*/
 
 var tournCounter=8;
 
 tournamentAddingTimer = setInterval(function(){
 	if (tournCounter>0){
-			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);//TournamentManager
+			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);
 			sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '127.0.0.1', 'BalanceServer', null, sender.printer);
 			
-			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);//TournamentManager
+			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);
 			//sender.sendRequest("RestartTournament", {tournamentID:tournCounter}, '46.101.157.129', 'BalanceServer', null, sender.printer);
 
 			tournCounter--;
@@ -282,10 +278,6 @@ tournamentAddingTimer = setInterval(function(){
 
 /*for (i=1;i<8;++i){
 }*/
-
-/*sender.sendRequest("RestartTournament", {tournamentID:1}, '127.0.0.1', queryProcessor.getPort('BalanceServer'), null, sender.printer);//TournamentManager*/
-
-
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);*/

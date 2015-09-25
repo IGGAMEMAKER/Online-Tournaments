@@ -15,11 +15,8 @@ app.post('/ServeTournament', ServeTournament);
 app.post('/StartTournament', StartTournament);
 app.post('/HaveEnoughResourcesForTournament', HaveEnoughResourcesForTournament);
 app.post('/FinishGame', FinishGame);
+app.post('/GameServerStarts', GameServerStarts);
 
-/*funcArray["/ServeTournament"] = ServeTournament; //start all comands with '/'. IT's a URL to serve
-funcArray["/StartTournament"] = StartTournament;
-funcArray["/HaveEnoughResourcesForTournament"] = HaveEnoughResourcesForTournament;
-funcArray["/FinishGame"] = FinishGame;*/
 
 var status = new Object();
 
@@ -28,7 +25,17 @@ var status = new Object();
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 
-
+function GameServerStarts(req, res){
+	sender.Answer(res,{result:'OK'});
+	var data = req.body;
+	strLog('GameServerStarts:' + JSON.stringify(data));
+	sender.sendRequest('GetTournaments', data, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
+		var games = body;
+		for (var i = body.length - 1; i >= 0; i--) {
+			AnalyzeStructure(body[i], res);
+		};
+	});
+}
 
 function ServeTournament (req, res){
 	var data = req.body;
@@ -45,9 +52,6 @@ function StartTournament (req, res){
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
 	sender.expressSendRequest("StartGame", data, 
 		'127.0.0.1', 'GameServer', null, sender.printer);//sender.printer
-
-	/*sender.sendRequest("StartGame", data, 
-		'127.0.0.1', 'GameServer', null, sender.printer);//sender.printer*/
 }
 
 function HaveEnoughResourcesForTournament (req, res){
@@ -60,17 +64,18 @@ function HaveEnoughResourcesForTournament (req, res){
 }
 
 function ServeTournamentCallback( error, response, body, res) {
-	strLog("Answer from GameServer comes here!!!");
+	strLog("Answer from GS comes here!!!");
 	res.end('OK');
     //    res.end("GameServed");
 }
 function AnalyzeStructure(tournament, res){
 	var numberOfRounds = tournament['rounds'];
+	var gameName = tournament.gameName;
+	if (!gameName) gameName = 1;
 	strLog("numberOfRounds= " + numberOfRounds);
-	sender.expressSendRequest("ServeGames", tournament, 
-		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer
+	sendToGameServer("ServeGames", tournament, null, gameName, res, ServeTournamentCallback);
 
-	/*sender.sendRequest("ServeGames", tournament, 
+	/*sender.expressSendRequest("ServeGames", tournament, 
 		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer*/
 }
 
@@ -79,8 +84,15 @@ function FinishGame (req,res){
 	strLog(data);
 	res.end('OK');
 	sender.sendRequest("FinishGame", data, 
-		'127.0.0.1', 'TournamentManager', res, sender.printer);
+		'127.0.0.1', 'FrontendServer', res, sender.printer);
 }
+
+function sendToGameServer(command, data, host, gameName, res, callback){
+	sender.expressSendRequest(command, data, 
+		host?host:'127.0.0.1', gameName, res, callback);//sender.printer
+}
+
+
 
 var server = app.listen(5008, function () {
   var host = server.address().address;

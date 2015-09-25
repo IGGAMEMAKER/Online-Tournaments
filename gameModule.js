@@ -352,6 +352,11 @@ function SendToRoom( room, event1, msg){
 	strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
 	games[room].socketRoom.emit(event1, msg);
 }
+function Initialize(){
+	sender.sendRequest("GameServerStarts", {serverName:serverName} , '127.0.0.1', 
+			'GameFrontendServer', null, sender.printer );
+}
+Initialize();
 
 this.StartGameServer = StartGameServer;
 this.app = app;
