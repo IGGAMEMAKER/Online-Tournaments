@@ -4,12 +4,12 @@ html
 	body
 		- //for (var item in message){
 		//p!= message.length
-		p!= JSON.stringify(message)
+		//p!= JSON.stringify(message)
 		include tAuth
 		br
 		br
 		h1 List of Tournaments
-		table
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="00FF00")
 			tr
 				td.
 					ID
@@ -26,7 +26,7 @@ html
 					td
 						p!= message[i].tournamentID
 					td
-						p!= message[i].goNext[0]
+						p!= message[i].players+'/'+message[i].goNext[0]
 					td
 						p!= message[i].buyIn
 					td
