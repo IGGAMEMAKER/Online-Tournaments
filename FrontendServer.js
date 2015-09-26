@@ -114,16 +114,13 @@ app.post('/GetTournaments', function (req, res){
 		query: data['query'],
 		queryFields: data['queryFields'],
 	};
+	strLog('Getting Tournaments: ' + JSON.stringify(obj) );
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, 
 		function ( error, response, body, res ){
 		sender.Answer(res, body);
 	});
 });
 
-//funcArray["/GetTournaments"] = GetTournaments;
-
-
-//funcArray['/GetUsers'] = GetUsers;
 app.post('/GetUsers', function (req, res){
 	var data = req.body;
 	//strLog(data);

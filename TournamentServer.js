@@ -24,10 +24,6 @@ var tournaments = {
 	count:0
 }
 
-//------------------Writing EventHandlers---------------------------------
-//YOU NEED data,res parameters for each handler, that you want to write
-//you can get the object from POST request by typing data['parameterName']
-//you NEED TO FINISH YOUR ANSWERS WITH sender.Answer(res,();
 function Initialize(){
 	sender.sendRequest('GetTournaments', {query:2}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
 		if (error){strLog(JSON.stringify(error)); }
@@ -156,7 +152,7 @@ function EndTournament( scores, gameID, tournamentID){
 	}
 	strLog(winners);
 
-	sender.sendRequest("WinPrize", winners, '127.0.0.1', 
+	sender.sendRequest("WinPrize", {winners:winners, tournamentID:tournamentID}, '127.0.0.1', 
 			'DBServer', null, sender.printer );
 
 	/*for (i=0;i<winnersCount;++i){

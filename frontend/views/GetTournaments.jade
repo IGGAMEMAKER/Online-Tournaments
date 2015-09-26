@@ -4,6 +4,7 @@ html
 	body
 		- //for (var item in message){
 		//p!= message.length
+		p!= JSON.stringify(message)
 		include tAuth
 		br
 		br
@@ -13,7 +14,7 @@ html
 				td.
 					ID
 				td.
-					Players count
+					Players
 				td.
 					Buy In
 				td.
@@ -25,7 +26,7 @@ html
 					td
 						p!= message[i].tournamentID
 					td
-						p!= message[i].goNext[0]
+						p!= message[i].players+'/'+message[i].goNext[0]
 					td
 						p!= message[i].buyIn
 					td

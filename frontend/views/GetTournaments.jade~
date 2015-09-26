@@ -4,7 +4,7 @@ html
 	body
 		- //for (var item in message){
 		//p!= message.length
-		p!= message
+		p!= JSON.stringify(message)
 		include tAuth
 		br
 		br
@@ -14,14 +14,14 @@ html
 				td.
 					ID
 				td.
-					Players count
+					Players
 				td.
 					Buy In
 				td.
 					Game Name ID
 				td.
 					TournamentInfo
-			- /*if (message.length>0){ for (i=0; i<message.length;i++){
+			- if (message.length>0){ for (i=0; i<message.length;i++){
 				tr
 					td
 						p!= message[i].tournamentID
@@ -35,6 +35,6 @@ html
 						a(href='TournamentInfo?tID='+message[i].tournamentID)
 							Tournament Info
 				//p!= message
-			- }}*/
+			- }}
 
 

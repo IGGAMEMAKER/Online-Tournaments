@@ -32,7 +32,7 @@ app.post('/RestartTournament', RestartTournament);
 
 
 app.post('/Login', LoginUser);
-app.post('/GetTournaments', GetTournaments);
+//app.post('/GetTournaments', GetTournaments);
 
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/GetPlayers', GetPlayers);
@@ -126,7 +126,7 @@ var Tournament = mongoose.model('Tournament', {
 	playersCountStatus: Number,///Fixed or float
 		startDate: 		Date,
 		status: 		Number,	
-		players: 		Array,
+		players: 		Number,
 	tournamentID:		Number
 	//tournamentServerID: String
 
@@ -196,6 +196,27 @@ function RegisterUserInTournament(data, res){
 			strLog('added user to tournament'); 
 		}
 	});
+	incrPlayersCount(tournamentID);
+}
+function incrPlayersCount(tournamentID){
+	Tournament.update({tournamentID:tournamentID}, {$inc: {players:1}} , function (err, count){
+		if (err){
+			strLog('incrPlayersCount');
+			strLog(JSON.stringify(err));
+			Tournament.update({tournamentID:tournamentID}, {$set: {players:1}} , function (err1, count1){
+				if (err1){
+					strLog('Still Error! Cannot set 1.' + JSON.stringify(err1) );
+				}
+			});
+		}
+	});
+}
+
+function Printer(err, count){
+	if (err){ strLog('error: ' + JSON.stringify(err));
+		Tournament.update
+	}
+	//strLog(func+ ' error: ' + )
 }
 
 function GetPlayers (req, res){
@@ -287,35 +308,13 @@ function GetGameParametersByGameName (gameName){
 		break;
 	}
 }
+const TOURN_STATUS_REGISTER = 1;
+const TOURN_STATUS_RUNNING = 2;
+const TOURN_STATUS_FINISHED = 3;
+const TOURN_STATUS_PAUSED = 4;
 
-function GetTournaments(req, res){
-	/* 
-	null - инициализирован
-	1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
-	2 - running - турнир начат
-	3 - finished - турнир окончен
-	4 - paused - турнир приостановлен
-	*/
-	var query = req.body.status;
-	if (!query) { query = '1'; }
-	Tournament.findOne({$or: [{status:null},{status:1}, {status:2} , {status:4}] }, '', function (err, tournaments){
-	//Tournament.findOne({status: { $not: { status: query } } }, '', function (err, tournaments){
-		if (err){
-			strLog('GetTournaments Error: ' + JSON.stringify(err));
-			sender.Answer(res, errObject);
-		}
-		else{
-			if (tournaments){
-				strLog('GetTournaments count: ' + tournaments.length);
-				//strLog(JSON.stringify(tournament));
-				sender.Answer(res, tournaments);
-			}
-			else{
-				sender.Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
-			}
-		}
-	});
-}
+
+
 
 function RestartTournament(req, res){
 	var data = req.body;
@@ -402,20 +401,24 @@ function incrMoney(res, login, cash){
 	});
 }
 
+function setTournStatus(tournamentID, status){
+	Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
+		if(err) { strLog('Tournament status update Error: ' + JSON.stringify(err)); }
+	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
+}
+
 function WinPrize( req,res){
 	var data = req.body;
 	/*var userID = data['userID'];
 	var incr = data['prize'];
 	strLog('uID= '+ userID + ' incr=' + incr);*/
-	//strLog(users);
-	//strLog('000000');
-	/*for (var i = data.length - 1; i >= 0; i--) {
-		data[i]
-	};*/
 	strLog(JSON.stringify(data));
 	var player = {};
-	for (i=0; i< data.length;i++){
-		player = data[i];
+	var winners = data.winners;
+	var tournamentID = data.tournamentID;
+	for (i=0; i< winners.length;i++){
+		player = winners[i];
+
 		strLog('WinPrize:')
 		strLog(player);
 		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
@@ -424,6 +427,8 @@ function WinPrize( req,res){
 		});
 	}
 	sender.Answer(res, {result:'WinPrize_OK'});
+	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
+
 	/*for (var player in data){
 		incrMoney(res, player.login, player.prize);
 		
@@ -505,38 +510,88 @@ function Register (req, res){
 /*function GetUserProfileInfoHandler ( error, response, body, res){
 	
 }*/
-
-function GetTournaments (req, res){
-	var data = req.body;
-
-	strLog("GetTournaments ");// + data['login']);
-	var query = {};
-	var queryFields = '';//'id buyIn goNext gameNameID';
-	
-	if (data['query']) {query = data['query'];}
-	if (data['queryFields']) {queryFields = data['queryFields']; strLog('Got it!');}
-
-	/*else{
-		query = {};
-	}*/
-
-	strLog(query);
-	strLog(queryFields);
-
-	Tournament.find(query,queryFields , function (err, tournaments){
+function findTournaments(res, query, queryFields){
+	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
 			//strLog(tournaments);
 			sender.Answer(res, tournaments);
 		}
 		else{
 			strLog(err);
+			sender.Answer(res, Fail);
 		}
 	});
-
-	
-	//res.end(currTournaments);
+}
+function getTournamentsQuery(query, fields){
+	if (query && fields){
+		return { 
+			query: query,
+			fields: fields
+		};
+	}
+	else{
+		return {
+			//query:{}, 
+			query: {$or: [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] },
+			fields:''
+		};
+	}
 }
 
+function GetTournaments (req, res){
+	var data = req.body;
+	strLog("GetTournaments ");// + data['login']);
+
+	var query = getTournamentsQuery(data['query'], data['queryFields']);
+	//var query = ;//{}
+	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
+
+	/*if (query && queryFields){
+		
+	}
+	else{
+		findTournaments(res, {}, '');
+	}*/
+	strLog(query.query);
+	strLog(query.fields);
+
+	findTournaments(res, query.query, query.fields);
+}
+/*query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}];
+{$or: query }
+
+//query = ;
+{$or: [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] }*/
+
+
+/*function GetTournaments(req, res){
+ 
+	//null - инициализирован
+	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
+	//2 - running - турнир начат
+	//3 - finished - турнир окончен
+	//4 - paused - турнир приостановлен
+	
+	var query = req.body.status;
+	if (!query || query) { query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]; }
+	Tournament.find({$or: query }, '', function (err, tournaments){
+	//Tournament.findOne({status: { $not: { status: query } } }, '', function (err, tournaments){
+		if (err){
+			strLog('GetTournaments Error: ' + JSON.stringify(err));
+			sender.Answer(res, errObject);
+		}
+		else{
+			if (tournaments){
+				strLog('GetTournaments count: ' + tournaments.length);
+				//strLog(JSON.stringify(tournament));
+				sender.Answer(res, tournaments);
+			}
+			else{
+				sender.Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
+			}
+		}
+	});
+}*/
 
 
 var COUNT_FIXED = 1;
