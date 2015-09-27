@@ -5,7 +5,9 @@ function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-var login = window.login;
+/*var login = window.login;
+alert(login);*/
+
 const STATUS_WAITING=1;
 const STATUS_RUNNING=2;
 const STATUS_RESTART_ROUND=3;
@@ -105,7 +107,7 @@ function sendGameData(data1, url){
 		gameID: tournamentID, 
 		login: window.login 
 	};
-	//alert(JSON.stringify(sendData));
+	alert(JSON.stringify(sendData));
 	ajaXSend(sendData, 'http://localhost:' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }

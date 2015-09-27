@@ -26,6 +26,7 @@ socket.on('StartTournament', function(msg){
 
   currentTID = tournamentID;
   console.log('tID = ' + currentTID);
+
   //var gameURL = 'PingPong';
   var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
@@ -39,11 +40,20 @@ socket.on('StartTournament', function(msg){
 
 function startGame(gameURL, port){
   if (gameURL && port){
+    //alert(login);
     //var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
-    var a = window.open('http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID);
+    var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID;
+    /*var a = window.open();
     //var a = window.open('http://'+gameURL+':'+80+'/Game?tournamentID='+currentTID);//80=port
+    
     a.logins= curLogins;
-    a.login = login;
+    a.login = login;*/
+    var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
+    console.log(txt);
+    $('#news').append(txt);
+    
+    window.open('', 'TheWindow');
+    document.getElementById('TheForm').submit();
   }
 }
 

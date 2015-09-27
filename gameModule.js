@@ -38,7 +38,7 @@ app.set('view engine', 'jade');
 
 app.all('/Game', RenderGame);
 
-app.all('/SetGame', SetGame);
+//app.all('/SetGame', SetGame);
 app.all('/StartGame', StartGame);
 app.all('/ServeGames', ServeGames);
 app.all('/GetGames', GetGames);
@@ -86,7 +86,6 @@ funcArray["/UnSetGame"] = UnSetGame;*/
 
 
 var games = {
-	count:0
 
 }
 
@@ -99,6 +98,7 @@ var games = {
 function RenderGame (req, res){
 	console.log(__dirname);
 	var tID = req.query.tournamentID;
+	var login = req.body.login;
 	/*Log(req.query);
 	Log(req.body);*/
 	console.log(req.query.tournamentID);
@@ -106,7 +106,8 @@ function RenderGame (req, res){
 	res.render('qst_game', {
 		tournamentID:tID?tID:111,
 		gameHost:'localhost',
-		gamePort:port
+		gamePort:port,
+		login:login
 	});
 
 	//res.render('/games/PingPong/game', {tournamentID:111} );
@@ -118,18 +119,7 @@ function GetGames ( req,res){
 	sender.Answer(res, games);
 }
 
-function SetGame (req, res){
-	var data = req.body;
-	strLog("SetGame ");
-	//strLog(data);
-	var gameID = data['tournamentID'];
-	strLog('****FIX IT!!!!   var gameID = data[tournamentID];'  );
-	games[gameID] = data;
-	games[gameID].tournamentID = data['tournamentID'];
-	res.end("Game " + gameID + " Is Set");
-}
-
-strLog('GMM Server starts!!');
+strLog('gameModule starts!!');
 
 function ServeGames (req, res){
 	strLog('Game Server serves games');
