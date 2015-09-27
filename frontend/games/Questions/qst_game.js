@@ -44,7 +44,9 @@ function setQuestionTab(question){
 	
 /*var gameHost = 'localhost';
 var gamePort = 5009;*/
-var room = io.connect('http://' + gameHost+':' + gamePort + '/'+tournamentID);
+var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
+alert(con);
+var room = io.connect(con);
 
 
 var starter=0;

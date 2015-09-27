@@ -6,6 +6,12 @@ var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 var curGameNameID = 1;
 
+var jade = require('jade');
+app.use(express.static('./frontend/public'));
+//app.use(express.static('games'));
+app.use(express.static('./frontend/games/PingPong'));
+app.use(express.static('./frontend/games/Questions'));
+
 //var gameModule = require('./gameModule');
 
 var strLog = sender.strLog;
@@ -26,6 +32,11 @@ app.use(function(req,res,next){
     strLog(serverName + ': Request/' + req.url);
     next();
 });
+
+app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
+app.set('view engine', 'jade');
+
+app.all('/Game', RenderGame);
 
 app.all('/SetGame', SetGame);
 app.all('/StartGame', StartGame);
@@ -84,6 +95,23 @@ var games = {
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
+
+function RenderGame (req, res){
+	console.log(__dirname);
+	var tID = req.query.tournamentID;
+	/*Log(req.query);
+	Log(req.body);*/
+	console.log(req.query.tournamentID);
+
+	res.render('qst_game', {
+		tournamentID:tID?tID:111,
+		gameHost:'localhost',
+		gamePort:port
+	});
+
+	//res.render('/games/PingPong/game', {tournamentID:111} );
+	//res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
+}
 
 function GetGames ( req,res){
 	var data = req.body;
@@ -146,12 +174,13 @@ function Move( tournamentID, gameID, movement, userName){//Must get move from Re
 		else{
 			strLog('#####PLAYER DOESNT exist#####');
 			strLog("Player " + userName + 
-				" Not your turn! Player " + curGame.curPlayerID + " must play");
+				" Not your turn! Player " + games[gameID].curPlayerID + " must play");
 		}
 	}
 }
 
 function playerExists(gameID, userName){
+	strLog('playerExists function: ' + gameID +' ' + userName);
 	var playerExistsVal = getGID(gameID, userName);// games[gameID].players.UIDtoGID[userName]; //userIDs[playerID];// games[gameID].players.UIDtoGID[playerID]
 	return playerExistsVal ;
 }
@@ -308,21 +337,27 @@ function CheckForTheWinner(tournamentID, gameID) {
 }
 
 var io;
+var host;
+var port;
+var gameName;
 function StartGameServer(options, initF, updateF, action, updateTime){
 	//if (options.port)
-	strLog('Trying to StartGameServer');
-	if (options && initF && action){
+	strLog('Trying to StartGameServer:' + options.gameName);
+	if (options && options.port && options.gameName && initF && action){
 		customInit = initF;
 		customUpdate = updateF;
 		UPDATE_TIME = updateTime;
 		Action = action;
+		gameName = options.gameName;
+
 		var server = app.listen(options.port, function () {
-		  var host = server.address().address;
-		  var port = server.address().port;
+		  host = server.address().address;
+		  port = server.address().port;
 		  //console.log('listening');
 		  strLog('Example app listening at http://'+ host+':'+ port);
 		});
 		io = require('socket.io')(server);
+		Initialize();
 	}
 }
 /*var tmr = setInterval(function(){
@@ -353,10 +388,11 @@ function SendToRoom( room, event1, msg){
 	games[room].socketRoom.emit(event1, msg);
 }
 function Initialize(){
-	sender.sendRequest("GameServerStarts", {serverName:serverName} , '127.0.0.1', 
+	strLog('gameModule Initialize');
+	sender.sendRequest("GameServerStarts", {gameName:gameName} , '127.0.0.1', 
 			'GameFrontendServer', null, sender.printer );
 }
-Initialize();
+
 
 this.StartGameServer = StartGameServer;
 this.app = app;

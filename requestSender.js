@@ -26,8 +26,8 @@ serverList['GameServer'] = 5009;
 
 serverList['site'] = 80;
 
-serverList['1']=5009;//Questions and Answers
-serverList['2']=5009;//Ping Pong
+serverList['1']=5009;//Ping Pong
+serverList['2']=5010;//Questions and Answers
 
 //console.log(serverList['DBServer']);
 
@@ -48,9 +48,9 @@ function getGamePort (r){
 function strLog(text){
 	var time = new Date();
 	//console.log(time);
-	var txt = time+' ' + text;// + "\n";
+	//var txt = time+' ' + text;// + "\n";
 	var host = '127.0.0.1';
-	
+	var txt = text;
 
 	fs.appendFile('message.txt', '\r\n' + txt, function (err) {
 		if (err) {

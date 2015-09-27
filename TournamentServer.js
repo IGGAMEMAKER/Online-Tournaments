@@ -48,6 +48,17 @@ function regPlayer(tournament, login){
 	strLog(tournament.logins);*/
 }
 
+function getPortAndHostOfGame(tournamentID){
+	strLog('getPortAndHostOfGame. REWRITE IT!!!!');
+	return { port:5010, host:'localhost' };
+  /*if (tournamentID<8){
+    return { port:5009, host:'localhost' };
+  }
+  else{
+    return { port:5010, host:'localhost' };
+  }*/
+}
+
 function RegisterUserInTournament (req, res){
 	var data = req.body;
 	//strLog("Sender = " + data['sender']);
@@ -58,7 +69,7 @@ function RegisterUserInTournament (req, res){
 	var tournament = tournaments[tournamentID];
 	var maxPlayersInTournament = tournament.goNext[0];
 
-	if (maxPlayersInTournament> tournament.playersRegistered){
+	if (maxPlayersInTournament > tournament.playersRegistered){
 		strLog('Current players:');
 		strLog(tournament.players);
 		//strLog(tournament);
@@ -79,8 +90,12 @@ function RegisterUserInTournament (req, res){
 				strLog("Tournament " + tournamentID + " starts");
 				strLog(tournament.players);
 				
-				sender.sendRequest("StartTournament", {sender:'TournamentServer', tournamentID:tournamentID, logins:tournament.players}, 
-					'127.0.0.1', 'FrontendServer', null, sender.printer);
+				var obj = getPortAndHostOfGame(tournamentID);
+				obj.tournamentID = tournamentID;
+				obj.sender = 'TournamentServer';
+				obj.logins = tournament.players;
+				strLog('StartTournament: ' + JSON.stringify(obj));
+				sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 				//sender.Answer(res,Success);
 			}
 		}

@@ -20,15 +20,16 @@ socket.on('StartTournament', function(msg){
   alert('StartTournament with ID: ' + tournamentID);
   console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
-
+  var host = msg.host;
+  var port = msg.port;
 
 
   currentTID = tournamentID;
   console.log('tID = ' + currentTID);
   //var gameURL = 'PingPong';
-  var text = '<button onclick="startGame()" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
-  startGame();
+  startGame(host, port);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
 
@@ -36,10 +37,14 @@ socket.on('StartTournament', function(msg){
   alert.stringify(JSON.stringify(msg));
 } )*/
 
-function startGame(gameURL){
-  var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
-  a.logins= curLogins;
-  a.login = login;
+function startGame(gameURL, port){
+  if (gameURL && port){
+    //var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
+    var a = window.open('http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID);
+    //var a = window.open('http://'+gameURL+':'+80+'/Game?tournamentID='+currentTID);//80=port
+    a.logins= curLogins;
+    a.login = login;
+  }
 }
 
 /* CLIENT SIDE INFO:

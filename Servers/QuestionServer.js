@@ -6,7 +6,6 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-
 var UpdPeriod = 10000;
 var SendPeriod = UpdPeriod;
 
@@ -36,7 +35,7 @@ var QT2 = [
 	{question:'Самая высокая гора в мире',	 			answers:['Эльбрус'	,'Монт Блан','Эверест'	,'Альпы'], 	correct: 3 }
 ];
 
-var Questions = [QT0,QT1,QT2,QT0,QT1,QT2,QT0];
+var Questions = [QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1,QT2,QT0,QT1,QT2,QT0];
 
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
@@ -108,7 +107,8 @@ function AnswerIsCorrect(gameID, answer){
 }
 
 gs.StartGameServer({
-	port:5009
+	port:5010,
+	gameName:'Questions'
 }, Init, AsyncUpdate, Action, UpdPeriod);
 
 console.log('started');

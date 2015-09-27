@@ -67,8 +67,8 @@ mongoose.connect('mongodb://localhost/test');
 var User = mongoose.model('User', { login: String, password: String, money: Number });
 
 var Game = mongoose.model('Game', { 
-	gameName: String, 
-	minPlayersPerGame:Number, maxPlayersPerGame:Number,
+	gameName: String, gameNameID: Number,
+	minPlayersPerGame: Number, maxPlayersPerGame:Number,
 	frontendServerIP: String, frontendServerPort:Number, 
 	token: String
 });
@@ -83,17 +83,25 @@ var TournamentRegs = mongoose.model('TournamentRegs', {
 
 var OBJ_EXITS = 11000;
 
-/*var game = new Game({
-	gameName:'GM_ABSTRACT_SYNC', 
-	minPlayersPerGame:2, maxPlayersPerGame:10, 
-	frontendServerIP:'127.0.0.1', frontendServerPort: 5008,
-	token: 'z,ve'
-})
-game.save(function (err) {
+//addGame('PingPong', 2, {port:5009, maxPlayersPerGame:2} );
+function addGame(gameName, gameNameID, options ){
+	var minPlayersPerGame = options.minPlayersPerGame?options.minPlayersPerGame:2;
+	var maxPlayersPerGame = options.maxPlayersPerGame?options.maxPlayersPerGame:10;
+	var frontendServerIP = '127.0.0.1';
+	var frontendServerPort = options.port;
+	var token = 'tkn';
+
+	var game = new Game({
+		gameName:gameName, gameNameID:gameNameID,
+		minPlayersPerGame:minPlayersPerGame, maxPlayersPerGame:maxPlayersPerGame, 
+		frontendServerIP:frontendServerIP, frontendServerPort: frontendServerPort,
+		token: token
+	})
+	game.save(function (err) {
 		if (err){
 			switch (err.code){
 				case OBJ_EXITS:
-					strLog('Sorry, game ' + 'GM_ABSTRACT_SYNC' + ' Exists');
+					strLog('Sorry, game ' + gameName + ' Exists');
 					//sender.Answer(res, {result: 'OBJ_EXITS'});
 				break;
 				default:
@@ -106,8 +114,8 @@ game.save(function (err) {
 			//sender.Answer(res, {result: 'OK'});
 			strLog('added Game'); 
 		}
-	});*/
-
+	});
+}
 var Tournament = mongoose.model('Tournament', { 
 	buyIn: 			Number,
 	initFund: 		Number,
@@ -513,7 +521,7 @@ function Register (req, res){
 function findTournaments(res, query, queryFields){
 	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
-			//strLog(tournaments);
+			//strLog(JSON.stringify(tournaments));
 			sender.Answer(res, tournaments);
 		}
 		else{
@@ -523,10 +531,12 @@ function findTournaments(res, query, queryFields){
 	});
 }
 function getTournamentsQuery(query, fields){
-	if (query && fields){
+	strLog(JSON.stringify(query));
+	strLog(JSON.stringify(fields));
+	if (query){
 		return { 
 			query: query,
-			fields: fields
+			fields: fields?fields:''
 		};
 	}
 	else{
@@ -552,8 +562,8 @@ function GetTournaments (req, res){
 	else{
 		findTournaments(res, {}, '');
 	}*/
-	strLog(query.query);
-	strLog(query.fields);
+	strLog(JSON.stringify(query.query));
+	strLog(JSON.stringify(query.fields));
 
 	findTournaments(res, query.query, query.fields);
 }

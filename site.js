@@ -96,17 +96,26 @@ app.post('/Log', function (req, res){
   //res.end('sended');
   res.end('');
   var msg = req.body;
-  io.emit('Logs', JSON.stringify(msg));
+  Log(msg);
 });
 
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
-
-app.get('/Game', function (req, res){
+function Log(msg){
+  io.emit('Logs', JSON.stringify(msg));
+}
+app.all('/Game', function (req, res){
   console.log(__dirname);
   var tID = req.query.tournamentID;
+  /*Log(req.query);
+  Log(req.body);*/
   console.log(req.query.tournamentID);
+  /*sender.expressSendRequest('GetTournaments', {tournamentID:tID}, '127.0.0.1', 
+        'FrontendServer', res, function (error, response, body, res1){
+
+  });*/
+  
   res.render('qst_game', {
     tournamentID:tID?tID:111,
     gameHost:gameHost,
@@ -211,13 +220,19 @@ app.get('/Register', function (req, res){
   res.render('Register');
 })
 
+
+
 app.all('/StartTournament', function (req, res){
   //console.log(req.url);
   console.log('Site starts tournament');
+  var data = req.body;
   //console.log(req.body);
-  io.emit('StartTournament', {tournamentID : req.body.tournamentID, logins : req.body.logins});//+req.body.tournamentID
+  //
+  io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
   res.end();
 });
+
+
 
 app.get('/CheckServer', function (req, res){
   var serv = req.query.serv;
