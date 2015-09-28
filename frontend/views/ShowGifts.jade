@@ -1,20 +1,25 @@
 mixin ShowGift(gift,add)
-	center
-		h2!= gift.name
+	td
+		center
+			h2!= gift.name
 		
-		//p!='URL = '+gift.photoURL
-		//img(src= "http://" + gift.photoURL)
-		//img(src= gift.photoURL width="400" height="300")
-		img(src= gift.photoURL width='400px')
-		br
-		- if (gift.URL)
-			a(href=gift.URL) Show more
-		p!=gift.description
-		p!=gift.price+'$'
-		p!= '----------------------------'
+			//p!='URL = '+gift.photoURL
+			img(src= gift.photoURL width='400px')
+			br
+			- if (gift.URL)
+				a(href=gift.URL) Show more
+			p!=gift.description
+			p!=gift.price+'$'
+			//p!= '----------------------------'
 html
 	center
+		a(href="AddGift") AddGift
 		h1!= 'Show gifts '
 		//p!=JSON.stringify(message)
-		each val in message
-			+ShowGift(val)
+		table
+			each val, index in message
+				if(index%3==0 && index!=0)
+					tr
+						+ShowGift(val)
+				else
+					+ShowGift(val)

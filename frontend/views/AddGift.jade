@@ -18,8 +18,10 @@ center
 	form(acion='', method="POST")
 		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 			+inp('Gift name','name')
-			+inp('photoURL','photoURL')
 			+inp('description', 'description')
-			+inp('URL','URL')
 			+inp('price','price')
+			+inp('photoURL','photoURL')
+			+inp('URL','URL')
 		input(type="submit", value="Add Gift")
+	br
+	a(href="ShowGifts") ShowGifts
