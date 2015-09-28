@@ -1,4 +1,6 @@
 var sender = require('./requestSender');
+var sendRequest = sender.sendRequest;
+var Answer = sender.Answer;
 
 var express         = require('express');
 var app = express();
@@ -34,17 +36,44 @@ function ServeTournament (req, res){
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
 
-	sender.sendRequest("AddTournament", tournament, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
+	sendRequest("AddTournament", tournament, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 }
 function RestartTournament (req, res){
 	var data = req.body;
 	if (data['tournamentID']){
-		sender.sendRequest("RestartTournament", data, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
+		sendRequest("RestartTournament", data, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 	}
 	else{
-		sender.Answer(res, {result:'error'});
+		Answer(res, {result:'error'});
 	}
 }
+
+function processTournament(tournament){
+	if (tournament && tournament.tournamentID && tournament.status==null){
+		sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
+			'TournamentServer',  null, function (error, response, body, res){
+					strLog('ServeTournament body : ' + JSON.stringify(body));
+					if (body.result=='OK'){
+						sendRequest('EnableTournament', tournament, '127.0.0.1', 'DBServer', null, sender.printer);
+					}
+				} );
+	}
+}
+
+const GET_TOURNAMENTS_USER = 1;
+const GET_TOURNAMENTS_BALANCE = 2;
+function CheckTournaments(){
+	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
+		function (error, response, body, res){
+			for (var i = body.length - 1; i >= 0; i--) {
+				var tournament = body[i];
+				processTournament(tournament);
+				
+			};
+		}
+	);
+}
+var f = setTimeout(CheckTournaments, 3000);
 
 function GetExecutor(req, res){
 	var data = req.body;
@@ -53,27 +82,31 @@ function GetExecutor(req, res){
 function DBAddTournamentHandler( error, response, body, res){
 	strLog('DBAddTournamentHandler');
 	//var tournamentID = body['tournamentID'];
-	if (body.result=='fail') {sender.Answer(res, {result:'fail' }); return;}
+	if (body.result=='fail') {Answer(res, {result:'fail' }); return;}
 	var tournament = body;
 
 	strLog("added tournament to DB");
 	//strLog(JSON.stringify(tournament));
-	sender.sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
-			'TournamentServer',  res, ServeTournamentHandler );
+	
+	/*sendRequest("ServeTournament", tournament, GetFreeTournamentServerIP(tournament.goNext), 
+			'TournamentServer',  res, ServeTournamentHandler );*/
 }
 
 function ServeTournamentHandler( error, response, body, res){
+	if (body.result=='OK'){
+		//sendRequest('EnableTournament', )
+	}
 	strLog('if all is OK (ServeTournamentHandler.BalanceServer)');
 	var answer = {
 		message:'tournament adding COMPLETED',
 		status:'OK'
 	}
-	sender.Answer(res, answer);
+	Answer(res, answer);
 }
 
 function FreeTournamentServerIP(req, res){
 	var data = req.body;
-	//sender.sendRequest("Register", user1, '127.0.0.1', 'AccountServer',  res, RegisterUserHandler );
+	//sendRequest("Register", user1, '127.0.0.1', 'AccountServer',  res, RegisterUserHandler );
 
 	res.end(GetFreeTournamentServerIP(null));
 }

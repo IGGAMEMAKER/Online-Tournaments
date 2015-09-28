@@ -31,7 +31,7 @@ app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/RestartTournament', RestartTournament);
 app.post('/StartTournament', function (req, res) {StartTournament(req.body, res);});
-
+app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
 
 app.post('/Login', LoginUser);
 //app.post('/GetTournaments', GetTournaments);
@@ -124,10 +124,21 @@ function addGame(gameName, gameNameID, options ){
 	});
 }
 
+function EnableTournament(data, res){
+	if (data && data.tournamentID){
+		setTournStatus(data.tournamentID, TOURN_STATUS_REGISTER);
+		Answer(res,OK);
+	}
+	else{
+		Answer(res, Fail);
+	}
+}
+
 function StartTournament(data, res){
+	Log('DBServer starts tournament');
 	if (data){
 		if (data.tournamentID){
-			setTournStatus(tournamentID, TOURN_STATUS_RUNNING);
+			setTournStatus(data.tournamentID, TOURN_STATUS_RUNNING);
 			 Answer(res, OK);
 		}
 		else{
@@ -418,6 +429,7 @@ function incrMoney(res, login, cash){
 }
 
 function setTournStatus(tournamentID, status){
+	Log('Set tourn status of ' + tournamentID + ' to ' + status);
 	Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
 		if(err) { Log('Tournament status update Error: ' + JSON.stringify(err)); }
 	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
@@ -566,9 +578,20 @@ function findTournaments(res, query, queryFields){
 		}
 	});
 }
-function getTournamentsQuery(query, fields){
+
+const GET_TOURNAMENTS_USER = 1;
+const GET_TOURNAMENTS_BALANCE = 2;
+function getTournamentsQuery(query, fields, purpose){
 	Log(JSON.stringify(query));
 	Log(JSON.stringify(fields));
+	switch(purpose){
+		case GET_TOURNAMENTS_USER:
+			query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+		break;
+		case GET_TOURNAMENTS_BALANCE:
+			query = {status:null};
+		break;
+	}
 	if (query){
 		return { 
 			query: query,
@@ -578,7 +601,8 @@ function getTournamentsQuery(query, fields){
 	else{
 		return {
 			//query:{}, 
-			query: {$or: [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] },
+			query: {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] },
+			//query: {$or: [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] },
 			fields:''
 		};
 	}
@@ -587,8 +611,8 @@ function getTournamentsQuery(query, fields){
 function GetTournaments (req, res){
 	var data = req.body;
 	Log("GetTournaments ");// + data['login']);
-
-	var query = getTournamentsQuery(data['query'], data['queryFields']);
+	var purpose = data.purpose?data.purpose:null;
+	var query = getTournamentsQuery(data['query'], data['queryFields'], purpose);
 	//var query = ;//{}
 	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
 
@@ -656,20 +680,11 @@ function AddTournament (req, res){
 		if (!err){
 			tourn.save(function (err) {
 				if (err){
-					switch (err.code){
-						case OBJ_EXITS:
-							Log('Sorry, tournament '  + ' Exists');
-							 Answer(res, {result: 'TournamentExists??!!!'});
-						break;
-						default:
-							Error(err);
-							 Answer(res, {result: 'UnknownError'});
-						break;
-					}
+					Error(err);
+					Answer(res, Fail);
 				}
 				else{
-					//showRestraunt(res, name);
-					 Answer(res, tournament);
+					Answer(res, tournament);
 					Log('added Tournament'); 
 				}
 			});

@@ -66,7 +66,8 @@ function GetGameFrontendAdress(gameNameId){
 }
 function SendTournamentHandler( error, response, body, res) {
 	strLog("Answer from GameServer comes here!!!");
-	res.end('OK');
+	sender.Answer(res, {result:'OK'});
+	//res.end('OK');
 }
 
 function getTournamentStructure( tournament){
@@ -208,7 +209,8 @@ function AddTournament(req, res){
 					status: 		null,	
 					players: 		0
 			}
-			sender.sendRequest('ServeTournament', obj, '127.0.0.1', 'BalanceServer', res, AddTournamentHandler);
+			//sender.sendRequest('ServeTournament', obj, '127.0.0.1', 'BalanceServer', res, AddTournamentHandler);
+			sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, AddTournamentHandler);
 		}
 		else{
 			sender.Answer(res, Fail);
@@ -271,12 +273,14 @@ function FinishGame(req, res){
 }
 
 function GetTournaments( data, res){
-	strLog(data);
+	strLog('FS ' + JSON.stringify(data));
+
 	var obj = {
 		sender: "FrontendServer",
 		tournamentID: data['tournamentID'],
 		query: data['query'],
 		queryFields: data['queryFields'],
+		purpose: 'watch'
 	};
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, GetTournamentsHandler);
 }

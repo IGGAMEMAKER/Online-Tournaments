@@ -96,6 +96,7 @@ function RegisterUserInTournament (req, res){
 				obj.logins = tournament.players;
 				strLog('StartTournament: ' + JSON.stringify(obj));
 				sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
+				sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
 				//sender.Answer(res,Success);
 			}
 		}

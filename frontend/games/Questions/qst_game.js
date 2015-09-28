@@ -107,7 +107,7 @@ function sendGameData(data1, url){
 		gameID: tournamentID, 
 		login: window.login 
 	};
-	alert(JSON.stringify(sendData));
+	//alert(JSON.stringify(sendData));
 	ajaXSend(sendData, 'http://localhost:' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }

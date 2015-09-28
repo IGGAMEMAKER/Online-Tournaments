@@ -1,10 +1,33 @@
+-var red = "#FF0000";
+-var green = "#00FF00";
+-var blue = "#0000FF";
+mixin ShowStatus(status)
+	case status
+		when 0
+			td(bgcolor="#FF0000") Initialized
+		when 1
+			td(bgcolor="#00FF00") Register
+		when 2
+			td(bgcolor="#0000FF") Running
+		default
+			td(bgcolor="#FF000000") NULL
+mixin ShowGame(gameNameID)
+	case gameNameID
+		when 0
+			td(bgcolor="#FF0000") Error
+		when 1
+			td(bgcolor=blue) Ping Pong
+		when 2
+			td(bgcolor=green) Questions
+		default
+			td(bgcolor=red) Error
 html
 	head
 		title!= title
 	body
 		- //for (var item in message){
 		//p!= message.length
-		//p!= JSON.stringify(message)
+		p!= JSON.stringify(message)
 		include tAuth
 		br
 		br
@@ -22,10 +45,14 @@ html
 					td #{message[i].tournamentID}
 					td #{message[i].players}/#{message[i].goNext[0]}
 					td #{message[i].buyIn}
-					td #{message[i].gameNameID}
+					+ShowGame(message[i].gameNameID)
+					//+ShowStatus(#{message[i].status})
+					+ShowStatus(message[i].status)
+					//td #{message[i].status}
 					td
-						a(href='TournamentInfo?tID='+message[i].tournamentID)
-							Tournament Info
+						center
+							a(href='TournamentInfo?tID='+message[i].tournamentID)
+								Tournament Info
 				//p!= message
 			- }}
 
