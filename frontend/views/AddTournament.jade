@@ -1,0 +1,34 @@
+mixin radioButton(val, ans)
+	div(id=val)
+		input(type="radio", value=val, name='answer').
+		| #{ans}
+		br
+mixin inp(tdName, inpName)
+	tr
+		td #{tdName}
+		td
+			input(type="text", name=inpName).
+html
+center
+	br
+	br
+	br
+	- if(msg)
+		p!=JSON.stringify(msg)
+	form(acion='', method="POST")
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			tr
+				td Game Name
+				td
+					select(id='gameNameID', name="gameNameID")
+						option(value=1) Ping Pong
+						option(value=2) Questions
+			tr
+				td Rounds
+				td
+					select(id="rounds", name="rounds")
+						-for (i=1;i<13;++i)
+							option(value=i) #{i}
+			+inp('Buy In', 'buyIn')
+			+inp('bb', 'field')
+		input(type="submit", value="Add tournament")

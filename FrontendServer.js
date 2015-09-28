@@ -139,7 +139,7 @@ app.post('/GetUsers', function (req, res){
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 
 app.post('/StartTournament', StartTournament);
-
+app.post('/AddTournament', AddTournament);
 /*funcArray["/WakeUsers"] = WakeUsers;
 funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;
 
@@ -167,6 +167,63 @@ function Alive(data, res){
 	strLog(data);
 	sender.Answer(res, {result:'OK'});
 }
+var Fail = { result:'fail'};
+
+var PRICE_FREE = 4;
+var PRICE_TRAINING = 5;
+
+var PRICE_GUARANTEED = 3;
+var PRICE_NO_EXTRA_FUND = 2;
+var PRICE_CUSTOM = 1;  //
+
+
+var COUNT_FIXED = 1;
+var COUNT_FLOATING = 2;
+function AddTournament(req, res){
+	var data = req.body;
+
+	if (data){
+		var buyIn = data.buyIn;
+		var rounds = data.rounds;
+		var gameNameID = data.gameNameID;
+
+		if (buyIn && rounds && gameNameID){
+			var obj = {
+				buyIn: 			buyIn,
+				initFund: 		0,
+				gameNameID: 	gameNameID,
+
+				pricingType: 	PRICE_NO_EXTRA_FUND,
+
+				rounds: 		rounds,
+				goNext: 		[2,1],
+					places: 		[1],
+					Prizes: 		[180],
+					prizePools: 	[1],
+
+				comment: 		'Yo',
+				
+				playersCountStatus: COUNT_FIXED,///Fixed or float
+					startDate: 		null,
+					status: 		null,	
+					players: 		0
+			}
+			sender.sendRequest('ServeTournament', obj, '127.0.0.1', 'BalanceServer', res, AddTournamentHandler);
+		}
+		else{
+			sender.Answer(res, Fail);
+		}
+	}
+	else{
+		sender.Answer(res, Fail);
+	}
+
+}
+
+function AddTournamentHandler(error, response, body, res){
+	sender.Answer(res, body);
+}
+
 
 function GetUsers (data, res){
 	//res.end('GetUsers OK');
@@ -199,6 +256,7 @@ function GetUserProfileInfo(req , res){
 	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, GetUserProfileInfoHandler);
 }
 function GetUserProfileInfoHandler ( error, response, body, res){
+	strLog('GetUserProfileInfoHandler :' + JSON.stringify(body));
 	sender.Answer(res, body);
 }
 

@@ -126,6 +126,19 @@ app.all('/Game', function (req, res){
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })
 
+app.get('/GetUserProfileInfo', function (req, res){
+  if (req.session && req.session.login){
+    sender.sendRequest('GetUserProfileInfo',  {login:req.session.login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
+      sender.Answer(res, body);
+      //res.end('OK');
+    });
+  }
+  else{
+    res.json({msg:'Сасай'});
+    //res.json({msg:'Сасай2'});
+  }
+})
+
 /*app.get('/', function (req, res) {
   res.send('Hello World!');
 });*/
@@ -220,7 +233,27 @@ app.get('/Register', function (req, res){
   res.render('Register');
 })
 
+app.get('/AddTournament', function (req, res){
+  res.render('AddTournament');
+  /*if (req.session.login=='Alvaro_Fernandez'){
+    res.render('AddTournament');
+    //siteAnswer(res, 'AddTournament');
+  }
+  else{
+    res.render('Alive');
+  }*/
+});
 
+app.post('/AddTournament', function (req, res){
+  //sender.expressSendRequest('AddTournament', req.body, '127.0.0.1', serv)
+  var data = req.body;
+  Log(data);
+  sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+        function (error, response, body, res1){
+          //res1.json(body);
+          res.render('AddTournament', {msg:body});
+        });
+})
 
 app.all('/StartTournament', function (req, res){
   //console.log(req.url);
