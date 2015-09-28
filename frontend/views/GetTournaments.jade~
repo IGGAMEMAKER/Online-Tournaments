@@ -1,6 +1,6 @@
 -var red = "#FF0000";
 -var green = "#00FF00";
--var blue = "#0000FF";
+-var blue = "#000000";
 mixin ShowStatus(status)
 	case status
 		when 0

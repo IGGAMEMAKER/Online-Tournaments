@@ -244,6 +244,7 @@ app.get('/AddTournament', function (req, res){
   }*/
 });
 
+
 app.post('/AddTournament', function (req, res){
   //sender.expressSendRequest('AddTournament', req.body, '127.0.0.1', serv)
   var data = req.body;
@@ -254,6 +255,24 @@ app.post('/AddTournament', function (req, res){
           res.render('AddTournament', {msg:body});
         });
 })
+
+app.get('/AddGift', function (req, res){
+  res.render('AddGift');
+});
+
+app.post('/AddGift', function (req, res){
+  var data = req.body;
+  Log(data);
+  sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+        function (error, response, body, res1){
+          res.render('AddGift', {msg:body});
+        });
+});
+app.get('/ShowGifts', function (req, res){
+  var data = req.body;
+  if (!data){ data={}; }
+  siteAnswer(res, 'ShowGifts', data, 'ShowGifts');
+});
 
 app.all('/StartTournament', function (req, res){
   //console.log(req.url);

@@ -42,7 +42,7 @@ function GameServerStarts(req, res){
 	strLog('GameServerStarts:' + JSON.stringify(data));
 	var gameName = data.gameName;
 	var gameNameID = getGameNameID(gameName);
-	sender.sendRequest('GetTournaments', {query:{gameNameID:gameNameID}, queryFields:''}, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
+	sender.sendRequest('GetTournaments', {query:{gameNameID:gameNameID, status:2}, queryFields:''}, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
 		//strLog(JSON.stringify(body));
 		for (var i = body.length - 1; i >= 0; i--) {
 			var tournament = body[i];

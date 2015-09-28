@@ -1,6 +1,7 @@
 //p!= 'PARTITION ADDED'
 if (session.login && session.login.length>0)
-	p!= 'Hello, ' + session.login
+	p!= 'Hello, '
+		a(href = "Profile") #{session.login}
 	a(href = "Logout") Logout
 else
 	p!= 'You need to register if you want to play in tournaments'

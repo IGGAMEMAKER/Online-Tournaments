@@ -42,7 +42,7 @@ app.post('/Register', function (req, res){
 
 app.post('/FinishGame', FinishGame);
 app.post('/StartTournament', StartTournament);
-
+app.post('/AddGift', AddGift);
 
 app.post('/Login', function (req, res){
 	var data = req.body;
@@ -141,6 +141,8 @@ app.post('/RegisterUserInTournament', RegisterUserInTournament);
 
 app.post('/StartTournament', StartTournament);
 app.post('/AddTournament', AddTournament);
+
+app.post('/ShowGifts', ShowGifts);
 /*funcArray["/WakeUsers"] = WakeUsers;
 funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;
 
@@ -180,6 +182,11 @@ var PRICE_CUSTOM = 1;  //
 
 var COUNT_FIXED = 1;
 var COUNT_FLOATING = 2;
+
+function ShowGifts(req, res){
+	sender.sendRequest('ShowGifts', req.body,'127.0.0.1', 'DBServer', res, stdHandler )
+}
+
 function AddTournament(req, res){
 	var data = req.body;
 
@@ -222,10 +229,23 @@ function AddTournament(req, res){
 
 }
 
+function stdHandler(error, response, body, res){
+	sender.Answer(res, body);
+}
+
 function AddTournamentHandler(error, response, body, res){
 	sender.Answer(res, body);
 }
 
+function AddGift(req, res){
+	var data = req.body;
+	if (data){
+		sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, stdHandler);
+	}
+	else{
+		sender.Answer(res, Fail);
+	}
+}
 
 function GetUsers (data, res){
 	//res.end('GetUsers OK');

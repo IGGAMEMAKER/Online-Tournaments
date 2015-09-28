@@ -39,6 +39,9 @@ app.post('/Login', LoginUser);
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/GetPlayers', GetPlayers);
 
+app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
+app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
+
 /*funcArray["/Ban"] = Ban;
 funcArray["/ChangePassword"] = ChangePassword;
 funcArray["/RememberPassword"] = RememberPassword;*/
@@ -80,9 +83,41 @@ var Game = mongoose.model('Game', {
 	token: String
 });
 
-var TournamentRegs = mongoose.model('TournamentRegs', {
-	tournamentID: String, userID: String, promo:String
-});
+var TournamentRegs = mongoose.model('TournamentRegs', {	tournamentID: String, userID: String, promo:String });
+
+var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number });
+
+function AddGift(data, res){
+	if (data){
+		gift = new Gift(data);
+		gift.save(function (err){
+			if (err){
+				Error(err);
+				Answer(res, Fail);
+			}
+			else{
+				Answer(res, OK);
+			}
+		})
+	}
+}
+
+function ShowGifts(data, res){
+	if (data){
+		Gift.find(data, function (err, gifts){
+			if (err){
+				Error(err);
+				Answer(res, Fail);
+			}
+			else{
+				Answer(res, gifts);
+			}
+		});
+	}
+	else{
+		Answer(res, Fail);
+	}
+}
 
 /*var Server = mongoose.model('Server'{
 	host: String, port: Number,
@@ -217,7 +252,7 @@ function RegisterUserInTournament(data, res){
 			}
 		}
 		else{
-			 Answer(res, {result:'OK'} );
+			 Answer(res, OK );
 			Log('added user to tournament'); 
 		}
 	});
@@ -291,7 +326,7 @@ function LoginUser(req, res){
 	    else{
 	    	if (user){
 		    	Log(JSON.stringify(user));
-			     Answer(res, {result:'OK'});
+			     Answer(res, OK);
 			    Log('Logged in');
 			}
 			else{
@@ -316,7 +351,7 @@ function LoginUser(req, res){
 		}
 		else{
 			//showRestraunt(res, name);
-			 Answer(res, {result: 'OK'});
+			 Answer(res, OK);
 			Log('added User'); 
 		}
 	});*/
@@ -551,7 +586,7 @@ function Register (req, res){
 		}
 		else{
 			//showRestraunt(res, name);
-			 Answer(res, {result: 'OK'});
+			 Answer(res, OK);
 			Log('added User'); 
 		}
 	});

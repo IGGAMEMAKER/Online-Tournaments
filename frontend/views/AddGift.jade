@@ -1,0 +1,25 @@
+mixin radioButton(val, ans)
+	div(id=val)
+		input(type="radio", value=val, name='answer').
+		| #{ans}
+		br
+mixin inp(tdName, inpName)
+	tr
+		td #{tdName}
+		td
+			input(type="text", name=inpName).
+html
+center
+	br
+	br
+	br
+	- if(msg)
+		p!=JSON.stringify(msg)
+	form(acion='', method="POST")
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			+inp('Gift name','name')
+			+inp('photoURL','photoURL')
+			+inp('description', 'description')
+			+inp('URL','URL')
+			+inp('price','price')
+		input(type="submit", value="Add Gift")
