@@ -87,6 +87,34 @@ var TournamentRegs = mongoose.model('TournamentRegs', {	tournamentID: String, us
 
 var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number });
 
+var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
+
+var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
+//var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
+
+var Tournament = mongoose.model('Tournament', { 
+	buyIn: 			Number,
+	initFund: 		Number,
+	gameNameID: 	Number,
+
+	pricingType: 	Number,
+
+	rounds: 		Number,
+	goNext: 		Array,
+		places: 		Array,
+		Prizes: 		Array,
+		prizePools: 	Array,
+
+	comment: 		String,
+
+	playersCountStatus: Number,///Fixed or float
+		startDate: 		Date,
+		status: 		Number,	
+		players: 		Number,
+	tournamentID:		Number
+	//tournamentServerID: String
+});
+
 function AddGift(data, res){
 	if (data){
 		gift = new Gift(data);
@@ -188,51 +216,7 @@ function StartTournament(data, res){
 }
 
 
-var Tournament = mongoose.model('Tournament', { 
-	buyIn: 			Number,
-	initFund: 		Number,
-	gameNameID: 	Number,
 
-	pricingType: 	Number,
-
-	rounds: 		Number,
-	goNext: 		Array,
-		places: 		Array,
-		Prizes: 		Array,
-		prizePools: 	Array,
-
-	comment: 		String,
-
-	playersCountStatus: Number,///Fixed or float
-		startDate: 		Date,
-		status: 		Number,	
-		players: 		Number,
-	tournamentID:		Number
-	//tournamentServerID: String
-
-
-	//roundsList: Array
-	/*asd: Object
-	structure: {
-		rounds: 1,
-		goNext: [10, 2],
-		//winners per whole round
-		round1:{
-			subRound1:{
-				ID:1,
-				players: 3,
-				games: 3,
-				winners: 3
-			},
-			subRound2:{
-				ID:2,
-				players: 2,
-				games: 2,
-				winners: 2
-			}
-		}
-	}*/  
-});
 
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
@@ -433,16 +417,17 @@ function GetUsers( req,res){
 
 function IncreaseMoney(req,res){
 	var data = req.body;
-	var login = data['login'];
-	var cash = data['cash'];
+	var login = data.login;
+	var cash = data.cash;
 	incrMoney(res, login, cash);
 }
+//function DecreaseMoney()
 function incrMoney(res, login, cash){
 	Log('trying to give ' + cash + ' points to ' + login);
 	User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
 		if (err){
 			Error(err);
-			 Answer(res, Fail);
+			Answer(res, Fail);
 		}
 		else{
 			Log('IncreaseMoney----- count= ');
@@ -451,12 +436,12 @@ function incrMoney(res, login, cash){
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					Error(err);
-					 Answer(res, Fail);
+					Answer(res, Fail);
 				}
 				else{
 					Log(user);
 					Log('Money now = '+ user.money);
-					 Answer(res, {login: user.login, money: user.money});
+					Answer(res, {login: user.login, money: user.money});
 				}
 			});
 		}
@@ -484,14 +469,16 @@ function WinPrize( req,res){
 
 		Log('WinPrize:')
 		Log(player);
+
 		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
 			if (err){ Error(err); }
 			else{ Log(count);}
 		});
 	}
-	 Answer(res, {result:'WinPrize_OK'});
+	Answer(res, {result:'WinPrize_OK'});
 	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
-
+	//updatePromos(tournamentID);
+	
 	/*for (var player in data){
 		incrMoney(res, player.login, player.prize);
 		

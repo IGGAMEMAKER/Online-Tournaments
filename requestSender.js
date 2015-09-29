@@ -7,6 +7,7 @@ this.printer = printer;
 this.Answer = Answer;
 this.Proxy = Proxy;
 this.strLog = strLog;
+this.getPort = getPort;
 
 var serverList = {};
 
