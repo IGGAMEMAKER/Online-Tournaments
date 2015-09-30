@@ -1,0 +1,20 @@
+mixin drawRegs(msg)
+	each val in msg
+		+drawReg(val)
+mixin drawReg(val)
+	tr 
+		td #{val.tournamentID}
+		td #{val.promo}
+
+html
+	//p!= JSON.stringify(message)
+	//p asd
+	center
+		h1 Profile of  #{session.login}
+		h2 You have #{message.money/100}$ on your account
+		a(href="Tournaments") Tournaments
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			tr
+				td TournamentID
+				td Promoted by(Status)
+			+drawRegs(message.tournaments)

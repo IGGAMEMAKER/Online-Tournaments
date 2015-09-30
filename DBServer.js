@@ -1,4 +1,5 @@
 var sender = require('./requestSender');
+
 var Answer =  sender.Answer;
 var express         = require('express');
 var app = express();
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
+sender.setServer(serverName);
 app.use(function(req,res,next){
     console.log(serverName + ': Request!');
     next();
@@ -83,13 +85,13 @@ var Game = mongoose.model('Game', {
 	token: String
 });
 
-var TournamentRegs = mongoose.model('TournamentRegs', {	tournamentID: String, userID: String, promo:String });
+var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: String, userID: String, promo:String });
 
 var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number });
 
 var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
 
-var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
+var TournamentResult = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
 //var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
 
 var Tournament = mongoose.model('Tournament', { 
@@ -221,7 +223,7 @@ function StartTournament(data, res){
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
 
-	var reg = new TournamentRegs({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
+	var reg = new TournamentReg({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
 	reg.save(function (err) {
 		if (err){
 			switch (err.code){
@@ -267,7 +269,7 @@ function Printer(err, count){
 
 function GetPlayers (req, res){
 	var query = req.body;
-	TournamentRegs.find({tournamentID:query.tournamentID},'', function (err, players){
+	TournamentReg.find({tournamentID:query.tournamentID},'', function (err, players){
 		if (!err){
 			 Answer(res, players);
 		}
@@ -319,27 +321,6 @@ function LoginUser(req, res){
 			}
 		}
  	});
-	/*var user = new User({ login:login, password:password, money:100 });
-	user.save(function (err) {
-		if (err){
-			switch (err.code){
-				case USER_EXISTS:
-					Log('Sorry, user ' + login + ' Exists');
-					 Answer(res, {result: 'UserExists'});
-				break;
-				default:
-					Log(err);
-					 Answer(res, {result: 'UnknownError'});
-				break;
-			}
-		}
-		else{
-			//showRestraunt(res, name);
-			 Answer(res, OK);
-			Log('added User'); 
-		}
-	});*/
-
 }
 
 
@@ -368,16 +349,16 @@ function RestartTournament(req, res){
 	Tournament.findOne({tournamentID: tournamentID}, '', function (err, tournament){
 		if (err){
 			Error(err);
-			 Answer(res, errObject);
+			Answer(res, errObject);
 		}
 		else{
 			if (tournament){
 				Log('RestartTournament: ' + tournamentID);
 				//Log(JSON.stringify(tournament));
-				 Answer(res, tournament);
+				Answer(res, tournament);
 			}
 			else{
-				 Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
+				Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
 			}
 		}
 	});
@@ -404,11 +385,11 @@ function GetUsers( req,res){
 	    if (err) {
 	    	Log('GetUsersError ');
 	    	Error(err);
-	    	 Answer(res, errObject);
+	    	Answer(res, errObject);
 	    }
 	    else{
 	    	Log(JSON.stringify(users));
-		     Answer(res, users);
+		    Answer(res, users);
 		}
  	});
 
@@ -455,6 +436,36 @@ function setTournStatus(tournamentID, status){
 	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
 }
 
+function givePrizeToPlayer(player, Prize){
+	Log('WinPrize: ' + JSON.stringify(player));
+	if (isNan(Prize) ){
+		//gift
+		var userGift = new UserGift( {userID:player.login, giftID: Prize.giftID} );
+		userGift.save(function (err){
+			if (err){Error(err);}
+		});
+	}
+	else{
+		//money
+		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
+			if (err){ Error(err); }
+			else{ Log(count);}
+		});
+	}
+}
+
+function LoadPrizes(tournamentID, winners){
+	Tournament.find( {tournamentID:tournamentID}, 'Prizes', function (err, Prizes){
+		if (err){ Error(err); }
+		else{
+			for (i=0; i< winners.length;i++){
+				var player = winners[i];
+				givePrizeToPlayer(player, Prizes[i]);
+			}
+		}
+	});
+}
+
 function WinPrize( req,res){
 	var data = req.body;
 	/*var userID = data['userID'];
@@ -464,25 +475,13 @@ function WinPrize( req,res){
 	var player = {};
 	var winners = data.winners;
 	var tournamentID = data.tournamentID;
-	for (i=0; i< winners.length;i++){
-		player = winners[i];
+	LoadPrizes(tournamentID, winners);
 
-		Log('WinPrize:')
-		Log(player);
-
-		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
-			if (err){ Error(err); }
-			else{ Log(count);}
-		});
-	}
+	
 	Answer(res, {result:'WinPrize_OK'});
 	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
 	//updatePromos(tournamentID);
 	
-	/*for (var player in data){
-		incrMoney(res, player.login, player.prize);
-		
-	}*/
 
 	/*var user = getUserByID(userID);
 	Log(user);
@@ -499,6 +498,18 @@ function getLoginByID(ID){
 	return IDToLoginConverter[ID]?IDToLoginConverter[ID]:'defaultLogin';
 }*/
 
+function KillFinishedTournaments(req, res){
+	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){
+		Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
+		Tournament.remove({$or:finishedTournaments}, function deleting (err, tournaments){
+			Log('finishedTournaments2: ' + JSON.stringify(tournaments) );
+			if (err) {Error(err);}
+			else{
+				Log(JSON.stringify(tournaments));
+			}
+		})
+	})
+}
 
 function GetUserProfileInfo(req , res){
 	var data = req.body;
@@ -506,31 +517,28 @@ function GetUserProfileInfo(req , res){
 	var login = data['login'];
 	Log('-----------USER PROFILE INFO -----ID=' + login + '------');
 	//var usr = User.find({}, 'login password money' )
-	var profileInfo = {};
-	TournamentRegs.find({userID:login}, '', function (err, tournaments){
+	var profileInfo = {};//tournaments:{}, money:0};
+	TournamentReg.find({userID:login}, '', function (err, tournaments){
 		if (!err && tournaments) {
-			
-
+			profileInfo.tournaments = tournaments;
 			User.findOne({login:login}, 'login money', function (err1, user) {    
 			    if (err1 || !user) {
 			    	Log('ProfileInfoError User findOne');
 			    	Error(err1);
-			    	 Answer(res, Fail);
+			    	Answer(res, Fail);
 			    }
 			    else{
 			    	Log('GOT TOTAL INFO' + JSON.stringify(user));
-			    	profileInfo.tournaments = tournaments;
+			    	//profileInfo.tournaments = tournaments;
 			    	profileInfo.money = user.money;
 			    	Log('Fin: ' + JSON.stringify(profileInfo));
-				     Answer(res,  JSON.parse(JSON.stringify(profileInfo)) );
+			    	Answer(res,  profileInfo );
 				}
 		 	});
-
-			 Answer(res, tournaments);
 		}
 		else{
 			Error(err);
-			 Answer(res, Fail);
+			Answer(res, Fail);
 		}
 	})
 	/*var usr1 = User.findOne({login:login}, 'login password money', function (err, user) {    
@@ -603,6 +611,7 @@ function findTournaments(res, query, queryFields){
 
 const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
+const GET_TOURNAMENTS_GAMESERVER = 3;
 function getTournamentsQuery(query, fields, purpose){
 	Log(JSON.stringify(query));
 	Log(JSON.stringify(fields));
@@ -612,6 +621,10 @@ function getTournamentsQuery(query, fields, purpose){
 		break;
 		case GET_TOURNAMENTS_BALANCE:
 			query = {status:null};
+		break;
+		case GET_TOURNAMENTS_GAMESERVER:
+			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+			query = { $and : [query, run_or_reg] };
 		break;
 	}
 	if (query){
@@ -634,7 +647,8 @@ function GetTournaments (req, res){
 	var data = req.body;
 	Log("GetTournaments ");// + data['login']);
 	var purpose = data.purpose?data.purpose:null;
-	var query = getTournamentsQuery(data['query'], data['queryFields'], purpose);
+	
+	var query = getTournamentsQuery(data.query, data.queryFields, purpose);
 	//var query = ;//{}
 	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
 

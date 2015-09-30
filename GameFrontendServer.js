@@ -8,6 +8,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 var serverName = "GameFrontendServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
+sender.setServer(serverName);
+
 var strLog = sender.strLog;
 //var funcArray = {};
 
@@ -36,13 +38,14 @@ function getGameNameID (gameName){
 	}
 }
 
+const GET_TOURNAMENTS_GAMESERVER = 3;
 function GameServerStarts(req, res){
 	sender.Answer(res,{result:'OK'});
 	var data = req.body;
 	strLog('GameServerStarts:' + JSON.stringify(data));
 	var gameName = data.gameName;
 	var gameNameID = getGameNameID(gameName);
-	sender.sendRequest('GetTournaments', {query:{gameNameID:gameNameID, status:2}, queryFields:''}, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
+	sender.sendRequest('GetTournaments', {query:{gameNameID:gameNameID}, purpose:GET_TOURNAMENTS_GAMESERVER, queryFields:''}, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {//GetTournamentsForGS
 		//strLog(JSON.stringify(body));
 		for (var i = body.length - 1; i >= 0; i--) {
 			var tournament = body[i];
@@ -71,6 +74,7 @@ function ServeTournament (req, res){
 }
 
 function StartTournament (req, res){
+	strLog('Trying to StartTournament');
 	var data = req.body;
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
 	var tournamentID = data.tournamentID;
@@ -95,8 +99,9 @@ function ServeTournamentCallback( error, response, body, res) {
 function AnalyzeStructure(tournament, res){
 	strLog('AnalyzeStructure. SENDING GAME TO GameServer');
 	var numberOfRounds = tournament['rounds'];
+	strLog()
 	var gameName = tournament.gameName;
-	if (!gameName) gameName = 1;
+	if (!gameName) gameName = 2;
 	strLog("numberOfRounds= " + numberOfRounds);
 	sendToGameServer("ServeGames", tournament, null, gameName, res, ServeTournamentCallback);
 	tourns[tournament.tournamentID] = gameName;

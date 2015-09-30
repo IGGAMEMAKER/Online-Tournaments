@@ -72,9 +72,18 @@ function FindWinner(gameID){
 }
 
 function getCurrentQuestion(gameID){
+	strLog('getCurrentQuestion : ' + gameID);
 	if (games[gameID]){
-		var a = Questions[gameID][games[gameID].questIndex];
-		strLog('questIndex = ' + games[gameID].questIndex);
+		var currQuestionIndex = games[gameID].questIndex;
+		var a;
+		if (gameID< Questions.length -1){
+			a = Questions[gameID][currQuestionIndex];
+		}
+		else{
+			a = QT2[currQuestionIndex];
+		}
+		
+		strLog('questIndex = ' + currQuestionIndex);
 		strLog(JSON.stringify(a));
 		return a;
 	}

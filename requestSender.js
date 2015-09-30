@@ -8,6 +8,7 @@ this.Answer = Answer;
 this.Proxy = Proxy;
 this.strLog = strLog;
 this.getPort = getPort;
+this.setServer = setServer;
 
 var serverList = {};
 
@@ -39,6 +40,12 @@ gameNameIDList['2'] = 5001;
 gameNameIDList['3'] = 5002;
 gameNameIDList['4'] = 5003;
 
+var serverName;
+
+function setServer(servName){
+	serverName = servName;
+}
+
 function getPort (r){
 	return serverList[r];
 }
@@ -51,7 +58,7 @@ function strLog(text){
 	//console.log(time);
 	//var txt = time+' ' + text;// + "\n";
 	var host = '127.0.0.1';
-	var txt = text;
+	var txt = serverName +' : ' + text;
 
 	fs.appendFile('message.txt', '\r\n' + txt, function (err) {
 		if (err) {

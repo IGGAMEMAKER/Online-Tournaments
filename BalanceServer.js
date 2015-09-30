@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 var strLog = sender.strLog;
 var serverName = "BalanceServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
+sender.setServer(serverName);
 app.use(function(req,res,next){
     strLog(serverName + ': Request!');
     next();
@@ -23,11 +24,11 @@ app.post('/RestartTournament', RestartTournament);
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
-function DefaultFunction (data, res){
-	strLog("DefaultFunction " + data['login']);
-	res.end("DefaultFunction!!!");
-}
-strLog(undefined>=1);
+
+const TOURN_STATUS_REGISTER = 1;
+const TOURN_STATUS_RUNNING = 2;
+const TOURN_STATUS_FINISHED = 3;
+const TOURN_STATUS_PAUSED = 4;
 
 function ServeTournament (req, res){
 	var data = req.body;
@@ -35,7 +36,7 @@ function ServeTournament (req, res){
 	//strLog(JSON.stringify(data));
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
-
+	tournament.status=
 	sendRequest("AddTournament", tournament, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 }
 function RestartTournament (req, res){
@@ -62,19 +63,34 @@ function processTournament(tournament){
 
 const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
+const GET_TOURNAMENTS_FINISHED = 3;
 function CheckTournaments(){
 	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
 		function (error, response, body, res){
 			for (var i = body.length - 1; i >= 0; i--) {
 				var tournament = body[i];
 				processTournament(tournament);
-				
+				if (i == body.length - 1 && i>0){
+					strLog('New tournaments count: ' + i);
+				}
 			};
 		}
 	);
 }
-var f = setTimeout(CheckTournaments, 3000);
+//CheckTournaments();
+//var f = setTimeout(CheckTournaments, 15000);//setInterval
 
+function LogFinishedTournaments (){
+	sendRequest('KillFinishedTournaments', {purpose:GET_TOURNAMENTS_FINISHED}, '127.0.0.1', 'DBServer', null, 
+		function ( error, response, body, res){
+			if (error) {strLog(JSON.stringify(error));}
+			else{
+				strLog('Killed : ' + JSON.stringify(body));
+
+			}
+		})
+}
+LogFinishedTournaments();
 function GetExecutor(req, res){
 	var data = req.body;
 }

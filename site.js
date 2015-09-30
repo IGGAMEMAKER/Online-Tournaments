@@ -126,17 +126,19 @@ app.all('/Game', function (req, res){
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })
 
-app.get('/GetUserProfileInfo', function (req, res){
+app.get('/Profile', function (req, res){
+  var login = 'Alvaro_Fernandez';
   if (req.session && req.session.login){
-    sender.sendRequest('GetUserProfileInfo',  {login:req.session.login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
-      sender.Answer(res, body);
-      //res.end('OK');
-    });
+    login = req.session.login;
   }
   else{
-    res.json({msg:'Сасай'});
-    //res.json({msg:'Сасай2'});
+    //res.json({msg:'Сасай'});
   }
+  siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
+  /*sender.sendRequest('GetUserProfileInfo',  {login:login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
+      
+      //sender.Answer(res, body);
+    });*/
 })
 
 /*app.get('/', function (req, res) {

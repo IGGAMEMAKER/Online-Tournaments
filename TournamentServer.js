@@ -1,5 +1,6 @@
 var serverName = "TournamentServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 var sender = require('./requestSender');
+sender.setServer(serverName);
 
 var express         = require('express');
 var app = express();
@@ -162,13 +163,15 @@ function EndTournament( scores, gameID, tournamentID){
 	strLog(tournaments[tournamentID]);
 	strLog('------');
 	
-	var winners = [];
+	/*var winners = [];
 	for (i=0;i<winnersCount;++i){
-		winners[i] = { login:obj[i].login, prize:tournaments[tournamentID].Prizes[i] };
+		winners[i] = { login:obj[i].login };//, place:tournaments[tournamentID].Prizes[i] };
 	}
-	strLog(winners);
+	strLog(winners);*/
 
-	sender.sendRequest("WinPrize", {winners:winners, tournamentID:tournamentID}, '127.0.0.1', 
+	/*sender.sendRequest("WinPrize", {winners:winners, tournamentID:tournamentID}, '127.0.0.1', 
+			'DBServer', null, sender.printer );*/
+	sender.sendRequest("WinPrize", {winners:obj, tournamentID:tournamentID}, '127.0.0.1', 
 			'DBServer', null, sender.printer );
 
 	/*for (i=0;i<winnersCount;++i){

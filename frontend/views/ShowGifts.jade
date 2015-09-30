@@ -4,7 +4,7 @@ mixin ShowGift(gift,add)
 			h2!= gift.name
 		
 			//p!='URL = '+gift.photoURL
-			img(src= gift.photoURL width='400px')
+			img(src= gift.photoURL display=block max-width='300px' width='400px')
 			br
 			- if (gift.URL)
 				a(href=gift.URL) Show more

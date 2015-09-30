@@ -1,6 +1,6 @@
 var serverName = "FrontendServer";
 var sender = require('./requestSender');
-
+sender.setServer(serverName);
 var express         = require('express');
 var app = express();
 var bodyParser = require('body-parser')
@@ -139,7 +139,6 @@ app.post('/GetUsers', function (req, res){
 
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 
-app.post('/StartTournament', StartTournament);
 app.post('/AddTournament', AddTournament);
 
 app.post('/ShowGifts', ShowGifts);

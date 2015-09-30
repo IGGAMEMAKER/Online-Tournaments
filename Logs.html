@@ -29,8 +29,8 @@
         return false;
       });
       socket.on('Logs', function(msg){
-	
-        $('#messages').append($('<li>').text(JSON.stringify(msg)));
+	var a = JSON.parse(msg);
+        $('#messages').append($('<li>').text(a.msg));
 	document.getElementById( 'bottom' ).scrollIntoView();
       });
       socket.on('StartTournament', function(msg){
