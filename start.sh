@@ -5,3 +5,4 @@ forever start BalanceServer.js
 forever start TournamentServer.js
 forever start GameFrontendServer.js
 sh gameServers.sh
+sudo forever list

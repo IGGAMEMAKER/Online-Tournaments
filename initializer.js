@@ -260,7 +260,7 @@ sender.sendRequest("GetTournaments", user1,'127.0.0.1', 5000, null,sender.printe
 sender.sendRequest("Register", user2, '127.0.0.1',  'FrontendServer', null, sender.printer);*/
 
 var tournCounter=8;
-
+/*
 tournamentAddingTimer = setInterval(function(){
 	if (tournCounter>0){
 			//sender.sendRequest("ServeTournament", tournament4, '46.101.157.129', 'BalanceServer', null, sender.printer);
@@ -274,10 +274,11 @@ tournamentAddingTimer = setInterval(function(){
 	else{
 		clearInterval(tournamentAddingTimer);
 	}
-}, 200);
-
-/*for (i=1;i<8;++i){
-}*/
+}, 200);*/
+function FinishTournament(ID){
+	sender.sendRequest('WinPrize', {tournamentID: ID, winners:{} }, 'localhost', 'DBServer', null, sender.printer);
+}
+FinishTournament(44);
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);*/

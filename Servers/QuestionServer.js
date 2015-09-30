@@ -6,7 +6,7 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-var UpdPeriod = 10000;
+var UpdPeriod = 2000;
 var SendPeriod = UpdPeriod;
 
 

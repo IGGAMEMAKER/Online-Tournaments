@@ -47,7 +47,7 @@ function setQuestionTab(question){
 /*var gameHost = 'localhost';
 var gamePort = 5009;*/
 var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
-alert(con);
+//alert(con);
 var room = io.connect(con);
 
 
@@ -66,9 +66,7 @@ room.on('startGame', function(msg){
 	}
 	else{
 		setQuestionTab('startGame in '+ ticks + ' seconds');
-		//printText('startAfter', 'startGame in '+ ticks + ' seconds', 400, 250);
 	}
-	//alert(msg);
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
 room.on('finish', function(msg){

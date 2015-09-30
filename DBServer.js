@@ -43,6 +43,7 @@ app.post('/GetPlayers', GetPlayers);
 
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
+//app.post('/')
 
 /*funcArray["/Ban"] = Ban;
 funcArray["/ChangePassword"] = ChangePassword;
@@ -388,7 +389,7 @@ function GetUsers( req,res){
 	    	Answer(res, errObject);
 	    }
 	    else{
-	    	Log(JSON.stringify(users));
+	    	//Log(JSON.stringify(users));
 		    Answer(res, users);
 		}
  	});
@@ -438,8 +439,9 @@ function setTournStatus(tournamentID, status){
 
 function givePrizeToPlayer(player, Prize){
 	Log('WinPrize: ' + JSON.stringify(player));
-	if (isNan(Prize) ){
+	if (isNaN(Prize) ){
 		//gift
+		Log('Prize is gift: ' + JSON.stringify(Prize));
 		var userGift = new UserGift( {userID:player.login, giftID: Prize.giftID} );
 		userGift.save(function (err){
 			if (err){Error(err);}
@@ -447,7 +449,8 @@ function givePrizeToPlayer(player, Prize){
 	}
 	else{
 		//money
-		User.update( {login:player.login}, {$inc: { money: player.prize }} , function (err,count) {
+		Log('mmmMoney!! ' + Prize);
+		User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
 			if (err){ Error(err); }
 			else{ Log(count);}
 		});
@@ -455,12 +458,14 @@ function givePrizeToPlayer(player, Prize){
 }
 
 function LoadPrizes(tournamentID, winners){
-	Tournament.find( {tournamentID:tournamentID}, 'Prizes', function (err, Prizes){
+	Log('LoadPrizes');
+	Tournament.findOne( {tournamentID:tournamentID}, 'Prizes', function (err, Prizes){
 		if (err){ Error(err); }
 		else{
-			for (i=0; i< winners.length;i++){
+			Log('Prizes: ' + JSON.stringify(Prizes));
+			for (i=0; i< winners.length && i <Prizes.Prizes.length;i++){
 				var player = winners[i];
-				givePrizeToPlayer(player, Prizes[i]);
+				givePrizeToPlayer(player, Prizes.Prizes[i]);
 			}
 		}
 	});
@@ -472,7 +477,7 @@ function WinPrize( req,res){
 	var incr = data['prize'];
 	Log('uID= '+ userID + ' incr=' + incr);*/
 	Log(JSON.stringify(data));
-	var player = {};
+
 	var winners = data.winners;
 	var tournamentID = data.tournamentID;
 	LoadPrizes(tournamentID, winners);
@@ -480,6 +485,8 @@ function WinPrize( req,res){
 	
 	Answer(res, {result:'WinPrize_OK'});
 	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
+	setTimeout(KillFinishedTournaments, 1500);
+	//Tournament.remove({tournamentID:})
 	//updatePromos(tournamentID);
 	
 
@@ -498,14 +505,28 @@ function getLoginByID(ID){
 	return IDToLoginConverter[ID]?IDToLoginConverter[ID]:'defaultLogin';
 }*/
 
-function KillFinishedTournaments(req, res){
+//KillFinishedTournaments();
+
+function KillFinishedTournaments(){
 	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){
 		Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
-		Tournament.remove({$or:finishedTournaments}, function deleting (err, tournaments){
+		/*Tournament.remove({$or:finishedTournaments}, function deletingTournaments (err, tournaments){
 			Log('finishedTournaments2: ' + JSON.stringify(tournaments) );
 			if (err) {Error(err);}
 			else{
 				Log(JSON.stringify(tournaments));
+			}
+		})*/
+		var TRegIDs = [];
+		for (var i = finishedTournaments.length - 1; i >= 0; i--) {
+			TRegIDs.push(finishedTournaments[i].tournamentID);
+		};
+		Log('TRegIDs : ');
+		Log(JSON.stringify(TRegIDs));
+		TournamentReg.remove({tournamentID: {$in : TRegIDs} } , function deletingTournamentRegs (err, tournRegs){
+			if (err) {Error(err);}
+			else{
+				Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
 			}
 		})
 	})
@@ -518,7 +539,10 @@ function GetUserProfileInfo(req , res){
 	Log('-----------USER PROFILE INFO -----ID=' + login + '------');
 	//var usr = User.find({}, 'login password money' )
 	var profileInfo = {};//tournaments:{}, money:0};
-	TournamentReg.find({userID:login}, '', function (err, tournaments){
+	TournamentReg
+		.find({userID:login})
+		.sort('-tournamentID')
+		.exec(function (err, tournaments){
 		if (!err && tournaments) {
 			profileInfo.tournaments = tournaments;
 			User.findOne({login:login}, 'login money', function (err1, user) {    
@@ -647,7 +671,7 @@ function GetTournaments (req, res){
 	var data = req.body;
 	Log("GetTournaments ");// + data['login']);
 	var purpose = data.purpose?data.purpose:null;
-	
+
 	var query = getTournamentsQuery(data.query, data.queryFields, purpose);
 	//var query = ;//{}
 	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
@@ -701,6 +725,22 @@ function GetTournaments (req, res){
 
 
 var COUNT_FIXED = 1;
+
+function addTournament(maxID, tournament, res){
+	tournament.tournamentID = maxID+1;
+	var tourn = new Tournament(tournament);
+	tourn.save(function (err) {
+		if (err){
+			Error(err);
+			Answer(res, Fail);
+		}
+		else{
+			Answer(res, tournament);
+			Log('added Tournament'); 
+		}
+	});
+}
+
 function AddTournament (req, res){
 	var data = req.body;
 	var tournament = data;
@@ -710,24 +750,19 @@ function AddTournament (req, res){
 	Log('----------------------------');
 	
 	
-	Tournament.count({}, function (err, cnt){
-		tournament.tournamentID = cnt;
-		var tourn = new Tournament(tournament);
+	Tournament
+		.findOne({})
+		.sort('-tournamentID')
+		.exec(function searchTournamentWithMaxID (err, maxTournament){
 		if (!err){
-			tourn.save(function (err) {
-				if (err){
-					Error(err);
-					Answer(res, Fail);
-				}
-				else{
-					Answer(res, tournament);
-					Log('added Tournament'); 
-				}
-			});
+			if (maxTournament) {
+				addTournament(maxTournament.tournamentID, tournament, res);
+			}
+			else { addTournament(0,tournament, res); }
 		}
 		else{
 			Log('Mario, no addition');
-			 Answer(res, {result: 'Fail', message: 'Gaga Genius'});
+			Answer(res, {result: 'Fail', message: 'Gaga Genius'});
 		}
 	});
 	

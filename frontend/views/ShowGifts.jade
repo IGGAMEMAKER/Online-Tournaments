@@ -11,15 +11,17 @@ mixin ShowGift(gift,add)
 			p!=gift.description
 			p!=gift.price+'$'
 			//p!= '----------------------------'
-html
-	center
-		a(href="AddGift") AddGift
-		h1!= 'Show gifts '
-		//p!=JSON.stringify(message)
-		table
-			each val, index in message
+mixin showGifts(gifts)
+	table
+			each val, index in gifts
 				if(index%3==0 && index!=0)
 					tr
 						+ShowGift(val)
 				else
 					+ShowGift(val)
+html
+	center
+		a(href="AddGift") AddGift
+		h1!= 'Show gifts '
+		//p!=JSON.stringify(message)
+		+showGifts(message)
