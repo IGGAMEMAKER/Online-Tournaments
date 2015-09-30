@@ -6,15 +6,50 @@ mixin drawReg(val)
 		td #{val.tournamentID}
 		td #{val.promo}
 
+///Dublicate from ShowGifts.jade
+mixin ShowGift(gift,add)
+	td
+		center
+			h2!= gift.name
+		
+			//p!='URL = '+gift.photoURL
+			img(src= gift.photoURL display=block max-width='300px' width='400px')
+			br
+			- if (gift.URL)
+				a(href=gift.URL) Show more
+			p!=gift.description
+			p!=gift.price+'$'
+			//p!= '----------------------------'
+mixin showGifts(gifts)
+	table
+			each val, index in gifts
+				if(index%3==0 && index!=0)
+					tr
+						+ShowGift(val)
+				else
+					+ShowGift(val)
+
+///-----
+
+
 html
-	//p!= JSON.stringify(message)
+	p!= JSON.stringify(message)
 	//p asd
 	center
 		h1 Profile of  #{session.login}
 		h2 You have #{message.money/100}$ on your account
 		a(href="Tournaments") Tournaments
+		h2 Registered tournaments
 		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 			tr
 				td TournamentID
 				td Promoted by(Status)
 			+drawRegs(message.tournaments)
+		br
+		br
+		h2 Prizes:
+		if message.userGifts && message.userGifts.length>0
+			h3 You won these prizes
+			+showGifts(message.userGifts)
+		else
+			h3 You have no prizes, but it's high time to do that!

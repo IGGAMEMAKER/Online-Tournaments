@@ -92,6 +92,7 @@ var Gift = mongoose.model('Gift', { name: String, photoURL: String, description:
 
 var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
 
+
 var TournamentResult = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
 //var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
 
@@ -117,6 +118,15 @@ var Tournament = mongoose.model('Tournament', {
 	tournamentID:		Number
 	//tournamentServerID: String
 });
+
+
+
+//var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609a7da4d4145c718549ab3' });//ObjectId(
+var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
+
+uGift.save(function (err){
+	if (err) {Error(err);}
+})
 
 function AddGift(data, res){
 	if (data){
@@ -473,6 +483,7 @@ function LoadPrizes(tournamentID, winners){
 
 function WinPrize( req,res){
 	var data = req.body;
+
 	/*var userID = data['userID'];
 	var incr = data['prize'];
 	Log('uID= '+ userID + ' incr=' + incr);*/
@@ -521,15 +532,31 @@ function KillFinishedTournaments(){
 		for (var i = finishedTournaments.length - 1; i >= 0; i--) {
 			TRegIDs.push(finishedTournaments[i].tournamentID);
 		};
-		Log('TRegIDs : ');
-		Log(JSON.stringify(TRegIDs));
-		TournamentReg.remove({tournamentID: {$in : TRegIDs} } , function deletingTournamentRegs (err, tournRegs){
-			if (err) {Error(err);}
-			else{
-				Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
-			}
-		})
+		
+
+		ClearRegistersInTournament(TRegIDs);
 	})
+}
+
+function ClearRegistersInTournament(TRegIDs){
+	Log('TRegIDs : ');
+	Log(JSON.stringify(TRegIDs));
+
+	TournamentReg.remove({tournamentID: {$in : TRegIDs} } , function deletingTournamentRegs (err, tournRegs){
+		if (err) {Error(err);}
+		else{
+			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
+		}
+	})
+}
+
+function killID(arr, field){
+	var list = [];
+	for (var i = arr.length - 1; i >= 0; i--) {
+		list.push(arr[i][field]);
+	};
+	Log('killID result: ' + JSON.stringify(list) );
+	return list;
 }
 
 function GetUserProfileInfo(req , res){
@@ -552,11 +579,42 @@ function GetUserProfileInfo(req , res){
 			    	Answer(res, Fail);
 			    }
 			    else{
-			    	Log('GOT TOTAL INFO' + JSON.stringify(user));
-			    	//profileInfo.tournaments = tournaments;
 			    	profileInfo.money = user.money;
-			    	Log('Fin: ' + JSON.stringify(profileInfo));
-			    	Answer(res,  profileInfo );
+
+			    	UserGift.find({userID:login}, 'giftID', function (err, gifts){
+			    		if (err) {
+			    			Error(err);
+							Answer(res, Fail);
+			    		}
+			    		else{
+			    			profileInfo.gifts = gifts?gifts:{};
+			    			/*var TRegIDs = [];
+							for (var i = finishedTournaments.length - 1; i >= 0; i--) {
+								TRegIDs.push(finishedTournaments[i].tournamentID);
+							};*/
+							var userGifts = killID(gifts, 'giftID');
+							//{tournamentID: {$in : TRegIDs} }
+			    			Gift.find( { _id : {$in : userGifts}} , '', function (err, UserGifts){//ObjectId.fromString(
+			    				if (err){
+			    					Error(err);
+			    					Answer(res, Fail);
+			    				}
+			    				else{
+			    					if (!UserGifts){
+			    						Log('Found NOTHING');
+			    					}
+			    					else{
+			    						profileInfo.userGifts = UserGifts;
+			    					}
+			    					Log('Fin: ' + JSON.stringify(profileInfo));
+			    					Answer(res,  profileInfo );
+			    				}
+			    			} )
+
+			    			/*Log('Fin: ' + JSON.stringify(profileInfo));
+			    			Answer(res,  profileInfo );*/
+			    		}
+			    	})
 				}
 		 	});
 		}
