@@ -43,7 +43,8 @@ function startGame(gameURL, port){
     //alert(login);
     //var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
     var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID;
-    alert(addr);
+    //alert(addr);
+    
     /*var a = window.open();
     //var a = window.open('http://'+gameURL+':'+80+'/Game?tournamentID='+currentTID);//80=port
     

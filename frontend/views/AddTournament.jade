@@ -8,6 +8,29 @@ mixin inp(tdName, inpName)
 		td #{tdName}
 		td
 			input(type="text", name=inpName).
+mixin select(id, variants, offset)
+	if id && variants && variants.length>0
+		//p!= variants
+		select(id=id, name=id)
+			each val, index in variants
+				option(value=index+offset) #{val}
+
+mixin showSelectInTR(id, variants, offset)
+	tr
+		td #{id}
+		td 
+			+select(id, variants, offset)
+mixin getGoNexts(numOfRounds)
+	- for(i=0;i<numOfRounds;++i)
+		if i==0
+			+inp('Incoming players', 'goNext'+i)
+		else
+			+inp('goNext'+i, 'goNext'+i)
+			//+inp('Prizes of round'+i, 'Prizes'+i)
+	- for(i=numOfRounds;i>0;--i)
+		+inp('Prizes of round'+i, 'Prizes'+i)
+
+
 html
 center
 	br
@@ -30,5 +53,16 @@ center
 						-for (i=1;i<13;++i)
 							option(value=i) #{i}
 			+inp('Buy In', 'buyIn')
-			+inp('bb', 'field')
-		input(type="submit", value="Add tournament")
+			//+inp('bb', 'field')
+			//+showSelectInTR('asd',['ololo','piw-piw', 'defense'],1)
+			//+getGoNexts(1)
+			+inp('goNext', 'goNext')
+			+inp('Prizes', 'Prizes')
+			+showSelectInTR('prizeGenerator',['auto','custom'],1)
+			+showSelectInTR('goNextSelection',['auto','custom'],1)
+
+		br
+		br
+		input(type="submit" style= "width:300px;height:50" value="Add tournament")
+		br
+		a(href="Tournaments") Tournaments

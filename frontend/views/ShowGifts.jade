@@ -1,3 +1,4 @@
+-var showGiftIDs = true;
 mixin ShowGift(gift,add)
 	td
 		center
@@ -10,6 +11,7 @@ mixin ShowGift(gift,add)
 				a(href=gift.URL) Show more
 			p!=gift.description
 			p!=gift.price+'$'
+			p!='ID:' + gift._id
 			//p!= '----------------------------'
 mixin showGifts(gifts)
 	table
@@ -23,5 +25,5 @@ html
 	center
 		a(href="AddGift") AddGift
 		h1!= 'Show gifts '
-		//p!=JSON.stringify(message)
+		p!=JSON.stringify(message)
 		+showGifts(message)

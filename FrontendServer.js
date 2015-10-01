@@ -188,12 +188,27 @@ function ShowGifts(req, res){
 
 function AddTournament(req, res){
 	var data = req.body;
-
+	
 	if (data){
+		strLog('Incoming tournament : ' +JSON.stringify(data));
 		var buyIn = data.buyIn;
 		var rounds = data.rounds;
 		var gameNameID = data.gameNameID;
-
+		var goNext = data.goNext?data.goNext.split(" ") : [];
+		var Prizes = data.Prizes.split(" ");
+		var prizes = [];
+		//convert array of strings to array of objects
+		for (var i = 0; i < Prizes.length - 1; i++) {
+			if (isNaN(Prizes[i]) ){
+				prizes.push({giftID:Prizes[i]})
+			}
+			else{
+				prizes.push(Prizes[i]);
+			}
+		};
+		strLog('goNext.length:' + goNext.length);
+		strLog(JSON.stringify(goNext));
+		//strLog('')
 		if (buyIn && rounds && gameNameID){
 			var obj = {
 				buyIn: 			buyIn,
@@ -203,10 +218,10 @@ function AddTournament(req, res){
 				pricingType: 	PRICE_NO_EXTRA_FUND,
 
 				rounds: 		rounds,
-				goNext: 		[2,1],
-					places: 		[1],
-					Prizes: 		[180],
-					prizePools: 	[1],
+				goNext: 		goNext.length>0 ? goNext : [2,1],
+						places: 		[1],
+					Prizes: 		prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
+						prizePools: 	[1],
 
 				comment: 		'Yo',
 				

@@ -36,7 +36,6 @@ app.post('/StartTournament', function (req, res) {StartTournament(req.body, res)
 app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
 
 app.post('/Login', LoginUser);
-//app.post('/GetTournaments', GetTournaments);
 
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/GetPlayers', GetPlayers);
@@ -469,16 +468,35 @@ function givePrizeToPlayer(player, Prize){
 
 function LoadPrizes(tournamentID, winners){
 	Log('LoadPrizes');
-	Tournament.findOne( {tournamentID:tournamentID}, 'Prizes', function (err, Prizes){
+	Tournament.findOne( {tournamentID:tournamentID}, 'Prizes goNext', function (err, Prizes){
 		if (err){ Error(err); }
 		else{
+			//var curRound=1;
 			Log('Prizes: ' + JSON.stringify(Prizes));
 			for (i=0; i< winners.length && i <Prizes.Prizes.length;i++){
 				var player = winners[i];
-				givePrizeToPlayer(player, Prizes.Prizes[i]);
+				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1) );
 			}
 		}
 	});
+}
+
+function getPrize(Prizes, goNext, i){
+	Log('Rewrite getPrize function. NOW YOU MUST ALL PRIZES FOR EACH PLAYER!!!');
+	var roundIndex=1;
+	var next = 2;
+	if (i>goNext[1]){
+		return 0;
+	}
+	else{
+		while(next<goNext.length && goNext[next] >= i){//playerRoundIndex<goNext.length-1 && 
+			roundIndex=next;
+			next = roundIndex+1;
+		}
+		return Prizes[roundIndex-1];
+	}
+
+	
 }
 
 function WinPrize( req,res){
@@ -678,22 +696,24 @@ function Register (req, res){
 /*function GetUserProfileInfoHandler ( error, response, body, res){
 	
 }*/
-function findTournaments(res, query, queryFields){
+function findTournaments(res, query, queryFields, purpose){
 	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
 			//Log(JSON.stringify(tournaments));
-			 Answer(res, tournaments);
+			Answer(res, tournaments);
 		}
 		else{
 			Error(err);
 			 Answer(res, Fail);
 		}
-	});
+	}).sort('-tournamentID');
 }
 
 const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_GAMESERVER = 3;
+const GET_TOURNAMENTS_INFO = 4;
+
 function getTournamentsQuery(query, fields, purpose){
 	Log(JSON.stringify(query));
 	Log(JSON.stringify(fields));
@@ -707,7 +727,7 @@ function getTournamentsQuery(query, fields, purpose){
 		case GET_TOURNAMENTS_GAMESERVER:
 			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 			query = { $and : [query, run_or_reg] };
-		break;
+		break;			
 	}
 	if (query){
 		return { 
@@ -743,7 +763,7 @@ function GetTournaments (req, res){
 	Log(JSON.stringify(query.query));
 	Log(JSON.stringify(query.fields));
 
-	findTournaments(res, query.query, query.fields);
+	findTournaments(res, query.query, query.fields, purpose);
 }
 /*query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}];
 {$or: query }
