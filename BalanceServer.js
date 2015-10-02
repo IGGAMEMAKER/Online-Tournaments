@@ -78,7 +78,7 @@ function CheckTournaments(){
 	);
 }
 //CheckTournaments();
-var f = setTimeout(CheckTournaments, 5000);//setInterval
+var f = setInterval(CheckTournaments, 8500);//setInterval
 
 function LogFinishedTournaments (){
 	sendRequest('KillFinishedTournaments', {purpose:GET_TOURNAMENTS_FINISHED}, '127.0.0.1', 'DBServer', null, 

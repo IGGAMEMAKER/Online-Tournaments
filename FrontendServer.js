@@ -1,6 +1,8 @@
 var serverName = "FrontendServer";
 var sender = require('./requestSender');
 sender.setServer(serverName);
+var Answer = sender.Answer;
+
 var express         = require('express');
 var app = express();
 var bodyParser = require('body-parser')
@@ -26,7 +28,7 @@ function strLog(data){
 
 app.get('/Alive', function (req, res){
 	strLog(data);
-	sender.Answer(res, {result:'OK'});
+	Answer(res, {result:'OK'});
 });
 
 app.post('/Register', function (req, res){
@@ -34,10 +36,10 @@ app.post('/Register', function (req, res){
 	sender.sendRequest("Register", data, '127.0.0.1', 'DBServer',  res, 
 		function ( error, response, body, res) {
 		strLog("Got answer from DBServer");
-		sender.Answer(res, body);
+		Answer(res, body);
 	});
 	//strLog(data);
-	//sender.Answer(res, {result:'OK'});
+	//Answer(res, {result:'OK'});
 });
 
 app.post('/FinishGame', FinishGame);
@@ -49,7 +51,7 @@ app.post('/Login', function (req, res){
 	strLog(data);
 	sender.expressSendRequest("Login", data, '127.0.0.1', 'DBServer', res, 
 		function (error, response, body, res){
-			sender.Answer(res, body);
+			Answer(res, body);
 		});
 });
 
@@ -66,7 +68,7 @@ function GetGameFrontendAdress(gameNameId){
 }
 function SendTournamentHandler( error, response, body, res) {
 	strLog("Answer from GameServer comes here!!!");
-	sender.Answer(res, {result:'OK'});
+	Answer(res, {result:'OK'});
 	//res.end('OK');
 }
 
@@ -99,7 +101,7 @@ function Login( data, res){
 }
 function LoginHandler( error, response, body, res){
 	strLog('LoginHandler call');
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 /*funcArray["/ChangePassword"] = ChangePassword;
@@ -118,7 +120,7 @@ app.post('/GetTournaments', function (req, res){
 	strLog('Getting Tournaments: ' + JSON.stringify(obj) );
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, 
 		function ( error, response, body, res ){
-		sender.Answer(res, body);
+		Answer(res, body);
 	});
 });
 
@@ -132,7 +134,7 @@ app.post('/GetUsers', function (req, res){
 		queryFields: data['queryFields'],
 	};
 	sender.sendRequest("GetUsers", obj, '127.0.0.1', 'DBServer', res, function ( error, response, body, res ){
-		sender.Answer(res, body);
+		Answer(res, body);
 	});
 });
 
@@ -167,7 +169,7 @@ var user1 = {
 
 function Alive(data, res){
 	strLog(data);
-	sender.Answer(res, {result:'OK'});
+	Answer(res, {result:'OK'});
 }
 var Fail = { result:'fail'};
 
@@ -191,21 +193,44 @@ function AddTournament(req, res){
 	
 	if (data){
 		strLog('Incoming tournament : ' +JSON.stringify(data));
-		var buyIn = data.buyIn;
-		var rounds = data.rounds;
-		var gameNameID = data.gameNameID;
-		var goNext = data.goNext?data.goNext.split(" ") : [];
+		var buyIn = parseInt(data.buyIn);
+		var rounds = parseInt(data.rounds);
+		var gameNameID = parseInt(data.gameNameID);
+		var GoNext = data.goNext?data.goNext.split(" ") : [];
 		var Prizes = data.Prizes.split(" ");
 		var prizes = [];
+		var goNext = [];
 		//convert array of strings to array of objects
 		for (var i = 0; i < Prizes.length - 1; i++) {
 			if (isNaN(Prizes[i]) ){
-				prizes.push({giftID:Prizes[i]})
+				if (Prizes[i].length>0){
+					prizes.push({giftID:Prizes[i]})
+				}
+				else{
+					strLog('Prize[i] is null. Current prize is: ' + Prizes[i]);
+					Answer(res, Fail);
+					return;
+				}
 			}
 			else{
 				prizes.push(Prizes[i]);
 			}
 		};
+
+		for (var i=0; i< GoNext.length-1; ++i){
+			var num = parseInt(GoNext[i]);
+			if (isNaN(num)){
+				strLog('goNext num parseInt error! ');
+				strLog(GoNext);
+				Answer(res, Fail);
+				return;
+			}
+			else{
+				goNext.push( num );
+			}
+		}
+
+		strLog('splitted prizes: ' + JSON.stringify(prizes) );
 		strLog('goNext.length:' + goNext.length);
 		strLog(JSON.stringify(goNext));
 		//strLog('')
@@ -218,7 +243,7 @@ function AddTournament(req, res){
 				pricingType: 	PRICE_NO_EXTRA_FUND,
 
 				rounds: 		rounds,
-				goNext: 		goNext.length>0 ? goNext : [2,1],
+				goNext: 		goNext.length>0 ? goNext : [2,1],//
 						places: 		[1],
 					Prizes: 		prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
 						prizePools: 	[1],
@@ -234,21 +259,21 @@ function AddTournament(req, res){
 			sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, AddTournamentHandler);
 		}
 		else{
-			sender.Answer(res, Fail);
+			Answer(res, Fail);
 		}
 	}
 	else{
-		sender.Answer(res, Fail);
+		Answer(res, Fail);
 	}
 
 }
 
 function stdHandler(error, response, body, res){
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 function AddTournamentHandler(error, response, body, res){
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 function AddGift(req, res){
@@ -257,7 +282,7 @@ function AddGift(req, res){
 		sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, stdHandler);
 	}
 	else{
-		sender.Answer(res, Fail);
+		Answer(res, Fail);
 	}
 }
 
@@ -274,7 +299,7 @@ function GetUsers (data, res){
 }
 
 function GetUsersHandler( error, response, body, res ){
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 function StartTournament (req, res){
@@ -293,7 +318,7 @@ function GetUserProfileInfo(req , res){
 }
 function GetUserProfileInfoHandler ( error, response, body, res){
 	strLog('GetUserProfileInfoHandler :' + JSON.stringify(body));
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 function ChangePassword( data, res){
@@ -302,7 +327,7 @@ function ChangePassword( data, res){
 }
 function FinishGame(req, res){
 	var data = req.body;
-	sender.Answer(res, {result:'OK', message:'FinishGame'});
+	Answer(res, {result:'OK', message:'FinishGame'});
 	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
 }
 
@@ -338,7 +363,7 @@ function RegisterUserInTournament( req, res){
 
 function RegisterUserInTournamentHandler(error, response, body, res){
 	strLog("Checking Data taking: " + body['result']);
-	sender.Answer(res, body);
+	Answer(res, body);
 }
 
 function RememberPassword( data, res){

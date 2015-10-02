@@ -45,11 +45,9 @@ html
 				td TournamentID
 				td Promoted by(Status)
 			+drawRegs(message.tournaments)
-		br
-		br
 		h2 Prizes:
 		if message.userGifts && message.userGifts.length>0
-			h3 You won these prizes
+			h3 You won these prizes :
 			+showGifts(message.userGifts)
 		else
-			h3 You have no prizes, but it's high time to do that!
+			h3 You have no prizes, but it's high time to win them!

@@ -121,7 +121,7 @@ var Tournament = mongoose.model('Tournament', {
 
 
 //var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609a7da4d4145c718549ab3' });//ObjectId(
-var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
+//var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
 
 uGift.save(function (err){
 	if (err) {Error(err);}
@@ -473,7 +473,7 @@ function LoadPrizes(tournamentID, winners){
 		else{
 			//var curRound=1;
 			Log('Prizes: ' + JSON.stringify(Prizes));
-			for (i=0; i< winners.length && i <Prizes.Prizes.length;i++){
+			for (i=0; i< winners.length;i++){// && i <Prizes.Prizes.length
 				var player = winners[i];
 				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1) );
 			}
@@ -715,8 +715,9 @@ const GET_TOURNAMENTS_GAMESERVER = 3;
 const GET_TOURNAMENTS_INFO = 4;
 
 function getTournamentsQuery(query, fields, purpose){
-	Log(JSON.stringify(query));
-	Log(JSON.stringify(fields));
+	if (query) Log(JSON.stringify(query));
+	if (fields) Log(JSON.stringify(fields));
+
 	switch(purpose){
 		case GET_TOURNAMENTS_USER:
 			query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
@@ -760,8 +761,8 @@ function GetTournaments (req, res){
 	else{
 		findTournaments(res, {}, '');
 	}*/
-	Log(JSON.stringify(query.query));
-	Log(JSON.stringify(query.fields));
+	if (query.query) Log(JSON.stringify(query.query));
+	if (query.fields) Log(JSON.stringify(query.fields));
 
 	findTournaments(res, query.query, query.fields, purpose);
 }
