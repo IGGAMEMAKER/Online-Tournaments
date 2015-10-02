@@ -117,7 +117,8 @@ function AnswerIsCorrect(gameID, answer){
 
 gs.StartGameServer({
 	port:5010,
-	gameName:'Questions'
+	gameName:'Questions',
+	gameTemplate: 'qst_game'
 }, Init, AsyncUpdate, Action, UpdPeriod);
 
 console.log('started');

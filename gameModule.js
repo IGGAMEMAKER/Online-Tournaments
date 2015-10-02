@@ -76,14 +76,15 @@ function MoveHead(data){
   	Move(tournamentID, gameID, movement, userLogin);
 }
 
-
+var OPTIONS = {};
+var DEFAULT = {};
 
 
 /*funcArray["/PauseGame"] = PauseGame;
 funcArray["/AbortGame"] = AbortGame;
 funcArray["/UnSetGame"] = UnSetGame;*/
 
-
+DEFAULT.gameTemplate='game';
 
 var games = {
 
@@ -95,6 +96,8 @@ var games = {
 //you can get the object from POST request by typing data['parameterName']
 //you NEED TO FINISH YOUR ANSWERS WITH res.end();
 
+
+
 function RenderGame (req, res){
 	console.log(__dirname);
 	var tID = req.query.tournamentID;
@@ -102,16 +105,25 @@ function RenderGame (req, res){
 	/*Log(req.query);
 	Log(req.body);*/
 	console.log(req.query.tournamentID);
-
-	res.render('qst_game', {
-		tournamentID:tID?tID:111,
-		gameHost:'localhost',
-		gamePort:port,
-		login:login
-	});
+	if ( isNaN(tID) || !games[tID] ){
+		res.status(404);
+		res.type('txt').send('Game Not found');
+	}
+	else{
+		res.render(getOption('gameTemplate') , {//'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
+			tournamentID:tID,
+			gameHost:'localhost',
+			gamePort:port,
+			login:login
+		});
+	}
 
 	//res.render('/games/PingPong/game', {tournamentID:111} );
 	//res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
+}
+
+function getOption(optionName){
+	return OPTIONS[optionName] ? OPTIONS[optionName] : DEFAULT[optionName];
 }
 
 function GetGames ( req,res){
@@ -336,9 +348,12 @@ function StartGameServer(options, initF, updateF, action, updateTime){
 	if (options && options.port && options.gameName && initF && action){
 		customInit = initF;
 		customUpdate = updateF;
-		UPDATE_TIME = updateTime;
 		Action = action;
+
+		UPDATE_TIME = updateTime;
 		gameName = options.gameName;
+		gameTemplate = options.gameTemplate;
+		OPTIONS = options;
 
 		var server = app.listen(options.port, function () {
 		  host = server.address().address;

@@ -121,11 +121,11 @@ var Tournament = mongoose.model('Tournament', {
 
 
 //var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609a7da4d4145c718549ab3' });//ObjectId(
-//var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
+/*var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
 
 uGift.save(function (err){
 	if (err) {Error(err);}
-})
+})*/
 
 function AddGift(data, res){
 	if (data){
