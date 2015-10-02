@@ -19,7 +19,7 @@ var strLog = sender.strLog;
 var fs = require('fs');
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 5;
+const STANDARD_PREPARE_TICK_COUNT = 7;
 var UPDATE_TIME = 3000;
 const PREPARED = "PREPARED";
 
@@ -53,7 +53,7 @@ app.get('/Move', function (req, res){
 function FastLog(text){
 	var time = new Date();
 	//strLog(time);
-	fs.appendFile('GMLog.txt', '\r\n' + time+' ' + text + "\n", function (err) {
+	fs.appendFile(getOption('gameLog'), '\r\n' + time+' ' + text + "\n", function (err) {
 		if (err) strLog('err: ' + JSON.stringify(err));
 	});
 	//stream.write(text);
@@ -77,14 +77,18 @@ function MoveHead(data){
 }
 
 var OPTIONS = {};
-var DEFAULT = {};
+var DEFAULT = {
+	gameName:'Unknown',
+	gameLog:'GMLog.txt',
+	gameTemplate:'game'
+};
 
 
 /*funcArray["/PauseGame"] = PauseGame;
 funcArray["/AbortGame"] = AbortGame;
 funcArray["/UnSetGame"] = UnSetGame;*/
 
-DEFAULT.gameTemplate='game';
+//DEFAULT.;
 
 var games = {
 
@@ -198,11 +202,6 @@ function tournamentIsValid(tournamentID, gameID){
 function Answer(res, code){
 	res.end(code);
 	//strLog("......................");
-}
-
-function mod2(val){
-	//return val%2==0?'top':'bottom';
-	return val%2==0?0:95;
 }
 
 /*function CustomInit(gameID){
@@ -344,7 +343,7 @@ var port;
 var gameName;
 function StartGameServer(options, initF, updateF, action, updateTime){
 	//if (options.port)
-	strLog('Trying to StartGameServer:' + options.gameName);
+	strLog('Trying to StartGameServer: ' + options.gameName);
 	if (options && options.port && options.gameName && initF && action){
 		customInit = initF;
 		customUpdate = updateF;
@@ -359,7 +358,7 @@ function StartGameServer(options, initF, updateF, action, updateTime){
 		  host = server.address().address;
 		  port = server.address().port;
 		  //console.log('listening');
-		  strLog('Example app listening at http://'+ host+':'+ port);
+		  strLog(getOption('gameName') + ' game server listening at http://'+ host+':'+ port);
 		});
 		io = require('socket.io')(server);
 		Initialize();
@@ -391,6 +390,7 @@ function StartGameServer(options, initF, updateF, action, updateTime){
 function SendToRoom( room, event1, msg){
 	strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
 	games[room].socketRoom.emit(event1, msg);
+	//FastLog('Я отправиль...');
 }
 function Initialize(){
 	strLog('gameModule Initialize');

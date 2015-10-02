@@ -54,6 +54,23 @@ function AsyncUpdate(gameID){
 		FinishGame(gameID, FindWinner(gameID) );
 	}
 }
+
+function Action(gameID, playerID, movement, userName){
+	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
+	if (AnswerIsCorrect(gameID, movement.answer)){
+		games[gameID].scores[userName]++;	
+	}
+}
+
+gs.StartGameServer({
+	port:5010,
+	gameName:'Questions',
+	gameTemplate: 'qst_game'
+}, Init, AsyncUpdate, Action, UpdPeriod);
+
+console.log('started');
+
+
 function FindWinner(gameID){
 	var game = games[gameID];
 	strLog(JSON.stringify(game.scores));
@@ -98,13 +115,6 @@ function getQuestions(gameID){
 	return { question: curQuest.question , answers:curQuest.answers };
 }
 
-function Action(gameID, playerID, movement, userName){
-	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
-	if (AnswerIsCorrect(gameID, movement.answer)){
-		games[gameID].scores[userName]++;	
-	}
-}
-
 function AnswerIsCorrect(gameID, answer){
 	strLog('Player answer = ' + answer + ' , while correct is :' + getCurrentQuestion(gameID).correct );
 	if (answer && answer == getCurrentQuestion(gameID).correct ){
@@ -114,11 +124,3 @@ function AnswerIsCorrect(gameID, answer){
 		return false;
 	}
 }
-
-gs.StartGameServer({
-	port:5010,
-	gameName:'Questions',
-	gameTemplate: 'qst_game'
-}, Init, AsyncUpdate, Action, UpdPeriod);
-
-console.log('started');
