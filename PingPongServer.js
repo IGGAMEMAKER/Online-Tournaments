@@ -5,6 +5,7 @@ var send = gs.SendToRoom;
 var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
+var FastLog = gs.FastLog;
 
 var UpdPeriod = 1000/50; //50 times per second = 20ms;
 
@@ -24,14 +25,14 @@ function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 	var speed = 0.4/4;
 	//***********
-	games[ID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
-	games[ID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
+	games[gameID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
+	games[gameID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
 	//***********
 }
 
 function AsyncUpdate(gameID){
 	UpdateCollisions(gameID, gameID);
-	SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
+	send(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
 }
 
 function Action(gameID, playerID, movement, userName){

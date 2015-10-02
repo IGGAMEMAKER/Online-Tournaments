@@ -109,7 +109,7 @@ function RenderGame (req, res){
 	/*Log(req.query);
 	Log(req.body);*/
 	console.log(req.query.tournamentID);
-	if ( isNaN(tID) || !games[tID] ){
+	if ( isNaN(tID)){// || !games[tID] 
 		res.status(404);
 		res.type('txt').send('Game Not found');
 	}
@@ -406,3 +406,4 @@ this.SendToRoom = SendToRoom;
 this.strLog = strLog;
 this.getUID = getUID;
 this.FinishGame = FinishGame;
+this.FastLog = FastLog;

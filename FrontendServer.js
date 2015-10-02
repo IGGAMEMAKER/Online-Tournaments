@@ -213,7 +213,7 @@ function AddTournament(req, res){
 				}
 			}
 			else{
-				prizes.push(Prizes[i]);
+				prizes.push( parseInt(Prizes[i]) );
 			}
 		};
 
@@ -234,7 +234,7 @@ function AddTournament(req, res){
 		strLog('goNext.length:' + goNext.length);
 		strLog(JSON.stringify(goNext));
 		//strLog('')
-		if (buyIn && rounds && gameNameID){
+		if (buyIn>=0 && rounds && gameNameID){
 			var obj = {
 				buyIn: 			buyIn,
 				initFund: 		0,
@@ -259,6 +259,7 @@ function AddTournament(req, res){
 			sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, AddTournamentHandler);
 		}
 		else{
+			strLog('buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID);
 			Answer(res, Fail);
 		}
 	}

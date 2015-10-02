@@ -51,7 +51,19 @@ function regPlayer(tournament, login){
 
 function getPortAndHostOfGame(tournamentID){
 	strLog('getPortAndHostOfGame. REWRITE IT!!!!');
-	return { port:5010, host:'localhost' };
+	strLog('tIDtoGameName : ' + JSON.stringify(tIDtoGameName));
+	strLog('tIDtoGameName[tournamentID] = ' + tIDtoGameName[tournamentID]);
+
+	switch (tIDtoGameName[tournamentID])
+	{
+		case 1:
+			return { port:5009, host:'localhost'}; //PPServer
+		break;
+		default:
+			return { port:5010, host:'localhost' };//QuestionServer
+		break;
+
+	}
   /*if (tournamentID<8){
     return { port:5009, host:'localhost' };
   }
@@ -186,6 +198,8 @@ function EndTournament( scores, gameID, tournamentID){
 	strLog(scores);
 }
 
+
+
 var sort_by = function(field, reverse, primer){
 
    var key = primer ? 
@@ -206,7 +220,14 @@ function gameWasLast(gameID){
 	strLog('WRITE CONDITION: IF GAME WAS LAST');
 	return true;
 }
+
+var tIDtoGameName = {};
+function addToGameNameList(tournamentID, gameName){
+	tIDtoGameName[tournamentID] = gameName;
+}
+
 function getTournament(tournamentID, data){
+	addToGameNameList(tournamentID, data.gameNameID);
 	tournaments[tournamentID] = data;
 	tournaments[tournamentID].players = [];
 	tournaments[tournamentID].playersRegistered=0;

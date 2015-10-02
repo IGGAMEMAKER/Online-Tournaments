@@ -34,7 +34,7 @@ function getGameNameID (gameName){
 		case 'Questions':
 			return 2;
 		default:
-			return 2;
+			return 1;
 	}
 }
 
