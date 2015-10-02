@@ -30,6 +30,10 @@ function Init(gameID, playerID){
 	//***********
 }
 
+function getParameters(gameID, userName){
+	return games[gameID].scores;
+}
+
 function AsyncUpdate(gameID){
 	UpdateCollisions(gameID, gameID);
 	send(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });

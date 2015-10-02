@@ -118,13 +118,16 @@ function RenderGame (req, res){
 			tournamentID:tID,
 			gameHost:'localhost',
 			gamePort:port,
-			login:login
+			login:login,
+			parameters: getParameters?getParameters(tID, login) : ''
 		});
 	}
 
 	//res.render('/games/PingPong/game', {tournamentID:111} );
 	//res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 }
+
+
 
 function getOption(optionName){
 	return OPTIONS[optionName] ? OPTIONS[optionName] : DEFAULT[optionName];
@@ -341,13 +344,14 @@ var io;
 var host;
 var port;
 var gameName;
-function StartGameServer(options, initF, updateF, action, updateTime){
+function StartGameServer(options, initF, updateF, actionF, updateTime, parameterF){
 	//if (options.port)
 	strLog('Trying to StartGameServer: ' + options.gameName);
-	if (options && options.port && options.gameName && initF && action){
+	if (options && options.port && options.gameName && initF && actionF){
 		customInit = initF;
 		customUpdate = updateF;
-		Action = action;
+		Action = actionF;
+		getParameters = parameterF;
 
 		UPDATE_TIME = updateTime;
 		gameName = options.gameName;

@@ -129,8 +129,9 @@ startBtn = {
 	}
 };
 //alert(window.logins);
-var logins = window.logins;
-var login = window.login;
+
+/*var logins = window.logins;
+var login = window.login;*/
 
 var myID=0;
 var oppID=1;
