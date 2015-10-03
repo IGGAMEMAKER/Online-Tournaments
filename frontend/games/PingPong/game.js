@@ -208,6 +208,11 @@ room.on('statusChange', function(msg){
 	var gameStatus = msg['gameStatus'];
 });
 
+room.on('finish' , function(msg){
+	clearInterval(timer);
+	alert('Game finished!');
+});
+
 function deleteText(name){
 	delete drawObjects[name];
 }
@@ -221,8 +226,7 @@ function getNormalizedCoords(mouseCoords){
 var timer;
 
 function initSender(){
-	var tmr0 = setInterval(sendGameData , 20);
-	//timer = setInterval(function(){ sendGameData();} , 1000);
+	timer = setInterval(sendGameData , 20);
 }
 //console.log(room);
 
@@ -235,15 +239,6 @@ function myStartGame(){
 
 	initSender();
 }
-
-/*io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-  	console.log(msg);
-    io.emit('chat message', msg);
-  });
-});*/
-
-/**/
 
 function sendGameData(data1, url){
 	//room.emit('movement', {movement : getNormalizedCoords(mouse), tournamentID:tournamentID, gameID:tournamentID, login:login } );

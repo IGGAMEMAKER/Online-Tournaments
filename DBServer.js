@@ -42,6 +42,8 @@ app.post('/GetPlayers', GetPlayers);
 
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
+app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
+
 //app.post('/')
 
 /*funcArray["/Ban"] = Ban;
@@ -139,6 +141,23 @@ function AddGift(data, res){
 				Answer(res, OK);
 			}
 		})
+	}
+}
+
+function GetGiftByGiftID(data, res){
+	if (data){
+		Gift.findOne({ _id : data.giftID}, function (err, gift){
+			if (err){
+				Error(err);
+				Answer(res, Fail);
+			}
+			else{
+				Answer(res, gift);
+			}
+		});
+	}
+	else{
+		Answer(res, Fail);
 	}
 }
 
@@ -332,6 +351,7 @@ function LoginUser(req, res){
 		}
  	});
 }
+
 
 
 function GetGameParametersByGameName (gameName){

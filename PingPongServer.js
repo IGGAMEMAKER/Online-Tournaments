@@ -31,7 +31,7 @@ function Init(gameID, playerID){
 }
 
 function getParameters(gameID, userName){
-	return games[gameID].scores;
+	return games[gameID].userIDs;
 }
 
 function AsyncUpdate(gameID){

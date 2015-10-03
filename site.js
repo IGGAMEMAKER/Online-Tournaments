@@ -270,6 +270,7 @@ app.post('/AddGift', function (req, res){
           res.render('AddGift', {msg:body});
         });
 });
+
 app.get('/ShowGifts', function (req, res){
   var data = req.body;
   if (!data){ data={}; }
@@ -294,6 +295,20 @@ app.get('/CheckServer', function (req, res){
 
 });
 
+app.post('/GetGift', function (req, res){
+  var data = req.body;
+  if (data){
+    sender.sendRequest('GetGift', data, '127.0.0.1', 'DBServer', res, 
+        function (error, response, body, res1){
+          //res.send(body.result);
+          res.json(body);
+        });
+  }
+  else {
+    res.json({msg:'err'});
+  }
+})
+
 app.get('/Users' , function (req, res){
   /*if(req.session.login) {
     console.log('Saved login is: ' + req.session.login);
@@ -317,7 +332,7 @@ app.get('/Users' , function (req, res){
 
 app.all('/Tournaments', function (req,res){
   var data = req.body;
-  data.queryFields = 'tournamentID buyIn goNext gameNameID';
+  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
 
   //siteAnswer(res,'GetTournaments', 'GetTournaments', data, 'GetTournaments');
   siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
@@ -337,7 +352,7 @@ app.all('/Tournaments', function (req,res){
 app.get('/TournamentInfo', function (req, res){
   var data = req.body;
   data.query = {tournamentID:req.query.tID};
-  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes';
+  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players';
 
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 });

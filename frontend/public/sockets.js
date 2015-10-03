@@ -28,7 +28,7 @@ socket.on('StartTournament', function(msg){
   console.log('tID = ' + currentTID);
 
   //var gameURL = 'PingPong';
-  var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
   $('#news').append(text);
   startGame(host, port);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
@@ -44,7 +44,7 @@ function startGame(gameURL, port){
     //var a = window.open(gameURL? gameURL:'/Game?tournamentID='+currentTID);
     var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID;
     //alert(addr);
-    
+
     /*var a = window.open();
     //var a = window.open('http://'+gameURL+':'+80+'/Game?tournamentID='+currentTID);//80=port
     

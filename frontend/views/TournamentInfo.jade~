@@ -1,3 +1,26 @@
+//
+include tmpl/tournaments
+
+mixin showPrizes(prizes)
+	h2 Prizes
+
+mixin showTournament(tourn)
+	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		tr
+			td	ID
+			td	Players count
+			td	Buy In
+			td	Game Name ID
+			td	TournamentInfo
+		tr
+			td!= tourn.tournamentID
+			td!= tourn.players +'/'+ tourn.goNext[0]
+			td!= tourn.buyIn
+			td!= tourn.gameNameID
+			td Tournament Info
+	br
+	br
+
 html
 	head
 		title!= title
@@ -29,7 +52,6 @@ html
 				$.ajax({
 				  url: 'RegisterInTournament',
 				  method: 'POST',
-				  //data: { login: 'Alvaro_Fernandez', tournamentID:1 },
 				  data: { login: login, tournamentID:tID },
 				  success: function( data ) {
 					var msg = data;//JSON.stringify(data);
@@ -47,32 +69,9 @@ html
 	body
 		p!= JSON.stringify(message)
 		include tAuth
-		- //onclick="func('Alvaro_Fernandes',4)"		
 		h1!= 'Tournament : ' + message[0].tournamentID
-		table
-			tr
-				td.
-					ID
-				td.
-					Players count
-				td.
-					Buy In
-				td.
-					Game Name ID
-				td.
-					TournamentInfo
-			tr
-				td
-					p!= message[0].tournamentID
-				td
-					p!= message[0].goNext[0]
-				td
-					p!= message[0].buyIn
-				td
-					p!= message[0].gameNameID
-				td
-					Tournament Info
-		button(id="reg" style="width:100px;height:20px;").
+		+showTournament(message[0])
+		button(id="reg" style= "width:300px;height:50").
 			REGISTER
 		br
 		br
@@ -80,8 +79,7 @@ html
 			a( href='TournamentInfo?tID='+(message[0].tournamentID-1)).
 				Back
 			br
-			a( href='Tournaments').
-				Back To tournaments
+			a( href='Tournaments') Tournaments
 			br
 			a( href='TournamentInfo?tID='+(message[0].tournamentID+1)).
 				Next
@@ -93,4 +91,3 @@ html
 			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
 		#news
 			p!= aza
-		
