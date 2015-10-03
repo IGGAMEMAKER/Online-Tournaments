@@ -132,7 +132,9 @@ startBtn = {
 
 /*var logins = window.logins;
 var login = window.login;*/
-
+alert(JSON.stringify(logins));
+logins = logins.split(',');
+alert(JSON.stringify(logins));
 var myID=0;
 var oppID=1;
 
@@ -249,7 +251,7 @@ function sendGameData(data1, url){
 		movement: mvm, 
 		tournamentID: tournamentID, 
 		gameID: tournamentID, 
-		login: window.login 
+		login: login //window.login 
 	};
 	
 	//mvm.x = curX;
@@ -384,7 +386,7 @@ function drawPaddles(){
 				p.x = padX * W/100  - p.w/2;//(gameDatas[i])['padX']
 				//zzz
 				off = 0.1;
-				printText(logins[i-1], '', p.x, p.y==0? H*off: H*(1-off-0.05), colour);
+				printText(logins[i-1], '', p.x, p.y==0? H*off: H*(1-off-0.05), colour);//logins[i-1]
 			}
 			else{
 				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);

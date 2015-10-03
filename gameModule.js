@@ -53,9 +53,11 @@ app.get('/Move', function (req, res){
 function FastLog(text){
 	var time = new Date();
 	//strLog(time);
-	fs.appendFile(getOption('gameLog'), '\r\n' + time+' ' + text + "\n", function (err) {
+	
+	/*fs.appendFile(getOption('gameLog'), '\r\n' + time+' ' + text + "\n", function (err) {
 		if (err) strLog('err: ' + JSON.stringify(err));
-	});
+	});*/
+
 	//stream.write(text);
 	//strLog('FastLog: ' + text);
 }
@@ -92,8 +94,10 @@ funcArray["/UnSetGame"] = UnSetGame;*/
 
 var games = {
 
-}
+};
+var rooms = {
 
+};
 //strLog(JSON.stringify(games));
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
@@ -249,13 +253,26 @@ function StartGame (req, res){
 			customInit(ID, playerID);
 			//***********
 		}
+		rooms[ID] = {};
+		rooms[ID].socketRoom = io.of('/'+ID);
+
+		//var room = games[ID].socketRoom;
+		rooms[ID].socketRoom.on('connection', function (socket){
+			strLog('Room <' + ID + '> got new player');
+			socket.on('movement', function (data){
+				//strLog('Getting socketRoom socket.on Movement');
+				MoveHead(data);
+			});
+		});
 		
 		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
 		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
 		games[ID].userIDs = userIDs;
 
-		games[ID].socketRoom = io.of('/'+ID);
+		
+
+		/*games[ID].socketRoom = io.of('/'+ID);
 
 		//var room = games[ID].socketRoom;
 		games[ID].socketRoom.on('connection', function (socket){
@@ -264,10 +281,10 @@ function StartGame (req, res){
 				//strLog('Getting socketRoom socket.on Movement');
 				MoveHead(data);
 			});
-		});
+		});*/
 
 		strLog('Players');
-		strLog(games[ID].players);
+		strLog(JSON.stringify(games[ID].players));
 
 		sender.Answer(res, {result:'success', message:"Starting game:" + ID });
 		strLog('Answered');
@@ -344,6 +361,7 @@ var io;
 var host;
 var port;
 var gameName;
+var getParameters;
 function StartGameServer(options, initF, updateF, actionF, updateTime, parameterF){
 	//if (options.port)
 	strLog('Trying to StartGameServer: ' + options.gameName);
@@ -368,11 +386,6 @@ function StartGameServer(options, initF, updateF, actionF, updateTime, parameter
 		Initialize();
 	}
 }
-/*var tmr = setInterval(function(){
-	if (customInit){
-		customInit(1,132);
-	}
-}, 3000)*/
 
 /*function incr(gameID, i){
 	var userName = getUID(gameID, i);
@@ -393,7 +406,8 @@ function StartGameServer(options, initF, updateF, actionF, updateTime, parameter
 
 function SendToRoom( room, event1, msg){
 	strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
-	games[room].socketRoom.emit(event1, msg);
+
+	rooms[room].socketRoom.emit(event1, msg);
 	//FastLog('Я отправиль...');
 }
 function Initialize(){

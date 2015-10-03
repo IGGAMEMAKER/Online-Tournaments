@@ -352,7 +352,7 @@ app.all('/Tournaments', function (req,res){
 app.get('/TournamentInfo', function (req, res){
   var data = req.body;
   data.query = {tournamentID:req.query.tID};
-  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players';
+  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
 
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 });

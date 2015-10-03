@@ -10,13 +10,16 @@ mixin showTournament(tourn)
 			td	ID
 			td	Players count
 			td	Buy In
-			td	Game Name ID
+			td	Game Name
+			td	Status
 			td	TournamentInfo
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
 			td!= tourn.buyIn
-			td!= tourn.gameNameID
+			+ShowGame(tourn.gameNameID)
+			+ShowStatus(tourn.status)
+			//td!= tourn.gameNameID
 			td Tournament Info
 	br
 	br

@@ -10,13 +10,15 @@ mixin showTournament(tourn)
 			td	ID
 			td	Players count
 			td	Buy In
-			td	Game Name ID
+			td	Game Name
+			td	Status
 			td	TournamentInfo
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
 			td!= tourn.buyIn
-			td!= tourn.gameNameID
+			+ShowGame(tourn.gameNameID)
+			//td!= tourn.gameNameID
 			td Tournament Info
 	br
 	br
@@ -76,13 +78,8 @@ html
 		br
 		br
 		div
-			a( href='TournamentInfo?tID='+(message[0].tournamentID-1)).
-				Back
-			br
 			a( href='Tournaments') Tournaments
 			br
-			a( href='TournamentInfo?tID='+(message[0].tournamentID+1)).
-				Next
 		script.
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";

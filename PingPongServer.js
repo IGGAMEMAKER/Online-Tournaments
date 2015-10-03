@@ -5,7 +5,7 @@ var send = gs.SendToRoom;
 var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
-var FastLog = gs.FastLog;
+var FastLog = function(){}// gs.FastLog;
 
 var UpdPeriod = 1000/50; //50 times per second = 20ms;
 
@@ -31,6 +31,9 @@ function Init(gameID, playerID){
 }
 
 function getParameters(gameID, userName){
+	strLog('getParameters');
+	console.log(games[gameID].userIDs);
+	strLog(JSON.stringify(games[gameID].userIDs));
 	return games[gameID].userIDs;
 }
 
@@ -47,7 +50,7 @@ gs.StartGameServer({
 	port:5009,
 	gameName:'PingPong',
 	gameTemplate: 'game'
-}, Init, AsyncUpdate, Action, UpdPeriod);
+}, Init, AsyncUpdate, Action, UpdPeriod, getParameters);
 
 function incr(gameID, i){
 	var userName = getUID(gameID, i);
