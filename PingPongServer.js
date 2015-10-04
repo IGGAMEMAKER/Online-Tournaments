@@ -18,12 +18,17 @@ strLog('pp Server starts!!');
 
 function mod2(val){
 	//return val%2==0?'top':'bottom';
-	return val%2==0?0:95;
+	if (val>0){
+		return 95;
+	}
+	else {
+		return 0;
+	}
 }
 
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
-	var speed = 0.4/4;
+	var speed = 0.4/2;
 	//***********
 	games[gameID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
 	games[gameID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
@@ -93,14 +98,35 @@ function UpdateCollisions(tournamentID,gameID){
 	var p0 = gameDatas[0];
 	var p1 = gameDatas[1];
 
-	// If the ball strikes with paddles,
-	// invert the y-velocity vector of ball,
-	// increment the points, play the collision sound,
-	// save collision's position so that sparks can be
-	// emitted from that position, set the flag variable,
-	// and change the multiplier
 	var flag = 0;
 
+
+	if (ball.vy>0 && ball.y > H*0.95){
+		if (fitsWidth(ball, p1)){
+			ball.vy *= -1;
+		}
+		else{
+			incr(gameID, 0);
+			ball.y = ball.x = 50;
+		}
+
+	}
+	else if (ball.vy<0 && ball.y< H*0.05){
+		if (fitsWidth(ball, p0)){
+			ball.vy *= -1;
+		}
+		else{
+			incr(gameID, 1);
+			ball.y = ball.x = 50;
+		}
+
+	}
+
+	/*
+	else{
+
+	}
+	
 	if(collides(ball, p0, 'p0')) {
 		flag = 1;
 		FastLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );
@@ -121,19 +147,11 @@ function UpdateCollisions(tournamentID,gameID){
 		if(ball.y + ball.r > H) {
 			ball.y = H - ball.r;
 			incr(gameID, 1);
-			
-			//gameDatas[1].score++;
-			//CheckForTheWinner(tournamentID, gameID);
-			//gameOver();
 		} 
 		
 		else if(ball.y < 0) {
 			ball.y = ball.r;
 			incr(gameID, 0);
-			//game.scores[getUID(gameID, 0)]++;
-			//CheckForTheWinner(tournamentID, gameID);
-			//gameDatas[0].score++;
-			//gameOver();
 		}
 		
 		// If ball strikes the vertical walls, invert the 
@@ -149,22 +167,32 @@ function UpdateCollisions(tournamentID,gameID){
 			ball.vx = -ball.vx;
 			ball.x = ball.r;
 		}
-	}
+	}*/
+}
+
+function fitsWidth(ball, pad){
+	var a = (ball.x + ball.r >= pad.x - pad.w/2 && ball.x - ball.r <= pad.x + pad.w/2);
+	return a;
+}
+
+function fitsHeight(ball, pad){
+	var a = ball.y > pad.y - 3 && ball.y < pad.y + pad.h ;
 }
 
 function collides(b, p, padName) {
-	if (padName=='p0'){
-		FastLog('padName: ' + padName);
-		FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
-		FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
-	}
-	if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <=p.x + p.w/2) {
+	//if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <= p.x + p.w/2) {
+	if (fitsWidth(b,p) ){
 		//FastLog('Fits width');
 		if(b.y >= (p.y - p.h) && p.y > 0){
 			//paddleHit = 1;
 			
 			b.vy = -b.vy;
 			b.y = p.y - p.h;
+
+			FastLog('padName: ' + padName);
+			FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
+			FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
+
 			return true;
 		}
 		
@@ -173,6 +201,11 @@ function collides(b, p, padName) {
 
 			b.vy = -b.vy;
 			b.y = p.h + b.r;
+
+			FastLog('padName: ' + padName);
+			FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
+			FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
+
 			return true;
 		}
 		

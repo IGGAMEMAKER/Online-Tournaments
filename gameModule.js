@@ -264,7 +264,7 @@ function StartGame (req, res){
 				MoveHead(data);
 			});
 		});
-		
+
 		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
 		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
 
@@ -405,7 +405,9 @@ function StartGameServer(options, initF, updateF, actionF, updateTime, parameter
 }*/
 
 function SendToRoom( room, event1, msg){
-	strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
+	if (UPDATE_TIME>100){
+		strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
+	}
 
 	rooms[room].socketRoom.emit(event1, msg);
 	//FastLog('Я отправиль...');

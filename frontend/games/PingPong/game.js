@@ -82,8 +82,8 @@ function Paddle(pos) {
 }
 
 // Push two new paddles into the paddles[] array
-paddles.push(new Paddle("bottom"));
 paddles.push(new Paddle("top"));
+paddles.push(new Paddle("bottom"));
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
@@ -132,9 +132,10 @@ startBtn = {
 
 /*var logins = window.logins;
 var login = window.login;*/
-alert(JSON.stringify(logins));
+//alert(JSON.stringify(logins));
 logins = logins.split(',');
-alert(JSON.stringify(logins));
+//alert(JSON.stringify(logins));
+
 var myID=0;
 var oppID=1;
 
@@ -212,7 +213,7 @@ room.on('statusChange', function(msg){
 
 room.on('finish' , function(msg){
 	clearInterval(timer);
-	alert('Game finished!');
+	alert('Game finished! winner is : ' + JSON.stringify(msg) );
 });
 
 function deleteText(name){
