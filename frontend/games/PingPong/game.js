@@ -148,9 +148,13 @@ var gameStatus = STATUS_WAITING;
 
 
 //var tournamentID = "#{tournamentID}";
-console.log('AZAZA ' + tournamentID);
+var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
+//alert(con);
+var room = io.connect(con);
+
+/*console.log('AZAZA ' + tournamentID);
 //alert('AZAZA ' + tournamentID);
-var room = io.connect('http://localhost:5009' + '/'+tournamentID);
+var room = io.connect('http://localhost:5009' + '/'+tournamentID);*/
 
 
 
@@ -259,7 +263,7 @@ function sendGameData(data1, url){
 	//console.log()
 	//room.emit('movement', sendData );
 
-	ajaXSend(sendData, 'http://localhost:5009/Move');
+	ajaXSend(sendData, 'http://'+ gameHost+':' + gamePort +'/Move');
 	printText('SENDED', JSON.stringify(sendData) , 0, 450);
 	//alert('Sended :' + JSON.stringify(sendData));
 

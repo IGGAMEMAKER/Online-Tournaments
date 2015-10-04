@@ -49,6 +49,22 @@ function regPlayer(tournament, login){
 	strLog(tournament.logins);*/
 }
 
+var fs = require('fs');
+var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
+console.log(file);
+var configs =  JSON.parse(file);
+/*{ 
+  msg:'superhero!',
+  gamePort:5009,
+  gameHost:'localhost',
+  gameHost2:'46.101.157.129'
+}*/
+console.log(JSON.stringify(configs));
+
+//console.log(configs)
+var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
+var gamePort = configs.gamePort? configs.gamePort : '5010';
+
 function getPortAndHostOfGame(tournamentID){
 	strLog('getPortAndHostOfGame. REWRITE IT!!!!');
 	strLog('tIDtoGameName : ' + JSON.stringify(tIDtoGameName));
@@ -57,10 +73,10 @@ function getPortAndHostOfGame(tournamentID){
 	switch (tIDtoGameName[tournamentID])
 	{
 		case 1:
-			return { port:5009, host:'localhost'}; //PPServer
+			return { port:5009, host: gameHost }; //PPServer
 		break;
 		default:
-			return { port:5010, host:'localhost' };//QuestionServer
+			return { port:5010, host: gameHost };//QuestionServer
 		break;
 
 	}

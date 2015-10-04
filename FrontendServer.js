@@ -308,6 +308,7 @@ function StartTournament (req, res){
 
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
 	strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
+
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
