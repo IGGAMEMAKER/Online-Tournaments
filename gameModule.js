@@ -98,12 +98,21 @@ var games = {
 var rooms = {
 
 };
-//strLog(JSON.stringify(games));
-//------------------Writing EventHandlers---------------------------------
-//YOU NEED data,res parameters for each handler, that you want to write
-//you can get the object from POST request by typing data['parameterName']
-//you NEED TO FINISH YOUR ANSWERS WITH res.end();
 
+var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
+console.log(file);
+var configs =  JSON.parse(file);
+/*{ 
+  msg:'superhero!',
+  gamePort:5009,
+  gameHost:'localhost',
+  gameHost2:'46.101.157.129'
+}*/
+console.log(JSON.stringify(configs));
+
+//console.log(configs)
+var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
+var gamePort = configs.gamePort? configs.gamePort : '5010';
 
 
 function RenderGame (req, res){
@@ -120,7 +129,7 @@ function RenderGame (req, res){
 	else{
 		res.render(getOption('gameTemplate') , {//'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
 			tournamentID:tID,
-			gameHost:'localhost',
+			gameHost:gameHost,
 			gamePort:port,
 			login:login,
 			parameters: getParameters?getParameters(tID, login) : ''

@@ -121,12 +121,20 @@ function UpdateCollisions(tournamentID,gameID){
 		}
 
 	}
-
-	/*
 	else{
-
+		if(ball.x + ball.r > W) {
+			FastLog ('# HIT Right');
+			ball.vx = -ball.vx;
+			ball.x = W - ball.r;
+		}
+		
+		else if(ball.x - ball.r < 0) {
+			FastLog ('# HIT Left');
+			ball.vx = -ball.vx;
+			ball.x = ball.r;
+		}
 	}
-	
+	/*
 	if(collides(ball, p0, 'p0')) {
 		flag = 1;
 		FastLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );

@@ -106,7 +106,7 @@ function sendGameData(data1, url){
 		login: window.login 
 	};
 	//alert(JSON.stringify(sendData));
-	ajaXSend(sendData, 'http://localhost:' + gamePort + '/Move');
+	ajaXSend(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }
 
