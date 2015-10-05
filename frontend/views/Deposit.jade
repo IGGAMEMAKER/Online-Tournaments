@@ -1,0 +1,27 @@
+//
+mixin inp(tdName, inpName, plHolder)
+	tr
+		td #{tdName}
+		td
+			input(type="text", name=inpName, placeholder=plHolder).
+mixin showDepositForm()
+	p!= 'Hello, '
+		a(href = "Profile") Back to profile
+	a(href = "Logout") Logout
+
+
+	form(method="POST" action="Deposit")
+		table
+			+inp('money', 'cash', '10.00')
+			+inp('card num. Not necessary now', cardNum)
+			tr
+				td
+					input(type="submit" value="Deposit")
+
+
+if (session.login && session.login.length>0)
+	+showDepositForm()
+else
+	p!= 'You need to register'
+	a(href = "Login") Login
+

@@ -200,6 +200,7 @@ function AddTournament(req, res){
 		var Prizes = data.Prizes.split(" ");
 		var prizes = [];
 		var goNext = [];
+		strLog(JSON.stringify(Prizes));
 		//convert array of strings to array of objects
 		for (var i = 0; i < Prizes.length - 1; i++) {
 			if (isNaN(Prizes[i]) ){
@@ -217,7 +218,7 @@ function AddTournament(req, res){
 			}
 		};
 
-		for (var i=0; i< GoNext.length-1; ++i){
+		for (var i=0; i< GoNext.length - 1; ++i){
 			var num = parseInt(GoNext[i]);
 			if (isNaN(num)){
 				strLog('goNext num parseInt error! ');

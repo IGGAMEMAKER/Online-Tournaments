@@ -30,7 +30,10 @@ app.post('/Register', Register);
 app.post('/WinPrize', WinPrize);
 
 app.post('/GetUserProfileInfo', GetUserProfileInfo);
+
 app.post('/IncreaseMoney', IncreaseMoney);
+app.post('/DecreaseMoney', DecreaseMoney);
+
 app.post('/RestartTournament', RestartTournament);
 app.post('/StartTournament', function (req, res) {StartTournament(req.body, res);});
 app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
@@ -432,9 +435,37 @@ function IncreaseMoney(req,res){
 	var cash = data.cash;
 	incrMoney(res, login, cash);
 }
-//function DecreaseMoney()
+function DecreaseMoney(req, res){
+	Log('DecreaseMoney!!!!');
+	var data = req.body;
+	var login = data.login;
+	var money = data.money;
+	decrMoney(res, login, money);
+}
+
+function decrMoney(res, login, cash){
+	if (cash<0){ cash*= -1;}
+
+	User.update({login:login, money : {$gt: cash}}, {$inc: {money:-cash} }, function (err, count) {
+		if (err) { Error(err); Answer(res, Fail); }
+		else{
+			Log('DecreaseMoney---- count= ' + JSON.stringify(count));
+			if (count.ok==1){
+				Answer(res, OK);
+				Log('DecreaseMoney OK');
+			}
+			else{
+				Answer(res, Fail);
+				Log('DecreaseMoney Fail');
+			}
+		}
+	})
+}
+
 function incrMoney(res, login, cash){
 	Log('trying to give ' + cash + ' points to ' + login);
+	if (cash<0){ cash*= -1;}
+
 	User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
 		if (err){
 			Error(err);

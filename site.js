@@ -77,7 +77,6 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
         'FrontendServer', res, function (error, response, body, res1){
           if (!error){
-
             res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
           } else {
             sender.Answer(res1, { result:error });
@@ -92,6 +91,26 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
+
+function siteProxy( res, FSUrl, data, renderPage, server, title){
+  if (FSUrl && res){
+    sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
+        server, res, function (error, response, body, res){
+          if (!error){
+            res.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
+          } else {
+            sender.Answer(res, { result:error });
+          }
+            console.log('*****************');
+            console.log('***SITE_ANSWER***');
+            console.log('*****************');
+        });
+  }
+  else {
+    console.log('INVALID siteAnswer');
+  }
+}
+
 app.post('/Log', function (req, res){
   //res.end('sended');
   res.end('');
@@ -126,20 +145,7 @@ app.all('/Game', function (req, res){
   //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
 })
 
-app.get('/Profile', function (req, res){
-  var login = 'Alvaro_Fernandez';
-  if (req.session && req.session.login){
-    login = req.session.login;
-  }
-  else{
-    //res.json({msg:'Сасай'});
-  }
-  siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
-  /*sender.sendRequest('GetUserProfileInfo',  {login:login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
-      
-      //sender.Answer(res, body);
-    });*/
-})
+
 
 /*app.get('/', function (req, res) {
   res.send('Hello World!');
@@ -294,6 +300,91 @@ app.get('/CheckServer', function (req, res){
   sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
 
 });
+app.get('/GetGift', function (req, res){
+  var data = req.body;
+  var query = req.query;
+  var giftID = query.giftID;
+  if (query){
+    //siteAnswer(res, 'gift')
+    sender.sendRequest('GetGift', {giftID:giftID} , '127.0.0.1', 'DBServer', res, 
+        function (error, response, body, res1){
+          //res.send(body.result);
+          if (error || !body || body.length ==0 || body.result =='fail'){
+            Log(JSON.stringify(error));
+            res.send(404);//'Gift does not exist');
+          }
+          else{
+            res.render('gift', {message:body} );
+          }
+        });
+  }
+  else {
+    res.json({msg:'err'});
+  }
+})
+
+function isAuthenticated(req){
+  return req.session && req.session.login;
+}
+
+app.get('/Cashout', function (req, res){
+  //if (isAuthenticated(req))
+  res.render('Cashout');
+
+})
+
+function getLogin(req){
+  if (isAuthenticated(req)){
+    return req.session.login;
+  }
+  else{
+    return 0;
+  }
+}
+
+app.post('/Cashout', function (req, res){
+  //if (isAuthenticated(req))
+  var data = req.body;
+  var login = getLogin(req);
+  if (data && login!=0 ){
+    data.login = login;
+    siteProxy(res, 'Cashout',data,null,'MoneyServer');
+  }else{
+    res.send(400);
+  }
+
+})
+
+app.get('/Deposit', function (req, res){
+  res.render('Deposit');
+})
+app.post('/Deposit', function (req, res){
+  //if (isAuthenticated(req))
+  var data = req.body;
+  var login = getLogin(req);
+  if (data && login!=0 ){
+    data.login = login;
+    siteProxy(res, 'Deposit',data,null,'MoneyServer');
+  }else{
+    res.send(400);
+  }
+
+})
+
+app.get('/Profile', function (req, res){
+  var login = 'Alvaro_Fernandez';
+  if (req.session && req.session.login){
+    login = req.session.login;
+  }
+  else{
+    //res.json({msg:'Сасай'});
+  }
+  siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
+  /*sender.sendRequest('GetUserProfileInfo',  {login:login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
+      
+      //sender.Answer(res, body);
+    });*/
+})
 
 app.post('/GetGift', function (req, res){
   var data = req.body;

@@ -1,3 +1,5 @@
+//
+
 mixin drawRegs(msg)
 	each val in msg
 		+drawReg(val)
@@ -30,16 +32,28 @@ mixin showGifts(gifts)
 					+ShowGift(val)
 
 ///-----
-
+mixin buttonLink(link, text)
+	form(action=link) 
+		input(type="submit" value=text style="width:125px;height:50px;")
 
 html
-	//p!= JSON.stringify(message)
+	//p!= JSON.stringify(message.gifts)
+	p!= JSON.stringify(message.userGifts)
 	//p asd
 	center
 		h1 Profile of  #{session.login}
 		h2 You have #{message.money/100}$ on your account
-		a(href="Tournaments") Tournaments
-		h2 Registered tournaments
+		
+		table(width="300px")
+			tr
+				td
+					+buttonLink('Deposit', 'Deposit money')
+					//a(href="Deposit") Deposit money
+				td
+					+buttonLink('Cashout', 'Cashout')
+		br
+		a(href="Tournaments") Back to tournaments
+		h2 My tournaments
 		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 			tr
 				td TournamentID

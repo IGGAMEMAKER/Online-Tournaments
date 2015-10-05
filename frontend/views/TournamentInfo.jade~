@@ -3,6 +3,24 @@ include tmpl/tournaments
 
 mixin showPrizes(prizes)
 	h2 Prizes
+	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		tr
+			td	Round
+			td	Prize
+		each prize, index in prizes
+			if prize
+				tr
+					td #{index}
+					if isNaN(prize)
+						//td GIFT#{JSON.stringify(prize)}
+						td 
+							a(href="GetGift?giftID="+prize.giftID) Show prize
+					else
+						td #{prize/100}$
+	br
+	br
+
+
 
 mixin showTournament(tourn)
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
@@ -18,6 +36,7 @@ mixin showTournament(tourn)
 			td!= tourn.players +'/'+ tourn.goNext[0]
 			td!= tourn.buyIn
 			+ShowGame(tourn.gameNameID)
+			+ShowStatus(tourn.status)
 			//td!= tourn.gameNameID
 			td Tournament Info
 	br
@@ -34,22 +53,12 @@ html
 			var login = "#{session.login}"; 
 			//alert("#{session.login}");
 		script(src="sockets.js").
-		script(id= "RegUsr").
+		script(src="loadGift.js").
+		script(id= "RegUs11r").
 			function func(login, tID){
 				console.log(login);
 				console.log(tID);
 				//console.log(btn);
-				
-				/*$.ajax({
-				  url: 'Alive',
-				  method: 'POST',
-				  data: { f1:'ololo' },
-				  success: function( data ) {
-					var msg = JSON.stringify(data);
-					alert(msg);
-					console.log(msg);
-				  }
-				});*/
 
 				$.ajax({
 				  url: 'RegisterInTournament',
@@ -69,10 +78,11 @@ html
 				});
 			}
 	body
-		p!= JSON.stringify(message)
+		//p!= JSON.stringify(message)
 		include tAuth
 		h1!= 'Tournament : ' + message[0].tournamentID
 		+showTournament(message[0])
+		+showPrizes(message[0].Prizes)
 		button(id="reg" style= "width:300px;height:50").
 			REGISTER
 		br
@@ -80,11 +90,13 @@ html
 		div
 			a( href='Tournaments') Tournaments
 			br
+		#gift
+			p Click on gift to show it here!
 		script.
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
-			//alert('login:' + bbb);
 			var btn = document.getElementById("reg");
-			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+			document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
 		#news
 			p!= aza
