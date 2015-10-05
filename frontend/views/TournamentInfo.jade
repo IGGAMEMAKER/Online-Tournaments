@@ -34,7 +34,7 @@ mixin showTournament(tourn)
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
-			td!= tourn.buyIn
+			td!= tourn.buyIn/100
 			+ShowGame(tourn.gameNameID)
 			+ShowStatus(tourn.status)
 			//td!= tourn.gameNameID
@@ -96,7 +96,7 @@ html
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			var btn = document.getElementById("reg");
-			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
-			document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
+			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+			//document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
 		#news
 			p!= aza

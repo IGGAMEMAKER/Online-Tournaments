@@ -38,6 +38,7 @@ function Initialize(){
 
 Initialize();
 function playerIsRegistered (tournament, login){
+	strLog('players registered: ' + JSON.stringify(tournament.logins));
 	return tournament.logins[login];
 }
 
@@ -92,9 +93,8 @@ function RegisterUserInTournament (req, res){
 	var data = req.body;
 	//strLog("Sender = " + data['sender']);
 	strLog("Registering in tournament: " + data['tournamentID']);
-	var tournamentID = data['tournamentID'];
-	var login = data['login'];//data['login'];
-//	strLog("AddPlayerToTournament(); WRITE THIS CODE!!");
+	var tournamentID = data.tournamentID;
+	var login = data.login;
 	var tournament = tournaments[tournamentID];
 	var maxPlayersInTournament = tournament.goNext[0];
 
@@ -105,34 +105,15 @@ function RegisterUserInTournament (req, res){
 		if (playerIsRegistered(tournament, login)){ // tournament.players[login])
 			strLog('User ' + login + ' is already Registered in ' + tournamentID);
 			
-			sender.Answer(res,Fail);
+			sender.Answer(res, Fail);
 		}
 		else{
-			regPlayer(tournament, login);
-			
-
-			sender.Answer(res,Success);
-			sender.sendRequest('RegisterUserInTournament', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', null, sender.printer);
-			strLog('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
-			
-			if (maxPlayersInTournament === tournament.playersRegistered){
-				strLog("Tournament " + tournamentID + " starts");
-				strLog(tournament.players);
-				
-				var obj = getPortAndHostOfGame(tournamentID);
-				obj.tournamentID = tournamentID;
-				obj.sender = 'TournamentServer';
-				obj.logins = tournament.players;
-				strLog('StartTournament: ' + JSON.stringify(obj));
-				sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
-				sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
-				//sender.Answer(res,Success);
-			}
+			TryToRegisterInTournament(login, tournamentID, tournament, maxPlayersInTournament, res);
 		}
 	}
 	else{
 		strLog("Sorry, tournament is Full:"+ maxPlayersInTournament+'/'+tournament.playersRegistered);
-		sender.Answer(res,Fail);
+		sender.Answer(res, Fail);
 	}
 
 	/*if (userCanRegister(login, tournamentID)){
@@ -146,6 +127,39 @@ function RegisterUserInTournament (req, res){
 		register()
 		if (tournamentCanStart(tournamentID))
 	}*/
+}
+
+function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersInTournament, res){
+	strLog('TryToRegisterInTournament'); 
+	sender.sendRequest('RegisterUserInTournament', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', res, 
+		function (error, response, body, res){
+			if (error) { sender.Answer(res, Fail); return;}
+			else {
+				strLog('RegisterUserInTournament BODY: ' + JSON.stringify(body));
+				if (body.result == 'OK'){
+					sender.Answer(res, OK);
+					regPlayer(tournament, login);
+					strLog('User ' + login + ' added to tournament ' + tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
+			
+					if (maxPlayersInTournament === tournament.playersRegistered){
+						strLog("Tournament " + tournamentID + " starts");
+						strLog(tournament.players);
+						
+						var obj = getPortAndHostOfGame(tournamentID);
+						obj.tournamentID = tournamentID;
+						obj.sender = 'TournamentServer';
+						obj.logins = tournament.players;
+						strLog('StartTournament: ' + JSON.stringify(obj));
+						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
+						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
+						//sender.Answer(res,OK);
+					}
+				}
+				else{
+					sender.Answer(res, Fail);
+				}
+			}
+		});
 }
 
 function FinishGame (req, res){
@@ -284,7 +298,7 @@ function ServeTournamentTMProxy ( error, response, body, res){
   }
 }, 2000);*/
 
-var Success = {
+var OK = {
 	result: 'OK'
 };
 

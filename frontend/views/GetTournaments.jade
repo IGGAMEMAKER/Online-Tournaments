@@ -46,7 +46,7 @@ html
 				tr
 					td #{message[i].tournamentID}
 					td #{message[i].players}/#{message[i].goNext[0]}
-					td #{message[i].buyIn}
+					td #{message[i].buyIn/100}$
 					+ShowGame(message[i].gameNameID)
 					//+ShowStatus(#{message[i].status})
 					+ShowStatus(message[i].status)

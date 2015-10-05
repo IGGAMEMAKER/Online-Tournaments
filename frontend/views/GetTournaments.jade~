@@ -1,4 +1,27 @@
-
+//
+	-var red = "#FF0000";
+	-var green = "#00FF00";
+	-var blue = "#000000";
+	mixin ShowStatus(status)
+		case status
+			when 0
+				td(bgcolor="#FF0000") Initialized
+			when 1
+				td(bgcolor="#00FF00") Register
+			when 2
+				td(bgcolor="#0000FF") Running
+			default
+				td(bgcolor="#FF000000") NULL
+	mixin ShowGame(gameNameID)
+		case gameNameID
+			when 0
+				td(bgcolor="#FF0000") Error
+			when 1
+				td(bgcolor=blue) Ping Pong
+			when 2
+				td(bgcolor=green) Questions
+			default
+				td(bgcolor=red) Error
 include tmpl/tournaments
 html
 	head

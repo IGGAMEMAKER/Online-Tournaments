@@ -2,7 +2,7 @@
 include tmpl/tournaments
 
 mixin showPrizes(prizes)
-	h2 Prizes
+	h2 Tournament prizes
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
 			td	Round
@@ -96,7 +96,7 @@ html
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			var btn = document.getElementById("reg");
-			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
-			document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
+			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+			//document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
 		#news
 			p!= aza

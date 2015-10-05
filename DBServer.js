@@ -256,7 +256,38 @@ function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
 
 	var reg = new TournamentReg({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
-	reg.save(function (err) {
+
+	Tournament.findOne({tournamentID:tournamentID} , 'buyIn status', function getTournamentBuyIn (err, tournament){
+		if (err){ Error(err); Answer(res, Fail); }
+		else{
+			if (tournament && tournament.buyIn>=0 && tournament.status==TOURN_STATUS_REGISTER){
+				var buyIn = tournament.buyIn;
+				User.update({login:data.login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count){
+					Log('RegisterUserInTournament NEEDS TRANSACTIONS!!!!!!!!!! IF REG IS FAILED, MONEY WILL NOT return!!!');
+					if (err) { Error(err); Answer(res, Fail); }
+					else{
+						Log('Reg status: ' + JSON.stringify(count));
+						if (count.n==1){
+							reg.save(function (err) {
+								if (err){ Error(err); Answer(res, Fail); }
+								else{
+									Answer(res, OK );
+									incrPlayersCount(tournamentID);
+									Log('added user to tournament'); 
+								}
+							});
+						}
+						else{
+							Log('User ' + data.login + ' has not enough money');
+							Answer(res, Fail);
+						}
+					}
+				});				
+			}
+		}
+	})
+/*
+reg.save(function (err) {
 		if (err){
 			switch (err.code){
 				case OBJ_EXITS:
@@ -270,11 +301,13 @@ function RegisterUserInTournament(data, res){
 			}
 		}
 		else{
-			 Answer(res, OK );
-			Log('added user to tournament'); 
+			
 		}
 	});
-	incrPlayersCount(tournamentID);
+
+*/
+
+	
 }
 
 function incrPlayersCount(tournamentID){
@@ -550,6 +583,10 @@ function getPrize(Prizes, goNext, i){
 	
 }
 
+function UpdatePromos(tournamentID){
+	
+}
+
 function WinPrize( req,res){
 	var data = req.body;
 
@@ -567,7 +604,7 @@ function WinPrize( req,res){
 	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
 	setTimeout(KillFinishedTournaments, 1500);
 	//Tournament.remove({tournamentID:})
-	//updatePromos(tournamentID);
+	UpdatePromos(tournamentID);
 	
 
 	/*var user = getUserByID(userID);

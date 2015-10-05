@@ -365,7 +365,7 @@ function RegisterUserInTournament( req, res){
 }
 
 function RegisterUserInTournamentHandler(error, response, body, res){
-	strLog("Checking Data taking: " + body['result']);
+	strLog("Checking Data taking: " + JSON.stringify(body));
 	Answer(res, body);
 }
 
