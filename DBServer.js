@@ -304,7 +304,7 @@ function RegisterUserInTournament(data, res){
 
 	var reg = new TournamentReg({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
 
-	Tournament.findOne({tournamentID:tournamentID} , 'buyIn status', function getTournamentBuyIn (err, tournament){
+	Tournament.findOne({tournamentID:tournamentID} , 'buyIn status', function getTournamentBuyIn1 (err, tournament){
 		if (err){ Error(err); Answer(res, Fail); }
 		else{
 			if (tournament && tournament.buyIn>=0 && tournament.status==TOURN_STATUS_REGISTER){
@@ -550,7 +550,7 @@ function incrMoney(res, login, cash){
 	User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
 		if (err){
 			Error(err);
-			Answer(res, Fail);
+			if (res) Answer(res, Fail);
 		}
 		else{
 			Log('IncreaseMoney----- count= ');
@@ -559,12 +559,12 @@ function incrMoney(res, login, cash){
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					Error(err);
-					Answer(res, Fail);
+					if (res) Answer(res, Fail);
 				}
 				else{
 					Log(user);
 					Log('Money now = '+ user.money);
-					Answer(res, {login: user.login, money: user.money});
+					if (res) Answer(res, {login: user.login, money: user.money});
 				}
 			});
 		}
@@ -631,8 +631,45 @@ function getPrize(Prizes, goNext, i){
 	
 }
 
-function UpdatePromos(tournamentID){
+const PROMO_COMISSION = 5;
 
+function UpdatePromos(tournamentID){
+	Tournament.findOne({tournamentID:tournamentID}, 'buyIn', function (err, tournament){
+		if (tournament && tournament.buyIn>0){
+			var buyIn = parseInt(tournament.buyIn);
+			TournamentReg.find({tournamentID:tournamentID, promo: {$exists : true} }, 'promo', function (err, tournRegs){
+				if (err){ Error(err);}
+				else{
+					if (tournRegs.length>0){
+						var promoterIDs = {};
+						var promoterIDsArray= [];
+						for (var i = tournRegs.length - 1; i >= 0; i--) {
+							var ID = tournRegs[i].promo;// PROMOTER ID (login)
+							if (promoterIDs[ID]){
+								promoterIDs[ID]++;
+							}
+							else{
+								promoterIDs[ID]=1;
+								promoterIDsArray.push(ID);
+							}
+						};
+
+						for (var i = promoterIDsArray.length - 1; i >= 0; i--) {
+							var promoter = promoterIDsArray[i];//parseInt
+							var promoUsersCount = parseInt(promoterIDs[promoter]);
+							var payment = buyIn*promoUsersCount*PROMO_COMISSION / 100;
+							Log('Promoter '+promoter + ' invited '+ promoUsersCount + ' players and deserves to get ' + payment + ' points (' + payment/100 + '$)')
+							incrMoney(null, promoter, payment);
+						};
+
+					}
+					else{
+						Log('No promos! I WILL EARN MORE!!');
+					}
+				}
+			})
+		}
+	})
 }
 
 function WinPrize( req,res){
@@ -650,7 +687,7 @@ function WinPrize( req,res){
 	
 	Answer(res, {result:'WinPrize_OK'});
 	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
-	setTimeout(KillFinishedTournaments, 1500);
+	setTimeout(KillFinishedTournaments, 5000);
 	//Tournament.remove({tournamentID:})
 	UpdatePromos(tournamentID);
 	
