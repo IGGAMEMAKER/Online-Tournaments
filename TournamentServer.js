@@ -16,6 +16,10 @@ app.use(function(req,res,next){
     next();
 });
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
+app.post('/CancelRegister', function (req, res){
+	CancelRegister(req.body, res);
+})
+
 app.post('/ServeTournament', function (req, res){ 
 	ServeTournament(req.body, res);
 });
@@ -42,6 +46,18 @@ function playerIsRegistered (tournament, login){
 	return tournament.logins[login];
 }
 
+function unRegPlayer(tournamentID, login){
+	strLog('Deleting player ' + login + ' from player list');
+	strLog('Registered count was: ' + tournaments[tournamentID].playersRegistered 
+		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
+		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins) );
+	tournaments[tournamentID].playersRegistered--;
+	delete tournaments[tournamentID].players[login];
+	delete tournaments[tournamentID].logins[login];
+		strLog('Registered count was: ' + tournaments[tournamentID].playersRegistered 
+		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
+		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins) );
+}
 function regPlayer(tournament, login){
 	tournament.playersRegistered++;
 	tournament.players.push(login);
@@ -89,6 +105,23 @@ function getPortAndHostOfGame(tournamentID){
   }*/
 }
 
+function CancelRegister(data, res){
+	if (data){
+		var tournamentID = data.tournamentID;
+		var tournament = tournaments[tournamentID];
+		var login = data.login;
+		if (playerIsRegistered(tournament, login) && login && tournamentID && tournament){
+			UnRegisterFromTournament(login, tournamentID, tournament, res);
+		}
+		else{
+			sender.Answer(res, Fail);
+		}
+	}
+	else{
+		sender.Answer(res, Fail);
+	}
+}
+
 function RegisterUserInTournament (req, res){
 	var data = req.body;
 	//strLog("Sender = " + data['sender']);
@@ -129,6 +162,29 @@ function RegisterUserInTournament (req, res){
 	}*/
 }
 
+function Error(err){
+	strLog('Error: ' + JSON.stringify(err));
+}
+
+function UnRegisterFromTournament(login, tournamentID, tournament, res){
+	strLog('CancelRegister');
+	sender.sendRequest('CancelRegister', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', res, 
+		function (error, response, body, res){
+			if (error) { Error(error); sender.Answer(res, Fail); }
+			else{
+				strLog( 'UnRegisterFromTournament Answer from DB: ' + JSON.stringify(body));
+				if (body.money >= 0){ //
+					strLog('UnRegisterFromTournament SHIT CODE: if (body.money >= 0){ // IT MUST GET OK OR Fail')
+					sender.Answer(res, OK);
+					unRegPlayer(tournamentID, login);
+				}
+				else{
+					sender.Answer(res, Fail);
+				}
+			}
+		})
+}
+
 function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersInTournament, res){
 	strLog('TryToRegisterInTournament'); 
 	sender.sendRequest('RegisterUserInTournament', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', res, 
@@ -150,6 +206,7 @@ function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersI
 						obj.sender = 'TournamentServer';
 						obj.logins = tournament.players;
 						strLog('StartTournament: ' + JSON.stringify(obj));
+
 						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
 						//sender.Answer(res,OK);

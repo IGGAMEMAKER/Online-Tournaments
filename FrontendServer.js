@@ -140,6 +140,8 @@ app.post('/GetUsers', function (req, res){
 
 
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
+app.post('/CancelRegister', CancelRegister);
+
 
 app.post('/AddTournament', AddTournament);
 
@@ -351,6 +353,19 @@ function GetTournaments( data, res){
 function GetTournServerIP(tournamentID){
 	return '127.0.0.1';
 }
+
+function CancelRegister(req, res){
+	var data = req.body;
+	var obj = {
+		sender: "FrontendServer",
+		tournamentID: data['tournamentID'],
+		login: data['login']
+	};
+
+	sender.sendRequest("CancelRegister", obj, 
+		'127.0.0.1', 'TournamentServer', res, function (p1,p2,body,p4) { Answer(res, body); } );
+}
+
 function RegisterUserInTournament( req, res){
 	var data = req.body;
 	var obj = {

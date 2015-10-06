@@ -41,11 +41,16 @@ app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, re
 app.post('/Login', LoginUser);
 
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
+app.post('/CancelRegister', function (req, res) { CancelRegister(req.body, res); })
+
+
 app.post('/GetPlayers', GetPlayers);
 
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
+
+
 
 //app.post('/')
 
@@ -123,7 +128,12 @@ var Tournament = mongoose.model('Tournament', {
 	//tournamentServerID: String
 });
 
-
+function ERR(err, res){
+	Error(err);
+	if (res){
+		Answer(res, Fail);
+	}
+}
 
 //var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609a7da4d4145c718549ab3' });//ObjectId(
 /*var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
@@ -251,6 +261,43 @@ function StartTournament(data, res){
 
 
 
+function CancelRegister(data, res){
+	var login = data.login;
+	var tournamentID = data.tournamentID;
+	if (login && tournamentID){
+		Tournament.findOne({tournamentID:tournamentID}, 'buyIn', 
+			function (err, tournament){
+				if (err) { ERR(err, res); }
+				else{
+					clearRegister(data, res, function(p1, p2, p3){
+						incrMoney(res, login, tournament.buyIn);
+						changePlayersCount(tournamentID, -1);
+					}, ERR);
+				}
+			});
+	}
+	else{
+		Answer(res, Fail);
+	}
+	/*TournamentReg.remove({userID:login, tournamentID:tournamentID}, function deletingTournamentRegs (err, tournRegs){
+		if (err) {Error(err);}
+		else{
+
+			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
+		}
+	})*/
+}
+
+function clearRegister(data, res, successCb, failCb){
+	TournamentReg.remove({userID:data.login, tournamentID:data.tournamentID}, function (err, tournRegs){
+		if (err){
+			failCb(err, res);
+		}
+		else{
+			successCb(tournRegs, data, res);
+		}
+	})
+}
 
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
@@ -272,7 +319,7 @@ function RegisterUserInTournament(data, res){
 								if (err){ Error(err); Answer(res, Fail); }
 								else{
 									Answer(res, OK );
-									incrPlayersCount(tournamentID);
+									changePlayersCount(tournamentID , 1);
 									Log('added user to tournament'); 
 								}
 							});
@@ -310,17 +357,18 @@ reg.save(function (err) {
 	
 }
 
-function incrPlayersCount(tournamentID){
-	Tournament.update({tournamentID:tournamentID}, {$inc: {players:1}} , function (err, count){
+function changePlayersCount(tournamentID, mult){
+	if (!mult) {mult = 1;}
+	Tournament.update({tournamentID:tournamentID}, {$inc: {players:1*mult}} , function (err, count){
 		if (err){
-			Log('incrPlayersCount');
+			Log('changePlayersCount');
 			Error(err);
-			Tournament.update({tournamentID:tournamentID}, {$set: {players:1}} , function (err1, count1){
+			/*Tournament.update({tournamentID:tournamentID}, {$set: {players:1}} , function (err1, count1){
 				if (err1){
 					Error(err1);
 					Log('Still Error! Cannot set 1.' + JSON.stringify(err1) );
 				}
-			});
+			});*/
 		}
 	});
 }
@@ -479,7 +527,7 @@ function DecreaseMoney(req, res){
 function decrMoney(res, login, cash){
 	if (cash<0){ cash*= -1;}
 
-	User.update({login:login, money : {$gt: cash}}, {$inc: {money:-cash} }, function (err, count) {
+	User.update({login:login, money: {$not : {$lt: cash }} } , {$inc: {money:-cash} }, function (err, count) {
 		if (err) { Error(err); Answer(res, Fail); }
 		else{
 			Log('DecreaseMoney---- count= ' + JSON.stringify(count));
@@ -584,7 +632,7 @@ function getPrize(Prizes, goNext, i){
 }
 
 function UpdatePromos(tournamentID){
-	
+
 }
 
 function WinPrize( req,res){

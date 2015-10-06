@@ -198,21 +198,40 @@ app.post('/Login', function (req, res){
   );
 });
 
-app.post('/RegisterInTournament', function (req, res){
-  console.log('REG USER IN TOURN');
-  var data = req.body;
+function regManager(command, req, res, data){
+  
   console.log(data.login);
   console.log(data.tournamentID);
 
-    sender.sendRequest('RegisterUserInTournament', data?data:{}, '127.0.0.1', 
-        'FrontendServer', res, 
-        function (error, response, body, res1){
-          res.send(body.result);
-        }
-  );
+  if (isAuthenticated(req)){
+    sender.sendRequest(command, data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+      function (error, response, body, res1){
+        res.send(body.result);
+      });
+  }
+  else{
+    sender.Answer(res, {result:'auth'});
+  }
+}
+
+app.post('/CancelRegister', function (req, res){
+
+  var data = req.body;
+  regManager('CancelRegister',req, res, data);
+})
+
+
+
+app.post('/RegisterInTournament', function (req, res){
+  console.log('REG USER IN TOURN');
+  var data = req.body;
+
+  regManager('RegisterUserInTournament',req, res, data);
 
   console.log('WRITE Socket emitter!!!')
 })
+
+
 
 app.post('/Register', function (req, res){
   var data = req.body;
