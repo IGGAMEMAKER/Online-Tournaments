@@ -29,41 +29,8 @@ var tournaments = {
 	count:0
 }
 
-function Initialize(){
-	sender.sendRequest('GetTournaments', {query:2}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
-		if (error){strLog(JSON.stringify(error)); }
-		else{
-			for (var i = body.length - 1; i >= 0; i--) {
-				getTournament(body[i].tournamentID, body[i]);
-			}
-		}
-	});
-}
-
-Initialize();
-function playerIsRegistered (tournament, login){
-	strLog('players registered: ' + JSON.stringify(tournament.logins));
-	return tournament.logins[login];
-}
-
-function unRegPlayer(tournamentID, login){
-	strLog('Deleting player ' + login + ' from player list');
-	strLog('Registered count was: ' + tournaments[tournamentID].playersRegistered 
-		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
-		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins) );
-	tournaments[tournamentID].playersRegistered--;
-	delete tournaments[tournamentID].players[login];
-	delete tournaments[tournamentID].logins[login];
-		strLog('Registered count was: ' + tournaments[tournamentID].playersRegistered 
-		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
-		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins) );
-}
-function regPlayer(tournament, login){
-	tournament.playersRegistered++;
-	tournament.players.push(login);
-	tournament.logins[login]=1;
-	/*strLog('Logins list');
-	strLog(tournament.logins);*/
+function str(obj){
+	return ' '+JSON.stringify(obj)+' ';
 }
 
 var fs = require('fs');
@@ -77,6 +44,75 @@ var configs =  JSON.parse(file);
   gameHost2:'46.101.157.129'
 }*/
 console.log(JSON.stringify(configs));
+
+
+function TournamentLog(tournamentID ,message){
+	var time = new Date();
+	//console.log('TournamentLog LOGGING!!!!');
+	fs.appendFile('Logs/Tournaments/' + tournamentID + '.txt', '\r\n' + time + ' TS: ' + message + '\r\n', function (err) {
+		if (err) {strLog(err); throw err; }
+		//console.log('The "data to append" was appended to file!');
+	});
+}
+
+function Initialize(){
+	sender.sendRequest('GetTournaments', {query:2}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
+		if (error){strLog(JSON.stringify(error)); }
+		else{
+			for (var i = body.length - 1; i >= 0; i--) {
+				getTournament(body[i].tournamentID, body[i]);
+			}
+		}
+	});
+}
+//TournamentLog(1, 'OLOLO');
+Initialize();
+function playerIsRegistered (tournament, login){
+	strLog('players registered: ' + JSON.stringify(tournament.logins));
+	return tournament.logins[login];
+}
+
+function showRegList(tournamentID){
+	return tournaments[tournamentID].playersRegistered 
+		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
+		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins);
+}
+
+function unRegPlayer(tournamentID, login){
+	strLog('Deleting player ' + login + ' from player list');
+	TournamentLog(tournamentID, 'unRegPlayer: '+login );
+
+	var was = 'Registered count was: ' +  showRegList(tournamentID) ;
+	TournamentLog(tournamentID, was);
+	strLog(was);
+
+	tournaments[tournamentID].playersRegistered--;
+	var a = 1;
+	for (var i=0; i<tournaments[tournamentID].players.length && a; ++i){
+		if (tournaments[tournamentID].players[i] == login){
+			tournaments[tournamentID].players.splice(i,1);
+			//delete tournaments[tournamentID].players[login];
+		}
+		
+	}
+	//delete tournaments[tournamentID].players[login];
+	delete tournaments[tournamentID].logins[login];
+
+	var now = 'Registered count now: ' +  showRegList(tournamentID);
+	TournamentLog(tournamentID, now);
+	strLog(now);
+
+}
+function regPlayer(tournament, login){
+	tournament.playersRegistered++;
+	tournament.players.push(login);
+	tournament.logins[login]=1;
+	TournamentLog(tournament.tournamentID, 'Registered user ' + login);
+	/*strLog('Logins list');
+	strLog(tournament.logins);*/
+}
+
+
 
 //console.log(configs)
 var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
@@ -200,12 +236,14 @@ function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersI
 					if (maxPlayersInTournament === tournament.playersRegistered){
 						strLog("Tournament " + tournamentID + " starts");
 						strLog(tournament.players);
+						TournamentLog(tournamentID, 'Tournament starts... ' + str(tournament.players));
 						
 						var obj = getPortAndHostOfGame(tournamentID);
 						obj.tournamentID = tournamentID;
 						obj.sender = 'TournamentServer';
 						obj.logins = tournament.players;
 						strLog('StartTournament: ' + JSON.stringify(obj));
+						TournamentLog(tournamentID, 'start Object:' + str(obj));
 
 						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 						sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
@@ -261,7 +299,7 @@ function EndTournament( scores, gameID, tournamentID){
 	strLog(obj);
 	strLog(tournaments[tournamentID]);
 	strLog('------');
-	
+	TournamentLog(tournamentID, 'Winners:'+str(obj));
 	/*var winners = [];
 	for (i=0;i<winnersCount;++i){
 		winners[i] = { login:obj[i].login };//, place:tournaments[tournamentID].Prizes[i] };
@@ -314,6 +352,7 @@ function addToGameNameList(tournamentID, gameName){
 }
 
 function getTournament(tournamentID, data){
+	TournamentLog(tournamentID, 'Got tournament:' + str(data) );
 	addToGameNameList(tournamentID, data.gameNameID);
 	tournaments[tournamentID] = data;
 	tournaments[tournamentID].players = [];
