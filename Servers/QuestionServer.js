@@ -9,6 +9,16 @@ var FinishGame = gs.FinishGame;
 var UpdPeriod = 2000;
 var SendPeriod = UpdPeriod;
 
+var questionDir = './frontend/games/Questions/';
+var questionFolder = 'general';
+
+var fs = require('fs');
+
+app.post('/AddQuestions', function (req, res){
+	var data = req.body;
+	AddQuestions(data, res);
+})
+
 
 var QT0 = [
 	{question:'Гагин любимый цвет (QT0)', 					answers:['Красный'	,'Зелёный'	,'Золотой'	,'Синий'], 	correct: 1 },
@@ -40,8 +50,15 @@ var Questions = [QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 	games[gameID].questIndex = -1;
+
+	if (playerID==0){
+		setQuestion(gameID);
+	}
+	//games[gameID]
+
 	//games[gameID].players
 }
+
 var NUMBER_OF_QUESTIONS=6;
 function AsyncUpdate(gameID){
 	
@@ -71,6 +88,92 @@ gs.StartGameServer({
 console.log('started');
 
 
+function AddQuestions(data, res){
+
+}
+
+function setQuestion(gameID){
+	var topic = questionFolder;// 'general';// null;
+	strLog('here must be games[gameID].topic instead of null !!!');
+
+	fs.readdir(questionDir+topic, function callback (err, files){
+		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
+		else{
+			strLog('Files: ' + JSON.stringify(files));
+			var qCount = files.length;
+
+			var randomVal = parseInt((parseInt(Math.random()*qCount))%qCount);
+			strLog('Rand: ' + randomVal);
+
+			if (randomVal==qCount){
+				randomVal=0;
+				strLog('RANDOM VALUE EQUALS MAX!!!');
+			}
+			tryToLoadQuestion(randomVal, files, gameID);
+		}
+	});
+}
+
+function readJSONfile(fullPath){//gives you the json from file
+	var file = fs.readFileSync(fullPath, "utf8");
+	console.log(file);
+	
+	var jsFile =  JSON.parse(file);
+	//console.log(JSON.stringify(jsFile));
+	return jsFile;
+}
+
+function contains(word, symbol){
+	return word.indexOf(symbol) > -1;
+}
+
+function tryToLoadQuestion(id, files, gameID){
+	//find suitable file name
+	if (id>files.length) id = files.length-1;
+	var qFileName = files[id];
+	while(contains(qFileName,'~') ){
+		id--;
+		qFileName = files[id];
+	}
+
+	//open file by file name
+	var jsFile=readJSONfile( questionDir+ questionFolder+'/'+qFileName);
+
+	//add questions to game
+	games[gameID].source = qFileName;
+	games[gameID].questions = jsFile.qst;
+
+}
+
+function loadQuestList(folder, id, cb){
+	var qFile;
+	fs.readdir(questionDir+folder, function callback (err, files){
+		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
+		else{
+			strLog('Files: ' + JSON.stringify(files));
+
+			if (id>files.length) id = files.length-1;
+			qFile = files[id];
+			while(contains(qFile,'~') ){
+				id--;
+				qFile = files[id];
+			}
+			//qFile = files[id];
+			strLog(JSON.stringify(files));
+
+			var q = readJSONfile(questionDir+folder+'/'+qFile);
+
+		}
+	});
+
+	/*var file = fs.readFileSync(questionDir+folder+  '.txt', "utf8");
+	console.log(file);
+	var questions =  JSON.parse(file);
+	console.log(JSON.stringify(questions));*/
+}
+
+//setTimeout( function(){loadQuestList(questionFolder)}, 1750);
+
 function FindWinner(gameID){
 	var game = games[gameID];
 	strLog(JSON.stringify(game.scores));
@@ -88,8 +191,9 @@ function FindWinner(gameID){
 	return userName;
 }
 
-function getCurrentQuestion(gameID){
+/*function getCurrentQuestion(gameID){
 	strLog('getCurrentQuestion : ' + gameID);
+
 	if (games[gameID]){
 		var currQuestionIndex = games[gameID].questIndex;
 		var a;
@@ -103,6 +207,43 @@ function getCurrentQuestion(gameID){
 		strLog('questIndex = ' + currQuestionIndex);
 		strLog(JSON.stringify(a));
 		return a;
+	}
+	else{
+		return { question:'no gameID', answers:[0,1,2,3], correct:1 };
+	}
+}*/
+
+function getNumberOfQuestionsByTopic(topic){
+	fs.readdir(questionDir+folder, function callback (err, files){
+		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
+		else{
+			strLog('Files: ');
+
+		}
+
+	});
+
+
+	return 1;
+}
+function noQuestions(game){
+	return !game.questions;
+}
+function getCurrentQuestion(gameID){
+	strLog('getCurrentQuestion : ' + gameID);
+	//get number of questions of this topic
+	var game = games[gameID];
+	if (game){
+
+		if (games[gameID].questions){
+			strLog(JSON.stringify(games[gameID].questions ));
+			var currQuestionIndex = games[gameID].questIndex;
+			var a = games[gameID].questions[currQuestionIndex];
+			
+			strLog('questIndex = ' + currQuestionIndex);
+			strLog(JSON.stringify(a));
+			return a;
+		}
 	}
 	else{
 		return { question:'no gameID', answers:[0,1,2,3], correct:1 };
