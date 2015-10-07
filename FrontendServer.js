@@ -16,7 +16,7 @@ var sitePort = 80;
   strLog(index + ': ' + val);
 });*/
 app.use(function(req,res,next){
-    strLog(serverName + ': Request!');
+    strLog('REQUEST!!!  :  ' + req.url);
     next();
 });
 

@@ -100,11 +100,11 @@ function AnalyzeStructure(tournament, res){
 	strLog('AnalyzeStructure. SENDING GAME TO GameServer');
 	var numberOfRounds = tournament['rounds'];
 	strLog()
-	var gameName = tournament.gameName;
-	if (!gameName) gameName = 2;
+	var gameNameID = tournament.gameNameID;
+	if (!gameNameID) gameNameID = 2;
 	strLog("numberOfRounds= " + numberOfRounds);
-	sendToGameServer("ServeGames", tournament, null, gameName, res, ServeTournamentCallback);
-	tourns[tournament.tournamentID] = gameName;
+	sendToGameServer("ServeGames", tournament, null, gameNameID, res, ServeTournamentCallback);
+	tourns[tournament.tournamentID] = gameNameID;
 	/*sender.expressSendRequest("ServeGames", tournament, 
 		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer*/
 }

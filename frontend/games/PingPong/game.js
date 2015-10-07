@@ -193,7 +193,10 @@ var gameDatas;// = [];
 
 room.on('update', function(msg){
 	if (starter==1){ starter = 2; myStartGame();}
-
+	if (senderStatus==0){
+		initSender();
+		senderStatus =1;
+	}
 	//alert(JSON.stringify(msg));
 
 	var sBallX = (msg['ball']).x;
@@ -217,7 +220,8 @@ room.on('statusChange', function(msg){
 
 room.on('finish' , function(msg){
 	clearInterval(timer);
-	alert('Game finished! winner is : ' + JSON.stringify(msg) );
+	gameOver(JSON.stringify(msg));
+	//alert('Game finished! winner is : ' + JSON.stringify(msg) );
 });
 
 function deleteText(name){
@@ -231,9 +235,10 @@ function getNormalizedCoords(mouseCoords){
 	}
 }
 var timer;
-
+var senderStatus=0;
 function initSender(){
 	timer = setInterval(sendGameData , 20);
+
 }
 //console.log(room);
 
@@ -245,6 +250,7 @@ function myStartGame(){
 	//animloop();
 
 	initSender();
+	senderStatus = 1;
 }
 
 function sendGameData(data1, url){
@@ -648,6 +654,10 @@ function drawText(obj){
 	}
 }
 
+function StopAnimation(){
+	cancelRequestAnimFrame(init);
+}
+
 function nextRound(){
 	ctx.fillStyle = "white";
 	ctx.font = "20px Arial, sans-serif";
@@ -666,12 +676,18 @@ function nextRound(){
 }
 
 // Function to run when the game overs
-function gameOver() {
+function gameOver(winner) {
 	ctx.fillStyle = "white";
 	ctx.font = "20px Arial, sans-serif";
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
-	ctx.fillText("Game Over - You scored "+points+" points!", W/2, H/2 + 25 );
+	if (winner==login){
+		ctx.fillText("YOU WON THE GAME, CONGRATULATIONS!", W/2, H/2 + 25 );	
+	}
+	else{
+		//ctx.fillText("Game finished - Winner is : "+points+" points!", W/2, H/2 + 25 );
+		ctx.fillText("Game finished - winner is : " + winner , W/2, H/2 + 25 );
+	}
 	
 	// Stop the Animation
 	cancelRequestAnimFrame(init);
@@ -680,7 +696,7 @@ function gameOver() {
 	over = 1;
 	
 	// Show the restart button
-	restartBtn.draw();
+	//restartBtn.draw();
 }
 
 // Function for running the whole animation

@@ -921,21 +921,16 @@ function getTournamentsQuery(query, fields, purpose){
 
 function GetTournaments (req, res){
 	var data = req.body;
-	Log("GetTournaments ");// + data['login']);
+	//Log("GetTournaments ");// + data['login']);
 	var purpose = data.purpose?data.purpose:null;
 
 	var query = getTournamentsQuery(data.query, data.queryFields, purpose);
 	//var query = ;//{}
 	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
 
-	/*if (query && queryFields){
-		
-	}
-	else{
-		findTournaments(res, {}, '');
-	}*/
-	if (query.query) Log(JSON.stringify(query.query));
-	if (query.fields) Log(JSON.stringify(query.fields));
+	
+	//if (query.query) Log(JSON.stringify(query.query));
+	//if (query.fields) Log(JSON.stringify(query.fields));
 
 	findTournaments(res, query.query, query.fields, purpose);
 }

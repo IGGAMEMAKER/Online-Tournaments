@@ -36,7 +36,7 @@ function ServeTournament (req, res){
 	//strLog(JSON.stringify(data));
 	var tournament = data;
 	tournament['sender'] = 'BalanceServer';
-	tournament.status=
+	//tournament.status=
 	sendRequest("AddTournament", tournament, '127.0.0.1', 'DBServer',  res, DBAddTournamentHandler );
 }
 function RestartTournament (req, res){
