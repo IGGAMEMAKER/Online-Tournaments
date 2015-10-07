@@ -63,7 +63,7 @@ var NUMBER_OF_QUESTIONS=6;
 function AsyncUpdate(gameID){
 	
 	strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
-	if (games[gameID].questIndex < NUMBER_OF_QUESTIONS - 1){
+	if (games[gameID].questIndex < games[gameID].questions.length - 1){ // NUMBER_OF_QUESTIONS - 1){
 		games[gameID].questIndex++;
 		send(gameID, 'update', getQuestions(gameID));
 	}
@@ -142,6 +142,7 @@ function tryToLoadQuestion(id, files, gameID){
 	//add questions to game
 	games[gameID].source = qFileName;
 	games[gameID].questions = jsFile.qst;
+	
 
 }
 

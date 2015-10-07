@@ -42,6 +42,22 @@ mixin showTournament(tourn)
 	br
 	br
 
+mixin showPlayers(players)
+	h2 Players
+	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		tr
+			td	ID
+			td	Player
+		each player, index in players
+			if player
+				tr
+					td #{index}
+					td #{player.userID}
+	br
+	br
+
+	//p!= JSON.stringify(players)
+
 html
 	head
 		title!= title
@@ -104,11 +120,12 @@ html
 				});
 			}
 	body
-		//p!= JSON.stringify(message)
+		p!= JSON.stringify(message)
 		include tAuth
 		h1!= 'Tournament : ' + message[0].tournamentID
 		+showTournament(message[0])
 		+showPrizes(message[0].Prizes)
+		+showPlayers(message[1])
 		button(id="reg" style= "width:300px;height:50")	REGISTER
 		br
 		br

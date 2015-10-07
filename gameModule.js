@@ -343,7 +343,7 @@ function FinishGame(ID, playerID){
 		gameID: ID,
 		tournamentID:ID
 	};
-	SendToRoom(ID, 'finish', { winner:playerID });
+	SendToRoom(ID, 'finish', { winner:playerID, players: sortedPlayers });
 	clearInterval(games[gameID].timer);
 	strLog('FIX IT!!! GAMEID=tournamentID');
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 

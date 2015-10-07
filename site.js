@@ -458,12 +458,12 @@ app.all('/Tournaments', function (req,res){
         }
       });*/
 });
-
+const GET_TOURNAMENTS_INFO = 4;
 app.get('/TournamentInfo', function (req, res){
   var data = req.body;
   data.query = {tournamentID:req.query.tID};
   data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
-
+  data.purpose = GET_TOURNAMENTS_INFO;
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 });
 

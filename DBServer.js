@@ -873,7 +873,25 @@ function findTournaments(res, query, queryFields, purpose){
 	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
 			//Log(JSON.stringify(tournaments));
-			Answer(res, tournaments);
+			Log('purpose : ' + purpose);
+			if (purpose == GET_TOURNAMENTS_INFO){
+				TournamentReg.find({tournamentID: query.tournamentID},'', function (err, tournRegs){
+					if (err){
+						Error(err);
+						Answer(res, tournaments);
+					}
+					else{
+						Log('Registered: ' + JSON.stringify(tournRegs));
+						//tournaments.regs = tournRegs;
+						tournaments.push(tournRegs);
+						Log('Registered: ' + JSON.stringify(tournaments));
+						Answer(res, tournaments);
+					}
+				})
+			}
+			else{
+				Answer(res, tournaments);
+			}
 		}
 		else{
 			Error(err);

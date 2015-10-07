@@ -69,12 +69,14 @@ room.on('startGame', function(msg){
 	}
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
+
 room.on('finish', function(msg){
 	setQuestionTab('Game Finished. Thank you for participation!');
 	drawRB(1,'');
 	drawRB(2,'');
 	drawRB(3,'');
 	drawRB(4,'');
+	DrawPlayers(msg);
 	alert('Winner is :' + msg.winner);
 })
 var gameDatas;// = [];
@@ -98,12 +100,27 @@ room.on('statusChange', function(msg){
 	var gameStatus = msg['gameStatus'];
 });
 
+
+function DrawPlayers(results){
+	var q = document.getElementById('Question');
+	q.innerHTML = '<b>User results</b>';
+	$('#Question').append($('<li>').text('WINNER IS: ' + JSON.stringify(results.winner)));
+	$('#Question').append('<br>');
+	$('#Question').append('<br>');
+	
+	for (var ind in results.players.scores){
+		$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+	}
+}
+
+
+
 function sendGameData(data1, url){
 	var sendData = { 
 		movement: {answer:data1}, 
 		tournamentID: tournamentID, 
 		gameID: tournamentID, 
-		login: window.login 
+		login: login
 	};
 	//alert(JSON.stringify(sendData));
 	ajaXSend(sendData, 'http://' + gameHost+':' + gamePort + '/Move');

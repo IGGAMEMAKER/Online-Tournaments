@@ -116,6 +116,7 @@ app.post('/GetTournaments', function (req, res){
 		tournamentID: data['tournamentID'],
 		query: data['query'],
 		queryFields: data['queryFields'],
+		purpose: data['purpose']?data['purpose']:null
 	};
 	strLog('Getting Tournaments: ' + JSON.stringify(obj) );
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, 
