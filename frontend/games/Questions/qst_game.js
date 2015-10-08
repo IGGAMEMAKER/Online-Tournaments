@@ -77,7 +77,8 @@ room.on('finish', function(msg){
 	drawRB(3,'');
 	drawRB(4,'');
 	DrawPlayers(msg);
-	alert('Winner is :' + msg.winner);
+	getMyPoints();
+	//alert('Winner is :' + msg.winner);
 })
 var gameDatas;// = [];
 
@@ -88,6 +89,7 @@ room.on('update', function(msg){
 	for (var i=0;i<msg.answers.length;++i){
 		drawRB(i+1, msg.answers[i]);
 	}
+	getMyPoints();
 	//if (starter==1){ starter = 2;}
 
 	//alert(JSON.stringify(msg));
@@ -103,13 +105,29 @@ room.on('statusChange', function(msg){
 
 function DrawPlayers(results){
 	var q = document.getElementById('Question');
-	q.innerHTML = '<b>User results</b>';
-	$('#Question').append($('<li>').text('WINNER IS: ' + JSON.stringify(results.winner)));
+	q.innerHTML = '<b style="font-size: 72px;">User results</b>';
+	if (login==results.winner){
+		$('#Question').append($('<p style="color: #FF0000; ">').text('WINNER : ' + results.winner));
+	}
+	else{
+		$('#Question').append($('<p>').text('WINNER : ' + results.winner));
+	}
+
 	$('#Question').append('<br>');
 	$('#Question').append('<br>');
-	
+
 	for (var ind in results.players.scores){
-		$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+		var style="";
+		if (ind==login){
+			//style="style = 'color: #FF0000;'";
+
+			$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
+		}
+		else{
+			$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+		}
+		//$('#Question').append($('<li ' + style + '>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+
 	}
 }
 
@@ -123,20 +141,38 @@ function sendGameData(data1, url){
 		login: login
 	};
 	//alert(JSON.stringify(sendData));
-	ajaXSend(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
+	sendToRoom(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }
 
-function ajaXSend(dat, url){
-	/*$.ajax({
-	url: url?url:'http://localhost:5009/Move',
+function sendToRoom(dat, url){
+	room.emit('movement', dat );
+}
+
+function drawPoints(data){
+	var q = document.getElementById('Score');
+	q.innerHTML = 'Your score: '+ data.points;	
+	//$('#Score').innerHTML = 'Your score: '+ data.points;
+	//alert('Points : ' + JSON.stringify(data));
+}
+
+function getMyPoints(){
+	setTimeout( function(){
+		aj('http://' + gameHost+':' + gamePort + '/Points', drawPoints);
+	}, getRandomArbitrary(0, 50) );
+}
+
+function aj(url, callback){
+	$.ajax({
+	url: url,
 	method: 'POST',
-	data: dat,
-	success: function( data ) {
+	data: {login:login, tournamentID:tournamentID, gameID:tournamentID },
+	success: callback});
+	/*
+	function( data ) {
 		var msg = JSON.stringify(data);
 		//alert(msg);
 		console.log(msg);
-	}});*/
-	room.emit('movement', dat );
-
+	}
+	*/
 }

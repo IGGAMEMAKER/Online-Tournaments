@@ -6,7 +6,7 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-var UpdPeriod = 2000;
+var UpdPeriod = 5000;
 var SendPeriod = UpdPeriod;
 
 var questionDir = './frontend/games/Questions/';
@@ -17,6 +17,19 @@ var fs = require('fs');
 app.post('/AddQuestions', function (req, res){
 	var data = req.body;
 	AddQuestions(data, res);
+})
+
+app.post('/Points', function (req, res){
+	var data = req.body;
+	var login = data.login;
+	var gameID= data.gameID;
+	var tournamentID = tournamentID;
+	if (games[gameID] && login && games[gameID].scores[login]){
+		res.json({points: games[gameID].scores[login]});
+	}
+	else{
+		res.json({points:0});
+	}
 })
 
 
@@ -53,10 +66,10 @@ function Init(gameID, playerID){
 
 	if (playerID==0){
 		setQuestion(gameID);
+		games[gameID].userAnswers = [];
 	}
-	//games[gameID]
 
-	//games[gameID].players
+	games[gameID].userAnswers.push({});//[playerID] = {};
 }
 
 var NUMBER_OF_QUESTIONS=6;
@@ -64,18 +77,41 @@ function AsyncUpdate(gameID){
 	
 	strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
 	if (games[gameID].questIndex < games[gameID].questions.length - 1){ // NUMBER_OF_QUESTIONS - 1){
+		if (games[gameID].questIndex>=0){
+			checkAnswers(gameID);
+		}
 		games[gameID].questIndex++;
 		send(gameID, 'update', getQuestions(gameID));
 	}
 	else{
+		checkAnswers(gameID);
 		FinishGame(gameID, FindWinner(gameID) );
 	}
 }
 
 function Action(gameID, playerID, movement, userName){
 	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
-	if (AnswerIsCorrect(gameID, movement.answer)){
-		games[gameID].scores[userName]++;	
+	var currQuestionIndex = games[gameID].questIndex;
+	games[gameID].userAnswers[playerID][currQuestionIndex] = movement.answer;
+	/*if (games[gameID].userAnswers[playerID])
+	games[gameID].userAnswers[playerID]*/
+
+	
+}
+
+
+
+function checkAnswers(gameID){
+	var game = games[gameID];
+
+	var currQuestionIndex = game.questIndex;
+
+	for (var i=0; i< game.userAnswers.length; ++i){
+		var answer = game.userAnswers[i][currQuestionIndex];
+		if (AnswerIsCorrect(gameID, answer)){
+			var userName = getUID(gameID, i);
+			games[gameID].scores[userName]++;	
+		}
 	}
 }
 
@@ -142,7 +178,7 @@ function tryToLoadQuestion(id, files, gameID){
 	//add questions to game
 	games[gameID].source = qFileName;
 	games[gameID].questions = jsFile.qst;
-	
+
 
 }
 
@@ -247,7 +283,7 @@ function getCurrentQuestion(gameID){
 		}
 	}
 	else{
-		return { question:'no gameID', answers:[0,1,2,3], correct:1 };
+		return { question:'GAME DOES NOT EXIST', answers:[0,1,2,3], correct:1 };
 	}
 }
 

@@ -873,7 +873,8 @@ function findTournaments(res, query, queryFields, purpose){
 	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
 			//Log(JSON.stringify(tournaments));
-			Log('purpose : ' + purpose);
+			
+			//Log('purpose : ' + purpose);
 			if (purpose == GET_TOURNAMENTS_INFO){
 				TournamentReg.find({tournamentID: query.tournamentID},'', function (err, tournRegs){
 					if (err){

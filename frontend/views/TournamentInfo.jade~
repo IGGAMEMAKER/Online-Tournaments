@@ -40,7 +40,6 @@ mixin showTournament(tourn)
 			//td!= tourn.gameNameID
 			td Tournament Info
 	br
-	br
 
 mixin showPlayers(players)
 	h2 Players
@@ -52,7 +51,7 @@ mixin showPlayers(players)
 			if player
 				tr
 					td #{index}
-					td 
+					td #{player.userID}
 	br
 	br
 
