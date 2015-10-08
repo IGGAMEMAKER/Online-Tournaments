@@ -68,7 +68,8 @@ function Init(gameID, playerID){
 		setQuestion(gameID);
 		games[gameID].userAnswers = [];
 	}
-
+	strLog('FULL GAME INFO');
+	strLog(JSON.stringify(games[gameID] ));
 	games[gameID].userAnswers.push({});//[playerID] = {};
 }
 
@@ -125,7 +126,7 @@ console.log('started');
 
 
 function AddQuestions(data, res){
-
+	strLog('AddQuestions');
 }
 
 function setQuestion(gameID){
