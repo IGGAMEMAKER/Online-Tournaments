@@ -1,4 +1,4 @@
-var gs = require('./gameModule');
+var gs = require('../gameModule');
 var app = gs.app;
 var games = gs.games;
 var send = gs.SendToRoom;

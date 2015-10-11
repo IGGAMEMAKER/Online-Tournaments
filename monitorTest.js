@@ -10,7 +10,7 @@ var BS =  'BalanceServer';
 var TS =  'TournamentServer';
 var GFS = 'GameFrontendServer';
 var MS =  'MoneyServer';
-var PP =  'PingPongServer';
+var PP =  'Servers/PingPongServer';
 var QS =  'Servers/QuestionServer';
 
 serverNames.push(site);
@@ -20,8 +20,9 @@ serverNames.push(BS);
 serverNames.push(TS);
 serverNames.push(GFS);
 serverNames.push(MS);
-/*serverNames.push(PP);
+serverNames.push(PP);
 serverNames.push(QS);//*/
+
 var time = 1500;
 for (var i=0; i< serverNames.length; ++i){
 	//var child = {};

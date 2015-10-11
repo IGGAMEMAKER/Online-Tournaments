@@ -19,9 +19,9 @@ serverList['LogServer'] = 3000;
 serverList['FrontendServer'] = 5000;
 serverList['TournamentServer'] = 5001;
 //serverList['TournamentManager'] = 5002;
-serverList['AccountServer'] = 5003;
+//serverList['AccountServer'] = 5003;
 serverList['BalanceServer'] = 5004;
-serverList['AdminServer'] = 5005;
+//serverList['AdminServer'] = 5005;
 serverList['MoneyServer'] = 5006;
 serverList['DBServer'] = 5007;
 
