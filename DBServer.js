@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 sender.setServer(serverName);
 app.use(function(req,res,next){
-    console.log(serverName + ': Request!');
+    //console.log(serverName + ': Request!');
     next();
 });
 //var funcArray = {};

@@ -61,6 +61,7 @@ app.set('views', './games/PingPong');*/
 app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
 //app.set('games/PingPong', './views');
 
+
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
@@ -121,6 +122,7 @@ app.post('/Log', function (req, res){
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
+
 function Log(msg){
   io.emit('Logs', JSON.stringify(msg));
 }

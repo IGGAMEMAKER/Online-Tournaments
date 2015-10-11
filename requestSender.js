@@ -14,9 +14,11 @@ var serverList = {};
 
 var fs = require('fs');
 
+serverList['LogServer'] = 3000;
+
 serverList['FrontendServer'] = 5000;
 serverList['TournamentServer'] = 5001;
-serverList['TournamentManager'] = 5002;
+//serverList['TournamentManager'] = 5002;
 serverList['AccountServer'] = 5003;
 serverList['BalanceServer'] = 5004;
 serverList['AdminServer'] = 5005;
@@ -63,6 +65,7 @@ function strLog(text){
 	fs.appendFile('message.txt', '\r\n' + txt, function (err) {
 		if (err) {
 			console.log('err: ' + JSON.stringify(err)); 
+			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
 			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
 		}
 		else{
