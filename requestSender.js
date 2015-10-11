@@ -102,7 +102,7 @@ function universalAnswer(error, response, body, res, method){//response is a res
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
 	//We analyze this response and give an answer by the object 'res' in method 'method'
 	if (!error) {
-		if (body) console.log(JSON.stringify(body));
+		//if (body) console.log(JSON.stringify(body));
 		/*if (!body) {
 			console.log('body is NULL!!!!');
 		}*/
@@ -139,7 +139,7 @@ function expressSendRequest(urlPath, curData, host, servName, res, responseCallB
 
 }
 
-function sendRequest(urlPath, curData, host, servName, res, responseCallBack){
+function sendRequest(urlPath, curData, host, servName, res, responseCallBack, parameters){
 	//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.

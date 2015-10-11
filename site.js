@@ -45,9 +45,20 @@ app.use(session({
 }));
 
 app.use(function(req,res,next){
-    console.log('Site: Request! ' + req.url);
-    res.locals.session = req.session;
-    next();
+  switch(req.url){
+    case '/Log':
+
+    break;
+    default:
+      console.log('Site: Request! ' + req.url);
+    break;
+  }
+  
+  res.locals.session = req.session;
+  if (req.session){
+
+  }
+  next();
 });
 /*app.use(session({
   store: new MongoStore({
@@ -62,6 +73,7 @@ app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/g
 //app.set('games/PingPong', './views');
 
 
+
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
@@ -71,6 +83,7 @@ app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+
 
 function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
@@ -92,6 +105,7 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
+
 
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){

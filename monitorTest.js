@@ -1,35 +1,35 @@
-var forever = require('forever-monitor');
-//var child = new (forever.Monitor)('Servers/QuestionServer.js');
-//var child = new (forever.Monitor)('thrower.js');
-var servers = [];
+var forever = require('forever');
+//var child = new (forever.Monitor)('Servers/QuestionServer');
+//var child = new (forever.Monitor)('thrower');
+var serverNames = [];
 
-var site = new (forever.Monitor)('site.js'); 
-var DB =  new (forever.Monitor)('DBServer.js');
-var FS =  new (forever.Monitor)('FrontendServer.js');
-var BS =  new (forever.Monitor)('BalanceServer.js');
-var TS =  new (forever.Monitor)('TournamentServer.js');
-var GFS =  new (forever.Monitor)('GameFrontendServer.js');
-var MS =  new (forever.Monitor)('MoneyServer.js');
-var PP =  new (forever.Monitor)('PingPongServer.js');
-var QS =  new (forever.Monitor)('Servers/QuestionServer.js');
+var site = 'site'; 
+var DB =  'DBServer';
+var FS =  'FrontendServer';
+var BS =  'BalanceServer';
+var TS =  'TournamentServer';
+var GFS = 'GameFrontendServer';
+var MS =  'MoneyServer';
+var PP =  'PingPongServer';
+var QS =  'Servers/QuestionServer';
 
-servers.push(site);
-/*servers.push(DB);
-servers.push(FS);
-servers.push(BS);
-servers.push(TS);
-servers.push(GFS);
-servers.push(MS);
-servers.push(PP);
-servers.push(QS);//*/
-var time = 500;
-for (var i=0; i< servers.length; ++i){
+serverNames.push(site);
+serverNames.push(DB);
+serverNames.push(FS);
+serverNames.push(BS);
+serverNames.push(TS);
+serverNames.push(GFS);
+serverNames.push(MS);
+/*serverNames.push(PP);
+serverNames.push(QS);//*/
+var time = 1500;
+for (var i=0; i< serverNames.length; ++i){
 	//var child = {};
-	//child = servers[i];
-	tmrServer(servers[i], time*(i+1) );
+	//child = serverNames[i];
+	tmrServer(serverNames[i], time*(i+1) );
 	//setTimeout( function() { startServer(child); } ,	);
 
-/*	var child = servers[i];
+/*	var child = serverNames[i];
 
 	child.on('watch:restart', function(info) {
 		console.error('Restaring script because ' + info.file + ' changed');
@@ -50,9 +50,10 @@ for (var i=0; i< servers.length; ++i){
 	child.start();*/
 }
 
-function tmrServer(child, time){
+function tmrServer(servName, time){
 	setTimeout( function(){
-		startServer(child);
+		var child = new (forever.Monitor)(servName+'.js', getSettings(servName));
+		startServer(child, servName);
 	}, time);
 }
 function getSettings(app){
@@ -100,6 +101,7 @@ function getSettings(app){
 	      gid: 0  // Custom GID
 	    },*/
 
+
 	    //
 	    // More specific options to pass along to `child_process.spawn` which
 	    // will override anything passed to the `spawnWith` option
@@ -110,9 +112,9 @@ function getSettings(app){
 	    //
 	    // Log files and associated logging options for this instance
 	    //
-	    'logFile': 'Logs/mTlog.log', // Path to log output from forever process (when daemonized)
-	    'outFile': 'Logs/mTout.log', // Path to log output from child stdout
-	    'errFile': 'Logs/mTerr.log', // Path to log output from child stderr
+	    'logFile': 'Logs/Servers/'+app+'/log.log', // Path to log output from forever process (when daemonized)
+	    'outFile': 'Logs/Servers/'+app+'/out.log', // Path to log output from child stdout
+	    'errFile': 'Logs/Servers/'+app+'/err.log', // Path to log output from child stderr
 
 	    //
 	    // ### function parseCommand (command, args)
@@ -123,34 +125,40 @@ function getSettings(app){
 	    // any command. Use this to modify the default parsing
 	    // done by 'forever-monitor' around spaces.
 	    //
-	    'parser': function (command, args) {
+	    /*'parser': function (command, args) {
 	      return {
 	        command: command,
 	        args:    args
 	      };
-	    }
+	    }*/
 	}
+	return settings;
 }
 
-function startServer(child){
+function startServer(child, servName){
 	//console.log(JSON.stringify(child));
-	child.on('watch:restart', function(info) {
-		console.error('Restaring script because ' + info.file + ' changed');
+	child.on('start', function() {
+	    console.error('Forever restarting ' + servName + ' for ' + child.times + ' time');
+	})
+	child.on('watch:restart', function (info) {
+		console.error('Restaring ' + servName + ' because ' + info.file + ' changed');
 	});
 
-	child.on('error', function(err){
+	child.on('error', function (err){
+		console.error('Error in ' + servName);
 		console.error(err);
 	});
 
 	child.on('restart', function() {
-	    console.error('Forever restarting script for ' + child.times + ' time');
+	    console.error('Forever restarting ' + servName + ' for ' + child.times + ' time');
 	});
 
-	child.on('exit:code', function(code) {
-		console.error('Forever detected script exited with code ' + code);
+	child.on('exit:code', function (code) {
+		console.error('Forever detected, that ' + servName + ' exited with code ' + code);
 	});
-
-	child.start(null, getSettings('site'));
+	//forever.startDaemon(child);
+	child.start();//null, getSettings('site'));
+	//child.stop();
 }
 
 

@@ -21,7 +21,8 @@ app.use(function(req,res,next){
 });
 
 function strLog(data){
-	strLog(data);
+	console.log(data);
+	//strLog(data);
 }
 
 //["/stop"] //'/stop' : AnswerAndKill

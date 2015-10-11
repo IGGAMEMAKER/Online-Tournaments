@@ -61,6 +61,23 @@ function processTournament(tournament){
 	}
 }
 
+/*function GetTournamentInfo(tournamentID, res){
+	sendRequest("GetTournamentInfo", {tournamentID: tournamentID}, '127.0.0.1', 'DBServer', res, GetTournamentInfoFromTS );
+}
+
+function GetTournamentInfoFromTS (error, response, body, res){
+	if (error){
+		sender.Answer(res, )
+	}
+	sendRequest("GetTournamentInfo", {tournamentID: tournamentID}, '127.0.0.1', 'TournamentServer', res, 
+		function GetTournamentInfoFromGFS(error, response, body, res){
+	} );
+}
+
+function GetTournamentInfoFromGFS (error, response, body, res){
+
+}*/
+
 const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_FINISHED = 3;

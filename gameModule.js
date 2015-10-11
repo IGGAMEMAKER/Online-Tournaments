@@ -50,6 +50,20 @@ app.get('/Move', function (req, res){
 	res.end('Move GET works');
 });
 
+function SaveGameResults(results){
+	var gameID = results.gameID;
+	var tournamentID = results.tournamentID;
+	LogToFile('Logs/Games/'+ gameID, results.scores);
+}
+
+function LogToFile(filename, text){
+	fs.appendFile(filename, JSON.stringify({time: new Date, text:text}), function (err){
+		if (err){
+			strLog('err: ' + JSON.stringify(err));
+		}
+	})
+}
+
 function FastLog(text){
 	var time = new Date();
 	//strLog(time);
@@ -165,7 +179,7 @@ function ServeGames (req, res){
 	initGame(gameID);
 	//strLog(games);
 
-	res.write("serving games");
+	//res.write("serving games");
 	res.end();
 }
 
@@ -348,6 +362,7 @@ function FinishGame(ID, playerID){
 	strLog('FIX IT!!! GAMEID=tournamentID');
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
 			'GameFrontendServer', null, sender.printer );
+	SaveGameResults(sortedPlayers);
 }
 function Sort(players){
 	return players;
