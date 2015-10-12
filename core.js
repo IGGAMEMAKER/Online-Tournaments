@@ -10,7 +10,12 @@ var serverName = ""; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, 
 //var Log = sender.strLog;
 function Log(msg){
 	//console.log(msg);
-	sender.strLog(msg);
+	if (!serverName || serverName=='LogServer'){
+		console.log(msg);
+	}
+	else{
+		sender.strLog(msg);
+	}
 }
 /*app.all('/Alive', function (req,res){
 	console.log('Hey!!!');
@@ -41,7 +46,7 @@ app.post('/Stop', function (req, res){
 })
 
 
-Log('Server Core starts!!');
+//Log('Server Core starts!!');
 
 /*function Answer(res, code){
 	res.end(code);
@@ -67,7 +72,7 @@ function ReadConfigs(){
 	configs =  JSON.parse(file);
 	console.log(JSON.stringify(configs));
 }
-//var server;
+var server;
 function StartServer(options){
 	Log('Trying to StartServer:' + options.serverName);
 	if (options && options.port && options.serverName){
@@ -139,3 +144,4 @@ this.OK = OK;
 this.Fail = Fail;
 this.Answer = Answer;
 this.str = str;
+this.server = server;

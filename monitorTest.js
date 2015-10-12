@@ -1,9 +1,12 @@
 var forever = require('forever');
+var rqSender = require('./requestSender');
+var sendRequest = rqSender.sendRequest;
 //var child = new (forever.Monitor)('Servers/QuestionServer');
 //var child = new (forever.Monitor)('thrower');
 var serverNames = [];
 
 var site = 'site'; 
+var Log = 'LogServer'
 var DB =  'DBServer';
 var FS =  'FrontendServer';
 var BS =  'BalanceServer';
@@ -13,7 +16,9 @@ var MS =  'MoneyServer';
 var PP =  'Servers/PingPongServer';
 var QS =  'Servers/QuestionServer';
 
+//serverNames.push(Log);
 serverNames.push(site);
+
 serverNames.push(DB);
 serverNames.push(FS);
 serverNames.push(BS);
@@ -51,6 +56,7 @@ for (var i=0; i< serverNames.length; ++i){
 	child.start();*/
 }
 
+
 function tmrServer(servName, time){
 	setTimeout( function(){
 		var child = new (forever.Monitor)(servName+'.js', getSettings(servName));
@@ -58,11 +64,13 @@ function tmrServer(servName, time){
 	}, time);
 }
 function getSettings(app){
+	var silent = true;
+	if (app=='site') silent= false;
 	var settings = {
 		//
 	    // Basic configuration options
 	    //
-	    'silent': true,            // Silences the output from stdout and stderr in the parent process
+	    'silent': silent,            // Silences the output from stdout and stderr in the parent process
 	    'uid': app,          // Custom uid for this forever process. (default: autogen)
 	    //'pidFile': 'path/to/a.pid', // Path to put pid information for the process(es) started
 	    'max': 10,                  // Sets the maximum number of times a given script should run
@@ -138,30 +146,34 @@ function getSettings(app){
 
 function startServer(child, servName){
 	//console.log(JSON.stringify(child));
+	var msg;
 	child.on('start', function() {
-	    console.error('Forever restarting ' + servName + ' for ' + child.times + ' time');
+	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time');
 	})
 	child.on('watch:restart', function (info) {
-		console.error('Restaring ' + servName + ' because ' + info.file + ' changed');
+		SendInfo('Restaring ' + servName + ' because ' + info.file + ' changed');
 	});
 
 	child.on('error', function (err){
-		console.error('Error in ' + servName);
-		console.error(err);
+		SendInfo('Error in ' + servName + ' ' + JSON.stringify(err));
 	});
 
 	child.on('restart', function() {
-	    console.error('Forever restarting ' + servName + ' for ' + child.times + ' time');
+	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time');
 	});
 
 	child.on('exit:code', function (code) {
-		console.error('Forever detected, that ' + servName + ' exited with code ' + code);
+		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code);
 	});
 	//forever.startDaemon(child);
 	child.start();//null, getSettings('site'));
 	//child.stop();
 }
 
+function SendInfo(msg){
+	console.error('Send info! ' + msg);
+	sendRequest('Log', {msg: msg, topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
+}
 
 /*child.on('watch:restart', function(info) {
     console.error('Restaring script because ' + info.file + ' changed');

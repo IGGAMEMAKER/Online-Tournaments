@@ -55,21 +55,21 @@ function getPort (r){
 function getGamePort (r){
 	return gameNameIDList[r];
 }
-function strLog(text){
+function strLog(text, topic){
 	var time = new Date();
 	//console.log(time);
 	//var txt = time+' ' + text;// + "\n";
 	var host = '127.0.0.1';
 	var txt = serverName +' : ' + text;
 
-	fs.appendFile('message.txt', '\r\n' + txt, function (err) {
+	fs.appendFile('Logs/Full_message_'+'.txt', '\r\n' + txt, function (err) {
 		if (err) {
 			console.log('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
-			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
+			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err), topic:'err'}, host, 'site', null, printer);
 		}
 		else{
-			sendRequest('Log', {msg:txt}, host, 'site', null, printer);
+			sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
 		}
 	});
 	//stream.write(text);
@@ -108,8 +108,9 @@ function universalAnswer(error, response, body, res, method){//response is a res
 		}*/
         //var info = JSON.parse(JSON.stringify(body));
         //console.log(info);
-        
-        method(error, response, body, res);
+        if (method){
+        	method(error, response, body, res?res:null);
+        }
         /*console.log("Got answer from AccountServer");
         res.end("THX for register");*/
     }

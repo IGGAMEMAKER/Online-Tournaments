@@ -275,10 +275,14 @@ tournamentAddingTimer = setInterval(function(){
 		clearInterval(tournamentAddingTimer);
 	}
 }, 200);*/
-function FinishTournament(ID){
+
+sender.sendRequest('Log', {tournamentID: ID, winners:{} }, 'localhost', 'LogServer', null, sender.printer);
+
+
+/*function FinishTournament(ID){
 	sender.sendRequest('WinPrize', {tournamentID: ID, winners:{} }, 'localhost', 'DBServer', null, sender.printer);
 }
-FinishTournament(44);
+FinishTournament(44);*/
 
 /*sender.sendRequest("Move", movement1,'127.0.0.1', 5009, null ,sender.printer);//setVal);
 sender.sendRequest("Move", movement2,'127.0.0.1', 5009, null ,sender.printer);//setVal);*/

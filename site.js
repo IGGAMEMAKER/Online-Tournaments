@@ -130,15 +130,20 @@ app.post('/Log', function (req, res){
   //res.end('sended');
   res.end('');
   var msg = req.body;
-  Log(msg);
+  var topic = req.body.topic;
+  console.log(topic);
+  Log(msg, topic || null);
 });
 
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
+app.get('/SpecLogs', function (req, res){
+  res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+});
 
-function Log(msg){
-  io.emit('Logs', JSON.stringify(msg));
+function Log(msg, topic){
+  io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
 app.all('/Game', function (req, res){
   console.log(__dirname);

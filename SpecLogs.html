@@ -23,20 +23,23 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       var socket = io();
+/*	if (topic){
+		alert(topic);
+	}*/
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
       });
 	
-      socket.on('Logs', function(msg){
+      /*socket.on('Logs', function(msg){
 	var a = JSON.parse(msg);
         $('#messages').append($('<li style="color: #000000; ">').text(a.msg));
 	document.getElementById( 'bottom' ).scrollIntoView();
-      });
-      socket.on('Errors', function(msg){
+      });*/
+      socket.on('Forever', function(msg){
 	var a = JSON.parse(msg);
-        $('#messages').append($('<li style="color: #FF0000; ">').text(a.msg));
+        $('#messages').append($('<li style="color: #FF0000; font-size: 22px;">').text(a.msg));
 	document.getElementById( 'bottom' ).scrollIntoView();
       });	
       socket.on('StartTournament', function(msg){
