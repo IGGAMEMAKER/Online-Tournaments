@@ -17,8 +17,8 @@ var PP =  'Servers/PingPongServer';
 var QS =  'Servers/QuestionServer';
 
 //serverNames.push(Log);
-serverNames.push(site);
-
+//serverNames.push(site);
+//serverNames.push('thrower');
 serverNames.push(DB);
 serverNames.push(FS);
 serverNames.push(BS);
@@ -28,7 +28,7 @@ serverNames.push(MS);
 serverNames.push(PP);
 serverNames.push(QS);//*/
 
-var time = 1500;
+var time = 500;
 for (var i=0; i< serverNames.length; ++i){
 	//var child = {};
 	//child = serverNames[i];
@@ -65,7 +65,8 @@ function tmrServer(servName, time){
 }
 function getSettings(app){
 	var silent = true;
-	if (app=='site') silent= false;
+	var appPath = app.replace('/', '_');
+	//if (app=='site') silent= false;
 	var settings = {
 		//
 	    // Basic configuration options
@@ -73,7 +74,7 @@ function getSettings(app){
 	    'silent': silent,            // Silences the output from stdout and stderr in the parent process
 	    'uid': app,          // Custom uid for this forever process. (default: autogen)
 	    //'pidFile': 'path/to/a.pid', // Path to put pid information for the process(es) started
-	    'max': 10,                  // Sets the maximum number of times a given script should run
+	    'max': 3,                  // Sets the maximum number of times a given script should run
 	    'killTree': true,           // Kills the entire child process tree on `exit`
 
 	    //
@@ -94,10 +95,10 @@ function getSettings(app){
 	    //
 	    // Options for restarting on watched files.
 	    //
-	    'watch': true,               // Value indicating if we should watch files.
+	    'watch': false,               // Value indicating if we should watch files.
 	    'watchIgnoreDotFiles': null, // Whether to ignore file starting with a '.'
 	    'watchIgnorePatterns': null, // Ignore patterns to use when watching files.
-	    'watchDirectory': './',      // Top-level directory to watch from.
+	    'watchDirectory': './',      // Top-level directory to watch from. ///home/gaginho/project/NODE/
 
 	    //
 	    // All or nothing options passed along to `child_process.spawn`.
@@ -121,9 +122,10 @@ function getSettings(app){
 	    //
 	    // Log files and associated logging options for this instance
 	    //
-	    'logFile': 'Logs/Servers/'+app+'/log.log', // Path to log output from forever process (when daemonized)
-	    'outFile': 'Logs/Servers/'+app+'/out.log', // Path to log output from child stdout
-	    'errFile': 'Logs/Servers/'+app+'/err.log', // Path to log output from child stderr
+
+	    'logFile': 'Logs/'+appPath+'_log.log', // Path to log output from forever process (when daemonized)
+	    'outFile': 'Logs/'+appPath+'_out.log', // Path to log output from child stdout
+	    'errFile': 'Logs/'+appPath+'_err.log', // Path to log output from child stderr
 
 	    //
 	    // ### function parseCommand (command, args)
@@ -148,31 +150,32 @@ function startServer(child, servName){
 	//console.log(JSON.stringify(child));
 	var msg;
 	child.on('start', function() {
-	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time');
+
+	    SendInfo('Forever starting ' + servName + ' for ' + child.times + ' time');
 	})
 	child.on('watch:restart', function (info) {
 		SendInfo('Restaring ' + servName + ' because ' + info.file + ' changed');
 	});
 
 	child.on('error', function (err){
-		SendInfo('Error in ' + servName + ' ' + JSON.stringify(err));
+		SendInfo('Error in ' + servName + ' ' + JSON.stringify(err), 'Err');
 	});
 
 	child.on('restart', function() {
-	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time');
+	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time', 'Err');
 	});
 
 	child.on('exit:code', function (code) {
-		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code);
+		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
 	});
 	//forever.startDaemon(child);
 	child.start();//null, getSettings('site'));
 	//child.stop();
 }
 
-function SendInfo(msg){
+function SendInfo(msg, topic){
 	console.error('Send info! ' + msg);
-	sendRequest('Log', {msg: msg, topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
+	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
 }
 
 /*child.on('watch:restart', function(info) {

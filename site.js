@@ -131,7 +131,7 @@ app.post('/Log', function (req, res){
   res.end('');
   var msg = req.body;
   var topic = req.body.topic;
-  console.log(topic);
+  //console.log(topic);
   Log(msg, topic || null);
 });
 

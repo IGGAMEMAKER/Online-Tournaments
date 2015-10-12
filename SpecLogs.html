@@ -22,6 +22,20 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+	function listen(topic, socket){
+		socket.on(topic, function(msg){
+		var a = JSON.parse(msg);
+		switch(topic){
+			case 'Err':
+				$('#messages').append($('<li style="color: #FF0000; font-size: 22px;">').text(a.msg));
+			break;
+			default:
+				$('#messages').append($('<li style="color: #009F00; font-size: 22px;">').text(a.msg));
+			break;
+		}
+		document.getElementById( 'bottom' ).scrollIntoView();
+      });
+	}
       var socket = io();
 /*	if (topic){
 		alert(topic);
@@ -31,32 +45,18 @@
         $('#m').val('');
         return false;
       });
-	
+	listen('Forever', socket);
+	listen('Err', socket);
       /*socket.on('Logs', function(msg){
 	var a = JSON.parse(msg);
         $('#messages').append($('<li style="color: #000000; ">').text(a.msg));
 	document.getElementById( 'bottom' ).scrollIntoView();
       });*/
-      socket.on('Forever', function(msg){
+      /*socket.on('Forever', function(msg){
 	var a = JSON.parse(msg);
         $('#messages').append($('<li style="color: #FF0000; font-size: 22px;">').text(a.msg));
 	document.getElementById( 'bottom' ).scrollIntoView();
-      });	
-      socket.on('StartTournament', function(msg){
-	//alert('BINGO');
-        $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
-        $('#messages').append($('<li>').text('BINGO!! '+JSON.stringify(msg)));
-	document.getElementById( 'bottom' ).scrollIntoView();
-      });
-      socket.on('event1', function(msg){
-	
-        $('#messages').append($('<li>').text(JSON.stringify(msg)));
-      });
-	var room = io('/'+111);
-	room.on('azz', function(msg){
-		alert(msg);
-		//$('#messages').append($('<li>').text(JSON.stringify(msg)));
-	});
+      });*/
     </script>
   </body>
 </html>
