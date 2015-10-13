@@ -12,5 +12,5 @@ fuser -k 5010/tcp
 sudo forever stopall
 sudo forever start --uid "site" -o Logs/site.log -e Logs/siteErr.log -a site.js
 #node monitorTest.js
-forever start -o Logs/monitorTest.log -e Logs/monitorTestErr.log monitorTest.js
+forever -o Logs/monitorTest.log -e Logs/monitorTestErr.log monitorTest.js
 sudo forever list

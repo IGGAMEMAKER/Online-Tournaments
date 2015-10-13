@@ -37,6 +37,7 @@
       });
 	}
       var socket = io();
+	
 /*	if (topic){
 		alert(topic);
 	}*/
@@ -47,6 +48,7 @@
       });
 	listen('Forever', socket);
 	listen('Err', socket);
+	listen('Money', socket);
       /*socket.on('Logs', function(msg){
 	var a = JSON.parse(msg);
         $('#messages').append($('<li style="color: #000000; ">').text(a.msg));

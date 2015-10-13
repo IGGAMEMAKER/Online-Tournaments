@@ -234,6 +234,10 @@ function Answer(res, code){
 	//strLog("......................");
 }
 
+function isRunning(gameID){
+	return games[gameID].isRunning;
+}
+
 /*function CustomInit(gameID){
 
 }*/
@@ -325,7 +329,11 @@ function prepare(gameID){
 		strLog('Trying to stop timer');
 		clearInterval(games[gameID].timer);
 		strLog('Stopped timer');
-		games[gameID].timer = setInterval(function() {customUpdate(gameID) }, UPDATE_TIME);//update(gameID)
+		games[gameID].timer = setInterval(
+			function() {
+				games[gameID].isRunning=true;
+				customUpdate(gameID);
+			}, UPDATE_TIME);//update(gameID)
 	}
 }
 

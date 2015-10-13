@@ -66,7 +66,7 @@ function tmrServer(servName, time){
 function getSettings(app){
 	var silent = true;
 	var appPath = app.replace('/', '_');
-	//if (app=='site') silent= false;
+	if (app=='site') silent= false;
 	var settings = {
 		//
 	    // Basic configuration options
@@ -164,10 +164,14 @@ function startServer(child, servName){
 	child.on('restart', function() {
 	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time', 'Err');
 	});
-
+	child.on('exit', function (code) {
+		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
+	});
 	child.on('exit:code', function (code) {
 		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
 	});
+
+	//child.on('*', function
 	//forever.startDaemon(child);
 	child.start();//null, getSettings('site'));
 	//child.stop();

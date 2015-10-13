@@ -14,7 +14,7 @@ var MongoStore = require('connect-mongo');//(express);
 //var io = require('socket.io')(app);
 var fs = require('fs');
 var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-console.log(file);
+//console.log(file);
 var configs =  JSON.parse(file);
 /*{ 
   msg:'superhero!',
@@ -22,7 +22,9 @@ var configs =  JSON.parse(file);
   gameHost:'localhost',
   gameHost2:'46.101.157.129'
 }*/
-console.log(JSON.stringify(configs));
+var date = new Date();
+console.log(date + '  ' + JSON.stringify(configs));
+var server;
 
 //console.log(configs)
 var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
@@ -138,8 +140,10 @@ app.post('/Log', function (req, res){
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
-app.get('/SpecLogs', function (req, res){
-  res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+app.get('/SpecLogs/:topic', function (req, res){
+  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+  var topic = req.params.topic||'Forever';
+  res.render('SpecLogs', {topic:topic});
 });
 
 function Log(msg, topic){
@@ -504,12 +508,26 @@ app.get('/', function (req,res){
 })
 
 
-var server = app.listen(80, function () {
+/*app.get('/close', function (req, res){
+  console.log('closing');
+  res.render('Alive');
+  
+  io.close();
+  server.close();
+  console.log(process.pid);
+  process.exit(0);
+  process.kill(process.pid, 'SIGHUP');
+  //app.close();
+})*/
+
+server = app.listen(80, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
+
+
 
 var clients = [];
 

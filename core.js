@@ -42,7 +42,14 @@ app.get('/Alive', function (req, res){
 	res.end('GET METHOD WORKED');
 });
 app.post('/Stop', function (req, res){
-	Answer(res, 'OK');
+	//Answer(res, 'OK');
+	console.log('closing');
+	res.json('TriedToKill');
+
+	//io.close();
+	server.close();
+	console.log(process.pid);
+	process.exit(0);
 })
 
 
@@ -68,7 +75,7 @@ var configs;
 
 function ReadConfigs(){
 	var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-	console.log(file);
+	//console.log(file);
 	configs =  JSON.parse(file);
 	console.log(JSON.stringify(configs));
 }

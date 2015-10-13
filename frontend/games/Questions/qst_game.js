@@ -33,7 +33,7 @@ function setQuestionTab(question){
 	//alert('answs');
 	//answs.innerHTML='';
 	drawRB(1,'bar');
-	setQuestionTab('Question TROLOLO');
+	setQuestionTab('Question will be here');
 	/*var rb = document.getElementById('1');
 	rb.innerHTML='<input type="radio" value=1, name="answer"/> ';
 	rb.innerHTML+= 'bar';*/

@@ -5,8 +5,8 @@ mixin showPrizes(prizes)
 	h2 Tournament prizes
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
-			td	Round
-			td	Prize
+			td Round
+			td Prize
 		each prize, index in prizes
 			if prize
 				tr
@@ -25,12 +25,12 @@ mixin showPrizes(prizes)
 mixin showTournament(tourn)
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
-			td	ID
-			td	Players count
-			td	Buy In
-			td	Game Name
-			td	Status
-			td	TournamentInfo
+			td ID
+			td Players count
+			td Buy In
+			td Game Name
+			td Status
+			td TournamentInfo
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
@@ -45,8 +45,8 @@ mixin showPlayers(players)
 	h2 Players
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
-			td	ID
-			td	Player
+			td ID
+			td Player
 		each player, index in players
 			if player
 				tr

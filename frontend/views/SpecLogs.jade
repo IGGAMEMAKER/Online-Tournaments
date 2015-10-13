@@ -1,0 +1,60 @@
+//
+
+mixin drawLogLink(topic)
+	td(width="100px")
+		a(href=topic) #{topic}
+
+html
+	head
+		title Logs
+		style
+				* { margin: 0; padding: 0; box-sizing: border-box; }
+				body { font: 13px Helvetica, Arial; }
+				form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+				form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+				form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+				#messages { list-style-type: none; margin: 0; padding: 0; }
+				#messages li { padding: 5px 10px; }
+				#messages li:nth-child(odd) { background: #eee; }
+	body
+		ul(id="messages")
+		//form(action="")
+			//input id="m" autocomplete="off" />
+			button Send
+		#bottom 
+			table
+				tr
+					+drawLogLink("Forever")
+					+drawLogLink("Err")
+					+drawLogLink("Money")
+					+drawLogLink("Tournaments")
+		script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+		script(src="http://code.jquery.com/jquery-1.11.1.js")
+
+		script.
+			function listen(topic, socket){
+				socket.on(topic, function(msg){
+					var a = JSON.parse(msg);
+					switch(topic){
+						case 'Err':
+							$('#messages').append($('<li style="color: #FF0000; font-size: 22px;">').text(a.msg));
+						break;
+						default:
+							$('#messages').append($('<li style="color: #009F00; font-size: 22px;">').text(a.msg));
+						break;
+					}
+					document.getElementById( 'bottom' ).scrollIntoView();
+				});
+			}
+			var socket = io();
+			var topic = "#{topic}";
+			alert(topic);
+			/*$('form').submit(function(){
+				socket.emit('chat message', $('#m').val());
+				$('#m').val('');
+				return false;
+			});*/
+			listen(topic, socket);
+			/*listen('Forever', socket);
+			//listen('Err', socket);
+			listen('Money', socket);*/

@@ -49,7 +49,7 @@ app.post('/GetPlayers', GetPlayers);
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
-
+app.post('/GetTransfers', GetTransfers);
 
 
 //app.post('/')
@@ -100,7 +100,7 @@ var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: String, use
 var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number });
 
 var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
-
+var MoneyTransfer = mongoose.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date});
 
 var TournamentResult = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
 //var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
@@ -301,15 +301,15 @@ function clearRegister(data, res, successCb, failCb){
 
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
-
-	var reg = new TournamentReg({userID:data.login, tournamentID: tournamentID, promo:'gaginho'});
+	var login = data.login;
+	var reg = new TournamentReg({userID:login, tournamentID: tournamentID, promo:'gaginho'});
 
 	Tournament.findOne({tournamentID:tournamentID} , 'buyIn status', function getTournamentBuyIn1 (err, tournament){
 		if (err){ Error(err); Answer(res, Fail); }
 		else{
 			if (tournament && tournament.buyIn>=0 && tournament.status==TOURN_STATUS_REGISTER){
 				var buyIn = tournament.buyIn;
-				User.update({login:data.login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count){
+				User.update({login:login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count){
 					Log('RegisterUserInTournament NEEDS TRANSACTIONS!!!!!!!!!! IF REG IS FAILED, MONEY WILL NOT return!!!');
 					if (err) { Error(err); Answer(res, Fail); }
 					else{
@@ -321,11 +321,12 @@ function RegisterUserInTournament(data, res){
 									Answer(res, OK );
 									changePlayersCount(tournamentID , 1);
 									Log('added user to tournament'); 
+									saveTransfer(login, -buyIn, {tournamentID:tournamentID});
 								}
 							});
 						}
 						else{
-							Log('User ' + data.login + ' has not enough money');
+							Log('User ' + login + ' has not enough money');
 							Answer(res, Fail);
 						}
 					}
@@ -514,17 +515,17 @@ function IncreaseMoney(req,res){
 	var data = req.body;
 	var login = data.login;
 	var cash = data.cash;
-	incrMoney(res, login, cash);
+	incrMoney(res, login, cash, 'Deposit');
 }
 function DecreaseMoney(req, res){
 	Log('DecreaseMoney!!!!');
 	var data = req.body;
 	var login = data.login;
 	var money = data.money;
-	decrMoney(res, login, money);
+	decrMoney(res, login, money, 'Cashout');
 }
 
-function decrMoney(res, login, cash){
+function decrMoney(res, login, cash, source){
 	if (cash<0){ cash*= -1;}
 
 	User.update({login:login, money: {$not : {$lt: cash }} } , {$inc: {money:-cash} }, function (err, count) {
@@ -533,17 +534,18 @@ function decrMoney(res, login, cash){
 			Log('DecreaseMoney---- count= ' + JSON.stringify(count));
 			if (count.ok==1){
 				Answer(res, OK);
-				Log('DecreaseMoney OK');
+				Log('DecreaseMoney OK', 'Money');
+				saveTransfer(login, -cash, source||null);
 			}
 			else{
 				Answer(res, Fail);
-				Log('DecreaseMoney Fail');
+				Log('DecreaseMoney Fail', 'Money');
 			}
 		}
 	})
 }
 
-function incrMoney(res, login, cash){
+function incrMoney(res, login, cash, source){
 	Log('trying to give ' + cash + ' points to ' + login);
 	if (cash<0){ cash*= -1;}
 
@@ -565,11 +567,33 @@ function incrMoney(res, login, cash){
 					Log(user);
 					Log('Money now = '+ user.money);
 					if (res) Answer(res, {login: user.login, money: user.money});
+					saveTransfer(login, cash, source||null);
 				}
 			});
 		}
 	});
 }
+
+function GetTransfers(req, res){
+	var query = req.body.query;
+	var purpose = req.body.purpose;
+	MoneyTransfer.find({query:query}, function (err, transfers){
+		if (err){ Error(err); Answer(res, Fail); return;}
+		Answer(res, transfers);
+	})
+}
+
+function saveTransfer(login, cash, source){
+	//, date:new Date()
+	if (cash!=0 && cash!=null){
+		var transfer = new MoneyTransfer({userID:login, ammount: cash, source:source || null  });
+		transfer.save(function (err){
+			if (err){ Error(err); return;}
+			Log('MoneyTransfer to: '+ login + ' '+ cash/100 +'$ ('+ cash+' points), because of: ' + JSON.stringify(source), 'Money');
+		});
+	}
+}
+
 
 function setTournStatus(tournamentID, status){
 	Log('Set tourn status of ' + tournamentID + ' to ' + status);
@@ -578,7 +602,7 @@ function setTournStatus(tournamentID, status){
 	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
 }
 
-function givePrizeToPlayer(player, Prize){
+function givePrizeToPlayer(player, Prize, tournamentID){
 	Log('WinPrize: ' + JSON.stringify(player));
 	if (isNaN(Prize) ){
 		//gift
@@ -592,8 +616,8 @@ function givePrizeToPlayer(player, Prize){
 		//money
 		Log('mmmMoney!! ' + Prize);
 		User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
-			if (err){ Error(err); }
-			else{ Log(count);}
+			if (err){ Error(err); return; }
+			Log(count); saveTransfer(player.login, Prize, {tournamentID:tournamentID});
 		});
 	}
 }
@@ -607,7 +631,7 @@ function LoadPrizes(tournamentID, winners){
 			Log('Prizes: ' + JSON.stringify(Prizes));
 			for (i=0; i< winners.length;i++){// && i <Prizes.Prizes.length
 				var player = winners[i];
-				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1) );
+				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1, tournamentID) );
 			}
 		}
 	});

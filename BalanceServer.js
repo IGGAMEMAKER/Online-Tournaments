@@ -20,6 +20,20 @@ app.use(function(req,res,next){
 app.post('/FreeTournamentServerIP', FreeTournamentServerIP);
 app.post('/ServeTournament', ServeTournament);
 app.post('/RestartTournament', RestartTournament);
+
+/*app.get('/close', function (req, res){
+  console.log('closing');
+  res.json('TriedToKill');
+  
+  //io.close();
+  server.close();
+  console.log(process.pid);
+  process.exit(0);
+  //process.kill(process.pid, 'SIGHUP');
+  //app.close();
+})*/
+
+
 //------------------Writing EventHandlers---------------------------------
 //YOU NEED data,res parameters for each handler, that you want to write
 //you can get the object from POST request by typing data['parameterName']
@@ -108,6 +122,9 @@ function LogFinishedTournaments (){
 		})
 }
 LogFinishedTournaments();
+
+
+
 function GetExecutor(req, res){
 	var data = req.body;
 }
