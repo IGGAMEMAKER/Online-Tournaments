@@ -50,6 +50,21 @@ app.get('/Move', function (req, res){
 	res.end('Move GET works');
 });
 
+var OK = {result: 'OK'};
+var Fail = {result: 'Fail'};
+
+app.post('/IsRunning', function (req, res) {
+	var data = req.body;
+	if (data && data.tournamentID && isRunning(data.tournamentID)){
+		strLog('gameModule: ' + 'OK ' + data.tournamentID, 'chk');
+		sender.Answer(res, {result:'OK', tournamentID: data.tournamentID});
+	}
+	else{
+		strLog('gameModule: ' + 'NOT RUNNING ' + data.tournamentID, 'chk');
+		sender.Answer(res, Fail);
+	}
+})
+
 function SaveGameResults(results){
 	var gameID = results.gameID;
 	var tournamentID = results.tournamentID;
@@ -235,7 +250,9 @@ function Answer(res, code){
 }
 
 function isRunning(gameID){
-	return games[gameID].isRunning;
+	var isr = games[gameID] && games[gameID].isRunning;
+	strLog('game ' + gameID + ' isRunning= ' + isr, 'chk');
+	return isr;
 }
 
 /*function CustomInit(gameID){
@@ -256,65 +273,70 @@ function StartGame (req, res){
 		sender.Answer(res, {result:'fail', message:message });
 	}
 	else{
-		games[ID].status=PREPARED;
-		//games[ID].players = {};
-		games[ID].players.UIDtoGID = {};
+		if (!isRunning(ID)){
+			games[ID].status=PREPARED;
+			//games[ID].players = {};
+			games[ID].players.UIDtoGID = {};
 
-		games[ID].scores = {};
+			games[ID].scores = {};
 
-		//***********
-		games[ID].gameDatas = {};
-		//***********
+			//***********
+			games[ID].gameDatas = {};
+			//***********
 
 
-		var i=0;
-		var userIDs = data['logins']; //strLog(userIDs);
+			var i=0;
+			var userIDs = data['logins']; //strLog(userIDs);
 
-		for (var playerID in userIDs){
-			//strLog(playerID);
-			games[ID].players.UIDtoGID[userIDs[playerID]] = i;
-			games[ID].scores[userIDs[playerID]] = 0;
-			i++;			
+			for (var playerID in userIDs){
+				//strLog(playerID);
+				games[ID].players.UIDtoGID[userIDs[playerID]] = i;
+				games[ID].scores[userIDs[playerID]] = 0;
+				i++;			
+				
+				//***********
+				customInit(ID, playerID);
+				//***********
+			}
+			rooms[ID] = {};
+			rooms[ID].socketRoom = io.of('/'+ID);
+
+			//var room = games[ID].socketRoom;
+			rooms[ID].socketRoom.on('connection', function (socket){
+				strLog('Room <' + ID + '> got new player');
+				socket.on('movement', function (data){
+					//strLog('Getting socketRoom socket.on Movement');
+					MoveHead(data);
+				});
+			});
+
+			games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
+			games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
+
+			games[ID].userIDs = userIDs;
+
 			
-			//***********
-			customInit(ID, playerID);
-			//***********
+
+			/*games[ID].socketRoom = io.of('/'+ID);
+
+			//var room = games[ID].socketRoom;
+			games[ID].socketRoom.on('connection', function (socket){
+				strLog('Room <' + ID + '> got new player');
+				socket.on('movement', function (data){
+					//strLog('Getting socketRoom socket.on Movement');
+					MoveHead(data);
+				});
+			});*/
+
+			strLog('Players');
+			strLog(JSON.stringify(games[ID].players));
+
+			sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+			strLog('Answered');
 		}
-		rooms[ID] = {};
-		rooms[ID].socketRoom = io.of('/'+ID);
-
-		//var room = games[ID].socketRoom;
-		rooms[ID].socketRoom.on('connection', function (socket){
-			strLog('Room <' + ID + '> got new player');
-			socket.on('movement', function (data){
-				//strLog('Getting socketRoom socket.on Movement');
-				MoveHead(data);
-			});
-		});
-
-		games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
-		games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
-
-		games[ID].userIDs = userIDs;
-
-		
-
-		/*games[ID].socketRoom = io.of('/'+ID);
-
-		//var room = games[ID].socketRoom;
-		games[ID].socketRoom.on('connection', function (socket){
-			strLog('Room <' + ID + '> got new player');
-			socket.on('movement', function (data){
-				//strLog('Getting socketRoom socket.on Movement');
-				MoveHead(data);
-			});
-		});*/
-
-		strLog('Players');
-		strLog(JSON.stringify(games[ID].players));
-
-		sender.Answer(res, {result:'success', message:"Starting game:" + ID });
-		strLog('Answered');
+		else{
+			strLog('I am running already!!!', 'chk');
+		}
 	}
 	//res.end();
 }
@@ -324,6 +346,7 @@ function prepare(gameID){
 		strLog(gameID);
 		games[gameID].tick--;
 		SendToRoom(gameID, 'startGame', {ticks:games[gameID].tick} );
+		games[gameID].isRunning=true;
 	}
 	else{
 		strLog('Trying to stop timer');

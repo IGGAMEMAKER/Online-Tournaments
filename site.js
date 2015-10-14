@@ -140,11 +140,17 @@ app.post('/Log', function (req, res){
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
+
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
   var topic = req.params.topic||'Forever';
   res.render('SpecLogs', {topic:topic});
 });
+/*app.get('/SpecLogs', function (req, res){
+  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+  var topic = req.params.topic||'Forever';
+  res.render('SpecLogs', {topic:topic});
+});*/
 
 function Log(msg, topic){
   io.emit(topic?topic:'Logs', JSON.stringify(msg));

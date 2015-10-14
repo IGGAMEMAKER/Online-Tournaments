@@ -89,7 +89,7 @@ function printer(error, response, body) {
 };
 
 function Proxy(error, response, body, res){
-	
+	Answer(res, body);
 }
 
 function Magic(res, method){

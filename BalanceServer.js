@@ -95,8 +95,10 @@ function GetTournamentInfoFromGFS (error, response, body, res){
 const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_FINISHED = 3;
+const GET_TOURNAMENTS_RUNNING = 5;
+
 function CheckTournaments(){
-	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
+	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_RUNNING}, '127.0.0.1', 'DBServer', null, 
 		function (error, response, body, res){
 			for (var i = body.length - 1; i >= 0; i--) {
 				var tournament = body[i];
@@ -108,8 +110,31 @@ function CheckTournaments(){
 		}
 	);
 }
-//CheckTournaments();
-var f = setInterval(CheckTournaments, 8500);//setInterval
+
+var chkTourn = setInterval(CheckTournaments, 8500);//setInterval
+//var runTourn = setInterval(StartRunningTournaments, 3000);
+
+/*function StartRunningTournaments(){
+	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
+		function (error, response, body, res){
+			for (var i = body.length - 1; i >= 0; i--) {
+				var tournament = body[i];
+				runTournament(tournament);
+			};
+		}
+	);
+}
+
+function runTournament(tournament){
+	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
+		function (error, response, body, res){
+			for (var i = body.length - 1; i >= 0; i--) {
+				var tournament = body[i];
+				runTournament(tournament);
+			};
+		}
+	);
+}*/
 
 function LogFinishedTournaments (){
 	sendRequest('KillFinishedTournaments', {purpose:GET_TOURNAMENTS_FINISHED}, '127.0.0.1', 'DBServer', null, 

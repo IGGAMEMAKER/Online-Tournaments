@@ -20,10 +20,10 @@ app.use(function(req,res,next){
     next();
 });
 
-function strLog(data){
+/*function strLog(data){
 	console.log(data);
 	//strLog(data);
-}
+}*/
 
 //["/stop"] //'/stop' : AnswerAndKill
 
@@ -164,12 +164,6 @@ var server = app.listen(5000, function () {
 
   strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
-
-var user1 = {
-      login: 'Dinesh',
-      password: 'Kumar',
-	job   : [ 'language', 'PHP' ]
-    };
 
 function Alive(data, res){
 	strLog(data);

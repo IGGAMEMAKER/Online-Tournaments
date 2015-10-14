@@ -929,6 +929,7 @@ const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_GAMESERVER = 3;
 const GET_TOURNAMENTS_INFO = 4;
+const GET_TOURNAMENTS_RUNNING = 5;
 
 function getTournamentsQuery(query, fields, purpose){
 	if (query) Log(JSON.stringify(query));

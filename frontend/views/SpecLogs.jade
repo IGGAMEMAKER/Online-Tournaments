@@ -1,8 +1,8 @@
 //
 
 mixin drawLogLink(topic)
-	td(width="100px")
-		a(href=topic) #{topic}
+	td(width="200px")
+		a(href=topic style="font-size: 35px;") #{topic}
 
 html
 	head
@@ -48,7 +48,8 @@ html
 			}
 			var socket = io();
 			var topic = "#{topic}";
-			alert(topic);
+			//alert(topic);
+			$('#messages').append($('<li style="color: #FF0000; font-size: 22px;">').text(topic + ' Logs'));
 			/*$('form').submit(function(){
 				socket.emit('chat message', $('#m').val());
 				$('#m').val('');
