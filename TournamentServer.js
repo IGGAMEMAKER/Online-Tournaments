@@ -407,7 +407,7 @@ app.post('/StopTournament', function (req, res){
 
 function checkRunningTournaments(){
 	var stream = 'chk';
-	if(runningTournaments) strLog('runningTournaments: ' + JSON.stringify(runningTournaments), stream);
+	if(runningTournaments=={}) strLog('runningTournaments: ' + JSON.stringify(runningTournaments), stream);
 	for (var tournIndex in runningTournaments){
 		strLog(tournIndex + ' ' + runningTournaments[tournIndex], stream);
 		var tournamentID = tournIndex;
