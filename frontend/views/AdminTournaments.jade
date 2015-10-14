@@ -1,0 +1,61 @@
+//
+	-var red = "#FF0000";
+	-var green = "#00FF00";
+	-var blue = "#000000";
+	mixin ShowStatus(status)
+		case status
+			when 0
+				td(bgcolor="#FF0000") Initialized
+			when 1
+				td(bgcolor="#00FF00") Register
+			when 2
+				td(bgcolor="#0000FF") Running
+			default
+				td(bgcolor="#FF000000") NULL
+	mixin ShowGame(gameNameID)
+		case gameNameID
+			when 0
+				td(bgcolor="#FF0000") Error
+			when 1
+				td(bgcolor=blue) Ping Pong
+			when 2
+				td(bgcolor=green) Questions
+			default
+				td(bgcolor=red) Error
+include tmpl/tournaments
+html
+	head
+		title!= title
+	body
+		- //for (var item in message){
+		//p!= message.length
+		//p!= JSON.stringify(message)
+		include tAuth
+		br
+		br
+		h1 List of Tournaments
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			tr
+				td ID
+				td Players
+				td Buy In
+				td Game
+				td Status
+				td TournamentInfo
+			- if (message.length>0){ for (i=0; i<message.length;i++){
+				tr
+					td #{message[i].tournamentID}
+					td #{message[i].players}/#{message[i].goNext[0]}
+					td #{message[i].buyIn/100}$
+					+ShowGame(message[i].gameNameID)
+					//+ShowStatus(#{message[i].status})
+					+ShowStatus(message[i].status)
+					//td #{message[i].status}
+					td
+						center
+							a(href='TournamentInfo?tID='+message[i].tournamentID)
+								Tournament Info
+				//p!= message
+			- }}
+
+

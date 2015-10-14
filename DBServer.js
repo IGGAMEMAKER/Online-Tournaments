@@ -36,6 +36,8 @@ app.post('/DecreaseMoney', DecreaseMoney);
 
 app.post('/RestartTournament', RestartTournament);
 app.post('/StartTournament', function (req, res) {StartTournament(req.body, res);});
+app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
+
 app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
 
 app.post('/Login', LoginUser);
@@ -64,6 +66,21 @@ var Fail = {
 var OK = {
 	result: 'OK'
 }
+const TOURN_STATUS_REGISTER = 1;
+const TOURN_STATUS_RUNNING = 2;
+const TOURN_STATUS_FINISHED = 3;
+const TOURN_STATUS_PAUSED = 4;
+
+const PROMO_COMISSION = 5;
+
+
+const GET_TOURNAMENTS_USER = 1;
+const GET_TOURNAMENTS_BALANCE = 2;
+const GET_TOURNAMENTS_GAMESERVER = 3;
+const GET_TOURNAMENTS_INFO = 4;
+const GET_TOURNAMENTS_RUNNING = 5;
+
+
 function Error( err){
 	Log('DBServer Error: ' + JSON.stringify(err));
 }
@@ -74,6 +91,7 @@ function Error( err){
 
 var currentTournamentCounter=0;
 var tournaments = {};
+
 var users= {count:0 };
 var IDToLoginConverter = {count:0};
 //------------------Writing EventHandlers---------------------------------
@@ -238,6 +256,25 @@ function EnableTournament(data, res){
 	}
 	else{
 		Answer(res, Fail);
+	}
+}
+
+function StopTournament(data, res){
+	Log('DBServer starts tournament');
+	if (data){
+		if (data.tournamentID){
+			setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
+			ClearRegistersInTournament([data.tournamentID]);
+			Answer(res, OK);
+		}
+		else{
+			Log('no tournamentID, no fun!');
+			Answer(res, Fail);
+		}
+	}
+	else{
+		Log('data is null');
+		Answer(res,Fail);
 	}
 }
 
@@ -450,10 +487,7 @@ function GetGameParametersByGameName (gameName){
 		break;
 	}
 }
-const TOURN_STATUS_REGISTER = 1;
-const TOURN_STATUS_RUNNING = 2;
-const TOURN_STATUS_FINISHED = 3;
-const TOURN_STATUS_PAUSED = 4;
+
 
 
 
@@ -655,7 +689,6 @@ function getPrize(Prizes, goNext, i){
 	
 }
 
-const PROMO_COMISSION = 5;
 
 function UpdatePromos(tournamentID){
 	Tournament.findOne({tournamentID:tournamentID}, 'buyIn', function (err, tournament){
@@ -925,11 +958,6 @@ function findTournaments(res, query, queryFields, purpose){
 	}).sort('-tournamentID');
 }
 
-const GET_TOURNAMENTS_USER = 1;
-const GET_TOURNAMENTS_BALANCE = 2;
-const GET_TOURNAMENTS_GAMESERVER = 3;
-const GET_TOURNAMENTS_INFO = 4;
-const GET_TOURNAMENTS_RUNNING = 5;
 
 function getTournamentsQuery(query, fields, purpose){
 	if (query) Log(JSON.stringify(query));

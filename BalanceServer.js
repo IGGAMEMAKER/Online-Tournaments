@@ -98,7 +98,7 @@ const GET_TOURNAMENTS_FINISHED = 3;
 const GET_TOURNAMENTS_RUNNING = 5;
 
 function CheckTournaments(){
-	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_RUNNING}, '127.0.0.1', 'DBServer', null, 
+	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
 		function (error, response, body, res){
 			for (var i = body.length - 1; i >= 0; i--) {
 				var tournament = body[i];

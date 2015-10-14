@@ -19,7 +19,7 @@ app.post('/HaveEnoughResourcesForTournament', HaveEnoughResourcesForTournament);
 app.post('/FinishGame', FinishGame);
 app.post('/TournamentWorks', TournamentWorks);
 app.post('/GameServerStarts', GameServerStarts);
-
+app.post('/StopTournament', StopTournament);
 
 var status = new Object();
 
@@ -100,6 +100,16 @@ function StartTournament (req, res){
 	sender.expressSendRequest("StartGame", data, 
 		'127.0.0.1', tourns[tournamentID], null, sender.printer);//sender.printer
 }
+
+function StopTournament (req, res){
+	strLog('Trying to STOPTournament');
+	var data = req.body;
+	sender.Answer(res, {status:'OK', message:'StopTournament'});
+	var tournamentID = data.tournamentID;
+	sender.expressSendRequest("StopGame", data, 
+		'127.0.0.1', tourns[tournamentID], null, sender.printer);//sender.printer
+}
+
 
 function TournamentWorks(req, res){
 	var tournamentID = req.body.tournamentID;

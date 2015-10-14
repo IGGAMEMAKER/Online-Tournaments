@@ -335,6 +335,7 @@ app.get('/ShowGifts', function (req, res){
 
 app.all('/StartTournament', function (req, res){
   //console.log(req.url);
+  Log({msg:'StartTournament'}, 'ASD');
   console.log('Site starts tournament');
   var data = req.body;
   //console.log(req.body);

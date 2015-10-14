@@ -304,13 +304,18 @@ function GetUsersHandler( error, response, body, res ){
 
 function StartTournament (req, res){
 	var data = req.body;
-
+	//strLog('StartTournament')
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
 	strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
 
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
+
+function StopTournament (req, res){
+	sender.sendRequest("StopTournament", {tournamentID:req.body.tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.Proxy);
+}
+
 
 function GetUserProfileInfo(req , res){
 	var data = req.body;

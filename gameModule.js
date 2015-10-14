@@ -56,7 +56,7 @@ var Fail = {result: 'Fail'};
 app.post('/IsRunning', function (req, res) {
 	var data = req.body;
 	if (data && data.tournamentID && isRunning(data.tournamentID)){
-		strLog('gameModule: ' + 'OK ' + data.tournamentID, 'chk');
+		//strLog('gameModule: ' + 'OK ' + data.tournamentID, 'chk');
 		sender.Answer(res, {result:'OK', tournamentID: data.tournamentID});
 	}
 	else{
@@ -64,6 +64,13 @@ app.post('/IsRunning', function (req, res) {
 		sender.Answer(res, Fail);
 	}
 })
+
+app.post('/StopGame', function (req, res){
+	var tournamentID = req.body.tournamentID;
+	strLog('StopGame ' + tournamentID, 'chk');
+	sender.Answer(res, OK);
+	stopGame(tournamentID);
+});
 
 function SaveGameResults(results){
 	var gameID = results.gameID;
@@ -251,7 +258,7 @@ function Answer(res, code){
 
 function isRunning(gameID){
 	var isr = games[gameID] && games[gameID].isRunning;
-	strLog('game ' + gameID + ' isRunning= ' + isr, 'chk');
+	if (!isr) strLog('game ' + gameID + ' isRunning= ' + isr, 'chk');
 	return isr;
 }
 
@@ -328,8 +335,7 @@ function StartGame (req, res){
 				});
 			});*/
 
-			strLog('Players');
-			strLog(JSON.stringify(games[ID].players));
+			strLog('Players ' + JSON.stringify(games[ID].players));
 
 			sender.Answer(res, {result:'success', message:"Starting game:" + ID });
 			strLog('Answered');
@@ -378,6 +384,19 @@ function getGID(gameID, UID){//GID= GamerID, UID= UserID
 	return games[gameID].players.UIDtoGID[UID];
 }
 
+function stopGame(ID){
+	games[ID].isRunning = false;
+	setTimeout(function(){
+		strLog('games.length ' + games.length, 'ASD');
+		strLog('gameModule... stopGame : ' + ID);
+		games[ID].isRunning = false; 
+	}, UPDATE_TIME+100);
+	
+	SendToRoom(ID, 'finish', { winner:'Error', players: {} });
+	clearInterval(games[ID].timer);
+	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
+}
+
 function FinishGame(ID, playerID){
 	var gameID = ID;
 	var tournamentID = ID;
@@ -390,10 +409,12 @@ function FinishGame(ID, playerID){
 	};
 	SendToRoom(ID, 'finish', { winner:playerID, players: sortedPlayers });
 	clearInterval(games[gameID].timer);
-	strLog('FIX IT!!! GAMEID=tournamentID');
+	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
+	
+	SaveGameResults(sortedPlayers);
+
 	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
 			'GameFrontendServer', null, sender.printer );
-	SaveGameResults(sortedPlayers);
 }
 function Sort(players){
 	return players;

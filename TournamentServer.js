@@ -45,6 +45,9 @@ var configs =  JSON.parse(file);
 }*/
 console.log(JSON.stringify(configs));
 
+// If you want to start game manually (after long time stop), you need to call StartTournament
+// 
+
 
 function TournamentLog(tournamentID ,message){
 	var time = new Date();
@@ -218,6 +221,11 @@ function addRunningTournament(tournamentID){
 	runningTournaments[tournamentID] = 1;
 }
 
+function deleteRunningTournament(tournamentID){
+	runningTournaments[tournamentID] = null;
+	delete runningTournaments[tournamentID];
+}
+
 function StartTournament(tournamentID, tournament, force){
 	strLog("Tournament " + tournamentID + " starts");
 	strLog(tournament.players);
@@ -293,51 +301,52 @@ function last (Arr){
 }
 
 function EndTournament( scores, gameID, tournamentID){
-	var obj = [];
-	for (var a in scores){
-		obj.push( { value:scores[a], login: a } );
-	}
-	var winnersCount= last(tournaments[tournamentID].goNext);
-	strLog('Prizes will go to ' + winnersCount + ' first users');
-	/*//strLog(obj);
-	//strLog('------');
-	
-	strLog('SortUP');
-	obj.sort(sort_by('value', false, parseInt));
-	strLog(obj);
-	strLog('------');
-	
-	strLog('SortDown');*/
-	obj.sort(sort_by('value', true, parseInt));
-	strLog(obj);
-	strLog(tournaments[tournamentID]);
-	strLog('------');
-	TournamentLog(tournamentID, 'Winners:'+str(obj));
-
-	/*var winners = [];
-	for (i=0;i<winnersCount;++i){
-		winners[i] = { login:obj[i].login };//, place:tournaments[tournamentID].Prizes[i] };
-	}
-	strLog(winners);*/
-
-	/*sender.sendRequest("WinPrize", {winners:winners, tournamentID:tournamentID}, '127.0.0.1', 
-			'DBServer', null, sender.printer );*/
-	sender.sendRequest("WinPrize", {winners:obj, tournamentID:tournamentID}, '127.0.0.1', 
-			'DBServer', null, sender.printer );
-	
-	runningTournaments[tournamentID] = null;
-	delete runningTournaments[tournamentID];
-	strLog('Finished Tournament ' + tournamentID, 'chk');
-	/*for (i=0;i<winnersCount;++i){
-
-		strLog('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );
-		var winnerObject = {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] };
+	if (tournaments[tournamentID]){
+		var obj = [];
+		for (var a in scores){
+			obj.push( { value:scores[a], login: a } );
+		}
+		var winnersCount= last(tournaments[tournamentID].goNext);
+		strLog('Prizes will go to ' + winnersCount + ' first users');
+		/*//strLog(obj);
+		//strLog('------');
 		
-		sender.sendRequest("WinPrize", winnerObject, '127.0.0.1', 
-			'DBServer', null, sender.printer );
-	}*/
-	//scores.sort(Comparator);
-	strLog(scores);
+		strLog('SortUP');
+		obj.sort(sort_by('value', false, parseInt));
+		strLog(obj);
+		strLog('------');
+		
+		strLog('SortDown');*/
+		obj.sort(sort_by('value', true, parseInt));
+		strLog(obj);
+		strLog(tournaments[tournamentID]);
+		strLog('------');
+		TournamentLog(tournamentID, 'Winners:'+str(obj));
+
+		/*var winners = [];
+		for (i=0;i<winnersCount;++i){
+			winners[i] = { login:obj[i].login };//, place:tournaments[tournamentID].Prizes[i] };
+		}
+		strLog(winners);*/
+
+		/*sender.sendRequest("WinPrize", {winners:winners, tournamentID:tournamentID}, '127.0.0.1', 
+				'DBServer', null, sender.printer );*/
+		sender.sendRequest("WinPrize", {winners:obj, tournamentID:tournamentID}, '127.0.0.1', 
+				'DBServer', null, sender.printer );
+		
+		deleteRunningTournament(tournamentID);
+		strLog('Finished Tournament ' + tournamentID, 'chk');
+		/*for (i=0;i<winnersCount;++i){
+
+			strLog('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );
+			var winnerObject = {userID:obj[i].userID, prize: tournaments[tournamentID].Prizes[i] };
+			
+			sender.sendRequest("WinPrize", winnerObject, '127.0.0.1', 
+				'DBServer', null, sender.printer );
+		}*/
+		//scores.sort(Comparator);
+		strLog(scores);
+	}
 }
 
 
@@ -373,10 +382,32 @@ function addToGameNameList(tournamentID, gameName){
 	return true;
 }*/
 
+app.post('/Running', function (req, res){
+	sender.Answer(res, runningTournaments);
+})
+
+app.post('/RunTournament', function (req, res){
+	var tournamentID = req.body.tournamentID;
+	StartTournament(tournamentID, tournaments[tournamentID], 'ForcedRun');
+	sender.Answer(res, OK);
+});
+
+app.post('/StopTournament', function (req, res){
+	var tournamentID = req.body.tournamentID;
+	strLog('StopTournament : ' + tournamentID, 'Manual');
+	sender.sendRequest("StopTournament", {tournamentID: tournamentID}, '127.0.0.1', 'DBServer', null, sender.printer);
+	sender.sendRequest("StopTournament", {tournamentID: tournamentID}, '127.0.0.1', 'FrontendServer', null, sender.printer);
+
+	tournaments[tournamentID] = null;
+	delete tournaments[tournamentID];
+	deleteRunningTournament(tournamentID);
+
+	sender.Answer(res, OK);
+})
 
 function checkRunningTournaments(){
 	var stream = 'chk';
-	strLog('runningTournaments: ' + JSON.stringify(runningTournaments), stream);
+	if(runningTournaments) strLog('runningTournaments: ' + JSON.stringify(runningTournaments), stream);
 	for (var tournIndex in runningTournaments){
 		strLog(tournIndex + ' ' + runningTournaments[tournIndex], stream);
 		var tournamentID = tournIndex;
@@ -394,6 +425,7 @@ function checkRunningTournaments(){
 
 //var tmrRunningTournaments = setInterval( function(){checkRunningTournaments();} , 5000);
 setTimeout(checkRunningTournaments, 5000);
+
 function needsToRun(tournamentID){
 	return tournaments[tournamentID].goNext[0] === tournaments[tournamentID].playersRegistered;
 }

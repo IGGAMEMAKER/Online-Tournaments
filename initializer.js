@@ -276,8 +276,41 @@ tournamentAddingTimer = setInterval(function(){
 	}
 }, 200);*/
 
-sender.sendRequest('Log', {tournamentID: ID, winners:{} }, 'localhost', 'LogServer', null, sender.printer);
+//sender.sendRequest('Log', {tournamentID: ID, winners:{} }, 'localhost', 'LogServer', null, sender.printer);
+sender.sendRequest('Running', {tournamentID:1}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+	console.log(JSON.stringify(body));
+});
 
+
+function StopTournament(ID){
+	//sender.sendRequest('StopTournament', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+	//sender.sendRequest('Running', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+	//sender.sendRequest('RunTournament', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+	
+	/*sender.sendRequest('StopGame', {tournamentID:ID}, 'localhost', '1', null, function (error, response, body, res){
+		console.log(JSON.stringify(body));
+	});
+
+	sender.sendRequest('StopGame', {tournamentID:ID}, 'localhost', '2', null, function (error, response, body, res){
+		console.log(JSON.stringify(body));
+	});*/
+
+	//sender.sendRequest('StopGame', {tournamentID:ID}, 'localhost', 1, null, function (error, response, body, res){
+	sender.sendRequest('StopTournament', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+		console.log(JSON.stringify(body));
+	});
+
+	/*sender.sendRequest('StopGame', {tournamentID:ID}, 'localhost', 2, null, function (error, response, body, res){
+		console.log(JSON.stringify(body));
+	});*/
+}
+var args = process.argv.slice(2);
+console.log(args.length);
+var curTournAndGameID;
+if (args.length>0){//} || args.length=='0'){
+	curTournAndGameID = args[0];
+}
+StopTournament(curTournAndGameID);
 
 /*function FinishTournament(ID){
 	sender.sendRequest('WinPrize', {tournamentID: ID, winners:{} }, 'localhost', 'DBServer', null, sender.printer);
