@@ -10,6 +10,8 @@ this.strLog = strLog;
 this.getPort = getPort;
 this.setServer = setServer;
 
+this.getDay = getDay;
+
 var serverList = {};
 
 var fs = require('fs');
@@ -61,8 +63,17 @@ function strLog(text, topic){
 	//var txt = time+' ' + text;// + "\n";
 	var host = '127.0.0.1';
 	var txt = serverName +' : ' + text;
-
-	fs.appendFile('Logs/Full_message_'+'.txt', '\r\n' + txt, function (err) {
+	
+	var logDirectory = __dirname + '/Logs/'+getDay(time)+'/';
+	
+	fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+	var path = 'Full_message_';
+	if (topic=='::') topic = 'Forever';
+	if (topic) path = topic;
+	logDirectory += path;
+	// ensure log directory exists
+	
+	fs.appendFile(logDirectory+'.txt', '\r\n' + txt, function (err) {//'Logs/Full_message_'
 		if (err) {
 			console.log('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
@@ -72,9 +83,15 @@ function strLog(text, topic){
 			sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
 		}
 	});
+
 	//stream.write(text);
 	console.log('strLog: ' + text);
 }
+
+function getDay(date){
+	return date.toLocaleDateString();
+}
+
 
 function printer(error, response, body) {
 	if (!error) {

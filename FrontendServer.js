@@ -302,6 +302,7 @@ function GetUsersHandler( error, response, body, res ){
 	Answer(res, body);
 }
 
+
 function StartTournament (req, res){
 	var data = req.body;
 	//strLog('StartTournament')

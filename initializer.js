@@ -310,7 +310,13 @@ var curTournAndGameID;
 if (args.length>0){//} || args.length=='0'){
 	curTournAndGameID = args[0];
 }
-StopTournament(curTournAndGameID);
+//StopTournament(curTournAndGameID);
+
+var date = new Date();
+//console.log(date);
+var jsDate = date.toLocaleDateString();
+console.log(jsDate);
+
 
 /*function FinishTournament(ID){
 	sender.sendRequest('WinPrize', {tournamentID: ID, winners:{} }, 'localhost', 'DBServer', null, sender.printer);

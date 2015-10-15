@@ -385,6 +385,10 @@ function addToGameNameList(tournamentID, gameName){
 app.post('/Running', function (req, res){
 	sender.Answer(res, runningTournaments);
 })
+app.get('/Tournaments', function (req, res){
+	sender.Answer(res, tournaments);
+})
+
 
 app.post('/RunTournament', function (req, res){
 	var tournamentID = req.body.tournamentID;

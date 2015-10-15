@@ -95,7 +95,7 @@ function getSettings(app){
 	    //
 	    // Options for restarting on watched files.
 	    //
-	    'watch': true,               // Value indicating if we should watch files.
+	    'watch': false,               // Value indicating if we should watch files.
 	    'watchIgnoreDotFiles': null, // Whether to ignore file starting with a '.'
 	    //'watchIgnorePatterns': null, // Ignore patterns to use when watching files.
 	    'watchIgnorePatterns': [ 'log/*', 'node_modules/*', 'pids/*',
@@ -156,7 +156,7 @@ function startServer(child, servName){
 	var msg;
 	child.on('start', function() {
 
-	    SendInfo('Forever starting ' + servName + ' for ' + child.times + ' time');
+	    SendInfo('Forever starting ' + servName + ' for ' + child.times + ' time','Start');
 	})
 	child.on('watch:restart', function (info) {
 		SendInfo('Restaring ' + servName + ' because ' + info.file + ' changed');
@@ -165,6 +165,7 @@ function startServer(child, servName){
 	child.on('error', function (err){
 		SendInfo('Error in ' + servName + ' ' + JSON.stringify(err), 'Err');
 	});
+
 
 	child.on('restart', function() {
 	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time', 'Err');

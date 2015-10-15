@@ -53,13 +53,14 @@ app.use(function(req,res,next){
     break;
     default:
       console.log('Site: Request! ' + req.url);
+
     break;
   }
   
   res.locals.session = req.session;
-  if (req.session){
+  /*if (req.session){
 
-  }
+  }*/
   next();
 });
 /*app.use(session({
@@ -107,7 +108,22 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
+app.post('/Info', Info);
+function Info(req, res){
+  var command = req.body.command||'';
+  switch(command){
+    case 'TournamentsRunning':
+      TournamentsRunning(res);
+    break;
+    default:
+      sender.Answer(res, {result:'Unknown command ' + command});
+    break;
+  }
+}
 
+function TournamentsRunning(res){
+  sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
+}
 
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
@@ -128,6 +144,18 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
   }
 }
 
+app.get('/Admin', function (req, res){
+  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+  res.render('AdminPanel', {msg:'hola!'});
+    return;
+  if (isAuthenticated(req) && req.session.login=='Alvaro_Fernandez'){
+    res.render('AdminPanel', {msg:'hola!'});
+    return;
+  }
+  res.send(404);
+
+});
+
 app.post('/Log', function (req, res){
   //res.end('sended');
   res.end('');
@@ -140,6 +168,8 @@ app.post('/Log', function (req, res){
 app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
+
+
 
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});

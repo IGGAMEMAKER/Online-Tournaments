@@ -44,6 +44,11 @@ const TOURN_STATUS_RUNNING = 2;
 const TOURN_STATUS_FINISHED = 3;
 const TOURN_STATUS_PAUSED = 4;
 
+const GET_TOURNAMENTS_USER = 1;
+const GET_TOURNAMENTS_BALANCE = 2;
+const GET_TOURNAMENTS_FINISHED = 3;
+const GET_TOURNAMENTS_RUNNING = 5;
+
 function ServeTournament (req, res){
 	var data = req.body;
 	strLog('income tournament');
@@ -92,10 +97,6 @@ function GetTournamentInfoFromGFS (error, response, body, res){
 
 }*/
 
-const GET_TOURNAMENTS_USER = 1;
-const GET_TOURNAMENTS_BALANCE = 2;
-const GET_TOURNAMENTS_FINISHED = 3;
-const GET_TOURNAMENTS_RUNNING = 5;
 
 function CheckTournaments(){
 	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
