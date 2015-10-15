@@ -45,6 +45,10 @@ app.post('/Register', function (req, res){
 
 app.post('/FinishGame', FinishGame);
 app.post('/StartTournament', StartTournament);
+app.post('/StopTournament', StopTournament);
+
+
+
 app.post('/AddGift', AddGift);
 
 app.post('/Login', function (req, res){
@@ -314,6 +318,7 @@ function StartTournament (req, res){
 }
 
 function StopTournament (req, res){
+	strLog('FrontendServer StopTournament :::'+req.body.tournamentID, 'Manual')
 	sender.sendRequest("StopTournament", {tournamentID:req.body.tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.Proxy);
 }
 

@@ -102,7 +102,7 @@ function StartTournament (req, res){
 }
 
 function StopTournament (req, res){
-	strLog('Trying to STOPTournament');
+	strLog('Trying to STOPTournament', 'Manual');
 	var data = req.body;
 	sender.Answer(res, {status:'OK', message:'StopTournament'});
 	var tournamentID = data.tournamentID;

@@ -108,18 +108,26 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
-app.post('/Info', Info);
-function Info(req, res){
+app.post('/Admin', Admin);
+function Admin(req, res){
   var command = req.body.command||'';
   switch(command){
     case 'TournamentsRunning':
       TournamentsRunning(res);
+    break;
+    case 'stopTournament':
+      stopTournament(res, req.body.tournamentID)
     break;
     default:
       sender.Answer(res, {result:'Unknown command ' + command});
     break;
   }
 }
+
+function stopTournament(res, tournamentID){
+  sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy);
+}
+
 
 function TournamentsRunning(res){
   sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', res, sender.Proxy);

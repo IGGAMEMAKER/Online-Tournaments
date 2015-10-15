@@ -310,7 +310,7 @@ var curTournAndGameID;
 if (args.length>0){//} || args.length=='0'){
 	curTournAndGameID = args[0];
 }
-//StopTournament(curTournAndGameID);
+StopTournament(curTournAndGameID);
 
 var date = new Date();
 //console.log(date);
