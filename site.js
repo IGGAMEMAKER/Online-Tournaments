@@ -116,10 +116,12 @@ function Admin(req, res){
     case 'stopTournament': stopTournament(res, req.body.tournamentID); break;
     case 'runTournament': runTournament(res, req.body.tournamentID); break;
     case 'Tournaments': GetTournamentsFromTS(res); break;
+    case 'Stop': StopServer(res, req.body.serverName); break;
 
     default: sender.Answer(res, {result:'Unknown command ' + command}); break;
   }
 }
+
 
 function GetTournamentsFromTS(res){
   sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);

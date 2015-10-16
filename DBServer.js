@@ -261,6 +261,7 @@ function EnableTournament(data, res){
 
 function StopTournament(data, res){
 	Log('DBServer starts tournament');
+	Log('RETURN MONEY TO USERS, WHO TOOK PART IN STOPPED TOURNAMETNT', 'shitCode');
 	if (data){
 		if (data.tournamentID){
 			setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);

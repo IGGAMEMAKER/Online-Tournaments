@@ -15,7 +15,7 @@ var strLog = sender.strLog;
 
 app.post('/ServeTournament', ServeTournament);
 app.post('/StartTournament', StartTournament);
-app.post('/HaveEnoughResourcesForTournament', HaveEnoughResourcesForTournament);
+
 app.post('/FinishGame', FinishGame);
 app.post('/TournamentWorks', TournamentWorks);
 app.post('/GameServerStarts', GameServerStarts);
@@ -23,10 +23,6 @@ app.post('/StopTournament', StopTournament);
 
 var status = new Object();
 
-//------------------Writing EventHandlers---------------------------------
-//YOU NEED data,res parameters for each handler, that you want to write
-//you can get the object from POST request by typing data['parameterName']
-//you NEED TO FINISH YOUR ANSWERS WITH res.end();
 var OK = {result:'OK'};
 var Fail = {result:'Fail'};
 
@@ -84,12 +80,7 @@ function AnalyzeStructure(tournament, res){
 
 function ServeTournament (req, res){
 	var data = req.body;
-	strLog("----");
-	strLog("ServeTournament :");
-
-	//strLog(data);
 	AnalyzeStructure(data, res);
-	strLog("----");
 }
 
 function StartTournament (req, res){
@@ -147,16 +138,6 @@ function sendToGameServer(command, data, host, gameName, res, callback){
 
 	sender.expressSendRequest(command, data, 
 		host?host:'127.0.0.1', gameName, res, callback);//sender.printer
-}
-
-
-function HaveEnoughResourcesForTournament (req, res){
-	var data = req.body;
-	strLog("We have resources for " + data['playerCount'] + " divided in " + data['gameNums'] + " groups. HARDCODED success");
-	var result = {
-		result:"success"
-	}
-	res.end(result);
 }
 
 var server = app.listen(5008, function () {

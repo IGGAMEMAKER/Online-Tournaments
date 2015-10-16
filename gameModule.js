@@ -79,7 +79,7 @@ function SaveGameResults(results){
 }
 
 function LogToFile(filename, text){
-	fs.appendFile(filename, JSON.stringify({time: new Date, text:text}), function (err){
+	fs.writeFile(filename, JSON.stringify({time: new Date, text:text}), function (err){
 		if (err){
 			strLog('err: ' + JSON.stringify(err), 'GameResults');
 		}
@@ -128,12 +128,9 @@ funcArray["/UnSetGame"] = UnSetGame;*/
 
 //DEFAULT.;
 
-var games = {
-
-};
-var rooms = {
-
-};
+var games = { };
+var rooms = { };
+var timers = { };
 
 var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
 console.log(file);
@@ -190,12 +187,12 @@ function GetGames ( req,res){
 strLog('gameModule starts!!');
 
 function ServeGames (req, res){
-	strLog('Game Server serves games');
+	//strLog('Game Server serves games');
 	var data = req.body;
 	var tournamentID = data['tournamentID'];
 
 	var gameID = data['tournamentID'];
-	strLog('FIX IT!!!!   var gameID = data[tournamentID];');
+	//strLog('FIX IT!!!!   var gameID = data[tournamentID];','shitCode');
 
 	games[gameID]= data;
 	initGame(gameID);
@@ -269,11 +266,96 @@ var customInit;
 var Action;
 //var customMove
 
+function setRoom(ID){
+	rooms[ID] = {};
+	rooms[ID].socketRoom = io.of('/'+ID);
+
+	//var room = games[ID].socketRoom;
+	rooms[ID].socketRoom.on('connection', function (socket){
+		strLog('Room <' + ID + '> got new player');
+		socket.on('movement', function (data){
+			//strLog('Getting socketRoom socket.on Movement');
+			MoveHead(data);
+		});
+	});
+}
+
+function PrepareAndStart(ID, userIDs, res){
+	strLog('PrepareAndStart tournament ' + ID, 'Tournaments');
+	games[ID].status=PREPARED;
+	//games[ID].players = {};
+	games[ID].players.UIDtoGID = {};
+
+	games[ID].scores = {};
+
+	//***********
+	games[ID].gameDatas = {};
+	//***********
+
+	// Fill users
+	var i=0; //var userIDs = data['logins']; //strLog(userIDs);
+	for (var playerID in userIDs){
+		games[ID].players.UIDtoGID[userIDs[playerID]] = i;
+		games[ID].scores[userIDs[playerID]] = 0;
+		i++;			
+		
+		//***********
+		customInit(ID, playerID);
+		//***********
+	}
+	games[ID].userIDs = userIDs;
+	//
+
+	setRoom(ID);
+
+	games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
+	timers[ID] = setInterval(function() {prepare(ID)}, 1000);
+
+
+	//strLog('Players ' + JSON.stringify(games[ID].players), 'Tournaments');
+	sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+}
+
+function StopTMR(TMR_ID){
+	strLog('StopTMR : ' + TMR_ID, 'Timer');
+	clearInterval(timers[TMR_ID]);
+}
+
+function GameIsSet(ID){
+	return games[ID] && (games[ID].status==INIT || games[ID].status==PREPARED);
+}
+
 function StartGame (req, res){
 	var data = req.body;
-	strLog("start game: " + JSON.stringify(data), 'ASD');
+	strLog("start game: " + JSON.stringify(data), 'Games');
 	var ID = data['tournamentID'];
-	if (!games[ID]){
+	var force = data.force;
+	if (GameIsSet(ID)){
+		if (force || !isRunning(ID)){
+			if (force) { 
+				strLog('I am forced to start tournament ' + ID + ' ((( force=' + force, 'Tournaments');
+				stopGame(ID);
+			}
+			else { 
+				strLog('I thought, it was not running ' + ID, 'Tournaments'); 
+			}
+			PrepareAndStart(ID, data.logins, res);
+		}
+		else{
+			strLog('Game ' + ID + ' is running normally and there is no reason to restart it', 'Tournaments');
+			sender.Answer(res, Fail);
+		}
+	}
+	else{
+		strLog('Game ' + ID + ' was not set,  doing nothing :)', 'Tournaments');
+		sender.Answer(res, Fail);
+	}
+	/*var message = 'Cannot find tournament with ID='+ ID;
+	strLog(games);
+	strLog(message, 'ASD');*/
+	//sender.Answer(res, {result:'fail', message:message });
+
+	/*if (!games[ID] ){
 		var message = 'Cannot find tournament with ID='+ ID;
 		strLog(games);
 		strLog(message, 'ASD');
@@ -281,55 +363,12 @@ function StartGame (req, res){
 	}
 	else{
 		if (!isRunning(ID) || games[ID] == null){
-			games[ID].status=PREPARED;
-			//games[ID].players = {};
-			games[ID].players.UIDtoGID = {};
-
-			games[ID].scores = {};
-
-			//***********
-			games[ID].gameDatas = {};
-			//***********
-
-
-			var i=0;
-			var userIDs = data['logins']; //strLog(userIDs);
-
-			for (var playerID in userIDs){
-				//strLog(playerID);
-				games[ID].players.UIDtoGID[userIDs[playerID]] = i;
-				games[ID].scores[userIDs[playerID]] = 0;
-				i++;			
-				
-				//***********
-				customInit(ID, playerID);
-				//***********
-			}
-			rooms[ID] = {};
-			rooms[ID].socketRoom = io.of('/'+ID);
-
-			//var room = games[ID].socketRoom;
-			rooms[ID].socketRoom.on('connection', function (socket){
-				strLog('Room <' + ID + '> got new player');
-				socket.on('movement', function (data){
-					//strLog('Getting socketRoom socket.on Movement');
-					MoveHead(data);
-				});
-			});
-
-			games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
-			games[ID].timer = setInterval(function() {prepare(ID)}, 1000);
-
-			games[ID].userIDs = userIDs;
-
-			strLog('Players ' + JSON.stringify(games[ID].players));
-			sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+			PrepareAndStart(ID, data['logins']);
 		}
 		else{
 			strLog('I am running already!!! ' + ID, 'ASD');
 		}
-	}
-	//res.end();
+	}*/
 }
 
 function prepare(gameID){
@@ -341,9 +380,9 @@ function prepare(gameID){
 	}
 	else{
 		strLog('Trying to stop timer');
-		clearInterval(games[gameID].timer);
+		StopTMR(gameID);
 		strLog('Stopped timer');
-		games[gameID].timer = setInterval(
+		timers[gameID] = setInterval(
 			function() {
 				games[gameID].isRunning=true;
 				customUpdate(gameID);
@@ -373,8 +412,8 @@ function getGID(gameID, UID){//GID= GamerID, UID= UserID
 
 function stopGame(ID){
 	games[ID].isRunning = false;
-	clearInterval(games[ID].timer);
-	games[ID] = null;
+	StopTMR(ID);
+	//games[ID] = null;
 
 	/*setTimeout(function(){
 		strLog('games.length ' + games.length, 'ASD');
@@ -398,7 +437,7 @@ function FinishGame(ID, playerID){
 		tournamentID:ID
 	};
 	SendToRoom(ID, 'finish', { winner:playerID, players: sortedPlayers });
-	clearInterval(games[gameID].timer);
+	StopTMR(gameID);
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
 	
 	SaveGameResults(sortedPlayers);

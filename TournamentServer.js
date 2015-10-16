@@ -245,7 +245,7 @@ function StartTournament(tournamentID, tournament, force){
 	TournamentLog(tournamentID, 'start Object:' + str(obj));
 	//tournaments[tournamentID].status = TOURN_STATUS_RUNNING;
 
-	strLog('Tournament: ' + tournamentID + '  ' + JSON.stringify(tournaments[tournamentID]), 'ASD');
+	//strLog('Tournament: ' + tournamentID + '  ' + JSON.stringify(tournaments[tournamentID]), 'ASD');
 
 	sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 	if (!force) sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
@@ -269,18 +269,6 @@ function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersI
 				if (maxPlayersInTournament === tournament.playersRegistered){
 					StartTournament(tournamentID, tournament);
 				}
-
-				/*if (body.result == 'OK'){
-					sender.Answer(res, OK);
-					regPlayer(tournament, login);
-			
-					if (maxPlayersInTournament === tournament.playersRegistered){
-						StartTournament(tournamentID, tournament);
-					}
-				}
-				else{
-					sender.Answer(res, Fail);
-				}*/
 			}
 		});
 }
@@ -398,6 +386,7 @@ app.all('/Tournaments', function (req, res){
 
 
 app.post('/RunTournament', function (req, res){
+	strLog('TS: /RunTournament', 'Tournaments');
 	var tournamentID = req.body.tournamentID;
 	StartTournament(tournamentID, tournaments[tournamentID], 'ForcedRun');
 	sender.Answer(res, OK);
@@ -426,7 +415,7 @@ function checkRunningTournaments(){
 			function (error, response, body, res){
 				if (body.result != 'OK'){
 					strLog('RESTARTING TOURNAMENT ' + tournamentID+'/'+tournIndex, stream);
-					StartTournament(tournamentID, tournaments[tournamentID], 'restart');
+					StartTournament(tournamentID, tournaments[tournamentID]);
 					//runningTournaments[]
 				}
 			});
