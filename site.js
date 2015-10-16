@@ -231,7 +231,7 @@ app.get('/Alive', function (req, res){
 })
 
 app.post('/Alive', function (req, res){
-  res.json('I hear you, helpless baby!');
+  res.json({msg:'I hear you, helpless baby!'});
   //console.log('PRINTIIIIIIIIIIIIIIIIIIING!!!!');
 })
 

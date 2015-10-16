@@ -159,20 +159,20 @@ function startServer(child, servName){
 	    SendInfo('Forever starting ' + servName + ' for ' + child.times + ' time','Start');
 	})
 	child.on('watch:restart', function (info) {
-		SendInfo('Restaring ' + servName + ' because ' + info.file + ' changed');
+		CodeChange('Restaring ' + servName + ' because ' + info.file + ' changed');
 	});
 
 	child.on('error', function (err){
-		SendInfo('Error in ' + servName + ' ' + JSON.stringify(err), 'Err');
+		SendError('Error in ' + servName + ' ' + JSON.stringify(err), 'Err');
 	});
 
 
 	child.on('restart', function() {
 	    SendInfo('Forever restarting ' + servName + ' for ' + child.times + ' time', 'Err');
 	});
-	child.on('exit', function (code) {
+	/*child.on('exit', function (code) {
 		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
-	});
+	});*/
 	child.on('exit:code', function (code) {
 		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
 	});
@@ -183,8 +183,19 @@ function startServer(child, servName){
 	//child.stop();
 }
 
+function CodeChange(msg, topic){
+	//console.log('CodeChange ' + msg);
+	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);
+}
+
 function SendInfo(msg, topic){
-	console.error('Send info! ' + msg);
+	console.log('Send info! ' + msg);
+	//console.error('Send info! ' + msg);
+	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
+}
+
+function SendError(msg, topic){
+	console.error('Send Error ' + msg);
 	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
 }
 

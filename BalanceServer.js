@@ -21,24 +21,6 @@ app.post('/FreeTournamentServerIP', FreeTournamentServerIP);
 app.post('/ServeTournament', ServeTournament);
 app.post('/RestartTournament', RestartTournament);
 
-/*app.get('/close', function (req, res){
-  console.log('closing');
-  res.json('TriedToKill');
-  
-  //io.close();
-  server.close();
-  console.log(process.pid);
-  process.exit(0);
-  //process.kill(process.pid, 'SIGHUP');
-  //app.close();
-})*/
-
-
-//------------------Writing EventHandlers---------------------------------
-//YOU NEED data,res parameters for each handler, that you want to write
-//you can get the object from POST request by typing data['parameterName']
-//you NEED TO FINISH YOUR ANSWERS WITH res.end();
-
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
 const TOURN_STATUS_FINISHED = 3;
@@ -80,24 +62,6 @@ function processTournament(tournament){
 	}
 }
 
-/*function GetTournamentInfo(tournamentID, res){
-	sendRequest("GetTournamentInfo", {tournamentID: tournamentID}, '127.0.0.1', 'DBServer', res, GetTournamentInfoFromTS );
-}
-
-function GetTournamentInfoFromTS (error, response, body, res){
-	if (error){
-		sender.Answer(res, )
-	}
-	sendRequest("GetTournamentInfo", {tournamentID: tournamentID}, '127.0.0.1', 'TournamentServer', res, 
-		function GetTournamentInfoFromGFS(error, response, body, res){
-	} );
-}
-
-function GetTournamentInfoFromGFS (error, response, body, res){
-
-}*/
-
-
 function CheckTournaments(){
 	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
 		function (error, response, body, res){
@@ -113,29 +77,6 @@ function CheckTournaments(){
 }
 
 var chkTourn = setInterval(CheckTournaments, 8500);//setInterval
-//var runTourn = setInterval(StartRunningTournaments, 3000);
-
-/*function StartRunningTournaments(){
-	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
-		function (error, response, body, res){
-			for (var i = body.length - 1; i >= 0; i--) {
-				var tournament = body[i];
-				runTournament(tournament);
-			};
-		}
-	);
-}
-
-function runTournament(tournament){
-	sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_BALANCE}, '127.0.0.1', 'DBServer', null, 
-		function (error, response, body, res){
-			for (var i = body.length - 1; i >= 0; i--) {
-				var tournament = body[i];
-				runTournament(tournament);
-			};
-		}
-	);
-}*/
 
 function LogFinishedTournaments (){
 	sendRequest('KillFinishedTournaments', {purpose:GET_TOURNAMENTS_FINISHED}, '127.0.0.1', 'DBServer', null, 

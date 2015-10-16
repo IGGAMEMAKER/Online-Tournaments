@@ -340,6 +340,19 @@ function StartGame (req, res){
 				strLog('I thought, it was not running ' + ID, 'Tournaments'); 
 			}
 			PrepareAndStart(ID, data.logins, res);
+			/*fs.readFile('Logs/Games/' + ID, function (err, fileData){
+				if (err){
+					strLog('File ./Logs/Games/'+ID + ' not found, so I am starting game!');
+					
+				}
+				else{
+					//console.log(file);
+					var gameResult =  JSON.parse(fileData);
+					strLog('tournament ' + ID + ' was finished! ', 'WARN');
+					sender.Answer(res, Fail);
+					ManualFinishGame(ID, gameResult);
+				}
+			});	*/
 		}
 		else{
 			strLog('Game ' + ID + ' is running normally and there is no reason to restart it', 'Tournaments');
@@ -426,25 +439,46 @@ function stopGame(ID){
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
 }
 
-function FinishGame(ID, playerID){
+function ManualFinishGame(tournamentID, gameResult){
+	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 
+			'GameFrontendServer', null , sender.printer);
+}
+
+function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not finish properly and we retry to do this
 	var gameID = ID;
 	var tournamentID = ID;
-	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
+	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + winnerID + " wins!!");
 	games[ID].status = GAME_FINISH;
-	var sortedPlayers = { 
+	var gameResult = { 
 		scores: Sort(games[ID].scores),
 		gameID: ID,
 		tournamentID:ID
 	};
-	SendToRoom(ID, 'finish', { winner:playerID, players: sortedPlayers });
+	SendToRoom(ID, 'finish', { winner:winnerID, players: gameResult });
 	StopTMR(gameID);
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
 	
-	SaveGameResults(sortedPlayers);
+	SaveGameResults(gameResult);
 
-	sender.sendRequest("FinishGame", sortedPlayers , '127.0.0.1', 
-			'GameFrontendServer', null, sender.printer );
+	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 
+			'GameFrontendServer', gameResult , SendGameResultsHandler);
 }
+
+var pendingGames={};
+strLog('On GameServer crash save pendingGames object to the file ; read this file to pendingGames object after restart and try to send gameResults again', 'WARN');
+
+function SendGameResultsHandler(error, response, body, gameResult){
+	if (error) { 
+		strLog('SendGameResultsHandler error: ' + JSON.stringify(error) + ' while sending ' + JSON.stringify(gameResult), 'Tournaments'); 
+		pendingGames[gameResult.gameID] = gameResult;
+		return;
+	}
+	if (body=='OK'){
+		delete pendingGames[gameResult.gameID];
+		pendingGames[gameResult.gameID] = null;
+	}
+}
+
 function Sort(players){
 	return players;
 }
