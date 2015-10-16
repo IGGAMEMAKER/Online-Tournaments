@@ -95,12 +95,12 @@ function getSettings(app){
 	    //
 	    // Options for restarting on watched files.
 	    //
-	    'watch': false,               // Value indicating if we should watch files.
+	    'watch': true,               // Value indicating if we should watch files.
 	    'watchIgnoreDotFiles': null, // Whether to ignore file starting with a '.'
 	    //'watchIgnorePatterns': null, // Ignore patterns to use when watching files.
 	    'watchIgnorePatterns': [ 'log/*', 'node_modules/*', 'pids/*',
                               'dbscripts/*', 'test/*',
-                              'curlcookies', 'Logs/*',
+                              'curlcookies', 'Logs/*', 'frontent/*',
                               '.svn/*' ],
 	    //'watchDirectory': './',      // Top-level directory to watch from. ///home/gaginho/project/NODE/
 	    'watchDirectory': __dirname,

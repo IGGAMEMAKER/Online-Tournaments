@@ -136,6 +136,7 @@ html
 		#gift
 			p Click on gift to show it here!
 		script.
+			setTimeout(function(){location.reload(true);} , 7000);
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			var btn = document.getElementById("reg");

@@ -29,6 +29,7 @@ var tournaments = {
 	count:0
 }
 
+const TOURN_STATUS_RUNNING = 2;
 function str(obj){
 	return ' '+JSON.stringify(obj)+' ';
 }
@@ -59,17 +60,20 @@ function TournamentLog(tournamentID ,message){
 }
 
 function Initialize(){
-	sender.sendRequest('GetTournaments', {query:2}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
+	strLog('TournamentServer Initialize', 'ASD');
+	sender.sendRequest('GetTournaments', {}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
 		if (error){strLog(JSON.stringify(error)); }
 		else{
 			for (var i = body.length - 1; i >= 0; i--) {
 				getTournament(body[i].tournamentID, body[i]);
 			}
+			strLog('TournamentServer Initialize Tournaments count : ' + body.length, 'ASD');
 		}
 	});
 }
 //TournamentLog(1, 'OLOLO');
-Initialize();
+setTimeout(Initialize, 4000);
+//Initialize();
 
 function playerIsRegistered (tournament, login){
 	strLog('players registered: ' + JSON.stringify(tournament.logins));
@@ -239,7 +243,7 @@ function StartTournament(tournamentID, tournament, force){
 
 	strLog('StartTournament: ' + JSON.stringify(obj));
 	TournamentLog(tournamentID, 'start Object:' + str(obj));
-
+	tournaments[tournamentID].status = TOURN_STATUS_RUNNING;
 	sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 	if (!force) sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
 
@@ -385,9 +389,9 @@ function addToGameNameList(tournamentID, gameName){
 app.post('/Running', function (req, res){
 	sender.Answer(res, runningTournaments);
 })
-app.get('/Tournaments', function (req, res){
+app.all('/Tournaments', function (req, res){
 	sender.Answer(res, tournaments);
-})
+});
 
 
 app.post('/RunTournament', function (req, res){

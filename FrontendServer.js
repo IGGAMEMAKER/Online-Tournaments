@@ -318,8 +318,9 @@ function StartTournament (req, res){
 }
 
 function StopTournament (req, res){
-	strLog('FrontendServer StopTournament :::'+req.body.tournamentID, 'Manual')
-	sender.sendRequest("StopTournament", {tournamentID:req.body.tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.Proxy);
+	strLog('FrontendServer StopTournament :::'+req.body.tournamentID, 'Manual');
+	sender.sendRequest("StopTournament", {tournamentID:req.body.tournamentID}, '127.0.0.1', 'GameFrontendServer', res, sender.Proxy);
+
 }
 
 

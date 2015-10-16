@@ -16,5 +16,10 @@ html
 		p!=JSON.stringify(msg)
 	#Running
 		p Running
+	br
+	br
+	#Tournaments
+		p Total tournaments
 	script.
 		var tmr = setInterval(GetRunningTournaments, 3000);
+		var tmr2 = setInterval(GetTotalTournaments, 3000);
