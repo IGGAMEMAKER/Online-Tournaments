@@ -6,10 +6,10 @@ var socket = io();
   return false;
 });*/
 
-socket.on('chat message', function(msg){
+/*socket.on('chat message', function(msg){
   alert(JSON.stringify(msg));
   //$('#messages').append($('<li>').text(JSON.stringify(msg)));
-});
+});*/
 var currentTID=0;
 var curLogins=[];
 
@@ -17,7 +17,7 @@ socket.on('StartTournament', function(msg){
   //alert('StartTournament with ID: ' + JSON.stringify(msg));
   //alert('StartTournament socket works!!');
   var tournamentID = msg['tournamentID'];
-  alert('StartTournament with ID: ' + tournamentID);
+  //alert('StartTournament with ID: ' + tournamentID);
   console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
   var host = msg.host;
@@ -28,8 +28,9 @@ socket.on('StartTournament', function(msg){
   console.log('tID = ' + currentTID);
 
   //var gameURL = 'PingPong';
-  var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
-  $('#news').append(text);
+  /*var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  $('#news').append(text);*/
+  drawButton(host, port);
   startGame(host, port);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
@@ -37,6 +38,17 @@ socket.on('StartTournament', function(msg){
 /*socket.on('update', function(msg){
   alert.stringify(JSON.stringify(msg));
 } )*/
+
+//setTimeout(function(){drawButton("localhost", 5010);}, 300);
+
+function drawButton(host, port){
+  var text = '<button onclick="startGame(\''+host+'\','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  console.log(text);
+  $('#news').html(text);
+}
+/*var host = "localhost";
+var port = 5010;*/
+
 
 function startGame(gameURL, port){
   if (gameURL && port){

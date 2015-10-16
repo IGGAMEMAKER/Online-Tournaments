@@ -60,7 +60,7 @@ function TournamentLog(tournamentID ,message){
 }
 
 function Initialize(){
-	strLog('TournamentServer Initialize', 'ASD');
+	//strLog('TournamentServer Initialize', 'ASD');
 	sender.sendRequest('GetTournaments', {}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
 		if (error){strLog(JSON.stringify(error)); }
 		else{
@@ -243,7 +243,10 @@ function StartTournament(tournamentID, tournament, force){
 
 	strLog('StartTournament: ' + JSON.stringify(obj));
 	TournamentLog(tournamentID, 'start Object:' + str(obj));
-	tournaments[tournamentID].status = TOURN_STATUS_RUNNING;
+	//tournaments[tournamentID].status = TOURN_STATUS_RUNNING;
+
+	strLog('Tournament: ' + tournamentID + '  ' + JSON.stringify(tournaments[tournamentID]), 'ASD');
+
 	sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
 	if (!force) sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
 

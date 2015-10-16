@@ -122,8 +122,8 @@ html
 		include tAuth
 		h1!= 'Tournament : ' + message[0].tournamentID
 		+showTournament(message[0])
-		+showPrizes(message[0].Prizes)
-		+showPlayers(message[1])
+		//+showPrizes(message[0].Prizes)
+		//+showPlayers(message[1])
 		button(id="reg" style= "width:300px;height:50")	REGISTER
 		br
 		br
@@ -136,7 +136,7 @@ html
 		#gift
 			p Click on gift to show it here!
 		script.
-			setTimeout(function(){location.reload(true);} , 7000);
+			//setTimeout(function(){location.reload(true);} , 7000);
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			var btn = document.getElementById("reg");

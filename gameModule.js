@@ -81,7 +81,7 @@ function SaveGameResults(results){
 function LogToFile(filename, text){
 	fs.appendFile(filename, JSON.stringify({time: new Date, text:text}), function (err){
 		if (err){
-			strLog('err: ' + JSON.stringify(err));
+			strLog('err: ' + JSON.stringify(err), 'GameResults');
 		}
 	})
 }
@@ -271,12 +271,12 @@ var Action;
 
 function StartGame (req, res){
 	var data = req.body;
-	strLog("start game: " + JSON.stringify(data));
+	strLog("start game: " + JSON.stringify(data), 'ASD');
 	var ID = data['tournamentID'];
 	if (!games[ID]){
 		var message = 'Cannot find tournament with ID='+ ID;
 		strLog(games);
-		strLog(message);
+		strLog(message, 'ASD');
 		sender.Answer(res, {result:'fail', message:message });
 	}
 	else{
@@ -322,26 +322,11 @@ function StartGame (req, res){
 
 			games[ID].userIDs = userIDs;
 
-			
-
-			/*games[ID].socketRoom = io.of('/'+ID);
-
-			//var room = games[ID].socketRoom;
-			games[ID].socketRoom.on('connection', function (socket){
-				strLog('Room <' + ID + '> got new player');
-				socket.on('movement', function (data){
-					//strLog('Getting socketRoom socket.on Movement');
-					MoveHead(data);
-				});
-			});*/
-
 			strLog('Players ' + JSON.stringify(games[ID].players));
-
 			sender.Answer(res, {result:'success', message:"Starting game:" + ID });
-			strLog('Answered');
 		}
 		else{
-			strLog('I am running already!!!', 'chk');
+			strLog('I am running already!!! ' + ID, 'ASD');
 		}
 	}
 	//res.end();
@@ -390,7 +375,7 @@ function stopGame(ID){
 	games[ID].isRunning = false;
 	clearInterval(games[ID].timer);
 	games[ID] = null;
-	
+
 	/*setTimeout(function(){
 		strLog('games.length ' + games.length, 'ASD');
 		strLog('gameModule... stopGame : ' + ID);
