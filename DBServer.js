@@ -166,6 +166,7 @@ function AddGift(data, res){
 				Answer(res, Fail);
 			}
 			else{
+				strLog('Added gift ' + JSON.stringify(data), 'Gift');
 				Answer(res, OK);
 			}
 		})
@@ -1053,7 +1054,7 @@ function addTournament(maxID, tournament, res){
 		}
 		else{
 			Answer(res, tournament);
-			Log('added Tournament'); 
+			Log('added Tournament ' + JSON.stringify(tournament), 'Manual'); 
 		}
 	});
 }
@@ -1061,11 +1062,7 @@ function addTournament(maxID, tournament, res){
 function AddTournament (req, res){
 	var data = req.body;
 	var tournament = data;
-	Log('Adding tournament ');
-	Log('++++++++++++++++++++++++++++');
-	Log(JSON.stringify(tournament));
-	Log('----------------------------');
-	
+	Log('Adding tournament ' + JSON.stringify(tournament), 'Manual');	
 	
 	Tournament
 		.findOne({})

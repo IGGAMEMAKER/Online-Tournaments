@@ -88,7 +88,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
-  var basicInfo = targetServer+': /' + reqUrl + JSON.stringify(parameters);
+  var basicInfo = targetServer+': /' + reqUrl + ' ';
+  if (parameters) basicInfo += JSON.stringify(parameters);
   // res==null generally means that I will use AsyncRender in promise cascade
   Log('AsyncRender', 'Transport');
   if (targetServer && reqUrl){
@@ -125,7 +126,7 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
           options.callback(res || null, body, options, parameters);
         }
         else{ // ... or try to render page/ answer JSON/ return value(answer)
-          Log(' No callback found... try to deal with it' + basicInfo, 'Transport');
+          Log(' No callback found... try to deal with it ' + basicInfo, 'Transport');
           if (options.renderPage) { //if renderPage is specified we try render it
             if (res) { res.render(options.renderPage, {msg:body} ); } //we can send data properly
             else { Log('Oops, you specified a renderPage |' + options.renderPage + '.jade| but forgot to pass res(ponse) object ', 'WARN'); }
@@ -421,22 +422,126 @@ function Log(data, topic){
   JSLog({msg:data}, topic);
 }
 
-app.post('/AddTournament', function (req, res){
+/*app.post('/AddTournament', function (req, res){
   //sender.expressSendRequest('AddTournament', req.body, '127.0.0.1', serv)
   var data = req.body;
   Log(data, 'Manual');
 
   //####
   data.renderPage='AddTournament';
-  AsyncRender('FrontendServer', 'AddTournament', res, null,  data);
+  AsyncRender('FrontendServer', 'AddTournament', res, {renderPage:'AddTournament'}, data);
   //####
 
-  /*sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-        function (error, response, body, res1){
-          //res1.json(body);
-          res.render('AddTournament', {msg:body});
-        });*/
-})
+  ///sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+  //      function (error, response, body, res1){
+  //        //res1.json(body);
+  //        res.render('AddTournament', {msg:body});
+  //      });
+})*/
+app.post('/AddTournament', AddTournament);
+
+function proxy(error, response, body, res){
+  Answer(res, body);
+}
+
+var Fail = { result:'fail'};
+
+var PRICE_FREE = 4;
+var PRICE_TRAINING = 5;
+
+var PRICE_GUARANTEED = 3;
+  var PRICE_NO_EXTRA_FUND = 2;
+var PRICE_CUSTOM = 1;  //
+
+
+  var COUNT_FIXED = 1;
+var COUNT_FLOATING = 2;
+
+var strLog = Log;
+var Answer = sender.Answer;
+
+function AddTournament(req, res){
+  var data = req.body;
+  
+  if (data){
+    strLog('Incoming tournament : ' +JSON.stringify(data));
+    var buyIn = parseInt(data.buyIn);
+    var rounds = parseInt(data.rounds);
+    var gameNameID = parseInt(data.gameNameID);
+    var GoNext = data.goNext?data.goNext.split(" ") : [];
+    var Prizes = data.Prizes.split(" ");
+    var prizes = [];
+    var goNext = [];
+    strLog(JSON.stringify(Prizes));
+    //convert array of strings to array of objects
+    for (var i = 0; i < Prizes.length - 1; i++) {
+      if (isNaN(Prizes[i]) ){
+        if (Prizes[i].length>0){
+          prizes.push({giftID:Prizes[i]})
+        }
+        else{
+          strLog('Prize[i] is null. Current prize is: ' + Prizes[i]);
+          Answer(res, Fail);
+          return;
+        }
+      }
+      else{
+        prizes.push( parseInt(Prizes[i]) );
+      }
+    };
+
+    for (var i=0; i< GoNext.length - 1; ++i){
+      var num = parseInt(GoNext[i]);
+      if (isNaN(num)){
+        strLog('goNext num parseInt error! ');
+        strLog(GoNext);
+        Answer(res, Fail);
+        return;
+      }
+      else{
+        goNext.push( num );
+      }
+    }
+
+    strLog('splitted prizes: ' + JSON.stringify(prizes) );
+    strLog('goNext.length:' + goNext.length);
+    strLog(JSON.stringify(goNext));
+    //strLog('')
+    if (buyIn>=0 && rounds && gameNameID){
+      var obj = {
+        buyIn:      buyIn,
+        initFund:     0,
+        gameNameID:   gameNameID,
+
+        pricingType:  PRICE_NO_EXTRA_FUND,
+
+        rounds:     rounds,
+        goNext:     goNext.length>0 ? goNext : [2,1],//
+            places:     [1],
+          Prizes:     prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
+            prizePools:   [1],
+
+        comment:    'Yo',
+        
+        playersCountStatus: COUNT_FIXED,///Fixed or float
+          startDate:    null,
+          status:     null, 
+          players:    0
+      }
+      AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
+      //sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, sender.proxy);
+    }
+    else{
+      strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
+      Answer(res, Fail);
+    }
+  }
+  else{
+    Answer(res, Fail);
+  }
+
+}
+
 
 app.get('/AddGift', function (req, res){
   res.render('AddGift');
@@ -458,9 +563,10 @@ app.post('/AddGift', function (req, res){
 });
 
 app.get('/ShowGifts', function (req, res){
-  var data = req.body;
+  /*var data = req.body;
   if (!data){ data={}; }
-  siteAnswer(res, 'ShowGifts', data, 'ShowGifts');
+  siteAnswer(res, 'ShowGifts', data, 'ShowGifts');*/
+  AsyncRender('DBServer', 'ShowGifts', res, {renderPage:'ShowGifts'});
 });
 
 app.all('/StartTournament', function (req, res){
@@ -572,13 +678,15 @@ app.get('/Deposit', function (req, res){
 
 app.get('/Profile', function (req, res){
   var login = 'Alvaro_Fernandez';
-  if (req.session && req.session.login){
-    login = req.session.login;
+  if (isAuthenticated(req) ){//req.session && req.session.login
+    login = getLogin(req);
+    AsyncRender("DBServer", 'GetUserProfileInfo', res, {renderPage:'Profile'}, {login:login} );
+    return;
   }
-  else{
-    //res.json({msg:'Log in first'});
-  }
-  siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
+  res.json({msg:'Log in first'});
+  //else{
+  //}
+  //siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
 })
 
 app.post('/GetGift', function (req, res){

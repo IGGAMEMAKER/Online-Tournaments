@@ -81,18 +81,18 @@ mixin moneyOperations()
 	br
 
 html
-	//p!= JSON.stringify(message.gifts)
+	//p!= JSON.stringify(msg.gifts)
 	//br
-	//p!= JSON.stringify(message.userGifts)
+	//p!= JSON.stringify(msg.userGifts)
 	//p asd
 	center
 		h1 Profile of  #{session.login}
-		h2 You have #{message.money/100}$ on your account
-		p!= JSON.stringify(msg)
+		h2 You have #{msg.money/100}$ on your account
+		//p!= JSON.stringify(msg)
 		+moneyOperations()
 
 		a(href="Tournaments") Back to tournaments
-		+drawTournamentRegs(message.tournaments)
+		+drawTournamentRegs(msg.tournaments)
 
-		//+drawPrizes(message.userGifts)
-		+drawPrizes2(message.gifts, message.userGifts)
+		//+drawPrizes(msg.userGifts)
+		+drawPrizes2(msg.gifts, msg.userGifts)

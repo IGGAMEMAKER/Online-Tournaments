@@ -120,7 +120,8 @@ function getGameNameIDByTID(tournamentID){
 
 function ServeTournamentCallback( error, response, body, res) {
 	strLog("Answer from GS comes here!!!");
-	res.end('OK');
+	sender.Answer(res, OK)
+	//res.end('OK');
     //    res.end("GameServed");
 }
 

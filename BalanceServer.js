@@ -133,14 +133,9 @@ function GetFreeTournamentServerIP(tournamentStructure){
 	return '127.0.0.1';
 }
 
-/*var timer = setInterval(function(){
-
-
-}, 5000);*/
 var server = app.listen(5004, function () {
   var host = server.address().address;
   var port = server.address().port;
 
   strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
-//server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

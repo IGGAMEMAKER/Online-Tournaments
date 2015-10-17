@@ -229,8 +229,8 @@ function deleteRunningTournament(tournamentID){
 }
 
 function StartTournament(tournamentID, tournament, force){
-	strLog("Tournament " + tournamentID + " starts");
-	strLog(tournament.players);
+	strLog("Tournament " + tournamentID + " starts", 'Tournaments');
+	//strLog(tournament.players, 'Tournaments');
 	TournamentLog(tournamentID, 'Tournament starts... ' + str(tournament.players));
 	
 	var obj = getPortAndHostOfGame(tournamentID);
@@ -239,7 +239,7 @@ function StartTournament(tournamentID, tournament, force){
 	obj.logins = tournament.players;
 	if (force) obj.force = true;
 
-	strLog('StartTournament: ' + JSON.stringify(obj));
+	strLog('StartTournament: ' + JSON.stringify(obj), 'Tournaments');
 	TournamentLog(tournamentID, 'start Object:' + str(obj));
 	//tournaments[tournamentID].status = TOURN_STATUS_RUNNING;
 
@@ -280,13 +280,13 @@ function FinishGame (req, res){
 	
 	strLog('******************* game Finishes *********' + gameID + '****************', 'Tournaments');
 	if (gameWasLast(gameID)){
-		strLog('EndTournament: ' + tournamentID);
+		strLog('EndTournament: ' + tournamentID, 'Tournaments');
 		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 		EndTournament(scores, gameID, tournamentID);
 	}
 	else{
 		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
-		strLog('Middle results: ' + JSON.stringify(data));
+		strLog('Middle results: ' + JSON.stringify(data), 'Tournaments');
 	}	
 }
 function last (Arr){
