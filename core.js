@@ -17,10 +17,7 @@ function Log(msg){
 		sender.strLog(msg);
 	}
 }
-/*app.all('/Alive', function (req,res){
-	console.log('Hey!!!');
-	res.end('ololo');
-})*/
+
 ReadConfigs();
 
 //var jade = require('jade');
@@ -72,13 +69,30 @@ var io;
 var host;
 var port;
 var configs;
+var servConfigs;
+var constants;
 
 function ReadConfigs(){
 	var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
 	//console.log(file);
 	configs =  JSON.parse(file);
-	console.log(JSON.stringify(configs));
+	//console.log(JSON.stringify(configs));
 }
+
+function ReadServerConfigs(){
+	var file = fs.readFileSync('./configs/'+serverName+'.txt', "utf8");
+	servConfigs = JSON.parse(file);
+	console.log(JSON.stringify(servConfigs));
+}
+function ReadConstants(){
+	var file = fs.readFileSync('./configs/'+'constants'+'.txt', "utf8");
+	constants = JSON.parse(file);
+	console.log(JSON.stringify(constants));
+}
+
+
+
+
 var server;
 function StartServer(options){
 	Log('Trying to StartServer:' + options.serverName);
@@ -99,7 +113,7 @@ function startServer(port){
 		server = app.listen(port, function () {
 			host = server.address().address;
 			port = server.address().port;
-			Log(serverName + ' is listening at http://'+ host+':'+ port);
+			Log(serverName + ' is listening at http://'+ host+':'+ port + '. Powered by core.js');
 		});
 	}
 }
@@ -133,11 +147,17 @@ function SendToRoom( room, event1, msg){
 }
 
 function Initialize(){
+	//ReadServerConfigs();
 	/*Log('gameModule Initialize');
 	sender.sendRequest("GameServerStarts", {gameName:gameName} , '127.0.0.1', 
 			'GameFrontendServer', null, sender.printer );*/
 }
 //StartServer({host:'localhost', port:3000, serverName:'Core'});
+
+function getConstant(name){
+	if (constants[name]) return constants[name];
+	strLog('Cannot find constant: ' + name + ' please, check constant config to fix it', 'WARN');
+}
 
 this.StartServer = StartServer;
 this.app = app;
@@ -152,3 +172,5 @@ this.Fail = Fail;
 this.Answer = Answer;
 this.str = str;
 this.server = server;
+this.sCONF = serverConfigs;
+this._const = getConstant;

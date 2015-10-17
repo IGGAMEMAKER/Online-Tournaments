@@ -20,47 +20,32 @@ app.use(function(req,res,next){
     next();
 });
 
-/*function strLog(data){
-	console.log(data);
-	//strLog(data);
-}*/
-
-//["/stop"] //'/stop' : AnswerAndKill
-
-app.get('/Alive', function (req, res){
-	strLog(data);
-	Answer(res, {result:'OK'});
-});
-
 app.post('/Register', function (req, res){
 	var data = req.body;
-	sender.sendRequest("Register", data, '127.0.0.1', 'DBServer',  res, 
-		function ( error, response, body, res) {
-		strLog("Got answer from DBServer");
-		Answer(res, body);
-	});
-	//strLog(data);
-	//Answer(res, {result:'OK'});
+	sender.sendRequest("Register", data, '127.0.0.1', 'DBServer',  res, proxy);
 });
 
 app.post('/FinishGame', FinishGame);
 app.post('/StartTournament', StartTournament);
 app.post('/StopTournament', StopTournament);
 
+app.post('/GetUserProfileInfo', GetUserProfileInfo);
+app.post('/RegisterUserInTournament', RegisterUserInTournament);
+app.post('/CancelRegister', CancelRegister);
 
 
-app.post('/AddGift', AddGift);
+app.post('/AddTournament', AddTournament);
+app.post('/ServeTournament', ServeTournament);
+
+app.post('/ShowGifts', ShowGifts);
+
 
 app.post('/Login', function (req, res){
 	var data = req.body;
 	strLog(data);
-	sender.expressSendRequest("Login", data, '127.0.0.1', 'DBServer', res, 
-		function (error, response, body, res){
-			Answer(res, body);
-		});
+	sender.expressSendRequest("Login", data, '127.0.0.1', 'DBServer', res, proxy);
 });
 
-app.post('/ServeTournament', ServeTournament);
 
 ///********************** 	TournamentManager
 function GetGameFrontendAdress(gameNameId){
@@ -71,8 +56,8 @@ function GetGameFrontendAdress(gameNameId){
 	};
 	return adress;
 }
-function SendTournamentHandler( error, response, body, res) {
-	strLog("Answer from GameServer comes here!!!");
+function SendTournamentHandler( error, response, body, res) { //this code is used :) delete it if you KNOW, what are you doing
+	strLog("SendTournamentHandler THIS METHOD WORKS", 'WARN');
 	Answer(res, {result:'OK'});
 	//res.end('OK');
 }
@@ -83,7 +68,7 @@ function getTournamentStructure( tournament){
 
 function ServeTournament (req, res){
 	var data = req.body;
-	strLog("ServeTournament ")
+	strLog("ServeTournament ... FS ", 'WARN')
 	//strLog(JSON.stringify(data));//['tournamentStructure']);
 	
 	//strLog("Sending Tournament...");
@@ -98,22 +83,7 @@ function ServeTournament (req, res){
 
 
 
-
-function Login( data, res){
-	strLog('FrontendServer login:');
-	strLog(data);
-	sender.sendRequest("Login", data, '127.0.0.1', 'DBServer', res, LoginHandler);
-}
-function LoginHandler( error, response, body, res){
-	strLog('LoginHandler call');
-	Answer(res, body);
-}
-
-/*funcArray["/ChangePassword"] = ChangePassword;
-funcArray["/RememberPassword"] = RememberPassword;*/
-app.post('/GetUserProfileInfo', GetUserProfileInfo);
-
-app.post('/GetTournaments', function (req, res){
+app.post('/GetTournaments', function (req, res){//DON'T MODIFY OBJ!!
 	var data = req.body;
 	//strLog(data);
 	var obj = {
@@ -121,46 +91,16 @@ app.post('/GetTournaments', function (req, res){
 		tournamentID: data['tournamentID'],
 		query: data['query'],
 		queryFields: data['queryFields'],
-		purpose: data['purpose']?data['purpose']:null
+		purpose: data['purpose']||null
 	};
-	strLog('Getting Tournaments: ' + JSON.stringify(obj) );
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, 
-		function ( error, response, body, res ){
-		Answer(res, body);
-	});
+	strLog('Getting Tournaments: ' + JSON.stringify(obj) , 'WARN');
+	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, proxy);
 });
 
 app.post('/GetUsers', function (req, res){
 	var data = req.body;
-	//strLog(data);
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-	};
-	sender.sendRequest("GetUsers", obj, '127.0.0.1', 'DBServer', res, function ( error, response, body, res ){
-		Answer(res, body);
-	});
+	sender.sendRequest("GetUsers", data, '127.0.0.1', 'DBServer', res, proxy);
 });
-
-
-app.post('/RegisterUserInTournament', RegisterUserInTournament);
-app.post('/CancelRegister', CancelRegister);
-
-
-app.post('/AddTournament', AddTournament);
-
-app.post('/ShowGifts', ShowGifts);
-/*funcArray["/WakeUsers"] = WakeUsers;
-funcArray["/UnregisterFromTournament"] = UnregisterFromTournament;
-
-funcArray["/Cashout"] = Cashout;
-funcArray["/Deposit"] = Deposit;
-
-
-funcArray["/SendMessagesToUsers"] = SendMessagesToUsers;*/
-
 
 var server = app.listen(5000, function () {
   var host = server.address().address;
@@ -169,25 +109,22 @@ var server = app.listen(5000, function () {
   strLog(serverName + ' is listening at http://%s:%s', host, port);
 });
 
-function Alive(data, res){
-	strLog(data);
-	Answer(res, {result:'OK'});
-}
+
 var Fail = { result:'fail'};
 
 var PRICE_FREE = 4;
 var PRICE_TRAINING = 5;
 
 var PRICE_GUARANTEED = 3;
-var PRICE_NO_EXTRA_FUND = 2;
+	var PRICE_NO_EXTRA_FUND = 2;
 var PRICE_CUSTOM = 1;  //
 
 
-var COUNT_FIXED = 1;
+	var COUNT_FIXED = 1;
 var COUNT_FLOATING = 2;
 
 function ShowGifts(req, res){
-	sender.sendRequest('ShowGifts', req.body,'127.0.0.1', 'DBServer', res, stdHandler )
+	sender.sendRequest('ShowGifts', {},'127.0.0.1', 'DBServer', res, proxy )
 }
 
 function AddTournament(req, res){
@@ -258,11 +195,11 @@ function AddTournament(req, res){
 					status: 		null,	
 					players: 		0
 			}
-			//sender.sendRequest('ServeTournament', obj, '127.0.0.1', 'BalanceServer', res, AddTournamentHandler);
-			sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, AddTournamentHandler);
+			//sender.sendRequest('ServeTournament', obj, '127.0.0.1', 'BalanceServer', res, proxy);
+			sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, proxy);
 		}
 		else{
-			strLog('buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID);
+			strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
 			Answer(res, Fail);
 		}
 	}
@@ -272,40 +209,9 @@ function AddTournament(req, res){
 
 }
 
-function stdHandler(error, response, body, res){
+function proxy(error, response, body, res){
 	Answer(res, body);
 }
-
-function AddTournamentHandler(error, response, body, res){
-	Answer(res, body);
-}
-
-function AddGift(req, res){
-	var data = req.body;
-	if (data){
-		sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, stdHandler);
-	}
-	else{
-		Answer(res, Fail);
-	}
-}
-
-function GetUsers (data, res){
-	//res.end('GetUsers OK');
-	strLog(data);
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-	};
-	sender.sendRequest("GetUsers", obj, '127.0.0.1', 'DBServer', res, GetUsersHandler);
-}
-
-function GetUsersHandler( error, response, body, res ){
-	Answer(res, body);
-}
-
 
 function StartTournament (req, res){
 	var data = req.body;
@@ -327,39 +233,13 @@ function StopTournament (req, res){
 function GetUserProfileInfo(req , res){
 	var data = req.body;
 	strLog(data);
-	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, GetUserProfileInfoHandler);
-}
-function GetUserProfileInfoHandler ( error, response, body, res){
-	strLog('GetUserProfileInfoHandler :' + JSON.stringify(body));
-	Answer(res, body);
+	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, proxy);
 }
 
-function ChangePassword( data, res){
-	res.end("OK");
-	strLog("You must send changePass to Account Server");
-}
 function FinishGame(req, res){
 	var data = req.body;
 	Answer(res, {result:'OK', message:'FinishGame'});
 	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
-}
-
-function GetTournaments( data, res){
-	strLog('FS ' + JSON.stringify(data));
-
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-		purpose: 'watch'
-	};
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, GetTournamentsHandler);
-}
-
-
-function GetTournServerIP(tournamentID){
-	return '127.0.0.1';
 }
 
 function CancelRegister(req, res){
@@ -371,7 +251,7 @@ function CancelRegister(req, res){
 	};
 
 	sender.sendRequest("CancelRegister", obj, 
-		'127.0.0.1', 'TournamentServer', res, function (p1,p2,body,p4) { Answer(res, body); } );
+		'127.0.0.1', 'TournamentServer', res, proxy );
 }
 
 function RegisterUserInTournament( req, res){
@@ -381,20 +261,18 @@ function RegisterUserInTournament( req, res){
 		tournamentID: data['tournamentID'],
 		login: data['login']
 	};
-	//log(data);
-	log("Trying to register in tournament " + data['tournamentID']);
-	sender.sendRequest("RegisterUserInTournament", obj, 
-		'127.0.0.1', 'TournamentServer', res, RegisterUserInTournamentHandler);
+	strLog("Trying to register in tournament " + data['tournamentID']);
+	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', 'TournamentServer', res, proxy);
 }
 
-function RegisterUserInTournamentHandler(error, response, body, res){
-	strLog("Checking Data taking: " + JSON.stringify(body));
-	Answer(res, body);
-}
+
 
 function RememberPassword( data, res){
 	res.end("Try to remember");
 	strLog("You must send rememberPass to Account Server");
 }
 
-function log(str){ strLog(str);}
+function ChangePassword( data, res){
+	res.end("OK");
+	strLog("You must send changePass to Account Server");
+}

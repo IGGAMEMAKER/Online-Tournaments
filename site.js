@@ -87,6 +87,62 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
+function AsyncRender(targetServer, reqUrl, res, options){//options: parameters, renderPage, callback, sender
+  // res==null generally means that I will use AsyncReader in promise cascade
+  if (targetServer && reqUrl){
+    sender.sendRequest(reqUrl, options.parameters||{}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
+      //if (err) return handleError(err, targetServer, reqUrl, res || null, options || null, 'ERR');
+      if (!options){
+        // We don't know, which page to render or what to do with this data, 
+        // so we ... 
+        if (res) { sender.Answer(res, body); } //send data to client Server or client ajax script
+        else{ return body; } // or return an answer if it is used in promise
+      }
+
+
+      else{
+        if (options.callback){ // if we have a callback - run it!
+          options.callback(res || null, body, options);
+        }
+        else{ // ... or try to render page/ answer JSON/ return value(answer)
+          if (options.renderPage) { //if renderPage is specified we try render it
+            if (res) { res.render(options.renderPage, body); } //we can send data properly
+            else { Log('Oops, you specified a renderPage |' + options.renderPage + '.jade| but forgot to pass res(ponse) object ', 'Err'); }
+          } 
+          else{
+            if (res){ sender.Answer(res, body); }
+            else{ return body; }
+          }
+        }
+
+      }
+
+    });
+
+  }
+}
+
+function handleError(err, targetServer, reqUrl, res, options){
+  Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null) + ':::'+ JSON.stringify(err), 'Err');
+  if (res){
+    res.send(500); 
+  }
+  return err;
+}
+
+function renderInfo(targetServer, reqUrl, res, options){
+  var resIsSet = res?' res is set ':' no res ';
+  var optionsDescription = ' options: ';
+  if (options) {
+    optionsDescription+= 'null';
+  }
+  else{
+    optionsDescription += 'rendPage: ' + options.renderPage + ' parameters: ' + options.parameters + ' sender: ' + options.sender + ' callback is ';
+    if (!options.callback) optionsDescription+= ' not ';
+    optionsDescription+= ' set ';
+  }
+  return targetServer + ' Url: ' + reqUrl + resIsSet + optionsDescription ;
+}
 
 function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
@@ -365,10 +421,16 @@ app.get('/AddGift', function (req, res){
 app.post('/AddGift', function (req, res){
   var data = req.body;
   Log(data);
-  sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-        function (error, response, body, res1){
+  if (data){
+    sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
           res.render('AddGift', {msg:body});
         });
+  }
+  else{
+    Answer(res, Fail);
+  }
+  //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+        
 });
 
 app.get('/ShowGifts', function (req, res){

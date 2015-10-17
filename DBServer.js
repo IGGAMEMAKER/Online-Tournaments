@@ -86,9 +86,6 @@ function Error( err){
 }
 
 
-
-
-
 var currentTournamentCounter=0;
 var tournaments = {};
 

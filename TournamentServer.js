@@ -15,6 +15,7 @@ app.use(function(req,res,next){
     strLog(serverName + ': Request!');
     next();
 });
+
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
 app.post('/CancelRegister', function (req, res){
 	CancelRegister(req.body, res);
@@ -157,7 +158,7 @@ function CancelRegister(data, res){
 		var tournamentID = data.tournamentID;
 		var tournament = tournaments[tournamentID];
 		var login = data.login;
-		if (playerIsRegistered(tournament, login) && login && tournamentID && tournament){
+		if (login && playerIsRegistered(tournament, login) &&  tournamentID && tournament){
 			UnRegisterFromTournament(login, tournamentID, tournament, res);
 		}
 		else{
