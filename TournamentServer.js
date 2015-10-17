@@ -140,17 +140,14 @@ function getPortAndHostOfGame(tournamentID){
 		case 1:
 			return { port:5009, host: gameHost }; //PPServer
 		break;
+		case 2:
+			return { port:5010, host: gameHost };//QuestionServer
 		default:
+			strLog('Some strange gameNameID !!' + tIDtoGameName[tournamentID],'WARN');
 			return { port:5010, host: gameHost };//QuestionServer
 		break;
 
 	}
-  /*if (tournamentID<8){
-    return { port:5009, host:'localhost' };
-  }
-  else{
-    return { port:5010, host:'localhost' };
-  }*/
 }
 
 function CancelRegister(data, res){
@@ -281,7 +278,7 @@ function FinishGame (req, res){
 	var tournamentID = data['tournamentID'];
 	var scores = data['scores'];
 	
-	strLog('******************* game Finishes *********' + gameID + '****************');
+	strLog('******************* game Finishes *********' + gameID + '****************', 'Tournaments');
 	if (gameWasLast(gameID)){
 		strLog('EndTournament: ' + tournamentID);
 		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );

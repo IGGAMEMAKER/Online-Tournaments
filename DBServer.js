@@ -450,7 +450,7 @@ function LoginUser(req, res){
 	var USER_EXISTS = 11000;
 	var login = data['login'];
 	var password = data['password'];
-	Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')');
+	Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', 'Users');
 
 	var usr1 = User.findOne({login:login, password:password}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
 	    if (err) {
@@ -460,9 +460,10 @@ function LoginUser(req, res){
 	    }
 	    else{
 	    	if (user){
-		    	Log(JSON.stringify(user));
-			     Answer(res, OK);
-			    Log('Logged in');
+		    	//Log();
+		    	Log('DBSERVER: Logged in ' + JSON.stringify(user), 'Users');
+			    Answer(res, OK);
+			    
 			}
 			else{
 				Log('Invalid login/password : ' + login);
@@ -891,14 +892,14 @@ function Register (req, res){
 	var USER_EXISTS = 11000;
 	var login = data['login'];
 	var password = data['password'];
-	Log('adding user :' + login + '. (' + JSON.stringify(data) + ')');
+	Log('adding user :' + login + '. (' + JSON.stringify(data) + ')','Users');
 	Log('Check the data WHILE adding USER!!! need to write Checker');
 	var user = new User({ login:login, password:password, money:100 });
 	user.save(function (err) {
 		if (err){
 			switch (err.code){
 				case USER_EXISTS:
-					Log('Sorry, user ' + login + ' Exists');
+					Log('Sorry, user ' + login + ' Exists', 'Users');
 					 Answer(res, {result: 'UserExists'});
 				break;
 				default:
@@ -908,9 +909,8 @@ function Register (req, res){
 			}
 		}
 		else{
-			//showRestraunt(res, name);
-			 Answer(res, OK);
-			Log('added User'); 
+			Log('added User ' + login, 'Users'); 
+			Answer(res, OK);
 		}
 	});
 	//Log('Adding user ' + login + ' !!!');

@@ -6,7 +6,7 @@ mixin drawLogLink(topic)
 
 html
 	head
-		title Logs
+		title Logs/#{topic}
 		style
 				* { margin: 0; padding: 0; box-sizing: border-box; }
 				body { font: 13px Helvetica, Arial; }
@@ -33,6 +33,7 @@ html
 					+drawLogLink("Games")
 					+drawLogLink("shitCode")
 					+drawLogLink("WARN")
+					+drawLogLink("Transport")
 		script(src="https://cdn.socket.io/socket.io-1.2.0.js")
 		script(src="http://code.jquery.com/jquery-1.11.1.js")
 

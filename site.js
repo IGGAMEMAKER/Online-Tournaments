@@ -58,9 +58,6 @@ app.use(function(req,res,next){
   }
   
   res.locals.session = req.session;
-  /*if (req.session){
-
-  }*/
   next();
 });
 /*app.use(session({
@@ -87,10 +84,16 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-function AsyncRender(targetServer, reqUrl, res, options){//options: parameters, renderPage, callback, sender
-  // res==null generally means that I will use AsyncReader in promise cascade
+
+
+
+function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
+  var basicInfo = targetServer+': /' + reqUrl + JSON.stringify(parameters);
+  // res==null generally means that I will use AsyncRender in promise cascade
+  Log('AsyncRender', 'Transport');
   if (targetServer && reqUrl){
-    sender.sendRequest(reqUrl, options.parameters||{}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
+    sender.sendRequest(reqUrl, parameters||{}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
+      Log(JSON.stringify(body), 'Transport');
       //if (err) return handleError(err, targetServer, reqUrl, res || null, options || null, 'ERR');
       if (!options){
         // We don't know, which page to render or what to do with this data, 
@@ -102,12 +105,30 @@ function AsyncRender(targetServer, reqUrl, res, options){//options: parameters, 
 
       else{
         if (options.callback){ // if we have a callback - run it!
-          options.callback(res || null, body, options);
+          if (options.failCallback){
+            Log('failCallback exists!! body.result: ' + body.result, 'Transport');
+            switch (body.result){
+              case 'OK': break;
+              /*case 'fail':                 
+                options.failCallback(res || null, body, options, parameters);
+                return;
+              break;*/
+
+              default: 
+                options.failCallback(res || null, body, options, parameters);
+                return;
+              break;
+            }
+          }
+          Log(' execute normal callback: ' + reqUrl + ' ', 'Transport');
+          //else - execute normally
+          options.callback(res || null, body, options, parameters);
         }
         else{ // ... or try to render page/ answer JSON/ return value(answer)
+          Log(' No callback found... try to deal with it' + basicInfo, 'Transport');
           if (options.renderPage) { //if renderPage is specified we try render it
-            if (res) { res.render(options.renderPage, body); } //we can send data properly
-            else { Log('Oops, you specified a renderPage |' + options.renderPage + '.jade| but forgot to pass res(ponse) object ', 'Err'); }
+            if (res) { res.render(options.renderPage, {msg:body} ); } //we can send data properly
+            else { Log('Oops, you specified a renderPage |' + options.renderPage + '.jade| but forgot to pass res(ponse) object ', 'WARN'); }
           } 
           else{
             if (res){ sender.Answer(res, body); }
@@ -122,22 +143,22 @@ function AsyncRender(targetServer, reqUrl, res, options){//options: parameters, 
   }
 }
 
-function handleError(err, targetServer, reqUrl, res, options){
-  Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null) + ':::'+ JSON.stringify(err), 'Err');
+function handleError(err, targetServer, reqUrl, res, options, parameters){
+  Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null, parameters||null) + ':::'+ JSON.stringify(err), 'Err');
   if (res){
     res.send(500); 
   }
   return err;
 }
 
-function renderInfo(targetServer, reqUrl, res, options){
+function renderInfo(targetServer, reqUrl, res, options, parameters){
   var resIsSet = res?' res is set ':' no res ';
   var optionsDescription = ' options: ';
   if (options) {
     optionsDescription+= 'null';
   }
   else{
-    optionsDescription += 'rendPage: ' + options.renderPage + ' parameters: ' + options.parameters + ' sender: ' + options.sender + ' callback is ';
+    optionsDescription += 'rendPage: ' + options.renderPage + ' parameters: ' + parameters + ' sender: ' + options.sender + ' callback is ';
     if (!options.callback) optionsDescription+= ' not ';
     optionsDescription+= ' set ';
   }
@@ -150,6 +171,7 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
         'FrontendServer', res, function (error, response, body, res1){
           if (!error){
+            if (FSUrl=='GetUserProfileInfo') Log(FSUrl + ' ' + JSON.stringify(body), 'Users');
             res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
           } else {
             sender.Answer(res1, { result:error });
@@ -218,7 +240,7 @@ app.get('/Admin', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
   res.render('AdminPanel', {msg:'hola!'});
     return;
-  if (isAuthenticated(req) && req.session.login=='Alvaro_Fernandez'){
+  if (isAuthenticated(req) && getLogin(req) =='Alvaro_Fernandez'){
     res.render('AdminPanel', {msg:'hola!'});
     return;
   }
@@ -232,7 +254,7 @@ app.post('/Log', function (req, res){
   var msg = req.body;
   var topic = req.body.topic;
   //console.log(topic);
-  Log(msg, topic || null);
+  JSLog(msg, topic || null);
 });
 
 app.get('/Log', function (req, res){
@@ -252,43 +274,12 @@ app.get('/SpecLogs/:topic', function (req, res){
   res.render('SpecLogs', {topic:topic});
 });*/
 
-function Log(msg, topic){
+function JSLog(msg, topic){
   io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
-app.all('/Game', function (req, res){
-  console.log(__dirname);
-  var tID = req.query.tournamentID;
-  /*Log(req.query);
-  Log(req.body);*/
-  console.log(req.query.tournamentID);
-  /*sender.expressSendRequest('GetTournaments', {tournamentID:tID}, '127.0.0.1', 
-        'FrontendServer', res, function (error, response, body, res1){
-
-  });*/
-  
-  res.render('qst_game', {
-    tournamentID:tID?tID:111,
-    gameHost:gameHost,
-    gamePort:gamePort
-  });
-  
-  //res.render('/games/PingPong/game', {tournamentID:111} );
-  //res.sendFile(__dirname + '/games/PingPong/game.html');//, {tournamentID:111}, function(err){console.log(err); });
-})
-
-
-
-/*app.get('/', function (req, res) {
-  res.send('Hello World!');
-});*/
 
 app.get('/Alive', function (req, res){
   res.render('Alive');
-})
-
-app.post('/Alive', function (req, res){
-  res.json({msg:'I hear you, helpless baby!'});
-  //console.log('PRINTIIIIIIIIIIIIIIIIIIING!!!!');
 })
 
 app.get('/Logout', function (req, res){
@@ -302,13 +293,48 @@ app.get('/Login', function (req, res){
   res.render('Login',{});
 })
 
+function LoginOrRegister(req, res, command){
+    var data = req.body;
+  
+  if (data && data.login && data.password) {
+    var callback = function(res, body, options, parameters){
+      Log(command + ' user ' + data.login, 'Users');
+      req.session.login = data.login;
+      res.redirect('Tournaments');
+    }
+    var failCallback = function(res, body, options, parameters){
+      Log('Reject user ' + data.login,'Users');
+      res.render(command,{err:body.result});
+    }
+    AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
+    return;
+  }
+  res.render(command, Fail );
+}
+
 app.post('/Login', function (req, res){
-  var data = req.body;
+  /*var data = req.body;
+  Log('User ' + data.login + ' tries to log')
   console.log('Login: ' + data.login);
-  console.log('Pass: ' + data.password);
+  console.log('Pass: ' + data.password);*/
   //res.redirect('Tournaments');
   
-  sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
+  /*if (data && data.login && data.password) {
+    data.callback = function(res, body, options){
+      Log('Log user ' + data.login, 'Users');
+      req.session.login = data.login;
+      res.redirect('Tournaments');
+    }
+    data.failCallback = function(res, body, options){
+      Log('Reject user ' + data.login,'Users');
+      res.render('Login',{err:body.result});
+    }
+    AsyncRender('FrontendServer', 'Login', res, data );
+    return;
+  }
+  res.render('Login', Fail );*/
+  LoginOrRegister(req, res, 'Login');
+  /*sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
         'FrontendServer', res, 
         function (error, response, body, res1){
           if (error){
@@ -325,47 +351,12 @@ app.post('/Login', function (req, res){
             }
           }
         }
-  //siteAnswer(res, 'Register', data);
-  );
+  );*/
 });
 
-function regManager(command, req, res, data){
-  
-  console.log(data.login);
-  console.log(data.tournamentID);
-
-  if (isAuthenticated(req)){
-    sender.sendRequest(command, data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-      function (error, response, body, res1){
-        res.send(body.result);
-      });
-  }
-  else{
-    sender.Answer(res, {result:'auth'});
-  }
-}
-
-app.post('/CancelRegister', function (req, res){
-
-  var data = req.body;
-  regManager('CancelRegister',req, res, data);
-})
-
-
-
-app.post('/RegisterInTournament', function (req, res){
-  console.log('REG USER IN TOURN');
-  var data = req.body;
-
-  regManager('RegisterUserInTournament',req, res, data);
-
-  console.log('WRITE Socket emitter!!!')
-})
-
-
-
 app.post('/Register', function (req, res){
-  var data = req.body;
+  LoginOrRegister(req, res, 'Register');
+  /*var data = req.body;
   console.log('Login: ' + data.login);
   console.log('Pass: ' + data.password);
   //res.redirect('Tournaments');
@@ -383,13 +374,38 @@ app.post('/Register', function (req, res){
             break;
           }
         }
-  //siteAnswer(res, 'Register', data);
-  );
+  );*/
 });
 
 app.get('/Register', function (req, res){
   res.render('Register');
 })
+
+
+function regManager(command, req, res){
+  var data = req.body;
+  console.log(data.login);
+  console.log(data.tournamentID);
+
+  if (isAuthenticated(req)){
+    AsyncRender('TournamentServer', command, res, null,  data);
+    /*sender.sendRequest(command, data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+      function (error, response, body, res1){
+        res.send(body.result);
+      });*/
+  }
+  else{
+    sender.Answer(res, {result:'auth'});
+  }
+}
+app.post('/CancelRegister', function (req, res){
+  regManager('CancelRegister',req, res);
+})
+app.post('/RegisterInTournament', function (req, res){
+  regManager('RegisterUserInTournament',req, res);
+  //console.log('WRITE Socket emitter!!!')
+})
+
 
 app.get('/AddTournament', function (req, res){
   res.render('AddTournament');
@@ -401,17 +417,25 @@ app.get('/AddTournament', function (req, res){
     res.render('Alive');
   }*/
 });
-
+function Log(data, topic){
+  JSLog({msg:data}, topic);
+}
 
 app.post('/AddTournament', function (req, res){
   //sender.expressSendRequest('AddTournament', req.body, '127.0.0.1', serv)
   var data = req.body;
-  Log(data);
-  sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+  Log(data, 'Manual');
+
+  //####
+  data.renderPage='AddTournament';
+  AsyncRender('FrontendServer', 'AddTournament', res, null,  data);
+  //####
+
+  /*sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
         function (error, response, body, res1){
           //res1.json(body);
           res.render('AddTournament', {msg:body});
-        });
+        });*/
 })
 
 app.get('/AddGift', function (req, res){
@@ -420,7 +444,7 @@ app.get('/AddGift', function (req, res){
 
 app.post('/AddGift', function (req, res){
   var data = req.body;
-  Log(data);
+  Log(data,'Manual');
   if (data){
     sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
           res.render('AddGift', {msg:body});
@@ -441,7 +465,7 @@ app.get('/ShowGifts', function (req, res){
 
 app.all('/StartTournament', function (req, res){
   //console.log(req.url);
-  Log({msg:'StartTournament'}, 'ASD');
+  Log('StartTournament', 'ASD');
   console.log('Site starts tournament');
   var data = req.body;
   //console.log(req.body);
@@ -484,11 +508,7 @@ function isAuthenticated(req){
   return req.session && req.session.login;
 }
 
-app.get('/Cashout', function (req, res){
-  //if (isAuthenticated(req))
-  res.render('Cashout');
-
-})
+var Fail = {result:'fail'};
 
 function getLogin(req){
   if (isAuthenticated(req)){
@@ -501,32 +521,54 @@ function getLogin(req){
 
 app.post('/Cashout', function (req, res){
   //if (isAuthenticated(req))
-  var data = req.body;
+  /*var data = req.body;
   var login = getLogin(req);
   if (data && login!=0 ){
     data.login = login;
     siteProxy(res, 'Cashout',data,null,'MoneyServer');
   }else{
     res.send(400);
+  }*/
+  MoneyTransferOperation(req, res, 'Cashout');
+})
+
+function MoneyTransferOperation(req, res, operation){
+  if (isAuthenticated(req)){
+    var data = req.body;
+    var login = getLogin(req);
+    if (data && login){
+      data.login = login;
+      siteProxy(res, operation,data,null,'MoneyServer');
+      return;
+    }
   }
+  //else
+  res.send(400);
+}
 
-})
-
-app.get('/Deposit', function (req, res){
-  res.render('Deposit');
-})
 app.post('/Deposit', function (req, res){
   //if (isAuthenticated(req))
-  var data = req.body;
+  /*var data = req.body;
   var login = getLogin(req);
   if (data && login!=0 ){
     data.login = login;
     siteProxy(res, 'Deposit',data,null,'MoneyServer');
   }else{
     res.send(400);
-  }
+  }*/
+  MoneyTransferOperation(req, res, 'Deposit');
 
 })
+
+app.get('/Cashout', function (req, res){
+  //if (isAuthenticated(req))
+  res.render('Cashout');
+
+})
+app.get('/Deposit', function (req, res){
+  res.render('Deposit');
+})
+
 
 app.get('/Profile', function (req, res){
   var login = 'Alvaro_Fernandez';
@@ -534,13 +576,9 @@ app.get('/Profile', function (req, res){
     login = req.session.login;
   }
   else{
-    //res.json({msg:'Сасай'});
+    //res.json({msg:'Log in first'});
   }
   siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
-  /*sender.sendRequest('GetUserProfileInfo',  {login:login}, '127.0.0.1', 'FrontendServer', res, function (error, response, body, res){
-      
-      //sender.Answer(res, body);
-    });*/
 })
 
 app.post('/GetGift', function (req, res){

@@ -69,53 +69,46 @@ html
 		script(src="sockets.js").
 		script(src="loadGift.js").
 		script(id= "RegUs11r").
-			function func(login, tID){
+			function ManageReg(login, tID, url, regID){
 				console.log(login);
 				console.log(tID);
 				//console.log(btn);
 
 				$.ajax({
-				  url: 'RegisterInTournament',
+				  url: url,
 				  method: 'POST',
 				  data: { login: login, tournamentID:tID },
 				  success: function( data ) {
-					var msg = data;//JSON.stringify(data);
+					var msg = JSON.parse(data);//JSON.stringify(data);
 					var txt='';
-					switch(data){
-						case 'OK': txt='You registered successfully!!';  break;
-						case 'fail': txt='Register failed :(('; break;
-						default : txt='Sorry, you need to login first :(('; break;
+					if (regID==1){
+						switch(msg.result){
+							case 'OK': txt='You registered successfully!!';  break;
+							case 'fail': txt='Register failed :(('; break;
+							default : txt='Sorry, you need to login first :(('; break;
+						}
 					}
-					alert(txt);
+					else{
+						switch(msg.result){
+							case 'OK': txt='Register canceled. Check your money ammount'; break;
+							case 'fail': txt='unRegister failed :(('; break;
+							default : txt='Sorry, you need to login first :(('; break;
+						}
+					}
+					alert(txt);//msg.result
 					console.log(msg);
 				  }
 				});
+			}
+			function func(login, tID){
+				ManageReg(login, tID, 'RegisterInTournament', 1);
 			}
 			function addRegListener(){
 				//document.getElementById("reg").removeEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");} );
 				//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");} );
 			}
 			function unReg(login, tID){
-				console.log(login);
-				console.log(tID);
-				//console.log(btn);
-
-				$.ajax({
-				  url: 'CancelRegister',
-				  method: 'POST',
-				  data: { login: login, tournamentID:tID },
-				  success: function( data ) {
-					var msg = data;//JSON.stringify(data);
-					var txt='';
-					switch(data){
-						case 'OK': txt='Register canceled. Check your money ammount'; break;
-						case 'fail': txt='unRegister failed :(('; break;
-						default : txt='Sorry, you need to login first :(('; break;
-					}
-					alert(txt);
-					console.log(msg);
-				  }
-				});
+				ManageReg(login, tID, 'CancelRegister', 0);
 			}
 	body
 		p!= JSON.stringify(message)
@@ -123,7 +116,7 @@ html
 		h1!= 'Tournament : ' + message[0].tournamentID
 		+showTournament(message[0])
 		//+showPrizes(message[0].Prizes)
-		//+showPlayers(message[1])
+		+showPlayers(message[1])
 		button(id="reg" style= "width:300px;height:50")	REGISTER
 		br
 		br

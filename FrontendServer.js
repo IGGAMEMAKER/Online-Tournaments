@@ -30,8 +30,9 @@ app.post('/StartTournament', StartTournament);
 app.post('/StopTournament', StopTournament);
 
 app.post('/GetUserProfileInfo', GetUserProfileInfo);
-app.post('/RegisterUserInTournament', RegisterUserInTournament);
-app.post('/CancelRegister', CancelRegister);
+
+/*app.post('/RegisterUserInTournament', RegisterUserInTournament);
+app.post('/CancelRegister', CancelRegister);*/
 
 
 app.post('/AddTournament', AddTournament);
@@ -93,7 +94,7 @@ app.post('/GetTournaments', function (req, res){//DON'T MODIFY OBJ!!
 		queryFields: data['queryFields'],
 		purpose: data['purpose']||null
 	};
-	strLog('Getting Tournaments: ' + JSON.stringify(obj) , 'WARN');
+	//strLog('Getting Tournaments: ' + JSON.stringify(obj) , 'WARN');
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, proxy);
 });
 
@@ -242,7 +243,7 @@ function FinishGame(req, res){
 	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
 }
 
-function CancelRegister(req, res){
+/*function CancelRegister(req, res){
 	var data = req.body;
 	var obj = {
 		sender: "FrontendServer",
@@ -263,7 +264,7 @@ function RegisterUserInTournament( req, res){
 	};
 	strLog("Trying to register in tournament " + data['tournamentID']);
 	sender.sendRequest("RegisterUserInTournament", obj, '127.0.0.1', 'TournamentServer', res, proxy);
-}
+}*/
 
 
 

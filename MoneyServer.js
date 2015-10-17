@@ -25,16 +25,14 @@ var logins = {};
 
 function BuyIn(req, res){
 	var data = req.body;
-	if(data){
-		if (data.userID){
-			if (noOperations(data.userID)){
-				logins[data.userID]=1;
-				core.DBupdate('/DecreaseMoney', data, null,res, function (err, response, body, res){
-					delete logins[data.userID];
-					core.Answer(res, body); 
-					//OK(res);
-				});
-			}
+	if(data && data.userID){
+		if (noOperations(data.userID)){
+			logins[data.userID]=1;
+			core.DBupdate('/DecreaseMoney', data, null,res, function (err, response, body, res){
+				delete logins[data.userID];
+				core.Answer(res, body); 
+				//OK(res);
+			});
 		}
 	}
 }

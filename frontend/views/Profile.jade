@@ -33,21 +33,22 @@ mixin showGifts(gifts)
 				+ShowGift(val)
 
 mixin drawPrizes2(giftIDList, gifts)
-	table
-		each gft, index in giftIDList
-			//p!= JSON.stringify(gft)
-			- for (var i=0;i<gifts.length;i++)
-				if gft.giftID == gifts[i]._id
-					tr
-						+ShowGift(gifts[i])
-					//
-						if(index%3==0)
-							//tr
-								td
-									p TR
-									//+ShowGift(gifts[i])
-						else
+	if giftIDList && gifts
+		table
+			each gft, index in giftIDList
+				//p!= JSON.stringify(gft)
+				- for (var i=0;i<gifts.length;i++)
+					if gft.giftID == gifts[i]._id
+						tr
 							+ShowGift(gifts[i])
+						//
+							if(index%3==0)
+								//tr
+									td
+										p TR
+										//+ShowGift(gifts[i])
+							else
+								+ShowGift(gifts[i])
 		
 ///-----
 mixin buttonLink(link, text)
@@ -55,11 +56,12 @@ mixin buttonLink(link, text)
 		input(type="submit" value=text style="width:125px;height:50px;")
 mixin drawTournamentRegs(tournaments)
 	h2 My tournaments
-	table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-		tr
-			td TournamentID
-			td Promoted by(Status)
-		+drawRegs(tournaments)
+	if tournaments
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			tr
+				td TournamentID
+				td Promoted by(Status)
+			+drawRegs(tournaments)
 
 mixin drawPrizes(gifts)
 	h2 Prizes:
@@ -86,7 +88,7 @@ html
 	center
 		h1 Profile of  #{session.login}
 		h2 You have #{message.money/100}$ on your account
-		
+		p!= JSON.stringify(msg)
 		+moneyOperations()
 
 		a(href="Tournaments") Back to tournaments

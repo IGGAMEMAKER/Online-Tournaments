@@ -69,7 +69,7 @@ var io;
 var host;
 var port;
 var configs;
-var servConfigs;
+var serverConfigs;// this config is specific for each server
 var constants;
 
 function ReadConfigs(){
@@ -81,8 +81,8 @@ function ReadConfigs(){
 
 function ReadServerConfigs(){
 	var file = fs.readFileSync('./configs/'+serverName+'.txt', "utf8");
-	servConfigs = JSON.parse(file);
-	console.log(JSON.stringify(servConfigs));
+	serverConfigs = JSON.parse(file);
+	console.log(JSON.stringify(serverConfigs));
 }
 function ReadConstants(){
 	var file = fs.readFileSync('./configs/'+'constants'+'.txt', "utf8");
