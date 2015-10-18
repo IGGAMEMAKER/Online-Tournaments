@@ -174,7 +174,9 @@ function startServer(child, servName){
 		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
 	});*/
 	child.on('exit:code', function (code) {
-		SendInfo('Forever detected, that ' + servName + ' exited with code ' + code, 'Err');
+		var msg = 'Forever detected, that ' + servName + ' exited with code ' + code;
+		if (code) SendError(msg, 'Err');
+		else { SendInfo(msg); }
 	});
 
 	//child.on('*', function
@@ -187,6 +189,7 @@ function CodeChange(msg, topic){
 	//console.log('CodeChange ' + msg);
 	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);
 }
+
 
 function SendInfo(msg, topic){
 	console.log('Send info! ' + msg);

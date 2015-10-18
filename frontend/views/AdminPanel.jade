@@ -18,8 +18,22 @@ html
 		p Running
 	br
 	br
-	#Tournaments
-		p Total tournaments
-	script.
+	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		tr
+			td
+				#Tournaments
+					p Total tournaments
+			td
+				#Games
+					table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+						tr
+							td
+								#1
+									p Ping pong
+							td
+								#2
+									p Questions
+						
+	//script.
 		var tmr = setInterval(GetRunningTournaments, 3000);
 		var tmr2 = setInterval(GetTotalTournaments, 3000);

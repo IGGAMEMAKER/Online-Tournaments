@@ -197,10 +197,15 @@ function Admin(req, res){
     case 'Tournaments': GetTournamentsFromTS(res); break;
     case 'Stop': StopServer(res, req.body.serverName); break;
 
+    case 'GetGameFromGameServer': GetGameFromGameServer(res, req.body.gameNameID); break;
     default: sender.Answer(res, {result:'Unknown command ' + command}); break;
   }
 }
 
+function GetGameFromGameServer(res, gameNameID){
+  var servName = gameNameID;
+  AsyncRender(serverName, 'GetGames', res);
+}
 
 function GetTournamentsFromTS(res){
   sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);

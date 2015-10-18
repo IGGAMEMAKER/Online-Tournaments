@@ -49,7 +49,9 @@ function GameServerStarts(req, res){
 		function (error, response, body, res) {//GetTournamentsForGS
 			//strLog(JSON.stringify(body));
 			for (var i = body.length - 1; i >= 0; i--) {
-				var tournament = body[i];
+				SendTournamentToGameServer(body[i]);
+
+				/*var tournament = body[i];
 				var numberOfRounds = tournament['rounds'];
 				
 				var tournamentID = tournament.tournamentID;
@@ -59,21 +61,39 @@ function GameServerStarts(req, res){
 					tourns[tournamentID] = gameNameID;
 					sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
 					
-				}
-				//AnalyzeStructure(body[i], res);
+				}*/
 			}
 		});
 }
 
+function SendTournamentToGameServer(tournament, res){
+	if (res) sender.Answer(res, OK);
+
+	var numberOfRounds = tournament['rounds'];
+	var gameNameID = tournament.gameNameID;
+	
+	var tournamentID = tournament.tournamentID;
+	strLog(JSON.stringify(tournament));
+
+	if (tournament && numberOfRounds){
+		tourns[tournamentID] = gameNameID;
+		sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
+		
+	}
+}
+
 function AnalyzeStructure(tournament, res){
+	sender.Answer(res, OK);
+
+
 	strLog('AnalyzeStructure. SENDING GAME TO GameServer');
 	var numberOfRounds = tournament['rounds'];
 	//strLog()
 	var gameNameID = tournament.gameNameID;
-	if (!gameNameID) gameNameID = 2;
-	strLog("numberOfRounds= " + numberOfRounds);
+	//if (!gameNameID) gameNameID = 2;
+	//strLog("numberOfRounds= " + numberOfRounds);
 	tourns[tournament.tournamentID] = gameNameID;
-	sendToGameServer("ServeGames", tournament, null, gameNameID, res, ServeTournamentCallback);
+	sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
 
 	/*sender.expressSendRequest("ServeGames", tournament, 
 		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer*/
@@ -81,7 +101,9 @@ function AnalyzeStructure(tournament, res){
 
 function ServeTournament (req, res){
 	var data = req.body;
-	AnalyzeStructure(data, res);
+	if (data) SendTournamentToGameServer(data, res); return;
+	strLog('I recieved null tournament. WHAT THE HELL??? ', 'WARN');
+	//AnalyzeStructure(data, res);
 }
 
 function StartTournament (req, res){
@@ -121,7 +143,7 @@ function getGameNameIDByTID(tournamentID){
 
 function ServeTournamentCallback( error, response, body, res) {
 	strLog("Answer from GS comes here!!!");
-	sender.Answer(res, OK)
+	
 	//res.end('OK');
     //    res.end("GameServed");
 }

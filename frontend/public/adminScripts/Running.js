@@ -23,6 +23,37 @@ function size(obj){
 	return Object.keys(obj).length;
 }
 
+function GetPingPongGames(){
+	GetGame(1);
+}
+function GetQuestionGames(){
+	GetGame(2);
+}
+
+function GetGame(gameNameID){
+	$.ajax({
+	  url: 'Admin',
+	  method: 'POST',
+	  data: { command:'GetGameFromGameServer', gameNameID:gameNameID },
+	  success: function( data ) {
+		
+		var msg = data;//JSON.stringify(data);
+		//console.log(msg);
+		var obj = JSON.parse(msg);
+		//console.log(obj);
+		console.log(size(obj));
+		//var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+		//alert('Answer on Running');
+			//$('#Running').append('<b>'+JSON.stringify(msg)+'</b>');
+			$("#"+gameNameID).html('<h2>'+'Total Games (GOT FROM GS) ' +size(obj)+ '</h2>');
+			//$("#Tournaments").append(msg); 
+			//$("#Running").append('<p>'+msg+'</p>');// '<b>'+JSON.stringify(msg)+'</b>';*/
+			drawGames(obj, gameNameID );
+	  }
+	});
+}
+
+
 function GetTotalTournaments(){
 	$.ajax({
 	  url: 'Admin',
@@ -33,7 +64,7 @@ function GetTotalTournaments(){
 		var msg = data;//JSON.stringify(data);
 		//console.log(msg);
 		var obj = JSON.parse(msg);
-		console.log(obj);
+		//console.log(obj);
 		console.log(size(obj));
 		//var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
 		//alert('Answer on Running');
@@ -82,6 +113,30 @@ function stopTournament(tournamentID){
 	});
 }
 
+function drawGames(msg, gameNameID){
+	/*for (var running in msg){
+		var func = "stopTournament("+running +")";
+		var func1 = "restartGame("+running +")";
+		var separator = '  --  ';
+		var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
+		var restart_game = '<a href="" onclick="' + func1 + '"> restartGame ' +running+'</a>';
+
+		$("#"+gameNameID).append(stopTourn + separator); 
+		$("#"+gameNameID).append(restart_game);// '<b>'+JSON.stringify(msg)+'</b>';
+	}*/
+	$("#"+gameNameID).html(JSON.stringify(msg));
+	/*for (var running in msg){
+		var func = "stopTournament("+running +")";
+		var func1 = "restartGame("+running +")";
+		var separator = '  --  ';
+		var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
+		var restart_game = '<a href="" onclick="' + func1 + '"> restartGame ' +running+'</a>';
+
+		$("#"+gameNameID).append(stopTourn + separator); 
+		$("#"+gameNameID).append(restart_game);// '<b>'+JSON.stringify(msg)+'</b>';
+	}*/
+}
+
 function drawTournaments(msg){
 	for (var running in msg){
 		var func = "stopTournament("+running +")";
@@ -118,3 +173,8 @@ function drawTotalTournaments(msg){
 		$("#Tournaments").append(restart_game +'<br>');// '<b>'+JSON.stringify(msg)+'</b>';*/
 	}
 }
+
+var tmr = setInterval(GetRunningTournaments, 5000);
+var tmr2 = setInterval(GetTotalTournaments, 5000);
+var tmr3 = setInterval(GetPingPongGames, 4000);
+var tmr4 = setInterval(GetQuestionGames, 4000);

@@ -132,7 +132,7 @@ function universalAnswer(error, response, body, res, method){//response is a res
         res.end("THX for register");*/
     }
     else {
-        console.log('Error happened: '+ error);
+        console.log('Error happened: '+ JSON.stringify(error),'Err');
     }
 }
 
