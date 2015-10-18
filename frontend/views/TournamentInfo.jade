@@ -55,30 +55,46 @@ mixin showPlayers(players)
 	br
 
 	//p!= JSON.stringify(players)
+mixin drawRegButton(name, ButtonValue, tID, message)
+	button(id=name, style= "width:300px;height:50")	#{ButtonValue}
+	br
+	br
+	p #{tID}
+	//script. 
+		document.getElementById("#{name}").addEventListener("click", function() { func("#{session.login}", "#{tID}");});
+	script.
+		var name = "#{name}";
+		//alert(name);
+		document.getElementById(name).addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+
+mixin drawTournamentInfo(message)
+	+showTournament(message[0])
+	//+showPrizes(message[0].Prizes)
+	+showPlayers(message[1])
+
 
 html
 	head
 		title!= title
-		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+		script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+		script(src="http://code.jquery.com/jquery-1.11.1.js")
 
-		script( src="https://cdn.socket.io/socket.io-1.2.0.js").
-		script( src="http://code.jquery.com/jquery-1.11.1.js")
 		script.
-			var login = "#{session.login}"; 
-			//alert("#{session.login}");
+			var login = "#{session.login}";
 		script(src="sockets.js").
 		script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
-		p!= JSON.stringify(message)
 		include tAuth
 		h1!= 'Tournament : ' + message[0].tournamentID
-		+showTournament(message[0])
-		//+showPrizes(message[0].Prizes)
-		+showPlayers(message[1])
-		button(id="reg" style= "width:300px;height:50")	REGISTER
-		br
-		br
+		+drawTournamentInfo(message)
+
+		//- var tID = "#{message[0].tournamentID}";
+		+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
+		//button(id="reg" style= "width:300px;height:50")	REGISTER
+		//br
+		//br
 		button(id="unReg" style= "width:300px;height:50") UNREGISTER
 		br
 		br
@@ -92,8 +108,8 @@ html
 			var aaa = "#{session.login}";
 			var bbb = "#{message[0].tournamentID}";
 			var btn = document.getElementById("reg");
-			document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
+
+			//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
 			document.getElementById("unReg").addEventListener("click", function() { unReg("#{session.login}", "#{message[0].tournamentID}");});
-			//document.getElementById("reg").addEventListener("click", function() { loadGift("5609b8ac8b659cb7194c78c7");});
 		#news
 			p!= aza
