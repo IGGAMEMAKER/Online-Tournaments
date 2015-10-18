@@ -68,7 +68,13 @@ html
 			//alert("#{session.login}");
 		script(src="sockets.js").
 		script(src="loadGift.js").
-		script(id= "RegUs11r").
+		script(id= "RegUs11r").			
+			function func(login, tID){
+				ManageReg(login, tID, 'RegisterInTournament', 1);
+			}
+			function unReg(login, tID){
+				ManageReg(login, tID, 'CancelRegister', 0);
+			}
 			function ManageReg(login, tID, url, regID){
 				console.log(login);
 				console.log(tID);
@@ -96,20 +102,9 @@ html
 						}
 					}
 					alert(txt);//msg.result
-					location.reload(true);
 					console.log(msg);
 				  }
 				});
-			}
-			function func(login, tID){
-				ManageReg(login, tID, 'RegisterInTournament', 1);
-			}
-			function addRegListener(){
-				//document.getElementById("reg").removeEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");} );
-				//document.getElementById("reg").addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");} );
-			}
-			function unReg(login, tID){
-				ManageReg(login, tID, 'CancelRegister', 0);
 			}
 	body
 		p!= JSON.stringify(message)

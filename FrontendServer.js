@@ -28,40 +28,14 @@ app.post('/StopTournament', StopTournament);
 app.post('/ServeTournament', ServeTournament);
 
 
-
-app.post('/GetUserProfileInfo', GetUserProfileInfo);
-
 app.post('/GetTournaments', GetTournaments);
-app.post('/GetUsers', GetUsers);
-
-///********************** 	TournamentManager
-/*function GetGameFrontendAdress(gameNameId){
-	strLog("rewrite FS.GetGameFrontendAdress");
-	var adress = {
-		IP: '127.0.0.1',
-		port: 'GameFrontendServer'
-	};
-	return adress;
-}
-
-function SendTournamentHandler( error, response, body, res) { //this code is used :) delete it if you KNOW, what are you doing
-	strLog("SendTournamentHandler THIS METHOD WORKS", 'Tournaments');
-	Answer(res, {result:'OK'});
-	//res.end('OK');
-}*/
 
 function ServeTournament (req, res){
 	var data = req.body;
 	strLog("ServeTournament ... FS ", 'Tournaments')
 	//strLog(JSON.stringify(data));//['tournamentStructure']);
 	
-	//strLog("Sending Tournament...");
 	var tournament = data;
-	//var adress = GetGameFrontendAdress(tournament.gameNameID);
-
-	/*sender.sendRequest("ServeTournament", tournament,
-		adress['IP'], adress['port'], res, proxy);*/
-		//SendTournamentHandler
 
 	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
 }
@@ -87,9 +61,7 @@ function FinishGame(req, res){
 	Answer(res, {result:'OK', message:'FinishGame'});
 	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
 }
-
 ///**********************
-
 
 function GetTournaments(req, res){//DON'T MODIFY OBJ!!
 	var data = req.body;
@@ -103,27 +75,6 @@ function GetTournaments(req, res){//DON'T MODIFY OBJ!!
 	};
 	//strLog('Getting Tournaments: ' + JSON.stringify(obj) , 'WARN');
 	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, proxy);
-}
-
-
-
-
-
-
-
-
-
-///
-
-function GetUsers(req, res){
-	var data = req.body;
-	sender.sendRequest("GetUsers", data, '127.0.0.1', 'DBServer', res, proxy);
-}
-
-function GetUserProfileInfo(req , res){
-	var data = req.body;
-	strLog(data);
-	sender.sendRequest("GetUserProfileInfo", data, '127.0.0.1', 'DBServer', res, proxy);
 }
 
 function proxy(error, response, body, res){

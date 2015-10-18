@@ -29,9 +29,6 @@ html
 							p!= message[i].login
 						td
 							p!= message[i].money
-						td
-							a(href='TournamentInfo?tID='+i)
-								Tournament Info
 					//p!= message
 				- }}
 			a(href='Tournaments')

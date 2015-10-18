@@ -720,16 +720,18 @@ app.get('/Users' , function (req, res){
   data.query = {};//tournamentID:req.query.tID};
   data.queryFields = 'login money';
 
-  //siteAnswer(res, 'GetUsers', data, 'tAuth', {login: req.session.login} );
-  siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
+  //siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
+  
+  AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
 });
 
 app.all('/Tournaments', function (req,res){
   var data = req.body;
   data.queryFields = 'tournamentID buyIn goNext gameNameID players';
 
-  //siteAnswer(res,'GetTournaments', 'GetTournaments', data, 'GetTournaments');
-  siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
+  //siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+
 
   /*sender.sendRequest('GetTournaments', data, '127.0.0.1', 
       'FrontendServer', res, function (error, response, body, res1){
@@ -743,12 +745,32 @@ app.all('/Tournaments', function (req,res){
       });*/
 });
 const GET_TOURNAMENTS_INFO = 4;
+
 app.get('/TournamentInfo', function (req, res){
   var data = req.body;
   data.query = {tournamentID:req.query.tID};
   data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
   data.purpose = GET_TOURNAMENTS_INFO;
   siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
+
+  /*var obj = {
+    sender: "FrontendServer",
+    tournamentID: data['tournamentID'],
+    query: data['query'],
+    queryFields: data['queryFields'],
+    purpose: data['purpose']||null
+  };*/
+  /*var obj = {
+    sender: "FrontendServer",
+    tournamentID: data['tournamentID'],
+    query: {tournamentID:req.query.tID},
+    queryFields: 'tournamentID buyIn goNext gameNameID Prizes players status',
+    purpose: GET_TOURNAMENTS_INFO
+  };*/
+  //AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, obj);
+  
+
+  //AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
 });
 
 
