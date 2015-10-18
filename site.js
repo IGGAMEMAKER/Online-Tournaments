@@ -208,6 +208,9 @@ function GetTournamentsFromTS(res){
 
 function stopTournament(res, tournamentID){
   sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy);
+
+  strLog('FrontendServer StopTournament :::'+tournamentID, 'Manual');
+  sender.sendRequest("StopTournament", {tournamentID:tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
 }
 
 function runTournament(res, tournamentID){
@@ -542,6 +545,13 @@ function AddTournament(req, res){
 
 }
 
+app.post('/FinishGame', FinishGame);
+function FinishGame(req, res){
+  var data = req.body;
+  Answer(res, {result:'OK', message:'FinishGame'});
+  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+}
+
 
 app.get('/AddGift', function (req, res){
   res.render('AddGift');
@@ -575,7 +585,11 @@ app.all('/StartTournament', function (req, res){
   console.log('Site starts tournament');
   var data = req.body;
   //console.log(req.body);
+  
   //
+  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+  //
+
   io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
   res.end();
 });
@@ -725,6 +739,18 @@ app.get('/Users' , function (req, res){
   AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
 });
 
+app.post('/ServeTournament', ServeTournament);
+function ServeTournament (req, res){
+  var data = req.body;
+  strLog("ServeTournament ... FS ", 'Tournaments')
+  //strLog(JSON.stringify(data));//['tournamentStructure']);
+  
+  var tournament = data;
+
+  sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
+}
+
+
 app.all('/Tournaments', function (req,res){
   var data = req.body;
   data.queryFields = 'tournamentID buyIn goNext gameNameID players';
@@ -751,7 +777,7 @@ app.get('/TournamentInfo', function (req, res){
   data.query = {tournamentID:req.query.tID};
   data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
   data.purpose = GET_TOURNAMENTS_INFO;
-  siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
+  //siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
 
   /*var obj = {
     sender: "FrontendServer",
@@ -760,17 +786,18 @@ app.get('/TournamentInfo', function (req, res){
     queryFields: data['queryFields'],
     purpose: data['purpose']||null
   };*/
+
   /*var obj = {
     sender: "FrontendServer",
     tournamentID: data['tournamentID'],
     query: {tournamentID:req.query.tID},
     queryFields: 'tournamentID buyIn goNext gameNameID Prizes players status',
     purpose: GET_TOURNAMENTS_INFO
-  };*/
-  //AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, obj);
+  };
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, obj);*/
   
 
-  //AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
 });
 
 

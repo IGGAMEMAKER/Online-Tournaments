@@ -18,7 +18,7 @@ var fs = require('fs');
 
 serverList['LogServer'] = 3000;
 
-serverList['FrontendServer'] = 5000;
+serverList['FrontendServer'] = 80;//5000;
 serverList['TournamentServer'] = 5001;
 //serverList['TournamentManager'] = 5002;
 //serverList['AccountServer'] = 5003;

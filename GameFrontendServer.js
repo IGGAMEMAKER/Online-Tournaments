@@ -13,13 +13,14 @@ sender.setServer(serverName);
 var strLog = sender.strLog;
 //var funcArray = {};
 
-app.post('/ServeTournament', ServeTournament);
+app.post('/ServeTournament', ServeTournament);//<---from Site to GFS
 app.post('/StartTournament', StartTournament);
-
-app.post('/FinishGame', FinishGame);
-app.post('/TournamentWorks', TournamentWorks);
-app.post('/GameServerStarts', GameServerStarts);
 app.post('/StopTournament', StopTournament);
+
+app.post('/TournamentWorks', TournamentWorks);//?  ask status
+
+app.post('/FinishGame', FinishGame);//--->from GS to Site
+app.post('/GameServerStarts', GameServerStarts);//--->
 
 var status = new Object();
 

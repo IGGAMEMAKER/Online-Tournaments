@@ -80,18 +80,18 @@ html
 
 		script.
 			var login = "#{session.login}";			
-			var tID = "#{message[0].tournamentID}";
+			var tID = "#{msg[0].tournamentID}";
 		script(src="sockets.js").
 		script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
 		include tAuth
 
-		h1!= 'Tournament : ' + message[0].tournamentID
-		+drawTournamentInfo(message)
+		h1!= 'Tournament : ' + msg[0].tournamentID
+		+drawTournamentInfo(msg)
 				
-		+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
-		+drawRegButton("unReg", "UNREGISTER", message[0].tournamentID, message)
+		+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
+		+drawRegButton("unReg", "UNREGISTER", msg[0].tournamentID, msg)
 
 		div
 			a( href='Tournaments') Tournaments

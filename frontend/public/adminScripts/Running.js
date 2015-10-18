@@ -45,30 +45,6 @@ function GetTotalTournaments(){
 	  }
 	});
 }
-function drawTotalTournaments(msg){
-	for (var running in msg){
-		var func = "stopTournament("+running +")";
-		var func1 = "restartGame("+running +")";
-		var separator = '  --  ';
-		var tournament =  msg[running];
-		var message = 	'status: '+tournament.status + 
-						'| ID: ' + tournament.tournamentID;// JSON.stringify(msg[running]);
-		/*
-			
-						'| gameNameID: ' + tournament.gameNameID + 
-						'| buyIn: ' + tournament.buyIn + 
-						'| players: ' + tournament.players + 
-		*/
-		var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
-
-		$("#Tournaments").append(message + ' ' + stopTourn + '<br>'); 
-
-		/*var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
-		var restart_game = '<a href="" onclick="' + func1 + '"> restartGame ' +running+'</a>';
-		$("#Tournaments").append(stopTourn + separator); 
-		$("#Tournaments").append(restart_game +'<br>');// '<b>'+JSON.stringify(msg)+'</b>';*/
-	}
-}
 
 function restartGame(tournamentID){
 	$.ajax({
@@ -116,5 +92,29 @@ function drawTournaments(msg){
 
 		$("#Running").append(stopTourn + separator); 
 		$("#Running").append(restart_game);// '<b>'+JSON.stringify(msg)+'</b>';
+	}
+}
+function drawTotalTournaments(msg){
+	for (var running in msg){
+		var func = "stopTournament("+running +")";
+		var func1 = "restartGame("+running +")";
+		var separator = '  --  ';
+		var tournament =  msg[running];
+		var message = 	'status: '+tournament.status + 
+						'| ID: ' + tournament.tournamentID;// JSON.stringify(msg[running]);
+		/*
+			
+						'| gameNameID: ' + tournament.gameNameID + 
+						'| buyIn: ' + tournament.buyIn + 
+						'| players: ' + tournament.players + 
+		*/
+		var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
+
+		$("#Tournaments").append(message + ' ' + stopTourn + '<br>'); 
+
+		/*var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
+		var restart_game = '<a href="" onclick="' + func1 + '"> restartGame ' +running+'</a>';
+		$("#Tournaments").append(stopTourn + separator); 
+		$("#Tournaments").append(restart_game +'<br>');// '<b>'+JSON.stringify(msg)+'</b>';*/
 	}
 }

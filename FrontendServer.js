@@ -21,61 +21,35 @@ app.use(function(req,res,next){
     next();
 });
 
-app.post('/FinishGame', FinishGame);
+
 app.post('/StartTournament', StartTournament);
 app.post('/StopTournament', StopTournament);
-//app.post('/AddTournament', AddTournament);
-app.post('/ServeTournament', ServeTournament);
 
 
-app.post('/GetTournaments', GetTournaments);
 
-function ServeTournament (req, res){
-	var data = req.body;
-	strLog("ServeTournament ... FS ", 'Tournaments')
-	//strLog(JSON.stringify(data));//['tournamentStructure']);
-	
-	var tournament = data;
-
-	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
-}
-
-function StartTournament (req, res){
+function StartTournament (req, res){///
 	var data = req.body;
 	//strLog('StartTournament')
-	sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
-	strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
+	////sender.sendRequest("StartTournament", data, '127.0.0.1', 'site', null, sender.printer);
+	////strLog("StartTournament " + data['tournamentID']);//['tournamentStructure']);
 
 	sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 	res.end("StartTournament");
 }
 
-function StopTournament (req, res){
+function StopTournament (req, res){///
 	strLog('FrontendServer StopTournament :::'+req.body.tournamentID, 'Manual');
 	sender.sendRequest("StopTournament", {tournamentID:req.body.tournamentID}, '127.0.0.1', 'GameFrontendServer', res, sender.Proxy);
 
 }
-
+app.post('/FinishGame', FinishGame);
 function FinishGame(req, res){
 	var data = req.body;
 	Answer(res, {result:'OK', message:'FinishGame'});
 	sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
 }
-///**********************
 
-function GetTournaments(req, res){//DON'T MODIFY OBJ!!
-	var data = req.body;
-	//strLog(data);
-	var obj = {
-		sender: "FrontendServer",
-		tournamentID: data['tournamentID'],
-		query: data['query'],
-		queryFields: data['queryFields'],
-		purpose: data['purpose']||null
-	};
-	//strLog('Getting Tournaments: ' + JSON.stringify(obj) , 'WARN');
-	sender.sendRequest("GetTournaments", obj, '127.0.0.1', 'DBServer', res, proxy);
-}
+
 
 function proxy(error, response, body, res){
 	Answer(res, body);

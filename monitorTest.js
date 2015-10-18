@@ -8,7 +8,7 @@ var serverNames = [];
 var site = 'site'; 
 var Log = 'LogServer'
 var DB =  'DBServer';
-var FS =  'FrontendServer';
+//var FS =  'FrontendServer';
 var BS =  'BalanceServer';
 var TS =  'TournamentServer';
 var GFS = 'GameFrontendServer';
@@ -20,7 +20,7 @@ var QS =  'Servers/QuestionServer';
 //serverNames.push(site);
 //serverNames.push('thrower');
 serverNames.push(DB);
-serverNames.push(FS);
+//serverNames.push(FS);
 serverNames.push(BS);
 serverNames.push(TS);
 serverNames.push(GFS);

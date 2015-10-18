@@ -86,7 +86,7 @@ html
 		script(src="registerUserInTournament.js")
 	body
 		include tAuth
-		p "#{login}"
+
 		h1!= 'Tournament : ' + message[0].tournamentID
 		+drawTournamentInfo(message)
 				
