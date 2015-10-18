@@ -462,6 +462,7 @@ function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not fi
 
 	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 
 			'GameFrontendServer', gameResult , SendGameResultsHandler);
+	delete games[gameID];
 }
 
 var pendingGames={};

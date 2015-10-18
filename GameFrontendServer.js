@@ -50,18 +50,6 @@ function GameServerStarts(req, res){
 			//strLog(JSON.stringify(body));
 			for (var i = body.length - 1; i >= 0; i--) {
 				SendTournamentToGameServer(body[i]);
-
-				/*var tournament = body[i];
-				var numberOfRounds = tournament['rounds'];
-				
-				var tournamentID = tournament.tournamentID;
-				strLog(JSON.stringify(tournament));
-
-				if (tournament && numberOfRounds){
-					tourns[tournamentID] = gameNameID;
-					sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
-					
-				}*/
 			}
 		});
 }
@@ -71,39 +59,20 @@ function SendTournamentToGameServer(tournament, res){
 
 	var numberOfRounds = tournament['rounds'];
 	var gameNameID = tournament.gameNameID;
-	
+
 	var tournamentID = tournament.tournamentID;
 	strLog(JSON.stringify(tournament));
 
 	if (tournament && numberOfRounds){
 		tourns[tournamentID] = gameNameID;
 		sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
-		
 	}
-}
-
-function AnalyzeStructure(tournament, res){
-	sender.Answer(res, OK);
-
-
-	strLog('AnalyzeStructure. SENDING GAME TO GameServer');
-	var numberOfRounds = tournament['rounds'];
-	//strLog()
-	var gameNameID = tournament.gameNameID;
-	//if (!gameNameID) gameNameID = 2;
-	//strLog("numberOfRounds= " + numberOfRounds);
-	tourns[tournament.tournamentID] = gameNameID;
-	sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
-
-	/*sender.expressSendRequest("ServeGames", tournament, 
-		'127.0.0.1', 'GameServer', res, ServeTournamentCallback);//sender.printer*/
 }
 
 function ServeTournament (req, res){
 	var data = req.body;
 	if (data) SendTournamentToGameServer(data, res); return;
 	strLog('I recieved null tournament. WHAT THE HELL??? ', 'WARN');
-	//AnalyzeStructure(data, res);
 }
 
 function StartTournament (req, res){
@@ -140,21 +109,11 @@ function getGameNameIDByTID(tournamentID){
 	return tourns[tournamentID];
 }
 
-
-function ServeTournamentCallback( error, response, body, res) {
-	strLog("Answer from GS comes here!!!");
-	
-	//res.end('OK');
-    //    res.end("GameServed");
-}
-
-
 function FinishGame (req,res){
 	var data = req.body;
 	strLog(data);
 	res.end('OK');
-	sender.sendRequest("FinishGame", data, 
-		'127.0.0.1', 'FrontendServer', res, sender.printer);
+	sender.sendRequest("FinishGame", data, '127.0.0.1', 'FrontendServer');//, null, sender.printer);
 }
 
 function sendToGameServer(command, data, host, gameName, res, callback){

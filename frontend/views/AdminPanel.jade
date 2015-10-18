@@ -4,8 +4,6 @@ html
 	script.
 		//- alert('1');
 		var msg = "#{msg}";
-		//alert(msg);
-		//- alert(#{msg});
 	script(src="adminScripts/Running.js")
 	//script(src="adminScripts/MoneyTransfer.js")
 
@@ -18,21 +16,20 @@ html
 		p Running
 	br
 	br
-	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+	//table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
 			td
-				#Tournaments
-					p Total tournaments
-			td
-				#Games
-					table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-						tr
-							td
-								#1
-									p Ping pong
-							td
-								#2
-									p Questions
+	#Tournaments
+		p Total tournaments
+	#Games
+		table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			tr
+				td
+					#1
+						p Ping pong
+				td
+					#2
+						p Questions
 						
 	//script.
 		var tmr = setInterval(GetRunningTournaments, 3000);

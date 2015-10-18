@@ -21,15 +21,8 @@ app.post('/FreeTournamentServerIP', FreeTournamentServerIP);
 app.post('/ServeTournament', ServeTournament);
 app.post('/RestartTournament', RestartTournament);
 
-const TOURN_STATUS_REGISTER = 1;
-const TOURN_STATUS_RUNNING = 2;
-const TOURN_STATUS_FINISHED = 3;
-const TOURN_STATUS_PAUSED = 4;
-
-const GET_TOURNAMENTS_USER = 1;
 const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_FINISHED = 3;
-const GET_TOURNAMENTS_RUNNING = 5;
 
 function ServeTournament (req, res){
 	var data = req.body;

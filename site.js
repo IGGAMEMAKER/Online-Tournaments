@@ -204,7 +204,7 @@ function Admin(req, res){
 
 function GetGameFromGameServer(res, gameNameID){
   var servName = gameNameID;
-  AsyncRender(serverName, 'GetGames', res);
+  AsyncRender(servName, 'GetGames', res);
 }
 
 function GetTournamentsFromTS(res){

@@ -124,7 +124,26 @@ function drawGames(msg, gameNameID){
 		$("#"+gameNameID).append(stopTourn + separator); 
 		$("#"+gameNameID).append(restart_game);// '<b>'+JSON.stringify(msg)+'</b>';
 	}*/
-	$("#"+gameNameID).html(JSON.stringify(msg));
+	//$("#"+gameNameID).html(JSON.stringify(msg));
+	var counter=0;
+	for (var running in msg){
+		//if (counter==0){ $("#"+gameNameID).html(JSON.stringify(msg[running])); counter++;}
+		//else{
+			var game = msg[running];
+			var func = "restartGame("+running +")";
+
+			var tag = '<span style="color: gray;">';
+			if (game.isRunning) tag = '<span style="color: green;"> ';
+
+			var message = 	tag + 'status: '+game.isRunning + 
+							'| ID: ' + JSON.stringify(game.scores)+'</span>';// JSON.stringify(msg[running]);
+
+			var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
+
+			$("#"+gameNameID).append(message + ' ' + stopTourn + '<br>'); 
+		//}
+	}
+
 	/*for (var running in msg){
 		var func = "stopTournament("+running +")";
 		var func1 = "restartGame("+running +")";
@@ -164,7 +183,6 @@ function drawTotalTournaments(msg){
 						'| players: ' + tournament.players + 
 		*/
 		var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
-
 		$("#Tournaments").append(message + ' ' + stopTourn + '<br>'); 
 
 		/*var stopTourn = '<a href="" onclick="' + func + '"> stopTournament ' +running+'</a>';
@@ -176,5 +194,5 @@ function drawTotalTournaments(msg){
 
 var tmr = setInterval(GetRunningTournaments, 5000);
 var tmr2 = setInterval(GetTotalTournaments, 5000);
-var tmr3 = setInterval(GetPingPongGames, 4000);
-var tmr4 = setInterval(GetQuestionGames, 4000);
+//var tmr3 = setInterval(GetPingPongGames, 4000);
+//var tmr4 = setInterval(GetQuestionGames, 4000);

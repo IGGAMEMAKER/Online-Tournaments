@@ -8,11 +8,6 @@ var OK = core.OK;
 var Fail = core.Fail;
 var str = core.str;
 
-/*app.all('/', function (req, res) {
-	console.log('Request!');
-	res.end('OK');
-	//core.Log()
-})*/
 app.post('/BuyIn', BuyIn);
 app.post('/Deposit', Deposit);
 app.post('/Cashout', Cashout);
