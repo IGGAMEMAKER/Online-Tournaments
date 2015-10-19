@@ -202,6 +202,13 @@ function SendError(msg, topic){
 	sendRequest('Log', {msg: msg, topic: topic?topic:'Forever'} , '127.0.0.1', 'site', null, null);//LogServer
 }
 
+/*setTimeout(function(){
+	vodafone();
+	//throw 'Prog error';
+}, 7000);*/
+
+
+
 /*child.on('watch:restart', function(info) {
     console.error('Restaring script because ' + info.file + ' changed');
 });

@@ -80,7 +80,7 @@ function strLog(text, topic){
 			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err), topic:'err'}, host, 'site', null, printer);
 		}
 		else{
-			sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
+			//sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
 		}
 	});
 

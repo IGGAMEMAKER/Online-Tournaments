@@ -30,6 +30,9 @@ var server;
 var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
 var gamePort = configs.gamePort? configs.gamePort : '5009';
 
+
+
+
 console.log('ololo');
 app.use(express.static('./frontend/public'));
 //app.use(express.static('games'));
@@ -84,7 +87,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-
+//var gifts = require('./Modules/site/gifts');
+//gifts.setApp(app);
 
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
@@ -284,7 +288,7 @@ app.get('/SpecLogs/:topic', function (req, res){
 });*/
 
 function JSLog(msg, topic){
-  io.emit(topic?topic:'Logs', JSON.stringify(msg));
+  //io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
 
 app.get('/Alive', function (req, res){
@@ -558,7 +562,7 @@ function FinishGame(req, res){
 }
 
 
-app.get('/AddGift', function (req, res){
+/*app.get('/AddGift', function (req, res){
   res.render('AddGift');
 });
 
@@ -578,34 +582,12 @@ app.post('/AddGift', function (req, res){
 });
 
 app.get('/ShowGifts', function (req, res){
-  /*var data = req.body;
-  if (!data){ data={}; }
-  siteAnswer(res, 'ShowGifts', data, 'ShowGifts');*/
+  //var data = req.body;
+  //if (!data){ data={}; }
+  //siteAnswer(res, 'ShowGifts', data, 'ShowGifts');
   AsyncRender('DBServer', 'ShowGifts', res, {renderPage:'ShowGifts'});
 });
 
-app.all('/StartTournament', function (req, res){
-  //console.log(req.url);
-  Log('StartTournament', 'ASD');
-  console.log('Site starts tournament');
-  var data = req.body;
-  //console.log(req.body);
-  
-  //
-  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
-  //
-
-  io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
-  res.end();
-});
-
-
-
-app.get('/CheckServer', function (req, res){
-  var serv = req.query.serv;
-  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
-
-});
 app.get('/GetGift', function (req, res){
   var data = req.body;
   var query = req.query;
@@ -628,6 +610,44 @@ app.get('/GetGift', function (req, res){
     res.json({msg:'err'});
   }
 })
+
+app.post('/GetGift', function (req, res){
+  var data = req.body;
+  if (data){
+    sender.sendRequest('GetGift', data, '127.0.0.1', 'DBServer', res, 
+        function (error, response, body, res1){
+          //res.send(body.result);
+          res.json(body);
+        });
+  }
+  else {
+    res.json({msg:'err'});
+  }
+})*/
+
+app.all('/StartTournament', function (req, res){
+  //console.log(req.url);
+  Log('StartTournament', 'ASD');
+  console.log('Site starts tournament');
+  var data = req.body;
+  //console.log(req.body);
+  
+  //
+  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+  //
+
+  //io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+  res.end();
+});
+
+
+
+app.get('/CheckServer', function (req, res){
+  var serv = req.query.serv;
+  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
+
+});
+
 
 function isAuthenticated(req){
   return req.session && req.session.login;
@@ -708,19 +728,6 @@ app.get('/Profile', function (req, res){
   //siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
 })
 
-app.post('/GetGift', function (req, res){
-  var data = req.body;
-  if (data){
-    sender.sendRequest('GetGift', data, '127.0.0.1', 'DBServer', res, 
-        function (error, response, body, res1){
-          //res.send(body.result);
-          res.json(body);
-        });
-  }
-  else {
-    res.json({msg:'err'});
-  }
-})
 
 app.get('/Users' , function (req, res){
   /*if(req.session.login) {
@@ -844,7 +851,7 @@ server = app.listen(80, function () {
 
 var clients = [];
 
-var io = require('socket.io')(server);
+/*var io = require('socket.io')(server);
 io.on('connection', function(socket){
   console.log('IO connection');
   //socket.join('/111');
@@ -853,16 +860,10 @@ io.on('connection', function(socket){
     io.emit('chat message', msg);
   });
   socket.on('event1', function(data){
-    /*console.log('io.on connection--> socket.on event1');
-    console.log(data);*/
     SendToRoom('/111', 'azz', 'LALKI', socket);
     //io.of('/111').emit('azz','LALKI');
   });
 });
-/*var tmr2 = setTimeout(function(){
-  console.log(io.sockets.server.nsps['/111'].sockets);
-}, 11000);*/
-
 
 io.of('/111').on('connection', function(socket){
   console.log('ololo222');
@@ -873,5 +874,5 @@ io.of('/111').on('connection', function(socket){
 })
 
 function SendToRoom( room, event, msg, socket){
-  io.of(room).emit(event, msg);
-}
+  //io.of(room).emit(event, msg);
+}*/
