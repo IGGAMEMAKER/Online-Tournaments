@@ -424,8 +424,10 @@ function getGID(gameID, UID){//GID= GamerID, UID= UserID
 //strLog('CHANGE APPLIED', 'ASD');
 
 function stopGame(ID){
-	games[ID].isRunning = false;
-	StopTMR(ID);
+	if (games[ID]){
+		games[ID].isRunning = false;
+		StopTMR(ID);
+	}
 	//games[ID] = null;
 
 	/*setTimeout(function(){

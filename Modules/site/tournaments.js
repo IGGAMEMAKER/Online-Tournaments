@@ -108,7 +108,27 @@ var strLog = Log;
 
 	}
 
+	/*app.post('/FinishGame', FinishGame);
+	function FinishGame(req, res){
+		var data = req.body;
+		Answer(res, {result:'OK', message:'FinishGame'} );
+		sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+	}
 
+	app.all('/StartTournament', function (req, res){
+		//console.log(req.url);
+		Log('StartTournament', 'ASD');
+		console.log('Site starts tournament');
+		var data = req.body;
+		//console.log(req.body);
+
+		//
+		sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+		//
+
+		//io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+		res.end();
+	});*/
 
 	app.post('/ServeTournament', ServeTournament);
 	function ServeTournament (req, res){

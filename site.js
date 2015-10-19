@@ -87,10 +87,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-//var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer);
-//gifts.setApp(app, AsyncRender, Answer);
-//gifts(app, AsyncRender, Answer);
-
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
@@ -260,6 +256,7 @@ app.get('/CheckServer', function (req, res){
     Answer(res, {result:'OK', message:'FinishGame'} );
     sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
   }
+  
 
   app.all('/StartTournament', function (req, res){
     //console.log(req.url);
@@ -271,8 +268,7 @@ app.get('/CheckServer', function (req, res){
     //
     sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
     //
-    
-    io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+    if (socket_enabled) io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
     res.end();
   });
 
@@ -280,8 +276,6 @@ app.get('/CheckServer', function (req, res){
 function isAuthenticated(req){
   return req.session && req.session.login;
 }
-
-var Fail = {result:'fail'};
 
 function getLogin(req){
   if (isAuthenticated(req)){
@@ -312,11 +306,6 @@ app.get('/SpecLogs/:topic', function (req, res){
   var topic = req.params.topic||'Forever';
   res.render('SpecLogs', {topic:topic});
 });
-/*app.get('/SpecLogs', function (req, res){
-  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
-  var topic = req.params.topic||'Forever';
-  res.render('SpecLogs', {topic:topic});
-});*/
 
 function JSLog(msg, topic){
   if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
@@ -328,11 +317,6 @@ app.get('/Alive', function (req, res){
 
 
 app.get('/chat', function(req, res){
-  //var i=0;
-  //io.emit('chat message', { hello: 'Gaga the great!' });
-  /*var abd = setInterval(function(){
-  //'Gaga the great!'
-}, 10);*/
   res.sendFile(__dirname + '/sock.html');
 });
 
@@ -353,7 +337,7 @@ app.get('/', function (req,res){
   //app.close();
 })*/
 
-server = app.listen(80, function () {
+server = app.listen(8888, function () {
   var host = server.address().address;
   var port = server.address().port;
 
@@ -363,28 +347,30 @@ server = app.listen(80, function () {
 
 
 var clients = [];
-
-var io = require('socket.io')(server);
-io.on('connection', function(socket){
-  console.log('IO connection');
-  //socket.join('/111');
-  socket.on('chat message', function(msg){
-    console.log(msg);
-    io.emit('chat message', msg);
+var io;
+if (socket_enabled){
+  io = require('socket.io')(server);
+  io.on('connection', function(socket){
+    console.log('IO connection');
+    //socket.join('/111');
+    socket.on('chat message', function(msg){
+      console.log(msg);
+      io.emit('chat message', msg);
+    });
+    socket.on('event1', function(data){
+      SendToRoom('/111', 'azz', 'LALKI', socket);
+      //io.of('/111').emit('azz','LALKI');
+    });
   });
-  socket.on('event1', function(data){
-    SendToRoom('/111', 'azz', 'LALKI', socket);
-    //io.of('/111').emit('azz','LALKI');
-  });
-});
 
-io.of('/111').on('connection', function(socket){
-  console.log('ololo222');
-  socket.on('event1', function(data){
-    console.log('ololo111');
-    console.log(data);
+  io.of('/111').on('connection', function(socket){
+    console.log('ololo222');
+    socket.on('event1', function(data){
+      console.log('ololo111');
+      console.log(data);
+    })
   })
-})
+}
 
 function SendToRoom( room, event, msg, socket){
   if (socket_enabled) io.of(room).emit(event, msg);

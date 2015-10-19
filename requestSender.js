@@ -18,7 +18,7 @@ var fs = require('fs');
 
 serverList['LogServer'] = 3000;
 
-serverList['FrontendServer'] = 80;//5000;
+serverList['FrontendServer'] = 8888;//5000;
 serverList['TournamentServer'] = 5001;
 //serverList['TournamentManager'] = 5002;
 //serverList['AccountServer'] = 5003;
@@ -30,7 +30,7 @@ serverList['DBServer'] = 5007;
 serverList['GameFrontendServer'] = 5008;
 serverList['GameServer'] = 5009;
 
-serverList['site'] = 80;
+serverList['site'] = 8888;
 
 serverList['1']=5009;//Ping Pong
 serverList['2']=5010;//Questions and Answers

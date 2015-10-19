@@ -282,6 +282,8 @@ sender.sendRequest('Running', {tournamentID:1}, 'localhost', 'TournamentServer',
 });
 
 
+
+
 function StopTournament(ID){
 	//sender.sendRequest('StopTournament', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
 	//sender.sendRequest('Running', {tournamentID:ID}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
@@ -310,12 +312,63 @@ var curTournAndGameID;
 if (args.length>0){//} || args.length=='0'){
 	curTournAndGameID = args[0];
 }
-StopTournament(curTournAndGameID);
+//StopTournament(curTournAndGameID);
 
 var date = new Date();
 //console.log(date);
 var jsDate = date.toLocaleDateString();
 console.log(jsDate);
+
+var info ={
+	recieved :0,
+	sended :0
+}
+var DATA_SIZE=10000;
+/*function SendReq(){
+	info.sended++;
+	sender.sendRequest('Tournaments', {}, 'localhost', 'site', null, function (error, response, body, res){
+		//console.log(JSON.stringify(body));
+		info.recieved++;
+	});
+	if (info.sended<DATA_SIZE/10){
+		setTimeout(SendReq, 2);
+	}
+}
+//SendReq();
+
+function SendReqRunningTournaments(){
+	info.sended++;
+	sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', null, function (error, response, body, res){
+		//console.log(JSON.stringify(body));
+		info.recieved++;
+	});
+	if (info.sended<DATA_SIZE){
+		setTimeout(SendReqRunningTournaments, 1);
+	}
+}
+SendReqRunningTournaments();*/
+
+function SendAlive(){
+	info.sended++;
+	sender.sendRequest('Alive', {}, 'localhost', 'site', null, function (error, response, body, res){
+		//console.log(JSON.stringify(body));
+		info.recieved++;
+	});
+	if (info.sended<DATA_SIZE) setTimeout(SendAlive, 1);
+}
+SendAlive();
+
+/*while(info.sended<1000){
+	info.sended++;
+	sender.sendRequest('Tournaments', {}, 'localhost', 'site', null, function (error, response, body, res){
+		//console.log(JSON.stringify(body));
+		info.recieved++;
+	});
+}*/
+var tmr = setInterval(function(){
+	console.log(info);
+	if (info.recieved>=DATA_SIZE) clearInterval(tmr);
+}, 2000);
 
 
 /*function FinishTournament(ID){

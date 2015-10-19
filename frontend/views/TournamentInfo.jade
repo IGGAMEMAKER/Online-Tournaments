@@ -34,7 +34,7 @@ mixin showTournament(tourn)
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
-			td!= tourn.buyIn/100
+			td!= tourn.buyIn/100+'$'
 			+ShowGame(tourn.gameNameID)
 			+ShowStatus(tourn.status)
 			//td!= tourn.gameNameID
