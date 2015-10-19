@@ -30,14 +30,14 @@ var server;
 var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
 var gamePort = configs.gamePort? configs.gamePort : '5009';
 
-
+var SOCKET_ON=1;
+var socket_enabled=SOCKET_ON;
 
 
 console.log('ololo');
 app.use(express.static('./frontend/public'));
-//app.use(express.static('games'));
-app.use(express.static('./frontend/games/PingPong'));
-app.use(express.static('./frontend/games/Questions'));
+//app.use(express.static('./frontend/games/PingPong'));
+//app.use(express.static('./frontend/games/Questions'));
 
 /*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');*/
@@ -52,7 +52,7 @@ app.use(session({
 app.use(function(req,res,next){
   switch(req.url){
     case '/Log':
-
+    case '/Admin':
     break;
     default:
       console.log('Site: Request! ' + req.url);
@@ -87,9 +87,16 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-//var gifts = require('./Modules/site/gifts');
-//gifts.setApp(app);
+//var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer);
+//gifts.setApp(app, AsyncRender, Answer);
+//gifts(app, AsyncRender, Answer);
 
+var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer);
+var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
+var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
+var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
+
+var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
@@ -191,44 +198,6 @@ function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
     //try{ console.log(FSUrl)}
   }
 }
-app.post('/Admin', Admin);
-function Admin(req, res){
-  var command = req.body.command || '';
-  switch(command){
-    case 'TournamentsRunning': TournamentsRunning(res); break;
-    case 'stopTournament': stopTournament(res, req.body.tournamentID); break;
-    case 'runTournament': runTournament(res, req.body.tournamentID); break;
-    case 'Tournaments': GetTournamentsFromTS(res); break;
-    case 'Stop': StopServer(res, req.body.serverName); break;
-
-    case 'GetGameFromGameServer': GetGameFromGameServer(res, req.body.gameNameID); break;
-    default: sender.Answer(res, {result:'Unknown command ' + command}); break;
-  }
-}
-
-function GetGameFromGameServer(res, gameNameID){
-  var servName = gameNameID;
-  AsyncRender(servName, 'GetGames', res);
-}
-
-function GetTournamentsFromTS(res){
-  sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
-}
-
-function stopTournament(res, tournamentID){
-  sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy);
-
-  strLog('FrontendServer StopTournament :::'+tournamentID, 'Manual');
-  sender.sendRequest("StopTournament", {tournamentID:tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
-}
-
-function runTournament(res, tournamentID){
- sender.sendRequest('RunTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy); 
-}
-
-function TournamentsRunning(res){
-  sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
-}
 
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
@@ -249,17 +218,79 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
   }
 }
 
-app.get('/Admin', function (req, res){
-  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
-  res.render('AdminPanel', {msg:'hola!'});
-    return;
-  if (isAuthenticated(req) && getLogin(req) =='Alvaro_Fernandez'){
-    res.render('AdminPanel', {msg:'hola!'});
-    return;
-  }
-  res.send(404);
+
+
+
+function Log(data, topic){
+  JSLog({msg:data}, topic);
+}
+
+
+function proxy(error, response, body, res){
+  Answer(res, body);
+}
+
+var Fail = { result:'fail'};
+
+var PRICE_FREE = 4;
+var PRICE_TRAINING = 5;
+
+var PRICE_GUARANTEED = 3;
+  var PRICE_NO_EXTRA_FUND = 2;
+var PRICE_CUSTOM = 1;  //
+
+
+  var COUNT_FIXED = 1;
+var COUNT_FLOATING = 2;
+
+var strLog = Log;
+var Answer = sender.Answer;
+
+
+
+app.get('/CheckServer', function (req, res){
+  var serv = req.query.serv;
+  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
 
 });
+
+  app.post('/FinishGame', FinishGame);
+  function FinishGame(req, res){
+    var data = req.body;
+    Answer(res, {result:'OK', message:'FinishGame'} );
+    sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+  }
+
+  app.all('/StartTournament', function (req, res){
+    //console.log(req.url);
+    Log('StartTournament', 'ASD');
+    console.log('Site starts tournament');
+    var data = req.body;
+    //console.log(req.body);
+
+    //
+    sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+    //
+    
+    io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+    res.end();
+  });
+
+
+function isAuthenticated(req){
+  return req.session && req.session.login;
+}
+
+var Fail = {result:'fail'};
+
+function getLogin(req){
+  if (isAuthenticated(req)){
+    return req.session.login;
+  }
+  else{
+    return 0;
+  }
+}
 
 app.post('/Log', function (req, res){
   //res.end('sended');
@@ -288,530 +319,12 @@ app.get('/SpecLogs/:topic', function (req, res){
 });*/
 
 function JSLog(msg, topic){
-  //io.emit(topic?topic:'Logs', JSON.stringify(msg));
+  if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
 
 app.get('/Alive', function (req, res){
   res.render('Alive');
 })
-
-app.get('/Logout', function (req, res){
-  req.session.destroy(function (err){
-    if (err){ console.log('Session destroying error:' + err);}
-  });
-  res.render('Login',{});
-});
-
-app.get('/Login', function (req, res){
-  res.render('Login',{});
-})
-
-function LoginOrRegister(req, res, command){
-    var data = req.body;
-  
-  if (data && data.login && data.password) {
-    var callback = function(res, body, options, parameters){
-      Log(command + ' user ' + data.login, 'Users');
-      req.session.login = data.login;
-      res.redirect('Tournaments');
-    }
-    var failCallback = function(res, body, options, parameters){
-      Log('Reject user ' + data.login,'Users');
-      res.render(command,{err:body.result});
-    }
-    AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
-    return;
-  }
-  res.render(command, Fail );
-}
-
-app.post('/Login', function (req, res){
-  /*var data = req.body;
-  Log('User ' + data.login + ' tries to log')
-  console.log('Login: ' + data.login);
-  console.log('Pass: ' + data.password);*/
-  //res.redirect('Tournaments');
-  
-  /*if (data && data.login && data.password) {
-    data.callback = function(res, body, options){
-      Log('Log user ' + data.login, 'Users');
-      req.session.login = data.login;
-      res.redirect('Tournaments');
-    }
-    data.failCallback = function(res, body, options){
-      Log('Reject user ' + data.login,'Users');
-      res.render('Login',{err:body.result});
-    }
-    AsyncRender('FrontendServer', 'Login', res, data );
-    return;
-  }
-  res.render('Login', Fail );*/
-  LoginOrRegister(req, res, 'Login');
-  /*sender.expressSendRequest('Login', data?data:{}, '127.0.0.1', 
-        'FrontendServer', res, 
-        function (error, response, body, res1){
-          if (error){
-            console.log('error :' + JSON.stringify(error));
-          }else{
-            switch (body.result){
-              case 'OK':
-                req.session.login = data.login;
-                res.redirect('Tournaments');
-              break;
-              default:
-                res.render('Login',{err:body.result});
-              break;
-            }
-          }
-        }
-  );*/
-});
-
-app.post('/Register', function (req, res){
-  LoginOrRegister(req, res, 'Register');
-  /*var data = req.body;
-  console.log('Login: ' + data.login);
-  console.log('Pass: ' + data.password);
-  //res.redirect('Tournaments');
-  
-  sender.sendRequest('Register', data?data:{}, '127.0.0.1', 
-        'FrontendServer', res, 
-        function (error, response, body, res1){
-          switch (body.result){
-            case 'OK':
-              req.session.login = data.login;
-              res.redirect('Tournaments');
-            break;
-            default:
-              res.render('Register',{err:body.result});
-            break;
-          }
-        }
-  );*/
-});
-
-app.get('/Register', function (req, res){
-  res.render('Register');
-})
-
-
-function regManager(command, req, res){
-  var data = req.body;
-  console.log(data.login);
-  console.log(data.tournamentID);
-
-  if (isAuthenticated(req)){
-    AsyncRender('TournamentServer', command, res, null,  data);
-    /*sender.sendRequest(command, data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-      function (error, response, body, res1){
-        res.send(body.result);
-      });*/
-  }
-  else{
-    sender.Answer(res, {result:'auth'});
-  }
-}
-app.post('/CancelRegister', function (req, res){
-  regManager('CancelRegister',req, res);
-})
-app.post('/RegisterInTournament', function (req, res){
-  regManager('RegisterUserInTournament',req, res);
-  //console.log('WRITE Socket emitter!!!')
-})
-
-
-app.get('/AddTournament', function (req, res){
-  res.render('AddTournament');
-  /*if (req.session.login=='Alvaro_Fernandez'){
-    res.render('AddTournament');
-    //siteAnswer(res, 'AddTournament');
-  }
-  else{
-    res.render('Alive');
-  }*/
-});
-function Log(data, topic){
-  JSLog({msg:data}, topic);
-}
-
-/*app.post('/AddTournament', function (req, res){
-  //sender.expressSendRequest('AddTournament', req.body, '127.0.0.1', serv)
-  var data = req.body;
-  Log(data, 'Manual');
-
-  //####
-  data.renderPage='AddTournament';
-  AsyncRender('FrontendServer', 'AddTournament', res, {renderPage:'AddTournament'}, data);
-  //####
-
-  ///sender.sendRequest('AddTournament', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-  //      function (error, response, body, res1){
-  //        //res1.json(body);
-  //        res.render('AddTournament', {msg:body});
-  //      });
-})*/
-app.post('/AddTournament', AddTournament);
-
-function proxy(error, response, body, res){
-  Answer(res, body);
-}
-
-var Fail = { result:'fail'};
-
-var PRICE_FREE = 4;
-var PRICE_TRAINING = 5;
-
-var PRICE_GUARANTEED = 3;
-  var PRICE_NO_EXTRA_FUND = 2;
-var PRICE_CUSTOM = 1;  //
-
-
-  var COUNT_FIXED = 1;
-var COUNT_FLOATING = 2;
-
-var strLog = Log;
-var Answer = sender.Answer;
-
-function AddTournament(req, res){
-  var data = req.body;
-  
-  if (data){
-    strLog('Incoming tournament : ' +JSON.stringify(data));
-    var buyIn = parseInt(data.buyIn);
-    var rounds = parseInt(data.rounds);
-    var gameNameID = parseInt(data.gameNameID);
-    var GoNext = data.goNext?data.goNext.split(" ") : [];
-    var Prizes = data.Prizes.split(" ");
-    var prizes = [];
-    var goNext = [];
-    strLog(JSON.stringify(Prizes));
-    //convert array of strings to array of objects
-    for (var i = 0; i < Prizes.length - 1; i++) {
-      if (isNaN(Prizes[i]) ){
-        if (Prizes[i].length>0){
-          prizes.push({giftID:Prizes[i]})
-        }
-        else{
-          strLog('Prize[i] is null. Current prize is: ' + Prizes[i]);
-          Answer(res, Fail);
-          return;
-        }
-      }
-      else{
-        prizes.push( parseInt(Prizes[i]) );
-      }
-    };
-
-    for (var i=0; i< GoNext.length - 1; ++i){
-      var num = parseInt(GoNext[i]);
-      if (isNaN(num)){
-        strLog('goNext num parseInt error! ');
-        strLog(GoNext);
-        Answer(res, Fail);
-        return;
-      }
-      else{
-        goNext.push( num );
-      }
-    }
-
-    strLog('splitted prizes: ' + JSON.stringify(prizes) );
-    strLog('goNext.length:' + goNext.length);
-    strLog(JSON.stringify(goNext));
-    //strLog('')
-    if (buyIn>=0 && rounds && gameNameID){
-      var obj = {
-        buyIn:      buyIn,
-        initFund:     0,
-        gameNameID:   gameNameID,
-
-        pricingType:  PRICE_NO_EXTRA_FUND,
-
-        rounds:     rounds,
-        goNext:     goNext.length>0 ? goNext : [2,1],//
-            places:     [1],
-          Prizes:     prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
-            prizePools:   [1],
-
-        comment:    'Yo',
-        
-        playersCountStatus: COUNT_FIXED,///Fixed or float
-          startDate:    null,
-          status:     null, 
-          players:    0
-      }
-      AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
-      //sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, sender.proxy);
-    }
-    else{
-      strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
-      Answer(res, Fail);
-    }
-  }
-  else{
-    Answer(res, Fail);
-  }
-
-}
-
-app.post('/FinishGame', FinishGame);
-function FinishGame(req, res){
-  var data = req.body;
-  Answer(res, {result:'OK', message:'FinishGame'});
-  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
-}
-
-
-/*app.get('/AddGift', function (req, res){
-  res.render('AddGift');
-});
-
-app.post('/AddGift', function (req, res){
-  var data = req.body;
-  Log(data,'Manual');
-  if (data){
-    sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
-          res.render('AddGift', {msg:body});
-        });
-  }
-  else{
-    Answer(res, Fail);
-  }
-  //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-        
-});
-
-app.get('/ShowGifts', function (req, res){
-  //var data = req.body;
-  //if (!data){ data={}; }
-  //siteAnswer(res, 'ShowGifts', data, 'ShowGifts');
-  AsyncRender('DBServer', 'ShowGifts', res, {renderPage:'ShowGifts'});
-});
-
-app.get('/GetGift', function (req, res){
-  var data = req.body;
-  var query = req.query;
-  var giftID = query.giftID;
-  if (query){
-    //siteAnswer(res, 'gift')
-    sender.sendRequest('GetGift', {giftID:giftID} , '127.0.0.1', 'DBServer', res, 
-        function (error, response, body, res1){
-          //res.send(body.result);
-          if (error || !body || body.length ==0 || body.result =='fail'){
-            Log(JSON.stringify(error));
-            res.send(404);//'Gift does not exist');
-          }
-          else{
-            res.render('gift', {message:body} );
-          }
-        });
-  }
-  else {
-    res.json({msg:'err'});
-  }
-})
-
-app.post('/GetGift', function (req, res){
-  var data = req.body;
-  if (data){
-    sender.sendRequest('GetGift', data, '127.0.0.1', 'DBServer', res, 
-        function (error, response, body, res1){
-          //res.send(body.result);
-          res.json(body);
-        });
-  }
-  else {
-    res.json({msg:'err'});
-  }
-})*/
-
-app.all('/StartTournament', function (req, res){
-  //console.log(req.url);
-  Log('StartTournament', 'ASD');
-  console.log('Site starts tournament');
-  var data = req.body;
-  //console.log(req.body);
-  
-  //
-  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
-  //
-
-  //io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
-  res.end();
-});
-
-
-
-app.get('/CheckServer', function (req, res){
-  var serv = req.query.serv;
-  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
-
-});
-
-
-function isAuthenticated(req){
-  return req.session && req.session.login;
-}
-
-var Fail = {result:'fail'};
-
-function getLogin(req){
-  if (isAuthenticated(req)){
-    return req.session.login;
-  }
-  else{
-    return 0;
-  }
-}
-
-app.post('/Cashout', function (req, res){
-  //if (isAuthenticated(req))
-  /*var data = req.body;
-  var login = getLogin(req);
-  if (data && login!=0 ){
-    data.login = login;
-    siteProxy(res, 'Cashout',data,null,'MoneyServer');
-  }else{
-    res.send(400);
-  }*/
-  MoneyTransferOperation(req, res, 'Cashout');
-})
-
-function MoneyTransferOperation(req, res, operation){
-  if (isAuthenticated(req)){
-    var data = req.body;
-    var login = getLogin(req);
-    if (data && login){
-      data.login = login;
-      siteProxy(res, operation,data,null,'MoneyServer');
-      return;
-    }
-  }
-  //else
-  res.send(400);
-}
-
-app.post('/Deposit', function (req, res){
-  //if (isAuthenticated(req))
-  /*var data = req.body;
-  var login = getLogin(req);
-  if (data && login!=0 ){
-    data.login = login;
-    siteProxy(res, 'Deposit',data,null,'MoneyServer');
-  }else{
-    res.send(400);
-  }*/
-  MoneyTransferOperation(req, res, 'Deposit');
-
-})
-
-app.get('/Cashout', function (req, res){
-  //if (isAuthenticated(req))
-  res.render('Cashout');
-
-})
-app.get('/Deposit', function (req, res){
-  res.render('Deposit');
-})
-
-
-app.get('/Profile', function (req, res){
-  var login = 'Alvaro_Fernandez';
-  if (isAuthenticated(req) ){//req.session && req.session.login
-    login = getLogin(req);
-    AsyncRender("DBServer", 'GetUserProfileInfo', res, {renderPage:'Profile'}, {login:login} );
-    return;
-  }
-  res.json({msg:'Log in first'});
-  //else{
-  //}
-  //siteAnswer(res, 'GetUserProfileInfo', {login:login}, 'Profile');
-})
-
-
-app.get('/Users' , function (req, res){
-  /*if(req.session.login) {
-    console.log('Saved login is: ' + req.session.login);
-    //res.write('Last page was: ' + req.session.user + '. ');
-  }
-  console.log(req.params);
-  if (req.query.login){
-    console.log(req.query);
-    console.log('Getting login: ' + req.query.login);
-    req.session.login = req.query.login;
-
-  }*/
-  
-  var data = req.body;
-  data.query = {};//tournamentID:req.query.tID};
-  data.queryFields = 'login money';
-
-  //siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
-  
-  AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
-});
-
-app.post('/ServeTournament', ServeTournament);
-function ServeTournament (req, res){
-  var data = req.body;
-  strLog("ServeTournament ... FS ", 'Tournaments')
-  //strLog(JSON.stringify(data));//['tournamentStructure']);
-  
-  var tournament = data;
-
-  sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
-}
-
-
-app.all('/Tournaments', function (req,res){
-  var data = req.body;
-  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
-
-  //siteAnswer(res,'GetTournaments', data, 'GetTournaments');//, 'GetTournaments');//, data, 'GetTournaments');
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
-
-
-  /*sender.sendRequest('GetTournaments', data, '127.0.0.1', 
-      'FrontendServer', res, function (error, response, body, res1){
-
-        if (!error){
-          //var msg = body;
-          res1.render('GetTournaments', { title: 'GetTournaments', message: body});
-        } else{
-          sender.Answer(res1, { result:error});
-        }
-      });*/
-});
-const GET_TOURNAMENTS_INFO = 4;
-
-app.get('/TournamentInfo', function (req, res){
-  var data = req.body;
-  data.query = {tournamentID:req.query.tID};
-  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
-  data.purpose = GET_TOURNAMENTS_INFO;
-  //siteAnswer(res, 'GetTournaments', data, 'TournamentInfo');
-
-  /*var obj = {
-    sender: "FrontendServer",
-    tournamentID: data['tournamentID'],
-    query: data['query'],
-    queryFields: data['queryFields'],
-    purpose: data['purpose']||null
-  };*/
-
-  /*var obj = {
-    sender: "FrontendServer",
-    tournamentID: data['tournamentID'],
-    query: {tournamentID:req.query.tID},
-    queryFields: 'tournamentID buyIn goNext gameNameID Prizes players status',
-    purpose: GET_TOURNAMENTS_INFO
-  };
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, obj);*/
-  
-
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
-});
-
 
 
 app.get('/chat', function(req, res){
@@ -851,7 +364,7 @@ server = app.listen(80, function () {
 
 var clients = [];
 
-/*var io = require('socket.io')(server);
+var io = require('socket.io')(server);
 io.on('connection', function(socket){
   console.log('IO connection');
   //socket.join('/111');
@@ -874,5 +387,5 @@ io.of('/111').on('connection', function(socket){
 })
 
 function SendToRoom( room, event, msg, socket){
-  //io.of(room).emit(event, msg);
-}*/
+  if (socket_enabled) io.of(room).emit(event, msg);
+}
