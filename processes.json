@@ -1,0 +1,29 @@
+{
+	"apps" : [
+	{
+		"name"		: "site",
+		"script"	: "site.js",
+		"watch"		: ["/Modules", "/Servers","site.js"],
+		"out_file"	: "./Logs/Output/site.txt",
+		"error_file"	: "./Logs/Errors/err.txt",
+		"log_date_format"  : "YYYY-MM-DD HH:mm Z",
+	},
+	{
+		"name"		: "DB",
+		"script"	: "DBServer.js",
+		"watch"		: true,
+		"out_file"	: "./Logs/Output/DBServer.txt",
+		"error_file"	: "./Logs/Errors/err.txt",
+		"log_date_format"  : "YYYY-MM-DD HH:mm Z",
+	},
+	{
+		"name"		: "TS",
+		"script"	: "TournamentServer.js",
+		"watch"		: ["/Modules", "/Servers","site.js"],
+		"out_file"	: "./Logs/Output/TournamentServer.txt",
+		"error_file"	: "./Logs/Errors/err.txt",
+		"log_date_format"  : "YYYY-MM-DD HH:mm Z",
+	},
+
+	]
+}

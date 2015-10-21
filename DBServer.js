@@ -18,9 +18,8 @@ app.use(function(req,res,next){
     console.log(serverName + ': Request! ' + req.url );
     next();
 });
-//var funcArray = {};
+
 app.post('/GetTournaments',GetTournaments);
-//funcArray["/TournamentInfo"] = TournamentInfo;
 
 app.post('/GetUsers', GetUsers);
 
@@ -34,7 +33,7 @@ app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
 
-app.post('/RestartTournament', RestartTournament);
+//app.post('/RestartTournament', RestartTournament);
 app.post('/StartTournament', function (req, res) {StartTournament(req.body, res);});
 app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
 
@@ -52,13 +51,6 @@ app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
 app.post('/GetTransfers', GetTransfers);
-
-
-//app.post('/')
-
-/*funcArray["/Ban"] = Ban;
-funcArray["/ChangePassword"] = ChangePassword;
-funcArray["/RememberPassword"] = RememberPassword;*/
 
 var Fail = {
 	result: 'fail'
@@ -79,6 +71,8 @@ const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_GAMESERVER = 3;
 const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_RUNNING = 5;
+
+const ERR_LOG_STREAM = 'Err';
 
 
 function Error( err){
@@ -260,38 +254,31 @@ function EnableTournament(data, res){
 function StopTournament(data, res){
 	Log('DBServer starts tournament');
 	Log('RETURN MONEY TO USERS, WHO TOOK PART IN STOPPED TOURNAMETNT', 'shitCode');
-	if (data){
-		if (data.tournamentID){
-			setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
-			ClearRegistersInTournament([data.tournamentID]);
-			Answer(res, OK);
-		}
-		else{
-			Log('no tournamentID, no fun!');
-			Answer(res, Fail);
-		}
+	if (data && data.tournamentID){
+		setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
+		ClearRegistersInTournament([data.tournamentID]);
+		Answer(res, OK);
+		Log('StopTournament ' + JSON.stringify(data), 'Tournaments');
+		Log('StopTournament ' + JSON.stringify(data), 'Manual');
 	}
 	else{
-		Log('data is null');
-		Answer(res,Fail);
+		Log('StopTournament: no tournamentID, no fun!', 'WARN');
+
+		Answer(res, Fail);
 	}
 }
 
 function StartTournament(data, res){
-	Log('DBServer starts tournament');
-	if (data){
-		if (data.tournamentID){
-			setTournStatus(data.tournamentID, TOURN_STATUS_RUNNING);
-			 Answer(res, OK);
-		}
-		else{
-			Log('no tournamentID, no fun!');
-			 Answer(res, Fail);
-		}
+	Log('DBServer starts tournament ' + data);
+	if (data && data.tournamentID){
+		setTournStatus(data.tournamentID, TOURN_STATUS_RUNNING);
+		Answer(res, OK);
+		Log('StartTournament ' + data.tournamentID, 'Tournaments');
 	}
 	else{
-		Log('data is null');
-		 Answer(res,Fail);
+		Log('StartTournament: no tournamentID, no fun! ' + JSON.stringify(data), 'WARN');
+		Log('StartTournament: no tournamentID, no fun! ' + JSON.stringify(data), ERR_LOG_STREAM);
+		Answer(res, Fail);
 	}
 }
 
@@ -346,7 +333,7 @@ function RegisterUserInTournament(data, res){
 			if (tournament && tournament.buyIn>=0 && tournament.status==TOURN_STATUS_REGISTER){
 				var buyIn = tournament.buyIn;
 				User.update({login:login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count){
-					Log('RegisterUserInTournament NEEDS TRANSACTIONS!!!!!!!!!! IF REG IS FAILED, MONEY WILL NOT return!!!');
+					Log('RegisterUserInTournament NEEDS TRANSACTIONS!!!!!!!!!! IF REG IS FAILED, MONEY WILL NOT return!!!', 'WARN');
 					if (err) { Error(err); Answer(res, Fail); }
 					else{
 						Log('Reg status: ' + JSON.stringify(count));
@@ -488,11 +475,7 @@ function GetGameParametersByGameName (gameName){
 	}
 }
 
-
-
-
-
-function RestartTournament(req, res){
+/*function RestartTournament(req, res){
 	var data = req.body;
 	var tournamentID = data['tournamentID'];
 	Tournament.findOne({tournamentID: tournamentID}, '', function (err, tournament){
@@ -511,9 +494,10 @@ function RestartTournament(req, res){
 			}
 		}
 	});
-}
+}*/
 
 function GetUsers( req,res){
+	//throw new Error('Catch Me If You Can');
 	var data = req.body;
 	var query = {};
 	var queryFields = '';//'id buyIn goNext gameNameID';
@@ -871,21 +855,6 @@ function GetUserProfileInfo(req , res){
 			Answer(res, Fail);
 		}
 	})
-	/*var usr1 = User.findOne({login:login}, 'login password money', function (err, user) {    
-	    if (err || !user) {
-	    	Log('ProfileInfoError ');
-	    	Log(err);
-	    	 Answer(res, errObject);
-	    }
-	    else{
-	    	Log(JSON.stringify(user));
-		     Answer(res, {
-		    	login:user.login,
-		    	password : '****',
-		    	money : user.money
-		    });
-		}
- 	});*/
 }
 
 function Register (req, res){
@@ -914,17 +883,9 @@ function Register (req, res){
 			Answer(res, OK);
 		}
 	});
-	//Log('Adding user ' + login + ' !!!');
-		
-		/*users[login] = data;
-		users[login].userID = ++users.count;
-		users[login].money = 100;
-		IDToLoginConverter[users[login].userID]= login;*/
 
 }
-/*function GetUserProfileInfoHandler ( error, response, body, res){
-	
-}*/
+
 function findTournaments(res, query, queryFields, purpose){
 	Tournament.find(query, queryFields , function (err, tournaments){
 		if(!err){
@@ -1005,6 +966,7 @@ function GetTournaments (req, res){
 
 	findTournaments(res, query.query, query.fields, purpose);
 }
+
 /*query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}];
 {$or: query }
 

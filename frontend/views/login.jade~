@@ -1,5 +1,4 @@
 html
-	h1 != Login
 	div.loginbox
 			form(name="Register", action="/Register", method="post")
 				p.

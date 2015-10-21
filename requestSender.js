@@ -75,7 +75,7 @@ function strLog(text, topic){
 	
 	fs.appendFile(logDirectory+'.txt', '\r\n' + txt, function (err) {//'Logs/Full_message_'
 		if (err) {
-			console.log('err: ' + JSON.stringify(err)); 
+			console.error('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
 			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err), topic:'err'}, host, 'site', null, printer);
 		}
@@ -101,7 +101,7 @@ function printer(error, response, body) {
         //console.log(info);
     }
     else {
-        console.log('Error happened: '+ error);
+        console.error('Error happened: '+ error);
     }
 };
 
@@ -132,7 +132,7 @@ function universalAnswer(error, response, body, res, method){//response is a res
         res.end("THX for register");*/
     }
     else {
-        console.log('Error happened: '+ JSON.stringify(error),'Err');
+        console.error('Error happened: '+ JSON.stringify(error),'Err');
     }
 }
 

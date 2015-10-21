@@ -2,12 +2,11 @@ html
 	h1!= 'Login'
 	div.loginbox
 			form(name="Login", action="/Login", method="post")
-				p.
-					Login
+				p Login
 				input(type="text", name="login")
-				p.
-					Pass
-				input(type="password", name="password")				
-				p.
+				p Pass
+				input(type="password", name="password")
+				br
+				br
 				input(type="submit", value="Log in")
 			a(href="Register") Don't have an account? Register now!

@@ -16,6 +16,7 @@ var fs = require('fs');
 var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
 //console.log(file);
 var configs =  JSON.parse(file);
+var serverName = 'site';
 /*{ 
   msg:'superhero!',
   gamePort:5009,
@@ -32,8 +33,17 @@ var gamePort = configs.gamePort? configs.gamePort : '5009';
 
 var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
+//----
+//var domain = require('domain').create();
+/*domain.on('error', function(err){
+    console.log(err);
+});
+ 
+domain.run(function(){
+    throw new Error('thwump');
+});*/
 
-
+///---
 console.log('ololo');
 app.use(express.static('./frontend/public'));
 //app.use(express.static('./frontend/games/PingPong'));
@@ -48,11 +58,18 @@ app.use(session({
   resave: true,
   saveUninitialized: true,/**/
 }));
+console.error('UPDATED*');
 
 app.use(function(req,res,next){
   switch(req.url){
     case '/Log':
     case '/Admin':
+    break;
+    case '/Profile':
+      //asd();
+      var a = 1/0;
+      console.error(a);
+      //throw new Error('Catch Me If You Can');
     break;
     default:
       console.log('Site: Request! ' + req.url);
@@ -63,6 +80,19 @@ app.use(function(req,res,next){
   res.locals.session = req.session;
   next();
 });
+
+app.use(function(err, req, res, next){
+  console.error('ERROR STARTS!!');
+  //console.error(err.stack);
+  //console.error('-------------');
+  Log('Error happened in ' + serverName + ' : ' + err, 'Err');
+  Log('Description ' + serverName + ' : ' + err.stack, 'Err');
+  console.error(err);
+  console.error('CATCHED ERROR!!!! IN: ' + req.url);
+  res.status(500).send('Something broke!');
+  next(err);
+});
+
 /*app.use(session({
   store: new MongoStore({
     url: 'mongodb://root:myPassword@mongo.onmodulus.net:27017/3xam9l3'
@@ -94,6 +124,8 @@ var money =       require('./Modules/site/money')       (app, AsyncRender, Answe
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 
+
+
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
   if (parameters) basicInfo += JSON.stringify(parameters);
@@ -117,11 +149,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
             Log('failCallback exists!! body.result: ' + body.result, 'Transport');
             switch (body.result){
               case 'OK': break;
-              /*case 'fail':                 
-                options.failCallback(res || null, body, options, parameters);
-                return;
-              break;*/
-
               default: 
                 options.failCallback(res || null, body, options, parameters);
                 return;
@@ -151,6 +178,10 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
   }
 }
 
+
+
+
+
 function handleError(err, targetServer, reqUrl, res, options, parameters){
   Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null, parameters||null) + ':::'+ JSON.stringify(err), 'Err');
   if (res){
@@ -173,7 +204,7 @@ function renderInfo(targetServer, reqUrl, res, options, parameters){
   return targetServer + ' Url: ' + reqUrl + resIsSet + optionsDescription ;
 }
 
-function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
+/*function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
@@ -212,7 +243,7 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
   else {
     console.log('INVALID siteAnswer');
   }
-}
+}*/
 
 
 
@@ -239,7 +270,6 @@ var PRICE_CUSTOM = 1;  //
   var COUNT_FIXED = 1;
 var COUNT_FLOATING = 2;
 
-var strLog = Log;
 var Answer = sender.Answer;
 
 
