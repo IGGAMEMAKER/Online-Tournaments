@@ -76,7 +76,7 @@ const ERR_LOG_STREAM = 'Err';
 
 
 function Error( err){
-	Log('DBServer Error: ' + JSON.stringify(err));
+	Log('DBServer Error: ' + JSON.stringify(err), ERR_LOG_STREAM);
 }
 
 

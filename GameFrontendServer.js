@@ -76,7 +76,7 @@ function ServeTournament (req, res){
 }
 
 function StartTournament (req, res){
-	strLog('Trying to StartTournament');
+	strLog('Trying to StartTournament' , 'Tournaments');
 	var data = req.body;
 	sender.Answer(res, {status:'OK', message:'StartTournament'});
 	var tournamentID = data.tournamentID;

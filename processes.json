@@ -7,7 +7,7 @@
 		"out_file"	: "./Logs/Output/site.txt",
 		"error_file"	: "./Logs/Errors/err.txt",
 		"log_date_format"  : "YYYY-MM-DD HH:mm Z",
-	},
+	}/*,
 	{
 		"name"		: "DB",
 		"script"	: "DBServer.js",
@@ -19,11 +19,11 @@
 	{
 		"name"		: "TS",
 		"script"	: "TournamentServer.js",
-		"watch"		: ["/Modules", "/Servers","site.js"],
+		"watch"		: ["/Modules", "/Servers","TournamentServer.js"],
 		"out_file"	: "./Logs/Output/TournamentServer.txt",
 		"error_file"	: "./Logs/Errors/err.txt",
 		"log_date_format"  : "YYYY-MM-DD HH:mm Z",
-	},
+	},*/
 
 	]
 }

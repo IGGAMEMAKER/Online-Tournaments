@@ -339,7 +339,10 @@ function StartGame (req, res){
 			else { 
 				strLog('I thought, it was not running ' + ID, 'Tournaments'); 
 			}
+			strLog('You need to check if the game was finished', 'shitCode');
+
 			PrepareAndStart(ID, data.logins, res);
+
 			/*fs.readFile('Logs/Games/' + ID, function (err, fileData){
 				if (err){
 					strLog('File ./Logs/Games/'+ID + ' not found, so I am starting game!');
@@ -360,7 +363,7 @@ function StartGame (req, res){
 		}
 	}
 	else{
-		strLog('Game ' + ID + ' was not set,  doing nothing :)', 'Tournaments');
+		strLog('Game ' + ID + ' was not set, nothing to do with it :)', 'Tournaments');
 		sender.Answer(res, Fail);
 	}
 	/*var message = 'Cannot find tournament with ID='+ ID;
@@ -403,13 +406,6 @@ function prepare(gameID){
 	}
 }
 
-/*function update(gameID){
-	customUpdate(gameID);
-	//UpdateCollisions(gameID, gameID);
-	//SendToRoom(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
-}*/
-
-
 
 function getUID(gameID, GID){//GID= GamerID, UID= UserID
 	return games[gameID].userIDs[GID];
@@ -427,6 +423,9 @@ function stopGame(ID){
 	if (games[ID]){
 		games[ID].isRunning = false;
 		StopTMR(ID);
+	}
+	else{
+		strLog('stopGame that DOES NOT exist : ' + ID, 'WARN');
 	}
 	//games[ID] = null;
 
@@ -488,15 +487,6 @@ function Sort(players){
 
 function ScoreOfPlayer(gameID, i) {
 	return games[gameID].scores[getUID(gameID, i)];//games[gameID].scores[UID];
-}
-
-function CheckForTheWinner(tournamentID, gameID) {
-	for (var i = 0; i < 2; i++) {
-		if (ScoreOfPlayer(gameID, i) == 3){ 
-			strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
-			FinishGame(gameID);
-		}
-	}
 }
 
 var io;

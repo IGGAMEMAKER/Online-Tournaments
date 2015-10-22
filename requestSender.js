@@ -46,8 +46,8 @@ gameNameIDList['4'] = 5003;
 
 var serverName;
 
-function setServer(servName){
-	serverName = servName;
+function setServer(srvName){
+	serverName = srvName;
 }
 
 function getPort (r){
@@ -109,12 +109,12 @@ function Proxy(error, response, body, res){
 	Answer(res, body);
 }
 
-function Magic(res, method){
+function Magic(res, method, options){
 	return function (error, response, body) {
-		    universalAnswer(error, response, body, res, method );
+		    universalAnswer(error, response, body, res, method, options );
 		};
 }
-function universalAnswer(error, response, body, res, method){//response is a response, which we get from request sender. res is a response
+function universalAnswer(error, response, body, res, method, options){//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
 	//We analyze this response and give an answer by the object 'res' in method 'method'
@@ -126,13 +126,14 @@ function universalAnswer(error, response, body, res, method){//response is a res
         //var info = JSON.parse(JSON.stringify(body));
         //console.log(info);
         if (method){
-        	method(error, response, body, res?res:null);
+        	method(error, response, body || null, res || null);
         }
         /*console.log("Got answer from AccountServer");
         res.end("THX for register");*/
     }
     else {
-        console.error('Error happened: '+ JSON.stringify(error),'Err');
+
+        console.error('ERROR happened: '+ JSON.stringify(error) + ' while options were: ' + JSON.stringify(options),'Err');
     }
 }
 
@@ -140,13 +141,13 @@ function Answer(res, JSONObject){
 	res.end(JSON.stringify(JSONObject));
 }
 
-function initRequest(urlPath, curData, host, servName){
-	port = getPort(servName);
+function initRequest(urlPath, curData, host, targetServer){
+	port = getPort(targetServer);
 	sendRequest(urlPath, curData, host, port, null, printer);
 }
 
-function expressSendRequest(urlPath, curData, host, servName, res, responseCallBack){
-	port = getPort(servName);
+function expressSendRequest(urlPath, curData, host, targetServer, res, responseCallBack){
+	port = getPort(targetServer);
 	request({
 		url: "http://" + host+':'+port+'/'+urlPath,
 	    //url: "http://127.0.0.1:5009/ServeGames",
@@ -157,7 +158,7 @@ function expressSendRequest(urlPath, curData, host, servName, res, responseCallB
 
 }
 
-function sendRequest(urlPath, curData, host, servName, res, responseCallBack, parameters){
+function sendRequest(urlPath, curData, host, targetServer, res, responseCallBack, parameters){
 	//response is a response, which we get from request sender. res is a response
 	//to the server, which called this server
 	//someone requested this server. We try to send this request next for taking more detailed information. We get a 'response'.
@@ -167,54 +168,37 @@ function sendRequest(urlPath, curData, host, servName, res, responseCallBack, pa
 
 	//application/x-www-form-urlencoded
 	//host = "localhost";
-	port = getPort(servName);
+	port = getPort(targetServer);
 	var url = "http://" + host+':'+port+'/'+urlPath;
-	//console.log(url);
-	//url1 = "http://" + "127.0.0.1:5008/ServeTournament";
-	/*console.log("*****");
-	console.log("reqSender: Trying to send...");
-	console.log(JSON.stringify(curData));
-	console.log("request url = " + url);
-	console.log("*****");*/
-		var options = {
+
+	var options = {
 		url: url,
 		method: 'POST',
 		json: curData,
 		headers: {
 			'Content-Type': 'application/json'
 			//'Content-Length': Buffer.byteLength(curData)
-		}};
-	//options.path = "/"+urlPath;
-	/*if (curData !== null && curData !== undefined){
-		options.headers = {
-			'Content-Type': 'application/json',
-			'Content-Length': Buffer.byteLength(curData)
-	    	}
-	}
-	else{
-		console.log('Data null ' + urlPath);
-	}*/
-	//options.json = curData;
+		}
+	};
+	var options2 = {
+		url: url,
+		method: 'POST',
+		json: curData,
+		headers: {
+			'Content-Type': 'application/json'
+			//'Content-Length': Buffer.byteLength(curData)
+		},
+		serverName: serverName
+	};
+
 	/*var req = http.request(options, responseCallBack);
 
 	req.on('error', function(e) {
 	  console.log('problem with request: ' + e.message);
 	});*/
-
-	request(options, Magic(res,responseCallBack));//callback
+	
+	request(options, Magic(res,responseCallBack, options2));
 
 	//req.write(curData);
 	//request.end();
-}
-function callback(error, response, body) {
-    if (!error) {
-    	/*console.log('printing:');
-    	console.log(body);*/
-        var info = JSON.parse(JSON.stringify(body));
-        //console.log(info);
-    }
-    else {
-        console.log('Error happened: '+ error);
-    }
-    //response.end();
 }
