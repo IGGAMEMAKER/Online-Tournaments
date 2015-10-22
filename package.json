@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/IGGAMEMAKER/TestRepo#readme",
   "devDependencies": {
-    "connect-mongo": "^0.8.2"
+    "connect-mongo": "^0.8.2",
+    "zombie": "^4.1.0"
   }
 }

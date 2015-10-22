@@ -51,7 +51,7 @@ include tmpl/tournaments
 
 html
 	head
-		title!= title
+		title!= Tournaments
 	body
 		- //for (var item in message){
 		//p!= message.length
@@ -61,6 +61,6 @@ html
 		br
 		h1 List of Tournaments
 		+showTournaments(msg)
-		script.
+		//script.
 			setTimeout(function(){location.reload(true);} , 10000);
 
