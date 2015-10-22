@@ -67,7 +67,7 @@ app.post('/IsRunning', function (req, res) {
 
 app.post('/StopGame', function (req, res){
 	var tournamentID = req.body.tournamentID;
-	strLog('StopGame ' + tournamentID, 'chk');
+	strLog('StopGame ' + tournamentID, 'Games');
 	sender.Answer(res, OK);
 	stopGame(tournamentID);
 });

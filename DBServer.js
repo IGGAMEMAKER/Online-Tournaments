@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var serverName = "DBServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 sender.setServer(serverName);
 app.use(function(req,res,next){
-    console.log(serverName + ': Request! ' + req.url );
+    //console.log(serverName + ': Request! ' + req.url );
     next();
 });
 
@@ -438,7 +438,7 @@ function LoginUser(req, res){
 	var USER_EXISTS = 11000;
 	var login = data['login'];
 	var password = data['password'];
-	Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', 'Users');
+	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', 'Users');
 
 	var usr1 = User.findOne({login:login, password:password}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
 	    if (err) {
@@ -449,12 +449,12 @@ function LoginUser(req, res){
 	    else{
 	    	if (user){
 		    	//Log();
-		    	Log('DBSERVER: Logged in ' + JSON.stringify(user), 'Users');
+		    	Log('Logged in ' + JSON.stringify(user), 'Users');
 			    Answer(res, OK);
 			    
 			}
 			else{
-				Log('Invalid login/password : ' + login);
+				Log('Invalid login/password : ' + login, 'Users');
 				 Answer(res, {result:'Invalid reg'});
 			}
 		}

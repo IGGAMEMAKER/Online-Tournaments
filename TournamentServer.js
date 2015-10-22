@@ -12,8 +12,15 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var strLog = sender.strLog;
 
 app.use(function(req,res,next){
-    strLog(serverName + ': Request!');
-    next();
+	switch(req.url){
+		case 'Tournaments':
+		case 'Running':
+		break;
+		default:
+			//strLog(serverName + ': Request! '+ req.url);
+		break;
+	}
+	next();
 });
 
 app.post('/RegisterUserInTournament', RegisterUserInTournament);
@@ -260,7 +267,7 @@ function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersI
 				strLog('RegisterUserInTournament BODY: ' + JSON.stringify(body));
 
 				if (body.result != 'OK') {sender.Answer(res, Fail); return;}
-
+				strLog(login + ' registered in tournament ' + tournamentID, 'Users');
 				sender.Answer(res, OK);
 				regPlayer(tournament, login);
 		

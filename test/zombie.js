@@ -85,6 +85,7 @@ describe('User visits signup page', function() {
     });
   });
 });
+
   //describe('Profile', function() {
  
     /*before(function(done) {

@@ -339,6 +339,9 @@ app.get('/SpecLogs/:topic', function (req, res){
 
 function JSLog(msg, topic){
   if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
+  /*switch(topic){
+  }
+  fs.appendFile*/
 }
 
 app.get('/Alive', function (req, res){

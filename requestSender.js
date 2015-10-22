@@ -72,20 +72,20 @@ function strLog(text, topic){
 	if (topic) path = topic;
 	logDirectory += path;
 	// ensure log directory exists
-	
-	fs.appendFile(logDirectory+'.txt', '\r\n' + txt, function (err) {//'Logs/Full_message_'
+	// console.log(txt);//logDirectory+':::::'+'\r\n'+
+	fs.appendFile(logDirectory+'.txt', '\r\n' +time +' '+ txt, function (err) {//'Logs/Full_message_'
 		if (err) {
 			console.error('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);
-			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err), topic:'err'}, host, 'site', null, printer);
+			sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err), topic:'Err'}, host, 'site', null, printer);
 		}
 		else{
-			//sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
+			sendRequest('Log', {msg:txt, topic: topic?topic:null }, host, 'site', null, printer);
 		}
 	});
 
 	//stream.write(text);
-	console.log('strLog: ' + text);
+	//console.log('strLog: ' + text);
 }
 
 function getDay(date){

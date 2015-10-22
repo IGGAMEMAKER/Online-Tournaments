@@ -24,6 +24,8 @@ var urls = [
 	'http://localhost/Admin',
 	'http://localhost/Cashout',
 	'http://localhost/Deposit',
+
+	'http://localhost/chat'
 ];
 /**/
 /*describe('Login', function getLoginPage () {
