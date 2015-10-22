@@ -1,5 +1,5 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, Fail){
-	
+
 	app.get('/Logout', function (req, res){
 		req.session.destroy(function (err){
 			if (err){ console.log('Session destroying error:' + err);}
@@ -43,7 +43,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
-		if (!(data && data.login && data.password)) res.render(command, Fail); return;
+		if (!(data && data.login && data.password)) { res.render(command, Fail); return; }
 
 		var callback = function(res, body, options, parameters){
 			Log(command + ' user ' + data.login, 'Users');

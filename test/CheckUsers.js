@@ -16,7 +16,14 @@ var urls = [
 	'http://localhost/Alive',
 	'http://localhost/Tournaments',
 	'http://localhost/TournamentInfo?tID=247',
-	'http://localhost/Alive1'
+
+	'http://localhost/ShowGifts',
+	'http://localhost/AddGift',
+	'http://localhost/AddTournament',
+
+	'http://localhost/Admin',
+	'http://localhost/Cashout',
+	'http://localhost/Deposit',
 ];
 /**/
 /*describe('Login', function getLoginPage () {
@@ -29,30 +36,9 @@ var urls = [
 		});
 	});
 })*/
-function checkUrl(url, done){
-	request(url, function (error, response, body){
-		//if (error) console.log(error); throw error;
-		//console.log(response.statusCode);
-		if (response.statusCode==200) {done(); return;}
-		done('\nSTATUS : ' + response.statusCode);
 
-	});
-}
 
-describe('Urls', function getUrls () {
-	//for (var i=0;i<urls.length;++i){
-		/*it(urls[i]+' should return status 200', function (done){
-			checkUrl(urls[i], done);
-		});*/
-	//}
-	/*checkWrapper(urls[0]);
-	checkWrapper(urls[1]);
-	checkWrapper(urls[2]);
-	checkWrapper(urls[3]);
-
-	checkWrapper(urls[4]);
-	checkWrapper(urls[5]);
-	checkWrapper(urls[6]);*/
+describe('Check availability of pages', function getUrls () {
 	for (var i = urls.length - 1; i >= 0; i--) {
 		checkWrapper(urls[i]);
 	};
@@ -62,7 +48,15 @@ function checkWrapper(url){
 		checkUrl(url, done);
 	});
 }
+function checkUrl(url, done){
+	request(url, function (error, response, body){
+		//if (error) console.log(error); throw error;
+		//console.log(response.statusCode);
+		if (response.statusCode==200) {done(); return;}
+		done('\nSTATUS : ' + response.statusCode);
 
+	});
+}
 
 /*describe('Urls', function getUrls () {
 	for (var i=0;i<urls.length;++i){
