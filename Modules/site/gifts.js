@@ -1,4 +1,4 @@
-module.exports = function setApp(app, AsyncRender, Answer){
+module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy){
 
   app.get('/AddGift', function (req, res){
     res.render('AddGift');
@@ -6,7 +6,7 @@ module.exports = function setApp(app, AsyncRender, Answer){
 
   app.post('/AddGift', function (req, res){
     var data = req.body;
-    Log(data,'Manual');
+    Log('AddGift ' + JSON.stringify(data), 'Manual');
     if (data){
       sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
             res.render('AddGift', {msg:body});

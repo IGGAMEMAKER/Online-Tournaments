@@ -73,7 +73,7 @@ function strLog(text, topic){
 	logDirectory += path;
 	// ensure log directory exists
 	// console.log(txt);//logDirectory+':::::'+'\r\n'+
-	fs.appendFile(logDirectory+'.txt', '\r\n' +time +' '+ txt, function (err) {//'Logs/Full_message_'
+	fs.appendFile(logDirectory+'.txt', '\r\n\n' +time +' '+ txt, function (err) {//'Logs/Full_message_'
 		if (err) {
 			console.error('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);

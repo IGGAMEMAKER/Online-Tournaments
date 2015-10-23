@@ -60,6 +60,7 @@ describe('User visits signup page', function() {
   });
 });
 
+
 describe('User visits signup page', function() {
  
   const browser = new Browser();
@@ -82,6 +83,41 @@ describe('User visits signup page', function() {
     it('should see login page again', function() {
       browser.assert.text('title', 'Login');
       console.log(browser.location.href);
+    });
+  });
+});
+
+
+describe('Adding gifts', function() {
+ 
+  const browser = new Browser();
+ 
+  before(function(done) {
+    browser.visit('/AddGift', done);
+  });
+
+  describe('Add Gift', function() {
+ 
+    before(function(done) {
+      browser
+        .fill('name', 'Porsche 911')
+        .fill('description', 'JUST Porsche 911')
+        .fill('price', '182000')
+        .fill('photoURL', 'http://files1.porsche.com/filestore.aspx/porsche-911-Turbo-image?pool=multimedia&type=galleryimagerwd&id=rd-2013-991-tus-gallery-exterior-08&lang=none&filetype=preview&version=a58d3e33-366d-11e3-bd76-001a64c55f5c')
+        .fill('URL','http://www.porsche.com/usa/models/911/911-turbo-s/')
+        .pressButton('Add Gift', done);
+    });
+ 
+    it('should be successful', function() {
+      browser.assert.success();
+    });
+ 
+    it('should see AddGift page again, but with success message', function() {
+
+      browser.assert.text('title', 'AddGift');
+      browser.assert.element('#addResult');
+      //browser.assert.text('addResult',{"result":"OK"});
+      //console.log(browser.location.href);
     });
   });
 });

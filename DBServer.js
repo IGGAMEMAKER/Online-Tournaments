@@ -152,6 +152,7 @@ uGift.save(function (err){
 })*/
 
 function AddGift(data, res){
+	Log('trying to add gift '+ JSON.stringify(data), 'Gifts');
 	if (data){
 		gift = new Gift(data);
 		gift.save(function (err){
@@ -160,10 +161,14 @@ function AddGift(data, res){
 				Answer(res, Fail);
 			}
 			else{
-				strLog('Added gift ' + JSON.stringify(data), 'Gift');
+				Log('Added gift ' + JSON.stringify(data), 'Gifts');
 				Answer(res, OK);
 			}
 		})
+	}
+	else{
+		Log('No addition. Gift is null', 'Gifts');
+		Answer(res, Fail);
 	}
 }
 

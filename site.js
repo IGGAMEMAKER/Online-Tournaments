@@ -117,7 +117,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer);
+var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);

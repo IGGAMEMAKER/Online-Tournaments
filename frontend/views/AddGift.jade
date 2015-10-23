@@ -9,12 +9,15 @@ mixin inp(tdName, inpName)
 		td
 			input(type="text", name=inpName).
 html
+	head
+		title AddGift
 center
 	br
 	br
 	br
 	- if(msg)
-		p!=JSON.stringify(msg)
+		#addResult
+			p!=JSON.stringify(msg)
 	form(acion='', method="POST")
 		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 			+inp('Gift name','name')
