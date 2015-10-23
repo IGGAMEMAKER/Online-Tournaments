@@ -102,7 +102,7 @@ app.use(function(err, req, res, next){
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
-app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
+app.set('views', ['./frontend/views', './frontend/views/admin', './frontend/games/PingPong', './frontend/games/Questions']);
 //app.set('games/PingPong', './views');
 
 

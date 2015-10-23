@@ -51,12 +51,12 @@ include tmpl/tournaments
 
 html
 	head
-		title!= Tournaments
+		title!= 'Tournaments'
 	body
 		- //for (var item in message){
 		//p!= message.length
 		//p!= JSON.stringify(message)
-		include tAuth
+		include templates/tAuth
 		br
 		br
 		h1 List of Tournaments

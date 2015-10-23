@@ -1,5 +1,5 @@
 //
-include tmpl/tournaments
+include templates/tournaments
 
 mixin showPrizes(prizes)
 	h2 Tournament prizes
@@ -85,7 +85,7 @@ html
 		script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
-		include tAuth
+		include templates/tAuth
 
 		h1!= 'Tournament : ' + msg[0].tournamentID
 		+drawTournamentInfo(msg)

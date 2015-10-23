@@ -31,6 +31,18 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
+
+	/*app.post('/Get')
+	app.post('/GetMoney', function (req, res){
+		var callback = function()
+	})*/
+	app.post('/Profile', function (req, res){
+		if (isAuthenticated(req)){
+			var login = getLogin(req);
+			AsyncRender("DBServer", "GetUserProfileInfo", res, {}, {login:login});
+		}
+	})
+
 	app.get('/Profile', function (req, res){
 	  var login = 'Alvaro_Fernandez';
 	  if (isAuthenticated(req) ){//req.session && req.session.login
