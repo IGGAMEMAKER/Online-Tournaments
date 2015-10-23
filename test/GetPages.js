@@ -27,7 +27,6 @@ var urls = [
 
 	'http://localhost/chat'
 ];
-/**/
 /*describe('Login', function getLoginPage () {
 	it('should return status 200', function(done){
 		request('http://localhost/Login', function (error, response, body){

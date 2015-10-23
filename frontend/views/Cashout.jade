@@ -17,12 +17,14 @@ mixin showCashoutForm()
 			tr
 				td
 					input(type="submit" value="Cashout")
-
-
-if (session.login && session.login.length>0)
-	+showCashoutForm()
-else
-	p!= 'You need to register'
-	a(href = "Login") Login
-
-
+html
+	head
+		title Deposit
+	body
+		//
+			if (session.login && session.login.length>0)
+				+showCashoutForm()
+			else
+				p!= 'You need to register'
+				a(href = "Login") Login
+		+showCashoutForm()

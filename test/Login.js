@@ -1,39 +1,9 @@
 const Browser = require('zombie');
  
-// We're going to make requests to http://example.com/signup 
-// Which will be routed to our test server localhost:3000 
 Browser.localhost('localhost');
  
-describe('User visits signup page', function() {
- 
-  const browser = new Browser();
- 
-  before(function(done) {
-    browser.visit('/Login', done);
-  });
- 
-  describe('Correct Login and password', function() {
- 
-    before(function(done) {
-      browser
-        .fill('login',    'gaginho')
-        .fill('password', 'wasd')
-        .pressButton('Log in', done);
-    });
- 
-    it('should be successful', function() {
-      browser.assert.success();
-    });
- 
-    it('should see welcome page', function() {
-      browser.assert.text('title', 'Tournaments');
-      console.log(browser.location.href);
-    });
-  });
-});
-
-describe('User visits signup page', function() {
- 
+describe('Wrong password', function() {
+  this.timeout(5000);
   const browser = new Browser();
  
   before(function(done) {
@@ -60,9 +30,36 @@ describe('User visits signup page', function() {
   });
 });
 
-
-describe('User visits signup page', function() {
+describe('Good login', function() {
+  this.timeout(5000);
+  const browser = new Browser();
  
+  before(function(done) {
+    browser.visit('/Login', done);
+  });
+ 
+  describe('Correct Login and password', function() {
+ 
+    before(function(done) {
+      browser
+        .fill('login',    'gaginho')
+        .fill('password', 'wasd')
+        .pressButton('Log in', done);
+    });
+ 
+    it('should be successful', function() {
+      browser.assert.success();
+    });
+ 
+    it('should see welcome page', function() {
+      browser.assert.text('title', 'Tournaments');
+      console.log(browser.location.href);
+    });
+  });
+});
+
+describe('Empty form', function() {
+  this.timeout(5000);
   const browser = new Browser();
  
   before(function(done) {
@@ -89,7 +86,7 @@ describe('User visits signup page', function() {
 
 
 describe('Adding gifts', function() {
- 
+  this.timeout(5000);
   const browser = new Browser();
  
   before(function(done) {

@@ -17,11 +17,14 @@ mixin showDepositForm()
 			tr
 				td
 					input(type="submit" value="Deposit")
-
-
-if (session.login && session.login.length>0)
-	+showDepositForm()
-else
-	p!= 'You need to register'
-	a(href = "Login") Login
-
+html
+	head
+		title Deposit
+	body
+		//
+			if (session.login && session.login.length>0)
+				+showDepositForm()
+			else
+				p!= 'You need to register'
+				a(href = "Login") Login
+		+showDepositForm()

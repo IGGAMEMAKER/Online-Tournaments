@@ -82,9 +82,10 @@ mixin moneyOperations()
 
 html
 	//p!= JSON.stringify(msg.gifts)
-	//br
 	//p!= JSON.stringify(msg.userGifts)
-	//p asd
+	include templates/libs
+	script(src="loadProfile.js")
+	
 	center
 		h1 Profile of  #{session.login}
 		h2 You have #{msg.money/100}$ on your account
@@ -94,5 +95,5 @@ html
 		a(href="Tournaments") Back to tournaments
 		+drawTournamentRegs(msg.tournaments)
 
-		//+drawPrizes(msg.userGifts)
+		+drawPrizes(msg.userGifts)
 		+drawPrizes2(msg.gifts, msg.userGifts)

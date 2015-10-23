@@ -32,12 +32,15 @@ function loadProfile(drawFunction){
 			saveInStorage('money', money);
 			if(drawFunction) {drawFunction(profile);}
 			else{
-				alert(data);
-				console.log(data);
+				$('#money').html('You have '+money/100+'$ on account');
+				//alert(data);
+				//console.log(data);
 			}
 		}
 	});
 }
+
+var tmr0 = setInterval(function(){ loadProfile() }, 4000);
 
 
 function saveInStorage(field, data){
