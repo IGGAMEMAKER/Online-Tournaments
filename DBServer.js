@@ -52,6 +52,8 @@ app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
 app.post('/GetTransfers', GetTransfers);
 
+app.post('/MoneyTransfers', MoneyTransfers);
+
 var Fail = {
 	result: 'fail'
 };
@@ -285,6 +287,15 @@ function StartTournament(data, res){
 		Log('StartTournament: no tournamentID, no fun! ' + JSON.stringify(data), ERR_LOG_STREAM);
 		Answer(res, Fail);
 	}
+}
+
+function MoneyTransfers(req, res){
+	MoneyTransfer.find({userID: req.body.login}, '', function (err, transfers){
+		if (err) { Err(err, res); }
+		else{
+			Answer(res, transfers);
+		}
+	})
 }
 
 

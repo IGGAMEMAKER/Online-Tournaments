@@ -1,6 +1,24 @@
+//
+
+mixin drawTransfer(transfer)
+	tr
+		//td!= JSON.stringify(transfer)
+		td
+			- var colour = "red";
+			if transfer.ammount>0
+				- colour = "green";	
+				//p(style="color: red;") #{transfer.ammount}
+			//else 
+			//p!= JSON.stringify(transfer)
+			p(style="color: "+colour+";") #{transfer.ammount/100}$
 html
 	head
 		title!= title
 	body
-		include templates/tAuth
+		//include templates/tAuth
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			if msg.length
+				each transfer in msg
+					+drawTransfer(transfer)
+		//p!= JSON.stringify(msg)
 		

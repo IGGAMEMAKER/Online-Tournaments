@@ -31,6 +31,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
+	app.get('/MoneyTransfers', function (req, res){
+		if (isAuthenticated(req)){
+			AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:getLogin(req)})
+			return;
+		}
+
+		sender.Answer(res, Fail);
+	})
 
 	/*app.post('/Get')
 	app.post('/GetMoney', function (req, res){
@@ -40,7 +48,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		if (isAuthenticated(req)){
 			var login = getLogin(req);
 			AsyncRender("DBServer", "GetUserProfileInfo", res, {}, {login:login});
+			return;
 		}
+		
+		sender.Answer(res, Fail);
 	})
 
 	app.get('/Profile', function (req, res){
