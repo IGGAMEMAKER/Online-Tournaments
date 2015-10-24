@@ -58,7 +58,6 @@ app.use(session({
   resave: true,
   saveUninitialized: true,/**/
 }));
-console.error('UPDATED*');
 
 app.use(function(req,res,next){
   switch(req.url){

@@ -91,6 +91,7 @@ const ERR_LOG_STREAM = 'Err';
 
 function Error( err){
 	Log('DBServer Error: ' + JSON.stringify(err), ERR_LOG_STREAM);
+	console.error(err);
 }
 
 
@@ -272,18 +273,25 @@ function EnableTournament(data, res){
 
 }
 
+function makeUserArray(userRegs){
+	var arr = [];
+	for (var i = userRegs.length - 1; i >= 0; i--) {
+		arr.push(userRegs[i].userID);
+	};
+	return arr;
+}
 
 function getBuyInOfTournament(tournamentID){
 	return new Promise(function (resolve, reject){
 		console.error('Starting Promise');
-		Tournament.findOne({tournamentID:tournamentID},'buyIn', function (err, tournament){
+		Tournament.findOne({tournamentID:tournamentID},'buyIn tournamentID', function (err, tournament){
 			if (err) {
 				console.err('Tournament buyIn not found. ' + JSON.stringify(err));
 				reject(err);
 			}
 			else{
 				if (tournament && tournament.buyIn){
-					console.error('Tournament not found. ' + JSON.stringify(tournament));
+					console.error('Tournament found. ' + JSON.stringify(tournament));
 					resolve(tournament);
 				}
 				else{
@@ -298,13 +306,17 @@ function getBuyInOfTournament(tournamentID){
 function pGetPlayers (obj){
 	// needs tournamentID
 	return new Promise(function (resolve, reject){
-		console.error('Continue Promise');
-		TournamentReg.find({tournamentID:tournamentID},'', function (err, players){
+		console.error('Continue Promise ' + JSON.stringify(obj));
+		TournamentReg.find({tournamentID:obj.tournamentID},'userID', function (err, players){
 			if (!err){
 				//Answer(res, players);
-				console.error('No error');
-				obj.players=players;
-				resolve(obj);
+				console.error('Players :' + JSON.stringify(players) );
+				var obj2 = {tournamentID: obj.tournamentID, players:makeUserArray(players), buyIn: obj.buyIn};
+				
+				console.error('Players now :' + JSON.stringify(obj2));
+				//obj.players=players;
+
+				resolve(obj2);
 			}
 			else{
 				console.error(err);
@@ -317,27 +329,29 @@ function pGetPlayers (obj){
 
 function retMoney(tournament){
 	return new Promise( function (resolve, reject){
-		console.error('Last Promise');
-		for (var user in tournament.players){
-			console.log('Return ' + tournament.buyIn + ' to ' + user);
+		console.error('Last Promise ' + JSON.stringify(tournament) );
+		for (var index in tournament.players){
+			var user = tournament.players[index];
 			var money = parseInt(tournament.buyIn);
+			console.error('Incr money of user ' + user+ ' by ' + money + ' points');
 			if (money>0) { incrMoney(null, user, money, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournament.tournamentID}); }
 			else {
+				console.error('Money error: ' + money);
 				reject('Money error: '+ money);
 			}
 		}
+		console.error('Money OK: ');
 		resolve(tournament);
 	})
 }
 
 function ReturnBuyInsToPlayers(tournamentID){
+	console.error('return BuyIns ' + tournamentID);
 	getBuyInOfTournament(tournamentID)
 	.then(pGetPlayers)//get userIDs
 	.then(retMoney)
 	.catch(Error);
 }
-
-ReturnBuyInsToPlayers(255);
 
 function StopTournament(data, res){
 
@@ -669,7 +683,7 @@ function incrMoney(res, login, cash, source){
 			Log('IncreaseMoney----- count= ');
 			Log(count);
 			Log(login);
-			
+
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					Error(err);
@@ -890,6 +904,8 @@ function killID(arr, field){
 }
 
 function GetUserProfileInfo(req , res){
+	// FindUser
+	// Find
 	var data = req.body;
 	Log('Write Checker for sender validity.');
 	var login = data['login'];
@@ -897,7 +913,7 @@ function GetUserProfileInfo(req , res){
 	//var usr = User.find({}, 'login password money' )
 	var profileInfo = {};//tournaments:{}, money:0};
 	TournamentReg
-		.find({userID:login, status: {$not : TOURN_STATUS_FINISHED} })
+		.find({userID:login })//, status: {$not : TOURN_STATUS_FINISHED}
 		.sort('-tournamentID')
 		.exec(function (err, tournaments){
 		if (!err && tournaments) {
@@ -954,6 +970,10 @@ function GetUserProfileInfo(req , res){
 		}
 	})
 }
+
+
+
+
 
 function Register (req, res){
 	var data = req.body;
