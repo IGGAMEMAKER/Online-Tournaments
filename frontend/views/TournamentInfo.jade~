@@ -1,5 +1,5 @@
 //
-include tmpl/tournaments
+include templates/tournaments
 
 mixin showPrizes(prizes)
 	h2 Tournament prizes

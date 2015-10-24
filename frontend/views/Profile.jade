@@ -71,6 +71,8 @@ mixin drawPrizes(gifts)
 		h3 You have no prizes, but it's high time to win them!
 
 mixin moneyOperations()
+	a(href="MoneyTransfers") Money transfers
+	br
 	table(width="300px")
 		tr
 			td
@@ -93,7 +95,7 @@ html
 		+moneyOperations()
 
 		a(href="Tournaments") Back to tournaments
-		a(href="MoneyTransfers") Money transfers
+
 		+drawTournamentRegs(msg.tournaments)
 
 		+drawPrizes(msg.userGifts)

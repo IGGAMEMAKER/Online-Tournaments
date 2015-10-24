@@ -31,10 +31,13 @@ mixin drawTransfer(transfer)
 						- colour = "green";
 					default
 						- colour = "black";
+
 			//else 
 			//p!= JSON.stringify(transfer)
-
-			p(style="color: "+colour+";") #{transfer.ammount/100}$
+			if transfer.ammount>0
+				p(style="color: "+colour+";") +#{transfer.ammount/100}$
+			else
+				p(style="color: "+colour+";") #{transfer.ammount/100}$
 		td
 			if transfer.source
 				//- var linkToTournament = "#{transfer.source.tournamentID}"

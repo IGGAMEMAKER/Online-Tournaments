@@ -448,7 +448,7 @@ function ManualFinishGame(tournamentID, gameResult){
 function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not finish properly and we retry to do this
 	var gameID = ID;
 	var tournamentID = ID;
-	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + winnerID + " wins!!");
+	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + winnerID + " wins!!", 'Tournaments');
 	games[ID].status = GAME_FINISH;
 	var gameResult = { 
 		scores: Sort(games[ID].scores),
