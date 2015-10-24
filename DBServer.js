@@ -277,12 +277,17 @@ function getBuyInOfTournament(tournamentID){
 	return new Promise(function (resolve, reject){
 		console.error('Starting Promise');
 		Tournament.findOne({tournamentID:tournamentID},'buyIn', function (err, tournament){
-			if (err) reject(err);
+			if (err) {
+				console.err('Tournament buyIn not found. ' + JSON.stringify(err));
+				reject(err);
+			}
 			else{
 				if (tournament && tournament.buyIn){
+					console.error('Tournament not found. ' + JSON.stringify(tournament));
 					resolve(tournament);
 				}
 				else{
+					console.err('Tournament not found. ' + JSON.stringify(tournament));
 					reject('Tournament not found. ' + JSON.stringify(tournament));
 				}
 			}
@@ -302,6 +307,7 @@ function pGetPlayers (obj){
 				resolve(obj);
 			}
 			else{
+				console.error(err);
 				reject('Error ' + JSON.stringify(err) );
 				//Answer(res, Fail);
 			}
@@ -309,18 +315,28 @@ function pGetPlayers (obj){
 	})
 }
 
-function ReturnBuyInsToPlayers(tournamentID){
-	getBuyInOfTournament(tournamentID)
-	.then(pGetPlayers)//get userIDs
-	.then(function (tournament){
+function retMoney(tournament){
+	return new Promise( function (resolve, reject){
 		console.error('Last Promise');
 		for (var user in tournament.players){
 			console.log('Return ' + tournament.buyIn + ' to ' + user);
-			incrMoney(null, user, tournament.buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournament.tournamentID});
+			var money = parseInt(tournament.buyIn);
+			if (money>0) { incrMoney(null, user, money, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournament.tournamentID}); }
+			else {
+				reject('Money error: '+ money);
+			}
 		}
+		resolve(tournament);
 	})
+}
+
+function ReturnBuyInsToPlayers(tournamentID){
+	getBuyInOfTournament(tournamentID)
+	.then(pGetPlayers)//get userIDs
+	.then(retMoney)
 	.catch(Error);
 }
+
 ReturnBuyInsToPlayers(255);
 
 function StopTournament(data, res){
@@ -653,6 +669,7 @@ function incrMoney(res, login, cash, source){
 			Log('IncreaseMoney----- count= ');
 			Log(count);
 			Log(login);
+			
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err || !user){
 					Error(err);

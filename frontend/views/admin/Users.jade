@@ -1,3 +1,4 @@
+//
 mixin drawUsers(message)
 	table
 		tr
@@ -18,7 +19,7 @@ html
 	head
 		title!= title
 	body
-		include tAuth
+		include ../templates/tAuth
 		- console.log('incoming message Browser:');
 		- console.log(message);
 		- //console.log(JSON.stringify(message));

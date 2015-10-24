@@ -24,6 +24,7 @@ var urls = [
 	'http://localhost/Admin',
 	'http://localhost/Cashout',
 	'http://localhost/Deposit',
+	'http://localhost/Users',
 
 	'http://localhost/chat'
 ];
