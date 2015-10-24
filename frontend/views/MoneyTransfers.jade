@@ -1,4 +1,7 @@
 //
+mixin linkToTournament(words, tID)
+	p #{words}  
+		a(href="TournamentInfo?tID="+tID) #{tID}
 
 mixin drawTransfer(transfer)
 	tr
@@ -30,17 +33,38 @@ mixin drawTransfer(transfer)
 						- colour = "black";
 			//else 
 			//p!= JSON.stringify(transfer)
-			//git commit -a -m "added tranferInfo"
 
 			p(style="color: "+colour+";") #{transfer.ammount/100}$
 		td
-			p #{JSON.stringify(transfer.source)}
+			if transfer.source
+				//- var linkToTournament = "#{transfer.source.tournamentID}"
+				case transfer.source.type
+					when 'BuyIn'
+						//p Registered in tournament #{transfer.source.tournamentID}
+						+linkToTournament("Registered in tournament", transfer.source.tournamentID)
+					when 'Deposit'
+						p Deposit
+					when 'Cashout'
+						p Cashout
+					when 'promo'
+						//p Invited players to tournament #{transfer.source.tournamentID}
+						+linkToTournament("Invited players to tournament", transfer.source.tournamentID)
+					when 'Cancel'
+						//p Canceled register in tournament #{transfer.source.tournamentID}
+						+linkToTournament("Canceled register in tournament", transfer.source.tournamentID)
+					when 'Win'
+						//p WON prize in tournament #{transfer.source.tournamentID}
+						+linkToTournament("WON prize in tournament", transfer.source.tournamentID)
+					default
+						p if you see this, send a screenshot to admin. Something went wrong
+			else
+				p Old format #{JSON.stringify(transfer.source)}
 		td
 			if transfer.date
 				- var time = transfer.date;
 				- var time2 = (new Date(time)).toLocaleDateString();//Date.parse(time).toUTCString();//.toLocaleString();
 				p!= time2
-		td
+		//td
 			p #{transfer.date}
 html
 	head
