@@ -8,14 +8,48 @@ mixin drawTransfer(transfer)
 			if transfer.ammount>0
 				- colour = "green";	
 				//p(style="color: red;") #{transfer.ammount}
+			if transfer.source == 'Deposit'
+				- colour = "gold"
+			if transfer.source == 'Cashout'
+				- colour = "blue";
+			if transfer.sourse
+				case transfer.source.type
+					when 'BuyIn'
+						- colour = "red";
+					when 'Deposit'
+						- colour = "gold";
+					when 'Cashout'
+						- colour = "blue";
+					when 'promo'
+						- colour = "red";
+					when 'Cancel'
+						- colour = "green";
+					when 'Win'
+						- colour = "green";
+					default
+						- colour = "black";
 			//else 
 			//p!= JSON.stringify(transfer)
+			//git commit -a -m "added tranferInfo"
+
 			p(style="color: "+colour+";") #{transfer.ammount/100}$
+		td
+			p #{JSON.stringify(transfer.source)}
+		td
+			if transfer.date
+				- var time = transfer.date;
+				- var time2 = (new Date(time)).toLocaleDateString();//Date.parse(time).toUTCString();//.toLocaleString();
+				p!= time2
+		td
+			p #{transfer.date}
 html
 	head
 		title!= title
 	body
 		//include templates/tAuth
+		a(href="Profile") Back to profile
+		br
+		br
 		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 			if msg.length
 				each transfer in msg

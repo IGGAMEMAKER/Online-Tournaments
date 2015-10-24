@@ -108,7 +108,7 @@ var Game = mongoose.model('Game', {
 
 var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: String, userID: String, promo:String });
 
-var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number });
+var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number, sended:Object });
 
 var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
 var MoneyTransfer = mongoose.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date});
@@ -309,7 +309,7 @@ function CancelRegister(data, res){
 				if (err) { ERR(err, res); }
 				else{
 					clearRegister(data, res, function(p1, p2, p3){
-						incrMoney(res, login, tournament.buyIn);
+						incrMoney(res, login, tournament.buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
 						changePlayersCount(tournamentID, -1);
 					}, ERR);
 				}
@@ -338,6 +338,14 @@ function clearRegister(data, res, successCb, failCb){
 	})
 }
 
+const 	SOURCE_TYPE_BUY_IN = 'BuyIn',
+		SOURCE_TYPE_WIN = 'Win',
+		SOURCE_TYPE_PROMO = 'Promo',
+		SOURCE_TYPE_CANCEL_REG = 'Cancel',
+		SOURCE_TYPE_CASHOUT = 'Cashout',
+		SOURCE_TYPE_DEPOSIT = 'Deposit';
+
+
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
 	var login = data.login;
@@ -360,7 +368,7 @@ function RegisterUserInTournament(data, res){
 									Answer(res, OK );
 									changePlayersCount(tournamentID , 1);
 									Log('added user to tournament'); 
-									saveTransfer(login, -buyIn, {tournamentID:tournamentID});
+									saveTransfer(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
 								}
 							});
 						}
@@ -549,14 +557,14 @@ function IncreaseMoney(req,res){
 	var data = req.body;
 	var login = data.login;
 	var cash = data.cash;
-	incrMoney(res, login, cash, 'Deposit');
+	incrMoney(res, login, cash, {type: SOURCE_TYPE_DEPOSIT});
 }
 function DecreaseMoney(req, res){
 	Log('DecreaseMoney!!!!');
 	var data = req.body;
 	var login = data.login;
 	var money = data.money;
-	decrMoney(res, login, money, 'Cashout');
+	decrMoney(res, login, money, {type: SOURCE_TYPE_CASHOUT});
 }
 
 function decrMoney(res, login, cash, source){
@@ -620,7 +628,7 @@ function GetTransfers(req, res){
 function saveTransfer(login, cash, source){
 	//, date:new Date()
 	if (cash!=0 && cash!=null){
-		var transfer = new MoneyTransfer({userID:login, ammount: cash, source:source || null  });
+		var transfer = new MoneyTransfer({userID:login, ammount: cash, source:source || null , date:new Date() });
 		transfer.save(function (err){
 			if (err){ Error(err); return;}
 			Log('MoneyTransfer to: '+ login + ' '+ cash/100 +'$ ('+ cash+' points), because of: ' + JSON.stringify(source), 'Money');
@@ -651,7 +659,7 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		Log('mmmMoney!! ' + Prize);
 		User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
 			if (err){ Error(err); return; }
-			Log(count); saveTransfer(player.login, Prize, {tournamentID:tournamentID});
+			Log(count); saveTransfer(player.login, Prize, {type:SOURCE_TYPE_WIN, tournamentID:tournamentID});
 		});
 	}
 }
@@ -716,7 +724,7 @@ function UpdatePromos(tournamentID){
 							var promoUsersCount = parseInt(promoterIDs[promoter]);
 							var payment = buyIn*promoUsersCount*PROMO_COMISSION / 100;
 							Log('Promoter '+promoter + ' invited '+ promoUsersCount + ' players and deserves to get ' + payment + ' points (' + payment/100 + '$)')
-							incrMoney(null, promoter, payment);
+							incrMoney(null, promoter, payment, {type:SOURCE_TYPE_PROMO, tournamentID:tournamentID} );
 						};
 
 					}

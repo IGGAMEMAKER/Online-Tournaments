@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin){
+module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy){
 	app.post('/Cashout', function (req, res){
 	  //if (isAuthenticated(req))
 	  /*var data = req.body;

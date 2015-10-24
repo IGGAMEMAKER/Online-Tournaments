@@ -67,8 +67,9 @@ app.use(function(req,res,next){
     break;
     case '/Profile':
       //asd();
-      var a = 1/0;
-      console.error(a);
+      //var a = 1/0;
+      //console.error(a);
+
       //throw new Error('Catch Me If You Can');
     break;
     default:
@@ -120,7 +121,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
-var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
+var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 
@@ -204,7 +205,7 @@ function renderInfo(targetServer, reqUrl, res, options, parameters){
   return targetServer + ' Url: ' + reqUrl + resIsSet + optionsDescription ;
 }
 
-/*function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
+function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
 
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
@@ -243,7 +244,7 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
   else {
     console.log('INVALID siteAnswer');
   }
-}*/
+}
 
 
 
