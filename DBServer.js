@@ -903,9 +903,107 @@ function killID(arr, field){
 	return list;
 }
 
+
+function attachFieldToObj(obj, field, value){
+	obj[field] = value;
+	return obj;
+}
+
+function findUser(login){
+	return new Promise(function (resolve, reject){
+		User.findOne({login:login}, 'login money', function (err, user) {
+			if (err) { reject(err); }
+			else{
+				if (!user) { 
+					console.error('User ' + login + ' doesn\'t exist'); 
+					reject({}); 
+				}// if catch, but .err not found, it means, that user doesn't exist
+				else{
+					var profileInfo = {login:login, money:user.money};
+					resolve(profileInfo);
+				}
+			}
+		});
+	});
+}
+
+function findRegs(profileInfo){
+	return new Promise(function (resolve, reject){
+		TournamentReg
+		.find({userID:profileInfo.login})
+		.sort('-tournamentID')
+		.exec(function (err, tournaments){
+			if (err){
+				reject(attachFieldToObj(profileInfo, 'err', err));
+			}
+			else{
+				resolve(attachFieldToObj(profileInfo, 'tournaments', tournaments||{} ));
+			}
+		})
+	});
+}
+
+function findGiftIDs(profileInfo){
+	return new Promise(function (resolve, reject){
+		UserGift.find({userID:profileInfo.login}, 'giftID', function (err, gifts){
+			console.error('findGiftIDs got '+JSON.stringify(profileInfo) );
+			if (err){
+				reject(attachFieldToObj(profileInfo, 'err', err));
+			}
+			else{
+				//var userGifts = killID(gifts || {}, 'giftID');
+				resolve(attachFieldToObj(profileInfo, 'gifts', gifts || {} ));
+			}
+		});
+	});
+}
+
+function findGifts(profileInfo){
+	return new Promise(function (resolve, reject){
+		var userGifts = killID(profileInfo.gifts, 'giftID');
+		Gift.find( { _id : {$in : userGifts}} , '', function (err, UserGifts){
+			if (err){
+				reject(attachFieldToObj(profileInfo, 'err', err));
+			}
+			else{
+				resolve(attachFieldToObj(profileInfo, 'userGifts', UserGifts || {} ));
+			}
+		});
+	});
+}
+
 function GetUserProfileInfo(req , res){
+	var data = req.body;
+	Log('Write Checker for sender validity.');
+	var login = data['login'];
+	Log('-----------USER PROFILE INFO -----ID=' + login + '------');
+	findUser(login)
+	.then(findRegs)
+	.then(findGiftIDs)
+	.then(findGifts)
+	.then(function (profileInfo){
+		//console.error('User profileInfo ' + JSON.stringify(profileInfo));
+		Answer(res, profileInfo);
+	})
+	.catch(function(profileInfo){
+		if (profileInfo.err){
+			// it means, that user exists
+			console.error(profileInfo.err);
+			Answer(res, profileInfo);
+		}
+		else{
+			// user does not exist
+			Answer(res, Fail);
+		}
+	})
+}
+
+function GetUserProfileInfo1(req , res){
 	// FindUser
-	// Find
+	// FindRegs
+	// FindGiftIDs
+	// FindGifts
+
 	var data = req.body;
 	Log('Write Checker for sender validity.');
 	var login = data['login'];
