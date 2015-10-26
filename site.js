@@ -10,53 +10,47 @@ var app = express();
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 
-var MongoStore = require('connect-mongo');//(express);
+var MongoStore = require('connect-mongo')(session);
 //var io = require('socket.io')(app);
+
 var fs = require('fs');
 var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
 //console.log(file);
 var configs =  JSON.parse(file);
 var serverName = 'site';
-/*{ 
-  msg:'superhero!',
-  gamePort:5009,
-  gameHost:'localhost',
-  gameHost2:'46.101.157.129'
-}*/
-var date = new Date();
-console.log(date + '  ' + JSON.stringify(configs));
+
 var server;
 
-//console.log(configs)
-var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
-var gamePort = configs.gamePort? configs.gamePort : '5009';
 
 var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
-//----
-//var domain = require('domain').create();
-/*domain.on('error', function(err){
-    console.log(err);
-});
- 
-domain.run(function(){
-    throw new Error('thwump');
-});*/
 
-///---
-console.log('ololo');
 app.use(express.static('./frontend/public'));
-//app.use(express.static('./frontend/games/PingPong'));
-//app.use(express.static('./frontend/games/Questions'));
 
-/*var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');*/
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/sessionDB');
+
+
 
 app.use(cookieParser());
-app.use(session({
+/*app.use(session({
   secret: '1234567890QWERTY',
   resave: true,
-  saveUninitialized: true,/**/
+  saveUninitialized: true,
+}));*/
+
+/*app.use(session({
+  store: new MongoStore({
+    url: 'mongodb://root:myPassword@mongo.onmodulus.net:27017/3xam9l3'
+  }),
+  secret: '1234567890QWERTY'
+}));*/
+
+app.use(session({
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    secret: '1234567890QWERTY',
+    resave: true,
+    saveUninitialized: true,
 }));
 
 app.use(function(req,res,next){
@@ -93,12 +87,7 @@ app.use(function(err, req, res, next){
   next(err);
 });
 
-/*app.use(session({
-  store: new MongoStore({
-    url: 'mongodb://root:myPassword@mongo.onmodulus.net:27017/3xam9l3'
-  }),
-  secret: '1234567890QWERTY'
-}));*/
+
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
@@ -107,15 +96,17 @@ app.set('views', ['./frontend/views', './frontend/views/admin', './frontend/game
 
 
 
+
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
 
 var bodyParser = require('body-parser')
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+
 
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);

@@ -70,8 +70,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		var callback = function(res, body, options, parameters){
 			Log(command + ' user ' + data.login, 'Users');
-			req.session.login = data.login;
-			res.redirect('Tournaments');
+			req.session.save(function (err) {
+				// session saved
+				if (err) {
+					console.error('SESSION SAVING ERROR', 'Users'); 
+					res.render(command,{err:body.result});
+				}else{
+					req.session.login = data.login;
+					res.redirect('Tournaments');
+				}
+			})
 		}
 		var failCallback = function(res, body, options, parameters){
 			Log('Reject user ' + data.login,'Users');
