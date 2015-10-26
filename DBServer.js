@@ -511,19 +511,12 @@ function changePlayersCount(tournamentID, mult){
 		if (err){
 			Log('changePlayersCount');
 			Error(err);
-			/*Tournament.update({tournamentID:tournamentID}, {$set: {players:1}} , function (err1, count1){
-				if (err1){
-					Error(err1);
-					Log('Still Error! Cannot set 1.' + JSON.stringify(err1) );
-				}
-			});*/
 		}
 	});
 }
 
 function Printer(err, count){
 	if (err){ Error(err);
-		//Tournament.update
 	}
 	//Log(func+ ' error: ' + )
 }
@@ -856,13 +849,6 @@ function getLoginByID(ID){
 function KillFinishedTournaments(){
 	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){
 		Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
-		/*Tournament.remove({$or:finishedTournaments}, function deletingTournaments (err, tournaments){
-			Log('finishedTournaments2: ' + JSON.stringify(tournaments) );
-			if (err) {Error(err);}
-			else{
-				Log(JSON.stringify(tournaments));
-			}
-		})*/
 		var TRegIDs = [];
 		for (var i = finishedTournaments.length - 1; i >= 0; i--) {
 			TRegIDs.push(finishedTournaments[i].tournamentID);
@@ -930,10 +916,11 @@ function findUser(login){
 function findRegs(profileInfo){
 	return new Promise(function (resolve, reject){
 		TournamentReg
-		.find({userID:profileInfo.login})
+		.find({userID:profileInfo.login, status : { $ne: TOURN_STATUS_FINISHED } })
 		.sort('-tournamentID')
 		.exec(function (err, tournaments){
 			if (err){
+				console.error(err);
 				reject(attachFieldToObj(profileInfo, 'err', err));
 			}
 			else{
@@ -997,80 +984,6 @@ function GetUserProfileInfo(req , res){
 		}
 	})
 }
-
-function GetUserProfileInfo1(req , res){
-	// FindUser
-	// FindRegs
-	// FindGiftIDs
-	// FindGifts
-
-	var data = req.body;
-	Log('Write Checker for sender validity.');
-	var login = data['login'];
-	Log('-----------USER PROFILE INFO -----ID=' + login + '------');
-	//var usr = User.find({}, 'login password money' )
-	var profileInfo = {};//tournaments:{}, money:0};
-	TournamentReg
-		.find({userID:login })//, status: {$not : TOURN_STATUS_FINISHED}
-		.sort('-tournamentID')
-		.exec(function (err, tournaments){
-		if (!err && tournaments) {
-			profileInfo.tournaments = tournaments;
-			User.findOne({login:login}, 'login money', function (err1, user) {    
-			    if (err1 || !user) {
-			    	Log('ProfileInfoError User findOne');
-			    	Error(err1);
-			    	Answer(res, Fail);
-			    }
-			    else{
-			    	profileInfo.money = user.money;
-
-			    	UserGift.find({userID:login}, 'giftID', function (err, gifts){
-			    		if (err) {
-			    			Error(err);
-							Answer(res, Fail);
-			    		}
-			    		else{
-			    			profileInfo.gifts = gifts?gifts:{};
-			    			/*var TRegIDs = [];
-							for (var i = finishedTournaments.length - 1; i >= 0; i--) {
-								TRegIDs.push(finishedTournaments[i].tournamentID);
-							};*/
-							var userGifts = killID(gifts, 'giftID');
-							//{tournamentID: {$in : TRegIDs} }
-			    			Gift.find( { _id : {$in : userGifts}} , '', function (err, UserGifts){//ObjectId.fromString(
-			    				if (err){
-			    					Error(err);
-			    					Answer(res, Fail);
-			    				}
-			    				else{
-			    					if (!UserGifts){
-			    						Log('Found NOTHING');
-			    					}
-			    					else{
-			    						profileInfo.userGifts = UserGifts;
-			    					}
-			    					Log('Fin: ' + JSON.stringify(profileInfo));
-			    					Answer(res,  profileInfo );
-			    				}
-			    			} )
-
-			    			/*Log('Fin: ' + JSON.stringify(profileInfo));
-			    			Answer(res,  profileInfo );*/
-			    		}
-			    	})
-				}
-		 	});
-		}
-		else{
-			Error(err);
-			Answer(res, Fail);
-		}
-	})
-}
-
-
-
 
 
 function Register (req, res){
@@ -1181,44 +1094,14 @@ function GetTournaments (req, res){
 	//if (query.fields) Log(JSON.stringify(query.fields));
 
 	findTournaments(res, query.query, query.fields, purpose);
-}
-
-/*query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}];
-{$or: query }
-
-//query = ;
-{$or: [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] }*/
 
 
-/*function GetTournaments(req, res){
- 
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
 	//2 - running - турнир начат
 	//3 - finished - турнир окончен
 	//4 - paused - турнир приостановлен
-	
-	var query = req.body.status;
-	if (!query || query) { query = [{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]; }
-	Tournament.find({$or: query }, '', function (err, tournaments){
-	//Tournament.findOne({status: { $not: { status: query } } }, '', function (err, tournaments){
-		if (err){
-			Log('GetTournaments Error: ' + JSON.stringify(err));
-			 Answer(res, errObject);
-		}
-		else{
-			if (tournaments){
-				Log('GetTournaments count: ' + tournaments.length);
-				//Log(JSON.stringify(tournament));
-				 Answer(res, tournaments);
-			}
-			else{
-				 Answer(res, {result:'fail', message:'tournament not Exists'+tournamentID } );
-			}
-		}
-	});
-}*/
-
+}
 
 var COUNT_FIXED = 1;
 
@@ -1257,14 +1140,6 @@ function AddTournament (req, res){
 			Answer(res, {result: 'Fail', message: 'Gaga Genius'});
 		}
 	});
-	
-
-	/*var tournament = data;
-	var tournID = ++currentTournamentCounter;
-	tournament.tournamentID = tournID;
-	tournaments[tournID] = tournament;*/
-
-
 	// Answer(res, tournament);
 }
 
