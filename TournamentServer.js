@@ -469,17 +469,6 @@ function ServeTournamentTMProxy ( error, response, body, res){
 	sender.Answer(res, body);
 }
 
-////TIMERS!!!!
-/*var timerId = setInterval(function() {
-  if (tournaments[2].playerTotalCount === tournaments[2].playersRegistered){
-	strLog("Tournament " + 2 + " starts");	
-  }
-  else{
- 	//strLog("Registered in 2: " + tournaments[2].playersRegistered);
-	strLog("Registered :" +tournaments[2].playersRegistered +" / " + tournaments[2].playerTotalCount);
-  }
-}, 2000);*/
-
 var OK = {
 	result: 'OK'
 };

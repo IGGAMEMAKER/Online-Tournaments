@@ -45,7 +45,6 @@ app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
 
-//app.post('/RestartTournament', RestartTournament);
 app.post('/StartTournament', function (req, res) {StartTournament(req.body, res);});
 app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
 

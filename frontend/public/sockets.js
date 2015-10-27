@@ -28,7 +28,7 @@ socket.on('StartTournament', function(msg){
   console.log('tID = ' + currentTID);
 
   //var gameURL = 'PingPong';
-  /*var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  /*var text = '<button onclick="startGame('+host+','+port+ ')" style="width:300px;height:60px;"> PLAY </button>';//"' + gameURL + '"
   $('#news').append(text);*/
   drawButton(host, port);
   startGame(host, port);
@@ -42,7 +42,7 @@ socket.on('StartTournament', function(msg){
 //setTimeout(function(){drawButton("localhost", 5010);}, 300);
 
 function drawButton(host, port){
-  var text = '<button onclick="startGame(\''+host+'\','+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
+  var text = '<button onclick="startGame(\''+host+'\','+port+ ')" style="width:300px;height:60px;"> PLAY </button>';//"' + gameURL + '"
   console.log(text);
   $('#news').html(text);
 }

@@ -133,7 +133,7 @@ var strLog = Log;
 	app.post('/ServeTournament', ServeTournament);
 	function ServeTournament (req, res){
 		var data = req.body;
-		strLog("ServeTournament ... FS ", 'Tournaments')
+		strLog("ServeTournament ... site.tournaments ", 'Tournaments')
 		//strLog(JSON.stringify(data));//['tournamentStructure']);
 
 		var tournament = data;
