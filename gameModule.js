@@ -19,19 +19,33 @@ var strLog = sender.strLog;
 var fs = require('fs');
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 7;
-var UPDATE_TIME = 3000;
+const STANDARD_PREPARE_TICK_COUNT = 5;
 const PREPARED = "PREPARED";
+
+var UPDATE_TIME = 3000;
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
-app.use(function(req,res,next){
+/*app.use(function(req,res,next){
     strLog(serverName + ': Request/' + req.url);
     next();
+});*/
+
+app.use(function(err, req, res, next){
+  console.error('ERROR STARTS!!');
+  //console.error(err.stack);
+  //console.error('-------------');
+  Log('Error happened in ' + serverName + ' : ' + err, 'Err');
+  Log('Description ' + serverName + ' : ' + err.stack, 'Err');
+  console.error(err);
+  console.error('CATCHED ERROR!!!! IN: ' + req.url);
+  res.status(500).send('Something broke!');
+  next(err);
 });
+
 
 app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
 app.set('view engine', 'jade');
@@ -235,7 +249,9 @@ function Move( tournamentID, gameID, movement, userName){//Must get move from Re
 }
 
 function playerExists(gameID, userName){
-	strLog('playerExists function: ' + gameID +' ' + userName);
+	//if (UPDATE_TIME>100){
+	//	strLog('playerExists function: ' + gameID +' ' + userName);
+	//}
 	var playerExistsVal = getGID(gameID, userName);// games[gameID].players.UIDtoGID[userName]; //userIDs[playerID];// games[gameID].players.UIDtoGID[playerID]
 	return playerExistsVal ;
 }
@@ -337,7 +353,7 @@ function StartGame (req, res){
 				stopGame(ID);
 			}
 			else { 
-				strLog('I thought, it was not running ' + ID, 'Tournaments'); 
+				strLog('It was not running ' + ID, 'Tournaments'); 
 			}
 			strLog('You need to check if the game was finished', 'shitCode');
 
@@ -463,7 +479,10 @@ function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not fi
 
 	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 
 			'GameFrontendServer', gameResult , SendGameResultsHandler);
-	delete games[gameID];
+	setTimeout(function(){
+		delete games[gameID];
+	}, 10000);
+	
 }
 
 var pendingGames={};

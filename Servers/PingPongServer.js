@@ -18,12 +18,8 @@ strLog('pp Server starts!!');
 
 function mod2(val){
 	//return val%2==0?'top':'bottom';
-	if (val>0){
-		return 95;
-	}
-	else {
-		return 0;
-	}
+	if (val>0){ return 95; }
+	else { return 0; }
 }
 
 function Init(gameID, playerID){
@@ -44,7 +40,9 @@ function getParameters(gameID, userName){
 
 function AsyncUpdate(gameID){
 	UpdateCollisions(gameID, gameID);
-	send(gameID, 'update', { ball: games[gameID].ball, gameDatas: games[gameID].gameDatas });
+	var ball = games[gameID].ball || null;
+	var datas = games[gameID].gameDatas || null;
+	send(gameID, 'update', { ball: ball, gameDatas: datas });
 }
 
 function Action(gameID, playerID, movement, userName){
@@ -238,7 +236,7 @@ function collides(b, p, padName) {
 
 function SetGame (req, res){
 	var data = req.body;
-	strLog("SetGame ");
+	strLog("SetGame PingPong Server", 'Games');
 	//strLog(data);
 	var gameID = data['tournamentID'];
 	strLog('****FIX IT!!!!   var gameID = data[tournamentID];'  );
