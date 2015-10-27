@@ -1,6 +1,36 @@
 var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
 
+/*var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'mail@online-tournaments.org', // Your email id
+            pass: '3online_T_pass333' // Your password
+        }
+    });
+var text = 'Hello world from \n\n' + 'Gaga!';
+
+var mailOptions = {
+    from: 'mail@online-tournaments.org', // sender address
+    to: '23i03g@mail.ru', // list of receivers
+    subject: 'Шаблон письма 1', // Subject line
+    text: text //, // plaintext body
+    // html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+        res.json({yo: 'error'});
+    }else{
+        console.log('Message sent: ' + info.response);
+        res.json({yo: info.response});
+    };
+});*/
+
+
 var parseurl = require('parseurl');
 
 var jade = require('jade');
@@ -75,7 +105,9 @@ app.use(function(req,res,next){
   next();
 });
 
-app.use(function(err, req, res, next){
+
+var handler = require('./errHandler')(app, Log, serverName);
+/*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
   //console.error('-------------');
@@ -85,7 +117,7 @@ app.use(function(err, req, res, next){
   console.error('CATCHED ERROR!!!! IN: ' + req.url);
   res.status(500).send('Something broke!');
   next(err);
-});
+});*/
 
 
 

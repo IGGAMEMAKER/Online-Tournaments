@@ -23,6 +23,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.render('Register');
 	})
 
+	
+
 	app.post('/CancelRegister', function (req, res){
 	  regManager('CancelRegister',req, res);
 	})

@@ -13,6 +13,8 @@ sender.setServer(serverName);
 var strLog = sender.strLog;
 //var funcArray = {};
 
+var handler = require('./errHandler')(app, strLog, serverName);
+
 app.post('/ServeTournament', ServeTournament);//<---from Site to GFS
 app.post('/StartTournament', StartTournament);
 app.post('/StopTournament', StopTournament);

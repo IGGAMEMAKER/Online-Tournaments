@@ -5,7 +5,8 @@ mixin drawRegs(msg)
 		+drawReg(val)
 mixin drawReg(val)
 	tr 
-		td #{val.tournamentID}
+		td 
+			a(href="TournamentInfo?tID="+val.tournamentID) #{val.tournamentID}
 		td #{val.promo}
 
 ///Dublicate from ShowGifts.jade
@@ -90,7 +91,7 @@ html
 	
 	center
 		h1 Profile of  #{session.login}
-		p!= JSON.stringify(msg)
+		//p!= JSON.stringify(msg)
 		h2 You have #{msg.money/100}$ on your account
 		//p!= JSON.stringify(msg)
 		+moneyOperations()

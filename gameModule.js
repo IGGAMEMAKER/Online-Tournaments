@@ -34,7 +34,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     next();
 });*/
 
-app.use(function(err, req, res, next){
+var handler = require('./errHandler')(app, strLog, serverName);
+/*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
   //console.error('-------------');
@@ -44,7 +45,7 @@ app.use(function(err, req, res, next){
   console.error('CATCHED ERROR!!!! IN: ' + req.url);
   res.status(500).send('Something broke!');
   next(err);
-});
+});*/
 
 
 app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);

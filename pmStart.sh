@@ -11,4 +11,4 @@ pm2 start GameFrontendServer.js --name GFS
 pm2 start Servers/PingPongServer.js --name PP
 pm2 start Servers/QuestionServer.js --name QS
 pm2 list
-pm2 logs --err
+pm2 logs --err all

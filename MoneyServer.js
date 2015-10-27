@@ -1,6 +1,6 @@
 var core = require('./core');
-
-core.StartServer({host:'localhost', port:5006, serverName:'MoneyServer'});
+var serverName = 'MoneyServer';
+core.StartServer({host:'localhost', port:5006, serverName:serverName});
 var app = core.app;
 var sendRequest = core.sendRequest;
 var Log = core.Log;
@@ -13,6 +13,7 @@ app.post('/Deposit', Deposit);
 app.post('/Cashout', Cashout);
 app.post('/GetPack', GetPack);
 
+var handler = require('./errHandler')(app, Log, serverName);
 
 //var operations = [];
 var logins = {};
