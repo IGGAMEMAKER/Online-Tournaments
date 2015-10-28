@@ -16,3 +16,5 @@ it edits the startScript.sh. Needs to be executed from terminal
 
 save backup
 mongodump --db backupTest --out /home/gaginho/backups/backup_test/
+
+Need to create a symbolic link to /configs/nginx/mySite.conf in /etc/nginx/sites-available
