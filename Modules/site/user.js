@@ -2,7 +2,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	app.get('/Logout', function (req, res){
 		req.session.destroy(function (err){
-			if (err){ console.log('Session destroying error:' + err);}
+			if (err){ console.error('Session destroying error:' + err);}
 		});
 		res.render('Login',{});
 	});
@@ -55,11 +55,23 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		
 		sender.Answer(res, Fail);
 	})
+	
+	app.get('/Activate/:link', function (req, res){
+		var activationSuccessCallback = function(res, body, options, parameters){
+			res.redirect('../Profile');
+		}
+
+		var activationFailCallback = function(res, body, options, parameters){
+			res.render('Activate');
+		}
+		AsyncRender("DBServer", "Activate", res, {callback:activationSuccessCallback, failCallback:activationFailCallback}, 
+			{link:req.params.link});
+	})
 
 	app.get('/Profile', function (req, res){
-	  var login = 'Alvaro_Fernandez';
+	  //var login = 'Alvaro_Fernandez';
 	  if (isAuthenticated(req) ){//req.session && req.session.login
-	    login = getLogin(req);
+	    var login = getLogin(req);
 	    AsyncRender("DBServer", 'GetUserProfileInfo', res, {renderPage:'Profile'}, {login:login} );
 	    return;
 	  }
@@ -68,14 +80,19 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
+
 		if (!(data && data.login && data.password)) { res.render(command, Fail); return; }
+
+		if (command=='Register' && !ValidEmail(data)){
+			res.render(command, Fail); return;
+		}
 
 		var callback = function(res, body, options, parameters){
 			Log(command + ' user ' + data.login, 'Users');
 			req.session.save(function (err) {
 				// session saved
 				if (err) {
-					console.error('SESSION SAVING ERROR', 'Users'); 
+					console.error('SESSION SAVING ERROR', 'Err'); 
 					res.render(command,{err:body.result});
 				}else{
 					req.session.login = data.login;
@@ -103,4 +120,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			sender.Answer(res, {result:'auth'});
 		}
 	}
+
+	function ValidEmail(data){
+		if (data.email && data.email.length<20){
+			return true;
+		}
+	}
+
 }

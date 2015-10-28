@@ -3,7 +3,7 @@ var sender = require('./requestSender');
 var Answer =  sender.Answer;
 var express         = require('express');
 var app = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 
 var Log = sender.strLog;
@@ -19,6 +19,20 @@ app.use(function(req,res,next){
     //console.log(serverName + ': Request! ' + req.url );
     next();
 });
+
+var fs = require('fs');
+var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
+var configs =  JSON.parse(file);
+
+var mailer = require('./sendMail');
+//console.error('mailAuth ');
+
+//console.error(configs);
+var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
+
+//console.error(mailAuth);
+
+mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
@@ -39,7 +53,10 @@ app.post('/GetTournaments',GetTournaments);
 app.post('/GetUsers', GetUsers);
 
 app.post('/AddTournament', AddTournament);
+
+
 app.post('/Register', Register);
+app.post('/Activate', Activate);
 
 app.post('/WinPrize', WinPrize);
 
@@ -120,7 +137,7 @@ var errObject = {result:'error'};
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
-var User = mongoose.model('User', { login: String, password: String, money: Number, email: String, activated:String, date: Date });
+var User = mongoose.model('User', { login: String, password: String, money: Number, email: String, activated:String, date: Date, link: String });
 
 var Game = mongoose.model('Game', { 
 	gameName: String, gameNameID: Number,
@@ -996,35 +1013,148 @@ function GetUserProfileInfo(req , res){
 	})
 }
 
+function now(){
+	return new Date();
+}
+
+function createActivationLink(login){
+	var domainName = 'online-tournaments.org';
+	domainName = 'localhost';
+	Log('Rewrite createActivationLink. It must be less human-readable. guuid', STREAM_SHIT);
+	return 'http://' + domainName + '/Activate/'+login;
+}
+
+function createUser(data){
+	return new Promise(function (resolve, reject){
+		var USER_EXISTS = 11000;
+	
+		var login = data['login'];
+		var password = data['password'];
+		var email = data['email'];
+
+		var USER = { 
+			login:login, 
+			password:password, 
+			money:0, 
+			email:email, 
+			date: now(), 
+			activate:0, 
+			link:createActivationLink(login) 
+		};
+
+		var user = new User(USER);
+		user.save(function (err) {
+			if (err){
+				switch (err.code){
+					case USER_EXISTS:
+						Log('Sorry, user ' + login + ' Exists', STREAM_USERS); //Answer(res, {result: 'UserExists'});
+						reject('UserExists');
+					break;
+					default:
+						Error(err);	//Answer(res, {result: 'UnknownError'});
+						reject('UnknownError');
+					break;
+				}
+			}
+			else{
+				Log('added User ' + login+'/' + email, STREAM_USERS);
+				resolve(USER);
+				//mailer.send(email, 'Registered in online-tournaments.org!', makeRegisterText(login, email))
+				//Answer(res, OK);
+			}
+		});
+	});
+}
+
+function makeRegisterText(login, link){
+	var text = '<html><br>Thank you for registering in online-tournaments.org, ' + login + '!<br>';
+	text+= 'Follow the link below to activate your account: '
+	text+= '<br><a href="'+link+'">'+link+'</a>';
+	text+= '</html>';
+
+	Log('Registering email: ' + text, STREAM_USERS);
+
+	return text;
+}
+
+function sendActivationEmail(user){
+	user.to = user.email;
+	user.subject = 'Registered in online-tournaments.org!';
+	user.html = makeRegisterText(user.login, user.link);
+
+	return mailer.send(user);
+
+
+	//mailer.send(user.email, 'Registered in online-tournaments.org!', makeRegisterText(login, email) );
+}
 
 function Register (req, res){
+
 	var data = req.body;
-	var USER_EXISTS = 11000;
+	Log('Register '+ JSON.stringify(data), STREAM_USERS);
+
+	createUser(data)
+	.then(sendActivationEmail)
+	.then(function (msg){
+		Log('Reg OK: ' + JSON.stringify(msg) , STREAM_USERS);
+		Answer(res, OK);
+	})
+	.catch(function (msg){
+		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
+		Answer(res, Fail);//msg.err||null
+	})
+
+	/*var USER_EXISTS = 11000;
+
 	var login = data['login'];
 	var password = data['password'];
+	var email = data['email'];
+
+
 	Log('adding user :' + login + '. (' + JSON.stringify(data) + ')',STREAM_USERS);
 	Log('Check the data WHILE adding USER!!! need to write Checker');
-	var user = new User({ login:login, password:password, money:100 });
+	var user = new User({ login:login, password:password, money:0 });
 	user.save(function (err) {
 		if (err){
 			switch (err.code){
 				case USER_EXISTS:
 					Log('Sorry, user ' + login + ' Exists', STREAM_USERS);
-					 Answer(res, {result: 'UserExists'});
+					Answer(res, {result: 'UserExists'});
 				break;
 				default:
 					Error(err);
-					 Answer(res, {result: 'UnknownError'});
+					Answer(res, {result: 'UnknownError'});
 				break;
 			}
 		}
 		else{
 			Log('added User ' + login, STREAM_USERS); 
+			//mailer.send(email, 'Registered in online-tournaments.org!', makeRegisterText(login, email))
 			Answer(res, OK);
 		}
-	});
+	});*/
 
 }
+
+function Activate(req, res){
+	//var login = req.body.login;
+	var link = req.body.link;//login login:login, 
+	Log('Activate user ...' + link, STREAM_USERS);
+	User.update({link:link}, {$set: {activate:1} }, function (err, count){
+		if (err){ Error(err); Answer(res, Fail); }
+		else{
+			if (count){
+				Log('User ' + ' activated! by link: ' + link, STREAM_USERS );
+				Answer(res, OK);
+			}
+			else{
+				Log('Activation failed ' + login + ' __ ' + link, STREAM_USERS);
+				Answer(res, Fail);
+			}
+		}
+	} )
+}
+
 
 function findTournaments(res, query, queryFields, purpose){
 	Tournament.find(query, queryFields , function (err, tournaments){
