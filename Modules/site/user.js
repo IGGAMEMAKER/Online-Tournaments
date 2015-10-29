@@ -83,13 +83,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	
 	app.get('/Activate/:link', function (req, res){
 		var activationSuccessCallback = function(res, body, options, parameters){
-			res.redirect('../Profile');
+			res.redirect('Profile');
 		}
 
 		var activationFailCallback = function(res, body, options, parameters){
-			res.render('Activate');
+			res.render('Activate', {msg:body} );
 		}
-		AsyncRender("DBServer", "Activate", res, {callback:activationSuccessCallback, failCallback:activationFailCallback}, 
+		AsyncRender("DBServer", "Activate", res, 
+			{callback:activationSuccessCallback, failCallback:activationFailCallback}, 
 			{link:req.params.link});
 	})
 

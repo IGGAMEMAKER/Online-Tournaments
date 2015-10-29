@@ -1,6 +1,13 @@
+//
 html
 	head
 		title Activation
 	body
 		h1 Activation Failed
-		p Contact support to solve this
+		if msg
+			if msg.result=='OK'
+				p Activated!
+				br
+				a(href="Profile") check your profile
+			else
+				p Contact support to solve this

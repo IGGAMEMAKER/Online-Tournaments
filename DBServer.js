@@ -1076,7 +1076,7 @@ function createActivationLink(login){
 	var domainName = 'online-tournaments.org';
 	domainName = 'localhost';
 	Log('Rewrite createActivationLink. It must be less human-readable. guuid', STREAM_SHIT);
-	return 'http://' + domainName + '/Activate/'+login;
+	return login;
 }
 
 function createUser(data){
@@ -1142,7 +1142,7 @@ function makeResetPasswordText(user){
 function sendActivationEmail(user){
 	user.to = user.email;
 	user.subject = 'Registered in online-tournaments.org!';
-	user.html = makeRegisterText(user.login, user.link);
+	user.html = makeRegisterText(user.login, 'http://' + domainName + '/Activate/'+ user.link);
 
 	return mailer.send(user);
 	//mailer.send(user.email, 'Registered in online-tournaments.org!', makeRegisterText(login, email) );
@@ -1178,7 +1178,7 @@ function Register (req, res){
 function Activate(req, res){
 	//var login = req.body.login;
 	var link = req.body.link;//login login:login, 
-	Log('Activate user ...' + link, STREAM_USERS);
+	Log('Activate user ... ' + link, STREAM_USERS);
 	User.update({link:link}, {$set: {activate:1} }, function (err, count){
 		if (err){ Error(err); Answer(res, Fail); }
 		else{
@@ -1187,11 +1187,12 @@ function Activate(req, res){
 				Answer(res, OK);
 			}
 			else{
-				Log('Activation failed ' + login + ' __ ' + link, STREAM_USERS);
+				Log('Activation failed ' + ' __ ' + link, STREAM_USERS);
 				Answer(res, Fail);
 			}
 		}
-	} )
+	})
+	
 }
 
 
