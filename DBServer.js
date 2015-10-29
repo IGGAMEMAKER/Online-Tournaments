@@ -32,7 +32,7 @@ var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 
 //console.error(mailAuth);
 
-mailer.set(mailAuth, Log);
+//mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
@@ -75,6 +75,7 @@ app.post('/Login', LoginUser);
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/CancelRegister', function (req, res) { CancelRegister(req.body, res); })
 
+app.post('/Changepassword', Changepassword);
 
 app.post('/GetPlayers', GetPlayers);
 
@@ -181,10 +182,17 @@ var Tournament = mongoose.model('Tournament', {
 	//tournamentServerID: String
 });
 
-function ERR(err, res){
+function SERVER_ERROR(err, res){
 	Error(err);
 	if (res){
 		Answer(res, Fail);
+	}
+}
+
+function servError(err, res){
+	Error(err);
+	if (res){
+		Answer(res, {result:'ServerError'} );
 	}
 }
 
@@ -433,12 +441,12 @@ function CancelRegister(data, res){
 	if (login && tournamentID){
 		Tournament.findOne({tournamentID:tournamentID}, 'buyIn', 
 			function (err, tournament){
-				if (err) { ERR(err, res); }
+				if (err) { SERVER_ERROR(err, res); }
 				else{
 					clearRegister(data, res, function(p1, p2, p3){
 						incrMoney(res, login, tournament.buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
 						changePlayersCount(tournamentID, -1);
-					}, ERR);
+					}, SERVER_ERROR);
 				}
 			});
 	}
@@ -488,7 +496,7 @@ function RegisterUserInTournament(data, res){
 					if (err) { Error(err); Answer(res, Fail); }
 					else{
 						Log('Reg status: ' + JSON.stringify(count));
-						if (count.n==1){
+						if (updated(count)){
 							reg.save(function (err) {
 								if (err){ Error(err); Answer(res, Fail); }
 								else{
@@ -507,29 +515,7 @@ function RegisterUserInTournament(data, res){
 				});				
 			}
 		}
-	})
-/*
-reg.save(function (err) {
-		if (err){
-			switch (err.code){
-				case OBJ_EXITS:
-					Log('Sorry, User ' + data.login + ' Exists in tournament ' + tournamentID);
-					 Answer(res, {result: 'TournamentExists??!!!'});
-				break;
-				default:
-					Error(err);
-					 Answer(res, {result: 'UnknownError'});
-				break;
-			}
-		}
-		else{
-			
-		}
-	});
-
-*/
-
-	
+	})	
 }
 
 function changePlayersCount(tournamentID, mult){
@@ -558,11 +544,39 @@ function GetPlayers (req, res){
 	});
 }
 
-function ChangePassword(req, res){
+function updated(count){
+	console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
+	return count.n>0;
+}
+
+function HASH(password){
+	return password;
+}
+
+function Changepassword(req, res){
 	var data = req.body;
-	Log("check current auth");
+	var login = data.login;
+	var oldPass = data.oldPass;
+	var newPass = data.newPass;
+
+	Log('Filter passwords, when you change them!!', STREAM_SHIT);
+	User.update({login:login, password:HASH(oldPass)}, {$set : {password:HASH(newPass) } }, function (err, count){
+		
+		if(err) { servError(err, res); }
+		else{
+			if (updated(count)) {
+				Log('Changepassword OK '+ login, STREAM_USERS);
+				Answer(res, OK);
+			}
+			else{
+				Answer(res, Fail);
+			}
+		}
+	})
+
+	/*Log("check current auth");
 	Log("ChangePass of User " + data['login']);
-	res.end(Fail);
+	res.end(Fail);*/
 }
 
 function RememberPassword(req, res){
@@ -585,7 +599,7 @@ function LoginUser(req, res){
 	var password = data['password'];
 	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', STREAM_USERS);
 
-	var usr1 = User.findOne({login:login, password:password}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
+	var usr1 = User.findOne({login:login, password:HASH(password)}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
 	    if (err) {
 	    	Error(err, 'CANNOT LOG IN USER!!!');
 	    	Answer(res, {result: err});
@@ -671,7 +685,7 @@ function decrMoney(res, login, cash, source){
 		if (err) { Error(err); Answer(res, Fail); }
 		else{
 			Log('DecreaseMoney---- count= ' + JSON.stringify(count));
-			if (count.ok==1){
+			if (updated(count)){
 				Answer(res, OK);
 				Log('DecreaseMoney OK -- ' + login + ':' + cash, 'Money');
 				saveTransfer(login, -cash, source||null);
@@ -1034,7 +1048,7 @@ function createUser(data){
 
 		var USER = { 
 			login:login, 
-			password:password, 
+			password: HASH(password), 
 			money:0, 
 			email:email, 
 			date: now(), 
@@ -1103,37 +1117,6 @@ function Register (req, res){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, Fail);//msg.err||null
 	})
-
-	/*var USER_EXISTS = 11000;
-
-	var login = data['login'];
-	var password = data['password'];
-	var email = data['email'];
-
-
-	Log('adding user :' + login + '. (' + JSON.stringify(data) + ')',STREAM_USERS);
-	Log('Check the data WHILE adding USER!!! need to write Checker');
-	var user = new User({ login:login, password:password, money:0 });
-	user.save(function (err) {
-		if (err){
-			switch (err.code){
-				case USER_EXISTS:
-					Log('Sorry, user ' + login + ' Exists', STREAM_USERS);
-					Answer(res, {result: 'UserExists'});
-				break;
-				default:
-					Error(err);
-					Answer(res, {result: 'UnknownError'});
-				break;
-			}
-		}
-		else{
-			Log('added User ' + login, STREAM_USERS); 
-			//mailer.send(email, 'Registered in online-tournaments.org!', makeRegisterText(login, email))
-			Answer(res, OK);
-		}
-	});*/
-
 }
 
 function Activate(req, res){
@@ -1143,7 +1126,7 @@ function Activate(req, res){
 	User.update({link:link}, {$set: {activate:1} }, function (err, count){
 		if (err){ Error(err); Answer(res, Fail); }
 		else{
-			if (count){
+			if (updated(count)){
 				Log('User ' + ' activated! by link: ' + link, STREAM_USERS );
 				Answer(res, OK);
 			}

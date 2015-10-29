@@ -33,8 +33,23 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
+	app.get('/Changepassword', function (req, res){
+		res.render('Changepassword');
+	})
+
+	app.post('/Changepassword' , function (req, res){
+		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.password1 && req.body.newpassword){
+			AsyncRender("DBServer", 'Changepassword', res, {renderPage:'Changepassword'} , 
+				{oldPass:req.body.password, newPass: req.body.newpassword, login:getLogin(req) });
+		}
+		else{
+			res.render('Changepassword', {msg:{result:'Invalid data'}} );
+		}
+	})
+
 	app.get('/MoneyTransfers', function (req, res){
 		if (isAuthenticated(req)){
+
 			AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:getLogin(req)})
 			return;
 		}
