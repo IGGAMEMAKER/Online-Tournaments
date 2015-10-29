@@ -33,6 +33,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
+	app.get('/ResetPassword', function (req, res){
+		res.render('ResetPassword');
+	})
+
+	app.post('/ResetPassword', function (req, res){
+		//var login = req.body.login;
+		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, 
+			{login:req.body.login, email:req.body.email})
+	})
+
 	app.get('/Changepassword', function (req, res){
 		res.render('Changepassword');
 	})

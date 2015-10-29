@@ -32,7 +32,7 @@ var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 
 //console.error(mailAuth);
 
-//mailer.set(mailAuth, Log);
+mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
@@ -76,6 +76,9 @@ app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournam
 app.post('/CancelRegister', function (req, res) { CancelRegister(req.body, res); })
 
 app.post('/Changepassword', Changepassword);
+app.post('/ResetPassword', ResetPassword);
+
+//app.post('/BanUser', BanUser);
 
 app.post('/GetPlayers', GetPlayers);
 
@@ -553,13 +556,43 @@ function HASH(password){
 	return password;
 }
 
+function createPass(login){
+	var rand= 5;//(new Date()).toMilliseconds % 1024;
+	return login+rand;
+}
+
+function resetPassword(user){
+	return new Promise(function (resolve, reject){
+		var login = user.login;
+		var newPass = HASH(createPass(login));
+		Log('Filter passwords, when you change them!!', STREAM_SHIT);
+
+		User.update({login:login }, {$set : {password:newPass } }, function (err, count){
+			if (err) { reject(err); }
+			else{
+				if (updated(count)) {
+					Log('resetPassword OK '+ login + '  ' + newPass, STREAM_USERS);
+					//Answer(res, OK);
+					user.password = newPass;
+					resolve(user);
+				}
+				else{
+					reject(Fail);
+					//Answer(res, Fail);
+				}
+			}
+		})
+
+	})
+}
+
 function Changepassword(req, res){
 	var data = req.body;
 	var login = data.login;
 	var oldPass = data.oldPass;
 	var newPass = data.newPass;
 
-	Log('Filter passwords, when you change them!!', STREAM_SHIT);
+	Log('Filter passwords, when you want to change them!! Changepassword', STREAM_SHIT);
 	User.update({login:login, password:HASH(oldPass)}, {$set : {password:HASH(newPass) } }, function (err, count){
 		
 		if(err) { servError(err, res); }
@@ -579,11 +612,19 @@ function Changepassword(req, res){
 	res.end(Fail);*/
 }
 
-function RememberPassword(req, res){
+function ResetPassword(req, res){
 	var data = req.body;
-	Log("Send mail and reset pass");
-	Log("Remember pass of User " + data['login']);
-	res.end(Fail);
+	Log('these actions must be done together!! ResetPassword', STREAM_SHIT);
+
+	resetPassword(data)
+	.then(sendResetPasswordEmail)
+	.catch(function (err){
+		Answer(res, err);
+	})
+	.then(function (result){
+		Answer(res, OK);
+		Log("Sended mail and reset pass. Remember pass of User " + JSON.stringify(result), STREAM_USERS);
+	})
 }
 
 function cLog(data){
@@ -1091,16 +1132,31 @@ function makeRegisterText(login, link){
 	return text;
 }
 
+function makeResetPasswordText(user){
+	var text = 'You resetted your password. Your new password is : ' + user.password;
+	text+=  ' . We strongly recommend you to change it in your profile ';
+
+	return text;
+}
+
 function sendActivationEmail(user){
 	user.to = user.email;
 	user.subject = 'Registered in online-tournaments.org!';
 	user.html = makeRegisterText(user.login, user.link);
 
 	return mailer.send(user);
-
-
 	//mailer.send(user.email, 'Registered in online-tournaments.org!', makeRegisterText(login, email) );
 }
+
+function sendResetPasswordEmail(user){
+	user.to = user.email;
+	user.subject = 'Reset password';
+	user.html = makeResetPasswordText(user);
+
+	return mailer.send(user);
+}
+
+
 
 function Register (req, res){
 
