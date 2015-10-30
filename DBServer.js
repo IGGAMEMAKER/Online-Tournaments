@@ -32,7 +32,7 @@ var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 
 //console.error(mailAuth);
 
-mailer.set(mailAuth, Log);
+//mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
@@ -150,7 +150,7 @@ var Game = mongoose.model('Game', {
 	token: String
 });
 
-var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: String, userID: String, promo:String, status:Number, date:Date });
+var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
 
 var Gift = mongoose.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number, sended:Object, date:Date });
 
@@ -818,7 +818,8 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		Log('mmmMoney!! ' + Prize);
 		User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
 			if (err){ Error(err); return; }
-			Log(count); saveTransfer(player.login, Prize, {type:SOURCE_TYPE_WIN, tournamentID:tournamentID});
+			Log(count); 
+			saveTransfer(player.login, Prize, { type:SOURCE_TYPE_WIN, tournamentID:tournamentID } );
 		});
 	}
 }
@@ -832,7 +833,7 @@ function LoadPrizes(tournamentID, winners){
 			Log('Prizes: ' + JSON.stringify(Prizes));
 			for (i=0; i< winners.length;i++){// && i <Prizes.Prizes.length
 				var player = winners[i];
-				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1, tournamentID) );
+				givePrizeToPlayer(player, getPrize(Prizes.Prizes, Prizes.goNext,  i+1), tournamentID );
 			}
 		}
 	});
@@ -931,36 +932,57 @@ KillFinishedTournaments();
 function KillFinishedTournaments(){
 	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){
 		Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
-		var TRegIDs = [];
+		/*var TRegIDs = [];
 		for (var i = finishedTournaments.length - 1; i >= 0; i--) {
-			TRegIDs.push(finishedTournaments[i].tournamentID);
-		};
-		
-
+			var id = finishedTournaments[i].tournamentID;
+			console.log(id);
+			TRegIDs.push(id);
+			//TRegIDs.push(finishedTournaments[i].tournamentID);
+		};*/
+		var TRegIDs = killID(finishedTournaments, 'tournamentID');
 		ClearRegistersInTournament(TRegIDs);
 	})
 }
 
 
 
-
 function ClearRegistersInTournament(TRegIDs){
 	Log('TRegIDs : '+JSON.stringify(TRegIDs), 'TREGS');
 
-	/*TournamentReg.remove({tournamentID: {$in : TRegIDs} } , function deletingTournamentRegs (err, tournRegs){
-		if (err) {Error(err);}
-		else{
-			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
-		}
-	})*/
-	
-	TournamentReg.update({tournamentID: {$in : TRegIDs} } , {$set: {status:TOURN_STATUS_FINISHED}}, function finishTournamentRegs (err, tournRegs){
+	var finishedTS = 3; //TOURN_STATUS_FINISHED
+
+	for (var i = TRegIDs.length - 1; i >= 0; i--) {
+		var tournamentID = TRegIDs[i];
+		Log('treg: ' + tournamentID, 'TREGS');
+		TournamentReg.update( { tournamentID : tournamentID}, { $set: { status : finishedTS } }, {multi: true}, function (err, count){
+			if (err) {Error(err);}
+			else{
+				var cnt = updated(count);
+				if (cnt){
+					Log('Killed TournamentRegs: ' + tournamentID + ' count: '+cnt, 'TREGS' );
+				}
+				else{
+					Log('No changes ' + tournamentID + ' ' + JSON.stringify(cnt), 'TREGS')
+				}
+			}
+		})
+	};
+
+	/*TournamentReg.find({tournamentID: {$in : TRegIDs} } , function (err, tournRegs){
 		if (err) {Error(err);}
 		else{
 
 			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs), 'TREGS' );
 		}
-	})
+	})*/
+	
+	/*TournamentReg.update({tournamentID: {$in : TRegIDs} } , {$set: {status:TOURN_STATUS_FINISHED}}, function finishTournamentRegs (err, tournRegs){
+		if (err) {Error(err);}
+		else{
+
+			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs), 'TREGS' );
+		}
+	})*/
 }
 
 function killID(arr, field){
