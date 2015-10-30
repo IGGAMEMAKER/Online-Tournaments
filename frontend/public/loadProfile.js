@@ -26,9 +26,10 @@ function loadProfile(drawFunction){
 		success: function( data ) {
 			//saveInStorage('profile', data);
 			var profile = JSON.parse(data);
-			
+
 			var tournaments = profile.tournaments;
 			var money = profile.money;
+
 			saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 			saveInStorage('money', money);
 
@@ -38,6 +39,7 @@ function loadProfile(drawFunction){
 				//alert(data);
 				//console.log(data);
 			}
+
 		}
 	});
 }

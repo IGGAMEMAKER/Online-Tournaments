@@ -6,9 +6,7 @@ function unReg(login, tID){
 }
 function ManageReg(login, tID, url, regID){
 	console.log(login);
-	console.log(tID);
-	//console.log(btn);
-
+	console.log(tID); //console.log(btn);
 	$.ajax({
 	  url: url,
 	  method: 'POST',

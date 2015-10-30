@@ -5,8 +5,8 @@ function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-/*var login = window.login;
-alert(login);*/
+//var login = login || window.login;
+//alert(login);
 
 const STATUS_WAITING=1;
 const STATUS_RUNNING=2;

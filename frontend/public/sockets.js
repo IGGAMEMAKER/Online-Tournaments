@@ -4,9 +4,12 @@ var socket = io();
 var currentTID=0;
 var curLogins=[];
 
+
+var windows=[];
+
 socket.on('StartTournament', function(msg){
   var tournamentID = msg['tournamentID'];
-
+  console.log('StartTournament');
   //console.log('Jugadores:' + msg.logins);
   curLogins = msg.logins;
   var host = msg.host;
@@ -16,8 +19,8 @@ socket.on('StartTournament', function(msg){
   currentTID = tournamentID;
   console.log('tID = ' + currentTID);
 
-  drawButton(host, port);
-  if (userIsRegisteredIn(tournamentID) ) startGame(host, port);
+  drawButton(host, port, tournamentID);
+  if (userIsRegisteredIn(tournamentID) ) startGame(host, port, tID);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 });
 
@@ -37,31 +40,47 @@ function userIsRegisteredIn(tournamentID){
 
   for (var i=0; i<tournaments.length;++i){
     if (tournaments[i]==tournamentID){
+      console.log('userIsRegisteredIn : ' + tournamentID);
       return true;
     }
   }
   return false;
 }
 
-function drawButton(host, port){
-  var text = '<button onclick="startGame(\''+host+'\','+port+ ')" style="width:300px;height:60px;"> PLAY </button>';//"' + gameURL + '"
+var PLAY_FIELD='#tournaments';
+//var PLAY_FIELD='#news';
+
+function drawButton(host, port, tournamentID){
+  //var text = '<button onclick="startGame(\''+host+'\','+port+','+tournamentID+ ')" style="width:300px;height:60px;"> PLAY ' + tournamentID + '</button><br>';//"' + gameURL + '"
+  var text = '<button onclick="startGame(\''+host+'\','+port+ ')" style="width:300px;height:60px;"> PLAY '+tournamentID+'</button><br>';//"' + gameURL + '"
   console.log(text);
-  $('#news').html(text);
+  $(PLAY_FIELD).html(text);
 }
 
-function startGame(gameURL, port){
+function drawPlayButtons(){
+  var tournaments = getTournaments();
+  /*for (var i = tournaments.length - 1; i >= 0; i--) {
+    tournaments[i]
+  };*/
+}
+
+function startGame(gameURL, port, tournamentID){
+
   if (gameURL && port){
     
-    var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+currentTID;
-    //alert(addr);
-
+    var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
+    
     var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
-    //console.log(txt);
-    $('#news').append(txt);
+    $(PLAY_FIELD).append(txt);
     
     window.open('', 'TheWindow');
     document.getElementById('TheForm').submit();
+
+    /*var win = window.open(addr, 'Tournament'+tournamentID);
+    win.login = login;*/
+
   }
+
 }
 
 /* CLIENT SIDE INFO:
