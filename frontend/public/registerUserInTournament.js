@@ -18,7 +18,7 @@ function ManageReg(login, tID, url, regID){
 		var txt='';
 		if (regID==1){
 			switch(msg.result){
-				case 'OK': txt='You registered successfully!!';  break;
+				case 'OK': txt='You registered successfully!!'; addTournament(tID); break;
 				case 'fail': txt='Register failed :(('; break;
 				default : txt='Sorry, you need to login first :(('; break;
 			}

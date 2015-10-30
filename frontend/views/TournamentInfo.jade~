@@ -67,7 +67,7 @@ mixin drawRegButton(name, ButtonValue, tID, message)
 
 mixin drawTournamentInfo(message)
 	+showTournament(message[0])
-	//+showPrizes(message[0].Prizes)
+	+showPrizes(message[0].Prizes)
 	+showPlayers(message[1])
 
 

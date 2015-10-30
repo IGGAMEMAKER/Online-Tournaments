@@ -47,7 +47,7 @@ mixin showTournaments(message)
 			//p!= message
 		- }}
 
-include tmpl/tournaments
+include templates/tournaments
 
 html
 	head
@@ -57,6 +57,7 @@ html
 		//p!= message.length
 		//p!= JSON.stringify(message)
 		include templates/tAuth
+		include clients
 		br
 		br
 		h1 List of Tournaments

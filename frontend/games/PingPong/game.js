@@ -209,7 +209,7 @@ room.on('update', function(msg){
 	printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
 	printText('u1', gameDatas[1].score, 200, 50+3*20);
 	
-	printText('Server Update', JSON.stringify(gameDatas), 75, 305);
+	//printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 
 room.on('statusChange', function(msg){
@@ -270,7 +270,9 @@ function sendGameData(data1, url){
 	//room.emit('movement', sendData );
 
 	ajaXSend(sendData, 'http://'+ gameHost+':' + gamePort +'/Move');
-	printText('SENDED', JSON.stringify(sendData) , 0, 450);
+	//printText('SENDED', JSON.stringify(sendData) , 0, 450);
+	
+
 	//alert('Sended :' + JSON.stringify(sendData));
 
 	/*console.log(sendData);

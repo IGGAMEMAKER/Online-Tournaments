@@ -74,15 +74,15 @@ mixin drawTournamentInfo(message)
 html
 	head
 		title!= title
-		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
-		script(src="https://cdn.socket.io/socket.io-1.2.0.js")
-		script(src="http://code.jquery.com/jquery-1.11.1.js")
-
+		//script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+		//script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+		//script(src="http://code.jquery.com/jquery-1.11.1.js")
+		include client
 		script.
 			var login = "#{session.login}";			
 			var tID = "#{msg[0].tournamentID}";
-		script(src="sockets.js").
-		script(src="loadGift.js").
+		//script(src="sockets.js").
+		//script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
 		include templates/tAuth
