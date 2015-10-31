@@ -28,11 +28,12 @@ var mailer = require('./sendMail');
 //console.error('mailAuth ');
 
 //console.error(configs);
+var domainName = configs.gameHost;//domainName
 var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 
 //console.error(mailAuth);
 
-//mailer.set(mailAuth, Log);
+mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
@@ -1136,14 +1137,14 @@ function createUser(data){
 			else{
 				Log('added User ' + login+'/' + email, STREAM_USERS);
 				resolve(USER);
-				//mailer.send(email, 'Registered in online-tournaments.org!', makeRegisterText(login, email))
-				//Answer(res, OK);
 			}
 		});
 	});
 }
 
 function makeRegisterText(login, link){
+	console.log(login);
+	console.log(link);
 	var text = '<html><br>Thank you for registering in online-tournaments.org, ' + login + '!<br>';
 	text+= 'Follow the link below to activate your account: '
 	text+= '<br><a href="'+link+'">'+link+'</a>';
@@ -1162,6 +1163,8 @@ function makeResetPasswordText(user){
 }
 
 function sendActivationEmail(user){
+	console.error('sendActivationEmail');
+
 	user.to = user.email;
 	user.subject = 'Registered in online-tournaments.org!';
 	user.html = makeRegisterText(user.login, 'http://' + domainName + '/Activate/'+ user.link);

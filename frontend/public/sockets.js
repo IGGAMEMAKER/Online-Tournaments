@@ -73,7 +73,7 @@ function isActiveTab(){
 
 function userIsRegisteredIn(tournamentID){
   var tournaments = getTournaments();
-  console.log(tournaments);
+  //console.log(tournaments);
 
   for (var i=0; i<tournaments.length;++i){
     if (tournaments[i]==tournamentID){
@@ -92,7 +92,7 @@ function drawButton(host, port, tournamentID){
   var parameters = '\''+host +'\','+port+','+tournamentID;
   console.log(parameters);
   var text = '<button onclick="startGame(' + parameters + ')" style="width:300px;height:60px;"> PLAY '+tournamentID+'</button><br>';//"' + gameURL + '"
-  console.log(text);
+  //console.log(text);
   $(PLAY_FIELD).html(text);
 }
 

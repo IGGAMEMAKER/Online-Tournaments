@@ -89,7 +89,14 @@ function strLog(text, topic){
 }
 
 function getDay(date){
-	return date.toLocaleDateString();
+	var day = date.toLocaleDateString();
+	day = day.replace('/','-');
+	day = day.replace('/','-');
+
+	//return date.toLocaleDateString().replace('/','-');
+	return day;
+
+	//return date.toLocaleDateString();
 }
 
 
