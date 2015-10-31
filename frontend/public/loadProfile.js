@@ -42,6 +42,26 @@ function loadProfile(drawFunction){
 
 		}
 	});
+
+	var tournaments = killID(getTournaments(), 'tournamentID') ;
+	console.log(tournaments);
+	for (var i=0; i < tournaments.length; i++ ){
+		var tID = tournaments[i];
+
+		$.ajax({
+			url: 'GetTournamentAddress',
+			method: 'POST',
+			data: { tournamentID: tID },
+			success: function( data ) {
+
+				var address = JSON.parse(data);
+				console.log(address);
+				setInObject('addresses', tID, address);
+				/*saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
+				saveInStorage('money', money);*/
+			}
+		});
+	}
 }
 loadProfile();
 var tmr0 = setInterval(function(){ loadProfile() }, 4000);

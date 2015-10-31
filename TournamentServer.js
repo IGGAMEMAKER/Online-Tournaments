@@ -39,6 +39,10 @@ app.post('/ServeTournament', function (req, res){
 });
 app.post('/FinishGame', FinishGame);
 
+app.post('/GetTournamentAddress' , function (req, res) { 
+	sender.Answer(res, {address: getPortAndHostOfGame(req.body.tournamentID)} );
+})
+
 var tournaments = {
 	count:0
 }

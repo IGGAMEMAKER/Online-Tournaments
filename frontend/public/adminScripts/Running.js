@@ -41,7 +41,7 @@ function GetGame(gameNameID){
 		//console.log(msg);
 		var obj = JSON.parse(msg);
 		//console.log(obj);
-		console.log(size(obj));
+		//console.log(size(obj));
 		//var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
 		//alert('Answer on Running');
 			//$('#Running').append('<b>'+JSON.stringify(msg)+'</b>');
@@ -65,7 +65,7 @@ function GetTotalTournaments(){
 		//console.log(msg);
 		var obj = JSON.parse(msg);
 		//console.log(obj);
-		console.log(size(obj));
+		//console.log(size(obj));
 		//var text = '<button onclick="startGame("'+host+'",'+port+ ')" style="width:300px;height:60px;"> Play in Tournament</button>';//"' + gameURL + '"
 		//alert('Answer on Running');
 			//$('#Running').append('<b>'+JSON.stringify(msg)+'</b>');
