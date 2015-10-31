@@ -565,10 +565,11 @@ function createPass(login){
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
 		var login = user.login;
+		var email = user.email;
 		var newPass = HASH(createPass(login));
 		Log('Filter passwords, when you change them!!', STREAM_SHIT);
 
-		User.update({login:login }, {$set : {password:newPass } }, function (err, count){
+		User.update({login:login, email:email}, {$set : {password:newPass } }, function (err, count){
 			if (err) { reject(err); }
 			else{
 				if (updated(count)) {
