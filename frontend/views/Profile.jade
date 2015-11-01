@@ -72,13 +72,15 @@ mixin drawPrizes(gifts)
 		h3 You have no prizes, but it's high time to win them!
 
 mixin moneyOperations()
-	a(href="MoneyTransfers") Money transfers
+	//a(href="MoneyTransfers") Money HISTORY
 	br
-	table(width="300px")
+	//table(width="300px")
 		tr
 			td
 				+buttonLink('Deposit', 'Deposit money')
 				//a(href="Deposit") Deposit money
+			//td
+				+buttonLink('MoneyTransfers', 'Money HISTORY')
 			td
 				+buttonLink('Cashout', 'Cashout')
 	br
@@ -91,11 +93,14 @@ html
 	//script(src="loadProfile.js")
 	
 	center
-		h1 Profile of  #{session.login}
+		h1 Profile of  #{session.login} 
+			a(href="MoneyTransfers") (#{msg.money/100}$)	
 		//p!= JSON.stringify(msg)
-		h2 You have #{msg.money/100}$ on your account
+		//h2 You have 
+			a(href="MoneyTransfers") #{msg.money/100}$ 
+			//p on your account
 		//p!= JSON.stringify(msg)
-		+moneyOperations()
+		//+moneyOperations()
 
 		a(href="Tournaments") Back to tournaments
 		br

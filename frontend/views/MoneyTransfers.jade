@@ -1,4 +1,9 @@
 //
+///-----
+mixin buttonLink(link, text)
+	form(action=link) 
+		input(type="submit" value=text style="width:125px;height:50px;")
+
 mixin linkToTournament(words, tID)
 	p #{words}  
 		a(href="TournamentInfo?tID="+tID) #{tID}
@@ -73,13 +78,33 @@ html
 	head
 		title!= title
 	body
-		//include templates/tAuth
-		a(href="Profile") Back to profile
-		br
-		br
-		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		include client
+		center
+			//include templates/tAuth
+			h1 Money history
+			table(width="300px")
+				tr
+					td
+						+buttonLink('Deposit', 'Deposit money')
+						//a(href="Deposit") Deposit money
+					//td
+						+buttonLink('MoneyTransfers', 'Money HISTORY')
+					td
+						+buttonLink('Cashout', 'Cashout')
+			a(href="Profile") Back to profile
+			br
+			br
 			if msg.length
-				each transfer in msg
-					+drawTransfer(transfer)
-		//p!= JSON.stringify(msg)
+				table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+					tr
+						td Money
+						td Comment
+						td date
+					each transfer in msg
+						+drawTransfer(transfer)
+			else
+				p No History. 
+					a(href="Tournaments") Start it!
+			
+			//p!= JSON.stringify(msg)
 		

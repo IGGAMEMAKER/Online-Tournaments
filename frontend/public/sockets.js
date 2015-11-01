@@ -33,7 +33,7 @@ function StartTournament(tournamentID){
 
     var address = getAddress(tournamentID);
     //startGame(host, port, tournamentID);
-    startGame(address.host, address.port, tournamentID);
+    //startGame(address.host, address.port, tournamentID);
   }
 }
 
