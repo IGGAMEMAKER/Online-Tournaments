@@ -42,6 +42,34 @@ function StartTournament(tournamentID){
   }
 }
 
+var blinkCounter=0;
+function blinker(){
+  var blinkStatus = getFromStorage('hasRunningTournaments');
+  //console.log(blinkStatus);
+  blinkCounter++;
+
+  //$("#my-tournaments").css( "background-color" , defaultColour );
+  var colour = 'black';
+  var period;
+  if (blinkStatus==1){
+    if (blinkCounter%2){
+      colour = 'red';
+    }
+    else{
+      colour = 'blue';
+    }
+    period = 1000;
+  }
+  else{
+    period = 3000;
+  }
+  $("#my-tournaments").css( "background-color" , colour );
+  saveInStorage('hasRunningTournaments', 0);
+  setTimeout(blinker , period);
+
+}
+setTimeout(blinker, 1000);
+
 function startGame(gameURL, port, tournamentID){
 
   if (gameURL && port){
@@ -57,6 +85,7 @@ function startGame(gameURL, port, tournamentID){
     document.getElementById('TheForm').submit();
     wind.focus();
 
+    saveInStorage('hasRunningTournaments', 0);
     closePopup('tournaments');
   }
 
@@ -133,7 +162,8 @@ function drawPlayButtons(){
     //console.log(tournaments);
     for (var i = tournaments.length - 1; i >= 0; i--) {
       var tournamentID = tournaments[i];
-      var addr = addrs[tournamentID];
+      var addr = addrs[tournamentID].address;
+      //console.log(addr);
       if (addr && addr.host && addr.port && addr.running==TOURN_START) drawButton(addr.host, addr.port, tournamentID);
     };
   }

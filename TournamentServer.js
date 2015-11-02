@@ -41,8 +41,14 @@ app.post('/FinishGame', FinishGame);
 
 app.post('/GetTournamentAddress' , function (req, res) { 
 	var tournamentID = req.body.tournamentID;
+	strLog('BODY : ' + JSON.stringify(req.body), 'Tournaments');
 	var a = getPortAndHostOfGame(tournamentID);
-	a.running = runningTournaments[tournamentID]||null;
+
+	strLog('get addr of ' + tournamentID, 'Tournaments');
+	strLog('runningTournaments : ' + JSON.stringify(runningTournaments), 'Tournaments');
+	
+	a.running = runningTournaments[tournamentID];//||null;
+	strLog(JSON.stringify(a), 'Tournaments');
 
 	//sender.Answer(res, {address: getPortAndHostOfGame(req.body.tournamentID)} );
 	sender.Answer(res, {address: a});

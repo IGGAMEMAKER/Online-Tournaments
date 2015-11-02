@@ -43,10 +43,14 @@ function loadProfile(drawFunction){
 		}
 	});
 
-	var tournaments = killID(getTournaments(), 'tournamentID') ;
+	var tournaments = getTournaments();// ts;//killID(getTournaments(), 'tournamentID') ;
+	//console.log('tournaments !!!');
 	//console.log(tournaments);
+	var running = 0;
 	for (var i=0; i < tournaments.length; i++ ){
+		//console.log(tournaments[i]);
 		var tID = tournaments[i];
+		//console.log('loadTournamentInfo of : ' + tID);
 
 		$.ajax({
 			url: 'GetTournamentAddress',
@@ -55,8 +59,15 @@ function loadProfile(drawFunction){
 			success: function( data ) {
 
 				var address = JSON.parse(data);
-				console.log(address);
+				//console.log(address);
 				setInObject('addresses', tID, address);
+				//console.log(address.running);
+				if (address.address.running == 1) {
+					console.log('hasRunningTournaments');
+					saveInStorage('hasRunningTournaments',1);}
+				else{
+					
+				}
 				//setInObject('tournStatus', tID, address.running);
 
 			}
