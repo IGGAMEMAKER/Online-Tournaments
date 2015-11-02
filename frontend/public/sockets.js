@@ -1,7 +1,6 @@
 //alert('Sockets included');
 var socket = io();
 
-var currentTID=0;
 var curLogins=[];
 
 
@@ -13,6 +12,10 @@ var windows=[];
 // tournaments
 // playing
 
+var TOURN_START=1;
+
+//var popupOpener=OP_USER;
+
 socket.on('StartTournament', function(msg){
   var tournamentID = msg['tournamentID'];
   console.log('StartTournament');
@@ -20,11 +23,9 @@ socket.on('StartTournament', function(msg){
   curLogins = msg.logins;
   var host = msg.host;
   var port = msg.port;
+  var running = msg.running;
 
-
-  currentTID = tournamentID;
-  console.log('tID = ' + currentTID);
-  setInObject('addresses', tID, {host:host, port:port} );
+  setInObject('addresses', tID, {host:host, port:port, running: TOURN_START } );
   drawButton(host, port, tournamentID);
   if (userIsRegisteredIn(tournamentID) ) StartTournament(tournamentID);
   ///$('#news').append($('<button>').text(JSON.stringify(msg)));
@@ -37,18 +38,28 @@ function StartTournament(tournamentID){
     var audio = new Audio('TOURN_START.wav');
     audio.play();
 
-    var address = getAddress(tournamentID);
-    //startGame(host, port, tournamentID);
-    //startGame(address.host, address.port, tournamentID);
+    openPopup();
   }
 }
 
+function startGame(gameURL, port, tournamentID){
 
+  if (gameURL && port){
+    
+    var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
+    
+    var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
+    $(PLAY_FIELD).append(txt);
 
+    //setInObject('playing', tournamentID, {status:STARTED_BY_PLAYER} );
+    
+    var wind = window.open('', 'TheWindow');
+    document.getElementById('TheForm').submit();
+    wind.focus();
 
-function getAddress(tournamentID){
-  var address = getObject('addresses')[tournamentID];
-  return address;
+    closePopup('tournaments');
+  }
+
 }
 
 function getTournaments(){
@@ -71,12 +82,6 @@ function setInObject(arrName, id , value){
   array[id] = value;
   saveInStorage(arrName, array);
 }
-
-function setPlayingTournament(){
-
-}
-
-setTimeout(function(){removeObject('playing');} , 1000);
 
 function isActiveTab(){
   return true;
@@ -118,48 +123,30 @@ function drawButton(host, port, tournamentID){
 
 function drawPlayButtons(){
   var tournaments = getTournaments();
-  var addresses = getObject('addresses');
+  var addrs = getObject('addresses');
 
   var playing = getObject('playing');
 
-  //closePopup(PLAY_FIELD);
-  ////closePopup('tournaments');
-  
-  //$(PLAY_FIELD).html('<p>'+ tournaments.length + '__' + JSON.stringify(playing)+'</p>');
-  //console.log(playing);
+  $(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
 
-  $(PLAY_FIELD).html(tournaments.length + '__' + JSON.stringify(playing));
-  
   if (tournaments.length){
+    //console.log(tournaments);
     for (var i = tournaments.length - 1; i >= 0; i--) {
-
       var tournamentID = tournaments[i];
-      var host = addresses[tournamentID].host;
-      var port = addresses[tournamentID].port;
-      //if (!playing[tournamentID].status)
-      //if (!UserStartedTournament(tournamentID, playing)) 
-      drawButton(host, port, tournamentID);
+      var addr = addrs[tournamentID];
+      if (addr && addr.host && addr.port && addr.running==TOURN_START) drawButton(addr.host, addr.port, tournamentID);
     };
   }
   else{
-    closePopup('tournaments');
+    $(PLAY_FIELD).append('No tournaments available'); //closePopup('tournaments');
   }
+}
 
-  /*if (tournaments.length > playing.length){
-    //$(PLAY_FIELD).html('');
-    for (var i = tournaments.length - 1; i >= 0; i--) {
+var buttons = setInterval(drawPlayButtons, 1000);
 
-      var tournamentID = tournaments[i];
-      var host = addresses[tournamentID].host;
-      var port = addresses[tournamentID].port;
-      //if (!playing[tournamentID].status)
-      //if (!UserStartedTournament(tournamentID, playing)) 
-      drawButton(host, port, tournamentID);
-    };
-  }
-  else{
-    $(PLAY_FIELD).html(tournaments.length + '__' + JSON.stringify(playing));
-  }*/
+function UserStartedTournament(tournamentID, playing){
+  return false;
+  //return playing[tournamentID] && (playing[tournamentID].status==STARTED_BY_PLAYER);
 }
 
 $(document).mouseup(function (e)
@@ -180,34 +167,6 @@ function closePopup(name){
 
 function openPopup(){
   document.getElementById('tournaments').style.display='block';
-}
-
-var buttons = setInterval(drawPlayButtons, 1000);
-
-function UserStartedTournament(tournamentID, playing){
-  return false;
-  //return playing[tournamentID] && (playing[tournamentID].status==STARTED_BY_PLAYER);
-}
-
-function startGame(gameURL, port, tournamentID){
-
-  if (gameURL && port){
-    
-    var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
-    
-    var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
-    $(PLAY_FIELD).append(txt);
-
-    //setInObject('playing', tournamentID, {status:STARTED_BY_PLAYER} );
-    
-    window.open('', 'TheWindow');
-    document.getElementById('TheForm').submit();
-
-    /*var win = window.open(addr, 'Tournament'+tournamentID);
-    win.login = login;*/
-
-  }
-
 }
 
 /* CLIENT SIDE INFO:

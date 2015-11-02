@@ -78,6 +78,8 @@ room.on('finish', function(msg){
 	drawRB(4,'');
 	DrawPlayers(msg);
 	getMyPoints();
+
+	setTimeout(window.close, 7000);
 	//alert('Winner is :' + msg.winner);
 })
 var gameDatas;// = [];

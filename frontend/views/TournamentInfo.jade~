@@ -18,9 +18,6 @@ mixin showPrizes(prizes)
 					else
 						td #{prize/100}$
 	br
-	br
-
-
 
 mixin showTournament(tourn)
 	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
@@ -30,7 +27,7 @@ mixin showTournament(tourn)
 			td Buy In
 			td Game Name
 			td Status
-			td TournamentInfo
+			//td TournamentInfo
 		tr
 			td!= tourn.tournamentID
 			td!= tourn.players +'/'+ tourn.goNext[0]
@@ -38,7 +35,9 @@ mixin showTournament(tourn)
 			+ShowGame(tourn.gameNameID)
 			+ShowStatus(tourn.status)
 			//td!= tourn.gameNameID
-			td Tournament Info
+			//td Tournament Info
+			//td
+				+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
 	br
 
 mixin showPlayers(players)
@@ -68,34 +67,32 @@ mixin drawRegButton(name, ButtonValue, tID, message)
 mixin drawTournamentInfo(message)
 	+showTournament(message[0])
 	+showPrizes(message[0].Prizes)
+
+	+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
+	+drawRegButton("unReg", "UNREGISTER", message[0].tournamentID, message)
+
 	+showPlayers(message[1])
 
 
 html
 	head
 		title!= title
-		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
-		script(src="https://cdn.socket.io/socket.io-1.2.0.js")
-		script(src="http://code.jquery.com/jquery-1.11.1.js")
-
+		include client
 		script.
 			var login = "#{session.login}";			
 			var tID = "#{msg[0].tournamentID}";
-		script(src="sockets.js").
-		script(src="loadGift.js").
+		//script(src="sockets.js").
+		//script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
 		include templates/tAuth
 
 		h1!= 'Tournament : ' + msg[0].tournamentID
 		+drawTournamentInfo(msg)
-				
-		+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
-		+drawRegButton("unReg", "UNREGISTER", msg[0].tournamentID, msg)
 
-		div
-			a( href='Tournaments') Tournaments
-			br
+		//+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
+		//+drawRegButton("unReg", "UNREGISTER", msg[0].tournamentID, msg)
+
 		#gift
 			p Click on gift to show it here!
 		script.

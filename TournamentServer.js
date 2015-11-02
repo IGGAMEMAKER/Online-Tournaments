@@ -40,7 +40,12 @@ app.post('/ServeTournament', function (req, res){
 app.post('/FinishGame', FinishGame);
 
 app.post('/GetTournamentAddress' , function (req, res) { 
-	sender.Answer(res, {address: getPortAndHostOfGame(req.body.tournamentID)} );
+	var tournamentID = req.body.tournamentID;
+	var a = getPortAndHostOfGame(tournamentID);
+	a.running = runningTournaments[tournamentID]||null;
+
+	//sender.Answer(res, {address: getPortAndHostOfGame(req.body.tournamentID)} );
+	sender.Answer(res, {address: a});
 })
 
 var tournaments = {
@@ -218,6 +223,7 @@ function Error(err){
 
 function UnRegisterFromTournament(login, tournamentID, tournament, res){
 	strLog('CancelRegister');
+
 	sender.sendRequest('CancelRegister', {login:login, tournamentID:tournamentID}, '127.0.0.1', 'DBServer', res, 
 		function (error, response, body, res){
 			if (error) { Error(error); sender.Answer(res, Fail); }
@@ -235,9 +241,10 @@ function UnRegisterFromTournament(login, tournamentID, tournament, res){
 }
 
 var runningTournaments = {};
+var TOURN_STATUS_RUNNING2 = 1;
 
 function addRunningTournament(tournamentID){
-	runningTournaments[tournamentID] = 1;
+	runningTournaments[tournamentID] = TOURN_STATUS_RUNNING2;
 }
 
 function deleteRunningTournament(tournamentID){

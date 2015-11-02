@@ -688,7 +688,9 @@ function gameOver(winner) {
 	}
 	else{
 		//ctx.fillText("Game finished - Winner is : "+points+" points!", W/2, H/2 + 25 );
-		ctx.fillText("Game finished - winner is : " + winner , W/2, H/2 + 25 );
+		//ctx.fillText("Game finished - winner is : " + (JSON.parse(winner)).winner , W/2, H/2 + 25 );
+		ctx.fillText("Winner is : " + (JSON.parse(winner)).winner , W/2, H/2 + 25 );
+		console.log(winner);
 	}
 	
 	// Stop the Animation
@@ -696,6 +698,8 @@ function gameOver(winner) {
 	
 	// Set the over flag
 	over = 1;
+
+	setTimeout(window.close, 7000);
 	
 	// Show the restart button
 	//restartBtn.draw();

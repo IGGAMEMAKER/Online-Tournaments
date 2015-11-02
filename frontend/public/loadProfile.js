@@ -55,8 +55,10 @@ function loadProfile(drawFunction){
 			success: function( data ) {
 
 				var address = JSON.parse(data);
-				//console.log(address);
+				console.log(address);
 				setInObject('addresses', tID, address);
+				//setInObject('tournStatus', tID, address.running);
+
 			}
 		});
 	}
