@@ -78,9 +78,6 @@ mixin moneyOperations()
 		tr
 			td
 				+buttonLink('Deposit', 'Deposit money')
-				//a(href="Deposit") Deposit money
-			//td
-				+buttonLink('MoneyTransfers', 'Money HISTORY')
 			td
 				+buttonLink('Cashout', 'Cashout')
 	br
@@ -89,6 +86,7 @@ html
 	//p!= JSON.stringify(msg.gifts)
 	//p!= JSON.stringify(msg.userGifts)
 	//include templates/libs
+	//include templates/menu
 	include client
 	//script(src="loadProfile.js")
 	
@@ -102,8 +100,8 @@ html
 		//p!= JSON.stringify(msg)
 		//+moneyOperations()
 
-		a(href="Tournaments") Back to tournaments
-		br
+		//a(href="Tournaments") Back to tournaments
+		//br
 		a(href="Changepassword") Change password
 		+drawTournamentRegs(msg.tournaments)
 
