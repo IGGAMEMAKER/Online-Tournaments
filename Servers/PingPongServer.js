@@ -9,6 +9,12 @@ var FastLog = function(){}// gs.FastLog;
 
 var UpdPeriod = 1000/50; //50 times per second = 20ms;
 
+var fs = require('fs');
+var file = fs.readFileSync('./configs/ppConfigs.txt', "utf8");
+console.log(file);
+var gameConfigs =  JSON.parse(file);
+
+
 app.post('/Sender', function (req, res){
 	strLog('POST Sender ' + JSON.stringify(req.body));
 	res.json({obj:'lul'});
@@ -23,11 +29,13 @@ function mod2(val){
 }
 
 function Init(gameID, playerID){
+	var horiz = gameConfigs.horizontal||0;
+
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
-	var speed = 0.4/2;
+	var speed = gameConfigs.speed || 0.4;
 	//***********
 	games[gameID].gameDatas[playerID] = { x: 50, y: mod2(playerID), h: 5, w: 20, score:0 };
-	games[gameID].ball = {x:15, y:35, vy:-speed*2, vx:speed*8*0, r:3 };
+	games[gameID].ball = {x:15, y:35, vy:-speed, vx:speed*horiz, r:3 };
 	//***********
 }
 
@@ -132,49 +140,8 @@ function UpdateCollisions(tournamentID,gameID){
 			ball.x = ball.r;
 		}
 	}
-	/*
-	if(collides(ball, p0, 'p0')) {
-		flag = 1;
-		FastLog("# Collision with p0, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p0) );
-	}
-	
-	
-	else if(collides(ball, p1, 'p1')) {
-		flag = 1;
-		FastLog("# Collision with p1, MOTHERFUCKER! \n " + JSON.stringify(ball) + " " + JSON.stringify(p1) );
-	} 
-	
-	else {
-		//FastLog('No collision');
-		// Collide with walls, If the ball hits the top/bottom,
-		// walls, run gameOver() function
-		//FastLog('ball.y=' + ball.y + ' ball.r=' + ball.r);
-
-		if(ball.y + ball.r > H) {
-			ball.y = H - ball.r;
-			incr(gameID, 1);
-		} 
-		
-		else if(ball.y < 0) {
-			ball.y = ball.r;
-			incr(gameID, 0);
-		}
-		
-		// If ball strikes the vertical walls, invert the 
-		// x-velocity vector of ball
-		if(ball.x + ball.r > W) {
-			FastLog ('# HIT Right');
-			ball.vx = -ball.vx;
-			ball.x = W - ball.r;
-		}
-		
-		else if(ball.x - ball.r < 0) {
-			FastLog ('# HIT Left');
-			ball.vx = -ball.vx;
-			ball.x = ball.r;
-		}
-	}*/
 }
+
 
 function fitsWidth(ball, pad){
 	var a = (ball.x + ball.r >= pad.x - pad.w/2 && ball.x - ball.r <= pad.x + pad.w/2);

@@ -4,7 +4,6 @@ var app = express();
 //var gameServer = require('../gameServer');
 var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
-var curGameNameID = 1;
 
 var jade = require('jade');
 app.use(express.static('./frontend/public'));
@@ -16,10 +15,12 @@ app.use(express.static('./frontend/games/Questions'));
 
 var strLog = sender.strLog;
 
+var Stats = sender.Stats;
+
 var fs = require('fs');
 const GAME_FINISH = "GAME_FINISH";
 const tournamentFAIL="tournamentFAIL";
-const STANDARD_PREPARE_TICK_COUNT = 5;
+
 const PREPARED = "PREPARED";
 
 var UPDATE_TIME = 3000;
@@ -159,8 +160,10 @@ var configs =  JSON.parse(file);
 console.log(JSON.stringify(configs));
 
 //console.log(configs)
+const STANDARD_PREPARE_TICK_COUNT = 5;
 var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
 var gamePort = configs.gamePort? configs.gamePort : '5010';
+var BEFORE_TOURNAMENT_START_DELAY = configs.delay || STANDARD_PREPARE_TICK_COUNT;
 
 
 function RenderGame (req, res){
@@ -290,8 +293,13 @@ function setRoom(ID){
 	//var room = games[ID].socketRoom;
 	rooms[ID].socketRoom.on('connection', function (socket){
 		strLog('Room <' + ID + '> got new player');
+
 		socket.on('movement', function (data){
 			//strLog('Getting socketRoom socket.on Movement');
+			/*if (UPDATE_TIME > 100) { Stats('OpenedTournament', {tid:ID, gameID:ID, login:data.login||null }); }
+			else{
+
+			}*/
 			MoveHead(data);
 		});
 	});
@@ -325,7 +333,7 @@ function PrepareAndStart(ID, userIDs, res){
 
 	setRoom(ID);
 
-	games[ID].tick = STANDARD_PREPARE_TICK_COUNT;
+	games[ID].tick = BEFORE_TOURNAMENT_START_DELAY;
 	timers[ID] = setInterval(function() {prepare(ID)}, 1000);
 
 

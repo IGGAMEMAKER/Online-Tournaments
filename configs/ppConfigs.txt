@@ -1,0 +1,5 @@
+{
+	"horizontal":0.1,
+	"speed":1,
+	"accelerator":0.1
+}
