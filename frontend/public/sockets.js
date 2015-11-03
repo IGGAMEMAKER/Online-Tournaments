@@ -64,7 +64,9 @@ function blinker(){
     period = 3000;
   }
   $("#my-tournaments").css( "background-color" , colour );
-  saveInStorage('hasRunningTournaments', 0);
+  setTimeout(function(){
+    saveInStorage('hasRunningTournaments', 0);
+  }, 3000);
   setTimeout(blinker , period);
 
 }

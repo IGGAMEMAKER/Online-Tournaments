@@ -36,7 +36,7 @@ this.set = function(mailAuth, Log){
 };*/
 //from:auth.user,
 
-this.sendStd = function(to, subject, text, html){
+this.sendStd = function(to, subject, text, html, res){
     var mailOptions = {
         to: to,
         subject: subject,
@@ -48,11 +48,11 @@ this.sendStd = function(to, subject, text, html){
         if(error){
             console.error(error);
             //return {result:0, error:error};
-            //res.json({yo: 'error'});
+            if (res) res.json({yo: 'error', Message:error});
         }else{
             console.error('Message sent: ' + info.response);
             //return {result:1 };
-            //res.json({yo: info.response});
+            if (res) res.json({yo: info.response});
         };
     });
     /*}

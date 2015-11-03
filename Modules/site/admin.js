@@ -49,26 +49,16 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
 
   });
 
-  app.get('/Users' , function (req, res){
-    /*if(req.session.login) {
-      console.log('Saved login is: ' + req.session.login);
-      //res.write('Last page was: ' + req.session.user + '. ');
-    }
-    console.log(req.params);
-    if (req.query.login){
-      console.log(req.query);
-      console.log('Getting login: ' + req.query.login);
-      req.session.login = req.query.login;
-
-    }*/
-    
+  app.get('/Users' , function (req, res){    
     var data = req.body;
     data.query = {};//tournamentID:req.query.tID};
     data.queryFields = 'login money';
-
     //siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
-    
     AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
   });
+
+  app.get('/Mail', function (req, res){
+    AsyncRender("DBServer", 'Mail', res, {}, {});
+  })
 
 }

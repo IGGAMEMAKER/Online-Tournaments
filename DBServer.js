@@ -90,6 +90,13 @@ app.post('/GetTransfers', GetTransfers);
 
 app.post('/MoneyTransfers', MoneyTransfers);
 
+app.post('/Mail', function (req, res){
+	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
+	/*setTimeout(function(){
+
+	}, 200);*/
+})
+
 var Fail = {
 	result: 'fail'
 };
