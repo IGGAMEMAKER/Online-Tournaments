@@ -97,12 +97,15 @@ app.post('/Mail', function (req, res){
 	}, 200);*/
 })
 
+//var statistics = require('./Modules/DB/stats')(app, AsyncRender, Answer, sender, Log, proxy);
+
 var Fail = {
 	result: 'fail'
 };
 var OK = {
 	result: 'OK'
 }
+
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
 const TOURN_STATUS_FINISHED = 3;
@@ -122,6 +125,7 @@ const STREAM_TOURNAMENTS = 'Tournaments';
 const STREAM_USERS = 'Users';
 const STREAM_SHIT = 'shitCode';
 const STREAM_WARN = 'WARN';
+const STREAM_STATS = 'stats';
 
 function Error(err, message, additionalStream){
 	var txt='DBServer Error: ';

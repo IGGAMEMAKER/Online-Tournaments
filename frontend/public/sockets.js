@@ -64,9 +64,9 @@ function blinker(){
     period = 3000;
   }
   $("#my-tournaments").css( "background-color" , colour );
-  setTimeout(function(){
+  /*setTimeout(function(){
     saveInStorage('hasRunningTournaments', 0);
-  }, 3000);
+  }, 3000);*/
   setTimeout(blinker , period);
 
 }
@@ -89,6 +89,8 @@ function startGame(gameURL, port, tournamentID){
 
     saveInStorage('hasRunningTournaments', 0);
     closePopup('tournaments');
+
+    AttemptToStart(tournamentID);
   }
 
 }

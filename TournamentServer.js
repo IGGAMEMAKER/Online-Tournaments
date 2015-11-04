@@ -276,9 +276,14 @@ function StartTournament(tournamentID, tournament, force){
 	//strLog('Tournament: ' + tournamentID + '  ' + JSON.stringify(tournaments[tournamentID]), 'ASD');
 
 	sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer', null, sender.printer);
-	if (!force) sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
-
-	if (!force) addRunningTournament(tournamentID);
+	if (!force) {
+		sender.sendRequest("StartTournament", obj, '127.0.0.1', 'DBServer', null, sender.printer);
+		addRunningTournament(tournamentID);
+		sender.Stats('StartTournament', {tournamentID:tournamentID, players:tournament.players });
+	}
+	else{
+		sender.Stats('RestartTournament', {tournamentID:tournamentID});
+	}
 }
 
 function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersInTournament, res){

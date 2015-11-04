@@ -8,13 +8,13 @@ var Answer = sender.Answer;
 var serverName = ""; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
 //var Log = sender.strLog;
-function Log(msg){
+function Log(msg, topic){
 	//console.log(msg);
 	if (!serverName || serverName=='LogServer'){
 		console.log(msg);
 	}
 	else{
-		sender.strLog(msg);
+		sender.strLog(msg, topic);
 	}
 }
 

@@ -121,6 +121,7 @@ var money =       require('./Modules/site/money')       (app, AsyncRender, Answe
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 
+var client = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
 
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback

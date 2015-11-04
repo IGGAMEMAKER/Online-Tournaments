@@ -566,7 +566,8 @@ function StartGameServer(options, initF, updateF, actionF, updateTime, parameter
 
 function SendToRoom( room, event1, msg){
 	if (UPDATE_TIME>100){
-		strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg));
+		strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg), 'Games');
+		Stats('GameWorks', {tournamentID:room});
 	}
 
 	rooms[room].socketRoom.emit(event1, msg);
