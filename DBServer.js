@@ -37,6 +37,8 @@ mailer.set(mailAuth, Log);
 
 var handler = require('./errHandler')(app, Log, serverName);
 
+var Stats = sender.Stats;
+
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
@@ -342,9 +344,15 @@ function getBuyInOfTournament(tournamentID){
 				reject(err);
 			}
 			else{
-				if (tournament && tournament.buyIn){
-					Log('Tournament found. ' + JSON.stringify(tournament));
-					resolve(tournament);
+				if (tournament){
+					if (tournament.buyIn>=0){
+						Log('Tournament found. ' + JSON.stringify(tournament));
+						resolve(tournament);
+					}
+					else{
+						console.log('Tournament ' + tournamentID +' was free, no returns needed');
+						reject('Tournament ' + tournamentID +' was free, no returns needed');
+					}
 				}
 				else{
 					console.error('Tournament not found. ' + JSON.stringify(tournament));
@@ -824,6 +832,9 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		var userGift = new UserGift( {userID:player.login, giftID: Prize.giftID} );
 		userGift.save(function (err){
 			if (err){Error(err);}
+			else{
+				Stats('GivePrize', {tournamentID: tournamentID});
+			}
 		});
 	}
 	else{
@@ -833,6 +844,7 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 			if (err){ Error(err); return; }
 			Log(count); 
 			saveTransfer(player.login, Prize, { type:SOURCE_TYPE_WIN, tournamentID:tournamentID } );
+			Stats('GivePrize', {tournamentID: tournamentID});
 		});
 	}
 }

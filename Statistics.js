@@ -11,13 +11,16 @@ var str = core.str;
 var handler = require('./errHandler')(app, Log, serverName);
 var Promise = require('bluebird');
 
+
+const STREAM_ERROR = 'Err';
+const STREAM_TOURNAMENTS = 'Tournaments';
+const STREAM_USERS = 'Users';
+const STREAM_SHIT = 'shitCode';
+const STREAM_WARN = 'WARN';
+const STREAM_STATS = 'stats';
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/stats');
-
-
-var TimeInterval = mongoose.model('TimeInterval', {
-
-})
 
 var Tournament = mongoose.model('Tournament', { 
 	started: Number,
@@ -27,6 +30,8 @@ var Tournament = mongoose.model('Tournament', {
 	ID: String,
 	attempts: Number,
 	prized: Number,
+
+	TSfinished: Number,
 
 	startDate:Date,
 	finishDate:Date
@@ -41,13 +46,22 @@ var ClientGameStats = mongoose.model('ClientGameStats', {
 	movements:Number // gt 0 - user increments this when he plays
 })
 
-const STREAM_ERROR = 'Err';
-const STREAM_TOURNAMENTS = 'Tournaments';
-const STREAM_USERS = 'Users';
-const STREAM_SHIT = 'shitCode';
-const STREAM_WARN = 'WARN';
-const STREAM_STATS = 'stats';
+app.post('/GivePrize', function (req, res){
+	OK(res);
+	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
+	GivePrize(req.body.tournamentID);
+})
 
+
+
+
+function updTournament(tournamentID, todo, message){
+	Tournament.update( {ID: tournamentID}, todo, stdUpdateHandler(message) );
+}
+
+function GivePrize(tournamentID){
+	updTournament(tournamentID, {$inc : {prized: 1 }, finishDate:new Date() }, 'GivePrize ');
+}
 
 app.post('/StartTournament', function (req, res){ // starts in tournament Server
 	StartTournament(req.body.tournamentID, req.body.players , res);
@@ -65,8 +79,6 @@ app.post('/RestartTournament', function (req, res){
 
 app.post('/UserGetsData' , function (req, res){
 	OK(res);
-
-	UserGetsData()
 })
 
 app.post('/GameWorks', function (req, res){ GameWorks(req.body.tournamentID); })
@@ -76,30 +88,54 @@ app.post('/ClosedTournament', function (req, res){// Closed by force
 })
 
 app.post('/FinishedTournament', function (req, res){ // finished in TS (or, maybe DB)
+	OK(res);
 
+	var tournamentID = req.body.tournamentID;
+	Log('FinishedTournament ' + tournamentID, STREAM_STATS);
+	updTournament(tournamentID, {$inc : {finished:1} }, 'FinishedTournament');
 })
 
 
 
-app.post('/GetTournament', function (req, res){
-	Tournament.find({}, '', stdFindHandler('asd' , res));
+app.post('/GetTournaments', function (req, res){
+	var date = new Date();
+	var year = date.getYear();
+	var month = date.getMonth()+1;
+	var day = date.getDay();
+	var next = day+1;
+
+	var c = "T00:00:00Z";
+	var dtToday = year+"-"+month+"-"+day;
+	var dtTommorow = year+"-" + month+"-"+ next;
+	var query = {
+		startDate: {
+			/*$gte : ISODate("2015-11-02T00:00:00Z"), 
+    		$lt : ISODate("2014-07-03T00:00:00Z") */
+
+    		$gte : ISODate(dtToday + c), 
+    		$lt : ISODate(dtTommorow + c) 
+		}
+	}
+	Tournament.find(query, '', stdFindHandler('GetTournament ',res) );
 	//res.json
 })
 
+//app.post('/')
+
 function UserGetsData(tournamentID, login){
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {recievedData : 1 }}, 
-		stdDBhandler('UserGetsData ' + tournamentID + ' ' + login));
+		stdUpdateHandler('UserGetsData ' + tournamentID + ' ' + login));
 }
 
 function GameLoaded(tournamentID, login){
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
-		stdDBhandler('GameLoaded ' + tournamentID + ' ' + login));
+		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));
 }
 
 
 
 function GameWorks(tournamentID){
-	Tournament.update({ID:tournamentID}, {$inc: {works:1} }, stdDBhandler('GameWorks'));
+	Tournament.update({ID:tournamentID}, {$inc: {works:1} }, stdUpdateHandler('GameWorks'));
 }
 
 function StartTournament(tournamentID, players, res){
@@ -125,7 +161,7 @@ function AttemptToStart (tournamentID, login, res){
 	})
 
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} }, 
-		stdDBhandler('AttemptToStart ClientGameStats.update'));
+		stdUpdateHandler('AttemptToStart ClientGameStats.update'));
 
 	/*ClientGameStats.update({ID:tournamentID, login:login}, {$inc : { started:1 } }, function (err, count){
 		if (err) { Log(err); }
@@ -177,7 +213,7 @@ function stdSaver(message){
 	}
 }
 
-function stdDBhandler(message){
+function stdUpdateHandler(message){
 	return function (err, count){
 		if (err) { ERROR(err); }
 		else{

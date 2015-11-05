@@ -330,6 +330,8 @@ function last (Arr){
 
 function EndTournament( scores, gameID, tournamentID){
 	if (tournaments[tournamentID]){
+		sender.Stats('FinishedTournament', {tournamentID: tournamentID}); 
+		
 		var obj = [];
 		for (var a in scores){
 			obj.push( { value:scores[a], login: a } );
@@ -364,6 +366,8 @@ function EndTournament( scores, gameID, tournamentID){
 		
 		deleteRunningTournament(tournamentID);
 		strLog('Finished Tournament ' + tournamentID, 'chk');
+
+
 		/*for (i=0;i<winnersCount;++i){
 
 			strLog('User ' + obj[i].userID + ' wins ' + tournaments[tournamentID].Prizes[i] + ' points!!!' );

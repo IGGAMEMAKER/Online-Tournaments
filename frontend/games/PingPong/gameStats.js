@@ -10,6 +10,7 @@ function UserGetsData(tournamentID){
 }
 
 function GameLoaded(tournamentID){
+	console.log('GameLoaded');
 	statSend('GameLoaded', {tournamentID:tournamentID} );
 	/*$.ajax({
 		url: 'GameLoaded',

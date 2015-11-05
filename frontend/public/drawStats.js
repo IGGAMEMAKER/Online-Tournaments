@@ -21,6 +21,7 @@ function makeDataset(data, name, index, colour){
 		}
 		else{
 			// grey
+			col+="220,220,220,";
 		}
 	}
 	return {
@@ -51,12 +52,12 @@ function drawMyChart(){
 	var datasets =
 	[
 		makeDataset([65, 59, 80, 81, 56, 55, 40], 'first', 0, "220,220,220"),
-		makeDataset([28, 48, 40, 19, 86, 27, 190], 'second', 1, "151,187,205")
+		makeDataset([28, 48, 40, 19, 86, 27, 225], 'second', 1, "151,187,205")
 	];
 	drawChart('myChart', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
 }
 
-function chart1(){
+function drawChart1(){
 	var datasets =
 	[
 		makeDataset([65, 59, 80, 81, 56, 55, 40], 'first', 0, "220,20,20"),
@@ -64,6 +65,14 @@ function chart1(){
 	];
 	drawChart('chart1', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
 }
-drawMyChart();
-chart1();
+
+function drawTournamentStats(){
+	var dat = [1,1,1,1,1,1];
+	var datasets = [
+		makeDataset(dat, 'Started')
+		//makeDataset(dat, 'Opened', )
+	]
+	drawChart('tournStats', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
+}
+
 //drawChart('myChart', ["January", "February", "March", "April", "May", "June", "July", "August"]);

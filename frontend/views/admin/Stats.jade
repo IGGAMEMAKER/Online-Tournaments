@@ -1,18 +1,23 @@
 //
 script(src="Chart.js")
-div(id="chartcontainer")
-	This is just a replacement in case Javascript is not available or used for SEO purposes
-//script.
-	var myData = new Array([10, 20], [15, 10], [20, 30], [25, 10], [30, 5]);
-	alert(1);
-	var myChart = new JSChart('chartcontainer', 'line');
-	myChart.setDataArray(myData);
-	myChart.draw();
 
-table
+- var width=400;
+//table
 	tr
 		td
-			canvas(id="myChart" width="300" height="300")
+			canvas(id="myChart" width=width height=width)
 		td
-			canvas(id="chart1" width="300" height="300")
+			canvas(id="chart1" width=width height=width)
+	tr
+		td
+			canvas(id="tournStats" width=width height=width)
+table
+	//canvas(id="myChart" width=width height=width)
+	canvas(id="chart1" width=width height=width)
+	canvas(id="tournStats" width=width height=width)
+	
 script(src="drawStats.js")
+script.
+	//drawMyChart();
+	drawChart1();
+	drawTournamentStats();
