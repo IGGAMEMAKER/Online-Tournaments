@@ -30,6 +30,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	})
 
 	app.get('/Stats', function (req, res){
-
+		res.render('Stats');
 	})
 }

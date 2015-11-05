@@ -80,6 +80,12 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 })
 
 
+
+app.post('/GetTournament', function (req, res){
+	Tournament.find({}, '', stdFindHandler('asd' , res));
+	//res.json
+})
+
 function UserGetsData(tournamentID, login){
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {recievedData : 1 }}, 
 		stdDBhandler('UserGetsData ' + tournamentID + ' ' + login));
@@ -184,6 +190,16 @@ function stdDBhandler(message){
 		}
 	}
 
+}
+
+function stdFindHandler(message, res){
+	return function (err, data){
+		if (err) { ERROR(err); }
+		else{
+			Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
+			res.json(data||null);
+		}
+	}
 }
 
 
