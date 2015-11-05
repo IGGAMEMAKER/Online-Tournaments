@@ -152,55 +152,6 @@ function fitsHeight(ball, pad){
 	var a = ball.y > pad.y - 3 && ball.y < pad.y + pad.h ;
 }
 
-function collides(b, p, padName) {
-	//if(b.x + b.r >= p.x - p.w/2 && b.x - b.r <= p.x + p.w/2) {
-	if (fitsWidth(b,p) ){
-		//FastLog('Fits width');
-		if(b.y >= (p.y - p.h) && p.y > 0){
-			//paddleHit = 1;
-			
-			b.vy = -b.vy;
-			b.y = p.y - p.h;
-
-			FastLog('padName: ' + padName);
-			FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
-			FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
-
-			return true;
-		}
-		
-		else if(b.y <= p.h && p.y == 0) {
-			//paddleHit = 2;
-
-			b.vy = -b.vy;
-			b.y = p.h + b.r;
-
-			FastLog('padName: ' + padName);
-			FastLog('b.x: ' + b.x + '; b.y: ' + b.y + '; b.r: ' + b.r); 
-			FastLog('p.x: ' + p.x + '; p.y: ' + p.y + '; p.w: ' + p.w + '; p.h: ' + p.h);
-
-			return true;
-		}
-		
-		else return false;
-	}
-	else{
-		FastLog('DOESNT fit width');
-	}
-}
-/*function getOpponentGID(gameID, userName, count){
-	if (count)
-}*/
-
-/*function CheckForTheWinner(tournamentID, gameID) {
-	for (var i = 0; i < 2; i++) {
-		if (ScoreOfPlayer(gameID, i) == 3){ 
-			strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + playerID + " wins!!");
-			FinishGame(gameID);
-		}
-	}
-}*/
-
 function SetGame (req, res){
 	var data = req.body;
 	strLog("SetGame PingPong Server", 'Games');

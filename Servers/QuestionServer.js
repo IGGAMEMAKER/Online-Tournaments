@@ -1,4 +1,4 @@
-var gs = require('../gameModule.js');
+var gs = require('../gameModule');
 var app = gs.app;
 var games = gs.games;
 var send = gs.SendToRoom;
@@ -31,34 +31,6 @@ app.post('/Points', function (req, res){
 		res.json({points:0});
 	}
 })
-
-
-var QT0 = [
-	{question:'Гагин любимый цвет (QT0)', 					answers:['Красный'	,'Зелёный'	,'Золотой'	,'Синий'], 	correct: 1 },
-	{question:'Гагин САМЫЙ любимый футболист', 			answers:['Модрич'	,'Зидан'	,'Рамос'	,'Хамес'], 	correct: 2 },
-	{question:'Гагин возраст', 							answers:['20'		,'21'		,'19'		,'13'], 	correct: 1 },
-	{question:'Любимая еда Гаги', 					answers:['хачапури'	,'шашлык'	,'отбивная'	,'хинкали'],correct: 3 },
-	{question:'Гагин любимый футбольный клуб', 			answers:['Барселона','МЮ'		,'Реал Мадрид','Челси'],correct: 3 },
-	{question:'Гагин любимый язык программирования', 	answers:['js'		,'Java'		,'C++'		,'C#'],		correct: 4 }
-];
-var QT1 = [
-	{question:'Самая большая страна в мире',			answers:['Россия'	,'Китай'	,'США'	,'Никарагуа'], 	correct: 1 },
-	{question:'Количество дней в январе', 				answers:['365','30','367','31'], correct: 4 },
-	{question:'Самый быстрый человек в мире',			answers:['Усейн Болт','Роналду'	,'Форрест Гамп','Бэйл'],correct: 1 },
-	{question:'Возраст самого пожилого человека в мире',answers:['150'	,'200'	,'125'	,'94'], correct: 3 },
-	{question:'Количество дней в високосном году',		answers:['365','366','367','400'], correct: 2 },
-	{question:'Самая высокая гора в мире',	 			answers:['Эльбрус'	,'Монт Блан','Эверест'	,'Альпы'], 	correct: 3 }
-];
-var QT2 = [
-	{question:'Самая большая страна в мире',			answers:['Россия'	,'Китай'	,'США'	,'Никарагуа'], 	correct: 1 },
-	{question:'Количество дней в январе', 				answers:['365','30','367','31'], correct: 4 },
-	{question:'Самый быстрый человек в мире',			answers:['Усейн Болт','Роналду'	,'Форрест Гамп','Бэйл'],correct: 1 },
-	{question:'Возраст самого пожилого человека в мире',answers:['150'	,'200'	,'125'	,'94'], correct: 3 },
-	{question:'Количество дней в високосном году',		answers:['365','366','367','400'], correct: 2 },
-	{question:'Самая высокая гора в мире',	 			answers:['Эльбрус'	,'Монт Блан','Эверест'	,'Альпы'], 	correct: 3 }
-];
-
-var Questions = [QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1,QT2,QT0,QT1,QT2,QT0,QT0,QT1,QT2,QT0,QT1,QT2,QT0];
 
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
@@ -229,28 +201,6 @@ function FindWinner(gameID){
 	return userName;
 }
 
-/*function getCurrentQuestion(gameID){
-	strLog('getCurrentQuestion : ' + gameID);
-
-	if (games[gameID]){
-		var currQuestionIndex = games[gameID].questIndex;
-		var a;
-		if (gameID< Questions.length -1){
-			a = Questions[gameID][currQuestionIndex];
-		}
-		else{
-			a = QT2[currQuestionIndex];
-		}
-		
-		strLog('questIndex = ' + currQuestionIndex);
-		strLog(JSON.stringify(a));
-		return a;
-	}
-	else{
-		return { question:'no gameID', answers:[0,1,2,3], correct:1 };
-	}
-}*/
-
 function getNumberOfQuestionsByTopic(topic){
 	fs.readdir(questionDir+folder, function callback (err, files){
 		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
@@ -260,8 +210,6 @@ function getNumberOfQuestionsByTopic(topic){
 		}
 
 	});
-
-
 	return 1;
 }
 function noQuestions(game){

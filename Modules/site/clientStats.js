@@ -22,10 +22,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	})
 
 	app.post('/GameLoaded', function (req, res){
+		//console.error('GameLoaded');
 		sender.Answer(res, OK);
 
-		var login = getLogin(req);
+		var login = req.body.login;// getLogin(req);
 		var tournamentID = req.body.tournamentID;
+		console.error('GameLoaded : ' + login + ' ' + tournamentID);
 		Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 	})
 

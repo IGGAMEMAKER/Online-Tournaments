@@ -127,6 +127,15 @@ function UserGetsData(tournamentID, login){
 		stdUpdateHandler('UserGetsData ' + tournamentID + ' ' + login));
 }
 
+app.post('/GameLoaded', function (req, res){
+	OK(res);
+
+	var tournamentID = req.body.tournamentID;
+	var login = req.body.login;
+
+	GameLoaded(tournamentID, login);
+})
+
 function GameLoaded(tournamentID, login){
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
 		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));

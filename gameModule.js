@@ -8,6 +8,8 @@ var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE O
 var jade = require('jade');
 app.use(express.static('./frontend/public'));
 //app.use(express.static('games'));
+app.use(express.static('./frontend/games'));
+
 app.use(express.static('./frontend/games/PingPong'));
 app.use(express.static('./frontend/games/Questions'));
 
@@ -567,8 +569,9 @@ function StartGameServer(options, initF, updateF, actionF, updateTime, parameter
 function SendToRoom( room, event1, msg){
 	if (UPDATE_TIME>100){
 		strLog('SendToRoom:' + room + '/'+event1+'/'+ JSON.stringify(msg), 'Games');
-		Stats('GameWorks', {tournamentID:room});
+		//Stats('GameWorks', {tournamentID:room});
 	}
+
 
 	rooms[room].socketRoom.emit(event1, msg);
 	//FastLog('Я отправиль...');

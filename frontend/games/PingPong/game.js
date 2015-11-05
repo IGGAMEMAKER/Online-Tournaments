@@ -699,7 +699,7 @@ function gameOver(winner) {
 	// Set the over flag
 	over = 1;
 
-	setTimeout(window.close, 7000);
+	//setTimeout(window.close, 7000);
 	
 	// Show the restart button
 	//restartBtn.draw();

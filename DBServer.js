@@ -840,12 +840,14 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 	else{
 		//money
 		Log('mmmMoney!! ' + Prize);
-		User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
-			if (err){ Error(err); return; }
-			Log(count); 
-			saveTransfer(player.login, Prize, { type:SOURCE_TYPE_WIN, tournamentID:tournamentID } );
-			Stats('GivePrize', {tournamentID: tournamentID});
-		});
+		if (Prize>0){
+			User.update( {login:player.login}, {$inc: { money: Prize }} , function (err,count) {
+				if (err){ Error(err); return; }
+				Log(count); 
+				saveTransfer(player.login, Prize, { type:SOURCE_TYPE_WIN, tournamentID:tournamentID } );
+				Stats('GivePrize', {tournamentID: tournamentID});
+			});
+		}
 	}
 }
 
