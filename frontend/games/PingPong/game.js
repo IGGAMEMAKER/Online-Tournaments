@@ -176,6 +176,8 @@ var starter=0;
 
 room.on('startGame', function(msg){
 	//alert('alert, MOTHERFUCKER!!' + JSON.stringify(msg));
+	recievedData = 1;
+	
 	var ticks = msg['ticks'];
 	
 	console.log(ticks);
@@ -191,7 +193,7 @@ room.on('startGame', function(msg){
 });
 var gameDatas;// = [];
 
-room.on('update', function(msg){
+room.on('update', function (msg){
 	if (starter==1){ starter = 2; myStartGame();}
 	if (senderStatus==0){
 		initSender();
@@ -208,7 +210,9 @@ room.on('update', function(msg){
 	
 	printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
 	printText('u1', gameDatas[1].score, 200, 50+3*20);
-	
+
+	recievedData = 1;
+
 	//printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
 

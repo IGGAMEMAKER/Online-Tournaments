@@ -75,4 +75,20 @@ function drawTournamentStats(){
 	drawChart('tournStats', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
 }
 
+/*statGet();
+
+function statGet(url, data, chartDrawer){
+	var newUrl = 'http://localhost:5002/';
+	if (url) { newUrl+=url; }
+	else{
+		newUrl+= 'GetTournaments';
+	}
+	$.ajax({
+		url: newUrl,
+		method: 'POST',
+		data: data||null,
+		success: chartDrawer|| function (msg){ console.log(msg); }
+	});
+}*/
+
 //drawChart('myChart', ["January", "February", "March", "April", "May", "June", "July", "August"]);

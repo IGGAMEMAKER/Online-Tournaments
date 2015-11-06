@@ -1,8 +1,8 @@
 console.log('gameStats.js loaded');
-
+var recievedData =0;
 function UserGetsData(tournamentID){
 	//console.log(tournamentID);
-	statSend('UserGetsData', {tournamentID:tournamentID} );
+	statSend('UserGetsData', {tournamentID:tournamentID, login:login} );
 }
 
 function GameLoaded(tournamentID, login){
@@ -11,6 +11,12 @@ function GameLoaded(tournamentID, login){
 }
 GameLoaded(tournamentID, login);
 
+
+
+var rcvTimer = setInterval(function(){
+	UserGetsData(tournamentID);
+	recievedData=0;
+}, 3000)
 
 
 function printer(data){

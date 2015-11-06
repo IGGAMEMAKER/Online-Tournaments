@@ -13,10 +13,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		Stats('AttemptToStart', {login:login, tournamentID: tournamentID});
 	})
 
+
+
 	app.post('/UserGetsData', function (req, res){
 		sender.Answer(res, OK);
 
-		var login = getLogin(req);
+		var login =  req.body.login ;//getLogin(req);
 		var tournamentID = req.body.tournamentID;
 		Stats('UserGetsData', { login: login , tournamentID:tournamentID});
 	})
@@ -31,7 +33,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 	})
 
+	
+	//statistics Data
 	app.get('/Stats', function (req, res){
-		res.render('Stats');
+		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
+		//res.render('Stats');
 	})
+
 }

@@ -1,6 +1,6 @@
 //
 script(src="Chart.js")
-
+include ../templates/libs
 - var width=400;
 //table
 	tr
@@ -18,6 +18,8 @@ table
 	
 script(src="drawStats.js")
 script.
+	var msg = "#{msg}";
+	alert(msg)
 	//drawMyChart();
 	drawChart1();
 	drawTournamentStats();

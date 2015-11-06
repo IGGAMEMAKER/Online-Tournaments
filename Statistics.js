@@ -79,6 +79,8 @@ app.post('/RestartTournament', function (req, res){
 
 app.post('/UserGetsData' , function (req, res){
 	OK(res);
+
+	UserGetsData(req.body.tournamentID, req.body.login);
 })
 
 app.post('/GameWorks', function (req, res){ GameWorks(req.body.tournamentID); })
@@ -95,28 +97,36 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 	updTournament(tournamentID, {$inc : {finished:1} }, 'FinishedTournament');
 })
 
+function processStats(data){
 
+}
 
 app.post('/GetTournaments', function (req, res){
-	var date = new Date();
-	var year = date.getYear();
-	var month = date.getMonth()+1;
-	var day = date.getDay();
-	var next = day+1;
+	Log('/GetTournaments', STREAM_STATS);
+    var currentDate = new Date();
+    var day = currentDate.getDate();
+    var month = currentDate.getMonth() + 1;
+    var year = currentDate.getFullYear();
 
-	var c = "T00:00:00Z";
+	var next = day+1;
+	if (day<=9) day = '0'+day;
+	if (next<=9) next = '0'+next;
+	
+	var c = "T00:00:00.000Z";
 	var dtToday = year+"-"+month+"-"+day;
 	var dtTommorow = year+"-" + month+"-"+ next;
+	Log('dtToday: ' + dtToday + '  dtTommorow: ' + dtTommorow, STREAM_STATS);
 	var query = {
 		startDate: {
-			/*$gte : ISODate("2015-11-02T00:00:00Z"), 
-    		$lt : ISODate("2014-07-03T00:00:00Z") */
+			// $gte : ISODate("2015-11-02T00:00:00Z"), 
+    		// $lt : ISODate("2014-07-03T00:00:00Z")
 
-    		$gte : ISODate(dtToday + c), 
-    		$lt : ISODate(dtTommorow + c) 
+    		$gte : new Date(dtToday + c), 
+    		$lt : new Date(dtTommorow + c) 
 		}
 	}
-	Tournament.find(query, '', stdFindHandler('GetTournament ',res) );
+
+	Tournament.find(query, '', stdFindHandler('GetTournament ', res) ); // , processStats
 	//res.json
 })
 
@@ -207,7 +217,7 @@ function createStatTournament(tournamentID, players){
 	};
 }
 
-
+// ---- AUXillary functions
 function updated(count){
 	console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
 	return count.n>0;
@@ -237,11 +247,12 @@ function stdUpdateHandler(message){
 
 }
 
-function stdFindHandler(message, res){
+function stdFindHandler(message, res, dataProcessor){
 	return function (err, data){
 		if (err) { ERROR(err); }
 		else{
 			Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
+			if (dataProcessor) data = dataProcessor(data);
 			res.json(data||null);
 		}
 	}
