@@ -30,6 +30,7 @@ var Tournament = mongoose.model('Tournament', {
 	ID: String,
 	attempts: Number,
 	prized: Number,
+	loaded: Number,
 
 	TSfinished: Number,
 
@@ -99,28 +100,36 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 
 function processStats(data){
 	var obj = {
-		started:0,
+		/*started:0,
 		finished:0,
 		prized:0,
 		attempts:0,//opening attempts
-		openSuccess:0
+		openSuccess:0*/
 
-		//IDs:[]
-		/*started:[]
+		IDs:[],
+		started:[],
 		finished:[],
-		prized:[]
-		openAttempts:[],
-		openSuccess:[]*/
+		prized:[],
+		attempts:[],
+		opened:[]
 	}
 	for (var i = data.length - 1; i >= 0; i--) {
 		var t = data[i];
 
 		//obj.IDs.push[t.ID];
 
-		obj.started += t.started||0;
+		/*obj.started += t.started||0;
 		obj.prized += t.prized||0;
 		obj.finished +=t.finished||0;
-		obj.attempts += t.attempts||0;
+		obj.attempts += t.attempts||0;*/
+
+		obj.started.push(t.started||0);
+		obj.prized.push(t.prized||0);
+		obj.finished.push(t.finished||0);
+		obj.attempts.push(t.attempts||0);
+		obj.opened.push(t.loaded||0);
+		obj.IDs.push(t.ID||0);
+
 		//obj.openSuccess += 
 	};
 	return obj;
@@ -174,6 +183,8 @@ app.post('/GameLoaded', function (req, res){
 function GameLoaded(tournamentID, login){
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
 		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));
+
+	updTournament(tournamentID, {$inc : {loaded :1} }, 'GameLoaded');
 }
 
 
@@ -219,7 +230,7 @@ function AttemptToStart (tournamentID, login, res){
 
 function createStatTournament(tournamentID, players){
 	var tournament = {started:1, finished:0, works:0, restarted:0, ID:tournamentID, attempts:0, 
-		prized:0, startDate: new Date(), finishDate: null};
+		prized:0, loaded:0, startDate: new Date(), finishDate: null};
 
 	var statTournament = new Tournament(tournament);
 

@@ -1,14 +1,23 @@
 //
 script(src="Chart.js")
 include ../templates/libs
-- var width=400;
+- var width=300;
 
 p!= JSON.stringify(msg)
 
 table
 	//canvas(id="myChart" width=width height=width)
-	canvas(id="chart1" width=width height=width)
-	canvas(id="tournStats" width=width height=width)
+	tr
+		td
+			p Plot Example
+			canvas(id="chart1" width=width height=width)
+		td
+			p started/finished/prized
+			canvas(id="tournStats" width=width height=width)
+	tr
+		td
+			p Attempt to load/ Loaded
+			canvas(id="attemptToSuccess" width=width height=width)
 	
 script(src="drawStats.js")
 //script var msg = !{JSON.stringify(msg);

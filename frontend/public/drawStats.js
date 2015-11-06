@@ -5,7 +5,7 @@ function drawChart(name, labels, datasets){
 	    labels: labels,
 	    datasets: datasets
 	};
-	var myLineChart = new Chart(ctx).Line(data);//, options);
+	var myLineChart = new Chart(ctx).Bar(data);//, options);
 }
 
 
@@ -82,31 +82,28 @@ function drawTournamentStats(inf){
 	console.log(info);
 	//console.log(JSON.parse(info));
 
-	var startedArr = [];
-	var finishedArr = [];
-	var prizedArr = [];
-	var attemptsArr = [];
-
 	var started = info.started;
 	var prized = info.prized;
 	var finished =info.finished;
 	var attempts = info.attempts;
+	var opened = info.opened;
 	console.log(started);
 	var IDs = info.IDs;
 
-	var startedArr = [started];
-	var finishedArr = [finished];
-	var prizedArr = [prized];
-	var attemptsArr = [attempts];
-
 	var datasets = [
-		makeDataset(startedArr, 'started', 0, "220,0,0"),
-		makeDataset(finishedArr, 'finished',1, "0,0,220"),
-		makeDataset(prizedArr, 'prized',2, "0,220,0"),
-		makeDataset(attemptsArr, 'attempts',3,"220,220,220")
+		makeDataset(started , 'started' ,0, "220,0,0"),
+		makeDataset(finished, 'finished',1, "0,0,220"),
+		makeDataset(prized  , 'prized'  ,2, "0,220,0")
+		//makeDataset(attempts, 'attempts',3, "220,220,220")
 		//makeDataset(dat, 'Opened', )
 	];
-	drawChart('tournStats', [0, 1, 2,3] , datasets);
+
+	var datasets2 = [
+		makeDataset(attempts, 'attempts', 3, "0,0,0"),
+		makeDataset(opened  , 'opened'  , 3, "256,0,0")
+	];
+	drawChart('tournStats', IDs , datasets);
+	drawChart('attemptToSuccess', IDs, datasets2);
 }
 
 
