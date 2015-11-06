@@ -47,6 +47,41 @@ var ClientGameStats = mongoose.model('ClientGameStats', {
 	movements:Number // gt 0 - user increments this when he plays
 })
 
+/*var Profile = mongoose.model('Profile',{
+	//login:String,
+	register:Number,
+	registerOK:Number,
+	registerFail:Number,
+
+	resetPassword:Number,
+	resetPasswordOK:Number,
+	resetPasswordFail:Number,
+
+	date:Date
+})
+
+var Mail = mongoose.model('Mail',{
+	send:Number,
+	sendOK:Number,
+
+})*/
+
+var DailyStats = mongoose.model('DailyStats', {
+	mailSend:Number,
+	mailFail:Number,
+
+	register:Number,
+	registerOK:Number,
+	registerFail:Number,
+
+	resetPassword:Number,
+	resetPasswordOK:Number,
+	resetPasswordFail:Number,
+
+	date:Date
+})
+
+
 app.post('/GivePrize', function (req, res){
 	OK(res);
 	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
@@ -54,7 +89,50 @@ app.post('/GivePrize', function (req, res){
 })
 
 
+app.post('/Mail', function (req, res){
+	OK(res);
+	//var mail = new Mail({})
+	updateDaily({$inc: {mail:1} }, 'Mail');
+});
 
+app.post('/MailFail', function (req, res){
+	OK(res);
+	//var mail = new Mail({})
+	updateDaily({$inc: {mailFail:1} }, 'Mail');
+});
+
+function getDefaultDailyStats(){
+	return new DailyStats({
+		mail:0,
+		mailFail:0,
+
+		register:0,
+		registerOK:0,
+		registerFail:0,
+
+		resetPassword:0,
+		resetPasswordOK:0,
+		resetPasswordFail:0,
+
+		date:getToday()
+	});
+}
+CreateDaily();
+function CreateDaily(){
+	var dailyStats = getDefaultDailyStats();
+	var today = getTodayQuery();
+	DailyStats.findOne({date:today},'', function (err, data){
+		if (err) { ERROR(err); }
+		else{
+			if (!data){
+				dailyStats.save(stdSaver('DailyStats saved!!'));
+				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
+			}
+			//Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
+		}
+	})
+	
+}
 
 function updTournament(tournamentID, todo, message){
 	Tournament.update( {ID: tournamentID}, todo, stdUpdateHandler(message) );
@@ -63,6 +141,43 @@ function updTournament(tournamentID, todo, message){
 function GivePrize(tournamentID){
 	updTournament(tournamentID, {$inc : {prized: 1 }, finishDate:new Date() }, 'GivePrize ');
 }
+
+app.post('/Register', function (req, res){
+	OK(res);
+
+	updateDaily({$inc: {register:1} }, 'Register');
+})
+
+app.post('/RegisterFail', function (req, res){
+	OK(res);
+
+	updateDaily( {$inc: {registerFail:1} }, 'RegisterFail');
+})
+
+app.post('/ResetPassword', function (req, res){
+	OK(res);
+	//var result = req.body.result;
+	//var login = req.body.login;
+	updateDaily({$inc: {resetPassword:1} }, 'ResetPassword');
+	/*if (result==1){
+		Profile.update({login:login}, {$inc : {resetPasswordAttempt: 1 } }, stdUpdateHandler('ResetPassword ' + req.body.login));
+	}*/
+})
+
+function updateDaily(todo, message){
+	var today = getTodayQuery();
+	DailyStats.update({date: today}, todo, stdUpdateHandler(message));
+}
+
+app.post('/ResetPasswordFail', function (req, res){
+	OK(res);
+	//var result = req.body.result;
+	//var login = req.body.login;
+	updateDaily({$inc : {resetPasswordFail:1}}, 'resetPasswordFail');
+	/*if (result==1){
+		Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login));
+	}*/
+})
 
 app.post('/StartTournament', function (req, res){ // starts in tournament Server
 	StartTournament(req.body.tournamentID, req.body.players , res);
@@ -113,7 +228,7 @@ function processStats(data){
 		attempts:[],
 		opened:[]
 	}
-	for (var i = data.length - 1; i >= 0; i--) {
+	for (var i = 0; i <= data.length - 1; i++) {
 		var t = data[i];
 
 		//obj.IDs.push[t.ID];
@@ -133,6 +248,49 @@ function processStats(data){
 		//obj.openSuccess += 
 	};
 	return obj;
+}
+
+function getToday(){
+	var currentDate = new Date();
+    var day = currentDate.getDate();
+    var month = currentDate.getMonth() + 1;
+    var year = currentDate.getFullYear();
+
+	var next = day+1;
+	if (day<=9) day = '0'+day;
+	if (next<=9) next = '0'+next;
+
+	var c = "T00:00:00.000Z";
+	var dtToday = year+"-"+month+"-"+day;
+	var dtTommorow = year+"-" + month+"-"+ next;
+	Log('dtToday: ' + dtToday + '  dtTommorow: ' + dtTommorow, STREAM_STATS);
+	return dtToday;
+}
+
+function getTodayQuery(){
+	var currentDate = new Date();
+    var day = currentDate.getDate();
+    var month = currentDate.getMonth() + 1;
+    var year = currentDate.getFullYear();
+
+	var next = day+1;
+	if (day<=9) day = '0'+day;
+	if (next<=9) next = '0'+next;
+
+	var c = "T00:00:00.000Z";
+	var dtToday = year+"-"+month+"-"+day;
+	var dtTommorow = year+"-" + month+"-"+ next;
+	Log('dtToday: ' + dtToday + '  dtTommorow: ' + dtTommorow, STREAM_STATS);
+	//var query = {
+	var today = {
+		// $gte : ISODate("2015-11-02T00:00:00Z"), 
+		// $lt : ISODate("2014-07-03T00:00:00Z")
+
+		$gte : new Date(dtToday + c), 
+		$lt : new Date(dtTommorow + c) 
+	}
+	return today;
+	//}
 }
 
 app.post('/GetTournaments', function (req, res){
@@ -255,7 +413,7 @@ function createStatTournament(tournamentID, players){
 
 // ---- AUXillary functions
 function updated(count){
-	console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
+	console.log('Updated : ' + JSON.stringify(count), STREAM_STATS );
 	return count.n>0;
 }
 

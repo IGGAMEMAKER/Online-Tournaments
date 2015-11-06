@@ -636,14 +636,19 @@ function Changepassword(req, res){
 function ResetPassword(req, res){
 	var data = req.body;
 	Log('these actions must be done together!! ResetPassword', STREAM_SHIT);
+	var login = data.login;
+	Stats('ResetPassword', {login:login});
 
 	resetPassword(data)
 	.then(sendResetPasswordEmail)
 	.catch(function (err){
+		//Stats('ResetPassword', {login:login, result:});
 		Answer(res, err);
+		Stats('ResetPasswordFail', {login:login});
 	})
 	.then(function (result){
 		Answer(res, OK);
+		//Stats('ResetPasswordOK', {login:login});
 		Log("Sended mail and reset pass. Remember pass of User " + JSON.stringify(result), STREAM_USERS);
 	})
 }
@@ -1213,7 +1218,7 @@ function Register (req, res){
 
 	var data = req.body;
 	Log('Register '+ JSON.stringify(data), STREAM_USERS);
-
+	Stats('Register',{});
 	createUser(data)
 	.then(sendActivationEmail)
 	.then(function (msg){
@@ -1223,6 +1228,7 @@ function Register (req, res){
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, Fail);//msg.err||null
+		Stats('RegiterFail',{});
 	})
 }
 

@@ -1,16 +1,24 @@
 //
+mixin drawPlot(id, name)
+	td
+		p!= name
+		canvas(id=id width=width height=width)
+
 script(src="Chart.js")
 include ../templates/libs
 - var width=300;
 
 p!= JSON.stringify(msg)
 
+
+
 table
 	//canvas(id="myChart" width=width height=width)
 	tr
-		td
+		//td
 			p Plot Example
 			canvas(id="chart1" width=width height=width)
+		//+drawPlot("chart1", "Plot Example")
 		td
 			p started/finished/prized
 			canvas(id="tournStats" width=width height=width)
@@ -28,5 +36,5 @@ script.
 
 	//console.log(JSON.stringify(msg));
 	//drawMyChart();
-	drawChart1();
+	//drawChart1();
 	drawTournamentStats(JSON.stringify(msg));

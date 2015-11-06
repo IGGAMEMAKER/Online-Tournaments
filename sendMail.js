@@ -1,5 +1,9 @@
 var nodemailer = require('nodemailer');
 var Promise = require('bluebird');
+
+var sender = require('./requestSender');
+var Stats = sender.Stats;
+
 var auth;
 var transporter;
 
@@ -49,6 +53,7 @@ this.sendStd = function(to, subject, text, html, res){
             console.error(error);
             //return {result:0, error:error};
             if (res) res.json({yo: 'error', Message:error});
+
         }else{
             console.error('Message sent: ' + info.response);
             //return {result:1 };
@@ -72,15 +77,20 @@ this.send = function(msg){
         }
 
         if (canSend){
+            Stats('Mail', {});
             transporter.sendMail(mailOptions, function (error, info){
                 if(error){
                     console.log(error);
                     msg.error = error;
+                    Stats('MailFail', {});
                     reject(msg);
+
+
                     //return {result:0, error:error};
                     //res.json({yo: 'error'});
                 }else{
                     console.log('Message sent: ' + info.response);
+                    
                     resolve(msg);
                     //return {result:1 };
                     //res.json({yo: info.response});
