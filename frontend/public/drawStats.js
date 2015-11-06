@@ -66,14 +66,38 @@ function drawChart1(){
 	drawChart('chart1', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
 }
 
-function drawTournamentStats(){
+/*function drawTournamentStats(){
 	var dat = [1,1,1,1,1,1];
 	var datasets = [
 		makeDataset(dat, 'Started')
 		//makeDataset(dat, 'Opened', )
 	]
 	drawChart('tournStats', ["January", "February", "March", "April", "May", "June", "July", "August"], datasets);
+}*/
+
+function drawTournamentStats(inf){
+	//var dat = [1,1,1,1,1,1];
+	var info = JSON.parse(inf);
+	console.log('1111');
+	console.log(info);
+	//console.log(JSON.parse(info));
+	var started = info.started;
+	var prized = info.prized;
+	var finished =info.finished;
+	var attempts = info.attempts;
+	console.log(started);
+	var IDs = info.IDs;
+
+	var datasets = [
+		makeDataset(started, 'started'),
+		makeDataset(finished, 'finished'),
+		makeDataset(prized, 'prized'),
+		makeDataset(attempts, 'attempts')
+		//makeDataset(dat, 'Opened', )
+	];
+	drawChart('tournStats', [new Date()] , datasets);
 }
+
 
 /*statGet();
 

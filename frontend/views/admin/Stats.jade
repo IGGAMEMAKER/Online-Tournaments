@@ -2,24 +2,22 @@
 script(src="Chart.js")
 include ../templates/libs
 - var width=400;
-//table
-	tr
-		td
-			canvas(id="myChart" width=width height=width)
-		td
-			canvas(id="chart1" width=width height=width)
-	tr
-		td
-			canvas(id="tournStats" width=width height=width)
+
+p!= JSON.stringify(msg)
+
 table
 	//canvas(id="myChart" width=width height=width)
 	canvas(id="chart1" width=width height=width)
 	canvas(id="tournStats" width=width height=width)
 	
 script(src="drawStats.js")
+//script var msg = !{JSON.stringify(msg);
+script var msg = !{JSON.stringify(msg)}
 script.
-	var msg = "#{msg}";
-	alert(msg)
+	//var msg = "!{msg}";
+	alert(JSON.stringify(msg));
+
+	//console.log(JSON.stringify(msg));
 	//drawMyChart();
 	drawChart1();
-	drawTournamentStats();
+	//drawTournamentStats(msg);

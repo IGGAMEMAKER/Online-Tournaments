@@ -98,7 +98,32 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 })
 
 function processStats(data){
+	var obj = {
+		started:0,
+		finished:0,
+		prized:0,
+		attempts:0,//opening attempts
+		openSuccess:0
 
+		//IDs:[]
+		/*started:[]
+		finished:[],
+		prized:[]
+		openAttempts:[],
+		openSuccess:[]*/
+	}
+	for (var i = data.length - 1; i >= 0; i--) {
+		var t = data[i];
+
+		//obj.IDs.push[t.ID];
+
+		obj.started += t.started||0;
+		obj.prized += t.prized||0;
+		obj.finished +=t.finished||0;
+		obj.attempts += t.attempts||0;
+		//obj.openSuccess += 
+	};
+	return obj;
 }
 
 app.post('/GetTournaments', function (req, res){
@@ -111,7 +136,7 @@ app.post('/GetTournaments', function (req, res){
 	var next = day+1;
 	if (day<=9) day = '0'+day;
 	if (next<=9) next = '0'+next;
-	
+
 	var c = "T00:00:00.000Z";
 	var dtToday = year+"-"+month+"-"+day;
 	var dtTommorow = year+"-" + month+"-"+ next;
@@ -126,7 +151,7 @@ app.post('/GetTournaments', function (req, res){
 		}
 	}
 
-	Tournament.find(query, '', stdFindHandler('GetTournament ', res) ); // , processStats
+	Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
 	//res.json
 })
 
@@ -252,8 +277,16 @@ function stdFindHandler(message, res, dataProcessor){
 		if (err) { ERROR(err); }
 		else{
 			Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
-			if (dataProcessor) data = dataProcessor(data);
-			res.json(data||null);
+			if (dataProcessor) { 
+				var obj = dataProcessor(data); 
+				console.log('processed: ' + JSON.stringify(obj) );
+				console.log(obj);
+				core.Answer(res, obj);
+				//res.json(obj);
+			}else{
+				core.Answer(res, data||null);
+				//res.json(data||null);
+			}
 		}
 	}
 }
