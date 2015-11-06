@@ -81,6 +81,12 @@ function drawTournamentStats(inf){
 	console.log('1111');
 	console.log(info);
 	//console.log(JSON.parse(info));
+
+	var startedArr = [];
+	var finishedArr = [];
+	var prizedArr = [];
+	var attemptsArr = [];
+
 	var started = info.started;
 	var prized = info.prized;
 	var finished =info.finished;
@@ -88,14 +94,19 @@ function drawTournamentStats(inf){
 	console.log(started);
 	var IDs = info.IDs;
 
+	var startedArr = [started];
+	var finishedArr = [finished];
+	var prizedArr = [prized];
+	var attemptsArr = [attempts];
+
 	var datasets = [
-		makeDataset(started, 'started'),
-		makeDataset(finished, 'finished'),
-		makeDataset(prized, 'prized'),
-		makeDataset(attempts, 'attempts')
+		makeDataset(startedArr, 'started', 0, "220,0,0"),
+		makeDataset(finishedArr, 'finished',1, "0,0,220"),
+		makeDataset(prizedArr, 'prized',2, "0,220,0"),
+		makeDataset(attemptsArr, 'attempts',3,"220,220,220")
 		//makeDataset(dat, 'Opened', )
 	];
-	drawChart('tournStats', [new Date()] , datasets);
+	drawChart('tournStats', [0, 1, 2,3] , datasets);
 }
 
 

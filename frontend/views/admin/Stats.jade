@@ -12,12 +12,12 @@ table
 	
 script(src="drawStats.js")
 //script var msg = !{JSON.stringify(msg);
-script var msg = !{JSON.stringify(msg)}
+//script var msg = !{JSON.stringify(msg)}
 script.
-	//var msg = "!{msg}";
-	alert(JSON.stringify(msg));
+	var msg = !{JSON.stringify(msg)};
+	//alert(JSON.stringify(msg));
 
 	//console.log(JSON.stringify(msg));
 	//drawMyChart();
 	drawChart1();
-	//drawTournamentStats(msg);
+	drawTournamentStats(JSON.stringify(msg));
