@@ -90,6 +90,15 @@ function drawTournamentStats(inf){
 	console.log(started);
 	var IDs = info.IDs;
 
+
+	var mail = info.mail;
+	var mailFail = info.mailFail;
+	var register = info.register;
+	var registerFail = info.registerFail;
+	var resetPassword = info.resetPassword;
+	var resetPasswordFail = info.resetPasswordFail;
+
+
 	var datasets = [
 		makeDataset(started , 'started' ,0, "220,0,0"),
 		makeDataset(finished, 'finished',1, "0,0,220"),
@@ -102,8 +111,30 @@ function drawTournamentStats(inf){
 		makeDataset(attempts, 'attempts', 3, "0,0,0"),
 		makeDataset(opened  , 'opened'  , 3, "256,0,0")
 	];
+
+	var datasets3 = [
+		makeDataset(register, 'register', 3, "0,0,0"),
+		makeDataset(registerFail  , 'registerFail'  , 3, "256,0,0")
+	]
+
+	var datasetsMail = [
+		makeDataset(mail, 'mail', 3, "0,0,0"),
+		makeDataset(mailFail  , 'mailFail'  , 3, "256,0,0")
+	]
+
+	var datasetsReset = [
+		makeDataset(resetPassword, 'resetPassword', 3, "0,0,0"),
+		makeDataset(resetPasswordFail  , 'resetPasswordFail'  , 3, "256,0,0")
+	]
+
+	var Time = [1,2];
 	drawChart('tournStats', IDs , datasets);
 	drawChart('attemptToSuccess', IDs, datasets2);
+
+	drawChart('register', Time, datasets3);
+	drawChart('mail', Time, datasetsMail);
+	drawChart('resetPassword', Time, datasetsReset);
+
 }
 
 

@@ -47,14 +47,16 @@ this.sendStd = function(to, subject, text, html, res){
         text: text
     }
     console.error('sendStd: '+ JSON.stringify(mailOptions) );
+    
     //if (canSend){
     transporter.sendMail(mailOptions, function (error, info){
         if(error){
             console.error(error);
             //return {result:0, error:error};
             if (res) res.json({yo: 'error', Message:error});
-
+            Stats('MailFail', {});
         }else{
+
             console.error('Message sent: ' + info.response);
             //return {result:1 };
             if (res) res.json({yo: info.response});

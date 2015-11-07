@@ -93,6 +93,7 @@ app.post('/GetTransfers', GetTransfers);
 app.post('/MoneyTransfers', MoneyTransfers);
 
 app.post('/Mail', function (req, res){
+	Stats('Mail', {});
 	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
 	/*setTimeout(function(){
 
@@ -1228,7 +1229,7 @@ function Register (req, res){
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, Fail);//msg.err||null
-		Stats('RegiterFail',{});
+		Stats('RegisterFail',{});
 	})
 }
 

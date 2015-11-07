@@ -103,6 +103,10 @@ function getDay(date){
 }
 
 function Stats(topic, statObject){
+	console.log('Stats:');
+	console.log(topic);
+	console.log(statObject);
+
 	sendRequest(topic, statObject , 'localhost', 'Stats');//, null, null, null){
 }
 

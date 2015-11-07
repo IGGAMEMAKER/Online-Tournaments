@@ -67,7 +67,7 @@ var Mail = mongoose.model('Mail',{
 })*/
 
 var DailyStats = mongoose.model('DailyStats', {
-	mailSend:Number,
+	mail:Number,
 	mailFail:Number,
 
 	register:Number,
@@ -80,27 +80,6 @@ var DailyStats = mongoose.model('DailyStats', {
 
 	date:Date
 })
-
-
-app.post('/GivePrize', function (req, res){
-	OK(res);
-	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
-	GivePrize(req.body.tournamentID);
-})
-
-
-app.post('/Mail', function (req, res){
-	OK(res);
-	//var mail = new Mail({})
-	updateDaily({$inc: {mail:1} }, 'Mail');
-});
-
-app.post('/MailFail', function (req, res){
-	OK(res);
-	//var mail = new Mail({})
-	updateDaily({$inc: {mailFail:1} }, 'Mail');
-});
-
 function getDefaultDailyStats(){
 	return new DailyStats({
 		mail:0,
@@ -117,16 +96,46 @@ function getDefaultDailyStats(){
 		date:getToday()
 	});
 }
+
+
+app.post('/GivePrize', function (req, res){
+	OK(res);
+	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
+	GivePrize(req.body.tournamentID);
+})
+
+
+app.post('/Mail', function (req, res){
+	OK(res);
+	console.log('Mail');
+	//Log('Mail', )
+	//var mail = new Mail({})
+	updateDaily({$inc: {mail:1} }, 'Mail');
+});
+
+app.post('/MailFail', function (req, res){
+	OK(res);
+	console.log('MailFail');
+	//var mail = new Mail({})
+	updateDaily({$inc: {mailFail:1} }, 'Mail');
+});
+
+
 CreateDaily();
 function CreateDaily(){
 	var dailyStats = getDefaultDailyStats();
 	var today = getTodayQuery();
+	//console.log(today);
+	//Log('CreateDaily: ' + str(today), STREAM_STATS );
 	DailyStats.findOne({date:today},'', function (err, data){
 		if (err) { ERROR(err); }
 		else{
 			if (!data){
 				dailyStats.save(stdSaver('DailyStats saved!!'));
 				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
+			}
+			else{
+				//console.log('DailyStats exists: ' + str(data) );
 			}
 			//Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
 		}
@@ -213,7 +222,9 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 	updTournament(tournamentID, {$inc : {finished:1} }, 'FinishedTournament');
 })
 
-function processStats(data){
+function processStats(tournaments, dailyStats){
+	console.log('dailyStats: ');
+	console.log(dailyStats);
 	var obj = {
 		/*started:0,
 		finished:0,
@@ -226,10 +237,19 @@ function processStats(data){
 		finished:[],
 		prized:[],
 		attempts:[],
-		opened:[]
+		opened:[],
+
+		register:[],
+		registerFail:[],
+
+		mail:[],
+		mailFail:[],
+
+		resetPassword:[],
+		resetPasswordFail:[]
 	}
-	for (var i = 0; i <= data.length - 1; i++) {
-		var t = data[i];
+	for (var i = 0; i <= tournaments.length - 1; i++) {
+		var t = tournaments[i];
 
 		//obj.IDs.push[t.ID];
 
@@ -247,6 +267,14 @@ function processStats(data){
 
 		//obj.openSuccess += 
 	};
+	console.log(dailyStats.mail);
+	obj.register.push(dailyStats.register||0);
+	obj.registerFail.push(dailyStats.registerFail||0);
+	obj.mail.push(dailyStats.mail||0);
+	obj.mailFail.push(dailyStats.mailFail||0);
+	obj.resetPassword.push(dailyStats.resetPassword||0);
+	obj.resetPasswordFail.push(dailyStats.resetPasswordFail||0);
+
 	return obj;
 }
 
@@ -318,9 +346,57 @@ app.post('/GetTournaments', function (req, res){
 		}
 	}
 
-	Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
+	//Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
+//
+	getTournamentStats(query)
+	.then(getDailyStats)
+	.then(function (data){
+		core.Answer(res, processStats(data.tournaments, data.dailyStats));
+	})
+	.catch(stdCatcher(res));
+
+
 	//res.json
 })
+
+//function (err){
+//		console.log(err);
+//		Fail(res);
+//	}
+
+function stdCatcher(res){
+	return function (err){
+		console.log(err);
+		Fail(res);
+	}
+}
+
+function getTournamentStats(query){
+	return new Promise(function (resolve, reject){
+		Tournament.find(query, '', function (err, data){
+			console.log('getTournamentStats');
+			if (err) { ERROR(err); reject(err); }
+			else{
+				var stats = { tournaments: data||null };
+				console.log(stats);
+				resolve(stats);
+			}
+		})
+	})
+}
+
+function getDailyStats(stats){
+	return new Promise(function (resolve, reject){
+		var today = getTodayQuery();
+		DailyStats.findOne({date:today}, '', function (err, dailyStats){
+			if (err) { reject(err); }
+			else{
+				stats.dailyStats = dailyStats||null;
+				resolve(stats);
+			}
+		})
+	})
+}
 
 //app.post('/')
 

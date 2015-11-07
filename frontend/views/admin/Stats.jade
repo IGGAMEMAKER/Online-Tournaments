@@ -18,7 +18,7 @@ table
 		//td
 			p Plot Example
 			canvas(id="chart1" width=width height=width)
-		//+drawPlot("chart1", "Plot Example")
+		+drawPlot("chart1", "Plot Example")
 		td
 			p started/finished/prized
 			canvas(id="tournStats" width=width height=width)
@@ -26,6 +26,10 @@ table
 		td
 			p Attempt to load/ Loaded
 			canvas(id="attemptToSuccess" width=width height=width)
+		+drawPlot("register", "Register/RegisterFail")
+	tr
+		+drawPlot("mail", "Mail/MailFail")
+		+drawPlot("resetPassword", "Reset Password/Fail")
 	
 script(src="drawStats.js")
 //script var msg = !{JSON.stringify(msg);
@@ -36,5 +40,6 @@ script.
 
 	//console.log(JSON.stringify(msg));
 	//drawMyChart();
-	//drawChart1();
+	drawChart1();
 	drawTournamentStats(JSON.stringify(msg));
+	//setTimeout(function(){location.reload(true);} , 10000);
