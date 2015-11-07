@@ -14,7 +14,7 @@ GameLoaded(tournamentID, login);
 
 
 var rcvTimer = setInterval(function(){
-	UserGetsData(tournamentID);
+	if (recievedData==1) UserGetsData(tournamentID);
 	recievedData=0;
 }, 3000)
 

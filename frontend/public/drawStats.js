@@ -26,7 +26,7 @@ function makeDataset(data, name, index, colour){
 	}
 	return {
 		label: name,
-		fillColor: col + "0.2)",
+		fillColor: col + "0.7)",
 		strokeColor: col+ "1)",
 		pointColor: col + "1)",
 		pointHighlightStroke: col + "1)",
@@ -127,6 +127,11 @@ function drawTournamentStats(inf){
 		makeDataset(resetPasswordFail  , 'resetPasswordFail'  , 3, "256,0,0")
 	]
 
+	/*var gameStats = [
+		makeDataset(resetPassword, 'resetPassword', 3, "0,0,0"),
+		makeDataset(resetPasswordFail  , 'resetPasswordFail'  , 3, "256,0,0")
+	]*/
+
 	var Time = [1,2];
 	drawChart('tournStats', IDs , datasets);
 	drawChart('attemptToSuccess', IDs, datasets2);
@@ -136,22 +141,5 @@ function drawTournamentStats(inf){
 	drawChart('resetPassword', Time, datasetsReset);
 
 }
-
-
-/*statGet();
-
-function statGet(url, data, chartDrawer){
-	var newUrl = 'http://localhost:5002/';
-	if (url) { newUrl+=url; }
-	else{
-		newUrl+= 'GetTournaments';
-	}
-	$.ajax({
-		url: newUrl,
-		method: 'POST',
-		data: data||null,
-		success: chartDrawer|| function (msg){ console.log(msg); }
-	});
-}*/
 
 //drawChart('myChart', ["January", "February", "March", "April", "May", "June", "July", "August"]);

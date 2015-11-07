@@ -67,6 +67,7 @@ room.on('startGame', function(msg){
 	else{
 		setQuestionTab('startGame in '+ ticks + ' seconds');
 	}
+	recievedData = 1;
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
 
@@ -79,7 +80,7 @@ room.on('finish', function(msg){
 	DrawPlayers(msg);
 	getMyPoints();
 
-	//setTimeout(window.close, 7000);
+	setTimeout(window.close, 7000);
 	
 	//alert('Winner is :' + msg.winner);
 })
@@ -87,6 +88,7 @@ var gameDatas;// = [];
 
 room.on('update', function(msg){
 	//alert(JSON.stringify(msg));
+	recievedData = 1;
 	setQuestionTab(msg.question);
 
 	for (var i=0;i<msg.answers.length;++i){
