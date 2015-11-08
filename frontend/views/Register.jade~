@@ -1,39 +1,165 @@
 //
-script(src= "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
-script.
-	function OpenInNewTab(url) {
-		alert(url);
-		var win = window.open(url, url);//'_blank'
-		win.focus();
-	}
-	function onAjaxSuccess(data)
-	{
-	  // Здесь мы получаем данные, отправленные сервером и выводим их на экран.
-	  alert(data);
-	}
-	function send(){
-		console.log('Sending');
-		$.post('Tournaments', {message:"I am cool!"} , onAjaxSuccess );
-	}
+
+mixin GetValue(text, name, type)
+	tr
+		td #{text}
+		td
+			if type
+				input(id=name, type=type, name=name)
+			else
+				input(id=name, type="text", name=name)
+		td
+			p(id=name+"Validator") *
+
+		
+
+mixin RegForm()
+	table
+		+GetValue("Email" ,"email")
+		+GetValue("Login", "login")
+		+GetValue("Password", "password", "password")
+		tr
+			td
+			td
+				p.
+				input(type="submit", value="Register")
+		
+
 html
+	head
+		title Register
+	script(src="validator.min.js")
 	h1!= 'Register'
 	div#loginbox
 			form(name="Register", action="/Register", method="post")
-				p Email
-				input(type="text", name="email")
-				p Login
-				input(type="text", name="login")
-				p Pass
-				input(type="password", name="password")
-				p.
-				input(type="submit", value="Register")
-				script.
-					//alert('5');
-					//document.getElementsByClassName('loginbox');
-					//var i = document.getElementsByClassName('loginbox')[0];;//getElementById('loginbox');
-					/*var i = document.getElementById('loginbox');
-					console.log(i);
-					i.innerHTML = '';*/
-					//window.open('http://google.com');
-					//var tmr = setInterval(send,5000);
-					//OpenInNewTab('localhost:3000/Tournaments');
+				+RegForm()
+				//
+					p Email
+					input(type="text", name="email")
+					p Login
+					input(type="text", name="login")
+					p Pass
+					input(type="password", name="password")
+	br
+	br
+	a(href="Login") Log in
+
+script.
+	var RED = "#FF0000";
+	var WHITE = "#FFFFFF";
+	var GREEN = "#00FF00";
+
+
+	var EMPTY= "*";
+	var EMAIL_INVALID= "email is incorrect";
+	var LOGIN_INVALID= "login can only contain letters or numbers. Special symbols are prohibited";
+	var PASS_INVALID= "password can only contain letters or numbers. Special symbols are prohibited";
+
+	var CORRECT = "OK!";
+
+	var PASS_LENGTH = "password length must be greater than 8 and less than 25";
+
+	function emailListener(){
+		//alert( document.getElementById("email").value );
+		var value = document.getElementById("email").value;
+
+		var colour = WHITE;
+		var text=EMPTY;
+
+		if (value.length==0){
+			colour = WHITE;
+			text = EMPTY;
+		}
+		else{
+			if (validator.isEmail(value)){
+				colour=GREEN;
+				text = CORRECT;
+			}
+			else{
+				colour=RED;
+				text = EMAIL_INVALID;
+			}
+		}
+		document.getElementById("email").setAttribute("style", "background-color:"+colour);
+		document.getElementById("emailValidator").innerHTML=text;//("value", 1);
+	}
+
+	function LoginListener(){
+		var value = document.getElementById("login").value;
+
+		var colour = WHITE;
+		var text=EMPTY;
+
+		if (value.length==0){
+			colour = WHITE;
+			text = EMPTY;
+		}
+		else{
+			if (validator.isAlphanumeric(value)){
+				colour=GREEN;
+				text = CORRECT;
+			}
+			else{
+				colour=RED;
+				text = LOGIN_INVALID;
+			}
+		}
+
+		document.getElementById("login").setAttribute("style", "background-color:"+colour);
+		document.getElementById("loginValidator").innerHTML=text;
+	}
+	function checkPassword(value){
+		if (validator.isAlphanumeric(value)){
+			return {
+				colour:GREEN,
+				text : CORRECT
+			}
+		}
+		else{
+			return {
+				colour:RED,
+				text : PASS_INVALID
+			}
+		}
+		
+	}
+	function PassListener(){
+		var value = document.getElementById("password").value;
+
+		var colour = WHITE;
+		var text=EMPTY;
+
+		if (value.length==0){
+			colour = WHITE;
+			text = EMPTY;
+		}
+		else{
+			if (value.length<6 || value.length>25) { 
+				colour = RED; text = PASS_LENGTH;
+			} else{
+				var obj = checkPassword(value);
+				colour = obj.colour;
+				text = obj.text;
+			}
+			
+		}
+
+		document.getElementById("password").setAttribute("style", "background-color:"+colour);
+		document.getElementById("passwordValidator").innerHTML=text;
+	}
+
+	document.getElementById("email").addEventListener("input", emailListener);
+	document.getElementById("email").addEventListener("onchange", emailListener);
+
+	document.getElementById("login").addEventListener("input", LoginListener);
+	document.getElementById("login").addEventListener("onchange", LoginListener);
+
+	document.getElementById("password").addEventListener("input", PassListener);
+	document.getElementById("password").addEventListener("onchange", PassListener);
+
+	document.getElementById("login").setAttribute("placeholder","MorganFreeman223");
+	document.getElementById("email").setAttribute("placeholder","chikenFreeze@gmail.com");
+
+	document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
+	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);
+	document.getElementById("passwordValidator").setAttribute("style", "color:"+RED);

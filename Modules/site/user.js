@@ -1,4 +1,5 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, Fail){
+	var validator = require('validator');
 
 	app.get('/Logout', function (req, res){
 		req.session.destroy(function (err){
@@ -148,9 +149,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	function ValidEmail(data){
-		if (data.email && data.email.length<20){
-			return true;
-		}
+		return (data.email && data.email.length<20 && validator.isEmail(data.email) )
 	}
 
 }

@@ -295,8 +295,9 @@ function getToday(){
 	return dtToday;
 }
 
-function getTodayQuery(){
+function getTodayQuery(date){
 	var currentDate = new Date();
+	if (date) currentDate = date;
     var day = currentDate.getDate();
     var month = currentDate.getMonth() + 1;
     var year = currentDate.getFullYear();
@@ -323,27 +324,9 @@ function getTodayQuery(){
 
 app.post('/GetTournaments', function (req, res){
 	Log('/GetTournaments', STREAM_STATS);
-    var currentDate = new Date();
-    var day = currentDate.getDate();
-    var month = currentDate.getMonth() + 1;
-    var year = currentDate.getFullYear();
 
-	var next = day+1;
-	if (day<=9) day = '0'+day;
-	if (next<=9) next = '0'+next;
-
-	var c = "T00:00:00.000Z";
-	var dtToday = year+"-"+month+"-"+day;
-	var dtTommorow = year+"-" + month+"-"+ next;
-	Log('dtToday: ' + dtToday + '  dtTommorow: ' + dtTommorow, STREAM_STATS);
 	var query = {
-		startDate: {
-			// $gte : ISODate("2015-11-02T00:00:00Z"), 
-    		// $lt : ISODate("2014-07-03T00:00:00Z")
-
-    		$gte : new Date(dtToday + c), 
-    		$lt : new Date(dtTommorow + c) 
-		}
+		startDate: getTodayQuery()
 	}
 
 	//Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
@@ -358,11 +341,6 @@ app.post('/GetTournaments', function (req, res){
 
 	//res.json
 })
-
-//function (err){
-//		console.log(err);
-//		Fail(res);
-//	}
 
 function stdCatcher(res){
 	return function (err){
