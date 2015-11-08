@@ -1136,7 +1136,7 @@ function createActivationLink(login){
 }
 
 var USER_EXISTS = 11000;
-var INVALID_DATA = 100;
+var INVALID_DATA = 100; 
 function createUser(data){
 	return new Promise(function (resolve, reject){
 		
