@@ -48,6 +48,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.render('Changepassword');
 	})
 
+	/*app.post('/UserExists', function (req, res){
+		var data = req.body;
+		if (ValidLogin(data||null)){
+
+		}
+	})*/
+
 	app.post('/Changepassword' , function (req, res){
 		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.passwordRepeat && ValidPass(req.body.newpassword)) {
 			AsyncRender("DBServer", 'Changepassword', res, {renderPage:'Changepassword'} , 
@@ -120,7 +127,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.render(command, Fail); 
 			return;
 		}
-		
+
 		if (command=='Register' && !ValidEmail(data) ){
 			res.render(command, Fail); 
 			return;
@@ -142,7 +149,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				// session saved
 				if (err) {
 					console.error('SESSION SAVING ERROR', 'Err'); 
-					res.render(command,{err:body.result});
+					res.render(command,{msg:body.result});
 				}else{
 					req.session.login = data.login;
 					res.redirect('Tournaments');
@@ -151,7 +158,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 		var failCallback = function(res, body, options, parameters){
 			Log('Reject user ' + data.login,'Users');
-			res.render(command,{err:body.result});
+			res.render(command,{msg:body.result});
 		}
 
 		AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );

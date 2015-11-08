@@ -30,6 +30,17 @@ html
 		title Register
 	script(src="validator.min.js")
 	h1!= 'Register'
+	if msg
+		case msg
+			when 500
+				p Server Error. Report about this bug
+			when 11000
+				p User exists( Try another login	
+			when 100
+				p Invalid data
+			default
+				p Not Error, but no Success... it's strange... report about this error
+			
 	div#loginbox
 			form(name="Register", action="/Register", method="post")
 				+RegForm()

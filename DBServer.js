@@ -6,6 +6,8 @@ var app = express();
 var bodyParser = require('body-parser');
 var Promise = require('bluebird');
 
+var validator = require('validator');
+
 var Log = sender.strLog;
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -305,7 +307,6 @@ function addGame(gameName, gameNameID, options ){
 				break;
 				default:
 					Error(err);
-					// Answer(res, {result: 'UnknownError'});
 				break;
 			}
 		}
@@ -1134,13 +1135,19 @@ function createActivationLink(login){
 	return login;
 }
 
+var USER_EXISTS = 11000;
+var INVALID_DATA = 100;
 function createUser(data){
 	return new Promise(function (resolve, reject){
-		var USER_EXISTS = 11000;
+		
 	
 		var login = data['login'];
 		var password = data['password'];
 		var email = data['email'];
+
+		if (!(validator.isEmail(email) && validator.isAlphanumeric(login) && validator.isAlphanumeric(password))){
+			reject(INVALID_DATA);
+		}
 
 		var USER = { 
 			login:login, 
@@ -1158,11 +1165,11 @@ function createUser(data){
 				switch (err.code){
 					case USER_EXISTS:
 						Log('Sorry, user ' + login + ' Exists', STREAM_USERS); //Answer(res, {result: 'UserExists'});
-						reject('UserExists');
+						reject(USER_EXISTS);
 					break;
 					default:
-						Error(err);	//Answer(res, {result: 'UnknownError'});
-						reject('UnknownError');
+						Error(err);
+						reject(UNKNOWN_ERROR);
 					break;
 				}
 			}
@@ -1213,7 +1220,7 @@ function sendResetPasswordEmail(user){
 	return mailer.send(user);
 }
 
-
+var UNKNOWN_ERROR=500;
 
 function Register (req, res){
 
@@ -1228,7 +1235,19 @@ function Register (req, res){
 	})
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
-		Answer(res, Fail);//msg.err||null
+		switch(msg){
+			case UNKNOWN_ERROR:
+				Answer(res, {result:UNKNOWN_ERROR} );
+			break;
+			case USER_EXISTS:
+				Answer(res, {result:USER_EXISTS} );
+			break;
+			default:
+				Answer(res, Fail);
+			break;
+
+		}
+		//Answer(res, Fail);//msg.err||null
 		Stats('RegisterFail',{});
 	})
 }
