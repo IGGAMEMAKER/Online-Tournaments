@@ -1178,8 +1178,8 @@ function makeRegisterText(login, link){
 	console.log(login);
 	console.log(link);
 	var text = '<html><br>Thank you for registering in online-tournaments.org, ' + login + '!<br>';
-	text+= 'Follow the link below to activate your account: '
-	text+= '<br><a href="'+link+'">'+link+'</a>';
+	/*text+= 'Follow the link below to activate your account: '
+	text+= '<br><a href="'+link+'">'+link+'</a>';*/
 	text+= '</html>';
 
 	Log('Registering email: ' + text, STREAM_USERS);
