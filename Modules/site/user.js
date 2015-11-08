@@ -49,7 +49,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.post('/Changepassword' , function (req, res){
-		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.password1 && req.body.newpassword){
+		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.passwordRepeat && ValidPass(req.body.newpassword)) {
 			AsyncRender("DBServer", 'Changepassword', res, {renderPage:'Changepassword'} , 
 				{oldPass:req.body.password, newPass: req.body.newpassword, login:getLogin(req) });
 		}
@@ -112,12 +112,15 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		return ValidLogin(data||null) && ValidPass(data.password||null);	
 	}
 
+	var INVALID_LOGIN_OR_PASS = '';
+
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
-		if (!ValidRegData(data)){
+		if (!ValidLoginData(data)){
 			res.render(command, Fail); 
 			return;
 		}
+		
 		if (command=='Register' && !ValidEmail(data) ){
 			res.render(command, Fail); 
 			return;
@@ -160,7 +163,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	function ValidPass(password){
-		return (password.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(password) )
+
+		return (password && password.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(password) )
 	}
 
 	function ValidLogin(data){
