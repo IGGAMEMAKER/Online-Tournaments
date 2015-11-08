@@ -22,7 +22,7 @@ mixin RegForm()
 			td
 			td
 				p.
-				input(type="submit", value="Register")
+				input(id="submitButton" type="submit", value="Register")
 		
 
 html
@@ -49,7 +49,11 @@ script.
 	var WHITE = "#FFFFFF";
 	var GREEN = "#00FF00";
 
-
+	var validityData = {
+		password:0,
+		email:0,
+		login:0
+	}
 	var EMPTY= "*";
 	var EMAIL_INVALID= "email is incorrect";
 	var LOGIN_INVALID= "login can only contain letters or numbers. Special symbols are prohibited";
@@ -57,9 +61,13 @@ script.
 
 	var CORRECT = "OK!";
 
+	var OK = 1;
+	var FAIL = 0;
+
 	var PASS_LENGTH = "password length must be greater than 8 and less than 25";
 
 	function emailListener(){
+		var field = "email";
 		//alert( document.getElementById("email").value );
 		var value = document.getElementById("email").value;
 
@@ -80,11 +88,19 @@ script.
 				text = EMAIL_INVALID;
 			}
 		}
+
+		if (text!=CORRECT){
+			HideSubmitButton(field);
+		} else {
+			ShowSubmitButton(field);
+		}
+
 		document.getElementById("email").setAttribute("style", "background-color:"+colour);
 		document.getElementById("emailValidator").innerHTML=text;//("value", 1);
 	}
 
 	function LoginListener(){
+		var field = "login";
 		var value = document.getElementById("login").value;
 
 		var colour = WHITE;
@@ -103,6 +119,11 @@ script.
 				colour=RED;
 				text = LOGIN_INVALID;
 			}
+		}
+		if (text!=CORRECT){
+			HideSubmitButton(field);
+		} else {
+			ShowSubmitButton(field);
 		}
 
 		document.getElementById("login").setAttribute("style", "background-color:"+colour);
@@ -123,8 +144,27 @@ script.
 		}
 		
 	}
+	document.getElementById("submitButton").setAttribute("disabled", "disabled");
+	function HideSubmitButton(fieldName){
+		validityData[fieldName+""]=FAIL;
+		//document.getElementById("submitButton").setAttribute("style", "visibility:hidden");
+		
+		//document.getElementById("submitButton").setAttribute("disabled", "disabled");
+	}
+	function ValidData(){
+		return validityData.password == OK && validityData.email == OK && validityData.login == OK;
+	}
+	function ShowSubmitButton(fieldName){
+		validityData[fieldName]=OK;
+		if (ValidData()){
+			//document.getElementById("submitButton").setAttribute("style", "visibility:visible");
+			document.getElementById("submitButton").removeAttribute("disabled");
+		}
+	}
+
 	function PassListener(){
-		var value = document.getElementById("password").value;
+		var field = "password";
+		var value = document.getElementById(field).value;
 
 		var colour = WHITE;
 		var text=EMPTY;
@@ -143,9 +183,19 @@ script.
 			}
 			
 		}
+		
+		if (text!=CORRECT){
+			HideSubmitButton(field);
+		} else {
+			ShowSubmitButton(field);
+		}
+		document.getElementById(field).setAttribute("style", "background-color:"+colour);
+		document.getElementById(field + "Validator").innerHTML=text;
+	}
 
-		document.getElementById("password").setAttribute("style", "background-color:"+colour);
-		document.getElementById("passwordValidator").innerHTML=text;
+	function submitForm(event){
+		event.preventDefault();
+		console.log(asd);		
 	}
 
 	document.getElementById("email").addEventListener("input", emailListener);
@@ -163,3 +213,7 @@ script.
 	document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("passwordValidator").setAttribute("style", "color:"+RED);
+
+	//document.getElementById("submitButton").addEventListener("submit", submitForm);
+
+	

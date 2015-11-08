@@ -104,15 +104,34 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  }
 	  res.json({msg:'Log in first'});
 	})
+	function ValidRegData(data){
+		return ValidLogin(data||null) && ValidPass(data.password||null) && ValidEmail(data);
+	}
+
+	function ValidLoginData(data){
+		return ValidLogin(data||null) && ValidPass(data.password||null);	
+	}
 
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
-
-		if (!(data && data.login && data.password)) { res.render(command, Fail); return; }
-
-		if (command=='Register' && !ValidEmail(data)){
-			res.render(command, Fail); return;
+		if (!ValidRegData(data)){
+			res.render(command, Fail); 
+			return;
 		}
+		if (command=='Register' && !ValidEmail(data) ){
+			res.render(command, Fail); 
+			return;
+		}
+
+		//if (!(data && data.login && data.password)) { res.render(command, Fail); return; }
+
+		/*if (command=='Register'){
+			if (!ValidRegData(data)) {
+				//if (!(data && ValidLogin(data) && data.password && ValidPass(data.password) )) { res.render(command, Fail); return; }
+				res.render(command, Fail); 
+				return;
+			}
+		}*/
 
 		var callback = function(res, body, options, parameters){
 			Log(command + ' user ' + data.login, 'Users');
@@ -135,6 +154,19 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
 	}
 
+	var FIELD_MAX_LENGTH = 25
+	function ValidEmail(data){
+		return (data.email && data.email.length<FIELD_MAX_LENGTH && validator.isEmail(data.email) )
+	}
+
+	function ValidPass(password){
+		return (password.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(password) )
+	}
+
+	function ValidLogin(data){
+		return (data.login && data.login.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(data.login) )
+	}
+
 	function regManager(command, req, res){
 		var data = req.body;
 		console.log(data.login);
@@ -146,10 +178,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		else{
 			sender.Answer(res, {result:'auth'});
 		}
-	}
-
-	function ValidEmail(data){
-		return (data.email && data.email.length<20 && validator.isEmail(data.email) )
 	}
 
 }
