@@ -8,6 +8,8 @@ var Promise = require('bluebird');
 
 var validator = require('validator');
 
+var security = require('./Modules/DB/security');
+
 var Log = sender.strLog;
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -132,6 +134,8 @@ const STREAM_SHIT = 'shitCode';
 const STREAM_WARN = 'WARN';
 const STREAM_STATS = 'stats';
 
+const CURRENT_CRYPT_VERSION = 0;
+
 function Error(err, message, additionalStream){
 	var txt='DBServer Error: ';
 	if (message){
@@ -158,7 +162,9 @@ var errObject = {result:'error'};
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/test');
-var User = mongoose.model('User', { login: String, password: String, money: Number, email: String, activated:String, date: Date, link: String });
+var User = mongoose.model('User', { login: String, password: String, money: Number, 
+	email: String, activated:String, date: Date, link: String, bonus:Object, 
+	salt:String, cryptVersion:Number });
 
 var Game = mongoose.model('Game', { 
 	gameName: String, gameNameID: Number,
@@ -197,6 +203,8 @@ var Tournament = mongoose.model('Tournament', {
 		status: 		Number,	
 		players: 		Number,
 	tournamentID:		Number,
+
+	settings: 			Object, 
 
 	startedTime: 		Date
 	//tournamentServerID: String
@@ -659,6 +667,10 @@ function cLog(data){
 	console.log(data);
 }
 
+function passwordCorrect(user, enteredPassword){
+	return security.passwordCorrect(user, enteredPassword);
+}
+
 function LoginUser(req, res){
 	var data = req.body;
 	cLog("LoginUser... " + JSON.stringify(data));
@@ -668,13 +680,13 @@ function LoginUser(req, res){
 	var password = data['password'];
 	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', STREAM_USERS);
 
-	var usr1 = User.findOne({login:login, password:HASH(password)}, 'login password' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
+	var usr1 = User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
 	    if (err) {
 	    	Error(err, 'CANNOT LOG IN USER!!!');
 	    	Answer(res, {result: err});
 	    }
 	    else{
-	    	if (user){
+	    	if (user && passwordCorrect(user, password) ){
 		    	Log('Logged in ' + JSON.stringify(user), STREAM_USERS);
 			    Answer(res, OK);
 			    
@@ -1156,7 +1168,11 @@ function createUser(data){
 			email:email, 
 			date: now(), 
 			activate:0, 
-			link:createActivationLink(login) 
+			bonus:{},
+
+			cryptVersion:CURRENT_CRYPT_VERSION,
+			salt:''
+			//link:createActivationLink(login) 
 		};
 
 		var user = new User(USER);
