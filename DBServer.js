@@ -1257,6 +1257,7 @@ function Register (req, res){
 				Answer(res, {result:USER_EXISTS} );
 			break;
 			default:
+				console.error(msg);
 				Answer(res, Fail);
 			break;
 
