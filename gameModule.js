@@ -150,21 +150,13 @@ var games = { };
 var rooms = { };
 var timers = { };
 
-var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-console.log(file);
-var configs =  JSON.parse(file);
-/*{ 
-  msg:'superhero!',
-  gamePort:5009,
-  gameHost:'localhost',
-  gameHost2:'46.101.157.129'
-}*/
+
+var configs = require('./configs');
 console.log(JSON.stringify(configs));
 
-//console.log(configs)
 const STANDARD_PREPARE_TICK_COUNT = 5;
-var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
-var gamePort = configs.gamePort? configs.gamePort : '5010';
+var gameHost = configs.gameHost || '127.0.0.1';
+var gamePort = configs.gamePort || '5010';
 var BEFORE_TOURNAMENT_START_DELAY = configs.delay || STANDARD_PREPARE_TICK_COUNT;
 
 
@@ -366,7 +358,7 @@ function StartGame (req, res){
 			else { 
 				strLog('It was not running ' + ID, 'Tournaments'); 
 			}
-			strLog('You need to check if the game was finished', 'shitCode');
+			strLog('WRITE: You need to check if the game was finished. Maybe it was finished, but you start it again!', 'shitCode');
 
 			PrepareAndStart(ID, data.logins, res);
 

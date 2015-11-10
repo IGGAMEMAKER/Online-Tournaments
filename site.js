@@ -13,18 +13,9 @@ var cookieParser = require('cookie-parser');
 var MongoStore = require('connect-mongo')(session);
 //var io = require('socket.io')(app);
 
-var fs = require('fs');
-var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-//console.log(file);
-var configs =  JSON.parse(file);
 var serverName = 'site';
 
 var server;
-
-//var mailer = require('./sendMail');
-//mailer.set(configs.mailAuth||null, Log);
-
-
 
 var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
@@ -339,9 +330,6 @@ app.get('/SpecLogs/:topic', function (req, res){
 
 function JSLog(msg, topic){
   if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
-  /*switch(topic){
-  }
-  fs.appendFile*/
 }
 
 app.get('/Alive', function (req, res){

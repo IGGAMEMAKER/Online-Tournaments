@@ -35,7 +35,7 @@ html
 			when 500
 				p Server Error. Report about this bug
 			when 11000
-				p User exists. Try another login	
+				p User exists( Try another login	
 			when 100
 				p Invalid data
 			default
@@ -155,7 +155,7 @@ script.
 		}
 		
 	}
-	//document.getElementById("submitButton").setAttribute("disabled", "disabled");
+	document.getElementById("submitButton").setAttribute("disabled", "disabled");
 	function HideSubmitButton(fieldName){
 		validityData[fieldName+""]=FAIL;
 		//document.getElementById("submitButton").setAttribute("style", "visibility:hidden");

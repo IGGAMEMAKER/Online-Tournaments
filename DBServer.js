@@ -24,14 +24,12 @@ app.use(function(req,res,next){
     next();
 });
 
-var fs = require('fs');
-var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-var configs =  JSON.parse(file);
+var configs = require('./configs');
+console.log(configs);
+
 
 var mailer = require('./sendMail');
-//console.error('mailAuth ');
 
-//console.error(configs);
 var domainName = configs.gameHost;//domainName
 var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 
@@ -1123,7 +1121,7 @@ function GetUserProfileInfo(req , res){
 		//console.error('User profileInfo ' + JSON.stringify(profileInfo));
 		Answer(res, profileInfo);
 	})
-	.catch(function(profileInfo){
+	.catch(function (profileInfo){
 		if (profileInfo.err){
 			// it means, that user exists
 			console.error(profileInfo.err);

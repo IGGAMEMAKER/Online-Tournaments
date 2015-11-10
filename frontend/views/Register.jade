@@ -155,12 +155,12 @@ script.
 		}
 		
 	}
-	//document.getElementById("submitButton").setAttribute("disabled", "disabled");
+	document.getElementById("submitButton").setAttribute("disabled", "disabled");
 	function HideSubmitButton(fieldName){
 		validityData[fieldName+""]=FAIL;
 		//document.getElementById("submitButton").setAttribute("style", "visibility:hidden");
 		
-		//document.getElementById("submitButton").setAttribute("disabled", "disabled");
+		document.getElementById("submitButton").setAttribute("disabled", "disabled");
 	}
 	function ValidData(){
 		return validityData.password == OK && validityData.email == OK && validityData.login == OK;

@@ -24,8 +24,9 @@ function printer(data){
 }
 
 function statSend(url, data){
+	var serverHost = 'localhost/';
 	$.ajax({
-		url: 'http://localhost/'+url,
+		url: 'http://' + serverHost + url,
 		method: 'POST',
 		data: data,
 		success: printer

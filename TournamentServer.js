@@ -64,15 +64,8 @@ function str(obj){
 }
 
 var fs = require('fs');
-var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-console.log(file);
-var configs =  JSON.parse(file);
-/*{ 
-  msg:'superhero!',
-  gamePort:5009,
-  gameHost:'localhost',
-  gameHost2:'46.101.157.129'
-}*/
+var configs = require('./configs');
+
 console.log(JSON.stringify(configs));
 
 // If you want to start game manually (after long time stop), you need to call StartTournament
@@ -153,10 +146,7 @@ function regPlayer(tournament, login){
 }
 
 
-
-//console.log(configs)
-var gameHost = configs.gameHost? configs.gameHost : '127.0.0.1';
-var gamePort = configs.gamePort? configs.gamePort : '5010';
+var gameHost = configs.gameHost || '127.0.0.1';
 
 function getPortAndHostOfGame(tournamentID){
 	strLog('getPortAndHostOfGame. REWRITE IT!!!!');

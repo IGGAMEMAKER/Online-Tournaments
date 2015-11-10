@@ -24,10 +24,6 @@ function loadGift(giftID){
 			break;
 		}
 		txt = JSON.stringify(msg);
-		/*
-			var url = 'localhost';
-			window.open('http://'+url+':'+80+'/ShowGifts');
-		*/
 
 		//+showGift('')
 		$('#gift').append(txt);

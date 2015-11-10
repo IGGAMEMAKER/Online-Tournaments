@@ -18,8 +18,6 @@ function Log(msg, topic){
 	}
 }
 
-ReadConfigs();
-
 //var jade = require('jade');
 app.use(express.static('./frontend/public'));
 app.use(bodyParser.json() );       // to support JSON-encoded bodies
@@ -68,18 +66,12 @@ var OK = { result:'OK' };*/
 var io;
 var host;
 var port;
-var configs;
+var configs = require('./configs');
 var serverConfigs;// this config is specific for each server
 var constants;
 
-function ReadConfigs(){
-	var file = fs.readFileSync('./configs/siteConfigs.txt', "utf8");
-	//console.log(file);
-	configs =  JSON.parse(file);
-	//console.log(JSON.stringify(configs));
-}
 
-function ReadServerConfigs(){
+/*function ReadServerConfigs(){
 	var file = fs.readFileSync('./configs/'+serverName+'.txt', "utf8");
 	serverConfigs = JSON.parse(file);
 	console.log(JSON.stringify(serverConfigs));
@@ -88,7 +80,7 @@ function ReadConstants(){
 	var file = fs.readFileSync('./configs/'+'constants'+'.txt', "utf8");
 	constants = JSON.parse(file);
 	console.log(JSON.stringify(constants));
-}
+}*/
 
 
 
