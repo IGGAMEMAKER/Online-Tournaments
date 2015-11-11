@@ -25,14 +25,11 @@ function getAddressFromAddrList(addresses, tournamentID){
 }
 
 function drawPlayButtons(){
-  console.log('------------');
-  console.log('drawPlayButtons');
-  var tournaments = getTournaments(); // prt(tournaments);
-  var addresses   = getObject('addresses'); console.log('addresses',addresses);
+  console.log('------------\ndrawPlayButtons');
+  var tournaments = getTournaments();        // prt(tournaments);
+  var addresses   = getObject('addresses');  // console.log('addresses',addresses);
 
   $(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
-  //console.log(tournaments);
-  //console.log(addresses);
 
   if (tournaments && addresses){  
     for (var i = tournaments.length - 1; i >= 0; i--) {

@@ -23,6 +23,14 @@ function setInObject(arrName, id , value){
   saveInStorage(arrName, array);
 }
 
+function unsetFromObject(arrName, id){
+	var array = getObject(arrName);
+	console.log('was', array);
+	delete array[id];
+	console.log('became', array);
+	saveInStorage(arrName, array);
+}
+
 function clearStorage(){
 	localStorage.clear();
 	saveInStorage('tournaments',[]);	// list of tournamentIDs

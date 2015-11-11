@@ -6,7 +6,7 @@ function getProfile(drawFunction){
 	getAsync('Profile', {}, saveProfile() );	
 }
 
-
+var loadedAddrs=0;
 
 function GetTournamentAddress(tID){
 	getAsync('GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
@@ -24,10 +24,12 @@ function saveProfile(){
 		resetRunningTournaments();
 		//var tournaments = getTournaments();
 		//console.log('tournaments',tournaments);
+		loadedAddrs=0;
 		for (var i=0; i < tournaments.length; i++){
 			var tID = tournaments[i];
 			GetTournamentAddress(tID.tournamentID);
 		}
+		if(tournaments.length==0){ drawPlayButtons(); }
 
 		$('#money').html('You have '+money/100+'$ on account');
 	};
@@ -42,7 +44,12 @@ function saveTournamentAddress(tID){
 		//var obj = getObject('addresses');
 		//console.log('saveTournamentAddress', address.address);
 		//console.log(obj[tID].address);
-
+		var tournaments = getTournaments();
+		loadedAddrs++;
+		console.log('length', tournaments.length);
+		if (loadedAddrs==tournaments.length){
+			drawPlayButtons();
+		}
 		if (address.address.running == 1) setRunningTournaments();
 	}
 }

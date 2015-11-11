@@ -38,6 +38,13 @@ socket.on('StartTournament', function (msg){
   
 });
 
+socket.on('FinishTournament', function (msg) {
+  var tournamentID = msg.tournamentID;
+  console.log('FinishTournament');
+  unsetFromObject('addresses', tournamentID);
+  drawPlayButtons();
+});
+
 
 function StartTournament(tournamentID){
   if (isActiveTab()){
@@ -45,7 +52,9 @@ function StartTournament(tournamentID){
     
     playAudio();
     drawPopup();
-    setTimeout(drawPlayButtons, 1000);
+    /*setTimeout(drawPlayButtons, 50);
+    setTimeout(drawPlayButtons, 300);
+    setTimeout(drawPlayButtons, 1000);*/
   }
   
   // if (userIsRegisteredIn(tournamentID) )
