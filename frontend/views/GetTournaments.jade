@@ -12,6 +12,7 @@ mixin ShowStatus(status)
 			td(bgcolor="#0000FF") Running
 		default
 			td(bgcolor="#FF000000") NULL
+
 mixin ShowGame(gameNameID)
 	case gameNameID
 		when 0
@@ -22,7 +23,9 @@ mixin ShowGame(gameNameID)
 			td(bgcolor=green) Questions
 		default
 			td(bgcolor=red) Error
+
 mixin showTournaments(message)
+	h1 List of Tournaments
 	table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
 		tr
 			td ID
@@ -52,15 +55,9 @@ include templates/tournaments
 html
 	head
 		title!= 'Tournaments'
-		include client
 	body
-		- //for (var item in message){
-		//p!= message.length
-		//p!= JSON.stringify(message)
+		include client
 		include templates/tAuth
-		br
-		br
-		h1 List of Tournaments
 		+showTournaments(msg)
 		//script.
 			setTimeout(function(){location.reload(true);} , 10000);

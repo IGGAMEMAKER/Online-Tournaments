@@ -6,6 +6,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	//var strLog = Log;
 
 	app.post('/AttemptToStart', function (req, res){
+		console.log('AttemptToStart');
 		sender.Answer(res, OK);
 
 		var login = getLogin(req);
@@ -24,12 +25,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	})
 
 	app.post('/GameLoaded', function (req, res){
-		//console.error('GameLoaded');
+		console.log('GameLoaded');
 		sender.Answer(res, OK);
 
 		var login = req.body.login;// getLogin(req);
 		var tournamentID = req.body.tournamentID;
-		console.error('GameLoaded : ' + login + ' ' + tournamentID);
+		console.log('GameLoaded : ' + login + ' ' + tournamentID);
 		Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 	})
 

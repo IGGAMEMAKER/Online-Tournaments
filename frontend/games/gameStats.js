@@ -24,7 +24,8 @@ function printer(data){
 }
 
 function statSend(url, data){
-	var serverHost = 'localhost/';
+	//var serverHost = 'localhost/';
+	var serverHost = gameHost;
 	$.ajax({
 		url: 'http://' + serverHost + url,
 		method: 'POST',

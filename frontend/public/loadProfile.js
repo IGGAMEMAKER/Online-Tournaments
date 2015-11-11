@@ -1,81 +1,74 @@
-/*function loadTournaments (argument) {
-	$.ajax({
-		url: 'UserTournaments',
-		method: 'POST',
-		data: {  },
-		success: function( data ) {
-			saveInStorage('tournaments', data);
-		}
-	});
+getProfile();
+//window.onfocus = getProfile;
+
+function getProfile(drawFunction){
+	clearStorage();
+	getAsync('Profile', {}, saveProfile() );	
 }
-function loadMoney (){
-	$.ajax({
-		url: 'UserMoney',
-		method: 'POST',
-		data: {  },
-		success: function( data ) {
-			saveInStorage('money', data);
+
+
+
+function GetTournamentAddress(tID){
+	getAsync('GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
+}
+
+function saveProfile(){
+	return function (data) {
+		console.log('saveProfile');
+		var profile = JSON.parse(data);
+
+		var tournaments = profile.tournaments;
+		var money = profile.money;
+
+		prt(profile);
+
+		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
+		saveInStorage('money', money);
+
+		$('#money').html('You have '+money/100+'$ on account');
+
+		resetRunningTournaments();
+
+		var tournaments = getTournaments();
+		console.log('tournaments',tournaments);
+		for (var i=0; i < tournaments.length; i++){
+			var tID = tournaments[i];
+			GetTournamentAddress(tID);
 		}
-	});
-}*/
-function loadProfile(drawFunction){
-	$.ajax({
-		url: 'Profile',
-		method: 'POST',
-		data: { },
-		success: function( data ) {
-			//saveInStorage('profile', data);
-			var profile = JSON.parse(data);
+	};
+}
 
-			var tournaments = profile.tournaments;
-			var money = profile.money;
+function saveTournamentAddress(tID){
+	return function (data) {
+		var address = JSON.parse(data); // console.log(address); // 
+		console.log('saveTournamentAddress', address, data);
 
-			saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
-			saveInStorage('money', money);
+		
+		setInObject('addresses', tID, address); // console.log(address.running);
 
-			if(drawFunction) {drawFunction(profile);}
-			else{
-				$('#money').html('You have '+money/100+'$ on account');
-				//alert(data);
-				//console.log(data);
-			}
-
-		}
-	});
-
-	var tournaments = getTournaments();// ts;//killID(getTournaments(), 'tournamentID') ;
-	//console.log('tournaments !!!');
-	//console.log(tournaments);
-	var running = 0;
-	for (var i=0; i < tournaments.length; i++ ){
-		//console.log(tournaments[i]);
-		var tID = tournaments[i];
-		//console.log('loadTournamentInfo of : ' + tID);
-
-		$.ajax({
-			url: 'GetTournamentAddress',
-			method: 'POST',
-			data: { tournamentID: tID },
-			success: function( data ) {
-
-				var address = JSON.parse(data);
-				//console.log(address);
-				setInObject('addresses', tID, address);
-				//console.log(address.running);
-				if (address.address.running == 1) {
-					console.log('hasRunningTournaments');
-					saveInStorage('hasRunningTournaments',1);}
-				else{
-					
-				}
-				//setInObject('tournStatus', tID, address.running);
-
-			}
-		});
+		if (address.address.running == 1) setRunningTournaments();
 	}
 }
-loadProfile();
-var tmr0 = setInterval(function(){ loadProfile() }, 4000);
+
+function resetRunningTournaments(){
+	saveInStorage('hasRunningTournaments',0);
+}
+
+function setRunningTournaments(){
+	console.log('hasRunningTournaments');
+	saveInStorage('hasRunningTournaments',1);
+}
+
+
+function getAsync(url, data, success){
+	$.ajax({
+		url: url,
+		method: 'POST',
+		data:data,
+		success: success
+	});
+}
+
 
 function killID(arr, field){
 	var list = [];
@@ -86,14 +79,3 @@ function killID(arr, field){
 	return list;
 }
 
-function saveInStorage(field, data){
-	var item = data;
-	if (typeof(data)=='object') {
-		//console.log('object');
-		item = JSON.stringify(data);
-	}
-	localStorage.setItem(field, item);
-}
-function getFromStorage(field){
-	return localStorage.getItem(field);
-}

@@ -40,6 +40,8 @@ html
 				p Invalid data
 			default
 				p Not Error, but no Success... it's strange... report about this error
+				p!= msg
+				p!= JSON.stringify(msg)
 			
 	div#loginbox
 			form(name="Register", action="/Register", method="post")

@@ -147,7 +147,7 @@ var strLog = Log;
 	}
 
 
-	app.all('/Tournaments', function (req,res){
+	app.all('/Tournaments', function (req, res){
 	  var data = req.body;
 	  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
 

@@ -193,7 +193,9 @@ app.post('/StartTournament', function (req, res){ // starts in tournament Server
 })
 
 app.post('/AttemptToStart', function (req, res){
-	AttemptToStart(req.body.tournamentID||0, req.body.login||null);
+	var tournamentID = req.body.tournamentID||0;
+	var login = req.body.login||null;
+	AttemptToStart(tournamentID, login , res);
 })
 
 
@@ -416,6 +418,7 @@ function StartTournament(tournamentID, players, res){
 }
 
 function AttemptToStart (tournamentID, login, res){
+	console.error('function AttemptToStart started');
 	if (res) OK(res);
 
 	Tournament.update({ID:tournamentID} , {$inc : {attempts:1} }, function (err, count){
@@ -426,6 +429,7 @@ function AttemptToStart (tournamentID, login, res){
 			}
 		}
 	})
+	console.error('At least tried to update Tournament attempts ', tournamentID, login);
 
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} }, 
 		stdUpdateHandler('AttemptToStart ClientGameStats.update'));

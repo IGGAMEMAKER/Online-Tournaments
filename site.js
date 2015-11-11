@@ -21,6 +21,7 @@ var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
 
 app.use(express.static('./frontend/public'));
+//app.use(express.static('./frontend/public'));
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/sessionDB');
