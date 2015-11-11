@@ -29,7 +29,7 @@ socket.on('StartTournament', function (msg){
     prt('StartTournament, but no tournamentID');
   }
   
-  /*var host = msg.host; var port = msg.port; var running = msg.running;*/
+  var host = msg.host; var port = msg.port; var running = msg.running;
   curLogins = msg.logins;
 
   //setInObject('addresses', tournamentID, {host:host, port:port, running: TOURN_START } );
@@ -45,6 +45,7 @@ function StartTournament(tournamentID){
     
     playAudio();
     drawPopup();
+    setTimeout(drawPlayButtons, 1000);
   }
   
   // if (userIsRegisteredIn(tournamentID) )
@@ -62,7 +63,6 @@ function startGame(gameURL, port, tournamentID){
 function playAudio(){
   var audio = new Audio('sounds/TOURN_START.wav');
   audio.play();
-  prt('audio');
 }
 
 

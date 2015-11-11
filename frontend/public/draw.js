@@ -14,10 +14,10 @@ function getAddressFromAddrList(addresses, tournamentID){
 
   if (!addresses) return null;
 
-  var addr1 = addresses[tournamentID];
-  if (!addr1) return null;
+  /*var addr1 = addresses[tournamentID]; console.log(addr1);
+  if (!addr1) return null;*/
 
-  var address = addr1.address;
+  var address = addresses[tournamentID];//.address;
 
   if (address && address.host && address.port && address.running==TOURN_START) return address;
 
@@ -25,18 +25,21 @@ function getAddressFromAddrList(addresses, tournamentID){
 }
 
 function drawPlayButtons(){
-  var tournaments = getTournaments();
-  //prt(tournaments);
-
-  var addresses = getObject('addresses'); prt(addresses);
+  console.log('------------');
+  console.log('drawPlayButtons');
+  var tournaments = getTournaments(); // prt(tournaments);
+  var addresses   = getObject('addresses'); console.log('addresses',addresses);
 
   $(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
+  //console.log(tournaments);
+  //console.log(addresses);
 
-  if (tournaments){    
-    for (var i = tournaments.length - 1; i > 0; i--) {
-      var tournamentID = tournaments[i]; prt(tournamentID);
+  if (tournaments && addresses){  
+    for (var i = tournaments.length - 1; i >= 0; i--) {
+      var tournamentID = tournaments[i]; // console.log(tournamentID);
       var address = getAddressFromAddrList(addresses, tournamentID);
-
+      //var address = addresses[tournamentID];//);
+      //console.log(address);
       if (address) drawButton(address.host, address.port, tournamentID);
     }
   }
@@ -60,14 +63,14 @@ function drawWindowForGame(gameURL, port, tournamentID){
 }
 
 function closePopup(name){
-  prt('closePopup');
+  //prt('closePopup');
   document.getElementById(name).style.display='none';
 }
 
 function drawPopup(){
-  prt('OPEN POPUUUUUUP!!!!');
+  //prt('OPEN POPUUUUUUP!!!!');
   document.getElementById('tournaments').style.display='block';
-  prt('popup opened');
+  //prt('popup opened');
 }
 
 //function drawProfile(money, tournaments, )

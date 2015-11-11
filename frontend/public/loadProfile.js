@@ -2,7 +2,7 @@ getProfile();
 //window.onfocus = getProfile;
 
 function getProfile(drawFunction){
-	clearStorage();
+	//clearStorage();
 	getAsync('Profile', {}, saveProfile() );	
 }
 
@@ -14,37 +14,34 @@ function GetTournamentAddress(tID){
 
 function saveProfile(){
 	return function (data) {
-		console.log('saveProfile');
-		var profile = JSON.parse(data);
-
+		var profile = JSON.parse(data); // prt(profile);
 		var tournaments = profile.tournaments;
 		var money = profile.money;
-
-		prt(profile);
 
 		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 		saveInStorage('money', money);
 
-		$('#money').html('You have '+money/100+'$ on account');
-
 		resetRunningTournaments();
-
-		var tournaments = getTournaments();
-		console.log('tournaments',tournaments);
+		//var tournaments = getTournaments();
+		//console.log('tournaments',tournaments);
 		for (var i=0; i < tournaments.length; i++){
 			var tID = tournaments[i];
-			GetTournamentAddress(tID);
+			GetTournamentAddress(tID.tournamentID);
 		}
+
+		$('#money').html('You have '+money/100+'$ on account');
 	};
 }
 
 function saveTournamentAddress(tID){
 	return function (data) {
 		var address = JSON.parse(data); // console.log(address); // 
-		console.log('saveTournamentAddress', address, data);
-
+		console.log(tID);
 		
-		setInObject('addresses', tID, address); // console.log(address.running);
+		setInObject('addresses', tID, address.address); // console.log(address.running);
+		//var obj = getObject('addresses');
+		//console.log('saveTournamentAddress', address.address);
+		//console.log(obj[tID].address);
 
 		if (address.address.running == 1) setRunningTournaments();
 	}
