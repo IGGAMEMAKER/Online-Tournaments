@@ -2,7 +2,7 @@ getProfile();
 //window.onfocus = getProfile;
 
 function getProfile(drawFunction){
-	//clearStorage();
+	clearStorage();
 	getAsync('Profile', {}, saveProfile() );	
 }
 
