@@ -104,9 +104,9 @@ var gameStatus = STATUS_WAITING;
 
 
 //var tournamentID = "#{tournamentID}";
-var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
-//alert(con);
-var room = io.connect(con);
+var gameUrl = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
+//alert(gameUrl);
+var room = io.connect(gameUrl);
 
 var opponentLogin;
 
@@ -142,6 +142,9 @@ room.on('update', function (msg){
 	//alert(JSON.stringify(msg));
 
 	drawMap(msg.map);
+	console.log(msg.armies);
+	drawArmies(msg.armies);
+
 	//console.log(msg.map);
 	
 	/*printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
@@ -158,49 +161,100 @@ room.on('finish' , function(msg){
 	//alert('Game finished! winner is : ' + JSON.stringify(msg) );
 });
 
+function drawArmies(armies){
+	var canvas1 = document.getElementById("canvas");
+	var ctx1 = canvas.getContext("2d");
+	console.log('drawArmies', armies[0]);
+	drawArmy(ctx1, armies[0], 'red');
+	drawArmy(ctx1, armies[1], 'blue');
+	/*if (armies && armies.length){
+		for (var i = 0; i<armies.length; i++){
+			var colour = i%2?'red':'blue';
+			drawArmy(ctx1, armies[i], colour);
+		}
+	}*/
+
+	//drawSquare(ctx1, 'red', 25, 0,0);
+}
+
+var fieldSize=30;
+
+var soldierOffset = 5;
+var soldierSize= fieldSize - 7;
+
+function drawArmy(ctx1, army, colour){
+	console.log('drawArmy', army);
+
+	for (var soldierIndex in army){
+		var soldier = army[soldierIndex];
+		console.log('soldier', soldier);
+		var x = soldier.x*fieldSize + soldierOffset;
+		var y = soldier.y*fieldSize + soldierOffset;
+
+		drawSquare(ctx1, colour, soldierSize, x, y);
+	}
+}
+
+function drawSquare(ctx, colour, size, x, y){
+	ctx.fillStyle = colour;
+	ctx.fillRect(x, y, size, size);
+}
+
 function drawMap(map){
 	var canvas = document.getElementById("canvas");
-	var context2D = canvas.getContext("2d");
+	var ctx = canvas.getContext("2d");
 
 	var size = map.length;
 	console.log(size);
 
-	
+	ctx.fillStyle = 'black';
+	ctx.fillRect(0,0, fieldSize*size+offset, fieldSize*size+offset);
+
 	for (var row = 0; row < size; row ++)
 	{
 		for (var column = 0; column < size; column ++)
 		{
 			// coordinates of the top-left corner
-			var x = column * 50;
-			var y = row * 50;
+
+			var x = column * fieldSize;
+			var y = row * fieldSize;
 			
-			if (row%2 == 0)
+			/*if (row%2 == 0)
 			{
 				if (column%2 == 0)
 				{
-					context2D.fillStyle = "black";
+					ctx.fillStyle = "black";
 				}
 				else
 				{
-					context2D.fillStyle = "white";
+					ctx.fillStyle = "white";
 				}
 			}
 			else
 			{
 				if (column%2 == 0)
 				{
-					context2D.fillStyle = "white";
+					ctx.fillStyle = "white";
 				}
 				else
 				{
-					context2D.fillStyle = "black";
+					ctx.fillStyle = "black";
 				}
-			}
+			}*/
 			
+			drawField(ctx, x, y, fieldSize, fieldSize, {});
 			
-			context2D.fillRect(x, y, 50, 50);
+			//ctx.fillRect(x, y, fieldSize, fieldSize);
 		}
 	}
+}
+
+var offset=2;
+
+function drawField(ctx, x, y, fieldSize, data){
+	ctx.fillStyle = 'white';
+	ctx.fillRect(x+offset, y+offset, fieldSize - offset, fieldSize - offset);
+	//ctx.
 }
 
 function deleteText(name){
@@ -216,7 +270,7 @@ function getNormalizedCoords(mouseCoords){
 var timer;
 var senderStatus=0;
 function initSender(){
-	timer = setInterval(sendGameData , 20);
+	timer = setInterval(sendGameData , 1000);
 
 }
 //console.log(room);

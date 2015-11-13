@@ -63,7 +63,7 @@ function getParameters(gameID, userName){
 }
 
 function AsyncUpdate(gameID){
-	send(gameID, 'update', { map:games[gameID].map });
+	send(gameID, 'update', { map:games[gameID].map, armies:games[gameID].armies });
 	/*UpdateCollisions(gameID, gameID);
 	var ball = games[gameID].ball || null;
 	var datas = games[gameID].gameDatas || null;
