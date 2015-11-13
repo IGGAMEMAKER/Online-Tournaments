@@ -33,8 +33,8 @@ var tourns = {};
 
 function getGameNameID (gameName){
 	switch(gameName){
-		case 'Questions':
-			return 2;
+		case 'Questions': return 2; break;
+		case 'Battle': return 3; break;
 		default:
 			return 1;
 	}

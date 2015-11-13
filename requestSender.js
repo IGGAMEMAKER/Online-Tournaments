@@ -35,8 +35,9 @@ serverList['GameServer'] = 5009;
 
 serverList['site'] = 8888;
 
-serverList['1']=5009;//Ping Pong
-serverList['2']=5010;//Questions and Answers
+serverList['1']=5009;// Ping Pong
+serverList['2']=5010;// Questions and Answers
+serverList['3']=5011;// Battle
 
 //console.log(serverList['DBServer']);
 
@@ -151,7 +152,7 @@ function universalAnswer(error, response, body, res, method, options){//response
     }
     else {
 
-        console.error('ERROR happened: '+ JSON.stringify(error) + ' while options were: ' + JSON.stringify(options),'Err');
+        console.error('ERROR happened: \n'+ JSON.stringify(error) + '\n while options were: \n' + JSON.stringify(options),'Err');
     }
 }
 

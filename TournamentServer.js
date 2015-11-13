@@ -155,11 +155,9 @@ function getPortAndHostOfGame(tournamentID){
 
 	switch (tIDtoGameName[tournamentID])
 	{
-		case 1:
-			return { port:5009, host: gameHost }; //PPServer
-		break;
-		case 2:
-			return { port:5010, host: gameHost };//QuestionServer
+		case 1: return { port:5009, host: gameHost }; break; // PPServer
+		case 2: return { port:5010, host: gameHost }; break; // QuestionServer
+		case 3: return { port:5011, host: gameHost };	break; // BattleServer
 		default:
 			strLog('Some strange gameNameID !!' + tIDtoGameName[tournamentID],'WARN');
 			return { port:5010, host: gameHost };//QuestionServer
@@ -503,7 +501,7 @@ var server = app.listen(5001, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  strLog(serverName + ' is listening at http://%s:%s', host, port);
+  console.log(serverName + ' is listening at http://'+host+':'+ port);
 });
 
 //server.SetServer(serverName, '127.0.0.1', funcArray);//THIS FUNCTION NEEDS REWRITING. '127.0.0.1' WORKS WELL WHILE YOU ARE WORKING ON THE LOCAL MACHINE

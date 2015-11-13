@@ -90,51 +90,7 @@ function getRandomArbitrary(min, max) {
 }
 //var curX = getRandomArbitrary(0,99);
 
-// Ball object
-ball = {
-	x: 50,
-	y: 50, 
-	r: 5,
-	c: "white",
-	vx: 4,
-	vy: 8,
-	
-	// Function for drawing ball on canvas
-	draw: function() {
-		ctx.beginPath();
-		ctx.fillStyle = this.c;
-		ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
-		ctx.fill();
-	}
-};
-
-
-// Start Button object
-startBtn = {
-	w: 100,
-	h: 50,
-	x: W/2 - 50,
-	y: H/2 - 25,
-	
-	draw: function() {
-		ctx.strokeStyle = "white";
-		ctx.lineWidth = "2";
-		ctx.strokeRect(this.x, this.y, this.w, this.h);
-		
-		ctx.font = "18px Arial, sans-serif";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillStyle = "white";
-		ctx.fillText("Start", W/2, H/2 );
-	}
-};
-//alert(window.logins);
-
-/*var logins = window.logins;
-var login = window.login;*/
-//alert(JSON.stringify(logins));
 logins = logins.split(',');
-//alert(JSON.stringify(logins));
 
 var myID=0;
 var oppID=1;
@@ -185,17 +141,13 @@ room.on('update', function (msg){
 	}
 	//alert(JSON.stringify(msg));
 
-	var sBallX = (msg['ball']).x;
-	var sBallY = (msg['ball']).y;
-	ball.x = sBallX*W / 100;
-	ball.y = sBallY*H / 100;
-
-	gameDatas = msg.gameDatas;
+	drawMap(msg.map);
+	//console.log(msg.map);
 	
-	printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
-	printText('u1', gameDatas[1].score, 200, 50+3*20);
+	/*printText('u0', gameDatas[0].score, 200, 50+2*20, 'red');
+	printText('u1', gameDatas[1].score, 200, 50+3*20);*/
 
-	recievedData = 1;
+	//recievedData = 1;
 
 	//printText('Server Update', JSON.stringify(gameDatas), 75, 305);
 });
@@ -205,6 +157,51 @@ room.on('finish' , function(msg){
 	gameOver(JSON.stringify(msg));
 	//alert('Game finished! winner is : ' + JSON.stringify(msg) );
 });
+
+function drawMap(map){
+	var canvas = document.getElementById("canvas");
+	var context2D = canvas.getContext("2d");
+
+	var size = map.length;
+	console.log(size);
+
+	
+	for (var row = 0; row < size; row ++)
+	{
+		for (var column = 0; column < size; column ++)
+		{
+			// coordinates of the top-left corner
+			var x = column * 50;
+			var y = row * 50;
+			
+			if (row%2 == 0)
+			{
+				if (column%2 == 0)
+				{
+					context2D.fillStyle = "black";
+				}
+				else
+				{
+					context2D.fillStyle = "white";
+				}
+			}
+			else
+			{
+				if (column%2 == 0)
+				{
+					context2D.fillStyle = "white";
+				}
+				else
+				{
+					context2D.fillStyle = "black";
+				}
+			}
+			
+			
+			context2D.fillRect(x, y, 50, 50);
+		}
+	}
+}
 
 function deleteText(name){
 	delete drawObjects[name];
@@ -306,44 +303,7 @@ function createParticles(x, y, m) {
 	this.vx = -1.5 + Math.random()*3;
 	this.vy = m * Math.random()*1.5;
 }
-var jjj=0;
 
-function drawPaddles(){
-	//paddles.push(new Paddle("bottom"));
-	//paddles.push(new Paddle("top"));
-	for(var i = 1; i < paddles.length; i++) {
-		//alert('i(' + i + ')' + JSON.stringify(paddles[i]));
-		var colour = "red";
-		if (i==2) { colour = "white"; }
-
-		p = paddles[i];
-		//printText(i, JSON.stringify(p), 25, 400+40*i);
-		//console.log('length=' + paddles.length);
-		if (gameDatas){
-			if (gameDatas[i-1]){
-				var a = gameDatas[i-1];
-				//console.log(JSON.stringify(a));
-				var padX = a.x;
-				//console.log('i: ' + i + ' ' + padX);
-
-				p.x = padX * W/100  - p.w/2;//(gameDatas[i])['padX']
-				//zzz
-				off = 0.1;
-				printText(logins[i-1], '', p.x, p.y==0? H*off: H*(1-off-0.05), colour);//logins[i-1]
-			}
-			else{
-				console.log('ERROR!! i= '+ i + ' while length= '+ paddles.length);
-			}
-		}
-		//p.y = gameDatas[i].padY =='top'? 0:500;
-		//ctx.fillStyle = 'red';
-		
-		ctx.fillStyle = colour;// (i==0?"white":"red");
-		// ctx.fillStyle = "white";// (i==0?"white":"red");
-
-		ctx.fillRect(p.x, p.y, p.w, p.h);
-	}
-}
 
 // Draw everything on canvas
 function Draw() {
@@ -364,7 +324,6 @@ function Draw() {
 }
 var texts = [];
 
-//printText('Campeon' , 'Gaga Campeon ' + jjj++, 20, 50);
 printText('user0' , logins[0], 20, 50+2*20, 'red');
 printText('user1' , logins[1], 20, 50+3*20, '');
 
@@ -452,4 +411,4 @@ function btnClick(e) {
 
 // Show the start screen
 //startScreen();
-animloop();
+//animloop();

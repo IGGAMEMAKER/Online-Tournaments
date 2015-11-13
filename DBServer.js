@@ -290,10 +290,10 @@ function ShowGifts(data, res){
 
 var OBJ_EXITS = 11000;
 
-//addGame('PingPong', 2, {port:5009, maxPlayersPerGame:2} );
+addGame('Battle', 3, {port:5011, maxPlayersPerGame:2} );
 function addGame(gameName, gameNameID, options ){
-	var minPlayersPerGame = options.minPlayersPerGame?options.minPlayersPerGame:2;
-	var maxPlayersPerGame = options.maxPlayersPerGame?options.maxPlayersPerGame:10;
+	var minPlayersPerGame = options.minPlayersPerGame||2;
+	var maxPlayersPerGame = options.maxPlayersPerGame||10;
 	var frontendServerIP = '127.0.0.1';
 	var frontendServerPort = options.port;
 	var token = 'tkn';
@@ -304,6 +304,7 @@ function addGame(gameName, gameNameID, options ){
 		frontendServerIP:frontendServerIP, frontendServerPort: frontendServerPort,
 		token: token
 	})
+
 	game.save(function (err) {
 		if (err){
 			switch (err.code){
@@ -402,13 +403,19 @@ function retMoney(tournament){
 			var user = tournament.players[index];
 			var money = parseInt(tournament.buyIn);
 			console.error('Incr money of user ' + user+ ' by ' + money + ' points');
-			if (money>0) { incrMoney(null, user, money, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournament.tournamentID}); }
+			if (money>0) { 
+				incrMoney(null, user, money, {
+					type:SOURCE_TYPE_CANCEL_REG, 
+					tournamentID: tournament.tournamentID
+				});
+
+			}
 			else {
-				console.error('Money error: ' + money);
+				if (money<0) console.error('Money error: ' + money);
 				reject('Money error: '+ money);
 			}
 		}
-		console.error('Money OK: ');
+		console.log('Money OK: ');
 		resolve(tournament);
 	})
 }
@@ -740,14 +747,14 @@ function GetUsers( req,res){
  	});
 }
 
-function IncreaseMoney(req,res){
+function IncreaseMoney(req,res) {
 
 	var data = req.body;
 	var login = data.login;
 	var cash = data.cash;
 	incrMoney(res, login, cash, {type: SOURCE_TYPE_DEPOSIT});
 }
-function DecreaseMoney(req, res){
+function DecreaseMoney(req, res) {
 
 	Log('DecreaseMoney!!!!');
 	var data = req.body;
@@ -756,7 +763,7 @@ function DecreaseMoney(req, res){
 	decrMoney(res, login, money, {type: SOURCE_TYPE_CASHOUT});
 }
 
-function decrMoney(res, login, cash, source){
+function decrMoney(res, login, cash, source) {
 
 	if (cash<0){ cash*= -1;}
 
@@ -777,7 +784,7 @@ function decrMoney(res, login, cash, source){
 	})
 }
 
-function incrMoney(res, login, cash, source){
+function incrMoney(res, login, cash, source) {
 
 	Log('incrMoney: give ' + cash + ' points to ' + login);
 	if (cash<0){ cash*= -1;}

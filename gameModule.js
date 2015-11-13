@@ -12,6 +12,15 @@ app.use(express.static('./frontend/games'));
 
 app.use(express.static('./frontend/games/PingPong'));
 app.use(express.static('./frontend/games/Questions'));
+app.use(express.static('./frontend/games/Battle'));
+
+
+var gameList = [];
+gameList.push('./frontend/views');
+gameList.push('./frontend/games/PingPong');
+gameList.push('./frontend/games/Questions');
+gameList.push('./frontend/games/Battle');
+
 
 //var gameModule = require('./gameModule');
 
@@ -51,7 +60,8 @@ var handler = require('./errHandler')(app, strLog, serverName);
 });*/
 
 
-app.set('views', ['./frontend/views', './frontend/games/PingPong', './frontend/games/Questions']);
+app.set('views', gameList);
+
 app.set('view engine', 'jade');
 
 app.all('/Game', RenderGame);
