@@ -9,20 +9,6 @@ function drawButton(host, port, tournamentID){
   $(PLAY_FIELD).append(text);
 }
 
-function getAddressFromAddrList(addresses, tournamentID){
-  if (!tournamentID) return null;
-
-  if (!addresses) return null;
-
-  /*var addr1 = addresses[tournamentID]; console.log(addr1);
-  if (!addr1) return null;*/
-
-  var address = addresses[tournamentID];//.address;
-
-  if (address && address.host && address.port && address.running==TOURN_START) return address;
-
-  return null;
-}
 
 function drawPlayButtons(){
   console.log('------------\ndrawPlayButtons');
@@ -103,3 +89,18 @@ function blinker(){
 }
 
 //function drawProfile(money, tournaments, )
+
+function getAddressFromAddrList(addresses, tournamentID){
+  if (!tournamentID) return null;
+
+  if (!addresses) return null;
+
+  /*var addr1 = addresses[tournamentID]; console.log(addr1);
+  if (!addr1) return null;*/
+
+  var address = addresses[tournamentID];//.address;
+
+  if (address && address.host && address.port && address.running==TOURN_START) return address;
+
+  return null;
+}

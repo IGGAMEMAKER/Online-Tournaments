@@ -113,7 +113,7 @@ var money =       require('./Modules/site/money')       (app, AsyncRender, Answe
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 
-var client = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
+var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
 
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
@@ -345,7 +345,10 @@ app.get('/chat', function(req, res){
 });
 
 app.get('/', function (req,res){
-  res.render('Login');
+  //res.render('GetTournaments');
+  var data = req.body;
+  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
 })
 
 

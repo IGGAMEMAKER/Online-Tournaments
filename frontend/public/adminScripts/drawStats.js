@@ -87,7 +87,7 @@ function drawTournamentStats(inf){
 	var finished =info.finished;
 	var attempts = info.attempts;
 	var opened = info.opened;
-	console.log(started);
+	console.log(opened);
 	var IDs = info.IDs;
 
 

@@ -252,7 +252,7 @@ function processStats(tournaments, dailyStats){
 	}
 	for (var i = 0; i <= tournaments.length - 1; i++) {
 		var t = tournaments[i];
-
+		console.log('Loaded: ' + t.loaded);
 		//obj.IDs.push[t.ID];
 
 		/*obj.started += t.started||0;
@@ -386,6 +386,7 @@ function UserGetsData(tournamentID, login){
 }
 
 app.post('/GameLoaded', function (req, res){
+	console.log('/GameLoaded');
 	OK(res);
 
 	var tournamentID = req.body.tournamentID;
@@ -395,6 +396,7 @@ app.post('/GameLoaded', function (req, res){
 })
 
 function GameLoaded(tournamentID, login){
+	console.log('GameLoaded : ', tournamentID, login);
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
 		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));
 

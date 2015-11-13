@@ -230,19 +230,40 @@ function initGame(ID){
 	//strLog(games[ID]);
 }
 
+var GST_SYNC = 'Sync';
+
 function Move( tournamentID, gameID, movement, userName){//Must get move from Real GameServer
-	if (tournamentIsValid(tournamentID, gameID))
-	{
+	if (!tournamentIsValid(tournamentID, gameID)) return;
+	//{
 		if (playerExists(gameID, userName)>=0) { 
 			var playerID = getGID(gameID,userName);
 			
-			Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
-		}
-		else{
-			strLog('#####PLAYER DOESNT exist#####');
-			strLog("Player " + userName + 
-				" Not your turn! Player " + games[gameID].curPlayerID + " must play");
-		}
+			if (gameServerType==GST_SYNC){
+				if (playerID==games[gameID].curPlayerID){
+					Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
+					//switchCurPlayerID(gameID);
+					return;
+				} //else{
+				strLog("Player " + userName +	" Not your turn! Player " + games[gameID].curPlayerID + " must play"); // }
+			}
+			else{
+				Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
+				return;
+			}
+		} //	else{
+		strLog('#####PLAYER DOESNT exist#####');
+		//}
+	//}
+
+}
+
+function switchCurPlayerID(gameID){
+	strLog('REWRITE switchCurPlayerID!! it is good only when two players play','shitCode');
+	if (games[gameID].curPlayerID==1){
+		games[gameID].curPlayerID=0;
+	}
+	else{
+		games[gameID].curPlayerID=1;
 	}
 }
 
@@ -385,25 +406,6 @@ function StartGame (req, res){
 		strLog('Game ' + ID + ' was not set, nothing to do with it :)', 'Tournaments');
 		sender.Answer(res, Fail);
 	}
-	/*var message = 'Cannot find tournament with ID='+ ID;
-	strLog(games);
-	strLog(message, 'ASD');*/
-	//sender.Answer(res, {result:'fail', message:message });
-
-	/*if (!games[ID] ){
-		var message = 'Cannot find tournament with ID='+ ID;
-		strLog(games);
-		strLog(message, 'ASD');
-		sender.Answer(res, {result:'fail', message:message });
-	}
-	else{
-		if (!isRunning(ID) || games[ID] == null){
-			PrepareAndStart(ID, data['logins']);
-		}
-		else{
-			strLog('I am running already!!! ' + ID, 'ASD');
-		}
-	}*/
 }
 
 function prepare(gameID){
@@ -583,3 +585,4 @@ this.strLog = strLog;
 this.getUID = getUID;
 this.FinishGame = FinishGame;
 this.FastLog = FastLog;
+this.finishStep = switchCurPlayerID;
