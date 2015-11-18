@@ -42,10 +42,10 @@ app.post('/FinishGame', FinishGame);
 app.post('/GetTournamentAddress' , function (req, res) { 
 	var tournamentID = req.body.tournamentID;
 	strLog('BODY : ' + JSON.stringify(req.body), 'Tournaments');
-	var a = getPortAndHostOfGame(tournamentID);
-
 	strLog('get addr of ' + tournamentID, 'Tournaments');
 	strLog('runningTournaments : ' + JSON.stringify(runningTournaments), 'Tournaments');
+	
+	var a = getPortAndHostOfGame(tournamentID);
 	
 	a.running = runningTournaments[tournamentID];//||null;
 	strLog(JSON.stringify(a), 'Tournaments');
@@ -72,7 +72,7 @@ console.log(JSON.stringify(configs));
 // 
 
 
-function TournamentLog(tournamentID ,message){
+function TournamentLog(tournamentID, message){
 	var time = new Date();
 	//console.log('TournamentLog LOGGING!!!!');
 	fs.appendFile('Logs/Tournaments/' + tournamentID + '.txt', '\r\n' + time + ' TS: ' + message + '\r\n', function (err) {
@@ -83,7 +83,7 @@ function TournamentLog(tournamentID ,message){
 
 function Initialize(){
 	//strLog('TournamentServer Initialize', 'ASD');
-	sender.sendRequest('GetTournaments', {}, '127.0.0.1', 'DBServer', null, function ( error, response, body, res){
+	sender.sendRequest('GetTournaments', {}, '127.0.0.1', 'DBServer', null, function (error, response, body, res) {
 		if (error){strLog(JSON.stringify(error)); }
 		else{
 			for (var i = body.length - 1; i >= 0; i--) {
@@ -93,7 +93,7 @@ function Initialize(){
 		}
 	});
 }
-//TournamentLog(1, 'OLOLO');
+
 setTimeout(Initialize, 4000);
 //Initialize();
 
@@ -105,7 +105,7 @@ function playerIsRegistered (tournament, login){
 function showRegList(tournamentID){
 	return tournaments[tournamentID].playersRegistered 
 		+ ' players ' + JSON.stringify(tournaments[tournamentID].players) 
-		+ ' logins ' +  JSON.stringify(tournaments[tournamentID].logins);
+		+ ' logins  ' + JSON.stringify(tournaments[tournamentID].logins);
 }
 
 function unRegPlayer(tournamentID, login){
@@ -138,9 +138,12 @@ function regPlayer(tournament, login){
 	tournament.playersRegistered++;
 	tournament.players.push(login);
 	tournament.logins[login]=1;
+
 	TournamentLog(tournament.tournamentID, 'Registered user ' + login);
 	var maxPlayersInTournament = tournament.goNext[0];
-	strLog('User ' + login + ' added to tournament ' + tournament.tournamentID+' || ('+ tournament.playersRegistered+'/'+maxPlayersInTournament+')');
+	strLog('User ' + login + ' added to tournament ' 
+		+ tournament.tournamentID + ' || (' + tournament.playersRegistered
+		+ '/' + maxPlayersInTournament + ')');
 	/*strLog('Logins list');
 	strLog(tournament.logins);*/
 }
@@ -162,7 +165,6 @@ function getPortAndHostOfGame(tournamentID){
 			strLog('Some strange gameNameID !!' + tIDtoGameName[tournamentID],'WARN');
 			return { port:5010, host: gameHost };//QuestionServer
 		break;
-
 	}
 }
 
@@ -173,14 +175,11 @@ function CancelRegister(data, res){
 		var login = data.login;
 		if (login && playerIsRegistered(tournament, login) &&  tournamentID && tournament){
 			UnRegisterFromTournament(login, tournamentID, tournament, res);
-		}
-		else{
-			sender.Answer(res, Fail);
+			return;
 		}
 	}
-	else{
-		sender.Answer(res, Fail);
-	}
+	
+	sender.Answer(res, Fail);
 }
 
 function RegisterUserInTournament (req, res){
@@ -195,17 +194,14 @@ function RegisterUserInTournament (req, res){
 	if (maxPlayersInTournament > tournament.playersRegistered){
 		strLog('Current players:');
 		strLog(tournament.players);
-		//strLog(tournament);
-		if (playerIsRegistered(tournament, login)){ // tournament.players[login])
+		
+		if (playerIsRegistered(tournament, login)) { // tournament.players[login])
 			strLog('User ' + login + ' is already Registered in ' + tournamentID);
-			
 			sender.Answer(res, Fail);
-		}
-		else{
+		} else {
 			TryToRegisterInTournament(login, tournamentID, tournament, maxPlayersInTournament, res);
 		}
-	}
-	else{
+	} else {
 		strLog("Sorry, tournament is Full:"+ maxPlayersInTournament+'/'+tournament.playersRegistered);
 		sender.Answer(res, Fail);
 	}
@@ -226,8 +222,7 @@ function UnRegisterFromTournament(login, tournamentID, tournament, res){
 				if (body.money >= 0){ // 
 					sender.Answer(res, OK);
 					unRegPlayer(tournamentID, login);
-				}
-				else{
+				}	else {
 					sender.Answer(res, Fail);
 				}
 			}
@@ -383,6 +378,7 @@ var sort_by = function(field, reverse, primer){
        return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
      } 
 }
+
 function Comparator(a, b){
 	return a>b;
 }

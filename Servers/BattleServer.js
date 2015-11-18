@@ -45,7 +45,7 @@ function Init(gameID, playerID){
 	}
 
 	//***********
-	games[gameID].armies[playerID] = CreateArmy(gameID, sizeOfArmy, playerID, mapSize-1);
+	games[gameID].armies[playerID] = CreateArmy(gameID, sizeOfArmy, playerID, mapSize-5);
 
 
 	//***********

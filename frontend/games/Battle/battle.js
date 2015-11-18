@@ -459,6 +459,7 @@ function btnClick(e) {
 	var mx = e.pageX,
 			my = e.pageY;
 */
+	
 }
 
 //printText('User', 'I am ' + login, 0, 20);

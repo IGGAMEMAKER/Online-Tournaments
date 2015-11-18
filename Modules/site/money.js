@@ -1,43 +1,34 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy){
+	
 	app.post('/Cashout', function (req, res){
-	  //if (isAuthenticated(req))
-	  /*var data = req.body;
-	  var login = getLogin(req);
-	  if (data && login!=0 ){
-	    data.login = login;
-	    siteProxy(res, 'Cashout',data,null,'MoneyServer');
-	  }else{
-	    res.send(400);
-	  }*/
-	  MoneyTransferOperation(req, res, 'Cashout');
+	  MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
 	})
 
-	function MoneyTransferOperation(req, res, operation){
+	function MoneyTransferOperation(req, res, operation, page){
 	  if (isAuthenticated(req)){
 	    var data = req.body;
 	    var login = getLogin(req);
 	    if (data && login){
 	      data.login = login;
-	      siteProxy(res, operation,data,null,'MoneyServer');
-	      return;
+	    	
+	    	var money=null;
+	    	if (data.money && !isNaN(data.money) ) money = data.money;
+	    	if (data.cash  && !isNaN(data.cash) ) money = data.cash;
+	      if (money){
+	      	data.money=money*100;
+	      	data.cash =money*100;
+
+		      siteProxy(res, operation,data,page,'DBServer');
+		      return;
+	      }
+
 	    }
 	  }
-	  //else
 	  res.send(400);
 	}
 
 	app.post('/Deposit', function (req, res){
-	  //if (isAuthenticated(req))
-	  /*var data = req.body;
-	  var login = getLogin(req);
-	  if (data && login!=0 ){
-	    data.login = login;
-	    siteProxy(res, 'Deposit',data,null,'MoneyServer');
-	  }else{
-	    res.send(400);
-	  }*/
-	  MoneyTransferOperation(req, res, 'Deposit');
-
+	  MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
 	})
 
 	app.get('/Cashout', function (req, res){

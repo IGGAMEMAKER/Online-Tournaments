@@ -61,7 +61,6 @@ app.post('/AddTournament', AddTournament);
 
 
 app.post('/Register', Register);
-app.post('/Activate', Activate);
 
 app.post('/WinPrize', WinPrize);
 
@@ -90,6 +89,7 @@ app.post('/GetPlayers', GetPlayers);
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
+
 app.post('/GetTransfers', GetTransfers);
 
 app.post('/MoneyTransfers', MoneyTransfers);
@@ -1125,18 +1125,14 @@ function GetUserProfileInfo(req , res){
 	.then(findGiftIDs)
 	.then(findGifts)
 	.then(function (profileInfo){
-		//console.error('User profileInfo ' + JSON.stringify(profileInfo));
-		Answer(res, profileInfo);
+		Answer(res, profileInfo); //console.error('User profileInfo ' + JSON.stringify(profileInfo));
 	})
 	.catch(function (profileInfo){
 		if (profileInfo.err){
-			// it means, that user exists
 			console.error(profileInfo.err);
-			Answer(res, profileInfo);
-		}
-		else{
-			// user does not exist
-			Answer(res, Fail);
+			Answer(res, profileInfo); // it means, that user exists
+		}	else {
+			Answer(res, Fail); // user does not exist
 		}
 	})
 }
@@ -1154,10 +1150,9 @@ function createActivationLink(login){
 
 var USER_EXISTS = 11000;
 var INVALID_DATA = 100; 
+
 function createUser(data){
-	return new Promise(function (resolve, reject){
-		
-	
+	return new Promise(function (resolve, reject){	
 		var login = data['login'];
 		var password = data['password'];
 		var email = data['email'];
@@ -1198,7 +1193,8 @@ function createUser(data){
 				Log('added User ' + login+'/' + email, STREAM_USERS);
 				resolve(USER);
 			}
-		});
+		})
+
 	});
 }
 
@@ -1233,7 +1229,7 @@ function sendActivationEmail(user){
 	//mailer.send(user.email, 'Registered in online-tournaments.org!', makeRegisterText(login, email) );
 }
 
-function sendResetPasswordEmail(user){
+function sendResetPasswordEmail(user) {
 	user.to = user.email;
 	user.subject = 'Reset password';
 	user.html = makeResetPasswordText(user);
@@ -1256,7 +1252,7 @@ function Register (req, res){
 	})
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
-		switch(msg){
+		switch(msg) {
 			case UNKNOWN_ERROR:
 				Answer(res, {result:UNKNOWN_ERROR} );
 			break;
@@ -1267,31 +1263,11 @@ function Register (req, res){
 				console.error(msg);
 				Answer(res, Fail);
 			break;
-
 		}
 		//Answer(res, Fail);//msg.err||null
 		Stats('RegisterFail',{});
 	})
-}
 
-function Activate(req, res){
-	//var login = req.body.login;
-	var link = req.body.link;//login login:login, 
-	Log('Activate user ... ' + link, STREAM_USERS);
-	User.update({link:link}, {$set: {activate:1} }, function (err, count){
-		if (err){ Error(err); Answer(res, Fail); }
-		else{
-			if (updated(count)){
-				Log('User ' + ' activated! by link: ' + link, STREAM_USERS );
-				Answer(res, OK);
-			}
-			else{
-				Log('Activation failed ' + ' __ ' + link, STREAM_USERS);
-				Answer(res, Fail);
-			}
-		}
-	})
-	
 }
 
 
@@ -1306,8 +1282,7 @@ function findTournaments(res, query, queryFields, purpose){
 					if (err){
 						Error(err);
 						Answer(res, tournaments);
-					}
-					else{
+					} else {
 						Log('Registered: ' + JSON.stringify(tournRegs));
 						//tournaments.regs = tournRegs;
 						tournaments.push(tournRegs);
@@ -1315,12 +1290,10 @@ function findTournaments(res, query, queryFields, purpose){
 						Answer(res, tournaments);
 					}
 				})
-			}
-			else{
+			} else {
 				Answer(res, tournaments);
 			}
-		}
-		else{
+		} else {
 			Error(err);
 			 Answer(res, Fail);
 		}
@@ -1342,12 +1315,12 @@ function getTournamentsQuery(query, fields, purpose){
 		case GET_TOURNAMENTS_GAMESERVER:
 			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 			query = { $and : [query, run_or_reg] };
-		break;			
+		break;
 	}
 	if (query){
 		return { 
 			query: query,
-			fields: fields?fields:''
+			fields: fields || ''
 		};
 	}
 	else{
@@ -1362,19 +1335,10 @@ function getTournamentsQuery(query, fields, purpose){
 
 function GetTournaments (req, res){
 	var data = req.body;
-	//Log("GetTournaments ");// + data['login']);
-	var purpose = data.purpose?data.purpose:null;
-
+	var purpose = data.purpose || null;
 	var query = getTournamentsQuery(data.query, data.queryFields, purpose);
-	//var query = ;//{}
-	//var queryFields = ;//'id buyIn goNext gameNameID'; //''
-
-	
-	//if (query.query) Log(JSON.stringify(query.query));
-	//if (query.fields) Log(JSON.stringify(query.fields));
 
 	findTournaments(res, query.query, query.fields, purpose);
-
 
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
@@ -1392,8 +1356,7 @@ function addTournament(maxID, tournament, res){
 		if (err){
 			Error(err);
 			Answer(res, Fail);
-		}
-		else{
+		}	else {
 			Answer(res, tournament);
 			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS); 
 		}
@@ -1411,10 +1374,10 @@ function AddTournament (req, res){
 		if (!err){
 			if (maxTournament) {
 				addTournament(maxTournament.tournamentID, tournament, res);
+			} else { 
+				addTournament(0,tournament, res); 
 			}
-			else { addTournament(0,tournament, res); }
-		}
-		else{
+		}	else {
 			multiLog('adding failed: ' + JSON.stringify(err), [STREAM_TOURNAMENTS, STREAM_ERROR] );	
 			Answer(res, Fail);
 		}
@@ -1422,9 +1385,7 @@ function AddTournament (req, res){
 }
 
 function multiLog(message, streams){
-	for (var i = streams.length - 1; i >= 0; i--) {
-		Log(message,streams[i]);
-	};
+	for (var i = streams.length - 1; i >= 0; i--) {	Log(message,streams[i]); }
 }
 
 var server = app.listen(5007, function () {

@@ -20,6 +20,7 @@ var logins = {};
 
 
 function BuyIn(req, res){
+	console.log('BuyIn');
 	var data = req.body;
 	if(data && data.userID){
 		if (noOperations(data.userID)){
@@ -38,6 +39,7 @@ function noOperations(userID){
 }
 
 function Deposit(req, res){
+	console.log('Deposit');
 	var data = req.body;
 	Log('Checking card data...');
 	if (data &&  !isNaN(data.cash)){
@@ -55,7 +57,8 @@ function Deposit(req, res){
 
 function Cashout(req, res){
 	var data = req.body;
-	Log('CashOut...');
+	console.log('Cashout');
+	Log('Cashout...');
 	if (data &&  !isNaN(data.money)){
 		data.money*=100;
 		core.DBupdate('DecreaseMoney', data, null, res, function (err, response, body, res){ 

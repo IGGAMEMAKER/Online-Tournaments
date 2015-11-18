@@ -122,7 +122,7 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
   // res==null generally means that I will use AsyncRender in promise cascade
   Log('AsyncRender', 'Transport');
   if (targetServer && reqUrl){
-    sender.sendRequest(reqUrl, parameters||{}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
+    sender.sendRequest(reqUrl, parameters || {}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
       Log(JSON.stringify(body), 'Transport');
       //if (err) return handleError(err, targetServer, reqUrl, res || null, options || null, 'ERR');
       if (!options){
@@ -270,31 +270,29 @@ app.get('/CheckServer', function (req, res){
 
 });
 
-  app.post('/FinishGame', FinishGame);
+app.post('/FinishGame', FinishGame);
 
-  function FinishGame(req, res){
+function FinishGame(req, res){
 
-    var data = req.body;
-    Log('FinishGame' + JSON.stringify(data), 'Tournaments');
-    Answer(res, {result:'OK', message:'FinishGame'} );
-    sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
-    if (socket_enabled) io.emit('FinishTournament', {tournamentID : data.tournamentID});
-  }
-  
+  var data = req.body;
+  Log('FinishGame' + JSON.stringify(data), 'Tournaments');
+  Answer(res, {result:'OK', message:'FinishGame'} );
+  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+  if (socket_enabled) io.emit('FinishTournament', {tournamentID : data.tournamentID});
+}
 
-  app.all('/StartTournament', function (req, res){
-    //console.log(req.url);
-    Log('StartTournament', 'ASD');
-    console.log('Site starts tournament');
-    var data = req.body;
-    //console.log(req.body);
 
-    //
-    sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
-    //
-    if (socket_enabled) io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
-    res.end();
-  });
+app.all('/StartTournament', function (req, res){
+  //console.log(req.url);
+  Log('StartTournament', 'ASD');
+  console.log('Site starts tournament');
+  var data = req.body;
+
+  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+
+  if (socket_enabled) io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+  res.end();
+});
 
 
 function isAuthenticated(req){
