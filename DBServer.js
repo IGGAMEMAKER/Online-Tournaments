@@ -471,9 +471,18 @@ function MoneyTransfers(req, res){
 		})
 }
 
+function TournamentLog(tournamentID, message){
+	var time = new Date();
+	//console.log('TournamentLog LOGGING!!!!');
+	fs.appendFile('Logs/Tournaments/' + tournamentID + '.txt', '\r\n' + time + ' TS: ' + message + '\r\n', function (err) {
+		if (err) {strLog(err); throw err; }
+		//console.log('The "data to append" was appended to file!');
+	});
+}
 
 
-function CancelRegister(data, res){
+
+/*function CancelRegister(data, res){
 	var login = data.login;
 	var tournamentID = data.tournamentID;
 	if (login && tournamentID){
@@ -491,35 +500,99 @@ function CancelRegister(data, res){
 	else{
 		Answer(res, Fail);
 	}
-	/*TournamentReg.remove({userID:login, tournamentID:tournamentID}, function deletingTournamentRegs (err, tournRegs){
-		if (err) {Error(err);}
-		else{
-
-			Log('Killed TournamentRegs: ' + JSON.stringify(tournRegs) );
-		}
-	})*/
-}
-
-function clearRegister(data, res, successCb, failCb){
-	TournamentReg.remove({userID:data.login, tournamentID:data.tournamentID}, function (err, tournRegs){
+}*/
+/*function clearRegister(data, res, successCb, failCb){
+	TournamentReg.remove({userID:data.login, tournamentID:data.tournamentID}, function (err, count){
 		if (err){
 			failCb(err, res);
 		}
 		else{
-			successCb(tournRegs, data, res);
+			if (removed(count)) { 
+				successCb(count, data, res); 
+			}	else {
+				Answer(res, Fail);
+			}
 		}
+	})
+}*/
+
+function clearRegister(tournamentID, login){
+	return new Promise(function (resolve, reject){
+			TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
+				if (err){ reject(err); }
+				else{
+					if (removed(count)) { 
+						resolve(1);
+					}	else {
+						reject(null);
+					}
+				}
+			});
+	});
+}
+
+function incrMoney1(login, cash, source) {
+	return new Promise(function (resolve, reject){
+		Log('incrMoney: give ' + cash + ' points to ' + login);
+		if (cash<0){ cash*= -1;}
+		
+		User.update( {login:login}, {$inc: { money: cash }} , function (err,count) {
+			if (err){ reject(err); }
+			else{
+				if (updated(count)){
+					cLog('IncreaseMoney----- count= ' + count + ' ___ ' +login);
+					Log('SAVE TRANSFER NEEDS OWN Promise!!', STREAM_SHIT);
+					saveTransfer(login, cash, source||null);
+					resolve(1);
+				} else {
+					reject(null);
+				}
+			}
+		});
+	});
+}
+
+function CancelRegister(data, res){
+	var login = data.login;
+	var tournamentID = data.tournamentID;
+	var buyIn;
+	getUnRegistrableTournament(tournamentID)
+	.then(function (tournament){
+		buyIn = tournament.buyIn;
+
+		return clearRegister(tournamentID, login);
+	})
+	.then(function (cleared){
+		return incrMoney1(login, buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
+	})
+	.then(function (increased){
+		return changePlayersCount(tournamentID, -1);
+	})
+	.then(function (msg){
+		Answer(res, OK);
+	})
+	.catch(function (err){
+		cLog('CATCHED error while CancelRegister'); cLog(err);
+		Error(err);
+		Answer(res,Fail);
 	})
 }
 
-const 	SOURCE_TYPE_BUY_IN = 'BuyIn',
-		SOURCE_TYPE_WIN = 'Win',
-		SOURCE_TYPE_PROMO = 'Promo',
-		SOURCE_TYPE_CANCEL_REG = 'Cancel',
-		SOURCE_TYPE_CASHOUT = 'Cashout',
-		SOURCE_TYPE_DEPOSIT = 'Deposit';
+function removed(count){
+	console.error(count.result);
+	return count.result.n>0;
+}
 
 
-function RegisterUserInTournament(data, res){
+const SOURCE_TYPE_BUY_IN = 'BuyIn'
+,SOURCE_TYPE_WIN = 'Win'
+,SOURCE_TYPE_PROMO = 'Promo'
+,SOURCE_TYPE_CANCEL_REG = 'Cancel'
+,SOURCE_TYPE_CASHOUT = 'Cashout'
+,SOURCE_TYPE_DEPOSIT = 'Deposit';
+
+
+/*function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
 	var login = data.login;
 	var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:'gaginho'});
@@ -554,16 +627,167 @@ function RegisterUserInTournament(data, res){
 			}
 		}
 	})	
+}*/
+
+
+function payBuyIn(buyIn, login){
+	return new Promise(function (resolve, reject){
+		console.log('payBuyIn', buyIn, login);
+		User.update({login:login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count) {
+			if (err) { reject(err); } 
+			else {
+				if (updated(count)) { 
+					resolve(true);
+				} else {
+					reject(TREG_NO_MONEY);
+				}
+			}
+		});
+	})
+}
+
+function saveReg(tournamentID, login, promo){
+	return new Promise(function (resolve, reject){
+			var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
+			reg.save(function (err) {
+				if (err) reject(err);
+				
+				Log('added user to tournament');
+				resolve(true);
+			});
+	})
+}
+
+function findTournamentReg(tournamentID, login){
+	return new Promise(function (resolve, reject){
+		TournamentReg.findOne({tournamentID:tournamentID, userID:login},'', function (err1, reg){
+
+			if (err1) reject(err1);
+			console.error('reg:', reg);
+			if (reg) reject('AlreadyRegistered');
+
+			if (reg) console.log('I am still writing after reject!');
+			
+			resolve(true);
+			console.log('I am writing after resolve!');
+			
+		})
+	})
+}
+
+function getRegistrableTournament(tournamentID){
+	return new Promise(function (resolve, reject){
+
+		Tournament.findOne({tournamentID:tournamentID, status:TOURN_STATUS_REGISTER}, '', function (err, tournament) {
+			if (err) { Error(err); reject(err); }
+			else{
+				if (tournament && tournament.players<tournament.goNext[0]) { 
+					console.log('getRegistrableTournament', tournament);
+					resolve(tournament);
+				} else {
+					reject(TREG_FULL);
+				}
+			}
+		})
+
+	})
+}
+
+function getUnRegistrableTournament(tournamentID){
+	return new Promise(function (resolve, reject){
+
+		Tournament.findOne({tournamentID:tournamentID, status:TOURN_STATUS_REGISTER}, '', function (err, tournament) {
+			if (err) { Error(err); reject(err); }
+			else{
+				if (tournament && tournament.players>0) { 
+					console.log('getUnRegistrableTournament', tournament);
+					resolve(tournament);
+				} else {
+					reject(null);
+				}
+			}
+		})
+
+	})
+}
+
+var TREG_NO_MONEY='TREG_NO_MONEY';
+var TREG_FULL='TREG_FULL';
+
+function RegisterUserInTournament(data, res){
+	var tournamentID = data.tournamentID;
+	var login = data.login;
+
+
+	var buyIn;
+	getRegistrableTournament(tournamentID)
+	.then(function (tournament) {
+		console.log(tournament);
+		buyIn = tournament.buyIn;
+		return findTournamentReg(tournamentID, login);
+	})
+	.then(function (reg){
+		return saveReg(tournamentID, login, 'gaginho');
+	})
+	.then(function (savingSuccess){
+		console.log('savingSuccess');
+		return payBuyIn(buyIn, login);
+	})
+	.then(function (paymentSucceed){
+		console.log('paymentSucceed');
+		return incrPlayersCount(tournamentID);
+	})
+	.then(function (increased){
+		console.log('increased');
+		return saveTransfer1(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
+	})
+	.then(function (saved){
+		console.log('REGISTER OK!!!!!');
+		Answer(res, OK);
+	})
+	.catch(function (err){
+		console.log('CATCHED error while player registering!', err);
+		Answer(res, Fail);
+		Error(err);
+	})
+}
+
+function getTournament(tournamentID){
+	return new Promise(function (resolve, reject){
+		Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament) {
+			if (err) { Error(err); reject(err); }
+			else{
+				if (tournament) resolve(tournament);
+				reject(null);
+			}
+		})
+	})
+}
+
+function incrPlayersCount(tournamentID){
+	return new Promise(function (resolve, reject){
+		Tournament.update({tournamentID:tournamentID}, {$inc: {players:1}} , function (err, count){
+			if (err){	reject(err); return; } 
+			resolve(true);
+		});
+	})
 }
 
 function changePlayersCount(tournamentID, mult){
 	if (!mult) {mult = 1;}
-	Tournament.update({tournamentID:tournamentID}, {$inc: {players:1*mult}} , function (err, count){
-		if (err){
-			Log('changePlayersCount');
-			Error(err);
-		}
-	});
+	return new Promise(function (resolve, reject){
+		Tournament.update({tournamentID:tournamentID}, {$inc: {players:1*mult}} , function (err, count){
+			if (err){	reject(err); }
+			else{
+				if (updated(count)){
+					resolve(1);
+
+				} else {
+					reject('changePlayersCount');
+				}
+			}
+		});
+	})
 }
 
 function Printer(err, count){
@@ -796,7 +1020,7 @@ function incrMoney(res, login, cash, source) {
 		}
 		else{
 			cLog('IncreaseMoney----- count= ' + count + ' ___ ' +login);
-			Log('Analyze COUNT parameter in incrMoney, stupid dumbass!', STREAM_SHIT);
+			Log('Analyze COUNT parameter in  incrMoney, stupid dumbass!', STREAM_SHIT);
 			User.findOne({login:login}, 'login money', function (err, user){
 				if (err){
 					Error(err);
@@ -826,6 +1050,18 @@ function GetTransfers(req, res){
 		if (err){ Error(err); Answer(res, Fail); return;}
 		Answer(res, transfers);
 	})
+}
+
+function saveTransfer1(login, cash, source){
+	//, date:new Date()
+	if (cash!=0 && cash!=null){
+		var transfer = new MoneyTransfer({userID:login, ammount: cash, source:source || null , date:new Date() });
+		transfer.save(function (err){
+			if (err){ Error(err); throw err;}
+			Log('MoneyTransfer to: '+ login + ' '+ cash/100 +'$ ('+ cash+' points), because of: ' + JSON.stringify(source), 'Money');
+			return true;
+		});
+	}
 }
 
 function saveTransfer(login, cash, source){
@@ -1358,7 +1594,10 @@ function addTournament(maxID, tournament, res){
 			Answer(res, Fail);
 		}	else {
 			Answer(res, tournament);
-			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS); 
+			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
+
+			setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
+			sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
 		}
 	});
 }
@@ -1383,6 +1622,21 @@ function AddTournament (req, res){
 		}
 	});
 }
+
+function Initialize(){
+	Tournament.find({status:null})
+	.exec(function (err, tournaments){
+		if (err) return err;
+		if (tournaments){
+			for (var i = tournaments.length - 1; i >= 0; i--) {
+				setTournStatus(tournaments[i].tournamentID, TOURN_STATUS_REGISTER);
+
+			};
+		}
+	})
+}
+//Initialize();
+
 
 function multiLog(message, streams){
 	for (var i = streams.length - 1; i >= 0; i--) {	Log(message,streams[i]); }
