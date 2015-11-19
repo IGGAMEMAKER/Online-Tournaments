@@ -32,13 +32,13 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   }
 
   function GetTournamentsFromTS(res){
-    sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
+    sender.sendRequest('Tournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
   function TournamentsRunning(res){
-    sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
+    sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
-  
+
   app.get('/Admin', function (req, res){
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
     res.render('AdminPanel', {msg:'hola!'});

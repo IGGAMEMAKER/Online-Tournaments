@@ -407,6 +407,23 @@ function pGetPlayers (obj){
 	})
 }
 
+app.post('/RunningTournaments', function (req, res){
+	console.error('RunningTournaments');
+	getRunningTournaments(res);
+})
+
+function getRunningTournaments (res) {
+	Tournament.find({status:TOURN_STATUS_RUNNING},'', function (err, tournaments){
+		if (err) { SERVER_ERROR(err, res); return; }
+		var running = [];
+		for (var i in tournaments){
+
+			running.push(tournaments[i].tournamentID);
+		}
+		Answer(res, running);
+	})
+}
+
 function retMoney(tournament){
 	return new Promise( function (resolve, reject){
 		// console.error('Last Promise ' + JSON.stringify(tournament) );

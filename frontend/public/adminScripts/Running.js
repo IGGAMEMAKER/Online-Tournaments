@@ -13,6 +13,7 @@ function GetRunningTournaments(){
 			//$('#Running').append('<b>'+JSON.stringify(msg)+'</b>');
 			$("#Running").html('<h2>'+'Running Tournaments (GOT FROM TS) '+size(obj)+'</h2>');
 			//$("#Running").append('<p>'+msg+'</p>');// '<b>'+JSON.stringify(msg)+'</b>';*/
+			console.log(data);
 			drawTournaments(obj );
 			//$("#Running").append('<p>'+msg+'</p>');// '<b>'+JSON.stringify(msg)+'</b>';
 	  }
@@ -157,7 +158,8 @@ function drawGames(msg, gameNameID){
 }
 
 function drawTournaments(msg){
-	for (var running in msg){
+	for (var i in msg){
+		var running = msg[i];
 		var func = "stopTournament("+running +")";
 		var func1 = "restartGame("+running +")";
 		var separator = '  --  ';
@@ -191,8 +193,11 @@ function drawTotalTournaments(msg){
 		$("#Tournaments").append(restart_game +'<br>');// '<b>'+JSON.stringify(msg)+'</b>';*/
 	}
 }
+GetRunningTournaments();
+GetTotalTournaments();
+/*var tmr = setInterval(GetRunningTournaments, 5000);
+var tmr2 = setInterval(GetTotalTournaments, 5000);*/
+window.onfocus = function(){location.reload(true);}
 
-var tmr = setInterval(GetRunningTournaments, 5000);
-var tmr2 = setInterval(GetTotalTournaments, 5000);
 //var tmr3 = setInterval(GetPingPongGames, 4000);
 //var tmr4 = setInterval(GetQuestionGames, 4000);
