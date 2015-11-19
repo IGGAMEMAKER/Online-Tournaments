@@ -157,7 +157,7 @@ function universalAnswer(error, response, body, res, method, options){//response
 }
 
 function Answer(res, JSONObject){
-	res.end(JSON.stringify(JSONObject));
+	if (res) res.end(JSON.stringify(JSONObject));
 }
 
 function initRequest(urlPath, curData, host, targetServer){

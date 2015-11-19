@@ -103,7 +103,7 @@ var strLog = Log;
     }
     else{
       strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
-      Answer(res, Fail);
+      sender.Answer(res, Fail);
     }
 	}
 
@@ -112,14 +112,16 @@ var strLog = Log;
 		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
 	})
 
-	/*app.post('/FinishGame', FinishGame);
+	app.post('/FinishGame', FinishGame);
 	function FinishGame(req, res){
 		var data = req.body;
-		Answer(res, {result:'OK', message:'FinishGame'} );
-		sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
+    console.error(data);
+
+		sender.Answer(res, {result:'OK', message:'FinishGame'} );
+		sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
 	}
 
-	app.all('/StartTournament', function (req, res){
+	/*app.all('/StartTournament', function (req, res){
 		//console.log(req.url);
 		Log('StartTournament', 'ASD');
 		console.log('Site starts tournament');

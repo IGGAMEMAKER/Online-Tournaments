@@ -289,6 +289,10 @@ function TryToRegisterInTournament (login, tournamentID, tournament, maxPlayersI
 		});
 }
 
+function last (Arr){
+	return Arr[Arr.length-1];
+}
+
 function FinishGame (req, res){
 	var data = req.body;
 	strLog(data);
@@ -306,9 +310,6 @@ function FinishGame (req, res){
 		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
 		strLog('Middle results: ' + JSON.stringify(data), 'Tournaments');
 	}	
-}
-function last (Arr){
-	return Arr[Arr.length-1];
 }
 
 function EndTournament( scores, gameID, tournamentID){

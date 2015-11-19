@@ -19,24 +19,26 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     AsyncRender(servName, 'GetGames', res);
   }
 
-  function GetTournamentsFromTS(res){
-    sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
-  }
 
   function stopTournament(res, tournamentID){
-    sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy);
+    sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy);
 
     strLog('FrontendServer StopTournament :::'+tournamentID, 'Manual');
     sender.sendRequest("StopTournament", {tournamentID:tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
   }
 
   function runTournament(res, tournamentID){
-   sender.sendRequest('RunTournament', {tournamentID:tournamentID}, 'localhost', 'TournamentServer', res, sender.Proxy); 
+   sender.sendRequest('RunTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy); 
+  }
+
+  function GetTournamentsFromTS(res){
+    sender.sendRequest('Tournaments', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
   }
 
   function TournamentsRunning(res){
     sender.sendRequest('Running', {}, 'localhost', 'TournamentServer', res, sender.Proxy);
   }
+  
   app.get('/Admin', function (req, res){
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
     res.render('AdminPanel', {msg:'hola!'});
