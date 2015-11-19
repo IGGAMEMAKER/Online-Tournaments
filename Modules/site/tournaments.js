@@ -109,7 +109,7 @@ var strLog = Log;
 
 	app.post('/GetTournamentAddress', function (req, res){
 		Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
-		AsyncRender('TournamentServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
+		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
 	})
 
 	/*app.post('/FinishGame', FinishGame);

@@ -102,6 +102,8 @@ app.post('/Mail', function (req, res){
 	}, 200);*/
 })
 
+app.post('/GetTournamentAddress' , GetTournamentAddress);
+
 //var statistics = require('./Modules/DB/stats')(app, AsyncRender, Answer, sender, Log, proxy);
 
 var Fail = {
@@ -459,6 +461,43 @@ function StartTournament(data, res){
 	}
 }
 
+function GetTournamentAddress(req, res){
+	var tournamentID = req.body.tournamentID;
+	Log('BODY : ' + JSON.stringify(req.body), 'Tournaments');
+	Log('get addr of ' + tournamentID, 'Tournaments');
+
+	Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament){
+		if (err) { SERVER_ERROR(err, res); return;}
+		if (!tournament) { SERVER_ERROR('tournament not found', res); return;}
+		var gameNameID = tournament.gameNameID;
+		var a = getPortAndHostOfGame(gameNameID);
+		
+		a.running = tournament.status==TOURN_STATUS_RUNNING;//||null;
+		Log(JSON.stringify(a), STREAM_TOURNAMENTS);
+
+		sender.Answer(res, {address: a});
+	})
+}
+
+
+var gameHost = configs.gameHost;
+
+function getPortAndHostOfGame(gameNameID){
+	Log('getPortAndHostOfGame. REWRITE IT!!!!');
+
+	switch (gameNameID)
+	{
+		case 1: return { port:5009, host: gameHost }; break; // PPServer
+		case 2: return { port:5010, host: gameHost }; break; // QuestionServer
+		case 3: return { port:5011, host: gameHost };	break; // BattleServer
+		default:
+			Log('Some strange gameNameID !!' + gameNameID,'WARN');
+			return { port:5010, host: gameHost };//QuestionServer
+		break;
+	}
+}
+
+
 function MoneyTransfers(req, res){
 	MoneyTransfer
 		.find({userID: req.body.login})
@@ -480,41 +519,6 @@ function TournamentLog(tournamentID, message){
 	});
 }
 
-
-
-/*function CancelRegister(data, res){
-	var login = data.login;
-	var tournamentID = data.tournamentID;
-	if (login && tournamentID){
-		Tournament.findOne({tournamentID:tournamentID}, 'buyIn', 
-			function (err, tournament){
-				if (err) { SERVER_ERROR(err, res); }
-				else{
-					clearRegister(data, res, function(p1, p2, p3){
-						incrMoney(res, login, tournament.buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
-						changePlayersCount(tournamentID, -1);
-					}, SERVER_ERROR);
-				}
-			});
-	}
-	else{
-		Answer(res, Fail);
-	}
-}*/
-/*function clearRegister(data, res, successCb, failCb){
-	TournamentReg.remove({userID:data.login, tournamentID:data.tournamentID}, function (err, count){
-		if (err){
-			failCb(err, res);
-		}
-		else{
-			if (removed(count)) { 
-				successCb(count, data, res); 
-			}	else {
-				Answer(res, Fail);
-			}
-		}
-	})
-}*/
 
 function clearRegister(tournamentID, login){
 	return new Promise(function (resolve, reject){
@@ -590,45 +594,6 @@ const SOURCE_TYPE_BUY_IN = 'BuyIn'
 ,SOURCE_TYPE_CANCEL_REG = 'Cancel'
 ,SOURCE_TYPE_CASHOUT = 'Cashout'
 ,SOURCE_TYPE_DEPOSIT = 'Deposit';
-
-
-/*function RegisterUserInTournament(data, res){
-	var tournamentID = data.tournamentID;
-	var login = data.login;
-	var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:'gaginho'});
-
-	Tournament.findOne({tournamentID:tournamentID} , 'buyIn status', function getTournamentBuyIn1 (err, tournament){
-		if (err){ Error(err); Answer(res, Fail); }
-		else{
-			if (tournament && tournament.buyIn>=0 && tournament.status==TOURN_STATUS_REGISTER){
-				var buyIn = tournament.buyIn;
-				User.update({login:login, money: {$not : {$lt: buyIn }} }, {$inc : {money: -buyIn} }, function takeBuyIn (err, count){
-					Log('RegisterUserInTournament NEEDS TRANSACTIONS!!!!!!!!!! IF REG IS FAILED, MONEY WILL NOT return!!!', STREAM_WARN);
-					if (err) { Error(err); Answer(res, Fail); }
-					else{
-						Log('Reg status: ' + JSON.stringify(count));
-						if (updated(count)){
-							reg.save(function (err) {
-								if (err){ Error(err); Answer(res, Fail); }
-								else{
-									Answer(res, OK );
-									changePlayersCount(tournamentID , 1);
-									Log('added user to tournament'); 
-									saveTransfer(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
-								}
-							});
-						}
-						else{
-							Log('User ' + login + ' has not enough money');
-							Answer(res, Fail);
-						}
-					}
-				});				
-			}
-		}
-	})	
-}*/
-
 
 function payBuyIn(buyIn, login){
 	return new Promise(function (resolve, reject){
