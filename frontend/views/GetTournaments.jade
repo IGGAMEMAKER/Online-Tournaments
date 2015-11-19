@@ -59,6 +59,7 @@ html
 		include client
 		include templates/tAuth
 		+showTournaments(msg)
-		//script.
-			setTimeout(function(){location.reload(true);} , 10000);
+		script.
+			window.onfocus = function(){location.reload(true);}
+			//setTimeout(function(){location.reload(true);} , 10000);
 

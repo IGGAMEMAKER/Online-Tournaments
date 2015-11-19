@@ -32,7 +32,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   }
 
   function GetTournamentsFromTS(res){
-    sender.sendRequest('Tournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
+    sender.sendRequest('GetTournaments', {purpose:1}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
   function TournamentsRunning(res){

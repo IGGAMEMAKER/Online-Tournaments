@@ -171,11 +171,13 @@ function drawTournaments(msg){
 	}
 }
 function drawTotalTournaments(msg){
-	for (var running in msg){
+	console.log(msg);
+	for (var i in msg){
+		var running = msg[i].tournamentID;
 		var func = "stopTournament("+running +")";
 		var func1 = "restartGame("+running +")";
 		var separator = '  --  ';
-		var tournament =  msg[running];
+		var tournament =  msg[i];
 		var message = 	'status: '+tournament.status + 
 						'| ID: ' + tournament.tournamentID;// JSON.stringify(msg[running]);
 		/*
