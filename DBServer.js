@@ -689,7 +689,6 @@ function incrMoney1(login, cash, source) {
 				if (updated(count)){
 					cLog('IncreaseMoney----- count= ' + count + ' ___ ' +login);
 					Log('SAVE TRANSFER NEEDS OWN Promise!!', STREAM_SHIT);
-					saveTransfer(login, cash, source||null);
 					resolve(1);
 				} else {
 					reject(null);
@@ -711,6 +710,9 @@ function CancelRegister(data, res){
 	})
 	.then(function (cleared){
 		return incrMoney1(login, buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
+	})
+	.then(function (saved){
+		return pSaveTransfer(login, buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
 	})
 	.then(function (increased){
 		return changePlayersCount(tournamentID, -1);
@@ -847,11 +849,12 @@ function RegisterUserInTournament(data, res){
 	})
 	.then(function (paymentSucceed){
 		console.log('paymentSucceed');
-		return incrPlayersCount(tournamentID);
+		return pSaveTransfer(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
 	})
 	.then(function (increased){
 		console.log('increased');
-		return saveTransfer1(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
+		//return incrPlayersCount(tournamentID);
+		return changePlayersCount(tournamentID);
 	})
 	.then(function (saved){
 		console.log('REGISTER OK!!!!!');
@@ -891,7 +894,7 @@ function incrPlayersCount(tournamentID){
 
 function changePlayersCount(tournamentID, mult){
 	if (!mult) {mult = 1;}
-	return new Promise(function (resolve, reject){
+	/*return new Promise(function (resolve, reject){
 		Tournament.update({tournamentID:tournamentID}, {$inc: {players:1*mult}} , function (err, count){
 			if (err){	reject(err); }
 			else{
@@ -903,7 +906,27 @@ function changePlayersCount(tournamentID, mult){
 				}
 			}
 		});
-	})
+	})*/
+	return new Promise(function (resolve, reject){
+		TournamentReg.find({tournamentID:tournamentID}, '', function (err, regs){
+			if (err) {reject(err);}
+			else{
+				var playerCount = regs.length;
+				console.log('changePlayersCount playerCount: '+ playerCount);
+				
+				Tournament.update({tournamentID:tournamentID}, {$set : {players:playerCount}}, function (err, count){
+					if (err){	reject(err); }
+					else{
+						if (updated(count)){
+							resolve(1);
+						} else {
+							reject('changePlayersCount');
+						}
+					}
+				})		
+			}
+		})
+	});
 }
 
 function Printer(err, count){
@@ -1168,7 +1191,7 @@ function GetTransfers(req, res){
 	})
 }
 
-function saveTransfer1(login, cash, source){
+function pSaveTransfer(login, cash, source){
 	//, date:new Date()
 	if (cash!=0 && cash!=null){
 		var transfer = new MoneyTransfer({userID:login, ammount: cash, source:source || null , date:new Date() });
