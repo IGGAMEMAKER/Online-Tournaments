@@ -49,7 +49,10 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+var requestCounter=0;
+
 app.use(function(req,res,next){
+  requestCounter++;
   switch(req.url){
     case '/Log':
     case '/Admin':
@@ -70,6 +73,7 @@ app.use(function(req,res,next){
   res.locals.session = req.session;
   next();
 });
+
 
 
 var handler = require('./errHandler')(app, Log, serverName);
@@ -269,6 +273,10 @@ app.get('/CheckServer', function (req, res){
   sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
 
 });
+
+app.get('/counter', function (req, res){
+  res.json({requests:requestCounter});
+})
 
 app.post('/FinishGame', FinishGame);
 
