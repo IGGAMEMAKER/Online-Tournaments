@@ -54,4 +54,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		console.error(data);
 		res.end('YES');
 	})
+
+	app.post('/payment/checkID', function (req, res){
+		//res.render('payResult');
+		var data = req.body;
+		console.error('payment come!!');
+		console.error(data);
+		res.end('YES');
+	})
 }
