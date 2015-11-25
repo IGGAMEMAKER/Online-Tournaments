@@ -32,12 +32,26 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.get('/Cashout', function (req, res){
-	  //if (isAuthenticated(req))
-	  res.render('Cashout');
-
+		//if (isAuthenticated(req))
+		res.render('Cashout');
 	})
 	app.get('/Deposit', function (req, res){
-	  res.render('Deposit');
+		res.render('Deposit');
 	})
 
+	app.get('/payOK', function (req, res){
+		res.render('payOK');
+	})
+
+	app.get('/payFail', function (req, res){
+		res.render('payFail');
+	})
+
+	app.post('/payment/new', function (req, res){
+		//res.render('payResult');
+		var data = req.body;
+		console.error('payment come!!');
+		console.error(data);
+		res.end('YES');
+	})
 }
