@@ -1512,6 +1512,20 @@ function GetUserProfileInfo(req , res){
 	})
 }
 
+app.post('/userExists', user_exists);
+
+function user_exists (req, res) {
+	var login = req.body.login;
+	findUser(login)
+	.then(function (user){
+		Answer(res, user);
+	})
+	.catch(function (msg){
+		console.error('user_exists error', msg);
+		Answer(res, Fail);
+	})
+}
+
 function now(){
 	return new Date();
 }

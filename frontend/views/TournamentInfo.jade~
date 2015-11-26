@@ -57,12 +57,6 @@ mixin showPlayers(players)
 mixin drawRegButton(name, ButtonValue, tID, message)
 	button(id=name, style="width:300px;height:50") #{ButtonValue}
 	br
-	br
-	//script. 
-		document.getElementById("#{name}").addEventListener("click", function() { func("#{session.login}", "#{tID}");});
-	//script.
-		var name = "#{name}";
-		document.getElementById(name).addEventListener("click", function() { func("#{session.login}", "#{message[0].tournamentID}");});
 
 mixin drawTournamentInfo(message)
 	+showTournament(message[0])
@@ -94,7 +88,7 @@ html
 		//+drawRegButton("unReg", "UNREGISTER", msg[0].tournamentID, msg)
 
 		#gift
-			p Click on gift to show it here!
+			//p Click on gift to show it here!
 		script.
 			//setTimeout(function(){location.reload(true);} , 7000);
 

@@ -47,6 +47,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.render('payFail');
 	})
 
+	var PAY_OK='YES';
+	var PAY_NO='NO';
+
 	app.post('/payment/new', function (req, res){
 		//res.render('payResult');
 		var data = req.body;
@@ -55,11 +58,26 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.end('YES');
 	})
 
+
+
 	app.post('/payment/checkID', function (req, res){
 		//res.render('payResult');
+
 		var data = req.body;
-		console.error('payment come!!');
+		var login = data.PAYSTO_PAYER_ID;
+		/*sender.sendRequest('userExists', {userID:login}, '127.0.0.1', "DBServer", res, function (error, body, response, res1){
+			if (error) { 
+				res.end(PAY_NO);
+				console.error('fail while user ', login, ' tries to pay. payment/checkID', error);
+			} else {
+				if (body){
+
+				}
+			}
+		})*/
+		console.error('user exists?');
 		console.error(data);
 		res.end('YES');
 	})
+
 }
