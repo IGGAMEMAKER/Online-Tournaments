@@ -23,8 +23,11 @@ var socket_enabled=SOCKET_ON;
 app.use(express.static('./frontend/public'));
 //app.use(express.static('./frontend/public'));
 
+var configs = require('./configs');
+
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/sessionDB');
+var sessionDBAddress = configs.session;
+mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
 
 

@@ -515,19 +515,6 @@ function StartTournament(tournamentID, force, res){
 	})
 }
 
-/*function StartTournament(data, res){
-	Log('DBServer starts tournament ' + data);
-	if (data && data.tournamentID){
-		setTournStatus(data.tournamentID, TOURN_STATUS_RUNNING);
-		Answer(res, OK);
-		Log('StartTournament ' + data.tournamentID, STREAM_TOURNAMENTS);
-	}
-	else{
-		multiLog('StartTournament: no tournamentID, no fun! ' + JSON.stringify(data), [STREAM_WARN,STREAM_ERROR] );
-		Answer(res, Fail);
-	}
-}*/
-
 function last (Arr){
 	return Arr[Arr.length-1];
 }
@@ -585,9 +572,6 @@ function EndTournament( scores, gameID, tournamentID){
 		Log(scores);
 		
 	})
-
-	//if (tournaments[tournamentID]){
-	//}
 }
 
 
@@ -1345,16 +1329,7 @@ function WinPrize(data, res){
 
 }
 
-/*function getUserByID(ID){
-	return users[getLoginByID(ID)];
-}
-
-
-function getLoginByID(ID){
-	return IDToLoginConverter[ID]?IDToLoginConverter[ID]:'defaultLogin';
-}*/
-
-KillFinishedTournaments();
+//KillFinishedTournaments();
 
 function KillFinishedTournaments(){
 	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){

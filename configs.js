@@ -14,5 +14,9 @@ config.gamePort	=	configs.gamePort;
 config.gameHost	=	configs.gameHost;
 config.mailUser	=	configs.mailUser;
 config.mailPass	=	configs.mailPass;
+config.db	=	configs.db;
+config.stats	=	configs.stats;
+config.session	=	configs.session;
+
 console.log(config);
 module.exports = config;
