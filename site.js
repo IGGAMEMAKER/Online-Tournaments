@@ -76,7 +76,7 @@ app.use(function(req,res,next){
 
 
 
-var handler = require('./errHandler')(app, Log, serverName);
+//var handler = require('./errHandler')(app, Log, serverName);
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
@@ -108,6 +108,8 @@ app.use(bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
+//var compression = require('compression');
+//app.use(compression());
 app.set('view cache', true);
 
 

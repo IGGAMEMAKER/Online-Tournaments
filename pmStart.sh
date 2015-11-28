@@ -1,5 +1,5 @@
 pm2 delete all
-NODE_ENV=production pm2 start site.js --name site -i 1
+NODE_ENV=production pm2 start site.js --name site -i 1 --nouse-idle-notification--expose-gc
 sleep 1
 pm2 start Statistics.js --name ST
 pm2 start DBServer.js --name DB

@@ -165,7 +165,8 @@ var errObject = {result:'error'};
 
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+//mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://'+configs.db+'/test');
 var User = mongoose.model('User', { login: String, password: String, money: Number, 
 	email: String, activated:String, date: Date, link: String, bonus:Object, 
 	salt:String, cryptVersion:Number });

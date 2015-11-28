@@ -19,8 +19,11 @@ const STREAM_SHIT = 'shitCode';
 const STREAM_WARN = 'WARN';
 const STREAM_STATS = 'stats';
 
+var configs = require('./configs');
+
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/stats');
+var stat_server_address = configs.stats || 'localhost';
+mongoose.connect('mongodb://'+stat_server_address+'/stats');
 
 var Tournament = mongoose.model('Tournament', { 
 	started: Number,

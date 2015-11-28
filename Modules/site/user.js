@@ -79,6 +79,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.post('/GetMoney', function (req, res){
 		var callback = function()
 	})*/
+	app.post('/json', function (req, res){
+		res.end('aaa');
+	})
+	app.get('/json', function (req, res){
+		res.end('aaa');
+	})
 	app.post('/Profile', function (req, res){
 		if (isAuthenticated(req)){
 			var login = getLogin(req);
