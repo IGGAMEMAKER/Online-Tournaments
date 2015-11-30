@@ -40,8 +40,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	app.post('/ResetPassword', function (req, res){
 		//var login = req.body.login;
-		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, 
-			{login:req.body.login, email:req.body.email})
+		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:req.body.login, email:req.body.email})
 	})
 
 	app.get('/Changepassword', function (req, res){

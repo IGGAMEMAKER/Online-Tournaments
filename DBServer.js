@@ -297,7 +297,7 @@ function ShowGifts(data, res){
 
 var OBJ_EXITS = 11000;
 
-addGame('Battle', 3, {port:5011, maxPlayersPerGame:2} );
+//addGame('Battle', 3, {port:5011, maxPlayersPerGame:2} );
 function addGame(gameName, gameNameID, options ){
 	var minPlayersPerGame = options.minPlayersPerGame||2;
 	var maxPlayersPerGame = options.maxPlayersPerGame||10;
@@ -908,7 +908,7 @@ function changePlayersCount(tournamentID, mult){
 							reject('changePlayersCount');
 						}
 					}
-				})		
+				})
 			}
 		})
 	});
@@ -916,6 +916,10 @@ function changePlayersCount(tournamentID, mult){
 
 function Printer(err, count){
 	if (err){ Error(err); }
+}
+
+function cLog(data){
+	console.log(data);
 }
 
 function GetPlayers (req, res){
@@ -936,33 +940,27 @@ function updated(count){
 }
 
 function HASH(password){
-	return password;
-}
-
-function createPass(login){
-	var rand= 5;//(new Date()).toMilliseconds % 1024;
-	return login+rand;
+	//return password;
+	return security.Hash(password, CURRENT_CRYPT_VERSION);
 }
 
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
 		var login = user.login;
 		var email = user.email;
-		var newPass = HASH(createPass(login));
+		var newPass = security.create_random_password();//HASH();
 		Log('Filter passwords, when you change them!!', STREAM_SHIT);
 
-		User.update({login:login, email:email}, {$set : {password:newPass } }, function (err, count){
-			if (err) { reject(err); }
+		User.update({login:login, email:email}, {$set : { password:HASH(newPass), cryptVersion:CURRENT_CRYPT_VERSION } }, function (err, count){
+			if (err) { Log(err, STREAM_ERROR); reject(err); }
 			else{
 				if (updated(count)) {
-					Log('resetPassword OK '+ login + '  ' + newPass, STREAM_USERS);
-					//Answer(res, OK);
+					Log('resetPassword OK '+ login + '  ' + newPass, STREAM_USERS);	
 					user.password = newPass;
-					resolve(user);
-				}
-				else{
-					reject(Fail);
-					//Answer(res, Fail);
+					resolve(user); // Answer(res, OK);
+				} else {
+					Log('resetPassword Fail '+login + ' ', STREAM_USERS);
+					reject(Fail);	// Answer(res, Fail);
 				}
 			}
 		})
@@ -977,24 +975,22 @@ function Changepassword(req, res){
 	var newPass = data.newPass;
 
 	Log('Filter passwords, when you want to change them!! Changepassword', STREAM_SHIT);
-	User.update({login:login, password:HASH(oldPass)}, {$set : {password:HASH(newPass) } }, function (err, count){
-		
-		if(err) { servError(err, res); }
+	User.findOne({login:login}, '', function (err, user){
+		if (err) { servError(err, res); }
 		else{
-			if (updated(count)) {
-				Log('Changepassword OK '+ login, STREAM_USERS);
-				Answer(res, OK);
-			}
-			else{
+			if (!user) Log('no user in Changepassword');
+			if (!user) return Answer(res, Fail);
+
+			Log('Changepassword', STREAM_USERS);
+			if (passwordCorrect(user, oldPass)){
+				update_password(login, newPass, CURRENT_CRYPT_VERSION, res);
+			} else {
 				Answer(res, Fail);
 			}
 		}
 	})
-
-	/*Log("check current auth");
-	Log("ChangePass of User " + data['login']);
-	res.end(Fail);*/
 }
+
 
 function ResetPassword(req, res){
 	var data = req.body;
@@ -1004,54 +1000,71 @@ function ResetPassword(req, res){
 
 	resetPassword(data)
 	.then(sendResetPasswordEmail)
-	.catch(function (err){
-		//Stats('ResetPassword', {login:login, result:});
-		Answer(res, err);
-		Stats('ResetPasswordFail', {login:login});
-	})
 	.then(function (result){
 		Answer(res, OK);
 		//Stats('ResetPasswordOK', {login:login});
 		Log("Sended mail and reset pass. Remember pass of User " + JSON.stringify(result), STREAM_USERS);
+		Log('still in then function');
+	})
+	.catch(function (err){
+		Log(err, STREAM_ERROR);
+		//Stats('ResetPassword', {login:login, result:});
+		Answer(res, err);
+		Stats('ResetPasswordFail', {login:login});
 	})
 }
 
-function cLog(data){
-	console.log(data);
-}
 
 function passwordCorrect(user, enteredPassword){
 	return security.passwordCorrect(user, enteredPassword);
+}
+
+function update_password (login, password, cryptVersion, res) {
+	var newPass = security.Hash(password, cryptVersion);
+
+	User.update({login:login}, {$set : {password:newPass, cryptVersion:CURRENT_CRYPT_VERSION} }, function (err, count){
+		if (err) { 
+			Error(err, 'CANNOT UPDATE PASSWORD TO NEWER ALGORITHM ' + CURRENT_CRYPT_VERSION); 
+			if(res) Answer(res, Fail); 
+		}	else { 
+
+			if (updated(count)) {
+				Log('PASSWORD updated while login'); 
+				if (res) Answer(res, OK);
+			} else {
+				if(res) Answer(res, Fail);
+			}
+
+		}
+	});
 }
 
 function LoginUser(req, res){
 	var data = req.body;
 	cLog("LoginUser... " + JSON.stringify(data));
 
-	var USER_EXISTS = 11000;
 	var login = data['login'];
 	var password = data['password'];
 	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', STREAM_USERS);
 
 	var usr1 = User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
-	    if (err) {
-	    	Error(err, 'CANNOT LOG IN USER!!!');
-	    	Answer(res, {result: err});
-	    }
-	    else{
-	    	if (user && passwordCorrect(user, password) ){
-		    	Log('Logged in ' + JSON.stringify(user), STREAM_USERS);
-			    Answer(res, OK);
-			    
-			}
-			else{
+		if (err) {
+			Error(err, 'CANNOT LOG IN USER!!!');
+			Answer(res, {result: err});
+		}	else {
+			if (user && passwordCorrect(user, password) ){
+				Log('Logged in ' + JSON.stringify(user), STREAM_USERS);
+				Answer(res, OK);
+				if (user.cryptVersion!=CURRENT_CRYPT_VERSION){
+					update_password(login, password, CURRENT_CRYPT_VERSION);		    	
+				}
+			}	else {
 				Log('Invalid login/password : ' + login, STREAM_USERS);
 				Answer(res, {result:'Invalid reg'});
 			}
 		}
  	});
 }
-
 
 
 function GetGameParametersByGameName (gameName){
@@ -1085,11 +1098,10 @@ function GetUsers( req,res){
 	});*/
 
 	User.find(query, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
-	    if (err) {
+		if (err) {
 			Error(err, 'GetUsersError ');
 			Answer(res, errObject);
-	    }
-	    else{
+		} else {
 			Answer(res, users);
 		}
  	});
@@ -1123,8 +1135,7 @@ function decrMoney(res, login, cash, source) {
 				Answer(res, OK);
 				Log('DecreaseMoney OK -- ' + login + ':' + cash, 'Money');
 				saveTransfer(login, -cash, source||null);
-			}
-			else{
+			} else {
 				Answer(res, Fail);
 				Log('DecreaseMoney Fail -- ' + login + ':' + cash, 'Money');
 			}
