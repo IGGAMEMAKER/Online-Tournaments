@@ -83,7 +83,7 @@ var DailyStats = mongoose.model('DailyStats', {
 
 	date:Date
 })
-function getDefaultDailyStats(){
+function getDefaultDailyStats(date){
 	return new DailyStats({
 		mail:0,
 		mailFail:0,
@@ -96,7 +96,7 @@ function getDefaultDailyStats(){
 		resetPasswordOK:0,
 		resetPasswordFail:0,
 
-		date:getToday()
+		date:date|| getToday()
 	});
 }
 
@@ -124,29 +124,73 @@ app.post('/MailFail', function (req, res){
 });
 
 
-CreateDaily();
+//CreateDaily();
 
-app.post('/createDailyStats', function (req, res){
-	res.json({message:'OK'});
-	CreateDaily();
+function dayQuery(date){
+	var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	var tmrw 	= new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	tmrw.setDate(tmrw.getDate() + 1);
+
+	console.log(today, tmrw);
+
+	var query = {
+		// $gte : ISODate("2015-11-02T00:00:00Z"), 
+		// $lt : ISODate("2014-07-03T00:00:00Z")
+		$gte : today, 
+		$lt : tmrw 
+	}
+	return query;
+}
+
+function CreateDaily(date){
+	var dailyStats = getDefaultDailyStats();
+	if (date) { 
+		var dt = new Date(date.getFullYear(), date.getMonth(), date.getDate() );
+		dailyStats = getDefaultDailyStats(dt);
+	}
+	//var today = getTodayQuery();
+	var query = dayQuery(date);
+	//console.log(today);
+	//Log('CreateDaily: ' + str(query), STREAM_STATS );
+
+	//console.error(query);
+
+	DailyStats.findOne({date:query},'', function (err, data){
+		if (err) { ERROR(err); }
+		else{
+			if (!data){
+				dailyStats.save(stdSaver('DailyStats saved!!'));
+				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
+			}
+		}
+	})	
+}
+
+app.all('/createDailyStats', function (req, res){
+	//console.log('createDailyStats');
+	//CreateDaily();
+	create_daily_for_month();
+	res.end('OK');
 })
 
-/*function create_daily_for_week(){
-	for (var i=0; i<7; i++){
+create_daily_for_month();
+
+function create_daily_for_month(){
+	for (var i=0; i<30; i++){
 		var d = new Date();
-		console.log(d)
+		//console.log(d)
 		// Wed Feb 29 2012 11:00:00 GMT+1100 (EST)
 
 		d.setDate(d.getDate() + i)
-		console.log(d)
+		//console.log(d)
 		// Thu Mar 01 2012 11:00:00 GMT+1100 (EST)
 
-		console.log(d.getDate())
+		//console.log(d.getDate())
 
-		console.log(getTodayQuery(d));
+		CreateDaily(d);
 	}
 
-}*/
+}
 
 function get_today_query(date){
 
@@ -174,25 +218,6 @@ function get_today_query(date){
 	return today;
 }
 
-function CreateDaily(){
-	var dailyStats = getDefaultDailyStats();
-	var today = getTodayQuery();
-	//console.log(today);
-	//Log('CreateDaily: ' + str(today), STREAM_STATS );
-	DailyStats.findOne({date:today},'', function (err, data){
-		if (err) { ERROR(err); }
-		else{
-			if (!data){
-				dailyStats.save(stdSaver('DailyStats saved!!'));
-				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
-			}	else {
-				//console.log('DailyStats exists: ' + str(data) );
-			}
-			//Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
-		}
-	})
-	
-}
 
 function updTournament(tournamentID, todo, message){
 	Tournament.update( {ID: tournamentID}, todo, stdUpdateHandler(message) );
@@ -374,6 +399,7 @@ function getTodayQuery(date){
 	return today;
 	//}
 }
+
 
 app.post('/GetTournaments', function (req, res){
 	Log('/GetTournaments', STREAM_STATS);

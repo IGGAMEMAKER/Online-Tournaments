@@ -57,3 +57,15 @@ function getTodayQuery(date){
 	return today;
 	//}
 }
+console.log('-------------');
+
+time(new Date(2015,11,31));
+
+
+function time(date){
+	var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	var tmrw = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	tmrw.setDate(tmrw.getDate() + 1);
+
+	console.log(today, tmrw);
+}

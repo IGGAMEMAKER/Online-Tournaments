@@ -1,3 +1,3 @@
-var sender = require('./requestSender');
+var sender = require('../requestSender');
 
-sender.Stats('/createDailyStats',{});
+sender.Stats('createDailyStats',{});
