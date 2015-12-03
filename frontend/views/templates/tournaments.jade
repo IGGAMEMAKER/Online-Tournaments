@@ -139,14 +139,20 @@ mixin tournamentTile()
 			#info
 				//form(action="/TournamentInfo?tID=300" method="GET")
 					input(type="submit" value="Ping-Pong. №:300")
-				a(href="TournamentInfo?tID=300") Ping-Pong. №:300
+				//a(href="TournamentInfo?tID=300") Ping-Pong. №:300
+				h6!= "Турнир №:"+300
+				h5!= "Пинг-Понг"
 
 				h2!= "Победитель получает: "+7+"$"
 				h3!= "Призовых мест: " + "1" 
 				p!= "Игроков: " + "3/10"
+				p!= "Стоимость "+"1$"
 				//p!= "Призовой фонд:"+10+"$"
 			
 		
 				#button300
-					form(action="TournamentInfo?tID=300")
+					//form(action="TournamentInfo?tID=300")
 						input(type="submit" value="Играть за 1$")
+					a(href="TournamentInfo?tID=300" class="btn btn-lg btn-primary") Подробнее
+						//span(class="glyphicon glyphicon-info-sign")
+							Подробнее

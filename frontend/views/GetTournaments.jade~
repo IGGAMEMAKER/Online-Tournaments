@@ -9,27 +9,33 @@ include templates/tournaments
 mixin filters()
 	#filters.filters
 		h2 Фильтры
-		table
+		table(width="50%")
 			tr
 				td Игры:
 				td
 					input(type="checkbox" name="game-pp" value="1" checked)
 					| Ping-Pong
+				td
 					input(type="checkbox" name="game-qs" value="2" checked)
 					| Quiz
 			tr
 				td Стоимость:
-				td
+				td(width="15%")
 					input(type="checkbox" name="free" value="1" checked)
 					| Бесплатные
+				td(width="15%")
 					input(type="radio" name="buyin" value="0" checked)
 					| Все
+				td(width="15%")
 					input(type="radio" name="buyin" value="1")
 					| до 1$
+				td(width="15%")
 					input(type="radio" name="buyin" value="2")
 					| 1$-5$
+				td(width="15%")
 					input(type="radio" name="buyin" value="3")
 					| 5$-15$
+				td(width="15%")
 					input(type="radio" name="buyin" value="4")
 					| свыше 15$
 
@@ -41,11 +47,22 @@ mixin filters()
 html
 	head
 		title!= 'Tournaments'
+		link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 	body
 		include client
 		include templates/tAuth
 		+filters()
-		+tournamentTile()
+		table
+			tr
+				td
+					+tournamentTile()
+				td
+					+tournamentTile()
+				td
+					+tournamentTile()
+				td
+					+tournamentTile()
+
 		+showTournaments(msg)
 		//script.
 			window.onfocus = function(){location.reload(true);}
