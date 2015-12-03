@@ -113,7 +113,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 //var compression = require('compression');
 //app.use(compression());
-app.set('view cache', true);
+
+//app.set('view cache', true);
 
 
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);

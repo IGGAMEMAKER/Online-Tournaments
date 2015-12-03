@@ -167,7 +167,7 @@ function CreateDaily(date){
 }
 
 app.all('/createDailyStats', function (req, res){
-	//console.log('createDailyStats');
+	console.log('createDailyStats');
 	//CreateDaily();
 	create_daily_for_month();
 	res.end('OK');

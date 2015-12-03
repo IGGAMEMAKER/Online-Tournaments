@@ -132,3 +132,21 @@ mixin showTournaments(message)
 							Tournament Info
 			//p!= message
 		- }}
+
+mixin tournamentTile()
+	#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
+		center
+			#info
+				//form(action="/TournamentInfo?tID=300" method="GET")
+					input(type="submit" value="Ping-Pong. №:300")
+				a(href="TournamentInfo?tID=300") Ping-Pong. №:300
+
+				h2!= "Победитель получает: "+7+"$"
+				h3!= "Призовых мест: " + "1" 
+				p!= "Игроков: " + "3/10"
+				//p!= "Призовой фонд:"+10+"$"
+			
+		
+				#button300
+					form(action="TournamentInfo?tID=300")
+						input(type="submit" value="Играть за 1$")

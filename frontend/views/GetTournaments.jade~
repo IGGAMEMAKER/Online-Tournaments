@@ -1,18 +1,53 @@
 //
+
 -var red = "#FF0000";
 -var green = "#00FF00";
 -var blue = "#0000FF";
 
 include templates/tournaments
 
+mixin filters()
+	#filters.filters
+		h2 Фильтры
+		table
+			tr
+				td Игры:
+				td
+					input(type="checkbox" name="game-pp" value="1" checked)
+					| Ping-Pong
+					input(type="checkbox" name="game-qs" value="2" checked)
+					| Quiz
+			tr
+				td Стоимость:
+				td
+					input(type="checkbox" name="free" value="1" checked)
+					| Бесплатные
+					input(type="radio" name="buyin" value="0" checked)
+					| Все
+					input(type="radio" name="buyin" value="1")
+					| до 1$
+					input(type="radio" name="buyin" value="2")
+					| 1$-5$
+					input(type="radio" name="buyin" value="3")
+					| 5$-15$
+					input(type="radio" name="buyin" value="4")
+					| свыше 15$
+
+			tr 
+				td Акции
+				td
+					input(type="checkbox" name="gifts" value="1" checked)
+					| Включить
 html
 	head
 		title!= 'Tournaments'
 	body
 		include client
 		include templates/tAuth
+		+filters()
+		+tournamentTile()
 		+showTournaments(msg)
-		script.
+		//script.
 			window.onfocus = function(){location.reload(true);}
 			//setTimeout(function(){location.reload(true);} , 10000);
 

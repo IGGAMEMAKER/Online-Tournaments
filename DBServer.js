@@ -138,7 +138,7 @@ const STREAM_SHIT = 'shitCode';
 const STREAM_WARN = 'WARN';
 const STREAM_STATS = 'stats';
 
-const CURRENT_CRYPT_VERSION = 0;
+const CURRENT_CRYPT_VERSION = 2;
 
 function Error(err, message, additionalStream){
 	var txt='DBServer Error: ';
@@ -358,24 +358,22 @@ function getBuyInOfTournament(tournamentID){
 			if (err) {
 				console.err('Tournament buyIn not found. ' + JSON.stringify(err));
 				reject(err);
-			}
-			else{
+			}	else {
 				if (tournament){
 					if (tournament.buyIn>=0){
 						Log('Tournament found. ' + JSON.stringify(tournament));
 						resolve(tournament);
-					}
-					else{
+					} else {
 						console.log('Tournament ' + tournamentID +' was free, no returns needed');
 						reject('Tournament ' + tournamentID +' was free, no returns needed');
 					}
-				}
-				else{
+				} else {
 					console.error('Tournament not found. ' + JSON.stringify(tournament));
 					reject('Tournament not found. ' + JSON.stringify(tournament));
 				}
 			}
-		})
+
+		});
 	});
 }
 
@@ -393,13 +391,11 @@ function pGetPlayers (obj){
 				//Answer(res, players);
 				//console.error('Players :' + JSON.stringify(players) );
 				var obj2 = {tournamentID: obj.tournamentID, players:makeUserArray(players), buyIn: obj.buyIn};
-				
 				console.log('Players now :' + JSON.stringify(obj2));
 				//obj.players=players;
 
 				resolve(obj2);
-			}
-			else{
+			} else {
 				console.error(err);
 				reject('Error ' + JSON.stringify(err) );
 				//Answer(res, Fail);
@@ -510,6 +506,7 @@ function StartTournament(tournamentID, force, res){
 			}	else {
 				sender.Stats('RestartTournament', {tournamentID:tournamentID});
 			}
+			
 			if (res) Answer(res, OK);
 		})
 	})
