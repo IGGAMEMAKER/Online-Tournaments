@@ -48,19 +48,24 @@ mixin filters()
 						input(type="checkbox" name="gifts" value="1" checked)
 						| Включить
 mixin showTournaments1(message)
-	- tournWidth = 4;
-	//- if (message.length>0) { for (i=0; i<message.length;i++) {
-		if i%4==0
-			tr
-				if (message[i])
-					+tournamentTile(message[i])
-				if (message[i+1])
-					+tournamentTile(message[i+1])
-				if (message[i+2])
-					+tournamentTile(message[i+2])
-				if (message[i+3])
-					+tournamentTile(message[i+3])
-	//- }
+	- tournWidth = 3;
+	if message
+		- for (i=0; i<message.length;i++) {
+			if i%tournWidth==0
+				tr
+					- for (j=0;j<tournWidth;j++){
+						if (message[i+j])
+							+tournamentTile(message[i+j])
+					-}
+					//if (message[i])
+						+tournamentTile(message[i])
+					//if (message[i+1])
+						+tournamentTile(message[i+1])
+					//if (message[i+2])
+						+tournamentTile(message[i+2])
+					//if (message[i+3])
+						+tournamentTile(message[i+3])
+		- }
 html
 	head
 		title!= 'Tournaments'
@@ -70,7 +75,8 @@ html
 		include client
 		include templates/tAuth
 		+filters()
-		+showTournaments1(msg)
+		table
+			+showTournaments1(msg)
 		//table
 			//tr
 				td
