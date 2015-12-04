@@ -178,16 +178,22 @@ mixin tournamentTile(t)
 		#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
 			center
 				#info
-					h6!= "Турнир №:"+t.tournamentID
+					h5
+						b!= "Турнир №:"+t.tournamentID
 					+showGame(t.gameNameID)
 
-					h2!= "Победитель получает: "+111+"$"
+					h2!= "Победитель получает: "
+					h2!= t.Prizes[0]/convert+"$"
 					h3!= "Призовых мест: " + t.goNext[1] 
 					p!= "Игроков: " + t.players+"/"+t.goNext[0]
-					p!= "Стоимость "+t.buyIn/convert+"$"
+					
+					if t.buyIn==0
+						p!= "Играть бесплатно!"
+					else
+						p!= "Стоимость "+t.buyIn/convert+"$"
 			
 		
 					#button300
-						a(href="TournamentInfo?tID=300" class="btn btn-lg btn-primary") Подробнее
+						a(href="TournamentInfo?tID="+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
 							//span(class="glyphicon glyphicon-info-sign")
 								Подробнее

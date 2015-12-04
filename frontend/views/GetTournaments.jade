@@ -28,15 +28,48 @@ mixin prices()
 			option(value="2") 1$-5$
 			option(value="3") 5$-15$
 			option(value="4") свыше 15$
+
+mixin alternativeFilter()
+	table(BORDER="1")
+		tr
+			td(style="padding:0 15px 7px 0;") Игры
+			td(style="padding:0 15px 7px 0;") Стоимость
+			td(style="padding:0 15px 7px 0;") Акции
+		tr
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="game-pp" value="1" checked)
+				| Ping-Pong
+				br
+				br
+				input(type="checkbox" name="game-qs" value="2" checked)
+				| Quiz
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="free" value="1" checked)
+				| Бесплатные
+				br
+				br
+				select(name="buyIn")
+					option(value="0" selected) Все
+					option(value="1") до 1$
+					option(value="2") 1$-5$
+					option(value="3") 5$-15$
+					option(value="4") свыше 15$
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="gifts" value="1" checked)
+				| Включить
+				br
+				br
+
 mixin filterTD()
 	td(style="padding:0 15px 7px 0;")
 
 mixin filters()
 	center
-		#filters.filters(style="border: 0px solid black; width:50%; background: #f0f0f0; padding:25px; margin:20px")
+		#filters.filters(style="border: 0px solid black; width:350px; background: #f0f0f0; margin:10px; padding:10px;")
 			//style="border: 1px solid #333; border-collapse: separate; border-spacing: 17px 11px; padding:20px"
 			h2 Фильтры
-			table(style="font-size:22px;")
+			+alternativeFilter()
+			//table(style="font-size:22px;")
 				tr
 					+games()
 				tr
@@ -69,18 +102,6 @@ html
 		+filters()
 		table
 			+showTournaments1(msg)
-		//table
-			//tr
-				td
-					+tournamentTile(msg[0])
-				//td
-					+tournamentTile()
-				//td
-					+tournamentTile()
-				td
-					+tournamentTile1()
-
-		//+showTournaments(msg)
 		//script.
 			window.onfocus = function(){location.reload(true);}
 			//setTimeout(function(){location.reload(true);} , 10000);
