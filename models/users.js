@@ -195,7 +195,7 @@ function hasEnoughMoney(login, ammount){
 	log('chain added!');
 })*/
 
-create('AlvaroFernandez11', 'ghjghj', '789hj@mail.ru')
+/*create('AlvaroFernandez11', 'ghjghj', '789hj@mail.ru')
 .catch(function(err){
 	switch(err){
 		case USER_EXISTS:
@@ -205,7 +205,7 @@ create('AlvaroFernandez11', 'ghjghj', '789hj@mail.ru')
 			log('UNKNOWN_ERROR' + err);
 		break;
 	}
-})
+})*/
 
 
 //tryMoneyDecrease('AlvaroFernandez', 100*money_koef);
@@ -322,6 +322,7 @@ function p_printer (obj) {
 		return resolve(obj);
 	})
 }
+
 function catcher(err){
 	log('catched error!');
 	if (err){
@@ -329,5 +330,4 @@ function catcher(err){
 	} else {
 		log('null error');
 	}
-
 }
