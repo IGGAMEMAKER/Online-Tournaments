@@ -26,6 +26,10 @@ var OK = {
 	result: 'OK'
 }
 
+var money_koef = 100;
+
+//-----------------------EXTERNAL FUNCTIONS--------------------------------
+
 function all(){
 	return new Promise(function(resolve, reject){
 		User.find({}, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
@@ -37,7 +41,7 @@ function all(){
 	})
 }
 
-function getByLogin(login){
+function profile(login){
 	return new Promise(function(resolve,reject){
 		User.findOne({login:login}, 'login money email', function (err, user) {
 			if (err) return reject(err);
@@ -109,11 +113,6 @@ function changePassword(login, oldPass, newPass){
 	})*/
 }
 
-function HASH(password){
-	//return password;
-	return security.Hash(password, CURRENT_CRYPT_VERSION);
-}
-
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
 		var login = user.login;
@@ -139,7 +138,6 @@ function resetPassword(user){
 	})
 }
 
-var money_koef = 100;
 
 function moneyIncrease(login, ammount){
 	return new Promise(function(resolve, reject){
@@ -153,18 +151,19 @@ function moneyIncrease(login, ammount){
 	})
 }
 
-function tryMoneyDecrease(login, ammount){
+function tryMoneyDecrease(login, ammount, force){
 	return hasEnoughMoney(login, ammount)
 	.then(function(hasMoney){
-		if (hasMoney==OK) return moneyDecrease(login, ammount);
+		if (hasMoney==OK || force) return moneyDecrease(login, ammount);
 		return Fail;
 	})
 	.then(function(result){
 		log('result: ' + JSON.stringify(result));
 	})
+	.catch(catcher);
 }
 
-function moneyDecrease(login, ammount, force){
+function moneyDecrease(login, ammount){
 	return new Promise(function(resolve, reject){
 		User.update({login:login}, {$inc: { money: -ammount }} , function (err, count) {
 			if (err) return reject(err);
@@ -176,8 +175,7 @@ function moneyDecrease(login, ammount, force){
 	});
 }
 
-tryMoneyDecrease('AlvaroFernandez', 100*money_koef);
-//moneyIncrease('AlvaroFernandez', 200*money_koef);
+
 function hasEnoughMoney(login, ammount){
 	return new Promise(function(resolve, reject){
 		User.findOne({login:login}, 'money', function(err, user){
@@ -190,6 +188,55 @@ function hasEnoughMoney(login, ammount){
 	})
 }
 
+//----------------------Tests-----------------------------
+
+/*changePassword('AlvaroFernandez', 'pppppppp', 'asdasd')
+.then(function(asd){
+	log('chain added!');
+})*/
+
+create('AlvaroFernandez11', 'ghjghj', '789hj@mail.ru')
+.catch(function(err){
+	switch(err){
+		case USER_EXISTS:
+			log('USER_EXISTS: ((' + err);
+		break;
+		default:
+			log('UNKNOWN_ERROR' + err);
+		break;
+	}
+})
+
+
+//tryMoneyDecrease('AlvaroFernandez', 100*money_koef);
+//moneyIncrease('AlvaroFernandez', 200*money_koef);
+
+/*auth('AlvaroFernandez', 'cojonesAAA')
+.then(function(auth){
+	if (!auth) { 
+		log('auth failed'); 
+	} else {
+		log('authenticated');
+	}
+})*/
+
+
+
+//update_password('AlvaroFernandez', 'asdasd', CURRENT_CRYPT_VERSION);
+
+/*profile('AlvaroFernandez')
+.then(p_printer)
+.catch(catcher);*/
+
+/*all()
+.then(function(users){
+	log('Users: ');
+	log(users);
+})
+.catch(catcher);*/
+
+
+// -----------------------AUXILARY FUNCTIONS--------------------------
 
 function update_password (login, password, cryptVersion) {
 	return new Promise(function(resolve, reject){
@@ -208,53 +255,18 @@ function update_password (login, password, cryptVersion) {
 	})
 }
 
+
 function now(){
 	return new Date();
 }
 
+function HASH(password){
+	//return password;
+	return security.Hash(password, CURRENT_CRYPT_VERSION);
+}
 
 function password_needs_update(cryptVersion){ return cryptVersion!=CURRENT_CRYPT_VERSION; }
 
-/*changePassword('AlvaroFernandez', 'pppppppp', 'asdasd')
-.then(function(asd){
-	log('chain added!');
-})*/
-
-create('AlvaroFernandez', 'ghjghj', '789hj@mail.ru')
-.catch(function(err){
-	switch(err){
-		case USER_EXISTS:
-			log('USER_EXISTS: ((' + err);
-		break;
-		default:
-			log('UNKNOWN_ERROR' + err);
-		break;
-	}
-})
-
-/*auth('AlvaroFernandez', 'cojonesAAA')
-.then(function(auth){
-	if (!auth) { 
-		log('auth failed'); 
-	} else {
-		log('authenticated');
-	}
-})*/
-
-
-
-//update_password('AlvaroFernandez', 'asdasd', CURRENT_CRYPT_VERSION);
-
-getByLogin('AlvaroFernandez')
-.then(p_printer)
-.catch(catcher);
-
-/*all()
-.then(function(users){
-	log('Users: ');
-	log(users);
-})
-.catch(catcher);*/
 
 
 
