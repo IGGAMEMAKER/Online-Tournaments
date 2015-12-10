@@ -68,7 +68,7 @@ app.use(function(req,res,next){
       //throw new Error('Catch Me If You Can');
     break;
     default:
-      console.log('Site: Request! ' + req.url);
+      //console.log('Site: Request! ' + req.url);
 
     break;
   }
