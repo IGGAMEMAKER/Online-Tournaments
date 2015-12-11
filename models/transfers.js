@@ -15,11 +15,12 @@ var MoneyTransfer = mongoose.model('MoneyTransfer', { userID: String, ammount:Nu
 
 var money_koef = 100;
 
-function getByLogin(login){
+function getByLogin(login, limit){
 	return new Promise(function(resolve, reject){
 		MoneyTransfer
 			.find({userID: login})
 			.sort('-date')
+			.limit(limit)
 			.exec(function (err, transfers){
 				if (err) return reject(err);
 
@@ -44,7 +45,7 @@ function add(login, cash, source){
 	});
 }
 
-getByLogin('Raja')
+getByLogin('Raja', 5)
 .then(helper.p_printer)
 .catch(helper.catcher)
 
