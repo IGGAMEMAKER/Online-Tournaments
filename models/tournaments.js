@@ -58,6 +58,16 @@ function all(){
 	//4 - paused - турнир приостановлен
 }
 
+function getByID(tournamentID){
+	return new Promise(function(resolve, reject){
+		Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
+			if (err) return reject(err);
+
+			return resolve(tournament||null);
+		})
+	})
+}
+
 function start(tournamentID){	setTournStatus(tournamentID, TOURN_STATUS_RUNNING); }
 
 function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED); }
@@ -124,7 +134,7 @@ function get_tournaments_gameserver(){
 function get_tournaments_default(){
 	log('get_tournaments_default');
 	query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
-	return get_tournaments(query, 'tournamentID buyIn goNext gameNameID players', null, null);
+	return get_tournaments(query, 'tournamentID buyIn goNext gameNameID players Prizes', null, null);
 }
 
 /*get_tournaments_for_user()
@@ -181,4 +191,12 @@ function get_tournaments(query, fields, filters, sort){
 	})
 }
 
+this.all = get_tournaments_default;
 this.get_tournaments_for_user = get_tournaments_for_user;
+this.getByID = getByID;
+
+this.start = start;
+this.stop = stop;
+this.enable = enable;
+this.add = add;
+this.finish = finish;

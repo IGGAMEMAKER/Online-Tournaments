@@ -12,6 +12,7 @@ var Promise = require('bluebird');
   res.render('index', { title: 'Express' });
 });*/
 var Tournaments = require('../models/tournaments');
+var Tregs = require('../models/tregs');
 
 
 
@@ -174,20 +175,41 @@ var strLog = Log;
   });*/
 
   function Render(res, page, data){
-    res.render(page, {msg:data||null});
+    res.render(page, { msg: data || null });
   }
 
   function InternalError(res){
-    res.status(500);
+    res.sendStatus(500);
   }
+
+  router.get('/:tournamentID', function(req, res){
+    var data=[];
+    var tournamentID = req.params.tournamentID;
+    Tournaments.getByID(tournamentID)
+    .then(function(tournament){
+      //log('TournamentInfo');     log(tournament);
+      data.push(tournament);
+
+      return Tregs.getParticipants(tournamentID);
+    })
+    .then(function(players){
+      data.push(players);
+      
+      Render(res, 'TournamentInfo', data);
+    })
+    .catch(function(err){
+      InternalError(res);
+    })
+  })
 
   router.all('/', function (req, res){
     log('get tournaments');
     Tournaments.get_tournaments_for_user()
     .then(function(tournaments){
       log('tournaments');
-      //Render(res, 'GetTournaments', tournaments);
-      res.json(tournaments);
+      //InternalError(res);
+      Render(res, 'GetTournaments', tournaments);
+      //res.json(tournaments);
     })
     .catch(function(err){
       log('get Tournaments error ' + ' Tournaments');
@@ -196,5 +218,7 @@ var strLog = Log;
     })
     //AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
   });
+
+
 
 module.exports = router;

@@ -109,6 +109,15 @@ mixin drawTournamentInfo(message)
 
 	+showPlayers(message[1])
 
+mixin drawTournamentInfo2(message)
+	+showTournament(message[0])
+	+showPrizes(message[0].Prizes)
+
+	+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
+	+drawRegButton("unReg", "UNREGISTER", message[0].tournamentID, message)
+
+	+showPlayers(message[1])
+
 mixin showTournaments(message)
 	h1 List of Tournaments
 	table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
@@ -177,7 +186,9 @@ mixin tournamentTile(t)
 	td
 		#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
 			center
+					//p!= JSON.stringify(t)
 				#info
+					
 					h5
 						b!= "Турнир №:"+t.tournamentID
 					+showGame(t.gameNameID)
@@ -194,6 +205,6 @@ mixin tournamentTile(t)
 			
 		
 					#button300
-						a(href="TournamentInfo?tID="+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
+						a(href=""+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
 							//span(class="glyphicon glyphicon-info-sign")
 								Подробнее

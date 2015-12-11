@@ -4,7 +4,7 @@ var express = require('express');
 var app = express();
 var server;
 
-/*var session = require('express-session');
+var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
 
@@ -12,16 +12,18 @@ var configs = require('./configs');
 var sessionDBAddress = configs.session;
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');*/
+mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
+
+
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-/*app.use(session({
+app.use(session({
 	store: new MongoStore({ mongooseConnection: mongoose.connection }),
 	secret: '1234567890QWERTY',
 	resave: true,
 	saveUninitialized: true,
-}));*/
+}));
 
 requestCounter=0;
 

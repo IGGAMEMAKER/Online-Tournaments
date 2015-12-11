@@ -6,25 +6,20 @@ html
 		title!= title
 		include client
 		script.
-			var login = "#{session.login}";			
-			var tID = "#{msg[0].tournamentID}";
+			var login = "#{session.login}";
+			var tID = "#{msg.tournamentID}";
 		//script(src="sockets.js").
 		//script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
 		include templates/tAuth
-
+		//p!=JSON.stringify(msg)
 		h1!= 'Tournament : ' + msg[0].tournamentID
 		+drawTournamentInfo(msg)
-
-		//+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
-		//+drawRegButton("unReg", "UNREGISTER", msg[0].tournamentID, msg)
 
 		#gift
 			//p Click on gift to show it here!
 		script.
-			//setTimeout(function(){location.reload(true);} , 7000);
-
 			document.getElementById("reg").addEventListener("click", function()   { func(login, tID);});
 			document.getElementById("unReg").addEventListener("click", function() { unReg(login, tID);});
 		#news

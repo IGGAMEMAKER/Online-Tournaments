@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var configs = require('../configs');
 var mongoose = require('mongoose');
 //mongoose.connect('mongodb://localhost/test');
-mongoose.connect('mongodb://'+configs.db+'/test');
+var db = mongoose.createConnection('mongodb://'+configs.db+'/test');
 
 var helper = require('../helpers/helper');
 var log = helper.log;
@@ -11,7 +11,7 @@ var log = helper.log;
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
 
-var TournamentReg = mongoose.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
+var TournamentReg = db.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -95,12 +95,12 @@ function userRegistered(login, tournamentID){
 //----------------TESTS------------------------
 
 /*test_add(363, 'AlvaroFernandez', 'gaginho')
-test_add(363, 'RafaMartinez', 'gaginho')*/
+test_add(363, 'RafaMartinez', 'gaginho')
 test_remove(363, 'AlvaroFernandez')
 test_remove(363, 'RafaMartinez')
 //test_registered('AlvaroFernandez', 364)
 test_player_regs('AlvaroFernandez')
-test_participants(363);
+test_participants(363);*/
 
 function test_player_regs(login){
 	getPlayerRegs(login)
@@ -154,3 +154,5 @@ function test_add(tournamentID, login, promo){
 	log('Experiment: ' + val);
 })
 .catch(helper.catcher)*/
+
+this.getParticipants = getParticipants;
