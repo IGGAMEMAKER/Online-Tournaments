@@ -1,15 +1,19 @@
 var Promise = require('bluebird');
 
 var configs = require('../configs');
-var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
-mongoose.connect('mongodb://'+configs.db+'/test');
+
+
 
 var helper = require('../helpers/helper');
 var log = helper.log;
 
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
+
+var mongoose = require('mongoose');
+//mongoose.connect('mongodb://localhost/test');
+log(configs.db);
+var db = mongoose.createConnection('mongodb://'+configs.db+'/test');
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -18,7 +22,7 @@ const TOURN_STATUS_PAUSED = 4;
 
 const PROMO_COMISSION = 5;
 
-var Tournament = mongoose.model('Tournament', { 
+var Tournament = db.model('Tournament', { 
 	buyIn: 			Number,
 	initFund: 		Number,
 	gameNameID: 	Number,
@@ -45,6 +49,7 @@ var Tournament = mongoose.model('Tournament', {
 	//tournamentServerID: String
 });
 
+
 function all(){
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
@@ -53,21 +58,13 @@ function all(){
 	//4 - paused - турнир приостановлен
 }
 
-function start(tournamentID){
-	setTournStatus(tournamentID, TOURN_STATUS_RUNNING);
-}
+function start(tournamentID){	setTournStatus(tournamentID, TOURN_STATUS_RUNNING); }
 
-function stop(tournamentID){
-	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
-}
+function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED); }
 
-function enable(tournamentID){
-	setTournStatus(tournamentID, TOURN_STATUS_REGISTER);
-}
+function enable(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_REGISTER); }
 
-function finish(tournamentID){
-	stop(tournamentID);
-}
+function finish(tournamentID){ stop(tournamentID); }
 
 function add(tournament){
 	return new Promise(function(resolve, reject){
@@ -76,7 +73,7 @@ function add(tournament){
 			.sort('-tournamentID')
 			.exec(function searchTournamentWithMaxID (err, maxTournament){
 
-			if (err) return reject({err:err, stage:'tournament.add find err');
+			if (err) return reject({err:err, stage:'tournament.add find err'});
 
 			var newID=0;
 			if (maxTournament) newID = maxTournament.tournamentID || 0;
@@ -91,7 +88,6 @@ function add(tournament){
 				//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
 				
 				return resolve(tournament);
-
 			});
 
 		});
@@ -107,30 +103,8 @@ function setTournStatus(tournamentID, status){
 
 var COUNT_FIXED = 1;
 
-function addTournament(maxID, tournament, res){
-	tournament.tournamentID = maxID+1;
-	var tourn = new Tournament(tournament);
-	tourn.save(function (err) {
-		if (err){
-			Error(err);
-			Answer(res, Fail);
-		}	else {
-			Answer(res, tournament);
-			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
-
-			setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
-			//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
-		}
-	});
-}
-
-function AddTournament (req, res){
-	var data = req.body;
-	var tournament = data;
-	
-}
-
 function get_tournaments_for_user(){
+	log('called');
 	return get_tournaments_default();
 	//query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 	//return get_tournaments(query, '', null, null);
@@ -148,13 +122,14 @@ function get_tournaments_gameserver(){
 }
 
 function get_tournaments_default(){
+	log('get_tournaments_default');
 	query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
-	return get_tournaments(query, '', null, null);
+	return get_tournaments(query, 'tournamentID buyIn goNext gameNameID players', null, null);
 }
 
-get_tournaments_default()
+/*get_tournaments_for_user()
 .then(helper.p_printer)
-.catch(helper.catcher)
+.catch(helper.catcher)*/
 
 /*function getTournamentsQuery(query, fields, purpose){
 	if (query) Log(JSON.stringify(query));
@@ -189,13 +164,21 @@ get_tournaments_default()
 }*/
 
 
+
+
 //--------------AUXILLARY FUNCTIONS----------
 function get_tournaments(query, fields, filters, sort){
 	return new Promise(function(resolve, reject){
+		log('tournaments');
 		Tournament.find(query, fields, function (err, tournaments){
+
+			log('Asynced');
 			if (err) return reject(err);
 
+			//log(tournaments);
 			return resolve(tournaments||null);
 		});
 	})
 }
+
+this.get_tournaments_for_user = get_tournaments_for_user;

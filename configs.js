@@ -18,5 +18,5 @@ config.db	=	configs.db;
 config.stats	=	configs.stats;
 config.session	=	configs.session;
 
-console.log(config);
+//console.log(config);
 module.exports = config;

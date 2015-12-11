@@ -317,8 +317,7 @@ function isAuthenticated(req){
 function getLogin(req){
   if (isAuthenticated(req)){
     return req.session.login;
-  }
-  else{
+  } else {
     return 0;
   }
 }

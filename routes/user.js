@@ -1,3 +1,13 @@
+/*var express = require('express');
+var router = express.Router();
+
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+module.exports = router;*/
+
+
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, Fail){
 	var validator = require('validator');
 
@@ -46,13 +56,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.get('/Changepassword', function (req, res){
 		res.render('Changepassword');
 	})
-
-	/*app.post('/UserExists', function (req, res){
-		var data = req.body;
-		if (ValidLogin(data||null)){
-
-		}
-	})*/
 
 	app.post('/Changepassword' , function (req, res){
 		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.passwordRepeat && ValidPass(req.body.newpassword)) {
