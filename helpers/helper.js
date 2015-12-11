@@ -27,12 +27,20 @@ function p_printer (obj) {
 }
 
 function printer(obj) { 
-	log('obj:'); 
-	log(obj); 
+	//log('obj:');
+	log(obj);
+}
+
+function removed(count){
+	//console.error(count.result);
+	return count.result.n>0;
 }
 
 this.log = log;
 this.now = now;
 this.catcher = catcher;
+
 this.updated = updated;
+this.removed = removed;
+
 this.p_printer = p_printer;

@@ -8,6 +8,9 @@ mongoose.connect('mongodb://'+configs.db+'/test');
 var helper = require('../helpers/helper');
 var log = helper.log;
 
+var Fail = { result: 'fail' };
+var OK = { result: 'OK' };
+
 var Gift = mongoose.model('Gift', { 
 	name: String, photoURL: String, 
 	description: String, URL: String, 

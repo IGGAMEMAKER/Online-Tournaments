@@ -19,12 +19,8 @@ const CURRENT_CRYPT_VERSION = 2;
 var USER_EXISTS = 11000;
 var UNKNOWN_ERROR=500;
 
-var Fail = {
-	result: 'fail'
-};
-var OK = {
-	result: 'OK'
-}
+var Fail = { result: 'fail' };
+var OK = { result: 'OK' };
 
 var money_koef = 100;
 
@@ -256,9 +252,7 @@ function update_password (login, password, cryptVersion) {
 }
 
 
-function now(){
-	return new Date();
-}
+function now(){ return new Date(); }
 
 function HASH(password){
 	//return password;
@@ -303,8 +297,8 @@ function get_new_user(login, password, email){
 function log(msg){ console.log(msg); }
 
 function printer(obj) { 
-	log('obj:'); 
-	//log(obj); 
+	//log('obj:'); 
+	log(obj); 
 }
 
 function auth_printer(authenticated){
