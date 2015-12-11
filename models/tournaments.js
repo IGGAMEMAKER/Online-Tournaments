@@ -46,17 +46,88 @@ var Tournament = mongoose.model('Tournament', {
 });
 
 function all(){
-	/*var data = req.body;
-	var purpose = data.purpose || null;
-	var query = getTournamentsQuery(data.query, data.queryFields, purpose);
-
-	findTournaments(res, query.query, query.fields, purpose);*/
-
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
 	//2 - running - турнир начат
 	//3 - finished - турнир окончен
 	//4 - paused - турнир приостановлен
+}
+
+function start(tournamentID){
+	setTournStatus(tournamentID, TOURN_STATUS_RUNNING);
+}
+
+function stop(tournamentID){
+	setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
+}
+
+function enable(tournamentID){
+	setTournStatus(tournamentID, TOURN_STATUS_REGISTER);
+}
+
+function finish(tournamentID){
+	stop(tournamentID);
+}
+
+function add(tournament){
+	return new Promise(function(resolve, reject){
+		Tournament
+			.findOne({})
+			.sort('-tournamentID')
+			.exec(function searchTournamentWithMaxID (err, maxTournament){
+
+			if (err) return reject({err:err, stage:'tournament.add find err');
+
+			var newID=0;
+			if (maxTournament) newID = maxTournament.tournamentID || 0;
+			tournament.tournamentID = newID+1;
+
+			var tourn = new Tournament(tournament);
+			tourn.save(function (err1) {
+				if (err1) return reject({err:err1, stage:'tournament.add save err'});
+
+				log('added Tournament ' + JSON.stringify(tournament));
+				enable(tournamentID);
+				//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
+				
+				return resolve(tournament);
+
+			});
+
+		});
+	});
+}
+
+function setTournStatus(tournamentID, status){
+	log('Set tourn status of ' + tournamentID + ' to ' + status);
+	Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
+		if(err) { log('Tournament status update Error: ' + JSON.stringify(err)); }
+	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
+}
+
+var COUNT_FIXED = 1;
+
+function addTournament(maxID, tournament, res){
+	tournament.tournamentID = maxID+1;
+	var tourn = new Tournament(tournament);
+	tourn.save(function (err) {
+		if (err){
+			Error(err);
+			Answer(res, Fail);
+		}	else {
+			Answer(res, tournament);
+			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
+
+			setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
+			//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
+		}
+	});
+}
+
+function AddTournament (req, res){
+	var data = req.body;
+	var tournament = data;
+	
 }
 
 function get_tournaments_for_user(){
