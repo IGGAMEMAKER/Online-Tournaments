@@ -1,0 +1,27 @@
+--------- style.css -----------
+.l-bloc a{
+	/*color:rgba(0,0,0,.6);*/
+}
+.l-bloc a:hover{
+	/*color:rgba(0,0,0,1);*/
+}
+
+
+--------- bootstrap.css ----------
+
+.btn-primary {
+  color: #ffffff;
+  background-color: #2780e3;
+  border-color: #2780e3;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #ffffff;
+  background-color: #1967be;
+  border-color: #10427b;
+}
+.btn-primary:hover {
+  color: #ffffff;
+  background-color: #1967be;
+  border-color: #1862b5;
+}
