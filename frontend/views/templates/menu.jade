@@ -1,16 +1,40 @@
 //
-link(rel="stylesheet" type="text/css" href="css/menu.css")
-table(width="100%")
-	tr
-		td
-			ul(id="menu")
-				li
-					a(href="Profile") Profile
-				li
-					a(href="Tournaments") Tournaments
-				li
-					a(href="chat") Chat
-br
-//ul(id="menu")
-	li
-a(id="my-tournaments" href="#" onclick="drawPopup()") My Tournaments
+	link(rel="stylesheet" type="text/css" href="css/menu.css")
+	table(width="100%")
+		tr
+			td
+				ul(id="menu")
+					li
+						a(href="Profile") Profile
+					li
+						a(href="Tournaments") Tournaments
+					li
+						a(href="chat") Chat
+	br
+	//ul(id="menu")
+		li
+	a(id="my-tournaments" href="#" onclick="drawPopup()") My Tournaments
+
+
+div(class="bloc l-bloc bgc-white" id="nav-bloc")
+	div(class="container bloc-sm")
+			nav(class="navbar row")
+				div(class="navbar-header")
+					a(class="navbar-brand" href="index.html") Онлайн турниры
+					button(id="nav-toggle" type="button" class="ui-navbar-toggle navbar-toggle" data-toggle="collapse" data-target=".navbar-1")
+						span(class="sr-only") Toggle navigation
+						span(class="icon-bar")
+						span(class="icon-bar")
+						span(class="icon-bar")
+					div(class="collapse navbar-collapse navbar-1")
+						ul(class="site-navigation nav navbar-nav")
+							li
+								a(href="index.html") Главная
+							li
+								a(href="account.html") Профиль
+							li
+								a(href="bonus.html") Бонусы
+							li
+								a(href="support.html") Техподдержка
+							li
+								a(class="ltc-brandeis-blue" href="tyrnit.html") sabrysmk $1.44

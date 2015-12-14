@@ -56,6 +56,9 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 .bloc-lg{
 	padding:100px 50px;
 }
+.bloc-md{
+	padding:50px;
+}
 .bloc-sm{
 	padding:20px 50px;
 }
@@ -87,6 +90,63 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 }
 
 
+/* Dark theme */
+
+.d-bloc{
+	color:rgba(255,255,255,.7);
+}
+.d-bloc button:hover{
+	color:rgba(255,255,255,.9);
+}
+.d-bloc h1, .d-bloc h2, .d-bloc h3, .d-bloc h4,.d-bloc h5, .d-bloc h6, .d-bloc .ico{
+	color:rgba(255,255,255,.9);
+}
+.d-bloc .icon-round,.d-bloc .icon-square,.d-bloc .icon-rounded,.d-bloc .icon-semi-rounded-a,.d-bloc .icon-semi-rounded-b{
+	border-color:rgba(255,255,255,.9);
+}
+.d-bloc .divider-h span{
+	border-color:rgba(255,255,255,.2);
+}
+.d-bloc a{
+	color:rgba(255,255,255,.6);
+}
+.d-bloc a:hover{
+	color:rgba(255,255,255,1);
+}
+.d-bloc .navbar-toggle .icon-bar{
+	background:rgba(255,255,255,1);
+}
+.d-bloc .btn-wire,.d-bloc .btn-wire:hover{
+	color:rgba(255,255,255,1);
+	border-color:rgba(255,255,255,1);
+}
+.d-bloc .panel{
+	color:rgba(0,0,0,.5);
+}
+.d-bloc .panel button:hover{
+	color:rgba(0,0,0,.7);
+}
+.d-bloc .panel h1,.d-bloc .panel h2, .d-bloc .panel h3, .d-bloc .panel h4, .d-bloc .panel h5, .d-bloc .panel h6, .d-bloc .ico{
+	color:rgba(0,0,0,.7);
+}
+.d-bloc .panel icon{
+	border-color:rgba(0,0,0,.7);
+}
+.d-bloc .panel .divider-h span{
+	border-color:rgba(0,0,0,.1);
+}
+.d-bloc .panel a{
+	color:rgba(0,0,0,.6);
+}
+.d-bloc .panel a:hover{
+	color:rgba(0,0,0,1);
+}
+.d-bloc .panel .btn-wire, .d-bloc .panel .btn-wire:hover{
+	color:rgba(0,0,0,.7);
+	border-color:rgba(0,0,0,.3);
+}
+
+
 /* Light theme */
 
 .l-bloc{
@@ -105,10 +165,10 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 	border-color:rgba(0,0,0,.1);
 }
 .l-bloc a{
-	/*color:rgba(0,0,0,.6);*/
+	color:rgba(0,0,0,.6);
 }
 .l-bloc a:hover{
-	/*color:rgba(0,0,0,1);*/
+	color:rgba(0,0,0,1);
 }
 .l-bloc .navbar-toggle .icon-bar{
 	color:rgba(0,0,0,.6);
@@ -126,6 +186,12 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 
 /* Bloc text custom styling */
 
+#bloc-12 h3{
+	font-size: 40px;
+}
+#bloc-13 h3{
+	font-size: 40px;
+}
 
 /* = NavBar
 -------------------------------------------------------------- */
@@ -282,6 +348,9 @@ button{
 .icon-md{
 	font-size:30px!important;
 }
+.icon-xl{
+	font-size:100px!important;
+}
 .icon-round{
 	margin:0 auto;
 	border:2px solid transparent;
@@ -310,6 +379,11 @@ button{
 	border-radius:34px;
 }
 
+/* = Text & Icon Styles
+-------------------------------------------------------------- */
+.lg-shadow{
+	text-shadow:0 2px 5px rgba(0,0,0,.5);
+}
 
 
 /* = Panels
@@ -371,6 +445,9 @@ iframe{
 
 .bg-1123676{
 	background-image:url("img/1123676.jpg");
+}
+.bg-walkway{
+	background-image:url('img/walkway.jpg');
 }
 
 
