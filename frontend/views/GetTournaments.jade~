@@ -1,108 +1,158 @@
 //
+- tournWidth = 3;
+
+-var convert=100;
+
+mixin showTournaments(tournaments)
+	div(class="bloc l-bloc bgc-white b-divider" id="hq1")
+		div(class="container bloc-sm")
+			div(class="row" id="line1")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament(tournaments[0] , 1 
+					, "img/CR2.jpg")
+			br
+			div(class="row" id="line2")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
+					, "img/CR2.jpg")
+				//each tournament in tournaments
+					showTournament(tournament)
+
+//mixin showTournaments1(tournaments)
+	if tournaments
+		- for (i=0; i<tournaments.length;i++) {
+			if i%tournWidth==0
+				-var lineID = i/tournWidth;
+				-console.log(lineID);
+				tr
+					- for (j=0;j<tournWidth;j++){
+						if (tournaments[i+j])
+							+tournamentTile(tournaments[i+j])
+					-}
+		- }
+
+mixin showGame(gameNameID)
+	case gameNameID
+		when 0
+			Ошибка, сообщите в техподдержку
+		when 1
+			Пинг понг
+		when 2
+			Викторина
+		when 3
+			Battle
+		default
+			Ошибка
+
+mixin tournamentTile(t)
+	td
+		#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
+			center
+					//p!= JSON.stringify(t)
+				#info
+					
+					h5
+						b!= "Турнир №:"+t.tournamentID
+					+showGame(t.gameNameID)
+
+					h2!= "Победитель получает: "
+					h2!= t.Prizes[0]/convert+"$"
+					h3!= "Призовых мест: " + t.goNext[1] 
+					p!= "Игроков: " + t.players+"/"+t.goNext[0]
+					
+					if t.buyIn==0
+						p!= "Играть бесплатно!"
+					else
+						p!= "Стоимость "+t.buyIn+"$"
+			
+		
+					#button300
+						a(href=""+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
+							//span(class="glyphicon glyphicon-info-sign")
+								Подробнее
+
+mixin showPrizes(prizes)
+	h2 Tournament prizes
+	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+		tr
+			td Round
+			td Prize
+		each prize, index in prizes
+			if prize
+				tr
+					td #{index}
+					if isNaN(prize)
+						//td GIFT#{JSON.stringify(prize)}
+						td 
+							a(href="GetGift?giftID="+prize.giftID) Show prize
+					else
+						td #{prize/convert}$
+	br
+
+mixin showPrize(prize)
+	if prize
+		if isNaN(prize)
+			//td GIFT#{JSON.stringify(prize)}
+			//td
+				a(href="GetGift?giftID="+prize.giftID) Show prize
+			Приз: #{prize}
+		else
+			Приз: #{prize/convert}$
+
+mixin showTournament(t,line, imageUrl)
+	- var ID=t.tournamentID||115;
+	- var registered = 1;
+	- var gameNameID = t.gameNameID;
+	- var prizes = t.Prizes[0];	
+	- var maxPlayers = t.goNext[0];
+	- var winnersPlaces = t.goNext[1];
+	- var buyIn = t.buyIn || 0;
+	
+	div(class="col-sm-3")
+		center
+			h4(class="mg-md text-center" id="gname-"+ID)
+				+showGame(t.gameNameID)
+			img(src=imageUrl width="210" height="150")
+			h3(id="wnrs-"+ID style="height:55px; width:220px" )
+				+showPrize(prizes)
+			h4(class="mg-md") 
+				Стоимость: #{buyIn/convert}$
+				br
+				Призовых мест: #{winnersPlaces}
+				div(id="plrs-"+ID)
+					Участников : #{registered} из #{maxPlayers}
+			a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
 
 -var red = "#FF0000";
 -var green = "#00FF00";
 -var blue = "#0000FF";
 
-include templates/tournaments
+//include templates/tournaments
 
-mixin games()
-	td(style="padding:0 15px 7px 0;")
-		Игры:
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="game-pp" value="1" checked)
-		| Ping-Pong
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="game-qs" value="2" checked)
-		| Quiz
-mixin prices()
-	td(style="padding:0 15px 7px 0;")
-		Стоимость:
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="free" value="1" checked)
-		| Бесплатные
-	td(style="padding:0 15px 7px 0;")
-		select(name="buyIn")
-			option(value="0" selected) Все
-			option(value="1") до 1$
-			option(value="2") 1$-5$
-			option(value="3") 5$-15$
-			option(value="4") свыше 15$
-
-mixin alternativeFilter()
-	table(BORDER="1")
-		tr
-			td(style="padding:0 15px 7px 0;") Игры
-			td(style="padding:0 15px 7px 0;") Стоимость
-			td(style="padding:0 15px 7px 0;") Акции
-		tr
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="game-pp" value="1" checked)
-				| Ping-Pong
-				br
-				br
-				input(type="checkbox" name="game-qs" value="2" checked)
-				| Quiz
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="free" value="1" checked)
-				| Бесплатные
-				br
-				br
-				select(name="buyIn")
-					option(value="0" selected) Все
-					option(value="1") до 1$
-					option(value="2") 1$-5$
-					option(value="3") 5$-15$
-					option(value="4") свыше 15$
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="gifts" value="1" checked)
-				| Включить
-				br
-				br
-
-mixin filterTD()
-	td(style="padding:0 15px 7px 0;")
-
-mixin filters()
-	center
-		#filters.filters(style="border: 0px solid black; width:350px; background: #f0f0f0; margin:20px; padding:20px;")
-			//style="border: 1px solid #333; border-collapse: separate; border-spacing: 17px 11px; padding:20px"
-			h2 Фильтры
-			+alternativeFilter()
-			//table(style="font-size:22px;")
-				tr
-					+games()
-				tr
-					+prices()
-				tr 
-					td(style="padding:0 15px 7px 0;")
-						Акции
-					td(style="padding:0 15px 7px 0;")
-						input(type="checkbox" name="gifts" value="1" checked)
-						| Включить
-mixin showTournaments1(message)
-	- tournWidth = 3;
-	if message
-		- for (i=0; i<message.length;i++) {
-			if i%tournWidth==0
-				tr
-					- for (j=0;j<tournWidth;j++){
-						if (message[i+j])
-							+tournamentTile(message[i+j])
-					-}
-		- }
 html
 	head
-		title!= 'Tournaments'
-		link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
-		
+		title!= 'Турниры'
+		include templates/head
+		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 	body
-		include client
-		include templates/tAuth
-		+filters()
-		table
-			+showTournaments1(msg)
-		//script.
-			window.onfocus = function(){location.reload(true);}
-			//setTimeout(function(){location.reload(true);} , 10000);
-
+		div(class="page-container")
+			include client
+			
+			div(class="bloc l-bloc bgc-white" id="bloc-1")
+				div(class="container")
+					div(class="row")
+						div(class="col-sm-12")
+							h3(class="mg-md text-center") Турниры
+			//p!= JSON.stringify(msg)
+			+showTournaments(msg)
+			include templates/footer

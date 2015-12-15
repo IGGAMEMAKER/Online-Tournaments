@@ -15,7 +15,6 @@
 		li
 	a(id="my-tournaments" href="#" onclick="drawPopup()") My Tournaments
 
-
 div(class="bloc l-bloc bgc-white" id="nav-bloc")
 	div(class="container bloc-sm")
 			nav(class="navbar row")
@@ -29,12 +28,15 @@ div(class="bloc l-bloc bgc-white" id="nav-bloc")
 					div(class="collapse navbar-collapse navbar-1")
 						ul(class="site-navigation nav navbar-nav")
 							li
-								a(href="index.html") Главная
-							li
-								a(href="account.html") Профиль
+								a(href="/") Турниры
+							//li
+								a(href="profile") Профиль
 							li
 								a(href="bonus.html") Бонусы
 							li
 								a(href="support.html") Техподдержка
-							li
+							include tAuth
+							//li
 								a(class="ltc-brandeis-blue" href="tyrnit.html") sabrysmk $1.44
+							//li
+								a(class="ltc-brandeis-blue" href="tyrnit.html") выйти)

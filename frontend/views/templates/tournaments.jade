@@ -208,3 +208,90 @@ mixin tournamentTile(t)
 						a(href=""+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
 							//span(class="glyphicon glyphicon-info-sign")
 								Подробнее
+
+
+mixin games()
+	td(style="padding:0 15px 7px 0;")
+		Игры:
+	td(style="padding:0 15px 7px 0;")
+		input(type="checkbox" name="game-pp" value="1" checked)
+		| Ping-Pong
+	td(style="padding:0 15px 7px 0;")
+		input(type="checkbox" name="game-qs" value="2" checked)
+		| Quiz
+mixin prices()
+	td(style="padding:0 15px 7px 0;")
+		Стоимость:
+	td(style="padding:0 15px 7px 0;")
+		input(type="checkbox" name="free" value="1" checked)
+		| Бесплатные
+	td(style="padding:0 15px 7px 0;")
+		select(name="buyIn")
+			option(value="0" selected) Все
+			option(value="1") до 1$
+			option(value="2") 1$-5$
+			option(value="3") 5$-15$
+			option(value="4") свыше 15$
+
+mixin alternativeFilter()
+	table(BORDER="1")
+		tr
+			td(style="padding:0 15px 7px 0;") Игры
+			td(style="padding:0 15px 7px 0;") Стоимость
+			td(style="padding:0 15px 7px 0;") Акции
+		tr
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="game-pp" value="1" checked)
+				| Ping-Pong
+				br
+				br
+				input(type="checkbox" name="game-qs" value="2" checked)
+				| Quiz
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="free" value="1" checked)
+				| Бесплатные
+				br
+				br
+				select(name="buyIn")
+					option(value="0" selected) Все
+					option(value="1") до 1$
+					option(value="2") 1$-5$
+					option(value="3") 5$-15$
+					option(value="4") свыше 15$
+			td(style="padding:0 15px 7px 0;")
+				input(type="checkbox" name="gifts" value="1" checked)
+				| Включить
+				br
+				br
+
+mixin filterTD()
+	td(style="padding:0 15px 7px 0;")
+
+mixin filters()
+	center
+		#filters.filters(style="border: 0px solid black; width:350px; background: #f0f0f0; margin:10px; padding:10px;")
+			//style="border: 1px solid #333; border-collapse: separate; border-spacing: 17px 11px; padding:20px"
+			h2 Фильтры
+			+alternativeFilter()
+			//table(style="font-size:22px;")
+				tr
+					+games()
+				tr
+					+prices()
+				tr 
+					td(style="padding:0 15px 7px 0;")
+						Акции
+					td(style="padding:0 15px 7px 0;")
+						input(type="checkbox" name="gifts" value="1" checked)
+						| Включить
+mixin showTournaments1(message)
+	- tournWidth = 3;
+	if message
+		- for (i=0; i<message.length;i++) {
+			if i%tournWidth==0
+				tr
+					- for (j=0;j<tournWidth;j++){
+						if (message[i+j])
+							+tournamentTile(message[i+j])
+					-}
+		- }

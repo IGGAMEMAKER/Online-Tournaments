@@ -31,7 +31,8 @@ function saveProfile(){
 		}
 		if(tournaments.length==0){ drawPlayButtons(); }
 
-		$('#money').html('You have '+money/100+'$ on account');
+		//$('#money').html('You have '+money/100+'$ on account');
+		$('#money').html(login+' ('+money/100+'$)');
 	};
 }
 

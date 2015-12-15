@@ -1,12 +1,13 @@
 //p!= 'PARTITION ADDED'
 if (session.login && session.login.length>0)
-	p!= 'Hello, '
-		a(href = "Profile") #{session.login} 
-	#money
-	a(href = "Logout") Logout
+	//- var login = "#{session.login}";
+	//- console.log(login);
+	li
+		a(id="money" class="ltc-brandeis-blue" href="profile") #{session.login}
+	//p!= 'Hello, '	a(href = "Profile") #{session.login}	//#money
+	li
+		a(class="ltc-brandeis-blue" href = "Logout") Выход
 else
-	p!= 'You need to register if you want to play in tournaments'
-	a(href = "Login") Login
+	li
+		a(href = "Login" class="ltc-brandeis-blue") Вход
 
-br
-br
