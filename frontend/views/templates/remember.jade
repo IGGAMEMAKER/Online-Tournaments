@@ -1,0 +1,24 @@
+//
+div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
+	div(class="container bloc-lg")
+		div(class="row")
+			div(class="col-sm-12")
+				center
+					h3(class="mg-md") Восстановление пароля
+
+				form(id="form-5" action="/ResetPassword" method="post" novalidate)
+					div(class="form-group")
+						label Логин
+						input(type="text" class="form-control" name="login")
+					div(class="form-group")
+						label Email
+						input(type="email" class="form-control" name="email")
+					//a(href="ResetPassword") Забыли пароль?
+					//br
+					//br
+
+					button(class="bloc-button btn btn-d btn-lg btn-block" type="submit") Сбросить пароль
+					//button(class="bloc-button btn btn-d btn-lg btn-block" style="width:45%;" type="submit") Войти
+				//a(href="Register") Нет аккаунта? Зарегистрируйтесь!
+				//br
+				//a(href="ResetPassword") Забыли пароль?
