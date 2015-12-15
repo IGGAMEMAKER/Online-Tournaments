@@ -1,58 +1,43 @@
 //
-- tournWidth = 3;
+- tournWidth = 4;
 
 -var convert=100;
 
 mixin showTournaments(tournaments)
 	div(class="bloc l-bloc bgc-white b-divider" id="hq1")
 		div(class="container bloc-sm")
-			div(class="row" id="line1")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament(tournaments[0] , 1 
-					, "img/CR2.jpg")
-			br
-			div(class="row" id="line2")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				+showTournament({buyIn:1, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 
-					, "img/CR2.jpg")
-				//each tournament in tournaments
-					showTournament(tournament)
+			- for (i=0; i<tournaments.length;i++) {
+				if i%tournWidth==0
+					- var lineID = i/tournWidth;
+					- console.log(lineID);
+					div(class="row" id="line"+lineID)
+						//+showTournament(tournaments[i] , lineID, "img/CR2.jpg")
+						//+showTournament(tournaments[i+1] , lineID, "img/CR2.jpg")
+						//+showTournament(tournaments[i+2] , lineID, "img/CR2.jpg")
+						//+showTournament(tournaments[i+3] , lineID, "img/CR2.jpg")
 
-//mixin showTournaments1(tournaments)
-	if tournaments
-		- for (i=0; i<tournaments.length;i++) {
-			if i%tournWidth==0
-				-var lineID = i/tournWidth;
-				-console.log(lineID);
-				tr
-					- for (j=0;j<tournWidth;j++){
-						if (tournaments[i+j])
-							+tournamentTile(tournaments[i+j])
-					-}
-		- }
+						//- for (j=0; j < tournWidth; j++) {
+							if (tournaments[i+j])
+								+showTournament(tournaments[i+j] , lineID, "img/CR2.jpg")
+						//-}
+					br
+					br
+			- }
+						//+showTournament(tournaments[0] , 1 , "img/CR2.jpg")
+						//+showTournament({buyIn:100, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 , "img/CR2.jpg")
 
-mixin showGame(gameNameID)
+mixin showGame(gameNameID, ID)
 	case gameNameID
 		when 0
-			Ошибка, сообщите в техподдержку
+			| Ошибка, сообщите в техподдержку ##{ID}
 		when 1
-			Пинг понг
+			| Пинг понг ##{ID}
 		when 2
-			Викторина
+			| Викторина ##{ID}
 		when 3
-			Battle
+			| Battle ##{ID}
 		default
-			Ошибка
+			| Ошибка ##{ID}
 
 mixin tournamentTile(t)
 	td
@@ -110,28 +95,29 @@ mixin showPrize(prize)
 			Приз: #{prize/convert}$
 
 mixin showTournament(t,line, imageUrl)
-	- var ID=t.tournamentID||115;
-	- var registered = 1;
-	- var gameNameID = t.gameNameID;
-	- var prizes = t.Prizes[0];	
-	- var maxPlayers = t.goNext[0];
-	- var winnersPlaces = t.goNext[1];
-	- var buyIn = t.buyIn || 0;
+	if t
+		- var ID=t.tournamentID||115;
+		- var registered = t.players;
+		- var gameNameID = t.gameNameID;
+		- var prizes = t.Prizes[0];	
+		- var maxPlayers = t.goNext[0];
+		- var winnersPlaces = t.goNext[1];
+		- var buyIn = t.buyIn || 0;
 	
-	div(class="col-sm-3")
-		center
-			h4(class="mg-md text-center" id="gname-"+ID)
-				+showGame(t.gameNameID)
-			img(src=imageUrl width="210" height="150")
-			h3(id="wnrs-"+ID style="height:55px; width:220px" )
-				+showPrize(prizes)
-			h4(class="mg-md") 
-				Стоимость: #{buyIn/convert}$
-				br
-				Призовых мест: #{winnersPlaces}
-				div(id="plrs-"+ID)
-					Участников : #{registered} из #{maxPlayers}
-			a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+		div(class="col-sm-3")
+			center
+				h4(class="mg-md text-center" id="gname-"+ID)
+					+showGame(t.gameNameID, t.tournamentID)
+				img(src=imageUrl width="210" height="150")
+				h3(id="wnrs-"+ID style="height:55px; width:220px" )
+					+showPrize(prizes)
+				h4(class="mg-md") 
+					Стоимость: #{buyIn/convert}$
+					br
+					Призовых мест: #{winnersPlaces}
+					div(id="plrs-"+ID)
+						Участников : #{registered} из #{maxPlayers}
+				a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
 
 -var red = "#FF0000";
 -var green = "#00FF00";
