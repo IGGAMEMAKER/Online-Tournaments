@@ -4,294 +4,95 @@
 -var blue = "#0000FF";
 
 -var convert=100;
-mixin ShowStatus(status)
-	case status
-		when 0
-			td(bgcolor="#FF0000") Initialized
-		when 1
-			td(bgcolor="#00FF00") Register
-		when 2
-			td(bgcolor="#0000FF") Running
-		default
-			td(bgcolor="red") NULL
-mixin ShowGame(gameNameID)
+
+mixin showGame(gameNameID, ID)
 	case gameNameID
 		when 0
-			td(bgcolor="#FF0000") Error
+			| Ошибка, сообщите в техподдержку ##{ID}
 		when 1
-			td(bgcolor='brown') Ping Pong
+			| Пинг понг ##{ID}
 		when 2
-			td(bgcolor=green) Questions
+			| Викторина ##{ID}
 		when 3
-			td(bgcolor='gold') Battle
+			| Battle ##{ID}
 		default
-			td(bgcolor=red) Error
+			| Ошибка ##{ID}
 
-mixin showGift(gift)
-	td
-		center
-			h2!= gift.name
-		
-			//p!='URL = '+gift.photoURL
-			img(src= gift.photoURL display=block max-width='300px' width='400px')
-			br
-			- if (gift.URL)
-				a(href=gift.URL) Show more
-			p!=gift.description
-			p!=gift.price+'$'
-			p!='ID:' + gift._id
-			//p!= '----------------------------'
+mixin showGameName(gameNameID, ID)
+	case gameNameID
+		when 0
+			| Ошибка, сообщите в техподдержку
+		when 1
+			| Пинг понг
+		when 2
+			| Викторина
+		when 3
+			| Battle
+		default
+			| Ошибка
 
-
-mixin showPrizes(prizes)
-	h2 Tournament prizes
-	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-		tr
-			td Round
-			td Prize
-		each prize, index in prizes
-			if prize
-				tr
-					td #{index}
-					if isNaN(prize)
-						//td GIFT#{JSON.stringify(prize)}
-						td 
-							a(href="GetGift?giftID="+prize.giftID) Show prize
-					else
-						td #{prize/100}$
-	br
-
-mixin showTournament(tourn)
-	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-		tr
-			td ID
-			td Players count
-			td Buy In
-			td Game Name
-			td Status
-			//td TournamentInfo
-		tr
-			td!= tourn.tournamentID
-			td!= tourn.players +'/'+ tourn.goNext[0]
-			td!= tourn.buyIn/100+'$'
-			+ShowGame(tourn.gameNameID)
-			+ShowStatus(tourn.status)
-			//td!= tourn.gameNameID
-			//td Tournament Info
+mixin showPrize(prize)
+	if prize
+		if isNaN(prize)
+			//td GIFT#{JSON.stringify(prize)}
 			//td
-				+drawRegButton("reg", "REGISTER", msg[0].tournamentID, msg)
-	br
+				a(href="GetGift?giftID="+prize.giftID) Show prize
+			Приз: #{prize}
+		else
+			Приз: #{prize/convert}$
 
-mixin showPlayers(players)
-	h2 Players
-	table(BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-		tr
-			td ID
-			td Player
-		each player, index in players
-			if player
-				tr
-					td #{index}
-					td #{player.userID}
-	br
-
-	//p!= JSON.stringify(players)
-mixin drawRegButton(name, ButtonValue, tID, message)
-	button(id=name, style="width:300px;height:50") #{ButtonValue}
-	br
-
-mixin drawTournamentInfo(message)
-	+showTournament(message[0])
-	+showPrizes(message[0].Prizes)
-
-	+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
-	+drawRegButton("unReg", "UNREGISTER", message[0].tournamentID, message)
-
-	+showPlayers(message[1])
-
-mixin drawTournamentInfo2(message)
-	+showTournament(message[0])
-	+showPrizes(message[0].Prizes)
-
-	+drawRegButton("reg", "REGISTER", message[0].tournamentID, message)
-	+drawRegButton("unReg", "UNREGISTER", message[0].tournamentID, message)
-
-	+showPlayers(message[1])
-
-mixin showTournaments(message)
-	h1 List of Tournaments
-	table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-		tr
-			td ID
-			td Players
-			td Buy In
-			td Game
-			td Status
-			td TournamentInfo
-		- if (message.length>0){ for (i=0; i<message.length;i++){
-			tr
-				td #{message[i].tournamentID}
-				td #{message[i].players}/#{message[i].goNext[0]}
-				td #{message[i].buyIn/100}$
-				+ShowGame(message[i].gameNameID)
-				//+ShowStatus(#{message[i].status})
-				+ShowStatus(message[i].status)
-				//td #{message[i].status}
-				td
-					center
-						a(href='TournamentInfo?tID='+message[i].tournamentID)
-							Tournament Info
-			//p!= message
-		- }}
-
-mixin tournamentTile1()
-	#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
-		center
-			#info
-				//form(action="/TournamentInfo?tID=300" method="GET")
-					input(type="submit" value="Ping-Pong. №:300")
-				//a(href="TournamentInfo?tID=300") Ping-Pong. №:300
-				h6!= "Турнир №:"+300
-				h5!= "Пинг-Понг"
-
-				h2!= "Победитель получает: "+7+"$"
-				h3!= "Призовых мест: " + "1" 
-				p!= "Игроков: " + "3/10"
-				p!= "Стоимость "+"1$"
-				//p!= "Призовой фонд:"+10+"$"
-			
-		
-				#button300
-					//form(action="TournamentInfo?tID=300")
-						input(type="submit" value="Играть за 1$")
-					a(href="TournamentInfo?tID=300" class="btn btn-lg btn-primary") Подробнее
-						//span(class="glyphicon glyphicon-info-sign")
-							Подробнее
-
-mixin showGame(gameNameID)
-	case gameNameID
-		when 0
-			h5 Error
-		when 1
-			h5 Ping Pong
-		when 2
-			h5 Questions
-		when 3
-			h5 Battle
-		default
-			h5 Error
-
-
-mixin tournamentTile(t)
-	td
-		#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
+mixin showTournament(t,line, imageUrl)
+	if t
+		- var ID=t.tournamentID||115;
+		- var registered = t.players;
+		- var gameNameID = t.gameNameID;
+		- var prizes = t.Prizes[0];	
+		- var maxPlayers = t.goNext[0];
+		- var winnersPlaces = t.goNext[1];
+		- var buyIn = t.buyIn || 0;
+	
+		div(class="col-sm-3")
 			center
-					//p!= JSON.stringify(t)
-				#info
-					
-					h5
-						b!= "Турнир №:"+t.tournamentID
-					+showGame(t.gameNameID)
-
-					h2!= "Победитель получает: "
-					h2!= t.Prizes[0]/convert+"$"
-					h3!= "Призовых мест: " + t.goNext[1] 
-					p!= "Игроков: " + t.players+"/"+t.goNext[0]
-					
-					if t.buyIn==0
-						p!= "Играть бесплатно!"
+				h4(class="mg-md text-center" id="gname-"+ID)
+					+showGame(t.gameNameID, t.tournamentID)
+				img(src=imageUrl width="210" height="150")
+				h3(id="wnrs-"+ID style="height:55px; width:220px" )
+					+showPrize(prizes)
+				h4(class="mg-md")
+					if buyIn>0
+						Стоимость: #{buyIn/convert}$
 					else
-						p!= "Стоимость "+t.buyIn/convert+"$"
-			
-		
-					#button300
-						a(href=""+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
-							//span(class="glyphicon glyphicon-info-sign")
-								Подробнее
+						Бесплатно!
+					br
+					Призовых мест: #{winnersPlaces}
+					div(id="plrs-"+ID)
+						Участников : #{registered} из #{maxPlayers}
+				a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
 
 
-mixin games()
-	td(style="padding:0 15px 7px 0;")
-		Игры:
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="game-pp" value="1" checked)
-		| Ping-Pong
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="game-qs" value="2" checked)
-		| Quiz
-mixin prices()
-	td(style="padding:0 15px 7px 0;")
-		Стоимость:
-	td(style="padding:0 15px 7px 0;")
-		input(type="checkbox" name="free" value="1" checked)
-		| Бесплатные
-	td(style="padding:0 15px 7px 0;")
-		select(name="buyIn")
-			option(value="0" selected) Все
-			option(value="1") до 1$
-			option(value="2") 1$-5$
-			option(value="3") 5$-15$
-			option(value="4") свыше 15$
-
-mixin alternativeFilter()
-	table(BORDER="1")
-		tr
-			td(style="padding:0 15px 7px 0;") Игры
-			td(style="padding:0 15px 7px 0;") Стоимость
-			td(style="padding:0 15px 7px 0;") Акции
-		tr
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="game-pp" value="1" checked)
-				| Ping-Pong
+mixin showMaxTournament(t,line, imageUrl)
+	if t
+		- var ID=t.tournamentID||115;
+		- var registered = t.players;
+		- var gameNameID = t.gameNameID;
+		- var prizes = t.Prizes[0];	
+		- var maxPlayers = t.goNext[0];
+		- var winnersPlaces = t.goNext[1];
+		- var buyIn = t.buyIn || 0;
+	
+		center
+			h4(class="mg-md text-center" id="gname-"+ID)
+				Игра : 
+				+showGameName(t.gameNameID, t.tournamentID)
+			img(src=imageUrl width="210" height="150")
+			h3(id="wnrs-"+ID style="height:55px; width:220px" )
+				+showPrize(prizes)
+			h4(class="mg-md")
+				if buyIn>0
+					Стоимость: #{buyIn/convert}$
+				else
+					Бесплатно!
 				br
-				br
-				input(type="checkbox" name="game-qs" value="2" checked)
-				| Quiz
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="free" value="1" checked)
-				| Бесплатные
-				br
-				br
-				select(name="buyIn")
-					option(value="0" selected) Все
-					option(value="1") до 1$
-					option(value="2") 1$-5$
-					option(value="3") 5$-15$
-					option(value="4") свыше 15$
-			td(style="padding:0 15px 7px 0;")
-				input(type="checkbox" name="gifts" value="1" checked)
-				| Включить
-				br
-				br
-
-mixin filterTD()
-	td(style="padding:0 15px 7px 0;")
-
-mixin filters()
-	center
-		#filters.filters(style="border: 0px solid black; width:350px; background: #f0f0f0; margin:10px; padding:10px;")
-			//style="border: 1px solid #333; border-collapse: separate; border-spacing: 17px 11px; padding:20px"
-			h2 Фильтры
-			+alternativeFilter()
-			//table(style="font-size:22px;")
-				tr
-					+games()
-				tr
-					+prices()
-				tr 
-					td(style="padding:0 15px 7px 0;")
-						Акции
-					td(style="padding:0 15px 7px 0;")
-						input(type="checkbox" name="gifts" value="1" checked)
-						| Включить
-mixin showTournaments1(message)
-	- tournWidth = 3;
-	if message
-		- for (i=0; i<message.length;i++) {
-			if i%tournWidth==0
-				tr
-					- for (j=0;j<tournWidth;j++){
-						if (message[i+j])
-							+tournamentTile(message[i+j])
-					-}
-		- }
+				Призовых мест: #{winnersPlaces}
+				div(id="plrs-"+ID)
+					Участников : #{registered} из #{maxPlayers}

@@ -1,10 +1,92 @@
 //
 include templates/tournaments
 
+mixin showShort(t)
+	+showMaxTournament(t)
+
+mixin showButton()
+	center
+		//p!= JSON.stringify(t)
+		a(id="reg" class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Зарегистрироваться
+
+mixin showPrizes(prizes, counts)
+	center
+		table(class="table table-bordered table-striped" style="width:50%;")
+			thead
+				tr
+					th Раунд
+					th Приз
+					th Количество
+			tbody
+				each prize, index in prizes
+					if prize
+						tr
+							td #{index}
+							if isNaN(prize)
+								//td GIFT#{JSON.stringify(prize)}
+								td 
+									a(href="GetGift?giftID="+prize.giftID) Show prize
+							else
+								td #{prize/100}$
+							td #{counts[index+1]}
+
+mixin showDescription(t)
+	p!= JSON.stringify(t)
+
+mixin showPlayers(players)
+	center
+		table(class="table table-bordered table-striped" style="width:50%;")
+			thead
+				tr
+					th №
+					th Игрок
+
+			tbody
+				each player, index in players
+					if player
+						tr
+							td #{index}
+							td #{player.userID}
+
+
+mixin showFullTournament(t, players)
+	div(class="bloc l-bloc bgc-white" id="bloc-10")
+		div(class="container bloc-lg")
+			div(class="row")
+				div(class="col-sm-12")
+					div(class="panel")
+						div(class="panel-heading")
+							h3(class="mg-clear text-center")
+								Турнир ##{t.tournamentID}
+						div(class="panel-body")
+							+showShort(t)
+
+					+showButton()
+
+					div(class="panel")
+						div(class="panel-heading")
+							h3(class="mg-clear text-center")
+								Призы
+						div(class="panel-body")
+							+showPrizes(t.Prizes, t.goNext)
+
+					div(class="panel")
+						div(class="panel-heading")
+							h3(class="mg-clear text-center")
+								Описание турнира
+						div(class="panel-body")
+							+showDescription(t)
+
+					div(class="panel")
+						div(class="panel-heading")
+							h3(class="mg-clear text-center") Игроки
+						div(class="panel-body")
+							+showPlayers(players)
+
 html
 	head
 		title!= title
-		include client
+		include templates/head
 		script.
 			var login = "#{session.login}";
 			var tID = "#{msg.tournamentID}";
@@ -12,15 +94,20 @@ html
 		//script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
 	body
-		include templates/tAuth
-		//p!=JSON.stringify(msg)
-		h1!= 'Tournament : ' + msg[0].tournamentID
-		+drawTournamentInfo(msg)
+		div(class="page-container")
+			include client
+			+title("Меню турнира")
+			+showFullTournament(msg[0], msg[1])
 
-		#gift
-			//p Click on gift to show it here!
-		script.
-			document.getElementById("reg").addEventListener("click", function()   { func(login, tID);});
-			document.getElementById("unReg").addEventListener("click", function() { unReg(login, tID);});
-		#news
+			//+showTournament(msg[0])
+			//p!= JSON.stringify(msg)
+
+			#gift
+				//p Click on gift to show it here!
+			script.
+				document.getElementById("reg").addEventListener("click", function()   { func(login, tID);});
+				document.getElementById("unReg").addEventListener("click", function() { unReg(login, tID);});
+			#news
+
+			include templates/footer
 			p!= aza
