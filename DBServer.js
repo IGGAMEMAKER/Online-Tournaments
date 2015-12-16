@@ -773,7 +773,7 @@ function getRegistrableTournament(tournamentID){
 		Tournament.findOne({tournamentID:tournamentID, status:TOURN_STATUS_REGISTER}, '', function (err, tournament) {
 			if (err) { Error(err); reject(err); }
 			else{
-				if (tournament && tournament.players<tournament.goNext[0]) { 
+				if (tournament) {
 					console.log('getRegistrableTournament', tournament);
 					resolve(tournament);
 				} else {

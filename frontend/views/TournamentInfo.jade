@@ -31,7 +31,8 @@ mixin showPrizes(prizes, counts)
 							td #{counts[index+1]}
 
 mixin showDescription(t)
-	p!= JSON.stringify(t)
+	p Тут будет словесное описание турнира
+	//p!= JSON.stringify(t)
 
 mixin showPlayers(players)
 	center
@@ -89,7 +90,9 @@ html
 		include templates/head
 		script.
 			var login = "#{session.login}";
-			var tID = "#{msg.tournamentID}";
+			var msg = "#{msg}";
+			var tID = "#{msg[0].tournamentID}";
+			//console.log(JSON.parse(msg)[0]);
 		//script(src="sockets.js").
 		//script(src="loadGift.js").
 		script(src="registerUserInTournament.js")
