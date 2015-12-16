@@ -55,7 +55,8 @@ mixin showTournament(t,line, imageUrl)
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
-				img(src=imageUrl width="210" height="150")
+				//img(src=imageUrl width="210" height="150")
+				+showImage(imageUrl, t.gameNameID)
 				h3(id="wnrs-"+ID style="height:55px; width:220px" )
 					+showPrize(prizes)
 				h4(class="mg-md")
@@ -68,6 +69,23 @@ mixin showTournament(t,line, imageUrl)
 					div(id="plrs-"+ID)
 						Участников : #{registered} из #{maxPlayers}
 				a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+
+mixin showImage(imageUrl, gameNameID)
+	if imageUrl
+		img(src=imageUrl width="210" height="150")
+	else
+		-var url="/img/CR2.jpg";
+		case gameNameID
+			when 0
+				| Ошибка, сообщите в техподдержку ##{ID}
+			when 1
+				img(src="/img/pp.jpg" width="210" height="150")
+			when 2
+				img(src="/img/quiz.png" width="210" height="150")
+			when 3
+				| Battle ##{ID}
+			default
+				| Ошибка ##{ID}
 
 
 mixin showMaxTournament(t,line, imageUrl)
@@ -84,7 +102,8 @@ mixin showMaxTournament(t,line, imageUrl)
 			h4(class="mg-md text-center" id="gname-"+ID)
 				Игра : 
 				+showGameName(t.gameNameID, t.tournamentID)
-			img(src=imageUrl width="210" height="150")
+			//img(src=imageUrl width="210" height="150")
+			+showImage(imageUrl, t.gameNameID)
 			h3(id="wnrs-"+ID style="height:55px; width:220px" )
 				+showPrize(prizes)
 			h4(class="mg-md")

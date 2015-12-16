@@ -28,7 +28,7 @@ mixin showPrizes(prizes, counts)
 									a(href="GetGift?giftID="+prize.giftID) Show prize
 							else
 								td #{prize/100}$
-							td #{counts[index]}
+							td #{counts[index+1]}
 
 mixin showDescription(t)
 	p!= JSON.stringify(t)
@@ -47,6 +47,9 @@ mixin showPlayers(players)
 						tr
 							td #{index}
 							td #{player.userID}
+
+mixin tournamentElement(name, param1, param2)
+	
 
 
 mixin showFullTournament(t, players)
