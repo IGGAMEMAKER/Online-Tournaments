@@ -16,15 +16,16 @@ mixin showTournaments(tournaments)
 						//+showTournament(tournaments[i+2] , lineID, "img/CR2.jpg")
 						//+showTournament(tournaments[i+3] , lineID, "img/CR2.jpg")
 
-						//- for (j=0; j < tournWidth; j++) {
+						- for (j=0; j < tournWidth; j++) {
 							if (tournaments[i+j])
 								+showTournament(tournaments[i+j] , lineID, "img/CR2.jpg")
-						//-}
+								+showTournament({buyIn:100, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 , "img/CR2.jpg")
+						-}
 					br
 					br
 			- }
 						//+showTournament(tournaments[0] , 1 , "img/CR2.jpg")
-						//+showTournament({buyIn:100, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 , "img/CR2.jpg")
+			
 
 mixin showGame(gameNameID, ID)
 	case gameNameID
@@ -39,32 +40,6 @@ mixin showGame(gameNameID, ID)
 		default
 			| Ошибка ##{ID}
 
-mixin tournamentTile(t)
-	td
-		#tournament300(style="border: 0px solid black; background: #f0f0f0; padding:25px; margin:20px")
-			center
-					//p!= JSON.stringify(t)
-				#info
-					
-					h5
-						b!= "Турнир №:"+t.tournamentID
-					+showGame(t.gameNameID)
-
-					h2!= "Победитель получает: "
-					h2!= t.Prizes[0]/convert+"$"
-					h3!= "Призовых мест: " + t.goNext[1] 
-					p!= "Игроков: " + t.players+"/"+t.goNext[0]
-					
-					if t.buyIn==0
-						p!= "Играть бесплатно!"
-					else
-						p!= "Стоимость "+t.buyIn+"$"
-			
-		
-					#button300
-						a(href=""+t.tournamentID+"" class="btn btn-lg btn-primary") Подробнее
-							//span(class="glyphicon glyphicon-info-sign")
-								Подробнее
 
 mixin showPrizes(prizes)
 	h2 Tournament prizes
@@ -111,8 +86,11 @@ mixin showTournament(t,line, imageUrl)
 				img(src=imageUrl width="210" height="150")
 				h3(id="wnrs-"+ID style="height:55px; width:220px" )
 					+showPrize(prizes)
-				h4(class="mg-md") 
-					Стоимость: #{buyIn/convert}$
+				h4(class="mg-md")
+					if buyIn>0
+						Стоимость: #{buyIn/convert}$
+					else
+						Бесплатно!
 					br
 					Призовых мест: #{winnersPlaces}
 					div(id="plrs-"+ID)

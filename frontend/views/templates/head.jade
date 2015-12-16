@@ -12,3 +12,10 @@ script(src="./js/bootstrap.js")
 script(src="./js/blocs.js")
 //script(src='./js/jqBootstrapValidation.js')
 script(src='./js/formHandler.js')
+
+mixin title(name)
+	div(class="bloc l-bloc bgc-white" id="bloc-1")
+		div(class="container")
+			div(class="row")
+				div(class="col-sm-12")
+					h3(class="mg-md text-center") #{name}

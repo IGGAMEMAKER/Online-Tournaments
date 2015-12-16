@@ -6,8 +6,12 @@ mixin drawRegs(msg)
 mixin drawReg(val)
 	tr 
 		td 
-			a(href="TournamentInfo?tID="+val.tournamentID) #{val.tournamentID}
+			+tLink(val.tournamentID)
 		td #{val.promo}
+
+mixin tLink(id)
+	a(href="TournamentInfo?tID="+id) #{id}
+
 
 ///Dublicate from ShowGifts.jade
 mixin ShowGift(gift,add)
@@ -83,28 +87,51 @@ mixin moneyOperations()
 				+buttonLink('Cashout', 'Cashout')
 	br
 
+mixin info()
+	div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-4")
+		div(class="container bloc-lg")
+			div(class="row")
+				div(class="col-sm-12")
+					h4(class="mg-md") Имя : smh
+					h4(class="mg-md") email: 123@gmail.com
+
+
+mixin changePass()
+	include templates/changepassword
+
+mixin deposit()
+	include templates/deposit
+
+mixin cashout()
+	include templates/cashout
+
+
+
 html
-	//p!= JSON.stringify(msg.gifts)
-	//p!= JSON.stringify(msg.userGifts)
-	//include templates/libs
-	//include templates/menu
+	head
+		include templates/head
+	//p!= JSON.stringify(msg.gifts)(msg.userGifts)
 	include client
 	//script(src="loadProfile.js")
 	
-	center
-		h1 Profile of  #{session.login} 
-			a(href="MoneyTransfers") (#{msg.money/100}$)	
-		//p!= JSON.stringify(msg)
-		//h2 You have 
-			a(href="MoneyTransfers") #{msg.money/100}$ 
-			//p on your account
-		//p!= JSON.stringify(msg)
-		//+moneyOperations()
+	div(class="page-container")
+		+title("Профиль")
+		
+		div(class="bloc-group")
+			+info()
+			+changePass()
+		div(class="bloc-group")
+			+deposit()
+			+cashout()
+		div(class="bloc-group")
+			+drawTournamentRegs(msg.tournaments)
+		
+		//center
+			h1 Profile of  #{session.login} 
+				a(href="MoneyTransfers") (#{msg.money/100}$)	
+		
+			a(href="Changepassword") Change password
+			//+drawTournamentRegs(msg.tournaments)
 
-		//a(href="Tournaments") Back to tournaments
-		//br
-		a(href="Changepassword") Change password
-		+drawTournamentRegs(msg.tournaments)
-
-		+drawPrizes(msg.userGifts)
-		+drawPrizes2(msg.gifts, msg.userGifts)
+			//+drawPrizes(msg.userGifts)
+			//+drawPrizes2(msg.gifts, msg.userGifts)
