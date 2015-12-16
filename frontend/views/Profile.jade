@@ -7,7 +7,8 @@ mixin drawReg(val)
 	tr 
 		td 
 			+tLink(val.tournamentID)
-		td #{val.promo}
+		//td #{val.promo}
+		td регистрация
 
 mixin tLink(id)
 	a(href="TournamentInfo?tID="+id) #{id}
@@ -60,15 +61,6 @@ mixin buttonLink(link, text)
 	form(action=link) 
 		input(type="submit" value=text style="width:125px;height:50px;")
 
-mixin drawTournamentRegs(tournaments)
-	h2 My tournaments
-	if tournaments
-		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
-			tr
-				td TournamentID
-				td Promoted by(Status)
-			+drawRegs(tournaments)
-
 mixin drawPrizes(gifts)
 	h2 Prizes:
 	if gifts && gifts.length>0
@@ -88,13 +80,30 @@ mixin moneyOperations()
 	br
 
 mixin info()
-	div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-4")
+	include templates/account
+	//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-4")
 		div(class="container bloc-lg")
 			div(class="row")
 				div(class="col-sm-12")
 					h4(class="mg-md") Имя : smh
 					h4(class="mg-md") email: 123@gmail.com
 
+mixin drawTournamentRegs(tournaments)
+	div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
+		div(class="container bloc-lg")
+			div(class="row")
+				div(class="col-sm-12")
+					if tournaments
+						center
+							table(class="table table-bordered table-striped" style="width:50%;")
+								thead
+									tr
+										th №
+										//th Приглашён
+										th Статус
+					
+								tbody
+									+drawRegs(tournaments)
 
 mixin changePass()
 	include templates/changepassword
@@ -105,33 +114,28 @@ mixin deposit()
 mixin cashout()
 	include templates/cashout
 
-
-
 html
 	head
 		include templates/head
 	//p!= JSON.stringify(msg.gifts)(msg.userGifts)
-	include client
+	
 	//script(src="loadProfile.js")
 	
 	div(class="page-container")
+		include client
 		+title("Профиль")
-		
-		div(class="bloc-group")
-			+info()
-			+changePass()
-		div(class="bloc-group")
-			+deposit()
-			+cashout()
-		div(class="bloc-group")
-			+drawTournamentRegs(msg.tournaments)
-		
-		//center
-			h1 Profile of  #{session.login} 
-				a(href="MoneyTransfers") (#{msg.money/100}$)	
-		
-			a(href="Changepassword") Change password
-			//+drawTournamentRegs(msg.tournaments)
+		div(class="bloc l-bloc bgc-white b-divider" id="hq1")
+			div(class="container bloc-sm")
+				+small_title("Мои турниры")
+				div(class="bloc-group")
+					+drawTournamentRegs(msg.tournaments)
 
-			//+drawPrizes(msg.userGifts)
-			//+drawPrizes2(msg.gifts, msg.userGifts)
+				div(class="bloc-group")
+					+info()
+					+changePass()
+
+				+title("Денежные операции")
+				div(class="bloc-group")
+					+deposit()
+					+cashout()
+		include templates/footer
