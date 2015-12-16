@@ -33,6 +33,7 @@ function saveProfile(){
 
 		//$('#money').html('You have '+money/100+'$ on account');
 		$('#money').html(login+' ('+money/100+'$)');
+		$('#money1').html(money/100+'$');
 	};
 }
 

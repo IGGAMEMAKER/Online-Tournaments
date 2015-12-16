@@ -81,6 +81,7 @@ mixin moneyOperations()
 
 mixin info()
 	include templates/account
+	+drawAccount(msg.email)
 	//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-4")
 		div(class="container bloc-lg")
 			div(class="row")
@@ -92,8 +93,8 @@ mixin drawTournamentRegs(tournaments)
 	div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 		div(class="container bloc-lg")
 			div(class="row")
-				div(class="col-sm-12")
-					if tournaments
+				div(class="col-sm-12 text-center")
+					if tournaments && tournaments.length>0
 						center
 							table(class="table table-bordered table-striped" style="width:50%;")
 								thead
@@ -104,6 +105,9 @@ mixin drawTournamentRegs(tournaments)
 					
 								tbody
 									+drawRegs(tournaments)
+					else
+						h3 Вы не зарегистрированы ни в одном турнире(
+						a(href="Tournaments") Начните играть !
 
 mixin changePass()
 	include templates/changepassword

@@ -11,17 +11,9 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-7")
 						p Условия вывода
 						form(id="form-564" novalidate)
 							div(class="form-group")
-								label Сумма
-								input(class="form-control")
+								label Сумма (в долларах)
+								input(class="form-control" name="ammount" id="cashout" value=10 required)
 							div(class="form-group")
-								label Card number
+								label Номер карточки
 								textarea(id="message4" class="form-control" rows="1" cols="50" required)
 							a(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px; " type="submit") Вывести
-				//form(id="form-4" novalidate)
-					div(class="form-group")
-						label Name
-						input(id="name4" class="form-control" required)
-					
-					div(class="form-group")
-						label Email
-						input(id="email4" class="form-control" type="email" required)

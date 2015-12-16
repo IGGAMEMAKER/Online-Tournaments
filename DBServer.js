@@ -1412,7 +1412,7 @@ function attachFieldToObj(obj, field, value){
 
 function findUser(login){
 	return new Promise(function (resolve, reject){
-		User.findOne({login:login}, 'login money', function (err, user) {
+		User.findOne({login:login}, 'login money email', function (err, user) {
 			if (err) { reject(err); }
 			else{
 				if (!user) { 
@@ -1420,7 +1420,7 @@ function findUser(login){
 					reject({}); 
 				}// if catch, but .err not found, it means, that user doesn't exist
 				else{
-					var profileInfo = {login:login, money:user.money};
+					var profileInfo = {login:login, money:user.money, email:user.email};
 					resolve(profileInfo);
 				}
 			}

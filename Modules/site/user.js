@@ -114,7 +114,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	    AsyncRender("DBServer", 'GetUserProfileInfo', res, {renderPage:'Profile'}, {login:login} );
 	    return;
 	  }
-	  res.json({msg:'Log in first'});
+	  res.redirect('Login');
 	})
 	function ValidRegData(data){
 		return ValidLogin(data||null) && ValidPass(data.password||null) && ValidEmail(data);
