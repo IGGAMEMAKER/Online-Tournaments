@@ -28,7 +28,7 @@ mixin RegForm()
 html
 	head
 		title Register
-	script(src="validator.min.js")
+	//script(src="third_party/validator.min.js")
 	h1!= 'Register'
 	if msg
 		case msg
@@ -43,7 +43,7 @@ html
 				p!= msg
 				p!= JSON.stringify(msg)
 			
-	div#loginbox
+	//div#loginbox
 			form(name="Register", action="/Register", method="post")
 				+RegForm()
 				//
@@ -57,7 +57,7 @@ html
 	br
 	a(href="Login") Log in
 
-script.
+//script.
 	var RED = "#FF0000";
 	var WHITE = "#FFFFFF";
 	var GREEN = "#00FF00";

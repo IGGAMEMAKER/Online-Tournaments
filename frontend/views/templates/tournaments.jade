@@ -87,6 +87,17 @@ mixin showImage(imageUrl, gameNameID)
 			default
 				| Ошибка ##{ID}
 
+mixin ShowStatus(status)
+	case status
+		when 0
+			Создан
+		when 1
+			td(bgcolor="#00FF00") Набор участников
+		when 2
+			td(bgcolor="#0000FF") Идёт
+		default
+			td(bgcolor="red") Завершён
+
 
 mixin showMaxTournament(t,line, imageUrl)
 	if t
@@ -115,3 +126,6 @@ mixin showMaxTournament(t,line, imageUrl)
 				Призовых мест: #{winnersPlaces}
 				div(id="plrs-"+ID)
 					Участников : #{registered} из #{maxPlayers}
+			h4(class="mg-md")
+				Статус : 
+				+ShowStatus(t.status)

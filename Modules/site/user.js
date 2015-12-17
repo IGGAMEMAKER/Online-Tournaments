@@ -16,12 +16,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		LoginOrRegister(req, res, 'Login');
 	});
 
+	var REG_TEMPLATE="Login";
+
 	app.post('/Register', function (req, res){
 		LoginOrRegister(req, res, 'Register');
 	});
 
 	app.get('/Register', function (req, res){
-		res.render('Register');
+		res.render(REG_TEMPLATE);
 	})
 
 	
@@ -128,13 +130,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
+
+		var page = REG_TEMPLATE;//command
+
 		if (!ValidLoginData(data)){
-			res.render(command, Fail); 
+			res.render(page, Fail); 
 			return;
 		}
 
 		if (command=='Register' && !ValidEmail(data) ){
-			res.render(command, Fail); 
+			res.render(page, Fail); 
 			return;
 		}
 
@@ -154,7 +159,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				// session saved
 				if (err) {
 					console.error('SESSION SAVING ERROR', 'Err'); 
-					res.render(command,{msg:body.result});
+					res.render(page,{msg:body.result});
 				}else{
 					req.session.login = data.login;
 					res.redirect('Tournaments');
@@ -163,7 +168,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 		var failCallback = function(res, body, options, parameters){
 			Log('Reject user ' + data.login,'Users');
-			res.render(command,{msg:body.result});
+			res.render(page,{msg:body.result});
 		}
 
 		AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
