@@ -60,6 +60,9 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 	padding:20px 50px;
 }
 
+.bg-walkway{
+	background-image:url("../img/walkway.jpg");
+}
 
 /* Group Styles */
 

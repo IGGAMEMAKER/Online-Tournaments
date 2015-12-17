@@ -1,0 +1,53 @@
+/*--------- style.css -----------*/
+/*.l-bloc a{*/
+	/*color:rgba(0,0,0,.6);*/
+/*}
+.l-bloc a:hover{
+	/*color:rgba(0,0,0,1);*/
+/*}*/
+
+/*.l-bloc a{
+  color: #2780e3;
+}
+.l-bloc a:hover{
+  color: #337ab7;
+}
+
+.a{
+  color: #337ab7;
+}*/
+
+.bloc-lg{
+  padding: 30px 50px;
+}
+
+.bloc-lg2{
+  padding: 100px 50px;
+}
+
+
+.bg-walkway{
+  background-image:url("../img/walkway.jpg");
+}
+
+
+/*--------- bootstrap.css ----------*/
+
+.btn-primary {
+
+  color: #ffffff;
+  background-color: #2780e3;
+  border-color: #2780e3;
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #ffffff;
+  background-color: #1967be;
+  border-color: #10427b;
+}
+.btn-primary:hover {
+  color: #ffffff;
+  background-color: #1967be;
+  border-color: #1862b5;
+}
+

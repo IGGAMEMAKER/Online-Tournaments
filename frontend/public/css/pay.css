@@ -1,0 +1,25 @@
+#bloc-13 h3 {
+    font-size: 40px;
+}
+#bloc-12 h3 {
+    font-size: 40px;
+}
+
+.bloc-lg2{
+	padding:100px 50px;
+}
+
+.d-bloc h1, .d-bloc h2, .d-bloc h3, .d-bloc h4, .d-bloc h5, .d-bloc h6, .d-bloc .ico {
+    color: rgba(255,255,255,.9);
+}
+
+.lg-shadow {
+    text-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+.icon-xl {
+    font-size: 100px!important;
+}
+
+.d-bloc {
+    color: rgba(255,255,255,.7);
+}
