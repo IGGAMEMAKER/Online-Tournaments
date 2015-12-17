@@ -18,7 +18,8 @@ mixin showTournaments(tournaments)
 
 						- for (j=0; j < tournWidth; j++) {
 							if (tournaments[i+j])
-								+showTournament(tournaments[i+j] , lineID, "img/CR2.jpg")
+								+showTournament(tournaments[i+j] , lineID)
+								//"img/CR2.jpg")
 								//+showTournament({buyIn:100, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 , "img/CR2.jpg")
 						-}
 					br
@@ -69,6 +70,23 @@ mixin showPrize(prize)
 		else
 			Приз: #{prize/convert}$
 
+mixin showImage(imageUrl, gameNameID)
+	if imageUrl
+		img(src=imageUrl width="210" height="150")
+	else
+		-var url="/img/CR2.jpg";
+		case gameNameID
+			when 0
+				| Ошибка, сообщите в техподдержку ##{ID}
+			when 1
+				img(src="/img/pp.jpg" width="210" height="150")
+			when 2
+				img(src="/img/quiz.png" width="210" height="150")
+			when 3
+				| Battle ##{ID}
+			default
+				| Ошибка ##{ID}
+
 mixin showTournament(t,line, imageUrl)
 	if t
 		- var ID=t.tournamentID||115;
@@ -83,7 +101,8 @@ mixin showTournament(t,line, imageUrl)
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
-				img(src=imageUrl width="210" height="150")
+				+showImage(imageUrl, t.gameNameID)
+				//img(src=imageUrl width="210" height="150")
 				h3(id="wnrs-"+ID style="height:55px; width:220px" )
 					+showPrize(prizes)
 				h4(class="mg-md")
