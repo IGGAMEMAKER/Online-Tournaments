@@ -1,4 +1,6 @@
 getProfile();
+//hideAllButtons();
+drawAuthButton();
 //window.onfocus = getProfile;
 
 function getProfile(drawFunction){
@@ -26,15 +28,60 @@ function saveProfile(){
 		//console.log('tournaments',tournaments);
 		loadedAddrs=0;
 		for (var i=0; i < tournaments.length; i++){
-			var tID = tournaments[i];
-			GetTournamentAddress(tID.tournamentID);
+			var tID1 = tournaments[i];
+			GetTournamentAddress(tID1.tournamentID);
 		}
 		if(tournaments.length==0){ drawPlayButtons(); }
 
 		//$('#money').html('You have '+money/100+'$ on account');
-		$('#money').html(login+' ('+money/100+'$)');
-		$('#money1').html(money/100+'$');
+		$('#money').html(login + ' (' + money/100 + '$)');
+		$('#money1').html(money/100 + '$');
+
+		if (tID){
+			console.log('tID: ' + tID);
+			/*drawUnRegButton();
+			drawRegButton();*/
+			//drawAuthButton();
+			//$('#unReg').show();
+			if (login){
+				if (userIsRegisteredIn(tID)){
+					console.log('userIsRegisteredIn');
+					drawUnRegButton();
+				} else {
+					console.log('no register');
+					drawRegButton();
+				}
+			} else {
+				console.log('no auth');
+				drawAuthButton();
+			}
+		}
+
 	};
+}
+
+function hideAllButtons(){
+	$('#unregister').hide();
+	$('#reg').hide();
+	$('#auth').hide();
+}
+
+function drawUnRegButton(){
+	$('#unregister').show();
+	$('#reg').hide();
+	$('#auth').hide();
+}
+
+function drawRegButton(){
+	$('#unregister').hide();
+	$('#reg').show();
+	$('#auth').hide();
+}
+
+function drawAuthButton(){
+	$('#unregister').hide();
+	$('#reg').hide();
+	$('#auth').show();
 }
 
 function saveTournamentAddress(tID){
