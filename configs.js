@@ -17,6 +17,7 @@ config.mailPass	=	configs.mailPass;
 config.db	=	configs.db;
 config.stats	=	configs.stats;
 config.session	=	configs.session;
+config.cacheTemplates = configs.cacheTemplates||null;
 
 //console.log(config);
 module.exports = config;
