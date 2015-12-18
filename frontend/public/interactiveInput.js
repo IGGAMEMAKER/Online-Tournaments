@@ -2,7 +2,7 @@
 	var WHITE = "#FFFFFF";
 	var GREEN = "#00FF00";
 
-	var submitButton = 'submitButton';
+	var submitButton = 'register';
 
 	var validityData = {
 		password:0,
@@ -10,9 +10,13 @@
 		login:0
 	}
 	var EMPTY= "*";
-	var EMAIL_INVALID= "email is incorrect";
+	/*var EMAIL_INVALID= "email is incorrect";
 	var LOGIN_INVALID= "login can only contain letters or numbers. Special symbols are prohibited";
-	var PASS_INVALID= "password can only contain letters or numbers. Special symbols are prohibited";
+	var PASS_INVALID= "password can only contain letters or numbers. Special symbols are prohibited";*/
+
+	var EMAIL_INVALID = "Некорректный email";
+	var LOGIN_INVALID = "Некорректный логин. Используйте только латиницу и цифры. Специальные символы запрещены";
+	var PASS_INVALID  = "Некорректный пароль. Используйте только латиницу и цифры. Специальные символы запрещены";
 
 	var CORRECT = "OK!";
 
@@ -22,7 +26,7 @@
 	var MIN_PASS_LENGTH=6;
 	var MAX_PASS_LENGTH=35;
 
-	var PASS_LENGTH = "password length must be greater than "+MIN_PASS_LENGTH+" and less than "+MAX_PASS_LENGTH;
+	var PASS_LENGTH = "Допустимая длина пароля от " + MIN_PASS_LENGTH + " до " + MAX_PASS_LENGTH + "символов";
 
 	function emailListener(){
 		var field = "email";
@@ -203,8 +207,8 @@
 	document.getElementById("login").setAttribute("placeholder","MorganFreeman223");
 	document.getElementById("email").setAttribute("placeholder","chikenFreeze@gmail.com");
 
-	document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
+	/*document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);
-	document.getElementById("passwordValidator").setAttribute("style", "color:"+RED);
+	document.getElementById("passwordValidator").setAttribute("style", "color:"+RED);*/
 
 	//document.getElementById(submitButton).addEventListener("submit", submitForm);

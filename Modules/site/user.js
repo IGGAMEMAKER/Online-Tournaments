@@ -177,13 +177,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	var FIELD_MAX_LENGTH = 40;
+	var MIN_PASS_LENGTH = 6;
 	function ValidEmail(data){
 		return (data.email && data.email.length<FIELD_MAX_LENGTH && validator.isEmail(data.email) )
 	}
 
 	function ValidPass(password){
 
-		return (password && password.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(password) )
+		return (password && password.length<FIELD_MAX_LENGTH && password.length>MIN_PASS_LENGTH && validator.isAlphanumeric(password) )
 	}
 
 	function ValidLogin(data){
