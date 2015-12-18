@@ -206,6 +206,7 @@
 
 	document.getElementById("login").setAttribute("placeholder","MorganFreeman223");
 	document.getElementById("email").setAttribute("placeholder","chikenFreeze@gmail.com");
+	document.getElementById("password").setAttribute("placeholder","********");
 
 	/*document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);

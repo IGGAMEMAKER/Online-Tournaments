@@ -17,7 +17,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		LoginOrRegister(req, res, 'Login');
 	});
 
-	var REG_TEMPLATE="Login";
+	var REG_TEMPLATE="Register";
 
 	app.post('/Register', function (req, res){
 		Log('Try to register : ' + JSON.stringify(req.body), 'Users');
@@ -133,7 +133,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	function LoginOrRegister(req, res, command){
 		var data = req.body;
 
-		var page = REG_TEMPLATE;//command
+		var page = command; //command REG_TEMPLATE;
 		if (!ValidLoginData(data)){
 			Log('Invalid login data')
 			res.render(page, Fail); 
