@@ -176,7 +176,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
 	}
 
-	var FIELD_MAX_LENGTH = 25;
+	var FIELD_MAX_LENGTH = 40;
 	function ValidEmail(data){
 		return (data.email && data.email.length<FIELD_MAX_LENGTH && validator.isEmail(data.email) )
 	}
