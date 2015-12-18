@@ -184,7 +184,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function ValidPass(password){
 
-		return (password && password.length<FIELD_MAX_LENGTH && password.length>MIN_PASS_LENGTH && validator.isAlphanumeric(password) )
+		return (password && password.length<FIELD_MAX_LENGTH && password.length>=MIN_PASS_LENGTH && validator.isAlphanumeric(password) )
 	}
 
 	function ValidLogin(data){
