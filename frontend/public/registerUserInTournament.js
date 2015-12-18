@@ -15,6 +15,20 @@ function ManageReg(login, tID, url, regID){
 	  success: function( data ) {
 		var msg = JSON.parse(data);//JSON.stringify(data);
 		var txt='';
+		/*if (regID==1){
+			switch(msg.result){
+				case 'OK': txt='You registered successfully!!'; addTournament(tID); break;
+				case 'fail': txt='Register failed :(('; break;
+				default : txt='Sorry, you need to login first :(('; break;
+			}
+		}
+		else{
+			switch(msg.result){
+				case 'OK': txt='Register canceled. Check your money ammount'; break;
+				case 'fail': txt='unRegister failed :(('; break;
+				default : txt='Sorry, you need to login first :(('; break;
+			}
+		}*/
 		if (regID==1){
 			switch(msg.result){
 				case 'OK': txt='You registered successfully!!'; addTournament(tID); break;

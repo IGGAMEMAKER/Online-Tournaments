@@ -13,12 +13,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.post('/Login', function (req, res){
+		Log('Try to login : ' + JSON.stringify(req.body), 'Users');
 		LoginOrRegister(req, res, 'Login');
 	});
 
 	var REG_TEMPLATE="Login";
 
 	app.post('/Register', function (req, res){
+		Log('Try to register : ' + JSON.stringify(req.body), 'Users');
 		LoginOrRegister(req, res, 'Register');
 	});
 
@@ -132,8 +134,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		var data = req.body;
 
 		var page = REG_TEMPLATE;//command
-
 		if (!ValidLoginData(data)){
+			Log('Invalid login data')
 			res.render(page, Fail); 
 			return;
 		}
