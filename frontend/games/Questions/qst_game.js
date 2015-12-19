@@ -17,8 +17,11 @@ var gameStatus = STATUS_WAITING;
 
 function drawRB(val, ans){
 	var rb = document.getElementById(val);
-	rb.innerHTML='<input type="radio" onclick=sendGameData('+val+') value='+val+', name="answer"/> ';
-	rb.innerHTML+= ans;
+	//rb.innerHTML='<input type="radio" onclick=sendGameData('+val+') value='+val+', name="answer"/> ';
+	//rb.innerHTML+= ans;
+	var txt = '<a class="btn btn-lg btn-block btn-rd btn-d btn-clean" onclick=sendGameData('+val+') value='+val+', name="answer">' + ans +'</a>';
+	rb.innerHTML=txt;
+	console.log(ans, txt);
 }
 function setQuestionTab(question){
 	var q = document.getElementById('Question');
@@ -32,8 +35,10 @@ function setQuestionTab(question){
 	//var answs = document.getElementById('Answers');
 	//alert('answs');
 	//answs.innerHTML='';
-	drawRB(1,'bar');
-	setQuestionTab('Question will be here');
+
+	//drawRB(1,'bar');
+	//setQuestionTab('Question will be here');
+	
 	/*var rb = document.getElementById('1');
 	rb.innerHTML='<input type="radio" value=1, name="answer"/> ';
 	rb.innerHTML+= 'bar';*/
@@ -80,7 +85,7 @@ room.on('finish', function(msg){
 	DrawPlayers(msg);
 	getMyPoints();
 
-	setTimeout(window.close, 7000);
+	//setTimeout(window.close, 7000);
 	
 	//alert('Winner is :' + msg.winner);
 })
