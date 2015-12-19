@@ -179,16 +179,20 @@ function RenderGame (req, res){
 	console.log(req.query.tournamentID);
 	if ( isNaN(tID)){// || !games[tID] 
 		res.status(404);
-		res.type('txt').send('Game Not found');
-	}
-	else{
-		res.render(getOption('gameTemplate') , {//'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
-			tournamentID:tID,
-			gameHost:gameHost,
-			gamePort:port,
-			login:login,
-			parameters: getParameters?getParameters(tID, login) : ''
-		});
+		res.type('txt').send('Игра не найдена');
+	}	else {
+		if (isRunning(tID)){
+			res.render(getOption('gameTemplate') , {//'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
+				tournamentID:tID,
+				gameHost:gameHost,
+				gamePort:port,
+				login:login,
+				parameters: getParameters?getParameters(tID, login) : ''
+			});
+		} else {
+			res.status(404);
+			res.type('txt').send('Турнир #'+ tID + ' завершён. <br><a href="http://online-tournaments.org"> Вернуться в меню турниров </a>');
+		}
 	}
 
 	//res.render('/games/PingPong/game', {tournamentID:111} );

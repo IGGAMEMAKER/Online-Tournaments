@@ -5,6 +5,8 @@ function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+var MAX_TICKS = 10000;
+
 //var login = login || window.login;
 //alert(login);
 
@@ -20,35 +22,26 @@ function drawRB(val, ans){
 	//rb.innerHTML='<input type="radio" onclick=sendGameData('+val+') value='+val+', name="answer"/> ';
 	//rb.innerHTML+= ans;
 	var txt = '<a class="btn btn-lg btn-block btn-rd btn-d btn-clean" onclick=sendGameData('+val+') value='+val+', name="answer">' + ans +'</a>';
-	rb.innerHTML=txt;
+	rb.innerHTML = txt;
 	console.log(ans, txt);
 }
+
+function hideRB(val){
+	var rb = document.getElementById(val);
+
+	//rb.style.display = 'none';
+}
+
 function setQuestionTab(question){
 	var q = document.getElementById('Question');
 	q.innerHTML = question;	
 }
 
-//var tournamentID = "#{tournamentID}";
-//console.log('AZAZA ' + tournamentID);
-//alert('AZAZA ' + tournamentID);
-	//alert(#{tournamentID});
-	//var answs = document.getElementById('Answers');
-	//alert('answs');
-	//answs.innerHTML='';
+function setTicker(ticks){
+	var q = document.getElementById('ticker');
+	q.innerHTML = ticks;	
+}
 
-	//drawRB(1,'bar');
-	//setQuestionTab('Question will be here');
-	
-	/*var rb = document.getElementById('1');
-	rb.innerHTML='<input type="radio" value=1, name="answer"/> ';
-	rb.innerHTML+= 'bar';*/
-	/*function drawAnswers(){
-		var rb = document.getElementById('1');
-		rb.innerHTML='';
-		//answs.appendChild();
-	}
-	drawAnswers();*/
-	
 /*var gameHost = 'localhost';
 var gamePort = 5009;*/
 var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
@@ -59,7 +52,6 @@ var room = io.connect(con);
 var starter=0;
 
 room.on('startGame', function(msg){
-	//alert('alert, MOTHERFUCKER!!' + JSON.stringify(msg));
 	var ticks = msg['ticks'];
 	
 	console.log(ticks);
@@ -70,26 +62,45 @@ room.on('startGame', function(msg){
 		starter=1;
 	}
 	else{
-		setQuestionTab('startGame in '+ ticks + ' seconds');
+		setTicker(ticks);
 	}
 	recievedData = 1;
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
 
+/*setInterval(function(){
+	document.getElementById(1).style.color = 'blue';
+}, 1000);*/
+
 room.on('finish', function(msg){
-	setQuestionTab('Game Finished. Thank you for participation!');
-	drawRB(1,'');
+	hideRB(1);
+	hideRB(2);
+	hideRB(3);
+	hideRB(4);
+
+	/*drawRB(1,'');
 	drawRB(2,'');
 	drawRB(3,'');
-	drawRB(4,'');
+	drawRB(4,'');*/
+	document.getElementById("Score").style.display = 'none';
+	document.getElementById("ticker").style.display = 'none';
+	setQuestionTab('Игра завершена. Ждём вас в следующих турнирах!');
+
 	DrawPlayers(msg);
-	getMyPoints();
+	//getMyPoints();
 
 	//setTimeout(window.close, 7000);
 	
 	//alert('Winner is :' + msg.winner);
 })
 var gameDatas;// = [];
+var qTick = MAX_TICKS;
+var tickerID;
+
+
+/*var qTicker = function(){
+	setTicker()
+}*/
 
 room.on('update', function(msg){
 	//alert(JSON.stringify(msg));
@@ -100,6 +111,23 @@ room.on('update', function(msg){
 		drawRB(i+1, msg.answers[i]);
 	}
 	getMyPoints();
+
+	var MAX_SECONDS=MAX_TICKS / 1000;
+	//for (var i=0; i<MAX_SECONDS; i++){
+	//	setTimeout(function(){ setTicker(MAX_SECONDS-i); }, i*1000);
+	//}
+
+	setTimeout(function(){ setTicker(10); },0);
+	setTimeout(function(){ setTicker(9); },1000);
+	setTimeout(function(){ setTicker(8); },2000);
+	setTimeout(function(){ setTicker(7); },3000);
+	setTimeout(function(){ setTicker(6); },4000);
+	setTimeout(function(){ setTicker(5); },5000);
+	setTimeout(function(){ setTicker(4); },6000);
+	setTimeout(function(){ setTicker(3); },7000);
+	setTimeout(function(){ setTicker(2); },8000);
+	setTimeout(function(){ setTicker(1); },9000);
+	//setTimeout(function(){ setTicker(1); },7000);
 	//if (starter==1){ starter = 2;}
 
 	//alert(JSON.stringify(msg));
@@ -112,35 +140,53 @@ room.on('statusChange', function(msg){
 	var gameStatus = msg['gameStatus'];
 });
 
+var resultField="#resultField";
 
 function DrawPlayers(results){
 	var q = document.getElementById('Question');
-	q.innerHTML = '<b style="font-size: 72px;">User results</b>';
-	if (login==results.winner){
-		$('#Question').append($('<p style="color: #FF0000; ">').text('WINNER : ' + results.winner));
-	}
-	else{
-		$('#Question').append($('<p>').text('WINNER : ' + results.winner));
+	q.innerHTML = '<b style="font-size: 72px;">Результаты турнира</b>';
+
+
+	if (login==results.winner) {
+		$('#Question').append($('<p style="color: #FF0000; ">').text('ВЫ ПОБЕДИЛИ!!!!'));
+	} else {
+		$('#Question').append($('<p>').text('Победитель : ' + results.winner));
 	}
 
 	$('#Question').append('<br>');
 	$('#Question').append('<br>');
+
+
 
 	for (var ind in results.players.scores){
 		var style="";
 		if (ind==login){
 			//style="style = 'color: #FF0000;'";
+			var text = '<tr><td style="color: red;"><b>'+ind+'</b></td><td style="color: red;">'+results.players.scores[ind]+'</td> </tr>'
+			$(resultField).append(text);
 
-			$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
+			//$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
 		}
 		else{
-			$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+			var text = '<tr><td>'+ind+'</td><td>'+results.players.scores[ind]+'</td> </tr>'
+			$(resultField).append(text);
+			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 		}
 		//$('#Question').append($('<li ' + style + '>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 
 	}
 }
 
+function blockAllButtons(){
+	document.getElementById(1).style.background = 'rgba(0,0,0,.5)';
+	document.getElementById(2).style.background = 'rgba(0,0,0,.5)';
+	document.getElementById(3).style.background = 'rgba(0,0,0,.3)';
+	document.getElementById(4).style.background = 'rgba(0,0,0,.3)';
+}
+
+function colorize(id){
+	document.getElementById(id).style.background = 'blue';
+}
 
 
 function sendGameData(data1, url){
@@ -150,6 +196,8 @@ function sendGameData(data1, url){
 		gameID: tournamentID, 
 		login: login
 	};
+	blockAllButtons();
+	colorize(data1);
 	//alert(JSON.stringify(sendData));
 	sendToRoom(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
@@ -161,7 +209,7 @@ function sendToRoom(dat, url){
 
 function drawPoints(data){
 	var q = document.getElementById('Score');
-	q.innerHTML = 'Your score: '+ data.points;	
+	q.innerHTML = 'Ваш счёт : '+ data.points;	
 	//$('#Score').innerHTML = 'Your score: '+ data.points;
 	//alert('Points : ' + JSON.stringify(data));
 }

@@ -4,39 +4,44 @@ mixin radioButton(val, ans)
 		//input(type="radio", value=val, name='answer').
 		//| #{ans}
 		//br
-		a(class="btn   btn-lg btn-block btn-rd btn-d btn-clean") #{ans}
+		a(class="btn btn-lg btn-block btn-rd btn-d btn-clean") #{ans}
+
+mixin drawTableOfResults()
+	table(class="table table-bordered table-striped")
+		thead
+			tr
+				th Игрок
+				th Набранные очки
+		tbody(id="resultField")
+
 html
 head
 	link(rel="stylesheet" type="text/css" href="qst_game.css")
 center
 	h1!= Questions
 	include ../../views/templates/head
-	div(class="bloc l-bloc bgc-white" id="bloc-9")
-		div(class="container bloc-lg")
-			div(class="row")
-				div(class="col-sm-12")
-					h3(class="mg-md text-center" id="Score")
-						p Ваш счёт:0
-					p(class="text-center" id="Question")
-						Турнир скоро начнётся
-					div#Answers
-						+radioButton(1, 'Answer1')
-						+radioButton(2, 'Answer2')
-						+radioButton(3, 'Answer3')
-						+radioButton(4, 'Answer4')
-					//a(href="index.html" class="btn   btn-lg btn-block btn-rd btn-d btn-clean") Button
-	//
-		div#Score
-			p Your score:0
-		div#Question
-			p Question will be here
-		br
-		br
-		div#Answers
-			+radioButton(1, 'Answer1')
-			+radioButton(2, 'Answer2')
-			+radioButton(3, 'Answer3')
-			+radioButton(4, 'Answer4')
+	div(class="page-container")
+		div(class="bloc l-bloc bgc-white" id="bloc-9")
+			div(class="container bloc-lg")
+				div(class="row")
+					div(class="col-sm-12")
+						h2(class="mg-md text-center" id="Score")
+							p Ваш счёт:0
+					
+						h3(class="text-center" id="Question")
+							Турнир начнётся через
+						h4(id="ticker")
+					
+						div#Answers
+							+radioButton(1, 'Answer1')
+							+radioButton(2, 'Answer2')
+							+radioButton(3, 'Answer3')
+							+radioButton(4, 'Answer4')
+						+radioButton(5, 'Answer5')
+						div#results
+							+drawTableOfResults()
+								
+
 script( src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
 script( src="https://cdn.socket.io/socket.io-1.2.0.js").
 //script( src="http://code.jquery.com/jquery-1.11.1.js").
