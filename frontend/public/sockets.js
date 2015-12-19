@@ -48,10 +48,12 @@ socket.on('FinishTournament', function (msg) {
 
 function StartTournament(tournamentID){
   if (isActiveTab()){
-    window.scrollTo(0,0); 
-    
-    playAudio();
-    drawPopup();
+    if (userIsRegisteredIn(tournamentID)){
+      window.scrollTo(0,0); 
+      
+      playAudio();
+      drawPopup();
+    }
     /*setTimeout(drawPlayButtons, 50);
     setTimeout(drawPlayButtons, 300);
     setTimeout(drawPlayButtons, 1000);*/

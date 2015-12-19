@@ -3,6 +3,8 @@ getProfile();
 drawAuthButton();
 //window.onfocus = getProfile;
 
+var myModal = '#myModal';
+
 function getProfile(drawFunction){
 	clearStorage();
 	getAsync('Profile', {}, saveProfile() );	
@@ -31,11 +33,13 @@ function saveProfile(){
 			var tID1 = tournaments[i];
 			GetTournamentAddress(tID1.tournamentID);
 		}
-		if(tournaments.length==0){ drawPlayButtons(); }
+		if(tournaments.length==0){ console.log('no tournaments'); drawPlayButtons(); }
 
 		//$('#money').html('You have '+money/100+'$ on account');
 		$('#money').html(login + ' (' + money/100 + '$)');
 		$('#money1').html(money/100 + '$');
+
+		//$(myModal).modal('show');
 
 		if (tID){
 			console.log('tID: ' + tID);

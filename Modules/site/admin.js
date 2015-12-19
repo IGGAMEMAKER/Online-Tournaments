@@ -13,6 +13,12 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
       default: sender.Answer(res, {result:'Unknown command ' + command}); break;
     }
   }
+  app.get('/AddQuestion', function (req, res){
+    res.render('AddQuestion');
+  })
+  app.post('/AddQuestion', function (req, res){
+
+  })
 
   function GetGameFromGameServer(res, gameNameID){
     var servName = gameNameID;

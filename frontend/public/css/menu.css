@@ -54,3 +54,23 @@ ul#menu li a:hover {
   color: #f00;
   width: 300px;
 }
+
+#parent_popup {
+  background: #000;
+  height: 100%;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+#popup {
+  background-color: #00f;
+  height: 200px;
+  position: fixed;
+  top: 100px;
+  left: 40%;
+  color: #f00;
+  width: 300px;
+}

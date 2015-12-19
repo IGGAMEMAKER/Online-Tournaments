@@ -1,12 +1,48 @@
 var PLAY_FIELD='#tournaments';
 var PLAY_FIELD='#playButtons';
+var BUTTON_FIELD="#modal-body";
+var myModal = '#myModal';
+
 //var PLAY_FIELD='#news';
+
+/*function drawButton(host, port, tournamentID){
+  var parameters = '\''+host +'\','+port+','+tournamentID; // prt(parameters);
+  var text = '<button onclick="startGame(' + parameters + ')" style="width:300px;height:60px;"> PLAY '+tournamentID+'</button><br>';//"' + gameURL + '"// prt(text);
+  
+  $(BUTTON_FIELD).append(text);
+  console.log('appended: ' + host, port, tournamentID);
+}*/
 
 function drawButton(host, port, tournamentID){
   var parameters = '\''+host +'\','+port+','+tournamentID; // prt(parameters);
   var text = '<button onclick="startGame(' + parameters + ')" style="width:300px;height:60px;"> PLAY '+tournamentID+'</button><br>';//"' + gameURL + '"// prt(text);
   
-  $(PLAY_FIELD).append(text);
+
+  var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
+    
+  var txt = '<p>AAAAAAAA</p>';
+  /*
+  <form id="TheForm" method="post" action="'+addr+'" target="TheWindow">';
+
+  '<input type="hidden" name="login" value="'+login+'" /> '+
+  '<input type="submit" class="btn btn-default" value="111"> PLAY 111</input>'+
+  '</form>
+
+  */
+  txt='<form id="form1" method="post" action="'+addr+'"  target="_blank"> '
+  //+'<p>aaaa</p>'
+  //+'<a href="http://google.com">google</a>'
+  +'<input type="hidden" name="login" value="'+login+'" />'
+  +'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
+  +'</form>';
+
+  
+  $(BUTTON_FIELD).append(txt);
+  console.log('appended: ' + host, port, tournamentID);
+
+  /*var wind = window.open('', 'TheWindow');
+  document.getElementById('TheForm').submit();
+  wind.focus();*/
 }
 
 
@@ -16,28 +52,43 @@ function drawPlayButtons(){
   var tournaments = getTournaments();        // prt(tournaments);
   var addresses   = getObject('addresses');  // console.log('addresses',addresses);
 
-  $(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
+  //$(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
   
-  if (tournaments && addresses){  
+  if (tournaments && addresses){
+    clearButtonField();
     for (var i = tournaments.length - 1; i >= 0; i--) {
       var tournamentID = tournaments[i]; // console.log(tournamentID);
       var address = getAddressFromAddrList(addresses, tournamentID);
       //var address = addresses[tournamentID];//);
       //console.log(address);
-      if (address) { 
+      if (address) {
+        
         runningCount++;
         drawButton(address.host, address.port, tournamentID);
       }
     }
   }
 
-  if (runningCount==0) $(PLAY_FIELD).append('No tournaments available'); //closePopup('tournaments');
+  if (runningCount==0) { 
+    console.log('no tournaments. runningCount=0');
+    $(BUTTON_FIELD).append('Нет запущенных турниров'); //closePopup('tournaments');
+    //drawPopup();
+  } else {
+    drawPopup();
+  }
+}
+
+function clearButtonField(){
+  console.log('clearButtonField');
+
+  $(BUTTON_FIELD).html('<br />');
 }
 
 function drawWindowForGame(gameURL, port, tournamentID){
-  var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
+  /*var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
     
   var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
+  console.log(txt);
   $(PLAY_FIELD).append(txt);
 
   
@@ -45,17 +96,21 @@ function drawWindowForGame(gameURL, port, tournamentID){
   document.getElementById('TheForm').submit();
   wind.focus();
 
-  closePopup('tournaments');
+  closePopup('tournaments');*/
 }
 
 function closePopup(name){
   //prt('closePopup');
-  document.getElementById(name).style.display='none';
+
+  //document.getElementById(name).style.display='none';
+  $(myModal).modal('hide');
 }
 
 function drawPopup(){
   //prt('OPEN POPUUUUUUP!!!!');
-  document.getElementById('tournaments').style.display='block';
+  //document.getElementById('tournaments').style.display='block';
+  $(myModal).modal('show');
+
   //prt('popup opened');
 }
 

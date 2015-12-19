@@ -1,6 +1,28 @@
 //
-include templates/libs
+//include templates/libs
+//script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+//script(src="http://code.jquery.com/jquery-1.11.1.js")
 include templates/menu
+
+mixin modal()
+	//button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal") Open Modal
+
+	div(id="myModal" class="modal fade" role="dialog")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					button(type="button" class="close" data-dismiss="modal")&times;
+					h4(class="modal-title") Запущенные турниры
+				#playButtons
+				div(class="modal-body" id="modal-body")
+					button(type="button" class="btn btn-default" data-dismiss="modal") Close
+					br
+					button(type="button" class="btn btn-default" data-dismiss="modal") Close
+					br
+					button(type="button" class="btn btn-default" data-dismiss="modal") Close
+				div(class="modal-footer")
+					button(type="button" class="btn btn-default" data-dismiss="modal") Close
 
 script(src="storage.js")
 script(src="draw.js")
@@ -12,8 +34,10 @@ if session && session.login
 //script(src="stats.js")
 
 script var login = "#{session.login}";
-#tournaments(style="display: none;")
-	#playButtons
+
+#tournaments()
+	+modal()
+
 
 script(src="YandexMetrica.js")
 noscript
