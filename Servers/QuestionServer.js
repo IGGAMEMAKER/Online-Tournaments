@@ -8,6 +8,7 @@ var FinishGame = gs.FinishGame;
 
 var UpdPeriod = 10000;
 //var SendPeriod = UpdPeriod;
+var NUMBER_OF_QUESTIONS=6;
 
 var questionDir = './frontend/games/Questions/';
 var questionFolder = 'general';
@@ -45,9 +46,7 @@ function Init(gameID, playerID){
 	games[gameID].userAnswers.push({});//[playerID] = {};
 }
 
-var NUMBER_OF_QUESTIONS=6;
 function AsyncUpdate(gameID){
-	
 	strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
 	if (games[gameID].questIndex < games[gameID].questions.length - 1){ // NUMBER_OF_QUESTIONS - 1){
 		if (games[gameID].questIndex>=0){
@@ -65,14 +64,12 @@ function AsyncUpdate(gameID){
 function Action(gameID, playerID, movement, userName){
 	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
 	var currQuestionIndex = games[gameID].questIndex;
-	games[gameID].userAnswers[playerID][currQuestionIndex] = movement.answer;
-	/*if (games[gameID].userAnswers[playerID])
-	games[gameID].userAnswers[playerID]*/
+	var time = new Date();
 
-	
+	games[gameID].userAnswers[playerID][currQuestionIndex] = { answer:movement.answer, time:time };
 }
 
-
+var PointsPerSecond=10;
 
 function checkAnswers(gameID){
 	var game = games[gameID];
@@ -80,10 +77,17 @@ function checkAnswers(gameID){
 	var currQuestionIndex = game.questIndex;
 
 	for (var i=0; i< game.userAnswers.length; ++i){
-		var answer = game.userAnswers[i][currQuestionIndex];
+		var AnswerData = game.userAnswers[i][currQuestionIndex];
+		console.log(AnswerData);
+
+
+		var answer = AnswerData.answer;
 		if (AnswerIsCorrect(gameID, answer)){
 			var userName = getUID(gameID, i);
-			games[gameID].scores[userName]++;	
+			//games[gameID].scores[userName]++;
+			var now = new Date();
+			var diff = now - AnswerData.time;
+			games[gameID].scores[userName]+= 1000 + diff*PointsPerSecond/1000;
 		}
 	}
 }
@@ -123,6 +127,23 @@ function setQuestion(gameID){
 	});
 }
 
+function tryToLoadQuestion(id, files, gameID){
+	//find suitable file name
+	if (id>files.length) id = files.length-1;
+	var qFileName = files[id];
+	while(contains(qFileName,'~') ){
+		id--;
+		qFileName = files[id];
+	}
+
+	// open file by file name
+	var jsFile=readJSONfile( questionDir+ questionFolder+'/'+qFileName);
+
+	// add questions to game
+	games[gameID].source = qFileName;
+	games[gameID].questions = jsFile.qst;
+}
+
 function readJSONfile(fullPath){//gives you the json from file
 	var file = fs.readFileSync(fullPath, "utf8");
 	console.log(file);
@@ -136,26 +157,8 @@ function contains(word, symbol){
 	return word.indexOf(symbol) > -1;
 }
 
-function tryToLoadQuestion(id, files, gameID){
-	//find suitable file name
-	if (id>files.length) id = files.length-1;
-	var qFileName = files[id];
-	while(contains(qFileName,'~') ){
-		id--;
-		qFileName = files[id];
-	}
 
-	//open file by file name
-	var jsFile=readJSONfile( questionDir+ questionFolder+'/'+qFileName);
-
-	//add questions to game
-	games[gameID].source = qFileName;
-	games[gameID].questions = jsFile.qst;
-
-
-}
-
-function loadQuestList(folder, id, cb){
+/*function loadQuestList(folder, id, cb){
 	var qFile;
 	fs.readdir(questionDir+folder, function callback (err, files){
 		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
@@ -174,13 +177,13 @@ function loadQuestList(folder, id, cb){
 			var q = readJSONfile(questionDir+folder+'/'+qFile);
 
 		}
-	});
+	});*/
 
 	/*var file = fs.readFileSync(questionDir+folder+  '.txt', "utf8");
 	console.log(file);
 	var questions =  JSON.parse(file);
-	console.log(JSON.stringify(questions));*/
-}
+	console.log(JSON.stringify(questions));
+}*/
 
 //setTimeout( function(){loadQuestList(questionFolder)}, 1750);
 
@@ -201,7 +204,7 @@ function FindWinner(gameID){
 	return userName;
 }
 
-function getNumberOfQuestionsByTopic(topic){
+/*function getNumberOfQuestionsByTopic(topic){
 	fs.readdir(questionDir+folder, function callback (err, files){
 		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
 		else{
@@ -211,7 +214,8 @@ function getNumberOfQuestionsByTopic(topic){
 
 	});
 	return 1;
-}
+}*/
+
 function noQuestions(game){
 	return !game.questions;
 }
@@ -243,8 +247,9 @@ function getQuestions(gameID){
 }
 
 function AnswerIsCorrect(gameID, answer){
-	strLog('Player answer = ' + answer + ' , while correct is :' + getCurrentQuestion(gameID).correct );
-	if (answer && answer == getCurrentQuestion(gameID).correct ){
+	var correct = getCurrentQuestion(gameID).correct;
+	strLog('Player answer = ' + answer + ' , while correct is :' + correct, 'Games');
+	if (answer && answer == correct ){
 		return true;
 	}
 	else{

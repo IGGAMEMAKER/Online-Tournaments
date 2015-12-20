@@ -162,13 +162,13 @@ function DrawPlayers(results){
 		var style="";
 		if (ind==login){
 			//style="style = 'color: #FF0000;'";
-			var text = '<tr><td style="color: red;"><b>'+ind+'</b></td><td style="color: red;">'+results.players.scores[ind]+'</td> </tr>'
+			var text = '<tr><td style="color: red;"><b>'+ind+'</b></td><td style="color: red;">' + Math.round(results.players.scores[ind]) + '</td> </tr>'
 			$(resultField).append(text);
 
 			//$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
 		}
 		else{
-			var text = '<tr><td>'+ind+'</td><td>'+results.players.scores[ind]+'</td> </tr>'
+			var text = '<tr><td>'+ind+'</td><td>'+ Math.round(results.players.scores[ind]) +'</td> </tr>'
 			$(resultField).append(text);
 			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 		}
@@ -211,7 +211,7 @@ function sendToRoom(dat, url){
 
 function drawPoints(data){
 	var q = document.getElementById('Score');
-	q.innerHTML = 'Ваш счёт : '+ data.points;	
+	q.innerHTML = 'Ваш счёт : '+ Math.round(data.points);	
 	//$('#Score').innerHTML = 'Your score: '+ data.points;
 	//alert('Points : ' + JSON.stringify(data));
 }
