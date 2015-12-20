@@ -6,7 +6,7 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-var UpdPeriod = 4000;
+var UpdPeriod = 10000;
 //var SendPeriod = UpdPeriod;
 
 var questionDir = './frontend/games/Questions/';

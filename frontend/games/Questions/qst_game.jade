@@ -16,10 +16,10 @@ mixin drawTableOfResults()
 
 html
 head
+	include ../../views/templates/head
 	link(rel="stylesheet" type="text/css" href="qst_game.css")
 center
 	h1!= Questions
-	include ../../views/templates/head
 	div(class="page-container")
 		div(class="bloc l-bloc bgc-white" id="bloc-9")
 			div(class="container bloc-lg")

@@ -21,7 +21,7 @@ function drawRB(val, ans){
 	var rb = document.getElementById(val);
 	//rb.innerHTML='<input type="radio" onclick=sendGameData('+val+') value='+val+', name="answer"/> ';
 	//rb.innerHTML+= ans;
-	var txt = '<a class="btn btn-lg btn-block btn-rd btn-d btn-clean" onclick=sendGameData('+val+') value='+val+', name="answer">' + ans +'</a>';
+	var txt = '<a class="btn btn-lg btn-block btn-rd btn-d btn-clean" id="a'+val+'" onclick=sendGameData('+val+') value='+val+', name="answer">' + ans +'</a>';
 	rb.innerHTML = txt;
 	console.log(ans, txt);
 }
@@ -144,7 +144,7 @@ var resultField="#resultField";
 
 function DrawPlayers(results){
 	var q = document.getElementById('Question');
-	q.innerHTML = '<b style="font-size: 72px;">Результаты турнира</b>';
+	//q.innerHTML = '<b style="font-size: 72px;">Результаты турнира</b>';
 
 
 	if (login==results.winner) {
@@ -153,8 +153,8 @@ function DrawPlayers(results){
 		$('#Question').append($('<p>').text('Победитель : ' + results.winner));
 	}
 
-	$('#Question').append('<br>');
-	$('#Question').append('<br>');
+	//$('#Question').append('<br>');
+	//$('#Question').append('<br>');
 
 
 
@@ -177,15 +177,17 @@ function DrawPlayers(results){
 	}
 }
 
+var default_colour = 'rgba(0,0,0, 0.3)';
+
 function blockAllButtons(){
-	document.getElementById(1).style.background = 'rgba(0,0,0,.5)';
-	document.getElementById(2).style.background = 'rgba(0,0,0,.5)';
-	document.getElementById(3).style.background = 'rgba(0,0,0,.3)';
-	document.getElementById(4).style.background = 'rgba(0,0,0,.3)';
+	document.getElementById("a1").style.background = default_colour;
+	document.getElementById("a2").style.background = default_colour;
+	document.getElementById("a3").style.background = default_colour;
+	document.getElementById("a4").style.background = default_colour;
 }
 
 function colorize(id){
-	document.getElementById(id).style.background = 'blue';
+	document.getElementById("a"+id).style.background = 'blueviolet';
 }
 
 
