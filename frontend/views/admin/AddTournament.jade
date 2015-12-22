@@ -70,8 +70,17 @@ center
 			//+getGoNexts(1)
 			+inp('goNext', 'goNext')
 			+inp('Prizes', 'Prizes')
-			+showSelectInTR('prizeGenerator',['auto','custom'],1)
-			+showSelectInTR('goNextSelection',['auto','custom'],1)
+
+			tr
+				td special
+				td
+					select(id='special', name="special")
+						option(value=0) none
+						option(value=1) special
+						//option(value=2) stream
+			+inp('specName', 'specName')
+			//+showSelectInTR('prizeGenerator',['auto','custom'],1)
+			//+showSelectInTR('goNextSelection',['auto','custom'],1)
 
 		br
 		br

@@ -13,7 +13,56 @@ var PRICE_CUSTOM = 1;  //
 var COUNT_FLOATING = 2;
 
 var strLog = Log;
+
+var multer  = require('multer')
+
+var specialTournamentID;
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    //cb(null, './frontend/games/Questions/special')
+    cb(null, './frontend/public/img')
+  },
+  filename: function (req, file, cb) {
+    var tournamentID = req.body.tournamentID;
+    console.log('in storage tournamentID', tournamentID);
+    console.log(file);
+    console.log(req.files);
+
+    arr = file.originalname.split('.');
+    var last = arr.length-1;
+    var extension = arr[last];
+    console.log('extension', extension)
+
+    cb(null, tournamentID + '.'+extension);// + file.extension)
+  }
+})
+  
+var upload = multer({ storage: storage }).single('image');
+
+/*function getTournamentID(req, res, next){
+  req.tournamentID = req.body.tournamentID;
+  next();
+}*/
+
+//var upload = multer({ storage: storage })
 //var Answer = sender.Answer;
+
+  app.get('/AddSpecial', function (req, res){
+    res.render('AddSpecial');
+  })
+  app.post('/AddSpecial', function (req, res){//upload.single('image'), 
+    // trying to add image
+    upload(req, res, function (err){
+      if (err) { console.log(err); res.render('AddSpecial'); return; }
+
+      console.log('added image');
+      res.redirect('AddQuestion');
+      //var filename = req.file.originalname;
+      //console.log('AddSpecial', filename);      
+    })
+
+  })
 
 	app.get('/AddTournament', function (req, res){
 	  res.render('AddTournament');
@@ -99,16 +148,15 @@ var strLog = Log;
           players:      0
       }
 
-      // regular tournaments settings
-      if (data.regularity) { // && data.regularity!="0"
-        obj.settings={}; 
-
-        obj.settings.regularity = parseInt(data.regularity);
+      if (data.special || data.regularity || data.specName){
+        obj.settings={};
       }
-      //if (data.tournamentName)
+      // regular tournaments settings  // // && data.regularity!="0"
+      if (data.regularity) { obj.settings.regularity = parseInt(data.regularity); }
+      if (data.special) { obj.settings.special = parseInt(data.special); }
+      if (data.specName) { obj.settings.specName = data.specName; }
 
       AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
-      //sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, sender.proxy);
     }
     else{
       strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');

@@ -1,0 +1,15 @@
+form(action="/AddSpecial" method="POST" enctype="multipart/form-data")
+	p!= 'tournament ID'
+	input(type="text" name="tournamentID")
+	br
+	p!= 'Select an image to upload:'
+	input(type="file" name="image")
+	br
+	br
+	p!= 'or the image URL:'
+	input(type="text" name="url")
+	br
+
+	input(type="submit" value="AddSpecialImage")
+
+a(href="AddQuestion") Add question

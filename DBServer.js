@@ -106,6 +106,12 @@ app.post('/Mail', function (req, res){
 	}, 200);*/
 })
 
+app.post('/StartSpecial', function(req, res){
+	sender.Answer(res, OK);
+
+	StartSpecial(req.body.tournamentID);
+})
+
 app.post('/GetTournamentAddress' , GetTournamentAddress);
 
 //var statistics = require('./Modules/DB/stats')(app, AsyncRender, Answer, sender, Log, proxy);
@@ -771,6 +777,8 @@ var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
 var REGULARITY_STREAM=2;
 
+var SPECIALITY_SPECIAL=1;
+
 function isStreamTournament(tournament){
 
 	return tournament.settings && tournament.settings.regularity==REGULARITY_STREAM;
@@ -778,6 +786,10 @@ function isStreamTournament(tournament){
 
 function isRegularTournament(tournament){
 	return tournament.settings && tournament.settings.regularity==REGULARITY_REGULAR;
+}
+
+function isSpecialTournament(tournament){
+	return tournament.settings && tournament.settings.special==SPECIALITY_SPECIAL;
 }
 
 function getRegistrableTournament(tournamentID){
@@ -871,6 +883,7 @@ function RegisterUserInTournament(data, res){
 			StartTournament(tournamentID);
 		} else {
 			if (playerCount>maxPlayers-1){
+				// stream tournaments addition
 				var newGoNext = TT.goNext;
 
 				Log('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
@@ -1826,11 +1839,20 @@ function addTournament(maxID, tournament, res){
 		}	else {
 			if (res) Answer(res, tournament);
 			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
-
-			setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
+			if (!isSpecialTournament(tournament)) {
+				setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
+			}
 			sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
 		}
 	});
+}
+
+function StartSpecial(tournamentID){
+	Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament){
+		if (tournament.status!=TOURN_STATUS_FINISHED && tournament.status !=TOURN_STATUS_RUNNING && isSpecialTournament(tournament)){
+			setTournStatus(tournamentID, TOURN_STATUS_REGISTER);
+		}
+	})
 }
 
 function AddTournament (req, res){

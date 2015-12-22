@@ -17,7 +17,16 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     res.render('AddQuestion');
   })
   app.post('/AddQuestion', function (req, res){
+    var data = req.body;
+    var tournamentID = req.body.tournamentID;
 
+    //if ()
+  })
+
+  app.get('/StartSpecial/:id', function (req, res){
+    var tournamentID = parseInt(req.params.id);
+    res.end('StartSpecial ' + tournamentID);
+    if (tournamentID>0) sender.sendRequest('StartSpecial', { tournamentID: tournamentID }, 'localhost', 'DBServer');//, res, sender.Proxy);
   })
 
   function GetGameFromGameServer(res, gameNameID){
