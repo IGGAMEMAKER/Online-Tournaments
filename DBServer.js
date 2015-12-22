@@ -531,13 +531,13 @@ function FinishGame (req, res){
 	sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 
 	/*if (gameWasLast(gameID)){
-		strLog('EndTournament: ' + tournamentID, 'Tournaments');
+		Log('EndTournament: ' + tournamentID, 'Tournaments');
 		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 		EndTournament(scores, gameID, tournamentID);
 	}
 	else{
 		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
-		strLog('Middle results: ' + JSON.stringify(data), 'Tournaments');
+		Log('Middle results: ' + JSON.stringify(data), 'Tournaments');
 	}*/	
 }
 
@@ -776,6 +776,10 @@ function isStreamTournament(tournament){
 	return tournament.settings && tournament.settings.regularity==REGULARITY_STREAM;
 }
 
+function isRegularTournament(tournament){
+	return tournament.settings && tournament.settings.regularity==REGULARITY_REGULAR;
+}
+
 function getRegistrableTournament(tournamentID){
 	return new Promise(function (resolve, reject){
 		//{$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
@@ -869,20 +873,20 @@ function RegisterUserInTournament(data, res){
 			if (playerCount>maxPlayers-1){
 				var newGoNext = TT.goNext;
 
-				strLog('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
-				strLog('goNext was '+JSON.stringify(newGoNext), STREAM_USERS);
+				Log('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
+				Log('goNext was '+JSON.stringify(newGoNext), STREAM_USERS);
 
 				newGoNext[0]++;
-				strLog('goNext now ' + JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
+				Log('goNext now ' + JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
 
 				Tournament.update({tournamentID:tournamentID}, {$set :{goNext: newGoNext} }, function (err, count){
 					if (err) return 0;
 
 					if (updated(count)) { 
-						strLog('goNext updated', STREAM_TOURNAMENTS); 
+						Log('goNext updated', STREAM_TOURNAMENTS); 
 					} else {
-						strLog('goNext update FAILED', STREAM_TOURNAMENTS); 
-						strLog('goNext update FAILED', STREAM_ERROR); 
+						Log('goNext update FAILED', STREAM_TOURNAMENTS); 
+						setQuestions('goNext update FAILED', STREAM_ERROR); 
 					}
 				});
 			}
@@ -974,7 +978,7 @@ function GetPlayers (req, res){
 }
 
 function updated(count){
-	console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
+	//console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
 	return count.n>0;
 }
 
@@ -1377,6 +1381,54 @@ function WinPrize(data, res){
 	//Tournament.remove({tournamentID:})
 	UpdatePromos(tournamentID);
 
+	Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament){
+		if (err) {Log('Tournament find err: ' + JSON.stringify(err), STREAM_TOURNAMENTS); }
+
+		if (tournament){
+			console.log('Find out if it was regular', tournament);
+			if (isStreamTournament(tournament) || isRegularTournament(tournament)){
+				console.log('AutoAddTournament');
+				AutoAddTournament(tournament);
+			}
+		}
+	})
+}
+
+function YoungerizeTournament(tournament){
+	var obj = {
+		buyIn:      tournament.buyIn,
+		initFund:     tournament.initFund,
+		gameNameID:   tournament.gameNameID,
+
+		pricingType:  tournament.pricingType,
+
+		rounds:     tournament.rounds,
+		goNext:     tournament.goNext,//
+		places:     tournament.places,
+		Prizes:     tournament.Prizes,
+		prizePools:   tournament.prizePools,
+
+		comment:    tournament.comment,
+
+		playersCountStatus: tournament.playersCountStatus,///Fixed or float
+		startDate:    null,
+		status:       null,
+		players:      0
+   }
+	// regular tournaments settings
+	if (tournament.settings) { // && data.regularity!="0"
+		obj.settings=tournament.settings;
+	}
+
+	//console.log(tournament1)
+	if (isStreamTournament(tournament)) {
+		obj.goNext[0] = 1;
+	}
+
+	obj.status = TOURN_STATUS_REGISTER;
+	obj.players = 0;
+
+	return obj;
 }
 
 //KillFinishedTournaments();
@@ -1770,9 +1822,9 @@ function addTournament(maxID, tournament, res){
 	tourn.save(function (err) {
 		if (err){
 			Error(err);
-			Answer(res, Fail);
+			if (res) Answer(res, Fail);
 		}	else {
-			Answer(res, tournament);
+			if (res) Answer(res, tournament);
 			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
 
 			setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
@@ -1801,6 +1853,27 @@ function AddTournament (req, res){
 		}
 	});
 }
+
+function AutoAddTournament (tournament1){
+	Log('AutoAddTournament ' + JSON.stringify(tournament1), STREAM_TOURNAMENTS);
+	var tournament = YoungerizeTournament(tournament1);
+	
+	Tournament
+		.findOne({})
+		.sort('-tournamentID')
+		.exec(function searchTournamentWithMaxID (err, maxTournament){
+		if (!err){
+			if (maxTournament) {
+				addTournament(maxTournament.tournamentID, tournament);
+			} else { 
+				addTournament(0,tournament); 
+			}
+		}	else {
+			multiLog('adding failed: ' + JSON.stringify(err), [STREAM_TOURNAMENTS, STREAM_ERROR] );	
+		}
+	});
+}
+
 
 function Initialize(){
 	Tournament.find({status:null})

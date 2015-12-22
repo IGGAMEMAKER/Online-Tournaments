@@ -6,7 +6,7 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-var UpdPeriod = 10000;
+var UpdPeriod = 4000;
 //var SendPeriod = UpdPeriod;
 var NUMBER_OF_QUESTIONS=6;
 
