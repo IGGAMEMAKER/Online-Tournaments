@@ -45,8 +45,8 @@ center
 				td Game Name
 				td
 					select(id='gameNameID', name="gameNameID")
-						option(value=3) Battle
 						option(value=2) Questions
+						option(value=3) Battle
 						option(value=1) Ping Pong
 						
 			tr
@@ -55,6 +55,15 @@ center
 					select(id="rounds", name="rounds")
 						-for (i=1;i<13;++i)
 							option(value=i) #{i}
+
+			tr
+				td Regularity
+				td
+					select(id='gameNameID', name="regularity")
+						option(value=0) none
+						option(value=1) regular
+						option(value=2) stream
+			
 			+inp('Buy In', 'buyIn')
 			//+inp('bb', 'field')
 			//+showSelectInTR('asd',['ololo','piw-piw', 'defense'],1)

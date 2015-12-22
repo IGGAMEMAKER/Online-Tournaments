@@ -95,9 +95,18 @@ var strLog = Log;
         
         playersCountStatus: COUNT_FIXED,///Fixed or float
           startDate:    null,
-          status:     null, 
-          players:    0
+          status:       null,
+          players:      0
       }
+
+      // regular tournaments settings
+      if (data.regularity) { // && data.regularity!="0"
+        obj.settings={}; 
+
+        obj.settings.regularity = parseInt(data.regularity);
+      }
+      //if (data.tournamentName)
+
       AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
       //sender.sendRequest('AddTournament', obj, '127.0.0.1', 'DBServer', res, sender.proxy);
     }

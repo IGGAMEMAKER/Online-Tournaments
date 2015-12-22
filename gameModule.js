@@ -333,6 +333,33 @@ function setRoom(ID){
 		});
 	});
 }
+app.post('/Join', function (req, res){
+	console.log('JoinPlayer Request');
+	var gameID = req.body.gameID;
+	var login = req.body.login;
+
+	if (login && gameID && isRunning(gameID)){
+		JoinPlayer(gameID, login);
+	}
+
+	sender.Answer(res, OK);
+})
+function JoinPlayer(ID, login){
+	console.log('JoinPlayer', login, ID);
+
+	var count = games[ID].players.count;
+	console.log('players.count', count);
+
+	games[ID].players.UIDtoGID[login] = count;
+	games[ID].scores[login] = 0;
+
+	console.log('players', games[ID].players.UIDtoGID, 'scores', games[ID].scores);
+	customInit(ID, count);
+	console.log('customInit done...', games[ID]);
+
+	games[ID].userIDs.push(login);
+	games[ID].players.count++;
+}
 
 function PrepareAndStart(ID, userIDs, res){
 	strLog('PrepareAndStart tournament ' + ID, 'Tournaments');
@@ -351,13 +378,14 @@ function PrepareAndStart(ID, userIDs, res){
 	for (var playerID in userIDs){
 		games[ID].players.UIDtoGID[userIDs[playerID]] = i;
 		games[ID].scores[userIDs[playerID]] = 0;
-		i++;			
+		i++;
 		
 		//***********
 		customInit(ID, playerID);
 		//***********
 	}
 	games[ID].userIDs = userIDs;
+	console.log('userIDs', userIDs);
 	//
 
 	setRoom(ID);

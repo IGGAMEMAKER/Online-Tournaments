@@ -11,7 +11,7 @@ mixin showButton()
 		div(id="unregister" style="display:none;")
 			h2 Вы зарегистрированы в турнире. 
 			h3 Дождитесь начала игры
-			a(id="unReg" class="btn btn-lg btn-primary" style="width:60%; border-radius:6px;") Сняться с турнира
+			a(id="unReg" class="btn btn-lg btn-danger" style="width:60%; border-radius:6px;") Сняться с турнира
 		div(id="auth")
 			h2 Авторизуйтесь, чтобы сыграть
 			a(id="lgn" href="login" class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Авторизоваться
@@ -64,8 +64,7 @@ mixin showFullTournament(t, players)
 				div(class="col-sm-12")
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Турнир ##{t.tournamentID}
+							h3(class="mg-clear text-center") Турнир ##{t.tournamentID}
 						div(class="panel-body")
 							+showShort(t)
 
@@ -73,15 +72,13 @@ mixin showFullTournament(t, players)
 
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Призы
+							h3(class="mg-clear text-center") Призы
 						div(class="panel-body")
 							+showPrizes(t.Prizes, t.goNext)
 
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Описание турнира
+							h3(class="mg-clear text-center") Описание турнира
 						div(class="panel-body")
 							+showDescription(t)
 

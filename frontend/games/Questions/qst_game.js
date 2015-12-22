@@ -29,7 +29,7 @@ function drawRB(val, ans){
 function hideRB(val){
 	var rb = document.getElementById(val);
 
-	//rb.style.display = 'none';
+	rb.style.display = 'none';
 }
 
 function setQuestionTab(question){
@@ -93,6 +93,7 @@ room.on('finish', function(msg){
 	
 	//alert('Winner is :' + msg.winner);
 })
+
 var gameDatas;// = [];
 var qTick = MAX_TICKS;
 var tickerID;
@@ -212,6 +213,7 @@ function sendToRoom(dat, url){
 function drawPoints(data){
 	var q = document.getElementById('Score');
 	q.innerHTML = 'Ваш счёт : '+ Math.round(data.points);	
+
 	//$('#Score').innerHTML = 'Your score: '+ data.points;
 	//alert('Points : ' + JSON.stringify(data));
 }

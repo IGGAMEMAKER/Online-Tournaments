@@ -35,9 +35,9 @@ app.post('/Points', function (req, res){
 
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
-	games[gameID].questIndex = -1;
 
 	if (playerID==0){
+		games[gameID].questIndex = -1;
 		setQuestion(gameID);
 		games[gameID].userAnswers = [];
 	}
@@ -78,9 +78,11 @@ function checkAnswers(gameID){
 
 	for (var i=0; i< game.userAnswers.length; ++i){
 		var AnswerData = game.userAnswers[i][currQuestionIndex];
-		console.log(AnswerData);
+		//console.log(AnswerData);
 
+		if (!AnswerData) continue;
 
+		if (!AnswerData) console.log('no AnswerData after continue');
 		var answer = AnswerData.answer;
 		if (AnswerIsCorrect(gameID, answer)){
 			var userName = getUID(gameID, i);
@@ -108,6 +110,8 @@ function AddQuestions(data, res){
 function setQuestion(gameID){
 	var topic = questionFolder;// 'general';// null;
 	strLog('here must be games[gameID].topic instead of null !!!');
+
+	
 
 	fs.readdir(questionDir+topic, function callback (err, files){
 		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }

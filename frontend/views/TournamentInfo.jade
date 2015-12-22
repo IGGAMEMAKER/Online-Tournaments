@@ -64,8 +64,7 @@ mixin showFullTournament(t, players)
 				div(class="col-sm-12")
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Турнир ##{t.tournamentID}
+							h3(class="mg-clear text-center") Турнир ##{t.tournamentID}
 						div(class="panel-body")
 							+showShort(t)
 
@@ -73,15 +72,13 @@ mixin showFullTournament(t, players)
 
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Призы
+							h3(class="mg-clear text-center") Призы
 						div(class="panel-body")
 							+showPrizes(t.Prizes, t.goNext)
 
 					div(class="panel")
 						div(class="panel-heading")
-							h3(class="mg-clear text-center")
-								Описание турнира
+							h3(class="mg-clear text-center") Описание турнира
 						div(class="panel-body")
 							+showDescription(t)
 

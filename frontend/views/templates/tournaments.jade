@@ -123,11 +123,9 @@ mixin showMaxTournament(t,line, imageUrl)
 				if buyIn>0
 					Стоимость: #{buyIn/convert}$
 				else
-					Бесплатно!
+					p Бесплатно!
 				br
 				Призовых мест: #{winnersPlaces}
-				div(id="plrs-"+ID)
-					Участников : #{registered} из #{maxPlayers}
-			h4(class="mg-md")
-				Статус : 
+				div(id="plrs-"+ID) Участников : #{registered} из #{maxPlayers}
+			h4(class="mg-md") Статус : 
 				+ShowStatus(t.status)

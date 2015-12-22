@@ -209,7 +209,7 @@ var Tournament = mongoose.model('Tournament', {
 		players: 		Number,
 	tournamentID:		Number,
 
-	settings: 			Object, 
+	settings: 			Object,
 
 	startedTime: 		Date
 	//tournamentServerID: String
@@ -767,15 +767,31 @@ function findTournamentReg(tournamentID, login){
 	})
 }
 
+var REGULARITY_NONE=0;
+var REGULARITY_REGULAR=1;
+var REGULARITY_STREAM=2;
+
+function isStreamTournament(tournament){
+
+	return tournament.settings && tournament.settings.regularity==REGULARITY_STREAM;
+}
+
 function getRegistrableTournament(tournamentID){
 	return new Promise(function (resolve, reject){
+		//{$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+		/*var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+		query = { $and : [query, run_or_reg] };*/
 
-		Tournament.findOne({tournamentID:tournamentID, status:TOURN_STATUS_REGISTER}, '', function (err, tournament) {
+		Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament) {
 			if (err) { Error(err); reject(err); }
 			else{
 				if (tournament) {
-					console.log('getRegistrableTournament', tournament);
-					resolve(tournament);
+					if (tournament.status==TOURN_STATUS_REGISTER || (isStreamTournament(tournament) && tournament.status==TOURN_STATUS_RUNNING)) {
+						console.log('getRegistrableTournament', tournament);
+						resolve(tournament);
+					} else {
+						reject(TREG_FULL);
+					}
 				} else {
 					reject(TREG_FULL);
 				}
@@ -814,12 +830,17 @@ function RegisterUserInTournament(data, res){
 	var buyIn;
 	var playerCount;
 	var maxPlayers;
+	var TT;
 	getRegistrableTournament(tournamentID)
 	.then(function (tournament) {
+		TT = tournament;
 		console.log(tournament);
 		buyIn = tournament.buyIn;
 		playerCount = tournament.players;
 		maxPlayers = tournament.goNext[0];
+		if (tournament.settings && tournament.settings.regularity==REGULARITY_STREAM){
+			sender.sendRequest("Join", {login:login, gameID:tournamentID} ,'127.0.0.1', tournament.gameNameID);
+		}
 		return findTournamentReg(tournamentID, login);
 	})
 	.then(function (reg){
@@ -844,6 +865,27 @@ function RegisterUserInTournament(data, res){
 
 		if (playerCount==maxPlayers-1){
 			StartTournament(tournamentID);
+		} else {
+			if (playerCount>maxPlayers-1){
+				var newGoNext = TT.goNext;
+
+				strLog('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
+				strLog('goNext was '+JSON.stringify(newGoNext), STREAM_USERS);
+
+				newGoNext[0]++;
+				strLog('goNext now ' + JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
+
+				Tournament.update({tournamentID:tournamentID}, {$set :{goNext: newGoNext} }, function (err, count){
+					if (err) return 0;
+
+					if (updated(count)) { 
+						strLog('goNext updated', STREAM_TOURNAMENTS); 
+					} else {
+						strLog('goNext update FAILED', STREAM_TOURNAMENTS); 
+						strLog('goNext update FAILED', STREAM_ERROR); 
+					}
+				});
+			}
 		}
 	})
 	.catch(function (err){
