@@ -16,8 +16,6 @@ var strLog = Log;
 
 var multer  = require('multer')
 
-var specialTournamentID;
-
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     //cb(null, './frontend/games/Questions/special')
@@ -40,11 +38,6 @@ var storage = multer.diskStorage({
   
 var upload = multer({ storage: storage }).single('image');
 
-/*function getTournamentID(req, res, next){
-  req.tournamentID = req.body.tournamentID;
-  next();
-}*/
-
 //var upload = multer({ storage: storage })
 //var Answer = sender.Answer;
 
@@ -57,7 +50,7 @@ var upload = multer({ storage: storage }).single('image');
       if (err) { console.log(err); res.render('AddSpecial'); return; }
 
       console.log('added image');
-      res.redirect('AddQuestion');
+      res.redirect('AddQuestions');
       //var filename = req.file.originalname;
       //console.log('AddSpecial', filename);      
     })
@@ -155,6 +148,7 @@ var upload = multer({ storage: storage }).single('image');
       if (data.regularity) { obj.settings.regularity = parseInt(data.regularity); }
       if (data.special) { obj.settings.special = parseInt(data.special); }
       if (data.specName) { obj.settings.specName = data.specName; }
+      if (data.specPrizeName) { obj.settings.specPrizeName = data.specPrizeName; }
 
       AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
     }

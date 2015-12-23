@@ -1,4 +1,33 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
+
+
+  var multer  = require('multer')
+
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      var tournamentID = req.body.tournamentID;
+      var folder;
+      if (tournamentID && !isNaN(tournamentID)) { 
+        folder = 'special';
+      } else {
+        folder = 'general';
+      }
+      cb(null, './frontend/games/Questions/'+folder);
+    },
+    filename: function (req, file, cb) {
+      var tournamentID = req.body.tournamentID;
+      console.log('in storage tournamentID', tournamentID);
+      console.log(file);
+      if (tournamentID) { 
+        cb(null, tournamentID + '.txt');// + file.extension) 
+      } else {
+        cb(null, 'qst-'+ Date.now() + '.txt');
+      }
+    }
+  })
+    
+  var upload = multer({ storage: storage }).single('questions');
+
   app.post('/Admin', Admin);
   function Admin(req, res){
     var command = req.body.command || '';
@@ -13,14 +42,24 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
       default: sender.Answer(res, {result:'Unknown command ' + command}); break;
     }
   }
-  app.get('/AddQuestion', function (req, res){
-    res.render('AddQuestion');
+  app.get('/AddQuestions', function (req, res){
+    res.render('AddQuestions');
   })
-  app.post('/AddQuestion', function (req, res){
+  app.post('/AddQuestions', function (req, res){
     var data = req.body;
     var tournamentID = req.body.tournamentID;
 
-    //if ()
+    // trying to add image
+    upload(req, res, function (err){
+      if (err) { console.log(err); res.render('AddQuestions'); return; }
+      
+      console.log('added questions');
+      if (tournamentID && !isNaN(tournamentID)) {
+        res.redirect('StartSpecial/'+tournamentID);
+      } else {
+        res.end('added questions');
+      }
+    })
   })
 
   app.get('/StartSpecial/:id', function (req, res){

@@ -12,9 +12,6 @@ mixin showTournaments(tournaments)
 					- console.log(lineID);
 					div(class="row" id="line"+lineID)
 						//+showTournament(tournaments[i] , lineID, "img/CR2.jpg")
-						//+showTournament(tournaments[i+1] , lineID, "img/CR2.jpg")
-						//+showTournament(tournaments[i+2] , lineID, "img/CR2.jpg")
-						//+showTournament(tournaments[i+3] , lineID, "img/CR2.jpg")
 
 						- for (j=0; j < tournWidth; j++) {
 							if (tournaments[i+j])
@@ -60,15 +57,15 @@ mixin showPrizes(prizes)
 						td #{prize/convert}$
 	br
 
-mixin showPrize(prize)
-	if prize
-		if isNaN(prize)
-			//td GIFT#{JSON.stringify(prize)}
-			//td
-				a(href="GetGift?giftID="+prize.giftID) Show prize
-			Приз: #{prize}
-		else
-			Приз: #{prize/convert}$
+mixin showPrize(prize, specPrize)
+	if specPrize
+		h3(id="wnrs-"+ID style="height:55px; width:220px" ) #{specPrize}
+	else
+		if prize
+			if isNaN(prize)
+				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize}
+			else
+				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize/convert}$
 
 mixin showImage(imageUrl, gameNameID)
 	if imageUrl
@@ -87,6 +84,15 @@ mixin showImage(imageUrl, gameNameID)
 			default
 				| Ошибка ##{ID}
 
+mixin drawRegButton(buyIn, ID)
+	a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="border-radius:6px; ") 
+		if buyIn>0
+				Играть за #{buyIn/convert}$
+		else
+				Играть БЕСПЛАТНО
+	//a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+		
+
 mixin showTournament(t,line, imageUrl)
 	if t
 		- var ID=t.tournamentID||115;
@@ -101,20 +107,31 @@ mixin showTournament(t,line, imageUrl)
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
-				+showImage(imageUrl, t.gameNameID)
-				//img(src=imageUrl width="210" height="150")
-				h3(id="wnrs-"+ID style="height:55px; width:220px" )
+				// image
+				if t.settings && t.settings.special
+					+showImage('img/'+ID+'.jpg', t.gameNameID)
+				else
+					+showImage(imageUrl, t.gameNameID)
+				
+				// prize
+				
+				if t.settings && t.settings.special
+					+showPrize(prizes, t.settings.specPrizeName)
+				else
 					+showPrize(prizes)
 				h4(class="mg-md")
-					if buyIn>0
+					//if buyIn>0
 						Стоимость: #{buyIn/convert}$
-					else
+					//else
 						Бесплатно!
+					//br
+					//Призовых мест: #{winnersPlaces}
 					br
-					Призовых мест: #{winnersPlaces}
+					br
 					div(id="plrs-"+ID)
 						Участников : #{registered} из #{maxPlayers}
-				a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+				+drawRegButton(buyIn, ID)
+				
 
 -var red = "#FF0000";
 -var green = "#00FF00";

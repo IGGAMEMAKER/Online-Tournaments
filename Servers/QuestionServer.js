@@ -38,7 +38,12 @@ function Init(gameID, playerID){
 
 	if (playerID==0){
 		games[gameID].questIndex = -1;
-		setQuestion(gameID);
+		console.log(games[gameID].settings);
+		if (games[gameID].settings && games[gameID].settings.special){
+			loadSpecialTournamentQuestions(gameID);
+		} else {
+			setQuestion(gameID);
+		}
 		games[gameID].userAnswers = [];
 	}
 	strLog('FULL GAME INFO');
@@ -107,11 +112,31 @@ function AddQuestions(data, res){
 	strLog('AddQuestions');
 }
 
+function loadSpecialTournamentQuestions(gameID){
+	var topic='special/'+gameID;
+	
+		fs.readFile(questionDir+topic+'.txt', "utf8", function (err, file){
+			if (err) { 
+				console.error('cannot loadSpecialTournamentQuestions', err); 
+				strLog('loadSpecialTournamentQuestions ', 'Error'); 
+				return;
+			}
+
+			console.log(file);
+			
+			var jsFile = JSON.parse(file);
+			
+			// add questions to game
+			games[gameID].source = topic;
+			games[gameID].questions = jsFile.qst;
+
+			//console.log(JSON.stringify(jsFile));
+		});
+}
+
 function setQuestion(gameID){
 	var topic = questionFolder;// 'general';// null;
 	strLog('here must be games[gameID].topic instead of null !!!');
-
-	
 
 	fs.readdir(questionDir+topic, function callback (err, files){
 		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
@@ -129,6 +154,7 @@ function setQuestion(gameID){
 			tryToLoadQuestion(randomVal, files, gameID);
 		}
 	});
+
 }
 
 function tryToLoadQuestion(id, files, gameID){
@@ -162,35 +188,6 @@ function contains(word, symbol){
 }
 
 
-/*function loadQuestList(folder, id, cb){
-	var qFile;
-	fs.readdir(questionDir+folder, function callback (err, files){
-		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
-		else{
-			strLog('Files: ' + JSON.stringify(files));
-
-			if (id>files.length) id = files.length-1;
-			qFile = files[id];
-			while(contains(qFile,'~') ){
-				id--;
-				qFile = files[id];
-			}
-			//qFile = files[id];
-			strLog(JSON.stringify(files));
-
-			var q = readJSONfile(questionDir+folder+'/'+qFile);
-
-		}
-	});*/
-
-	/*var file = fs.readFileSync(questionDir+folder+  '.txt', "utf8");
-	console.log(file);
-	var questions =  JSON.parse(file);
-	console.log(JSON.stringify(questions));
-}*/
-
-//setTimeout( function(){loadQuestList(questionFolder)}, 1750);
-
 function FindWinner(gameID){
 	var game = games[gameID];
 	strLog(JSON.stringify(game.scores));
@@ -207,18 +204,6 @@ function FindWinner(gameID){
 	strLog('Winner is: ' + userName);
 	return userName;
 }
-
-/*function getNumberOfQuestionsByTopic(topic){
-	fs.readdir(questionDir+folder, function callback (err, files){
-		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
-		else{
-			strLog('Files: ');
-
-		}
-
-	});
-	return 1;
-}*/
 
 function noQuestions(game){
 	return !game.questions;

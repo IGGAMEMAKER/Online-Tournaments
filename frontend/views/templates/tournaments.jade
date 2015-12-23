@@ -31,15 +31,15 @@ mixin showGameName(gameNameID, ID)
 		default
 			| Ошибка
 
-mixin showPrize(prize)
-	if prize
-		if isNaN(prize)
-			//td GIFT#{JSON.stringify(prize)}
-			//td
-				a(href="GetGift?giftID="+prize.giftID) Show prize
-			Приз: #{prize}
-		else
-			Приз: #{prize/convert}$
+mixin showPrize(prize, specPrize)
+	if specPrize
+		h3(id="wnrs-"+ID style="height:55px; width:220px" ) #{specPrize}
+	else
+		if prize
+			if isNaN(prize)
+				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize}
+			else
+				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize/convert}$
 
 
 
@@ -58,7 +58,10 @@ mixin showTournament(t,line, imageUrl)
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
 				//img(src=imageUrl width="210" height="150")
-				+showImage(imageUrl, t.gameNameID)
+				if t.settings && t.settings.special
+					+showImage('img/'+ID+'.png', t.gameNameID)
+				else
+					+showImage(imageUrl, t.gameNameID)
 				h3(id="wnrs-"+ID style="height:55px; width:220px" )
 					+showPrize(prizes)
 				h4(class="mg-md")
@@ -115,8 +118,10 @@ mixin showMaxTournament(t,line, imageUrl)
 			h4(class="mg-md text-center" id="gname-"+ID)
 				Игра : 
 				+showGameName(t.gameNameID, t.tournamentID)
-			//img(src=imageUrl width="210" height="150")
-			+showImage(imageUrl, t.gameNameID)
+			if t.settings && t.settings.special
+				+showImage('img/'+ID+'.png', t.gameNameID)
+			else
+				+showImage(imageUrl, t.gameNameID)
 			h3(id="wnrs-"+ID style="height:55px; width:220px" )
 				+showPrize(prizes)
 			h4(class="mg-md")
