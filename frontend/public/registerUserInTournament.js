@@ -43,10 +43,10 @@ function ManageReg(login, tID, url, regID){
 				default : txt='Ошибка'; break;
 			}
 		}
-		//getProfile();
+		getProfile();
 		alert(txt);//msg.result
 		console.log(msg);
-		reload();
+		reload(1000);
 	  }
 	});
 }

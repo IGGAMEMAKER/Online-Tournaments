@@ -104,7 +104,7 @@ mixin drawRegButton(buyIn, ID)
 			else
 					Играть БЕСПЛАТНО
 		div(id="unregister"+ID style="display:none;")
-			Вы зарегистрированы в турнире. 
+			//Вы зарегистрированы в турнире. 
 			//h3 Дождитесь начала игры
 			a(id="unReg"+ID onclick="unReg('"+session.login+"',"+ID+")" class="btn btn-lg btn-danger" style="border-radius:6px;") Сняться с турнира
 		
@@ -182,4 +182,16 @@ html
 							h3(class="mg-md text-center") Турниры
 			//p!= JSON.stringify(msg)
 			+showTournaments(msg)
+			script(src="//ulogin.ru/js/ulogin.js")
+			//-var site = "http%3A%2F%2Fonline-tournaments.org";
+			-var site = "http%3A%2F%2Flocalhost";
+			div(id="uLogin" data-ulogin= "display=panel;fields=first_name,last_name;providers=vkontakte,odnoklassniki,mailru,facebook;hidden=other;redirect_uri="+site)
+			script
+				var token = msg.token;
+				var host = window.location.host;
+				var s = file_get_contents("http://ulogin.ru/token.php?token=" +token + "&host=" + host);
+				console.log(s);
+				//var user = JSON.parse(s);
+			br
+			br
 			include templates/footer

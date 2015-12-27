@@ -366,6 +366,42 @@ app.get('/', function (req,res){
   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
 })
 
+function file_get_contents( url ) { // Reads entire file into a string
+  // 
+  // +   original by: Legaev Andrey
+  // %    note 1: This function uses XmlHttpRequest and cannot retrieve resource from different domain.
+
+  var req = null;
+  try { req = new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {
+    try { req = new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) {
+      try { req = new XMLHttpRequest(); } catch(e) {}
+    }
+  }
+  if (req == null) throw new Error('XMLHttpRequest not supported');
+
+  req.open("GET", url, false);
+  req.send(null);
+
+  return req.responseText;
+}
+
+
+app.post('/', function (req, res){
+  var data = req.body;
+  console.log('social auth', data);
+
+  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+
+  //json_decode($s, true);
+  
+  //$user['network'] - соц. сеть, через которую авторизовался пользователь
+  //$user['identity'] - уникальная строка определяющая конкретного пользователя соц. сети
+  //$user['first_name'] - имя пользователя
+  //$user['last_name'] - фамилия пользователя
+                
+})
+
 
 /*app.get('/close', function (req, res){
   console.log('closing');
