@@ -40,7 +40,10 @@ socket.on('StartTournament', function (msg){
 
 socket.on('FinishTournament', function (msg) {
   var tournamentID = msg.tournamentID;
-  console.log('FinishTournament');
+  console.log(msg);
+  alert('FinishTournament ' + tournamentID);
+  //drawWinningModal(msg);
+  //console.log('FinishTournament');
   unsetFromObject('addresses', tournamentID);
   drawPlayButtons();
 });

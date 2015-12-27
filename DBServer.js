@@ -558,10 +558,10 @@ function EndTournament( scores, gameID, tournamentID){
 		var obj = [];
 		for (var a in scores){ obj.push( { value:scores[a], login: a } );	}
 
+		obj.sort(sort_by('value', true, parseInt));
+		
 		var winnersCount = tournament.goNext[0];
 		Log('Prizes will go to ' + winnersCount + ' first users');
-
-		obj.sort(sort_by('value', true, parseInt));
 		Log(obj);
 		Log(tournaments[tournamentID]);
 		Log('------');
@@ -632,14 +632,14 @@ function getPortAndHostOfGame(gameNameID){
 
 function MoneyTransfers(req, res){
 	MoneyTransfer
-		.find({userID: req.body.login})
-		.sort('-date')
-		.exec(function (err, transfers){
-			if (err) { Err(err, res); }
-			else{
-				Answer(res, transfers);
-			}
-		})
+	.find({userID: req.body.login})
+	.sort('-date')
+	.exec(function (err, transfers){
+		if (err) { Err(err, res); }
+		else{
+			Answer(res, transfers);
+		}
+	})
 }
 function TournamentLog(tournamentID, message){
 	var time = new Date();

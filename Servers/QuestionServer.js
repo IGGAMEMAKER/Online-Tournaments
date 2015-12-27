@@ -115,23 +115,23 @@ function AddQuestions(data, res){
 function loadSpecialTournamentQuestions(gameID){
 	var topic='special/'+gameID;
 	
-		fs.readFile(questionDir+topic+'.txt', "utf8", function (err, file){
-			if (err) { 
-				console.error('cannot loadSpecialTournamentQuestions', err); 
-				strLog('loadSpecialTournamentQuestions ', 'Error'); 
-				return;
-			}
+	fs.readFile(questionDir+topic+'.txt', "utf8", function (err, file){
+		if (err) { 
+			console.error('cannot loadSpecialTournamentQuestions', err); 
+			strLog('loadSpecialTournamentQuestions ', 'Error'); 
+			return;
+		}
 
-			console.log(file);
-			
-			var jsFile = JSON.parse(file);
-			
-			// add questions to game
-			games[gameID].source = topic;
-			games[gameID].questions = jsFile.qst;
+		console.log(file);
+		
+		var jsFile = JSON.parse(file);
+		
+		// add questions to game
+		games[gameID].source = topic;
+		games[gameID].questions = jsFile.qst;
 
-			//console.log(JSON.stringify(jsFile));
-		});
+		//console.log(JSON.stringify(jsFile));
+	});
 }
 
 function setQuestion(gameID){
@@ -193,6 +193,7 @@ function FindWinner(gameID){
 	strLog(JSON.stringify(game.scores));
 	var userName = getUID(gameID, 0);
 	var maxScore=0;
+	
 	for (var playerID in game.userIDs){
 		var uName = getUID(gameID,playerID);
 		var curScore = game.scores[uName];
@@ -223,8 +224,7 @@ function getCurrentQuestion(gameID){
 			strLog(JSON.stringify(a));
 			return a;
 		}
-	}
-	else{
+	}	else {
 		return { question:'GAME DOES NOT EXIST', answers:[0,1,2,3], correct:1 };
 	}
 }
@@ -240,8 +240,7 @@ function AnswerIsCorrect(gameID, answer){
 	strLog('Player answer = ' + answer + ' , while correct is :' + correct, 'Games');
 	if (answer && answer == correct ){
 		return true;
-	}
-	else{
+	} else {
 		return false;
 	}
 }

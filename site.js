@@ -287,12 +287,16 @@ app.get('/counter', function (req, res){
 app.post('/FinishGame', FinishGame);
 
 function FinishGame(req, res){
-
   var data = req.body;
+  sender.Answer(res, { result:'OK', message:'FinishGame' } );
+  sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
+
+  /*var data = req.body;
   Log('FinishGame' + JSON.stringify(data), 'Tournaments');
   Answer(res, {result:'OK', message:'FinishGame'} );
-  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);
-  if (socket_enabled) io.emit('FinishTournament', {tournamentID : data.tournamentID});
+  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);*/
+  if (socket_enabled) io.emit('FinishTournament', { tournamentID : data.tournamentID, data:data } );
+  Log(data, 'Tournaments');
 }
 
 

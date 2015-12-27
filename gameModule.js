@@ -513,11 +513,15 @@ function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not fi
 	var tournamentID = ID;
 	strLog("Game " + gameID + " in tournament " + tournamentID + " ends. " + winnerID + " wins!!", 'Tournaments');
 	games[ID].status = GAME_FINISH;
+	
 	var gameResult = { 
 		scores: Sort(games[ID].scores),
 		gameID: ID,
-		tournamentID:ID
+		tournamentID:ID,
+		places: games[ID].goNext,
+		prizes: games[ID].Prizes
 	};
+
 	SendToRoom(ID, 'finish', { winner:winnerID, players: gameResult });
 	StopTMR(gameID);
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
@@ -547,8 +551,28 @@ function SendGameResultsHandler(error, response, body, gameResult){
 	}
 }
 
-function Sort(players){
-	return players;
+function Sort(scores){
+	console.log(scores);
+	var obj = [];
+	for (var a in scores){ obj.push( { value:scores[a], login: a } );	}
+
+	obj.sort(sort_by('value', true, parseInt));
+	console.log(obj);
+	return obj;
+	return scores;
+}
+
+var sort_by = function(field, reverse, primer){
+
+   var key = primer ? 
+       function(x) {return primer(x[field])} : 
+       function(x) {return x[field]};
+
+   reverse = !reverse ? 1 : -1;
+
+   return function (a, b) {
+     return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+   }
 }
 
 function ScoreOfPlayer(gameID, i) {

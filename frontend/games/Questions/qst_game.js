@@ -147,29 +147,59 @@ function DrawPlayers(results){
 	var q = document.getElementById('Question');
 	//q.innerHTML = '<b style="font-size: 72px;">Результаты турнира</b>';
 
-
+	$('#Question').append('<br>')
 	if (login==results.winner) {
 		$('#Question').append($('<p style="color: #FF0000; ">').text('ВЫ ПОБЕДИЛИ!!!!'));
 	} else {
 		$('#Question').append($('<p>').text('Победитель : ' + results.winner));
 	}
-
+	$('#Question').append('<br><br>')
 	//$('#Question').append('<br>');
 	//$('#Question').append('<br>');
 
+	var places = results.players.places;
+	var prizes = results.players.prizes;
+	var scores = results.players.scores;
 
 
-	for (var ind in results.players.scores){
+
+	for (var ind in scores){
 		var style="";
-		if (ind==login){
+
+		var name = scores[ind].login;
+		var score = Math.round(scores[ind].value);
+
+		var winning;
+		if (ind<places[1]){
+			winning = prizes[0]/100+'$';//'<td>'+prizes[0]/100+'$</td>';
+		} else {
+			winning = '--';
+		}
+
+		var winBlock;
+
+		//console.log(ind)
+		if (name==login){
 			//style="style = 'color: #FF0000;'";
-			var text = '<tr><td style="color: red;"><b>'+ind+'</b></td><td style="color: red;">' + Math.round(results.players.scores[ind]) + '</td> </tr>'
+			//winBlock = '<td style="color: red;>'+winning+'</td>';
+			var text = '<tr>'
+			text += '<td style="color: red;"><b>'+name+'</b></td>';
+			text += '<td style="color: red;">' + score + '</td>';
+			text += '<td style="color: red;">' + winning + '</td>';
+			text += '</tr>';
 			$(resultField).append(text);
 
 			//$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
 		}
 		else{
-			var text = '<tr><td>'+ind+'</td><td>'+ Math.round(results.players.scores[ind]) +'</td> </tr>'
+			//winBlock = '<td>'+winning+'</td>';
+			//var text = '<tr><td>'+name+'</td><td>'+ score +'</td>' + winBlock + '</tr>'
+			var text = '<tr>'
+			text += '<td ><b>'+name+'</b></td>';
+			text += '<td >' + score + '</td>';
+			text += '<td >' + winning + '</td>';
+			text += '</tr>';
+
 			$(resultField).append(text);
 			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 		}

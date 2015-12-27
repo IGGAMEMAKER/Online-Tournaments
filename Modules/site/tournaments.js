@@ -163,14 +163,13 @@ var upload = multer({ storage: storage }).single('image');
 		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
 	})
 
-	app.post('/FinishGame', FinishGame);
+	/*app.post('/FinishGame', FinishGame);
 	function FinishGame(req, res){
-		var data = req.body;
-    console.error(data);
-
-		sender.Answer(res, {result:'OK', message:'FinishGame'} );
-		sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
-	}
+    var data = req.body;
+    sender.Answer(res, {result:'OK', message:'FinishGame'} );
+    strLog(data, 'Tournaments');
+    sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
+	}*/
 
 	/*app.all('/StartTournament', function (req, res){
 		//console.log(req.url);

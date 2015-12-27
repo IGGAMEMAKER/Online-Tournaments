@@ -1,5 +1,5 @@
 //
-- tournWidth = 4;
+- tournWidth = 3;
 
 -var convert=100;
 
@@ -109,7 +109,7 @@ mixin showTournament(t,line, imageUrl)
 					+showGame(t.gameNameID, t.tournamentID)
 				// image
 				if t.settings && t.settings.special
-					+showImage('img/'+ID+'.png', t.gameNameID)
+					+showImage('img/'+ID+'.jpg', t.gameNameID)
 				else
 					+showImage(imageUrl, t.gameNameID)
 				
