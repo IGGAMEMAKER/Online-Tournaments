@@ -40,13 +40,32 @@ socket.on('StartTournament', function (msg){
 
 socket.on('FinishTournament', function (msg) {
   var tournamentID = msg.tournamentID;
-  console.log(msg);
-  alert('FinishTournament ' + tournamentID);
+  console.log('I am ', login);
+
+  if (userIsRegisteredIn(tournamentID)){
+    console.log(msg);
+    showCloseTournamentModal(tournamentID, msg.places, msg.prizes);
+  }
+
   //drawWinningModal(msg);
   //console.log('FinishTournament');
   unsetFromObject('addresses', tournamentID);
-  drawPlayButtons();
+  getProfile();
+  //drawPlayButtons();
 });
+
+function showCloseTournamentModal(tournamentID, places, prizes) {
+  alert('FinishTournament ' + tournamentID);
+  /*if(isWinner(login, places, prizes)){
+    //drawWinningModal()
+  }*/
+}
+
+function reload(){
+  setTimeout(function() { 
+    location.reload(); 
+  }, 2500);
+}
 
 
 function StartTournament(tournamentID){

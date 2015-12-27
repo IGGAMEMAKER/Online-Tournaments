@@ -1,5 +1,5 @@
 //
-- tournWidth = 3;
+- tournWidth = 4;
 
 -var convert=100;
 
@@ -84,14 +84,41 @@ mixin showImage(imageUrl, gameNameID)
 			default
 				| Ошибка ##{ID}
 
+mixin showButton()
+	center
+		//p!= JSON.stringify(t)
+		a(id="reg" class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; display:none;") Зарегистрироваться
+		div(id="unregister" style="display:none;")
+			h2 Вы зарегистрированы в турнире. 
+			h3 Дождитесь начала игры
+			a(id="unReg" class="btn btn-lg btn-danger" style="width:60%; border-radius:6px;") Сняться с турнира
+		div(id="auth")
+			h2 Авторизуйтесь, чтобы сыграть
+			a(id="lgn" href="login" class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Авторизоваться
+
 mixin drawRegButton(buyIn, ID)
-	a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="border-radius:6px; ") 
-		if buyIn>0
-				Играть за #{buyIn/convert}$
-		else
-				Играть БЕСПЛАТНО
-	//a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+	if session && session.login
+		a(id="reg"+ID onclick="reg('"+session.login+"',"+ID+")" class="btn btn-lg btn-primary" style="border-radius:6px; ") 
+			if buyIn>0
+					Играть за #{buyIn/convert}$
+			else
+					Играть БЕСПЛАТНО
+		div(id="unregister"+ID style="display:none;")
+			Вы зарегистрированы в турнире. 
+			//h3 Дождитесь начала игры
+			a(id="unReg"+ID onclick="unReg('"+session.login+"',"+ID+")" class="btn btn-lg btn-danger" style="border-radius:6px;") Сняться с турнира
 		
+
+		//a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="border-radius:6px; ") 
+			if buyIn>0
+					Играть за #{buyIn/convert}$
+			else
+					Играть БЕСПЛАТНО
+		//a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
+	else
+		div(id="auth"+ID)
+			h4 Авторизуйтесь, чтобы сыграть
+			a(id="lgn"+ID href="login" class="btn btn-lg btn-danger" style="border-radius:6px; ") Авторизоваться
 
 mixin showTournament(t,line, imageUrl)
 	if t
@@ -127,7 +154,6 @@ mixin showTournament(t,line, imageUrl)
 					//br
 					//Призовых мест: #{winnersPlaces}
 					br
-					br
 					div(id="plrs-"+ID)
 						Участников : #{registered} из #{maxPlayers}
 				+drawRegButton(buyIn, ID)
@@ -144,6 +170,7 @@ html
 		title!= 'Турниры'
 		include templates/head
 		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
+		script(src="registerUserInTournament.js")
 	body
 		div(class="page-container")
 			include client

@@ -522,14 +522,20 @@ function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not fi
 		prizes: games[ID].Prizes
 	};
 
+	var appResult = { 
+		scores: games[ID].scores,
+		gameID: ID,
+		tournamentID:ID
+	};
+
 	SendToRoom(ID, 'finish', { winner:winnerID, players: gameResult });
 	StopTMR(gameID);
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
 	
 	SaveGameResults(gameResult);
 
-	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 
-			'GameFrontendServer', gameResult , SendGameResultsHandler);
+	sender.sendRequest("FinishGame", appResult , '127.0.0.1', 
+			'GameFrontendServer', appResult , SendGameResultsHandler);
 	setTimeout(function(){
 		delete games[gameID];
 	}, 10000);
@@ -559,7 +565,7 @@ function Sort(scores){
 	obj.sort(sort_by('value', true, parseInt));
 	console.log(obj);
 	return obj;
-	return scores;
+	//return scores;
 }
 
 var sort_by = function(field, reverse, primer){

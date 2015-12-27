@@ -78,6 +78,29 @@ function drawPlayButtons(){
   }
 }
 
+function redrawRegButtons(tournaments){
+  for (var i = tournaments.length - 1; i >= 0; i--) {
+    console.log('redrawRegButtons', tournaments[i]);
+    var tID = tournaments[i].tournamentID;
+    console.log('look at ', tID);
+    if (login){
+      if (userIsRegisteredIn(tID)){
+        console.log('userIsRegisteredIn');
+        drawUnRegButton(tID);
+      } else {
+        console.log('no register');
+        drawRegButton(tID);
+      }
+    } else {
+      console.log('no auth');
+      drawAuthButton(tID);
+    }    
+  };
+  /*if (tID){
+    console.log('tID: ' + tID);
+  }*/
+}
+
 function clearButtonField(){
   console.log('clearButtonField');
 
