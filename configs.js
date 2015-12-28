@@ -18,6 +18,7 @@ config.db	=	configs.db;
 config.stats	=	configs.stats;
 config.session	=	configs.session;
 config.cacheTemplates = configs.cacheTemplates||null;
+config.vkAuth = configs.vkAuth;
 
 //console.log(config);
 module.exports = config;

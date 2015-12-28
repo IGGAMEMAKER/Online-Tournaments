@@ -402,6 +402,14 @@ app.post('/', function (req, res){
                 
 })
 
+app.get('/testVK', function (req, res){
+  res.render('testVK');
+})
+
+app.post('/RegisterAndPlay', function (req, res){
+
+})
+
 
 /*app.get('/close', function (req, res){
   console.log('closing');
