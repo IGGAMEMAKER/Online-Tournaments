@@ -164,9 +164,9 @@ html
 	body
 		script(src="//vk.com/js/api/openapi.js" type="text/javascript")
 		div(id="login_button" onclick="VK.Auth.login(authInfo);")
-		script(src="vk-auth.js").
-			
-		//div(class="page-container")
+		script(src="vk-auth.js")
+
+		div(class="page-container")
 			include client
 			
 			div(class="bloc l-bloc bgc-white" id="bloc-1")
@@ -176,37 +176,6 @@ html
 							h3(class="mg-md text-center") Турниры
 			//p!= JSON.stringify(msg)
 			+showTournaments(msg)
-			script(src="//ulogin.ru/js/ulogin.js").
-			//-var site = "http%3A%2F%2Fonline-tournaments.org";
-			-var site = "http%3A%2F%2Flocalhost";
-			//div(id="uLogin" data-ulogin= "display=panel; fields=first_name,last_name; providers=vkontakte,odnoklassniki,mailru,facebook;hidden=other;redirect_uri="+site)
-			script.
-				function file_get_contents( url ) { // Reads entire file into a string
-				  // 
-				  // +   original by: Legaev Andrey
-				  // %    note 1: This function uses XmlHttpRequest and cannot retrieve resource from different domain.
-
-				  var req = null;
-				  try { req = new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {
-				    try { req = new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) {
-				      try { req = new XMLHttpRequest(); } catch(e) {}
-				    }
-				  }
-				  if (req == null) throw new Error('XMLHttpRequest not supported');
-
-				  req.open("GET", url, false);
-				  req.send(null);
-
-				  return req.responseText;
-				}
-				var token = "#{msg.token}";
-				var host = window.location.host;
-				//alert(token)
-				var s = file_get_contents("http://ulogin.ru/token.php?token=" +token + "&host=" + host);
-				alert("got the page")
-				console.log(s)
-				//var user = JSON.parse(s);
-			
 			br
 			br
 			include templates/footer

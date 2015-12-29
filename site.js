@@ -29,7 +29,32 @@ var mongoose = require('mongoose');
 var sessionDBAddress = configs.session;
 mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
+var passport = require('passport');
+var VKontakteStrategy = require('passport-vkontakte').Strategy;
+console.log(configs, configs.vk);
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+
+passport.use(new VKontakteStrategy({
+    clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
+    clientSecret: configs.vk.secret_id,
+    callbackURL:  "http://localhost/vk-auth"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log(accessToken, refreshToken, profile);
+    done(null, profile);
+    /*User.findOrCreate({ vkontakteId: profile.id }, function (err, user) {
+      return done(err, user);
+    });*/
+  }
+));
 
 app.use(cookieParser());
 /*app.use(session({
@@ -51,6 +76,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 var requestCounter=0;
 
@@ -401,10 +430,28 @@ app.post('/', function (req, res){
   //$user['last_name'] - фамилия пользователя
                 
 })
+//Error: Failed to serialize user into session
+/*app.get('/vk-auth', function (req, res){
+  var uid = req.query.uid;
+  var first_name = req.query.first_name;
+  Log('uid: ' + uid + '. '+ first_name, 'Users');
+  //var last_name = 
+  res.end('uid ' + uid + ' OK!');
+})*/
 
-app.get('/testVK', function (req, res){
+app.get('/vk-auth',
+  passport.authenticate('vkontakte', { failureRedirect: '/login' }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/chat');
+  });
+
+/*app.get('/vk-auth', function (req, res){
+  var uid = req.params.uid;
+  var first_name = req.params.first_name;
+  //var last_name = 
   res.render('testVK');
-})
+})*/
 
 app.post('/RegisterAndPlay', function (req, res){
 

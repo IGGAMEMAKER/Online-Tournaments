@@ -1,0 +1,32 @@
+//
+
+mixin loadVKauth()
+	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
+	script(src="vk-auth.js")
+	div(id="vk_auth")
+	script.
+		if (document.location.hostname == "localhost") {
+			VK.Widgets.Auth("vk_auth", {authUrl: "http://localhost/vk-auth"});
+		} else {
+			VK.Widgets.Auth("vk_auth", {authUrl: "http://online-tournaments.org/vk-auth"});
+			//VK.Widgets.Auth("vk_auth", {width: "500px", authUrl: "http://online-tournaments.org/vk-auth"});
+		}
+//+loadVKauth()
+div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
+	div(class="container bloc-lg")
+		div(class="row")
+			div(class="col-sm-12")
+				+loadVKauth()
+
+////script(src="//vk.com/js/api/openapi.js" type="text/javascript")
+//script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
+////div(id="login_button" onclick="VK.Auth.login(authInfo);")
+//script(src="vk-auth.js")
+//div(id="vk_auth")
+//script.
+	if (document.location.hostname == "localhost") {
+		VK.Widgets.Auth("vk_auth", {authUrl: "http://localhost/vk-auth"});
+	} else {
+		VK.Widgets.Auth("vk_auth", {authUrl: "http://online-tournaments.org/vk-auth"});
+		//VK.Widgets.Auth("vk_auth", {width: "500px", authUrl: "http://online-tournaments.org/vk-auth"});
+	}
