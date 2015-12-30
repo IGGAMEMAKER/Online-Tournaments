@@ -10,7 +10,11 @@ script(src="storage.js")
 script(src="draw.js")
 
 script(src="sockets.js")
+p!= JSON.stringify(session)
+p!= JSON.stringify(vkUser)
 if session && session.login
+	script(src="loadProfile.js")
+if session && session.user
 	script(src="loadProfile.js")
 
 //script(src="stats.js")

@@ -33,6 +33,7 @@ var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 console.log(configs, configs.vk);
 
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -42,17 +43,27 @@ passport.deserializeUser(function(obj, done) {
 });
 
 
+
 passport.use(new VKontakteStrategy({
     clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
     clientSecret: configs.vk.secret_id,
-    callbackURL:  "http://localhost/vk-auth"
+    callbackURL:  "http://localhost"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log(accessToken, refreshToken, profile);
-    done(null, profile);
-    /*User.findOrCreate({ vkontakteId: profile.id }, function (err, user) {
-      return done(err, user);
-    });*/
+    //console.log(accessToken, refreshToken, profile);
+    console.log(profile);
+
+    sender.sendRequest("findOrCreateUser", profile, '127.0.0.1', 'DBServer', null, function (err, response, body, res){
+      if (err) return done(err, null);
+      if (!body) return done(1, null);
+
+      return done(null, body);
+    });
+
+    //done(null, profile);
+
+
+    //User.findOrCreate({ vkontakteId: profile.id }, function (err, user) { return done(err, user); });
   }
 ));
 
@@ -103,6 +114,7 @@ app.use(function(req,res,next){
   }
   
   res.locals.session = req.session;
+  res.locals.vkUser = req.user;
   next();
 });
 
@@ -343,12 +355,13 @@ app.all('/StartTournament', function (req, res){
 
 
 function isAuthenticated(req){
-  return req.session && req.session.login;
+  return (req.session && req.session.login) || req.user;
 }
 
 function getLogin(req){
   if (isAuthenticated(req)){
-    return req.session.login;
+    if (req.session && req.session.login) return req.session.login;
+    return req.user.login;
   } else {
     return 0;
   }
@@ -395,26 +408,6 @@ app.get('/', function (req,res){
   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
 })
 
-function file_get_contents( url ) { // Reads entire file into a string
-  // 
-  // +   original by: Legaev Andrey
-  // %    note 1: This function uses XmlHttpRequest and cannot retrieve resource from different domain.
-
-  var req = null;
-  try { req = new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {
-    try { req = new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) {
-      try { req = new XMLHttpRequest(); } catch(e) {}
-    }
-  }
-  if (req == null) throw new Error('XMLHttpRequest not supported');
-
-  req.open("GET", url, false);
-  req.send(null);
-
-  return req.responseText;
-}
-
-
 app.post('/', function (req, res){
   var data = req.body;
   console.log('social auth', data);
@@ -430,6 +423,7 @@ app.post('/', function (req, res){
   //$user['last_name'] - фамилия пользователя
                 
 })
+
 //Error: Failed to serialize user into session
 /*app.get('/vk-auth', function (req, res){
   var uid = req.query.uid;
@@ -439,11 +433,25 @@ app.post('/', function (req, res){
   res.end('uid ' + uid + ' OK!');
 })*/
 
-app.get('/vk-auth',
-  passport.authenticate('vkontakte', { failureRedirect: '/login' }),
+app.get('/vk-auth', passport.authenticate('vkontakte', { failureRedirect: '/' }),
   function (req, res) {
+    var login = req.user.login;
+    var user = req.user;
+    console.log(req.user, 'vk-auth authenticated');
+
+    req.session.save(function (err) {
+      // session saved
+      if (err) {
+        console.error('SESSION SAVING ERROR', 'Err'); 
+        res.render('Login',{msg:err});
+      }else{
+        req.session.login = login;
+        res.redirect('Tournaments');
+      }
+    })
+    //req.session = {login:login};
     // Successful authentication, redirect home.
-    res.redirect('/chat');
+    //res.redirect('/tournaments');
   });
 
 /*app.get('/vk-auth', function (req, res){
@@ -452,11 +460,6 @@ app.get('/vk-auth',
   //var last_name = 
   res.render('testVK');
 })*/
-
-app.post('/RegisterAndPlay', function (req, res){
-
-})
-
 
 /*app.get('/close', function (req, res){
   console.log('closing');

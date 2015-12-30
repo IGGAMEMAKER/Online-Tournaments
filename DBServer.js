@@ -67,6 +67,7 @@ app.post('/Register', Register);
 app.post('/FinishGame', FinishGame);
 
 app.post('/GetUserProfileInfo', GetUserProfileInfo);
+app.post('/findOrCreateUser', findOrCreateUser);
 
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
@@ -175,7 +176,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://'+configs.db+'/test');
 var User = mongoose.model('User', { login: String, password: String, money: Number, 
 	email: String, activated:String, date: Date, link: String, bonus:Object, 
-	salt:String, cryptVersion:Number });
+	salt:String, cryptVersion:Number, social:Object });
 
 var Game = mongoose.model('Game', { 
 	gameName: String, gameNameID: Number,
@@ -838,6 +839,10 @@ function getUnRegistrableTournament(tournamentID){
 var TREG_NO_MONEY='TREG_NO_MONEY';
 var TREG_FULL='TREG_FULL';
 
+function register_in_tournament(login, tournamentID){
+	return RegisterUserInTournament({tournamentID:tournamentID, login:login}, null);
+}
+
 function RegisterUserInTournament(data, res){
 	var tournamentID = data.tournamentID;
 	var login = data.login;
@@ -877,7 +882,7 @@ function RegisterUserInTournament(data, res){
 	})
 	.then(function (saved){
 		console.log('REGISTER OK!!!!!');
-		Answer(res, OK);
+		if (res) Answer(res, OK);
 
 		if (playerCount==maxPlayers-1){
 			StartTournament(tournamentID);
@@ -907,7 +912,7 @@ function RegisterUserInTournament(data, res){
 	})
 	.catch(function (err){
 		console.log('CATCHED error while player registering!', err);
-		Answer(res, Fail);
+		if (res) Answer(res, Fail);
 		Error(err);
 	})
 }
@@ -1719,6 +1724,87 @@ function sendResetPasswordEmail(user) {
 
 var UNKNOWN_ERROR=500;
 
+/*function socialFind(profile){
+	return new Promise(function (resolve, reject){
+		User.findOne({social.provider:profile.provider, id: profile.id}, '', function (err, user){
+			if (err) return reject(err);
+
+			if (user) return resolve(user);
+
+			resolve(null);
+		})
+	})
+}*/
+
+function findOrCreateUser (req, res){
+	var profile = req.body;
+	var uid = profile.id;
+	var provider = profile.provider;
+
+	var social = profile._json;
+
+	/*socialFind(profile)
+	.then(function (result){
+		if (result) {
+			// user was finded
+			return result;
+		} else {
+			return createWithLogin()
+		}
+	})*/
+
+	Log('findOrCreateUser ' + uid + ' ' + provider + ' social ' + JSON.stringify(social), STREAM_USERS);
+
+	User.findOne({'social.provider':provider, id:uid}, '', function (err, user){
+		if (err) return sender.Answer(res, null);
+		var login = profile.username;
+		if (!isNaN(login)) { login = profile.name.givenName+'*'+profile.id+'*'; }
+		if (user){
+			return sender.Answer(res, user);
+		} else {
+			var USER = { 
+				login:login,
+				money:0,
+				date: now(), 
+				activate:0, 
+				bonus:{},
+				//link:createActivationLink(login) 
+				social: social
+			};
+
+			var user = new User(USER);
+			user.save(function (err) {
+				if (err){
+					switch (err.code){
+						case USER_EXISTS:	Log('Sorry, user ' + login + ' Exists', STREAM_USERS); break;
+						default: Error(err); break;
+					}
+					return sender.Answer(res, null);
+				} else {
+					Log('added User ' + login+'/' + uid, STREAM_USERS);
+					sender.Answer(res, USER);
+					register_to_stream(login);
+				}
+			})
+		}
+
+	})
+}
+
+function register_to_stream(login){
+	Tournament.findOne({
+			'settings.regularity':REGULARITY_STREAM, 
+			status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] } 
+		},
+		'tournamentID', function (err, tournament){
+			if (err) return Error(err);
+			if (tournament)
+				multiLog('Current newest stream tournament is ' + tournament.tournamentID +'. trying to register ' + login
+					, [STREAM_USERS,STREAM_TOURNAMENTS]);
+				register_in_tournament(login, tournament.tournamentID);
+		})
+}
+
 function Register (req, res){
 
 	var data = req.body;
@@ -1749,6 +1835,8 @@ function Register (req, res){
 	})
 
 }
+
+
 
 
 function findTournaments(res, query, queryFields, purpose){
