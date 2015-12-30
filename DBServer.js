@@ -1755,11 +1755,12 @@ function findOrCreateUser (req, res){
 
 	Log('findOrCreateUser ' + uid + ' ' + provider + ' social ' + JSON.stringify(social), STREAM_USERS);
 
-	User.findOne({'social.provider':provider, id:uid}, '', function (err, user){
+	User.findOne({'social.id':uid}, '', function (err, user){ //'social.provider':provider, 
 		if (err) return sender.Answer(res, null);
 		var login = profile.username;
 		if (!isNaN(login)) { login = profile.name.givenName+'*'+profile.id+'*'; }
 		if (user){
+			console.log('findOrCreateUser' , user);
 			return sender.Answer(res, user);
 		} else {
 			var USER = { 

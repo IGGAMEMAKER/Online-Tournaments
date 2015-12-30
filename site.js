@@ -47,15 +47,16 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new VKontakteStrategy({
     clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
     clientSecret: configs.vk.secret_id,
-    callbackURL:  "http://localhost"
+    callbackURL:  "http://localhost/vk-auth"
   },
   function(accessToken, refreshToken, profile, done) {
     //console.log(accessToken, refreshToken, profile);
+    console.log('passport.use');
     console.log(profile);
 
     sender.sendRequest("findOrCreateUser", profile, '127.0.0.1', 'DBServer', null, function (err, response, body, res){
       if (err) return done(err, null);
-      if (!body) return done(1, null);
+      if (!body) return done(12, null);
 
       return done(null, body);
     });
@@ -67,12 +68,12 @@ passport.use(new VKontakteStrategy({
   }
 ));
 
+var bodyParser = require('body-parser')
 app.use(cookieParser());
-/*app.use(session({
-  secret: '1234567890QWERTY',
-  resave: true,
-  saveUninitialized: true,
-}));*/
+app.use(bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 /*app.use(session({
   store: new MongoStore({
@@ -95,6 +96,8 @@ app.use(passport.session());
 var requestCounter=0;
 
 app.use(function(req,res,next){
+  //console.log('req.user', req.user, 'req.session', req.session);
+
   requestCounter++;
   switch(req.url){
     case '/Log':
@@ -104,17 +107,15 @@ app.use(function(req,res,next){
       //asd();
       //var a = 1/0;
       //console.error(a);
-
       //throw new Error('Catch Me If You Can');
     break;
     default:
       //console.log('Site: Request! ' + req.url);
-
     break;
   }
   
   res.locals.session = req.session;
-  res.locals.vkUser = req.user;
+  //res.locals.vkUser = req.user;
   next();
 });
 
@@ -147,11 +148,7 @@ app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
 
-var bodyParser = require('body-parser')
-app.use(bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-})); 
+
 //var compression = require('compression');
 //app.use(compression());
 if (configs.cacheTemplates) app.set('view cache', true);
@@ -220,9 +217,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
 }
 
 
-
-
-
 function handleError(err, targetServer, reqUrl, res, options, parameters){
   Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null, parameters||null) + ':::'+ JSON.stringify(err), 'Err');
   if (res){
@@ -245,28 +239,6 @@ function renderInfo(targetServer, reqUrl, res, options, parameters){
   return targetServer + ' Url: ' + reqUrl + resIsSet + optionsDescription ;
 }
 
-function siteAnswer( res, FSUrl, data, renderPage, extraParameters, title){
-
-  if (FSUrl && res){
-    sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
-        'FrontendServer', res, function (error, response, body, res1){
-          if (!error){
-            if (FSUrl=='GetUserProfileInfo') Log(FSUrl + ' ' + JSON.stringify(body), 'Users');
-            res1.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body, extra: extraParameters});
-          } else {
-            sender.Answer(res1, { result:error });
-          }
-            console.log('*****************');
-            console.log('***SITE_ANSWER***');
-            console.log('*****************');
-        });
-  }
-  else {
-    console.log('INVALID siteAnswer');
-    //try{ console.log(FSUrl)}
-  }
-}
-
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
@@ -276,9 +248,7 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
           } else {
             sender.Answer(res, { result:error });
           }
-            console.log('*****************');
             console.log('***SITE_ANSWER***');
-            console.log('*****************');
         });
   }
   else {
@@ -355,13 +325,14 @@ app.all('/StartTournament', function (req, res){
 
 
 function isAuthenticated(req){
-  return (req.session && req.session.login) || req.user;
+  return (req.session && req.session.login);// || req.user;
 }
 
 function getLogin(req){
   if (isAuthenticated(req)){
-    if (req.session && req.session.login) return req.session.login;
-    return req.user.login;
+    return req.session.login;
+    /*if (req.session && req.session.login) return req.session.login;
+    return req.user.login;*/
   } else {
     return 0;
   }
@@ -392,17 +363,10 @@ function JSLog(msg, topic){
   if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
 
-app.get('/Alive', function (req, res){
-  res.render('Alive');
-})
-
-
-app.get('/chat', function(req, res){
-  res.sendFile(__dirname + '/sock.html');
-});
+app.get('/Alive', function (req, res){ res.render('Alive'); })
+app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
 app.get('/', function (req,res){
-  //res.render('GetTournaments');
   var data = req.body;
   data.queryFields = 'tournamentID buyIn goNext gameNameID players';
   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
@@ -487,7 +451,8 @@ var io;
 if (socket_enabled){
   io = require('socket.io')(server);
   io.on('connection', function(socket){
-    console.log('IO connection');
+    //console.log('IO connection');
+
     //socket.join('/111');
     socket.on('chat message', function(msg){
       console.log(msg);
@@ -498,14 +463,6 @@ if (socket_enabled){
       //io.of('/111').emit('azz','LALKI');
     });
   });
-
-  io.of('/111').on('connection', function(socket){
-    console.log('ololo222');
-    socket.on('event1', function(data){
-      console.log('ololo111');
-      console.log(data);
-    })
-  })
 }
 
 function SendToRoom( room, event, msg, socket){

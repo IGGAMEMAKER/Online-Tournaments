@@ -100,9 +100,9 @@ mixin drawRegButton(buyIn, ID)
 	if session && session.login
 		a(id="reg"+ID onclick="reg('"+session.login+"',"+ID+")" class="btn btn-lg btn-primary" style="border-radius:6px; ") 
 			if buyIn>0
-					Играть за #{buyIn/convert}$
+				| Играть за #{buyIn/convert}$
 			else
-					Играть БЕСПЛАТНО
+				| Играть БЕСПЛАТНО
 		div(id="unregister"+ID style="display:none;")
 			a(id="unReg"+ID onclick="unReg('"+session.login+"',"+ID+")" class="btn btn-lg btn-danger" style="border-radius:6px;") Сняться с турнира
 	else
@@ -144,8 +144,7 @@ mixin showTournament(t,line, imageUrl)
 					//br
 					//Призовых мест: #{winnersPlaces}
 					br
-					div(id="plrs-"+ID)
-						Участников : #{registered} из #{maxPlayers}
+					div(id="plrs-"+ID) Участников : #{registered} из #{maxPlayers}
 				+drawRegButton(buyIn, ID)
 				
 
