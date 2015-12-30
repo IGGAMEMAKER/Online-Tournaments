@@ -397,7 +397,7 @@ app.post('/', function (req, res){
   res.end('uid ' + uid + ' OK!');
 })*/
 
-app.get('/vk-auth', passport.authenticate('vkontakte', { failureRedirect: '/' }),
+app.get('/vk-auth', passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' }),
   function (req, res) {
     var login = req.user.login;
     var user = req.user;

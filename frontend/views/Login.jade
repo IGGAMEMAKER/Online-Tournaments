@@ -4,26 +4,15 @@ html
 	head
 		title Login
 		include templates/head
+		//link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/my_style.css")
 	div(class="page-container")
 		include templates/menu
 		div(class='bloc-group')
 			include templates/login
-		//center
+		center
 			h4(class="mg-md" id="loginForm") или
 			//h3(class="mg-md" id="loginForm") Вход
 		div(class='bloc-group')
-			include templates/vk-auth
-		include templates/footer
-	
-	//div(class="page-container")
-		include templates/menu
-		center
-			h3(class="mg-md" id="loginForm") Вход
-			//div(class='bloc-group')
-			include templates/vk-auth
-			br
-			h4(class="mg-md" id="loginForm") или
-			div(class='bloc-group')
-				include templates/login
-			//include templates/register
+			center
+				include templates/vk-auth
 		include templates/footer

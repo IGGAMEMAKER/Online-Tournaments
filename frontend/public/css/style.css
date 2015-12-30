@@ -96,8 +96,11 @@ a,button{outline: none!important;} /* Prevent ugly blue glow on chrome and safar
 	color:rgba(0,0,0,.5);
 }
 .l-bloc button:hover{
-	color:rgba(0,0,0,.7);
+	
 }
+/*.l-bloc button:hover{
+	color:rgba(0,0,0,.7);
+}*/
 .l-bloc h1,.l-bloc h2,.l-bloc h3,.l-bloc h4,.l-bloc h5, .l-bloc h6, .l-bloc .ico{
 	color:rgba(0,0,0,.7);
 }

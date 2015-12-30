@@ -9,7 +9,10 @@ html
 		include templates/menu
 
 		div(class='bloc-group')
-			include templates/login
+			//include templates/login
 			include templates/register
+		div(class='bloc-group')
+			center
+				include templates/vk-auth
 		include templates/footer
 		script(src="interactiveInput.js")
