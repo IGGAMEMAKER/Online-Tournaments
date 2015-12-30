@@ -55,7 +55,8 @@ socket.on('FinishTournament', function (msg) {
 });
 
 function showCloseTournamentModal(tournamentID, places, prizes) {
-  alert('FinishTournament ' + tournamentID);
+  //alert('FinishTournament ' + tournamentID);
+  
   /*if(isWinner(login, places, prizes)){
     //drawWinningModal()
   }*/

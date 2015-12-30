@@ -47,7 +47,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new VKontakteStrategy({
     clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
     clientSecret: configs.vk.secret_id,
-    callbackURL:  "http://localhost/vk-auth"
+    callbackURL:  configs.vk.url
   },
   function(accessToken, refreshToken, profile, done) {
     //console.log(accessToken, refreshToken, profile);
