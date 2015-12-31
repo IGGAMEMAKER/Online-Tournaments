@@ -1,16 +1,4 @@
 //
-script.
-	var USD_TO_RUR=70;
-	var input = document.getElementById('deposit');
-	input.oninput = function (){
-		var sum = input.value;
-		var user = login;
-		var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+sum*USD_TO_RUR+"&PAYSTO_PAYER_ID="+login;
-		$("#depositLink").attr("href", link);
-		console.log(link + " " + sum + " " + user);
-		document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
-	}
-
 div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 	div(class="container bloc-lg")
 		div(class="row")
@@ -23,7 +11,19 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 						form(id="form-928" novalidate)
 							div(class="form-group")
 								label Сумма (в долларах)
-								input(class="form-control" name="sum" id="deposit" value=10 required)
+								input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
 								label(id="depResult") Сумма в рублях: 700p
 							a(href="bonus") Почему это выгодно?
 							a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="width:100%; border-radius:6px; " id="depositLink") Пополнить
+
+script.
+	var USD_TO_RUR=70;
+	var input = document.getElementById('deposit');
+	input.oninput = function (){
+		var sum = input.value;
+		var user = login;
+		var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+sum*USD_TO_RUR+"&PAYSTO_PAYER_ID="+login;
+		$("#depositLink").attr("href", link);
+		console.log(link + " " + sum + " " + user);
+		document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
+	}
