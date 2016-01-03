@@ -99,6 +99,9 @@ app.post('/GetTransfers', GetTransfers);
 
 app.post('/MoneyTransfers', MoneyTransfers);
 
+app.post('/AddMessage', AddMessage);
+app.post('/GetMessages', GetMessages);
+
 app.post('/Mail', function (req, res){
 	Stats('Mail', {});
 	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
@@ -192,6 +195,8 @@ var Gift = mongoose.model('Gift', { name: String, photoURL: String, description:
 var UserGift = mongoose.model('UserGifts', { userID: String, giftID: String });
 var MoneyTransfer = mongoose.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date});
 
+var Message = mongoose.model('Message', {text:String, senderName:String, date: Date, isPrivate: Boolean});
+
 //var TournamentResult = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
 //var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
 
@@ -242,6 +247,27 @@ function servError(err, res){
 uGift.save(function (err){
 	if (err) {Error(err);}
 })*/
+
+function AddMessage(req, res){
+	var data = req.body;
+	
+	var message = new Message({text:data.text, senderName:data.sender, date:now() });
+
+	message.save(function (err){
+		if (err) return sender.Answer(res, null);
+
+		return sender.Answer(res, OK);
+	})
+}
+
+function GetMessages(data, res){
+	Message.find({},'', function (err, messages){
+		if (err) return sender.Answer(res, null);
+
+		return sender.Answer(res, messages);
+	})
+}
+
 
 function AddGift(data, res){
 	Log('trying to add gift '+ JSON.stringify(data), 'Gifts');
