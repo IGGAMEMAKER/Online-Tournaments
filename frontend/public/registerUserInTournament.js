@@ -43,6 +43,7 @@ function ManageReg(login, tID, url, regID){
 				default : txt='Ошибка'; break;
 			}
 		}
+		clearStorage();
 		getProfile();
 		alert(txt);//msg.result
 		console.log(msg);

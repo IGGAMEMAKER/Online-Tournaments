@@ -890,12 +890,12 @@ function RegisterUserInTournament(data, res){
 		}
 		return findTournamentReg(tournamentID, login);
 	})
-	.then(function (reg){
-		return saveReg(tournamentID, login, 'gaginho');
-	})
 	.then(function (savingSuccess){
 		console.log('savingSuccess');
 		return payBuyIn(buyIn, login);
+	})
+	.then(function (reg){
+		return saveReg(tournamentID, login, 'gaginho');
 	})
 	.then(function (paymentSucceed){
 		console.log('paymentSucceed');
