@@ -12,10 +12,14 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
 					div(class="form-group")
 						label Пароль
 						input(type="password" class="form-control" name="password")
-					button(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " type="submit") Войти
-					br
-					center
 						a(href="ResetPassword") Забыли пароль?
 						br
+						a(href="/" ) Нет аккаунта? Зарегистрируйтесь!
+					button(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " type="submit") Войти
+					//button(class="btn btn-lg btn-default" style="border-radius:6px; width:100%; " type="submit") Нет аккаунта? Зарегистрируйтесь!
+					br
+					//center
+						br
 						a(href="register" ) Нет аккаунта? Зарегистрируйтесь!
+					include vk-auth
 					//button(class="bloc-button btn btn-d btn-lg btn-block" style="width:45%;" type="submit") Войти

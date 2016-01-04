@@ -1,6 +1,7 @@
 //if (location.href())
 if (document.location.hostname == "localhost") {
 	VK.init({	apiId: 5205914 });
+
 } else {
 	VK.init({	apiId: 5205759 });
 }
@@ -14,11 +15,11 @@ function authInfo(response) {
 		//alert('user: '+response.session.mid);
 		VK.Api.call('users.get', {user_ids: response.session.mid}, function(r) { 
 		  if(r.response) { 
-		    alert('Привет, ' + r.response[0].first_name + '  ' + r.response[0].last_name); 
+		    //alert('Привет, ' + r.response[0].first_name + '  ' + r.response[0].last_name); 
 		  } 
 		});
 	} else {
-		alert('not auth');
+		//alert('not auth');
 	}
 }
 

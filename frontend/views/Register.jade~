@@ -13,6 +13,7 @@ html
 			include templates/register
 		div(class='bloc-group')
 			center
+				| Или
 				include templates/vk-auth
 		include templates/footer
 		script(src="interactiveInput.js")

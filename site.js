@@ -367,9 +367,10 @@ app.get('/Alive', function (req, res){ res.render('Alive'); })
 app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
 app.get('/', function (req,res){
-  var data = req.body;
+  res.render('main');
+  /*var data = req.body;
   data.queryFields = 'tournamentID buyIn goNext gameNameID players';
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);*/
 })
 
 app.post('/', function (req, res){

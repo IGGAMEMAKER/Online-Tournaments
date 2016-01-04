@@ -55,7 +55,7 @@ mixin drawAlerts()
 	div(class="alert alert-danger" id="invalid" style="display:none;")
 		strong Длина логина не более 25 символов
 
-
+script(src="third_party/validator.min.js")
 div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-15")
 	div(class="container bloc-lg")
 		div(class="row")
@@ -80,7 +80,9 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-15")
 					+drawAlerts()
 					br
 					button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
-					
+					include vk-auth
+
+script(src="interactiveInput.js")
 			
 				//div#loginbox
 						form(name="Register" action="/Register" method="post" autocomplete="on")
