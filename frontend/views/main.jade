@@ -31,9 +31,9 @@ mixin drawIcons()
 doctype html
 html
 	head
-		title Login
+		title Онлайн турниры
 		include templates/head
-		link(rel="stylesheet" href="./css/animate.css")
+		//link(rel="stylesheet" href="./css/animate.css")
 		link(rel="stylesheet" href="./css/ionicons.min.css")
 		link(rel="stylesheet" href="./css/main.css")
 	div(class="page-container")
@@ -41,11 +41,5 @@ html
 		//div(class='bloc-group')
 		+drawIcons()
 		include templates/auth
-		//center
-			h4(class="mg-md" id="loginForm") или
-			//h3(class="mg-md" id="loginForm") Вход
-		//div(class='bloc-group')
-			center
-				include templates/vk-auth
 		include templates/footer
 
