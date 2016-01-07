@@ -31,19 +31,19 @@ mixin closeTournamentModal()
 					button(type="button" class="btn btn-default" data-dismiss="modal")Close
 
 mixin notEnoughMoney()
-	button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#payMoney") No money
+	//button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#payModal") No money
 
-	div(id="payMoney" class="modal fade" role="dialog")
+	div(id="payModal" class="modal fade" role="dialog")
 		div(class="modal-dialog")
 			div(class="modal-content")
 				div(class="modal-header")
 					button(type="button" class="close" data-dismiss="modal")&times;
-					h4(class="modal-title") Не хватает самую малость
+					h4(class="modal-title") Вам не хватает совсем немного(
 				div(class="modal-body" id="close-body")
-					#winning
-					#continueButtons
-					p денег на счету
-					p стоимость участия
+					p(id="moneyNow") Денег на счету
+					p(id="tournamentPrice") Стоимость участия
+					p(id="needToPay") К оплате 
+
 				div(class="modal-footer")
-					a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=100&PAYSTO_PAYER_ID="+session.login class="btn btn-primary") Оплатить (1.5$)
+					a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=100&PAYSTO_PAYER_ID="+session.login class="btn btn-primary" id="depositLink") Оплатить (1.5$)
 					button(type="button" class="btn btn-default" data-dismiss="modal") Close

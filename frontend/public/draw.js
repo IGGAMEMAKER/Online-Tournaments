@@ -2,6 +2,7 @@ var PLAY_FIELD='#tournaments';
 var PLAY_FIELD='#playButtons';
 var BUTTON_FIELD="#modal-body";
 var myModal = '#myModal';
+var payModal = '#payModal';
 
 //var PLAY_FIELD='#news';
 
@@ -181,4 +182,24 @@ function getAddressFromAddrList(addresses, tournamentID){
   if (address && address.host && address.port && address.running==TOURN_START) return address;
 
   return null;
+}
+
+var USD_TO_RUR=70;
+
+function drawPayingModal(data){
+  console.log('drawPayingModal', data);
+  var price = data / 100;
+  var tournamentPrice = data/100 + '$';
+
+  $("#tournamentPrice").html('Стоимость участия в турнире: <b>'+tournamentPrice+'</b>');
+  $("#needToPay").html('К оплате: <b>'+tournamentPrice+'</b>');
+
+  var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+price*USD_TO_RUR+"&PAYSTO_PAYER_ID="+login;
+  $("#depositLink").attr("href", link);
+  $("#depositLink").html('Оплатить ' + tournamentPrice + ' ('+price * USD_TO_RUR + 'р) ');
+  var moneyNow = getFromStorage('money')/100;
+
+  $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
+
+  $(payModal).modal('show');
 }

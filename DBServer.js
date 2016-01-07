@@ -786,16 +786,17 @@ function saveReg(tournamentID, login, promo){
 function findTournamentReg(tournamentID, login){
 	return new Promise(function (resolve, reject){
 		TournamentReg.findOne({tournamentID:tournamentID, userID:login},'', function (err1, reg){
+			if (err1) {
+				reject(err1);
+				console.error('reg:', reg);
+			}
 
-			if (err1) reject(err1);
-			console.error('reg:', reg);
-			if (reg) reject('AlreadyRegistered');
+			if (reg) {
+				reject(TREG_ALREADY);
+			} else {
+				resolve(true);
+			}
 
-			if (reg) console.log('I am still writing after reject!');
-			
-			resolve(true);
-			console.log('I am writing after resolve!');
-			
 		})
 	})
 }
@@ -864,6 +865,7 @@ function getUnRegistrableTournament(tournamentID){
 
 var TREG_NO_MONEY='TREG_NO_MONEY';
 var TREG_FULL='TREG_FULL';
+var TREG_ALREADY = 'Registered';
 
 function register_in_tournament(login, tournamentID){
 	return RegisterUserInTournament({tournamentID:tournamentID, login:login}, null);
@@ -891,23 +893,23 @@ function RegisterUserInTournament(data, res){
 		return findTournamentReg(tournamentID, login);
 	})
 	.then(function (savingSuccess){
-		console.log('savingSuccess');
+		//console.log('savingSuccess');
 		return payBuyIn(buyIn, login);
 	})
 	.then(function (reg){
 		return saveReg(tournamentID, login, 'gaginho');
 	})
 	.then(function (paymentSucceed){
-		console.log('paymentSucceed');
+		//console.log('paymentSucceed');
 		return pSaveTransfer(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
 	})
 	.then(function (increased){
-		console.log('increased');
+		//console.log('increased');
 		//return incrPlayersCount(tournamentID);
 		return changePlayersCount(tournamentID);
 	})
 	.then(function (saved){
-		console.log('REGISTER OK!!!!!');
+		//console.log('REGISTER OK!!!!!');
 		if (res) Answer(res, OK);
 
 		if (playerCount==maxPlayers-1){
@@ -938,7 +940,14 @@ function RegisterUserInTournament(data, res){
 	})
 	.catch(function (err){
 		console.log('CATCHED error while player registering!', err);
-		if (res) Answer(res, Fail);
+		if (res) { 
+			switch (err){
+				case TREG_FULL: Answer(res, { result: TREG_FULL } ); break;
+				case TREG_ALREADY: Answer(res, { result: TREG_ALREADY }); break;
+				case TREG_NO_MONEY: Answer(res, { result: buyIn }); break;
+				default: Answer(res, Fail); break;
+			}
+		}
 		Error(err);
 	})
 }
