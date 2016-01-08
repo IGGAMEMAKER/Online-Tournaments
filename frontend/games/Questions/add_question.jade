@@ -1,0 +1,40 @@
+//
+html
+	title add question
+	p add your question
+	form(action="/AddQuestion" method="post")
+		label question
+		input(type="text" name="question" id="question" required)
+		br
+
+		label answer1
+		input(type="text" name="answer1" id="answer1" required)
+		br
+
+		label answer2
+		input(type="text" name="answer2" id="answer2" required)
+		br
+
+		label answer3
+		input(type="text" name="answer3" id="answer3" required)
+		br
+
+		label answer4
+		input(type="text" name="answer4" id="answer4" required)
+		br
+
+		label correct
+		input(type="text" name="correct" id="correct" required)
+		br
+
+		label tournamentID
+		input(type="numer" name="tournamentID" id="tournamentID")
+		br
+
+		label topic
+		input(type="numer" name="topic" id="topic")
+		br
+
+		input(type="submit" value="Add")
+
+		p 'startSpecial/133'

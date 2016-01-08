@@ -17,8 +17,12 @@ config.mailPass	=	configs.mailPass;
 config.db	=	configs.db;
 config.stats	=	configs.stats;
 config.session	=	configs.session;
-config.cacheTemplates = configs.cacheTemplates||null;
+config.cacheTemplates = configs.cacheTemplates || null;
 config.vk = configs.vk;
+
+
+//game configs
+config.quizQuestionPeriod = configs.quizQuestionPeriod || 4000;
 
 //console.log(config);
 module.exports = config;

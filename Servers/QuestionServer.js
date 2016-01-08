@@ -6,7 +6,6 @@ var strLog = gs.strLog;
 var getUID = gs.getUID;
 var FinishGame = gs.FinishGame;
 
-var UpdPeriod = 4000;
 //var SendPeriod = UpdPeriod;
 var NUMBER_OF_QUESTIONS=6;
 
@@ -15,10 +14,58 @@ var questionFolder = 'general';
 
 var fs = require('fs');
 
-app.post('/AddQuestions', function (req, res){
-	var data = req.body;
-	AddQuestions(data, res);
+var configs = require('../configs');
+console.log(configs);
+var UpdPeriod = configs.quizQuestionPeriod;// || 4000;
+
+var mongoose = require('mongoose');
+//mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://'+configs.db+'/test');
+
+var Question = mongoose.model('Question', { 
+	question: String, language: String,
+	answers: Array, correct:Number,
+	tournamentID: Number, topic:Number,
+	questionID: Number
+});
+
+
+
+app.get('/AddQuestion', function (req, res){
+	res.render('add_question');
 })
+app.post('/AddQuestion', function (req, res){
+
+	var data = req.body;
+	var answers=[];
+
+	answers.push(data.answer1);
+	answers.push(data.answer2);
+	answers.push(data.answer3);
+	answers.push(data.answer4);
+
+	var obj = {
+		question: data.question
+		,answers: answers
+		,correct: data.correct
+		,tournamentID: data.tournamentID
+	}
+	AddQuestion(obj, res);
+})
+
+function AddQuestion(data, res){
+	var question = new Question(data);
+
+	question.save(function (err){
+		if (err){
+			strLog('cannot save new question((( ' + JSON.stringify(err), 'Err');
+			if (res) res.json({result:'error', msg:err})
+			return;
+		}
+		if (res) res.json({result:'ok', msg:'question saved'});
+		strLog('question saved!', 'Games');
+	})
+}
 
 app.post('/Points', function (req, res){
 	var data = req.body;
@@ -33,17 +80,104 @@ app.post('/Points', function (req, res){
 	}
 })
 
+function loadSpecialTournamentQuestionsFromDB(gameID){
+	Question.find({tournamentID:gameID}, function (err, questions){
+		if (err){
+			strLog('loadSpecialTournamentQuestionsFromDB ' + JSON.stringify(err), 'Err');
+			return;
+		}
+
+		if (!questions){
+			return strLog('no questions for special tournament ' + gameID, 'Err');
+		}
+
+		games[gameID].questions=[];
+		for (var i = questions.length - 1; i >= 0; i--) {
+			var qst = questions[i];
+			var question = qst.question;
+			var answers = qst.answers;
+			var correct = qst.correct;
+
+			games[gameID].questions.push({question:question, answers:answers, correct:correct});
+		};
+
+	})
+}
+
+function add_questions(questions, gameID){
+	lg('add_questions ' + gameID + '   ' + JSON.stringify(questions) );
+
+	games[gameID].questions=[];
+	for (var i = questions.length - 1; i >= 0; i--) {
+		var qst = questions[i];
+		var question = qst.question;
+		var answers = qst.answers;
+		var correct = qst.correct;
+
+		games[gameID].questions.push({question:question, answers:answers, correct:correct});
+	};
+}
+
+//loadRandomQuestions(100);
+
+function loadRandomQuestions(gameID){
+	/*Question.find({}, '', function (err, questions){
+
+	})*/
+
+
+		Question.find({})
+		.limit(NUMBER_OF_QUESTIONS - 2)
+		.exec(function (err, questions){
+			lg('loadRandomQuestions ' + gameID);	
+			if (questions && questions.length>0){
+				lg(questions);
+				add_questions(questions, gameID);
+				return;
+			}
+			
+			strLog('no questions for tournament ' + gameID, 'Err');
+		})
+}
+
+var lg = console.log;
+lg('aaaaa');
+function load_questions_fromDB(gameID){
+	Question.find({tournamentID:gameID}, '', function (err, questions){
+		lg('load_questions_fromDB ' + gameID);
+		if (err) {
+			strLog('err in special questions for ' + gameID, 'Err');
+		}
+
+		if (questions && questions.length>0){
+			strLog('special questions for ' + gameID + '   ' + JSON.stringify(questions), 'Games');
+			add_questions(questions, gameID);
+			return;
+		}
+
+		strLog('no special questions for ' + gameID, 'Games');
+		loadRandomQuestions(gameID);
+
+	})
+}
+
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 
 	if (playerID==0){
 		games[gameID].questIndex = -1;
 		console.log(games[gameID].settings);
-		if (games[gameID].settings && games[gameID].settings.special){
+
+		load_questions_fromDB(gameID);
+
+		/*if (games[gameID].settings && games[gameID].settings.special){
 			loadSpecialTournamentQuestions(gameID);
+			//loadSpecialTournamentQuestionsFromDB(gameID);
 		} else {
-			setQuestion(gameID);
-		}
+			//setQuestion(gameID);
+			setQuestionFromDB(gameID);
+		}*/
+
 		games[gameID].userAnswers = [];
 	}
 	strLog('FULL GAME INFO');
@@ -118,7 +252,7 @@ function loadSpecialTournamentQuestions(gameID){
 	fs.readFile(questionDir+topic+'.txt', "utf8", function (err, file){
 		if (err) { 
 			console.error('cannot loadSpecialTournamentQuestions', err); 
-			strLog('loadSpecialTournamentQuestions ', 'Error'); 
+			strLog('loadSpecialTournamentQuestions ', 'Err'); 
 			return;
 		}
 
@@ -132,6 +266,34 @@ function loadSpecialTournamentQuestions(gameID){
 
 		//console.log(JSON.stringify(jsFile));
 	});
+}
+
+function setQuestionFromDB(gameID){
+	Question.find()
+		.limit(NUMBER_OF_QUESTIONS-2)
+		.exec(function (err, questions){
+			if (!questions){
+				return strLog('no questions for tournament ' + gameID, 'Err');
+			}
+
+			games[gameID].questions=[];
+			for (var i = questions.length - 1; i >= 0; i--) {
+				var qst = questions[i];
+				var question = qst.question;
+				var answers = qst.answers;
+				var correct = qst.correct;
+
+				games[gameID].questions.push({question:question, answers:answers, correct:correct});
+			};
+		})
+
+	/*Question.find({tournamentID:gameID},'', function (err, questions){
+		if (err) return strLog('setQuestionFromDB fail ' + JSON.stringify(err), 'Err');
+
+		if (!questions) {
+		}
+
+	})*/
 }
 
 function setQuestion(gameID){
@@ -154,7 +316,6 @@ function setQuestion(gameID){
 			tryToLoadQuestion(randomVal, files, gameID);
 		}
 	});
-
 }
 
 function tryToLoadQuestion(id, files, gameID){

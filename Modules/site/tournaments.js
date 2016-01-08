@@ -44,13 +44,14 @@ var upload = multer({ storage: storage }).single('image');
   app.get('/AddSpecial', function (req, res){
     res.render('AddSpecial');
   })
+
   app.post('/AddSpecial', function (req, res){//upload.single('image'), 
     // trying to add image
     upload(req, res, function (err){
       if (err) { console.log(err); res.render('AddSpecial'); return; }
 
       console.log('added image');
-      res.redirect('AddQuestions');
+      res.redirect(':5010/AddQuestion');
       //var filename = req.file.originalname;
       //console.log('AddSpecial', filename);      
     })

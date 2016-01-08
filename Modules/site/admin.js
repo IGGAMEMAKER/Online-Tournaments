@@ -50,10 +50,11 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     var tournamentID = req.body.tournamentID;
 
     // trying to add image
+    console.log('adding questions', tournamentID);
     upload(req, res, function (err){
       if (err) { console.log(err); res.render('AddQuestions'); return; }
       
-      console.log('added questions');
+      console.log('added questions', tournamentID);
       if (tournamentID && !isNaN(tournamentID)) {
         res.redirect('StartSpecial/'+tournamentID);
       } else {

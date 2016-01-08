@@ -191,7 +191,7 @@ function RenderGame (req, res){
 			});
 		} else {
 			res.status(404);
-			res.type('txt').send('Турнир #'+ tID + ' завершён. <br><a href="http://online-tournaments.org"> Вернуться в меню турниров </a>');
+			res.type('txt').send('Турнир #'+ tID + ' завершён или не был начат. ');
 		}
 	}
 
