@@ -34,10 +34,33 @@ s.plugin(random);
 
 var Question = mongoose.model('Question', s);
 
-/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
-  if (err) console.log(err);
-  else console.log(results);
-});*/
+Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+	if (err) console.log(err);
+	else {
+		for (var i = results.length - 1; i >= 0; i--) {
+			console.log(results[i].question);
+		};
+	}
+});
+
+Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+	if (err) console.log(err);
+	else {
+		for (var i = results.length - 1; i >= 0; i--) {
+			console.log(results[i].question);
+		};
+	}
+});
+
+Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+	if (err) console.log(err);
+	else {
+		for (var i = results.length - 1; i >= 0; i--) {
+			console.log(results[i].question);
+		};
+	}
+});
+
 
 /*Question.find({},'',function (err, questions){
 	if (err) console.log(err);
@@ -70,7 +93,11 @@ app.post('/AddQuestion', function (req, res){
 		question: data.question
 		,answers: answers
 		,correct: data.correct
-		,tournamentID: data.tournamentID
+		//,tournamentID: data.tournamentID
+	}
+
+	if (data.tournamentID) {
+		obj.tournamentID = data.tournamentID;
 	}
 	AddQuestion(obj, res);
 })
@@ -162,7 +189,7 @@ function loadRandomQuestions(gameID){
 	});
 
 
-	Question.find({})
+	/*Question.find({})
 	.limit(NUMBER_OF_QUESTIONS)
 	.exec(function (err, questions){
 		lg('loadRandomQuestions ' + gameID);	
@@ -173,7 +200,7 @@ function loadRandomQuestions(gameID){
 		}
 		
 		strLog('no questions for tournament ' + gameID, 'Err');
-	})
+	})*/
 }
 
 var lg = console.log;
