@@ -22,12 +22,34 @@ var mongoose = require('mongoose');
 //mongoose.connect('mongodb://localhost/test');
 mongoose.connect('mongodb://'+configs.db+'/test');
 
-var Question = mongoose.model('Question', { 
+var random = require('mongoose-simple-random');
+
+var s = new mongoose.Schema({ 
 	question: String, language: String,
 	answers: Array, correct:Number,
 	tournamentID: Number, topic:Number,
 	questionID: Number
 });
+s.plugin(random);
+
+var Question = mongoose.model('Question', s);
+
+/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+  if (err) console.log(err);
+  else console.log(results);
+});*/
+
+/*Question.find({},'',function (err, questions){
+	if (err) console.log(err);
+	else console.log(questions);
+})*/
+
+/*var Question = mongoose.model('Question', { 
+	question: String, language: String,
+	answers: Array, correct:Number,
+	tournamentID: Number, topic:Number,
+	questionID: Number
+});*/
 
 
 
@@ -126,18 +148,32 @@ function loadRandomQuestions(gameID){
 	})*/
 
 
-		Question.find({})
-		.limit(NUMBER_OF_QUESTIONS)
-		.exec(function (err, questions){
-			lg('loadRandomQuestions ' + gameID);	
-			if (questions && questions.length>0){
-				lg(questions);
-				add_questions(questions, gameID);
-				return;
-			}
-			
-			strLog('no questions for tournament ' + gameID, 'Err');
-		})
+	Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function (err, questions) {
+		lg('loadRandomQuestions ' + gameID);	
+		if (questions && questions.length>0){
+			lg(questions);
+			add_questions(questions, gameID);
+			return;
+		}
+		
+		strLog('no questions for tournament ' + gameID, 'Err');
+	  /*if (err) console.log(err);
+	  else console.log(results);*/
+	});
+
+
+	Question.find({})
+	.limit(NUMBER_OF_QUESTIONS)
+	.exec(function (err, questions){
+		lg('loadRandomQuestions ' + gameID);	
+		if (questions && questions.length>0){
+			lg(questions);
+			add_questions(questions, gameID);
+			return;
+		}
+		
+		strLog('no questions for tournament ' + gameID, 'Err');
+	})
 }
 
 var lg = console.log;
