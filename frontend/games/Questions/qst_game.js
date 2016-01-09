@@ -51,18 +51,36 @@ var room = io.connect(con);
 
 var starter=0;
 
+function countDown(seconds){
+	setTicker(seconds);
+
+	setTimeout(function() { countDown(seconds-1); }, 1000);
+}
+
 room.on('startGame', function(msg){
 	var ticks = msg['ticks'];
 	
 	console.log(ticks);
 	if (ticks==0){
-
 		//$('#Question').innerHTML = 'startGame in '+ ticks + ' seconds';
 		gameStatus = STATUS_RUNNING;
 		starter=1;
+
+		countDown(10);
+		/*setTimeout(function(){ setTicker(10); },0);
+		setTimeout(function(){ setTicker(9); },1000);
+		setTimeout(function(){ setTicker(8); },2000);
+		setTimeout(function(){ setTicker(7); },3000);
+		setTimeout(function(){ setTicker(6); },4000);
+		setTimeout(function(){ setTicker(5); },5000);
+		setTimeout(function(){ setTicker(4); },6000);
+		setTimeout(function(){ setTicker(3); },7000);
+		setTimeout(function(){ setTicker(2); },8000);
+		setTimeout(function(){ setTicker(1); },9000);*/
+		//show_answer_buttons();
 	}
 	else{
-		setTicker(ticks);
+		setTicker(ticks+10);
 	}
 	recievedData = 1;
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
@@ -103,6 +121,10 @@ var tickerID;
 	setTicker()
 }*/
 
+function show_answer_buttons(){
+	document.getElementById("Answers").style.display = "block";
+}
+
 room.on('update', function(msg){
 	//alert(JSON.stringify(msg));
 	recievedData = 1;
@@ -117,7 +139,7 @@ room.on('update', function(msg){
 	//for (var i=0; i<MAX_SECONDS; i++){
 	//	setTimeout(function(){ setTicker(MAX_SECONDS-i); }, i*1000);
 	//}
-
+	show_answer_buttons();
 	setTimeout(function(){ setTicker(10); },0);
 	setTimeout(function(){ setTicker(9); },1000);
 	setTimeout(function(){ setTicker(8); },2000);
@@ -204,6 +226,12 @@ function DrawPlayers(results){
 			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 		}
 		//$('#Question').append($('<li ' + style + '>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
+
+		// show winner table
+		var winnerTable = document.getElementById("winnerTable");
+
+		winnerTable.style.display = 'block';
+		//$('#winnerTable').css('display', )
 
 	}
 }

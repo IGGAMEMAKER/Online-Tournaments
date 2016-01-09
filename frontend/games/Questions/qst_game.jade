@@ -7,7 +7,7 @@ mixin radioButton(val, ans)
 		a(class="btn btn-lg btn-block btn-rd btn-d btn-clean") #{ans}
 
 mixin drawTableOfResults()
-	table(class="table table-bordered table-striped")
+	table(id="winnerTable" class="table table-bordered table-striped" style="display:none;")
 		thead
 			tr
 				th Игрок
@@ -32,8 +32,8 @@ center
 						h3(class="text-center" id="Question")
 							Турнир начнётся через
 						h4(id="ticker")
-					
-						div#Answers
+						//h4 секунд
+						div#Answers(style="display:none;")
 							+radioButton(1, 'Answer1')
 							+radioButton(2, 'Answer2')
 							+radioButton(3, 'Answer3')

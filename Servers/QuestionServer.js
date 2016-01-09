@@ -127,7 +127,7 @@ function loadRandomQuestions(gameID){
 
 
 		Question.find({})
-		.limit(NUMBER_OF_QUESTIONS - 2)
+		.limit(NUMBER_OF_QUESTIONS)
 		.exec(function (err, questions){
 			lg('loadRandomQuestions ' + gameID);	
 			if (questions && questions.length>0){
@@ -149,7 +149,7 @@ function load_questions_fromDB(gameID){
 			strLog('err in special questions for ' + gameID, 'Err');
 		}
 
-		if (questions && questions.length>0){
+		if (questions && questions.length > 0){
 			strLog('special questions for ' + gameID + '   ' + JSON.stringify(questions), 'Games');
 			add_questions(questions, gameID);
 			return;
@@ -157,7 +157,6 @@ function load_questions_fromDB(gameID){
 
 		strLog('no special questions for ' + gameID, 'Games');
 		loadRandomQuestions(gameID);
-
 	})
 }
 
