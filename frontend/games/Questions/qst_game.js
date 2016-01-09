@@ -53,8 +53,9 @@ var starter=0;
 
 function countDown(seconds){
 	setTicker(seconds);
-
-	setTimeout(function() { countDown(seconds-1); }, 1000);
+	if (seconds>0){
+		setTimeout(function() { countDown(seconds-1); }, 1000);
+	}
 }
 
 room.on('startGame', function(msg){
