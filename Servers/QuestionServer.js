@@ -34,7 +34,10 @@ s.plugin(random);
 
 var Question = mongoose.model('Question', s);
 
-Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+var lg = console.log;
+lg('aaaaa');
+
+/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
 	if (err) console.log(err);
 	else {
 		for (var i = results.length - 1; i >= 0; i--) {
@@ -43,7 +46,7 @@ Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function
 	}
 });
 
-Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
 	if (err) console.log(err);
 	else {
 		for (var i = results.length - 1; i >= 0; i--) {
@@ -52,14 +55,14 @@ Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function
 	}
 });
 
-Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: 3}, function(err, results) {
+Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
 	if (err) console.log(err);
 	else {
 		for (var i = results.length - 1; i >= 0; i--) {
 			console.log(results[i].question);
 		};
 	}
-});
+});*/
 
 
 /*Question.find({},'',function (err, questions){
@@ -168,14 +171,72 @@ function add_questions(questions, gameID){
 }
 
 //loadRandomQuestions(100);
+function add_question_to_list(gameID, qst){
+	var question = qst.question;
+	var answers = qst.answers;
+	var correct = qst.correct;
+
+	games[gameID].questions.push({question:question, answers:answers, correct:correct});
+}
+
+
+
+function find_random_question(gameID, left, count, attempts){
+	//var offset = Math.random()*count;
+	//if (!attempts) attempts={};
+
+	var offset = parseInt(Math.random()*count);
+	lg('offset = ' + offset, 'left: ' , left);
+	lg('attempts', attempts);
+	Question.findOne({},'', { skip: offset}, function (err, question){
+		if (err) return strLog('find_random_question Err ' + JSON.stringify(err), 'Err');
+
+		// check if it is not prepared for special tournament;
+		// and we did not add this question before
+		lg('find_random_question no error. tryToLoadQuestion', question.question);
+
+		if (is_not_special(question) && !attempts[offset]) { //  && attempts[offset]   !question_was_added(offset, attempts)
+			add_question_to_list(gameID, question); //attempts.push(offset);
+			attempts[offset] = 1;
+
+			if (left>1) return find_random_question(gameID, left-1, count, attempts);
+		} else {
+			find_random_question(gameID, left, count, attempts);
+		}
+	})
+}
+
+/*games[3] = { questions : [] };
+find_random_question(3, NUMBER_OF_QUESTIONS, 18, {});*/
+
+function question_was_added(offset, attempts){
+	return attempts[offset] == 1;
+	/*for (var i = attempts.length - 1; i >= 0; i--) {
+		if (attempts[i]==offset) return true;
+	};
+
+	return false;*/
+}
+
+function is_not_special(question){
+	return (!question.tournamentID);
+}
 
 function loadRandomQuestions(gameID){
 	/*Question.find({}, '', function (err, questions){
 
 	})*/
+	Question.count(function (err, count){
+		if (err) return lg('err while count', err);
+		else {
+			lg('count= ' + count);
+			games[gameID].questions=[];
+			find_random_question(gameID, NUMBER_OF_QUESTIONS, count, {});
+		}
+	})
 
 
-	Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function (err, questions) {
+	/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function (err, questions) {
 		lg('loadRandomQuestions ' + gameID);	
 		if (questions && questions.length>0){
 			lg(questions);
@@ -184,9 +245,9 @@ function loadRandomQuestions(gameID){
 		}
 		
 		strLog('no questions for tournament ' + gameID, 'Err');
-	  /*if (err) console.log(err);
-	  else console.log(results);*/
-	});
+	  //if (err) console.log(err);
+	  //else console.log(results);
+	});*/
 
 
 	/*Question.find({})
@@ -203,8 +264,7 @@ function loadRandomQuestions(gameID){
 	})*/
 }
 
-var lg = console.log;
-lg('aaaaa');
+
 function load_questions_fromDB(gameID){
 	Question.find({tournamentID:gameID}, '', function (err, questions){
 		lg('load_questions_fromDB ' + gameID);
