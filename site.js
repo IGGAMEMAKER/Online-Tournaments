@@ -295,6 +295,10 @@ app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
 })
 
+app.get('/about', function (req, res){
+  res.render('about');
+})
+
 app.post('/FinishGame', FinishGame);
 
 function FinishGame(req, res){
