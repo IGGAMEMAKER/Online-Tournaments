@@ -1,29 +1,37 @@
-//
+//id="bloc-6"
 div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 	div(class="container bloc-lg")
 		div(class="row")
 			div(class="col-sm-12")
 				div(class="panel")
 					div(class="panel-heading")
-						h3(class="mg-clear") Пополнить счет
+						h3(class="mg-clear" id="depositMoney") Пополнить счет
 					div(class="panel-body")
-						p Условия пополнения
+						//p Условия пополнения
 						form(id="form-928" novalidate)
 							div(class="form-group")
 								label Сумма (в долларах)
 								input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
-								label(id="depResult") Сумма в рублях: 700p
-							a(href="bonus") Почему это выгодно?
-							a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="width:100%; border-radius:6px; " id="depositLink") Пополнить
+								//label(id="depResult") Сумма в рублях: 700p
+								//p Эта сумма может меняться в зависимости от курса валюты
+							//a(href="bonus") Почему это выгодно?
+							a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="width:100%; border-radius:6px; " id="depositLink1") Пополнить
 
 script.
-	var USD_TO_RUR=70;
+	var USD_TO_RUR=78;
+	$("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
+	$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
 	var input = document.getElementById('deposit');
 	input.oninput = function (){
 		var sum = input.value;
 		var user = login;
-		var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+sum*USD_TO_RUR+"&PAYSTO_PAYER_ID="+login;
-		$("#depositLink").attr("href", link);
-		console.log(link + " " + sum + " " + user);
-		document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
+		var moneyRu = sum * USD_TO_RUR;
+		var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+moneyRu+"&PAYSTO_PAYER_ID="+login;
+		console.log(link + " " + sum + " " + user + " " + moneyRu + "p")
+
+		$("#depositLink1").attr("href", link);
+		$("#depResult").html("Сумма в рублях: " + moneyRu + "р")
+
+		//document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
+		$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
 	}
