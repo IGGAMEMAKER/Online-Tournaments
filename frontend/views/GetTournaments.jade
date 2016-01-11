@@ -153,7 +153,11 @@ mixin showTournament(t,line, imageUrl)
 						Стоимость: #{buyIn/convert}$
 					else
 						Бесплатно!
-					//br
+					p Призовых мест: #{winnersPlaces}
+					//if winnersPlaces>1
+						p Призовых мест: #{winnersPlaces}
+					//else
+						p
 					//Призовых мест: #{winnersPlaces}
 					br
 					div(id="plrs-"+ID) Участников : #{registered} из #{maxPlayers}

@@ -68,7 +68,7 @@ mixin showPrize(prize, specPrize)
 				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize/convert}$
 
 mixin showStreamPrize()
-	h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: Случайный!
+	h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: Случайный
 
 
 mixin showImage(imageUrl, gameNameID)
@@ -153,7 +153,11 @@ mixin showTournament(t,line, imageUrl)
 						Стоимость: #{buyIn/convert}$
 					else
 						Бесплатно!
-					//br
+					p Призовых мест: #{winnersPlaces}
+					if winnersPlaces>1
+						p Призовых мест: #{winnersPlaces}
+					else
+						p
 					//Призовых мест: #{winnersPlaces}
 					br
 					div(id="plrs-"+ID) Участников : #{registered} из #{maxPlayers}
