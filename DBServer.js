@@ -1771,6 +1771,19 @@ var UNKNOWN_ERROR=500;
 	})
 }*/
 
+function is_numeric_id(login){
+
+	var arr1 = login.split("id");
+	var is_numeric= arr1.length==2 && arr1[0]=="" && !isNaN(arr1[1]);
+	if (is_numeric)
+		console.log("input: ", login, is_numeric?"is_numeric ||":"no ||", "output:", arr1);
+	/*if (){
+		console.log("2 blocks");
+	}*/
+	//if (arr1[0]=="id")
+	return is_numeric;
+}
+
 function findOrCreateUser (req, res){
 	var profile = req.body;
 	var uid = profile.id;
@@ -1793,7 +1806,13 @@ function findOrCreateUser (req, res){
 	User.findOne({'social.id':uid}, '', function (err, user){ //'social.provider':provider, 
 		if (err) return sender.Answer(res, null);
 		var login = profile.username;
-		if (!isNaN(login)) { login = profile.name.givenName+'*'+profile.id+'*'; }
+		console.log(profile);
+
+		//if (!isNaN(login)) { login = profile.name.givenName+'*'+profile.id+'*'; }
+		if (is_numeric_id(login)){
+			login = social.first_name+social.last_name+social.id;
+		}
+		
 		if (user){
 			console.log('findOrCreateUser' , user);
 			return sender.Answer(res, user);

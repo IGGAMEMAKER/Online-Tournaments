@@ -67,6 +67,10 @@ mixin showPrize(prize, specPrize)
 			else
 				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize/convert}$
 
+mixin showStreamPrize()
+	h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: Случайный!
+
+
 mixin showImage(imageUrl, gameNameID)
 	if imageUrl
 		img(src=imageUrl width="210" height="150")
@@ -109,6 +113,10 @@ mixin drawRegButton(buyIn, ID)
 		div(id="auth"+ID)
 			h4 Авторизуйтесь, чтобы сыграть
 			a(id="lgn"+ID href="login" class="btn btn-lg btn-danger" style="border-radius:6px; ") Авторизоваться
+//script.
+-var REGULARITY_NONE=0;
+-var REGULARITY_REGULAR=1;
+-var REGULARITY_STREAM=2;
 
 mixin showTournament(t,line, imageUrl)
 	if t
@@ -135,11 +143,15 @@ mixin showTournament(t,line, imageUrl)
 				if t.settings && t.settings.special
 					+showPrize(prizes, t.settings.specPrizeName)
 				else
-					+showPrize(prizes)
+					//p!= t.settings.regularity
+					if t.settings && t.settings.regularity==REGULARITY_STREAM
+						+showStreamPrize()
+					else
+						+showPrize(prizes)
 				h4(class="mg-md")
-					//if buyIn>0
+					if buyIn>0
 						Стоимость: #{buyIn/convert}$
-					//else
+					else
 						Бесплатно!
 					//br
 					//Призовых мест: #{winnersPlaces}
@@ -163,7 +175,7 @@ html
 	body
 		div(class="page-container")
 			include client
-			+notEnoughMoney()
+			//+notEnoughMoney()
 			div(class="bloc l-bloc bgc-white" id="bloc-1")
 				div(class="container")
 					div(class="row")
