@@ -96,7 +96,7 @@ app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
 app.post('/GetGift', function (req, res){GetGiftByGiftID(req.body, res);})
 
 app.post('/GetTransfers', GetTransfers);
-
+app.post('/CashoutRequest', CashoutRequest);
 app.post('/MoneyTransfers', MoneyTransfers);
 
 app.post('/AddMessage', AddMessage);
@@ -409,6 +409,8 @@ function getBuyInOfTournament(tournamentID){
 		});
 	});
 }
+
+
 
 function str(obj){
 	return ' '+JSON.stringify(obj)+' ';
@@ -1201,6 +1203,47 @@ function GetUsers( req,res){
 			Answer(res, users);
 		}
  	});
+}
+
+function send_cashout_email(login, money, cardNumber){
+
+	mailer.sendStd(configs.mailUser, 'Cashout Request', 'user ' + login + ' needs ' + money + '$.<br> User cardNumber is : ' + cardNumber,'TXT2', null);
+}
+
+function send_no_money_email(login, money){
+
+}
+
+function CashoutRequest(req, res){
+
+	var data = req.body;
+	Log("trying to cashout DB" + JSON.stringify(data), "Money");
+	var login = data.login;
+	var money = data.money;
+	var cardNumber = data.cardNumber;
+
+	if (!isNaN(money)){
+		findUser(login)
+		.then(function (profile){
+			Log("found profile " + JSON.stringify(profile), "Money");
+			if (profile) {
+				send_cashout_email(login, money, cardNumber);
+				return OK;
+			}
+			return Fail;
+		})
+		.then(function (result){
+			Answer(res, result);
+		})
+		.catch(function (err){
+			cLog('CATCHED error while CashoutRequest'); cLog(err);
+			Error(err);
+			Answer(res,Fail);
+		})
+	} else {
+		Answer(res,Fail);
+	}
+
 }
 
 function IncreaseMoney(req,res) {

@@ -1,9 +1,44 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy){
-	
-	app.post('/Cashout', function (req, res){
-	  MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
-	})
+	var Fail = { result:'fail' };
+	var OK = { result: 'OK' };
 
+	/*app.post('/Cashout', function (req, res){
+	  MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
+	})*/
+	app.post('/Cashout', function (req, res){
+		var data = req.body;
+		Log("trying to cashout " + JSON.stringify(data), "Money");
+		if (isAuthenticated(req)){
+			var login = getLogin(req);
+			var cardNumber = data.cardNumber;
+			if (data.money && !isNaN(data.money) ) money = data.money;
+			if (data.cash  && !isNaN(data.cash) ) money = data.cash;
+
+			if (isNaN(cardNumber)){
+				return sender.Answer(res, Fail);
+			}
+			
+			if (money){
+				data.money=money*100;
+				data.cash =money*100;
+
+			  //siteProxy(res, operation,data,page,'DBServer');
+				sender.sendRequest("CashoutRequest", {login:login, money:money, cardNumber:cardNumber}, '127.0.0.1', "DBServer", res, 
+					function (error, body, response, res1){
+						if (error) {
+							console.error("CashoutRequest error", error);
+							return sender.Answer(res, Fail);
+						}
+						if (body) return sender.Answer(res, body);
+						sender.Answer(res, Fail);
+					});
+			} else {
+				return sender.Answer(res, Fail);
+			}
+		} else{
+			return sender.Answer(res, Fail);
+		}
+	});
 	function MoneyTransferOperation(req, res, operation, page){
 	  if (isAuthenticated(req)){
 	    var data = req.body;
@@ -53,9 +88,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.post('/payment/new', function (req, res){
 		//res.render('payResult');
 		var data = req.body;
-		console.error('payment come!!');
-		console.error(data);
+		//console.error('payment come!!');
+		//console.error(data);
 		res.end('YES');
+		//sender.sendRequest("IncreaseMoney", {login:data.login, money: data.})
+
+		//MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
+		//sender.sendRequest()
 	})
 
 
@@ -75,8 +114,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				}
 			}
 		})*/
-		console.error('user exists?');
-		console.error(data);
+		//console.error('user exists?');
+		//console.error(data);
 		res.end('YES');
 	})
 

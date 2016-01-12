@@ -14,10 +14,10 @@ function ManageReg(login, tID, url, regID){
 	console.log(tID); //console.log(btn);
 	
 	$.ajax({
-	  url: url,
-	  method: 'POST',
-	  data: { login: login, tournamentID:tID },
-	  success: function( data ) {
+		url: url,
+		method: 'POST',
+		data: { login: login, tournamentID:tID },
+		success: function( data ) {
 			var msg = JSON.parse(data);//JSON.stringify(data);
 			var txt='';
 
