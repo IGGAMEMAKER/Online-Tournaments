@@ -74,6 +74,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.render('Deposit');
 	})
 
+	app.post('/yandexPayment', function (req, res){
+		var data = req.body;
+		Log("Money yandexPayment " + JSON.stringify(data), "Money");
+		res.end('OK');
+	})
+
 	app.get('/payOK', function (req, res){
 		res.render('payOK');
 	})
