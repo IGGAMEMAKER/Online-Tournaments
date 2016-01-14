@@ -102,7 +102,10 @@ app.post('/MoneyTransfers', MoneyTransfers);
 app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
-app.post('/payment', IncreaseMoney);
+app.post('/payment', function(req, res){ 
+	console.log("new payment");
+	IncreaseMoney(req, res);
+});
 
 app.post('/Mail', function (req, res){
 	Stats('Mail', {});
@@ -1257,6 +1260,9 @@ function IncreaseMoney(req,res) {
 	var data = req.body;
 	var login = data.login;
 	var cash = data.cash;
+
+	console.log("DBServer :::: increase money", login, cash);
+
 	incrMoney(res, login, cash, {type: SOURCE_TYPE_DEPOSIT});
 	console.log("payment info" , data.info);
 }
