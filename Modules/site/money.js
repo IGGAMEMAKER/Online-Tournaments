@@ -80,8 +80,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.end('OK');
 
 		var login = data.label;
-		var money = parseInt(data.ammount)/76;
-		money= money*100;
+		var money = Math.round(parseInt(data.amount)*100/76);
+		/*var money = parseInt(data.amount)/76;
+
+		money= money*100;*/
 		Log("Money yandexPayment " + JSON.stringify(data), "Money");
 		Log("payment from " + login + ": " + money + "p", "Money");
 		sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
