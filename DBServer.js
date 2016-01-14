@@ -102,6 +102,8 @@ app.post('/MoneyTransfers', MoneyTransfers);
 app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
+app.post('/payment', IncreaseMoney);
+
 app.post('/Mail', function (req, res){
 	Stats('Mail', {});
 	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
@@ -247,6 +249,10 @@ function servError(err, res){
 uGift.save(function (err){
 	if (err) {Error(err);}
 })*/
+
+/*function ProcessPayment(req, res){
+
+}*/
 
 function AddMessage(req, res){
 	var data = req.body;
@@ -1252,6 +1258,7 @@ function IncreaseMoney(req,res) {
 	var login = data.login;
 	var cash = data.cash;
 	incrMoney(res, login, cash, {type: SOURCE_TYPE_DEPOSIT});
+	console.log("payment info" , data.info);
 }
 function DecreaseMoney(req, res) {
 

@@ -76,8 +76,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	app.post('/yandexPayment', function (req, res){
 		var data = req.body;
-		Log("Money yandexPayment " + JSON.stringify(data), "Money");
+
 		res.end('OK');
+		
+		var login = data.label;
+		var money = parseInt(data.ammount)/76;
+		money= money*100;
+		Log("Money yandexPayment " + JSON.stringify(data), "Money");
+		sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
 	})
 
 	app.get('/payOK', function (req, res){
