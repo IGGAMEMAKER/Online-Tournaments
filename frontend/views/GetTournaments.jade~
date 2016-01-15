@@ -154,9 +154,9 @@ mixin showTournament(t,line, imageUrl)
 					else
 						Бесплатно!
 					p Призовых мест: #{winnersPlaces}
-					if winnersPlaces>1
+					//if winnersPlaces>1
 						p Призовых мест: #{winnersPlaces}
-					else
+					//else
 						p
 					//Призовых мест: #{winnersPlaces}
 					br

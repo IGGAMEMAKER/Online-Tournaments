@@ -63,25 +63,4 @@ mixin notEnoughMoney()
 					//a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=100&PAYSTO_PAYER_ID="+session.login class="btn btn-primary" id="depositLink") Оплатить (1.5$)
 
 					//button(type="button" class="btn btn-default" data-dismiss="modal") Close
-	script.
-		var USD_TO_RUR=78;
-		$("#userLogin").attr("value", login)
-		$("#targets").attr("value", login)
-		$("#sumAttribute").attr("value", 10*USD_TO_RUR)
-
-		$("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
-
-		$("#depositLink1").attr("value", "Пополнить счёт на "+ 10+"$")
-		//$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
-		var input = document.getElementById('deposit');
-		input.oninput = function (){
-			var sum = input.value;
-			var user = login;
-			var moneyRu = sum * USD_TO_RUR;
-
-			$("#depResult").html("Сумма в рублях: " + moneyRu + "р")
-			$("#sumAttribute").attr("value", moneyRu)
-			//document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
-			//$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
-			$("#depositLink1").attr("value", "Пополнить счёт на "+ sum+"$")
-		}
+	//script(src="notEnoughMoney.js").
