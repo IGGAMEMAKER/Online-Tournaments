@@ -39,33 +39,14 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 								input(type="hidden" name="quickpay-form" value="shop") 
 								input(type="hidden" id="targets" name="targets" value="Пополнение счёта у " + login) 
 								input(type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number") 
-								input(type="hidden" name="comment" value="Хотелось бы дистанционного управления.")
+								input(type="hidden" name="comment" value="Платёж принят!")
 								input(type="hidden" name="paymentType" value="AC")
 								input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
 								label(id="depResult") Сумма в рублях: 700p
 							input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
 							//p Эта сумма может меняться в зависимости от курса валюты
 							//a(href="bonus") Почему это выгодно?
-							a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="display:none; width:100%; border-radius:6px; " id="depositLink12") Пополнить
-
-//script.
-	var USD_TO_RUR=78;
-	$("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
-	$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
-	var input = document.getElementById('deposit');
-	input.oninput = function (){
-		var sum = input.value;
-		var user = login;
-		var moneyRu = sum * USD_TO_RUR;
-		var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+moneyRu+"&PAYSTO_PAYER_ID="+login;
-		console.log(link + " " + sum + " " + user + " " + moneyRu + "p")
-
-		$("#depositLink1").attr("href", link);
-		$("#depResult").html("Сумма в рублях: " + moneyRu + "р")
-
-		//document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
-		$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
-	}
+							//a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="display:none; width:100%; border-radius:6px; " id="depositLink12") Пополнить
 
 script.
 	var USD_TO_RUR=78;

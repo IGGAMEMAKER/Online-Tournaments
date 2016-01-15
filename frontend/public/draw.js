@@ -184,9 +184,9 @@ function getAddressFromAddrList(addresses, tournamentID){
   return null;
 }
 
-var USD_TO_RUR=70;
+//var USD_TO_RUR=70;
 
-function drawPayingModal(data){
+/*function drawPayingModal(data){
   console.log('drawPayingModal', data);
   var price = data / 100;
   var tournamentPrice = data/100 + '$';
@@ -202,4 +202,59 @@ function drawPayingModal(data){
   $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
 
   $(payModal).modal('show');
+}*/
+var USD_TO_RUR=78;
+
+function drawPayingModal(data){
+  console.log('drawPayingModal', data);
+
+  var buyInUSD = data/100;
+  var needToPay = (buyInUSD - getFromStorage('money')/100); // in USD
+  needToPay = Math.ceil(needToPay*100)/100;
+  
+  var needToPayRU = needToPay*USD_TO_RUR;
+  needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+
+  //var price = data / 100;
+  var tournamentPrice = needToPay + '$';
+  /*var moneyRu = price * USD_TO_RUR;*/
+  var moneyNow = getFromStorage('money')/100;
+
+  //moneyRu = needToPay*USD_TO_RUR/100;
+
+  $("#userLogin").attr("value", login);
+  $("#targets").attr("value", login);
+  $("#sumAttribute").attr("value", needToPayRU);
+
+  $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
+
+
+  $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + '$</b>');
+  $("#needToPay").html('К оплате: <b>'+needToPay+'$</b>');
+  $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
+
+  if (needToPay>0) $(payModal).modal('show');
 }
+
+/*
+  $("#userLogin").attr("value", login)
+  $("#targets").attr("value", login)
+  $("#sumAttribute").attr("value", 10*USD_TO_RUR)
+
+  $("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
+
+  $("#depositLink1").attr("value", "Пополнить счёт на "+ 10+"$")
+  //$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
+  var input = document.getElementById('deposit');
+
+  input.oninput = function (){
+    var sum = input.value;
+    var user = login;
+    var moneyRu = sum * USD_TO_RUR;
+
+    $("#depResult").html("Сумма в рублях: " + moneyRu + "р")
+    $("#sumAttribute").attr("value", moneyRu)
+    //document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
+    //$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
+    $("#depositLink1").attr("value", "Пополнить счёт на "+ tournamentPrice)
+  }*/
