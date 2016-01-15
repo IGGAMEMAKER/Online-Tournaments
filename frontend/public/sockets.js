@@ -63,7 +63,7 @@ function showCloseTournamentModal(tournamentID, places, prizes) {
 }
 
 function reload(time){
-  //setTimeout(function() { location.reload(); }, time);
+  setTimeout(function() { location.reload(); }, time);
 }
 
 
