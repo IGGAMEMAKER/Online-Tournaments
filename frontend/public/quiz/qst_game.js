@@ -290,7 +290,9 @@ function drawPoints(data){
 
 function getMyPoints(){
 	setTimeout( function(){
-		aj('http://' + gameHost + '/Game/Points', drawPoints);
+		var urlUrl='http://' + gameHost + '/Game/Points';
+		console.log(urlUrl);
+		aj(urlUrl, drawPoints);
 		//aj('http://' + gameHost+':' + gamePort + '/Points', drawPoints);
 	}, getRandomArbitrary(0, 50) );
 }
