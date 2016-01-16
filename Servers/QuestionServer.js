@@ -119,7 +119,7 @@ function AddQuestion(data, res){
 	})
 }
 
-app.post('/Points', function (req, res){
+app.post('/Game/Points', function (req, res){
 	var data = req.body;
 	var login = data.login;
 	var gameID= data.gameID;
