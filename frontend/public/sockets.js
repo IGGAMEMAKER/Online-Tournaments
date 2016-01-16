@@ -87,7 +87,7 @@ function StartTournament(tournamentID){
 function startGame(gameURL, port, tournamentID){
   if (gameURL && port){
     statAttemptToStart(tournamentID);
-    drawWindowForGame(gameURL, port, tournamentID);
+    //drawWindowForGame(gameURL, port, tournamentID);
     //saveInStorage('hasRunningTournaments', 0);
   }
 }
