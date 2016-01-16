@@ -19,8 +19,7 @@ function drawButton(host, port, tournamentID){
   var text = '<button onclick="startGame(' + parameters + ')" style="width:300px;height:60px;"> PLAY '+tournamentID+'</button><br>';//"' + gameURL + '"// prt(text);
   
 
-  //var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
-  var addr = 'http://'+host+'/Game?tournamentID='+tournamentID;
+  var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
     
   var txt = '<p>AAAAAAAA</p>';
   /*
