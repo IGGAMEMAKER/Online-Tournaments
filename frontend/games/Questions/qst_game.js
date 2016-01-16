@@ -23,7 +23,7 @@ function drawRB(val, ans){
 	//rb.innerHTML+= ans;
 	var txt = '<a class="btn btn-lg btn-block btn-rd btn-d btn-clean" id="a'+val+'" onclick=sendGameData('+val+') value='+val+', name="answer">' + ans +'</a>';
 	rb.innerHTML = txt;
-	console.log(ans, txt);
+	//console.log(ans, txt);
 }
 
 function hideRB(val){
@@ -200,14 +200,25 @@ function DrawPlayers(results){
 		}
 
 		var winBlock;
+		var style = '';
+		if (name==login){
+			style = 'style="color: red;"';
+		}
+
+		var text = '<tr>';
+		text += '<td ' + style + '><b>'+name+'</b><br>('+score+')</td>';
+		//text += '<td style="color: red;">' + score + '</td>';
+		text += '<td ' + style + '>' + winning + '</td>';
+		text += '</tr>';
+		$(resultField).append(text);
 
 		//console.log(ind)
-		if (name==login){
+		/*if (name==login){
 			//style="style = 'color: #FF0000;'";
 			//winBlock = '<td style="color: red;>'+winning+'</td>';
 			var text = '<tr>'
-			text += '<td style="color: red;"><b>'+name+'</b></td>';
-			text += '<td style="color: red;">' + score + '</td>';
+			text += '<td style="color: red;"><b>'+name+'</b><br>('+score+')</td>';
+			//text += '<td style="color: red;">' + score + '</td>';
 			text += '<td style="color: red;">' + winning + '</td>';
 			text += '</tr>';
 			$(resultField).append(text);
@@ -218,14 +229,14 @@ function DrawPlayers(results){
 			//winBlock = '<td>'+winning+'</td>';
 			//var text = '<tr><td>'+name+'</td><td>'+ score +'</td>' + winBlock + '</tr>'
 			var text = '<tr>'
-			text += '<td ><b>'+name+'</b></td>';
-			text += '<td >' + score + '</td>';
+			text += '<td ><b>'+name+'</b><br>('+score+')</td>';
+			//text += '<td >' + score + '</td>';
 			text += '<td >' + winning + '</td>';
 			text += '</tr>';
 
 			$(resultField).append(text);
 			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
-		}
+		}*/
 		//$('#Question').append($('<li ' + style + '>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
 
 		// show winner table
