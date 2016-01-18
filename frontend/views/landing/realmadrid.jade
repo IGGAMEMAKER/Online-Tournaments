@@ -1,0 +1,112 @@
+//
+mixin drawIcons()
+	div(class="bloc l-bloc bgc-white" id="bloc-2")
+		div(class="container bloc-sm")
+			div(class="row")
+				//div(class="col-sm-4")
+					div(class="text-center")
+						//span(class="ion ion-android-desktop icon-desktop icon-round icon-lg")
+						span(class="fa fa-user icon-round icon-lg")
+					h3(class="text-center mg-md")
+						Зарегистрируйся
+					//p(class="text-center")
+						Моментальная регистрация
+
+				div(class="col-sm-5")
+					div(class="text-center")
+						//span(class="fa fa-soccer-ball-o icon-strategy icon-round icon-lg")
+						span(class="fa fa-question icon-strategy icon-round icon-lg")
+					h3(class="text-center mg-md")
+						Ответь на вопросы викторины
+					//p(class="text-center")
+						Ответь на вопросы по истории команды
+
+				div(class="col-sm-5")
+					div(class="text-center")
+						span(class="fa fa-trophy icon-round icon-lg")
+					h3(class="text-center mg-md")
+						Выиграй приз!
+					//p(class="text-center")
+						Выиграй футболку
+
+
+script(src="third_party/validator.min.js")
+link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/register.css")
+
+mixin drawSubscribe()
+	div(class="bloc l-bloc bgc-white bloc-tile-2 pull-right" id="bloc-15")
+		div(class="container bloc-lg")
+			div(class="row")
+				div(class="col-sm-12")
+					if msg
+						+ErrorHandler(msg)
+
+					form(id="form-4" action="/Register" method="post" autocomplete="on")
+						center
+							h3(class="mg-md" id="registerForm") Регистрация
+						div(class="inner-addon left-addon")
+							i(class="glyphicon glyphicon-remove" style="display:none;")
+							i(class="glyphicon glyphicon-user" style="")
+							i(class="glyphicon glyphicon-ok" style="display:none;")
+							//<input type="text" class="form-control" placeholder="Username" />
+							input(id="email" class="form-control" type="email" name="email" placeholder="Email" required)
+						
+						a(href="login") У меня уже есть аккаунт
+						br
+						//+drawAlerts()
+						br
+						button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
+						include ../templates/vk-auth
+
+script(src="interactiveInput.js")
+//
+mixin ErrorHandler(msg)
+	case msg
+		when 500
+			div(class="alert alert-danger")
+				strong Внутренняя ошибка сервера( Попробуйте позже
+			//p Server Error. Report about this bug
+		when 11000
+			div(class="alert alert-danger")
+				strong Пользователь с таким логином уже существует( 
+				br
+				Придумайте другой логин
+			//p User exists( Try another login
+		when 100
+			div(class="alert alert-danger")
+				strong Некорректные данные. Повторите ввод данных
+			p Invalid data
+		default
+			div(class="alert alert-danger")
+				strong Внутренняя ошибка сервера( Попробуйте позже
+			p Not Error, but no Success... it's strange... report about this error
+			p!= msg
+			p!= JSON.stringify(msg)
+		
+mixin drawAlerts()
+	div(class="alert alert-success" id="validOK" style="display:none;")
+		strong Данные корректны!
+	div(class="alert alert-warning" id="typeData")
+		strong Заполните поля
+	div(class="alert alert-danger" id="invalid" style="display:none;")
+		strong Длина логина не более 25 символов
+
+
+doctype html
+html
+	head
+		title Онлайн турниры
+		include ../templates/head2
+		//link(rel="stylesheet" href="./css/animate.css")
+		//link(rel="stylesheet" href="./css/ionicons.min.css")
+		link(rel="stylesheet" href="./css/main.css")
+	div(class="page-container" style='min-height:100%; min-width:100%; background: url("http://trivela.uol.com.br/wp-content/uploads/2015/11/AP_146245388718.jpg") no-repeat center center fixed; background-size: cover;')
+		p!= 'Hola!!'
+		//include ../templates/menu
+		div(class="b-divider" style="background-color:transparent;")
+			//div(class='bloc-group')
+			//+drawIcons()
+			+drawSubscribe()
+			//include ../templates/auth
+	//	include ../templates/footer
+

@@ -1,6 +1,6 @@
-	var RED = "#FF0000";
+	var RED = "#fdd";// "#FF0000";
 	var WHITE = "#FFFFFF";
-	var GREEN = "#00FF00";
+	var GREEN = "#dfd";//"#00FF00";
 
 	var submitButton = 'register';
 
@@ -175,7 +175,7 @@
 
 
 	function ValidData(){
-		return validityData.password == OK && validityData.email == OK && validityData.login == OK;
+		return validityData.email == OK;// &&validityData.password == OK &&  validityData.login == OK;
 	}
 
 	function ShowSubmitButton(fieldName){
@@ -198,15 +198,15 @@
 	document.getElementById("email").addEventListener("input", emailListener);
 	document.getElementById("email").addEventListener("onchange", emailListener);
 
-	document.getElementById("login").addEventListener("input", LoginListener);
+	/*document.getElementById("login").addEventListener("input", LoginListener);
 	document.getElementById("login").addEventListener("onchange", LoginListener);
 
 	document.getElementById("password").addEventListener("input", PassListener);
 	document.getElementById("password").addEventListener("onchange", PassListener);
 
 	document.getElementById("login").setAttribute("placeholder","MorganFreeman223");
+	document.getElementById("password").setAttribute("placeholder","********");*/
 	document.getElementById("email").setAttribute("placeholder","chikenFreeze@gmail.com");
-	document.getElementById("password").setAttribute("placeholder","********");
 
 	/*document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);

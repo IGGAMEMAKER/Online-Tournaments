@@ -1926,6 +1926,8 @@ function Register (req, res){
 	.then(function (msg){
 		Log('Reg OK: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, OK);
+
+		register_to_stream(data.login);
 	})
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);

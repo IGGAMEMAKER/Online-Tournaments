@@ -301,6 +301,15 @@ app.get('/about', function (req, res){
 
 app.post('/FinishGame', FinishGame);
 
+app.get('/realmadrid', Landing('realmadrid'));
+
+function Landing(name){
+  return function(req, res){
+    res.render('landing/'+name);
+  }
+}
+
+
 function FinishGame(req, res){
   var data = req.body;
   sender.Answer(res, { result:'OK', message:'FinishGame' } );

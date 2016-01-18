@@ -81,7 +81,7 @@ function StartTournament(tournamentID){
   }
   
   // if (userIsRegisteredIn(tournamentID) )
-  getProfile(); ///$('#news').append($('<button>').text(JSON.stringify(msg)));
+  //getProfile(); ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 }
 
 function startGame(gameURL, port, tournamentID){

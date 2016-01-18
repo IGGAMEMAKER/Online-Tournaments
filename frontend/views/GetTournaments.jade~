@@ -128,7 +128,7 @@ mixin showTournament(t,line, imageUrl)
 		- var winnersPlaces = t.goNext[1];
 		- var buyIn = t.buyIn || 0;
 	
-		div(class="col-sm-3")
+		div(class=" img-thumbnail col-sm-3")
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
@@ -179,7 +179,7 @@ html
 	body
 		div(class="page-container")
 			include client
-			//+notEnoughMoney()
+			+notEnoughMoney()
 			div(class="bloc l-bloc bgc-white" id="bloc-1")
 				div(class="container")
 					div(class="row")
