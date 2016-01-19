@@ -1,5 +1,6 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, Fail){
 	var validator = require('validator');
+	var security = require('../DB/security');
 
 	app.get('/Logout', function (req, res){
 		req.session.destroy(function (err){
@@ -12,17 +13,83 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.render('Login',{});
 	})
 
-	app.post('/Login', function (req, res){
+	/*app.post('/Login', function (req, res){
 		Log('Try to login : ' + JSON.stringify(req.body), 'Users');
 		LoginOrRegister(req, res, 'Login');
-	});
+	});*/
+
+	app.post('/Login', checkLoginData, std_auth('Login') );
+	/*function (req, res){
+		Log('Try to login : ' + JSON.stringify(req.body), 'Users');
+		LoginOrRegister(req, res, 'Login');
+	});*/
 
 	var REG_TEMPLATE="Register";
 
-	app.post('/Register', function (req, res){
-		Log('Try to register : ' + JSON.stringify(req.body), 'Users');
-		LoginOrRegister(req, res, 'Register');
-	});
+	function checkRegisterData(req, res, next){
+		var data = req.body;
+		var user = {
+			email : data.email
+			, inviter : data.inviter
+			, login : data.email.split("@")[0]
+			, password : security.create_random_password()
+		};
+		Log('Try to register : ' + JSON.stringify(user), 'Users');
+		
+		if (!ValidEmail(data)) return res.render('Register', Fail);
+		req.user = user;
+		/*req.email = data.email;
+		req.inviter = data.inviter;
+		req.login = data.email.split("@")[0];
+		req.password = security.create_random_password();*/
+		next();
+	}
+
+	function checkLoginData(req, res, next){
+		if (!ValidLoginData(req.body)){
+			Log('Invalid login data')
+			res.render('Login', Fail); 
+			return;
+		}
+		req.user = {
+			login:req.body.login
+			, password: req.body.password
+		};
+		next();
+	}
+
+	function std_auth(command){
+		return function (req, res, next){
+			var data = req.user;
+			var page = command; //command REG_TEMPLATE;
+		
+			var callback = function(res, body, options, parameters){
+				Log(command + ' user ' + data.login, 'Users');
+				req.session.save(function (err) {
+					// session saved
+					if (err) {
+						//console.error('SESSION SAVING ERROR', 'Err'); 
+						res.render(page,{msg:body.result});
+					} else {
+						req.session.login = data.login;
+						res.redirect('Tournaments');
+					}
+				})
+			}
+
+			var failCallback = function(res, body, options, parameters){
+				Log('Reject user ' + data.login,'Users');
+				res.render(page,{msg:body.result});
+			}
+
+			AsyncRender('DBServer', command, res, { callback:callback, failCallback:failCallback }, data );
+		}
+	}
+
+	app.post('/Register', checkRegisterData, std_auth('Register') );
+	/*	, function (req, res){
+		
+	});*/
 
 	app.get('/Register', function (req, res){
 		res.render(REG_TEMPLATE);
@@ -43,8 +110,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.post('/ResetPassword', function (req, res){
-		//var login = req.body.login;
-		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:req.body.login, email:req.body.email})
+		var email = req.body.email;
+		var login = req.body.login || email.split("@")[0];
+
+		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:login, email:email})
 	})
 
 	app.get('/Changepassword', function (req, res){

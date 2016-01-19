@@ -1,40 +1,9 @@
 //
-mixin drawIcons()
-	div(class="bloc l-bloc bgc-white" id="bloc-2")
-		div(class="container bloc-sm")
-			div(class="row")
-				//div(class="col-sm-4")
-					div(class="text-center")
-						//span(class="ion ion-android-desktop icon-desktop icon-round icon-lg")
-						span(class="fa fa-user icon-round icon-lg")
-					h3(class="text-center mg-md")
-						Зарегистрируйся
-					//p(class="text-center")
-						Моментальная регистрация
-
-				div(class="col-sm-5")
-					div(class="text-center")
-						//span(class="fa fa-soccer-ball-o icon-strategy icon-round icon-lg")
-						span(class="fa fa-question icon-strategy icon-round icon-lg")
-					h3(class="text-center mg-md")
-						Ответь на вопросы викторины
-					//p(class="text-center")
-						Ответь на вопросы по истории команды
-
-				div(class="col-sm-5")
-					div(class="text-center")
-						span(class="fa fa-trophy icon-round icon-lg")
-					h3(class="text-center mg-md")
-						Выиграй приз!
-					//p(class="text-center")
-						Выиграй футболку
-
-
 script(src="third_party/validator.min.js")
 link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/register.css")
 
 mixin drawSubscribe()
-	div(class="bloc l-bloc bgc-white bloc-tile-2 pull-right" id="bloc-15")
+	div(class="bloc l-bloc bgc-white bloc-tile-3 pull-right" id="bloc-15")
 		div(class="container bloc-lg")
 			div(class="row")
 				div(class="col-sm-12")
@@ -43,12 +12,13 @@ mixin drawSubscribe()
 
 					form(id="form-4" action="/Register" method="post" autocomplete="on")
 						center
-							h3(class="mg-md" id="registerForm") Регистрация
+							h3(class="mg-md" id="registerForm") Подпишитесь, чтобы играть!
 						div(class="inner-addon left-addon")
 							i(class="glyphicon glyphicon-remove" style="display:none;")
 							i(class="glyphicon glyphicon-user" style="")
 							i(class="glyphicon glyphicon-ok" style="display:none;")
 							//<input type="text" class="form-control" placeholder="Username" />
+							input(type="hidden" name="inviter" value="realmadrid")
 							input(id="email" class="form-control" type="email" name="email" placeholder="Email" required)
 						
 						a(href="login") У меня уже есть аккаунт
@@ -58,7 +28,7 @@ mixin drawSubscribe()
 						button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
 						include ../templates/vk-auth
 
-script(src="interactiveInput.js")
+	script(src="interactiveInput.js")
 //
 mixin ErrorHandler(msg)
 	case msg
@@ -68,9 +38,10 @@ mixin ErrorHandler(msg)
 			//p Server Error. Report about this bug
 		when 11000
 			div(class="alert alert-danger")
-				strong Пользователь с таким логином уже существует( 
+				strong Пользователь с таким Email-ом уже существует( 
 				br
-				Придумайте другой логин
+				p Используйте форму 
+					a(href="resetPassword") восстановления пароля
 			//p User exists( Try another login
 		when 100
 			div(class="alert alert-danger")

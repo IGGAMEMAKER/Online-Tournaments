@@ -94,14 +94,16 @@ app.post('/AddQuestion', function (req, res){
 
 	var obj = {
 		question: data.question
-		,answers: answers
-		,correct: data.correct
+		,	answers: answers
+		,	correct: data.correct
 		//,tournamentID: data.tournamentID
 	}
 
 	if (data.tournamentID) {
 		obj.tournamentID = data.tournamentID;
 	}
+	if (data.topic) obj.topic = data.topic;
+	
 	AddQuestion(obj, res);
 })
 

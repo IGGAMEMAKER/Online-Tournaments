@@ -7,9 +7,13 @@ mixin ErrorHandler(msg)
 			//p Server Error. Report about this bug
 		when 11000
 			div(class="alert alert-danger")
-				strong Пользователь с таким логином уже существует( 
+				//strong Пользователь с таким логином уже существует( 
+				//br
+				//Придумайте другой логин
+				strong Пользователь с таким Email-ом уже существует( 
 				br
-				Придумайте другой логин
+				p Используйте форму 
+					a(href="resetPassword") восстановления пароля
 			//p User exists( Try another login
 		when 100
 			div(class="alert alert-danger")

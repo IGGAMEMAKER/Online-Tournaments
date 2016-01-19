@@ -144,7 +144,7 @@
 
 	function drawTypeButton(){
 		$('#invalid').hide();
-		$('#typeData').show();
+		$('#typeData').hide();
 		$('#validOK').hide();
 	}
 
@@ -198,15 +198,7 @@
 	document.getElementById("email").addEventListener("input", emailListener);
 	document.getElementById("email").addEventListener("onchange", emailListener);
 
-	/*document.getElementById("login").addEventListener("input", LoginListener);
-	document.getElementById("login").addEventListener("onchange", LoginListener);
-
-	document.getElementById("password").addEventListener("input", PassListener);
-	document.getElementById("password").addEventListener("onchange", PassListener);
-
-	document.getElementById("login").setAttribute("placeholder","MorganFreeman223");
-	document.getElementById("password").setAttribute("placeholder","********");*/
-	document.getElementById("email").setAttribute("placeholder","chikenFreeze@gmail.com");
+	document.getElementById("email").setAttribute("placeholder","Email");
 
 	/*document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);
