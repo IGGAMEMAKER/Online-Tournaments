@@ -35,49 +35,6 @@ s.plugin(random);
 var Question = mongoose.model('Question', s);
 
 var lg = console.log;
-lg('aaaaa');
-
-/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
-	if (err) console.log(err);
-	else {
-		for (var i = results.length - 1; i >= 0; i--) {
-			console.log(results[i].question);
-		};
-	}
-});
-
-Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
-	if (err) console.log(err);
-	else {
-		for (var i = results.length - 1; i >= 0; i--) {
-			console.log(results[i].question);
-		};
-	}
-});
-
-Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function(err, results) {
-	if (err) console.log(err);
-	else {
-		for (var i = results.length - 1; i >= 0; i--) {
-			console.log(results[i].question);
-		};
-	}
-});*/
-
-
-/*Question.find({},'',function (err, questions){
-	if (err) console.log(err);
-	else console.log(questions);
-})*/
-
-/*var Question = mongoose.model('Question', { 
-	question: String, language: String,
-	answers: Array, correct:Number,
-	tournamentID: Number, topic:Number,
-	questionID: Number
-});*/
-
-
 
 app.get('/AddQuestion', function (req, res){
 	res.render('add_question');
@@ -134,32 +91,8 @@ app.post('/Points', function (req, res){
 	}
 })
 
-function loadSpecialTournamentQuestionsFromDB(gameID){
-	Question.find({tournamentID:gameID}, function (err, questions){
-		if (err){
-			strLog('loadSpecialTournamentQuestionsFromDB ' + JSON.stringify(err), 'Err');
-			return;
-		}
-
-		if (!questions){
-			return strLog('no questions for special tournament ' + gameID, 'Err');
-		}
-
-		games[gameID].questions=[];
-		for (var i = questions.length - 1; i >= 0; i--) {
-			var qst = questions[i];
-			var question = qst.question;
-			var answers = qst.answers;
-			var correct = qst.correct;
-
-			games[gameID].questions.push({question:question, answers:answers, correct:correct});
-		};
-
-	})
-}
-
 function add_questions(questions, gameID){
-	lg('add_questions ' + gameID + '   ' + JSON.stringify(questions) );
+	strLog('add_questions questions for ' + gameID + '   ' + JSON.stringify(questions), 'Games');
 
 	games[gameID].questions=[];
 	for (var i = questions.length - 1; i >= 0; i--) {
@@ -195,9 +128,9 @@ function find_random_question(gameID, left, count, attempts){
 
 		// check if it is not prepared for special tournament;
 		// and we did not add this question before
-		lg('find_random_question no error. tryToLoadQuestion', question.question);
+		lg('tryToLoadQuestion: ', question.question);
 
-		if (is_not_special(question) && !attempts[offset]) { //  && attempts[offset]   !question_was_added(offset, attempts)
+		if (is_not_special(question) && !attempts[offset]) { //!question_was_added(offset, attempts)
 			add_question_to_list(gameID, question); //attempts.push(offset);
 			attempts[offset] = 1;
 
@@ -208,16 +141,8 @@ function find_random_question(gameID, left, count, attempts){
 	})
 }
 
-/*games[3] = { questions : [] };
-find_random_question(3, NUMBER_OF_QUESTIONS, 18, {});*/
-
 function question_was_added(offset, attempts){
 	return attempts[offset] == 1;
-	/*for (var i = attempts.length - 1; i >= 0; i--) {
-		if (attempts[i]==offset) return true;
-	};
-
-	return false;*/
 }
 
 function is_not_special(question){
@@ -225,9 +150,6 @@ function is_not_special(question){
 }
 
 function loadRandomQuestions(gameID){
-	/*Question.find({}, '', function (err, questions){
-
-	})*/
 	Question.count(function (err, count){
 		if (err) return lg('err while count', err);
 		else {
@@ -236,34 +158,6 @@ function loadRandomQuestions(gameID){
 			find_random_question(gameID, NUMBER_OF_QUESTIONS, count, {});
 		}
 	})
-
-
-	/*Question.findRandom({tournamentID: {$exists : false} }, {}, {limit: NUMBER_OF_QUESTIONS}, function (err, questions) {
-		lg('loadRandomQuestions ' + gameID);	
-		if (questions && questions.length>0){
-			lg(questions);
-			add_questions(questions, gameID);
-			return;
-		}
-		
-		strLog('no questions for tournament ' + gameID, 'Err');
-	  //if (err) console.log(err);
-	  //else console.log(results);
-	});*/
-
-
-	/*Question.find({})
-	.limit(NUMBER_OF_QUESTIONS)
-	.exec(function (err, questions){
-		lg('loadRandomQuestions ' + gameID);	
-		if (questions && questions.length>0){
-			lg(questions);
-			add_questions(questions, gameID);
-			return;
-		}
-		
-		strLog('no questions for tournament ' + gameID, 'Err');
-	})*/
 }
 
 
@@ -274,11 +168,7 @@ function load_questions_fromDB(gameID){
 			strLog('err in special questions for ' + gameID, 'Err');
 		}
 
-		if (questions && questions.length > 0){
-			strLog('special questions for ' + gameID + '   ' + JSON.stringify(questions), 'Games');
-			add_questions(questions, gameID);
-			return;
-		}
+		if (questions && questions.length > 0) return add_questions(questions, gameID);
 
 		strLog('no special questions for ' + gameID, 'Games');
 		loadRandomQuestions(gameID);
@@ -293,14 +183,6 @@ function Init(gameID, playerID){
 		console.log(games[gameID].settings);
 
 		load_questions_fromDB(gameID);
-
-		/*if (games[gameID].settings && games[gameID].settings.special){
-			loadSpecialTournamentQuestions(gameID);
-			//loadSpecialTournamentQuestionsFromDB(gameID);
-		} else {
-			//setQuestion(gameID);
-			setQuestionFromDB(gameID);
-		}*/
 
 		games[gameID].userAnswers = [];
 	}
@@ -345,7 +227,6 @@ function checkAnswers(gameID){
 
 		if (!AnswerData) continue;
 
-		if (!AnswerData) console.log('no AnswerData after continue');
 		var answer = AnswerData.answer;
 		if (AnswerIsCorrect(gameID, answer)){
 			var userName = getUID(gameID, i);
@@ -364,109 +245,6 @@ gs.StartGameServer({
 }, Init, AsyncUpdate, Action, UpdPeriod);
 
 console.log('started');
-
-
-function AddQuestions(data, res){
-	strLog('AddQuestions');
-}
-
-function loadSpecialTournamentQuestions(gameID){
-	var topic='special/'+gameID;
-	
-	fs.readFile(questionDir+topic+'.txt', "utf8", function (err, file){
-		if (err) { 
-			console.error('cannot loadSpecialTournamentQuestions', err); 
-			strLog('loadSpecialTournamentQuestions ', 'Err'); 
-			return;
-		}
-
-		console.log(file);
-		
-		var jsFile = JSON.parse(file);
-		
-		// add questions to game
-		games[gameID].source = topic;
-		games[gameID].questions = jsFile.qst;
-
-		//console.log(JSON.stringify(jsFile));
-	});
-}
-
-function setQuestionFromDB(gameID){
-	Question.find()
-		.limit(NUMBER_OF_QUESTIONS-2)
-		.exec(function (err, questions){
-			if (!questions){
-				return strLog('no questions for tournament ' + gameID, 'Err');
-			}
-
-			games[gameID].questions=[];
-			for (var i = questions.length - 1; i >= 0; i--) {
-				var qst = questions[i];
-				var question = qst.question;
-				var answers = qst.answers;
-				var correct = qst.correct;
-
-				games[gameID].questions.push({question:question, answers:answers, correct:correct});
-			};
-		})
-
-	/*Question.find({tournamentID:gameID},'', function (err, questions){
-		if (err) return strLog('setQuestionFromDB fail ' + JSON.stringify(err), 'Err');
-
-		if (!questions) {
-		}
-
-	})*/
-}
-
-function setQuestion(gameID){
-	var topic = questionFolder;// 'general';// null;
-	strLog('here must be games[gameID].topic instead of null !!!');
-
-	fs.readdir(questionDir+topic, function callback (err, files){
-		if (err){ strLog('Err while reading file : ' + JSON.stringify(err) ); }
-		else{
-			strLog('Files: ' + JSON.stringify(files));
-			var qCount = files.length;
-
-			var randomVal = parseInt((parseInt(Math.random()*qCount))%qCount);
-			strLog('Rand: ' + randomVal);
-
-			if (randomVal==qCount){
-				randomVal=0;
-				strLog('RANDOM VALUE EQUALS MAX!!!');
-			}
-			tryToLoadQuestion(randomVal, files, gameID);
-		}
-	});
-}
-
-function tryToLoadQuestion(id, files, gameID){
-	//find suitable file name
-	if (id>files.length) id = files.length-1;
-	var qFileName = files[id];
-	while(contains(qFileName,'~') ){
-		id--;
-		qFileName = files[id];
-	}
-
-	// open file by file name
-	var jsFile=readJSONfile( questionDir+ questionFolder+'/'+qFileName);
-
-	// add questions to game
-	games[gameID].source = qFileName;
-	games[gameID].questions = jsFile.qst;
-}
-
-function readJSONfile(fullPath){//gives you the json from file
-	var file = fs.readFileSync(fullPath, "utf8");
-	console.log(file);
-	
-	var jsFile =  JSON.parse(file);
-	//console.log(JSON.stringify(jsFile));
-	return jsFile;
-}
 
 function contains(word, symbol){
 	return word.indexOf(symbol) > -1;
@@ -494,6 +272,7 @@ function FindWinner(gameID){
 function noQuestions(game){
 	return !game.questions;
 }
+
 function getCurrentQuestion(gameID){
 	strLog('getCurrentQuestion : ' + gameID);
 	//get number of questions of this topic
