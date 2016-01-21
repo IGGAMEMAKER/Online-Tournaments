@@ -162,8 +162,9 @@ var upload = multer({ storage: storage }).single('image');
 	}
 
   function getTopic(topic){
+    Log("getTopic : " + topic, "Tournaments");
     switch(topic){
-      case 1: return 'realmadrid'; break;
+      case '1': return 'realmadrid'; break;
       default: return 'null'; break;
     }
   }

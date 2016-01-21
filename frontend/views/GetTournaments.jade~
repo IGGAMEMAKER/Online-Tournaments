@@ -119,9 +119,7 @@ mixin drawRegButton(buyIn, ID)
 -var REGULARITY_STREAM=2;
 
 mixin showTournament(t,line, imageUrl)
-	//
 	if t
-		- var isHidden = t.settings && t.settings.hidden
 		- var ID=t.tournamentID||115;
 		- var registered = t.players;
 		- var gameNameID = t.gameNameID;
@@ -151,9 +149,9 @@ mixin showTournament(t,line, imageUrl)
 						+showPrize(prizes)
 				h4(class="mg-md")
 					if buyIn>0
-						Стоимость: #{buyIn/convert}$
+						p Стоимость: #{buyIn/convert}$
 					else
-						Бесплатно!
+						p Бесплатно!
 					p Призовых мест: #{winnersPlaces}
 					//if winnersPlaces>1
 						p Призовых мест: #{winnersPlaces}

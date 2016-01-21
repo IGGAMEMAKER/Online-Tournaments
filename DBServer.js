@@ -154,6 +154,7 @@ const STREAM_USERS = 'Users';
 const STREAM_SHIT = 'shitCode';
 const STREAM_WARN = 'WARN';
 const STREAM_STATS = 'stats';
+const STREAM_GAMES = 'Games';
 
 const CURRENT_CRYPT_VERSION = 2;
 
@@ -380,11 +381,13 @@ function SetInviter(req, res){
 
 	var login = data.login;
 	var inviter = data.inviter;
-	Answer(res, OK);
 
 	User.update({ login:login, inviter: {$exists : false} }, {$set:{ inviter:inviter }}, function (err, count){
 		if (!err && updated(count)){
+			Answer(res, OK);
 			Log("Registered via " + inviter, STREAM_USERS);
+		} else {
+			Answer(res, null);
 		}
 	})
 }
@@ -648,8 +651,8 @@ var sort_by = function(field, reverse, primer){
 
 function GetTournamentAddress(req, res){
 	var tournamentID = req.body.tournamentID;
-	Log('BODY : ' + JSON.stringify(req.body), STREAM_TOURNAMENTS);
-	Log('get addr of ' + tournamentID, STREAM_TOURNAMENTS);
+	//Log('BODY : ' + JSON.stringify(req.body), STREAM_TOURNAMENTS);
+	//Log('get addr of ' + tournamentID, STREAM_TOURNAMENTS);
 
 	Tournament.findOne({tournamentID:tournamentID}, '', function (err, tournament){
 		if (err) { SERVER_ERROR(err, res); return;}
@@ -1864,27 +1867,34 @@ function findNewbieTournament(inviter, login){
 		, buyIn: 0
 		, status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
 	}, 'tournamentID', function (err, tournament){
-		if (err || !tournament) return register_to_stream(login);
+		if (err || !tournament) { 
+			Log("not found findNewbieTournament ", STREAM_GAMES);
+			Log(err, STREAM_GAMES);
+			Log(tournament, STREAM_GAMES);
+			return register_to_stream(login);
+		}
 
 		register_in_tournament(login, tournament.tournamentID);
 	})
 }
 
 function register_newbie_in_tournament(login){
-	setTimeout(function(){
-		User.findOne({login:login}, 'inviter', function (err, user){
-			if (err) return sender.Answer(res, null);
+	Log("register_newbie_in_tournament " + login, STREAM_GAMES);
+	User.findOne({login:login}, 'inviter', function (err, user){
+		if (err) return sender.Answer(res, null);
 
-			if (user){
-				if (user.inviter){
-					findNewbieTournament(user.inviter, login);
-				} else {
-					register_to_stream(login);
-				}
+		if (user){
+			if (user.inviter){
+
+				findNewbieTournament(user.inviter, login);
+			} else {
+				register_to_stream(login);
 			}
+		}
 
-		})
-	}, 2000);
+	})
+	/*setTimeout(function(){
+	}, 2000);*/
 }
 
 function findOrCreateUser (req, res){
@@ -1941,9 +1951,10 @@ function findOrCreateUser (req, res){
 
 function register_to_stream(login, inviter){
 	Tournament.findOne({
-			'settings.regularity':REGULARITY_STREAM, 
-			status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] },
-			buyIn: 0 
+			'settings.regularity':REGULARITY_STREAM
+			,	'settings.hidden': {$ne: true}
+			,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+			,	buyIn: 0 
 		},
 		'tournamentID', function (err, tournament){
 			if (err) return Error(err);
@@ -1968,27 +1979,27 @@ function Register (req, res){
 		register_newbie_in_tournament(data.login);
 		//register_to_stream(data.login);
 	})
-	.catch(register_fail_catcher)
+	.catch(function (msg){
+		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
+		switch(msg) {
+			case UNKNOWN_ERROR:
+				Answer(res, {result:UNKNOWN_ERROR} );
+			break;
+			case USER_EXISTS:
+				Answer(res, {result:USER_EXISTS} );
+			break;
+			default:
+				console.error(msg);
+				Answer(res, Fail);
+			break;
+		}
+		//Answer(res, Fail);//msg.err||null
+		Stats('RegisterFail',{});
+	})
 
 }
 
-function register_fail_catcher(msg){
-	Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
-	switch(msg) {
-		case UNKNOWN_ERROR:
-			Answer(res, {result:UNKNOWN_ERROR} );
-		break;
-		case USER_EXISTS:
-			Answer(res, {result:USER_EXISTS} );
-		break;
-		default:
-			console.error(msg);
-			Answer(res, Fail);
-		break;
-	}
-	//Answer(res, Fail);//msg.err||null
-	Stats('RegisterFail',{});
-}
+
 
 
 function findTournaments(res, query, queryFields, purpose){

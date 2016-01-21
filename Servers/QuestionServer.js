@@ -27,7 +27,7 @@ var random = require('mongoose-simple-random');
 var s = new mongoose.Schema({ 
 	question: String, language: String,
 	answers: Array, correct:Number,
-	tournamentID: Number, topic:Number,
+	tournamentID: Number, topic:String,
 	questionID: Number
 });
 s.plugin(random);
@@ -154,6 +154,7 @@ function loadRandomQuestions(gameID){
 		else {
 			lg('count= ' + count);
 			games[gameID].questions=[];
+
 			find_random_question(gameID, NUMBER_OF_QUESTIONS, count, {});
 		}
 	})
@@ -174,6 +175,26 @@ function load_questions_fromDB(gameID){
 	})
 }
 
+function isNewbieTournament(gameID){
+	return games[gameID].settings && games[gameID].settings.hidden;
+}
+
+function load_newbie_questions(gameID){
+	var topic = games[gameID].settings.topic;
+	strLog("searching questions for newbies... Topic:"+ topic, "Games");
+	Question.find({topic:topic}, '', function (err, questions){
+		lg('load_newbie_questions ' + gameID);
+		if (err) {
+			strLog('err in load_newbie_questions for ' + gameID, 'Err');
+		}
+
+		if (questions && questions.length > 0) return add_questions(questions, gameID);
+
+		strLog('no special questions for ' + gameID, 'Games');
+		loadRandomQuestions(gameID);
+	})
+}
+
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 
@@ -181,8 +202,12 @@ function Init(gameID, playerID){
 		games[gameID].questIndex = -1;
 		console.log(games[gameID].settings);
 
-		load_questions_fromDB(gameID);
-
+		if (isNewbieTournament(gameID)) { 
+			load_newbie_questions(gameID);
+		} else {
+			load_questions_fromDB(gameID);
+		}
+		
 		games[gameID].userAnswers = [];
 	}
 	strLog('FULL GAME INFO');

@@ -413,15 +413,24 @@ app.post('/', function (req, res){
   res.end('uid ' + uid + ' OK!');
 })*/
 
-function getInviter(req, res, next){
-  if (req.query.inviter) {
-    req.inviter = req.query.inviter;
-  }
-  console.log("query", req.query);
-  next();
+function saveSession(req, res, inviterUrl, login){
+  if (!inviterUrl) inviterUrl = "Login"; 
+  setTimeout(function(){
+    req.session.save(function (err) {
+      // session saved
+      if (err) {
+        console.error('SESSION SAVING ERROR', 'Err'); 
+        res.render(inviterUrl,{msg:err});
+      } else {
+        req.session.inviter = null;
+        req.session.login = login;
+        res.redirect('Tournaments');
+      }
+    })
+  }, 2000);
 }
 
-function vkAuthSuccess(inviter1){
+function vkAuthSuccess(){
   return function (req, res) {
     var login = req.user.login;
     var user = req.user;
@@ -433,21 +442,23 @@ function vkAuthSuccess(inviter1){
     Log("SetInviter " + inviter + " for " + login, "Users");
 
     if (inviter) {
-      sender.sendRequest("SetInviter", { login:login, inviter:inviter }, "127.0.0.1", "DBServer");
-    }
+      sender.sendRequest("SetInviter", { login:login, inviter:inviter }, "127.0.0.1", "DBServer", res, function (err, response, body, res){
+        if (!err && body && body.result=='OK') {
+          Log("got answer from DBServer: SetInviter OK", "Users");
+          saveSession(req, res, inviter, login);
+        } else {
+          Log("got err from DBServer: SetInviter OK " + err, "Users");
+          res.redirect(inviter);//, {msg: 'Server error'});
+        }
+      });
 
+      return;
+    }
+    Log("no Inviter OK", "Users");
+    saveSession(req, res, null, login);
     //console.log(req.user, 'vk-auth authenticated');
 
-    req.session.save(function (err) {
-      // session saved
-      if (err) {
-        console.error('SESSION SAVING ERROR', 'Err'); 
-        res.render('Login',{msg:err});
-      } else {
-        req.session.login = login;
-        res.redirect('Tournaments');
-      }
-    })
+    
     //req.session = {login:login};
     // Successful authentication, redirect home.
     //res.redirect('/tournaments');
@@ -469,11 +480,15 @@ function setInviter(inviter){
 
 var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
 
+function redirectToAuth(req, res){
+  res.redirect('/vk-auth');
+}
 
-app.get('/vk-auth/realmadrid', setInviter("realmadrid"), vkAuth);
+app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess());
 
+app.get('/vk-auth', vkAuth, vkAuthSuccess());
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
   var first_name = req.params.first_name;
