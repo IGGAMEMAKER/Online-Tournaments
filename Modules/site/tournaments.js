@@ -151,6 +151,8 @@ var upload = multer({ storage: storage }).single('image');
       if (data.specName) { obj.settings.specName = data.specName; }
       if (data.specPrizeName) { obj.settings.specPrizeName = data.specPrizeName; }
 
+      if (data.hidden!=0) {obj.settings.hidden = true; obj.settings.topic = getTopic(data.hidden); }
+
       AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
     }
     else{
@@ -158,6 +160,13 @@ var upload = multer({ storage: storage }).single('image');
       sender.Answer(res, Fail);
     }
 	}
+
+  function getTopic(topic){
+    switch(topic){
+      case 1: return 'realmadrid'; break;
+      default: return 'null'; break;
+    }
+  }
 
 	app.post('/GetTournamentAddress', function (req, res){
 		Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
@@ -202,11 +211,13 @@ var upload = multer({ storage: storage }).single('image');
 
 	app.all('/Tournaments', function (req, res){
 	  var data = req.body;
-	  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
+	  data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+    data.purpose = GET_TOURNAMENTS_USER;
 
 	  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
 	});
 	const GET_TOURNAMENTS_INFO = 4;
+  const GET_TOURNAMENTS_USER = 1;
 
 	app.get('/TournamentInfo', function (req, res){
 	  var data = req.body;

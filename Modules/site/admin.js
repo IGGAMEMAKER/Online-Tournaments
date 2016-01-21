@@ -85,14 +85,16 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   function runTournament(res, tournamentID){
    sender.sendRequest('RunTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy); 
   }
-
+  const GET_TOURNAMENTS_RUNNING = 5;
   function GetTournamentsFromTS(res){
-    sender.sendRequest('GetTournaments', {purpose:1}, 'localhost', 'DBServer', res, sender.Proxy);
+    sender.sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_RUNNING}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
   function TournamentsRunning(res){
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
+
+
 
   app.get('/Admin', function (req, res){
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});

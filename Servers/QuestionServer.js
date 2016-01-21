@@ -121,8 +121,7 @@ function find_random_question(gameID, left, count, attempts){
 	//if (!attempts) attempts={};
 
 	var offset = parseInt(Math.random()*count);
-	lg('offset = ' + offset, 'left: ' , left);
-	lg('attempts', attempts);
+	lg('offset = ' + offset, 'left: ' , left, 'attempts', attempts);
 	Question.findOne({},'', { skip: offset}, function (err, question){
 		if (err) return strLog('find_random_question Err ' + JSON.stringify(err), 'Err');
 

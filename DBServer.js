@@ -102,6 +102,8 @@ app.post('/MoneyTransfers', MoneyTransfers);
 app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
+app.post('/SetInviter', SetInviter);
+
 app.post('/payment', function(req, res){ 
 	console.log("new payment");
 	IncreaseMoney(req, res);
@@ -183,8 +185,8 @@ var mongoose = require('mongoose');
 //mongoose.connect('mongodb://localhost/test');
 mongoose.connect('mongodb://'+configs.db+'/test');
 var User = mongoose.model('User', { login: String, password: String, money: Number, 
-	email: String, activated:String, date: Date, link: String, bonus:Object, 
-	salt:String, cryptVersion:Number, social:Object });
+	email: String, activated:String, date: Date, link: String, bonus: Object, 
+	salt:String, cryptVersion:Number, social:Object, inviter:Object });
 
 var Game = mongoose.model('Game', { 
 	gameName: String, gameNameID: Number,
@@ -373,13 +375,26 @@ function addGame(gameName, gameNameID, options ){
 	});
 }
 
+function SetInviter(req, res){
+	var data = req.body;
+
+	var login = data.login;
+	var inviter = data.inviter;
+	Answer(res, OK);
+
+	User.update({ login:login, inviter: {$exists : false} }, {$set:{ inviter:inviter }}, function (err, count){
+		if (!err && updated(count)){
+			Log("Registered via " + inviter, STREAM_USERS);
+		}
+	})
+}
+
 function EnableTournament(data, res){
 
 	if (data && data.tournamentID){
 		setTournStatus(data.tournamentID, TOURN_STATUS_REGISTER);
-		Answer(res,OK);
-	}
-	else{
+		Answer(res, OK);
+	} else {
 		Answer(res, Fail);
 	}
 
@@ -842,7 +857,7 @@ function getRegistrableTournament(tournamentID){
 			else{
 				if (tournament) {
 					if (tournament.status==TOURN_STATUS_REGISTER || (isStreamTournament(tournament) && tournament.status==TOURN_STATUS_RUNNING)) {
-						console.log('getRegistrableTournament', tournament);
+						//console.log('getRegistrableTournament', tournament);
 						resolve(tournament);
 					} else {
 						reject(TREG_FULL);
@@ -1733,6 +1748,7 @@ function createUser(data){
 		var password = data['password'];
 		var email = data['email'];
 
+
 		if (!(validator.isEmail(email) && validator.isAlphanumeric(login) && validator.isAlphanumeric(password))){
 			reject(INVALID_DATA);
 		}
@@ -1750,6 +1766,8 @@ function createUser(data){
 			salt:''
 			//link:createActivationLink(login) 
 		};
+		var inviter = data['inviter'];
+		if (inviter && validator.isAlphanumeric(inviter)) USER.inviter= inviter;
 
 		var user = new User(USER);
 		user.save(function (err) {
@@ -1767,6 +1785,7 @@ function createUser(data){
 			}
 			else{
 				Log('added User ' + login+'/' + email, STREAM_USERS);
+				USER.basePass = password;
 				resolve(USER);
 			}
 		})
@@ -1774,10 +1793,14 @@ function createUser(data){
 	});
 }
 
-function makeRegisterText(login, link){
-	console.log(login);
-	console.log(link);
-	var text = '<html><br>Thank you for registering in online-tournaments.org, ' + login + '!<br>';
+function makeRegisterText(user, link){
+	var login = user.login;
+	var password = user.basePass;
+	console.log(user);
+	//console.log(link);
+	var text = '<html><br>Спасибо за регистрацию на сайте online-tournaments.org!<br>';
+	text+= 'Ваш логин : ' + login + '<br>';
+	text+= 'Ваш пароль : ' + password;
 	/*text+= 'Follow the link below to activate your account: '
 	text+= '<br><a href="'+link+'">'+link+'</a>';*/
 	text+= '</html>';
@@ -1788,18 +1811,18 @@ function makeRegisterText(login, link){
 }
 
 function makeResetPasswordText(user){
-	var text = 'You resetted your password. Your new password is : ' + user.password;
-	text+=  ' . We strongly recommend you to change it in your profile ';
+	var text = 'Вы сбросили ваш пароль. Ваш новый пароль : ' + user.password;
+	text+=  ' . Настоятельно рекомендуем Вам изменить его в вашем профиле';
 
 	return text;
 }
 
 function sendActivationEmail(user){
-	console.error('sendActivationEmail');
+	//console.error('sendActivationEmail');
 
 	user.to = user.email;
-	user.subject = 'Registered in online-tournaments.org!';
-	user.html = makeRegisterText(user.login, 'http://' + domainName + '/Activate/'+ user.link);
+	user.subject = 'Регистрация на сайте online-tournaments.org!';
+	user.html = makeRegisterText(user, 'http://' + domainName + '/Activate/'+ user.link);
 
 	return mailer.send(user);
 	//mailer.send(user.email, 'Registered in online-tournaments.org!', makeRegisterText(login, email) );
@@ -1807,25 +1830,13 @@ function sendActivationEmail(user){
 
 function sendResetPasswordEmail(user) {
 	user.to = user.email;
-	user.subject = 'Reset password';
+	user.subject = 'Сброс пароля';
 	user.html = makeResetPasswordText(user);
 
 	return mailer.send(user);
 }
 
 var UNKNOWN_ERROR=500;
-
-/*function socialFind(profile){
-	return new Promise(function (resolve, reject){
-		User.findOne({social.provider:profile.provider, id: profile.id}, '', function (err, user){
-			if (err) return reject(err);
-
-			if (user) return resolve(user);
-
-			resolve(null);
-		})
-	})
-}*/
 
 function is_numeric_id(login){
 
@@ -1840,22 +1851,48 @@ function is_numeric_id(login){
 	return is_numeric;
 }
 
+function getTopic(inviter){ //public name != category
+	return inviter;
+}
+
+function findNewbieTournament(inviter, login){
+	var topic = getTopic(inviter);
+	Tournament.findOne({ 
+		"settings.topic": topic
+		, "settings.hidden":true
+		,	'settings.regularity': REGULARITY_STREAM
+		, buyIn: 0
+		, status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+	}, 'tournamentID', function (err, tournament){
+		if (err || !tournament) return register_to_stream(login);
+
+		register_in_tournament(login, tournament.tournamentID);
+	})
+}
+
+function register_newbie_in_tournament(login){
+	setTimeout(function(){
+		User.findOne({login:login}, 'inviter', function (err, user){
+			if (err) return sender.Answer(res, null);
+
+			if (user){
+				if (user.inviter){
+					findNewbieTournament(user.inviter, login);
+				} else {
+					register_to_stream(login);
+				}
+			}
+
+		})
+	}, 2000);
+}
+
 function findOrCreateUser (req, res){
 	var profile = req.body;
 	var uid = profile.id;
 	var provider = profile.provider;
 
 	var social = profile._json;
-
-	/*socialFind(profile)
-	.then(function (result){
-		if (result) {
-			// user was finded
-			return result;
-		} else {
-			return createWithLogin()
-		}
-	})*/
 
 	Log('findOrCreateUser ' + uid + ' ' + provider + ' social ' + JSON.stringify(social), STREAM_USERS);
 
@@ -1870,7 +1907,7 @@ function findOrCreateUser (req, res){
 		}
 		
 		if (user){
-			console.log('findOrCreateUser' , user);
+			//console.log('findOrCreateUser' , user);
 			return sender.Answer(res, user);
 		} else {
 			var USER = { 
@@ -1894,7 +1931,7 @@ function findOrCreateUser (req, res){
 				} else {
 					Log('added User ' + login+'/' + uid, STREAM_USERS);
 					sender.Answer(res, USER);
-					register_to_stream(login);
+					register_newbie_in_tournament(login);
 				}
 			})
 		}
@@ -1902,10 +1939,11 @@ function findOrCreateUser (req, res){
 	})
 }
 
-function register_to_stream(login){
+function register_to_stream(login, inviter){
 	Tournament.findOne({
 			'settings.regularity':REGULARITY_STREAM, 
-			status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] } 
+			status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] },
+			buyIn: 0 
 		},
 		'tournamentID', function (err, tournament){
 			if (err) return Error(err);
@@ -1922,34 +1960,35 @@ function Register (req, res){
 	Log('Register '+ JSON.stringify(data), STREAM_USERS);
 	Stats('Register',{});
 	createUser(data)
-	.then(sendActivationEmail)
-	.then(function (msg){
-		Log('Reg OK: ' + JSON.stringify(msg) , STREAM_USERS);
+	//.then(sendActivationEmail)
+	.then(function (user){
+		//Log('Reg OK: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, OK);
-
-		register_to_stream(data.login);
+		sendActivationEmail(user);
+		register_newbie_in_tournament(data.login);
+		//register_to_stream(data.login);
 	})
-	.catch(function (msg){
-		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
-		switch(msg) {
-			case UNKNOWN_ERROR:
-				Answer(res, {result:UNKNOWN_ERROR} );
-			break;
-			case USER_EXISTS:
-				Answer(res, {result:USER_EXISTS} );
-			break;
-			default:
-				console.error(msg);
-				Answer(res, Fail);
-			break;
-		}
-		//Answer(res, Fail);//msg.err||null
-		Stats('RegisterFail',{});
-	})
+	.catch(register_fail_catcher)
 
 }
 
-
+function register_fail_catcher(msg){
+	Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
+	switch(msg) {
+		case UNKNOWN_ERROR:
+			Answer(res, {result:UNKNOWN_ERROR} );
+		break;
+		case USER_EXISTS:
+			Answer(res, {result:USER_EXISTS} );
+		break;
+		default:
+			console.error(msg);
+			Answer(res, Fail);
+		break;
+	}
+	//Answer(res, Fail);//msg.err||null
+	Stats('RegisterFail',{});
+}
 
 
 function findTournaments(res, query, queryFields, purpose){
@@ -1988,7 +2027,10 @@ function getTournamentsQuery(query, fields, purpose){
 
 	switch(purpose){
 		case GET_TOURNAMENTS_USER:
-			query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+			console.log("GET_TOURNAMENTS_USER !!!!!!!!!!!!!!");
+			//query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+			query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
 		break;
 		case GET_TOURNAMENTS_BALANCE:
 			query = {status:null};

@@ -29,8 +29,8 @@ mixin ErrorHandler(msg)
 mixin drawAlerts()
 	div(class="alert alert-success" id="validOK" style="display:none;")
 		strong Данные корректны!
-	div(class="alert alert-warning" id="typeData")
-		strong Заполните поля
+	div(class="alert alert-warning" id="typeData1")
+		strong На этот email придёт письмо с вашим логином и паролем
 	div(class="alert alert-danger" id="invalid" style="display:none;")
 		strong Длина логина не более 25 символов
 
@@ -76,5 +76,6 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-15")
 					br
 					button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
 					include vk-auth
+					+loadVKauth()
 
 script(src="interactiveInput.js")

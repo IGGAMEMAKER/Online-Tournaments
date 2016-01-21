@@ -27,6 +27,7 @@ mixin drawSubscribe()
 						br
 						button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
 						include ../templates/vk-auth
+						+loadVKauth("realmadrid")
 
 	script(src="interactiveInput.js")
 //
@@ -72,7 +73,6 @@ html
 		//link(rel="stylesheet" href="./css/ionicons.min.css")
 		link(rel="stylesheet" href="./css/main.css")
 	div(class="page-container" style='min-height:100%; min-width:100%; background: url("http://trivela.uol.com.br/wp-content/uploads/2015/11/AP_146245388718.jpg") no-repeat center center fixed; background-size: cover;')
-		p!= 'Hola!!'
 		//include ../templates/menu
 		div(class="b-divider" style="background-color:transparent;")
 			//div(class='bloc-group')

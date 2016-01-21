@@ -1,6 +1,6 @@
 //
 
-mixin loadVKauth()
+mixin loadVKauth(inviter)
 	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
 	script(src="vk-auth.js")
 	div(id="vk_auth")
@@ -8,9 +8,16 @@ mixin loadVKauth()
 		a(id="vk-url" class="btn btn-lg btn-primary" style="border-radius:6px; width:100%;" href="http://online-tournaments.org/vk-auth")
 			span(class="fa fa-vk")
 			|    Войти через VK
+	script var inviter = "#{inviter}";
 	script.
 		if (document.location.hostname == "localhost") {
-			$("#vk-url").attr("href", "http://localhost/vk-auth");
+			setTimeout(function() {
+				if (inviter)
+					$("#vk-url").attr("href", "http://localhost/vk-auth/"+inviter);
+				else {
+					$("#vk-url").attr("href", "http://localhost/vk-auth");
+				}
+			}, 1000);
 		}
 	//script.
 		if (document.location.hostname == "localhost") {
@@ -21,7 +28,7 @@ mixin loadVKauth()
 			//VK.Widgets.Auth("vk_auth", {width: "500px", authUrl: "http://online-tournaments.org/vk-auth"});
 		}
 
-+loadVKauth()
+//+loadVKauth(inviter)
 //div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
 	div(class="container bloc-lg")
 		div(class="row")
