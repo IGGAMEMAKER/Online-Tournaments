@@ -170,7 +170,7 @@ var upload = multer({ storage: storage }).single('image');
   }
 
 	app.post('/GetTournamentAddress', function (req, res){
-		Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
+		//Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
 		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
 	})
 

@@ -112,9 +112,6 @@ app.post('/payment', function(req, res){
 app.post('/Mail', function (req, res){
 	Stats('Mail', {});
 	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
-	/*setTimeout(function(){
-
-	}, 200);*/
 })
 
 app.post('/StartSpecial', function(req, res){
@@ -383,12 +380,19 @@ function SetInviter(req, res){
 	var inviter = data.inviter;
 
 	User.update({ login:login, inviter: {$exists : false} }, {$set:{ inviter:inviter }}, function (err, count){
-		if (!err && updated(count)){
-			Answer(res, OK);
-			Log("Registered via " + inviter, STREAM_USERS);
-		} else {
-			Answer(res, null);
-		}
+		if (err) return	Answer(res, null);
+
+		register_newbie_in_tournament(login);
+		
+		setTimeout(function(){
+			if (updated(count)){
+				Answer(res, OK);
+				Log("Registered via " + inviter, STREAM_USERS);
+			} else {
+				Answer(res, null);
+			}
+		}, 1000);
+
 	})
 }
 
@@ -555,7 +559,7 @@ function StartTournament(tournamentID, force, res){
 			obj.logins = players;
 			if (force) obj.force = true;
 
-			Log('StartTournament: ' + str(obj), STREAM_TOURNAMENTS);
+			//Log('StartTournament: ' + str(obj), STREAM_TOURNAMENTS);
 			TournamentLog(tournamentID, 'Tournament starts... ' + str(players));
 			TournamentLog(tournamentID, 'start Object:' + str(obj));
 
@@ -661,7 +665,7 @@ function GetTournamentAddress(req, res){
 		var a = getPortAndHostOfGame(gameNameID);
 		
 		a.running = tournament.status==TOURN_STATUS_RUNNING;//||null;
-		Log(JSON.stringify(a), STREAM_TOURNAMENTS);
+		//Log(JSON.stringify(a), STREAM_TOURNAMENTS);
 
 		sender.Answer(res, {address: a});
 	})
@@ -679,7 +683,7 @@ function getPortAndHostOfGame(gameNameID){
 		case 2: return { port:5010, host: gameHost }; break; // QuestionServer
 		case 3: return { port:5011, host: gameHost };	break; // BattleServer
 		default:
-			Log('Some strange gameNameID !!' + gameNameID,'WARN');
+			//Log('Some strange gameNameID !!' + gameNameID,'WARN');
 			return { port:5010, host: gameHost };//QuestionServer
 		break;
 	}
@@ -1799,7 +1803,7 @@ function createUser(data){
 function makeRegisterText(user, link){
 	var login = user.login;
 	var password = user.basePass;
-	console.log(user);
+	//console.log(user);
 	//console.log(link);
 	var text = '<html><br>Спасибо за регистрацию на сайте online-tournaments.org!<br>';
 	text+= 'Ваш логин : ' + login + '<br>';
@@ -1808,7 +1812,7 @@ function makeRegisterText(user, link){
 	text+= '<br><a href="'+link+'">'+link+'</a>';*/
 	text+= '</html>';
 
-	Log('Registering email: ' + text, STREAM_USERS);
+	//Log('Registering email: ' + text, STREAM_USERS);
 
 	return text;
 }
@@ -1885,16 +1889,15 @@ function register_newbie_in_tournament(login){
 
 		if (user){
 			if (user.inviter){
-
+				Log("inviter is: " + user.inviter, STREAM_TOURNAMENTS);
 				findNewbieTournament(user.inviter, login);
 			} else {
+				Log("no inviter", STREAM_TOURNAMENTS);
 				register_to_stream(login);
 			}
 		}
 
 	})
-	/*setTimeout(function(){
-	}, 2000);*/
 }
 
 function findOrCreateUser (req, res){
@@ -1941,7 +1944,6 @@ function findOrCreateUser (req, res){
 				} else {
 					Log('added User ' + login+'/' + uid, STREAM_USERS);
 					sender.Answer(res, USER);
-					register_newbie_in_tournament(login);
 				}
 			})
 		}
@@ -1977,7 +1979,6 @@ function Register (req, res){
 		Answer(res, OK);
 		sendActivationEmail(user);
 		register_newbie_in_tournament(data.login);
-		//register_to_stream(data.login);
 	})
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);

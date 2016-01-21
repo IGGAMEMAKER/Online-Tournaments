@@ -454,7 +454,7 @@ function vkAuthSuccess(){
 
       return;
     }
-    Log("no Inviter OK", "Users");
+    Log("no Inviter, no RM PAGE", "Users");
     saveSession(req, res, null, login);
     //console.log(req.user, 'vk-auth authenticated');
 
