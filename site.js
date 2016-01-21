@@ -427,7 +427,7 @@ function saveSession(req, res, inviterUrl, login){
         res.redirect('Tournaments');
       }
     })
-  }, 2000);
+  }, 1000);
 }
 
 function vkAuthSuccess(){
@@ -440,22 +440,26 @@ function vkAuthSuccess(){
     console.log("inviter", inviter);
 
     Log("SetInviter " + inviter + " for " + login, "Users");
+    if (!inviter) {
+      inviter = null;
+      Log("no Inviter, no RM PAGE", "Users");
+    }
 
-    if (inviter) {
-      sender.sendRequest("SetInviter", { login:login, inviter:inviter }, "127.0.0.1", "DBServer", res, function (err, response, body, res){
-        if (!err && body && body.result=='OK') {
-          Log("got answer from DBServer: SetInviter OK", "Users");
-          saveSession(req, res, inviter, login);
-        } else {
-          Log("got err from DBServer: SetInviter OK " + err, "Users");
-          res.redirect(inviter);//, {msg: 'Server error'});
-        }
-      });
+    sender.sendRequest("SetInviter", { login:login, inviter:inviter }, "127.0.0.1", "DBServer", res, function (err, response, body, res){
+      if (!err && body && body.result=='OK') {
+        Log("got answer from DBServer: SetInviter OK", "Users");
+        saveSession(req, res, inviter, login);
+      } else {
+        Log("got err from DBServer: SetInviter OK " + err, "Users");
+        res.redirect(inviter);//, {msg: 'Server error'});
+      }
+    });
+    /*if (inviter) {
+
 
       return;
-    }
-    Log("no Inviter, no RM PAGE", "Users");
-    saveSession(req, res, null, login);
+    }*/
+    //saveSession(req, res, null, login);
     //console.log(req.user, 'vk-auth authenticated');
 
     

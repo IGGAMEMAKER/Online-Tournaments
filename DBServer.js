@@ -373,27 +373,52 @@ function addGame(gameName, gameNameID, options ){
 	});
 }
 
+
+
 function SetInviter(req, res){
 	var data = req.body;
 
 	var login = data.login;
 	var inviter = data.inviter;
 
-	User.update({ login:login, inviter: {$exists : false} }, {$set:{ inviter:inviter }}, function (err, count){
-		if (err) return	Answer(res, null);
+	//check if it is a newbie
+	User.findOne({login:login},function (err, user){
+		if (err) return Answer(res, null);
 
-		register_newbie_in_tournament(login);
-		
-		setTimeout(function(){
-			if (updated(count)){
-				Answer(res, OK);
-				Log("Registered via " + inviter, STREAM_USERS);
+		if (user.money==0) { // not registered at all
+
+			if (!inviter){
+				register_to_stream(login);
+
+				setTimeout(function(){
+					Answer(res, OK);
+				}, 300);
 			} else {
-				Answer(res, null);
+				User.update({ login:login, inviter: {$exists : false} }, {$set:{ inviter:inviter }}, function (err, count){
+					if (err) return	Answer(res, null);
+
+					register_newbie_in_tournament(login);
+					
+					setTimeout(function(){
+						if (updated(count)){
+							Answer(res, OK);
+							Log("Registered via " + inviter, STREAM_USERS);
+						} else {
+							Answer(res, null);
+						}
+					}, 300);
+				})
 			}
-		}, 1000);
+
+		} else {
+			Answer(res, OK);
+		}
+
 
 	})
+
+
+
 }
 
 function EnableTournament(data, res){
