@@ -80,7 +80,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.end('OK');
 
 		var login = data.label;
-		var money = Math.round(parseInt(data.amount)*100/76);
+		var money = Math.round(parseInt(data.amount));
 		/*var money = parseInt(data.amount)/76;
 
 		money= money*100;*/

@@ -31,7 +31,7 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 							input(type="submit" value="Оплатить")
 						form(id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate)
 							div(class="form-group")
-								label Сумма (в долларах)
+								label Сумма (в рублях)
 								input(type="hidden" name="receiver" value="410013860652119") 
 								input(type="hidden" name="formcomment" value="Пополнение счёта в online-tournaments.org") 
 								input(type="hidden" name="short-dest" value="Пополнение счёта в online-tournaments.org") 
@@ -41,8 +41,8 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 								input(type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number") 
 								input(type="hidden" name="comment" value="Платёж принят!")
 								input(type="hidden" name="paymentType" value="AC")
-								input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
-								label(id="depResult") Сумма в рублях: 700p
+								input(class="form-control" name="sum" id="deposit" value=500 required autocomplete="off")
+								label(id="depResult" style="display:none;") Сумма в рублях: 700p
 							input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
 							//p Эта сумма может меняться в зависимости от курса валюты
 							//a(href="bonus") Почему это выгодно?

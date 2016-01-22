@@ -40,10 +40,10 @@ function saveProfile(){
 			console.log('no tournaments'); 
 			drawPlayButtons(); 
 		}
-
+		var convert = 1;
 		//$('#money').html('You have '+money/100+'$ on account');
-		$('#money').html(login + ' (' + money/100 + '$)');
-		$('#money1').html(money/100 + '$');
+		$('#money').html(login + ' (' + money/convert + 'p)');
+		$('#money1').html(money/convert + 'p');
 
 		//$(myModal).modal('show');
 

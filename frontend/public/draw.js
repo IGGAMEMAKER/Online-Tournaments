@@ -203,12 +203,39 @@ function getAddressFromAddrList(addresses, tournamentID){
 
   $(payModal).modal('show');
 }*/
-var USD_TO_RUR=78;
+var USD_TO_RUR=1;
 
 function drawPayingModal(data){
   console.log('drawPayingModal', data);
 
-  var buyInUSD = data/100;
+  var buyInUSD = data;
+  var needToPay = (buyInUSD - getFromStorage('money')); // in USD
+  needToPay = Math.ceil(needToPay*100)/100;
+  
+  var needToPayRU = needToPay*USD_TO_RUR;
+  needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+
+  //var price = data / 100;
+  var tournamentPrice = needToPay + 'p';
+  /*var moneyRu = price * USD_TO_RUR;*/
+  var moneyNow = getFromStorage('money');
+
+  //moneyRu = needToPay*USD_TO_RUR/100;
+
+  $("#userLogin").attr("value", login);
+  $("#targets").attr("value", login);
+  $("#sumAttribute").attr("value", needToPayRU);
+
+  $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
+
+
+  $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' p</b>');
+  $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + 'p</b>');
+  $("#needToPay").html('К оплате: <b>'+needToPay+'p</b>');
+
+  if (needToPay>0) $(payModal).modal('show');
+
+  /*var buyInUSD = data/100;
   var needToPay = (buyInUSD - getFromStorage('money')/100); // in USD
   needToPay = Math.ceil(needToPay*100)/100;
   
@@ -217,7 +244,7 @@ function drawPayingModal(data){
 
   //var price = data / 100;
   var tournamentPrice = needToPay + '$';
-  /*var moneyRu = price * USD_TO_RUR;*/
+  //var moneyRu = price * USD_TO_RUR;
   var moneyNow = getFromStorage('money')/100;
 
   //moneyRu = needToPay*USD_TO_RUR/100;
@@ -233,7 +260,7 @@ function drawPayingModal(data){
   $("#needToPay").html('К оплате: <b>'+needToPay+'$</b>');
   $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
 
-  if (needToPay>0) $(payModal).modal('show');
+  if (needToPay>0) $(payModal).modal('show');*/
 }
 
 /*

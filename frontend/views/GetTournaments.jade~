@@ -131,12 +131,9 @@ mixin showTournament(t,line, imageUrl)
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
 				// image
-				alskdas
 				if t.settings && t.settings.special
-					p!= t.settings
 					+showImage('img/'+ID+'.jpg', t.gameNameID)
 				else
-					p!= t.settings
 					+showImage(imageUrl, t.gameNameID)
 				
 				// prize
@@ -151,7 +148,7 @@ mixin showTournament(t,line, imageUrl)
 						+showPrize(prizes)
 				h4(class="mg-md")
 					if buyIn>0
-						p Стоимость: #{buyIn/convert}$
+						p Стоимость: #{buyIn} руб
 					else
 						p Бесплатно!
 					p Призовых мест: #{winnersPlaces}
