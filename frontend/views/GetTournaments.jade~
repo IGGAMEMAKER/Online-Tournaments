@@ -9,7 +9,6 @@ mixin showTournaments(tournaments)
 			- for (i=0; i<tournaments.length;i++) {
 				if i%tournWidth==0
 					- var lineID = i/tournWidth;
-					- console.log(lineID);
 					div(class="row" id="line"+lineID)
 						//+showTournament(tournaments[i] , lineID, "img/CR2.jpg")
 
@@ -132,9 +131,12 @@ mixin showTournament(t,line, imageUrl)
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
 				// image
+				alskdas
 				if t.settings && t.settings.special
+					p!= t.settings
 					+showImage('img/'+ID+'.jpg', t.gameNameID)
 				else
+					p!= t.settings
 					+showImage(imageUrl, t.gameNameID)
 				
 				// prize

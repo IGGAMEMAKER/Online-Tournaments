@@ -2068,6 +2068,8 @@ function getTournamentsQuery(query, fields, purpose){
 			//query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 			query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
+
+			fields= '';
 		break;
 		case GET_TOURNAMENTS_BALANCE:
 			query = {status:null};
