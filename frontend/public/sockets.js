@@ -23,6 +23,7 @@ $(document).mouseup(function (e)
 socket.on('StartTournament', function (msg){
   prt('StartTournament');
   var tournamentID = msg.tournamentID;
+  
   if (tournamentID) {
     StartTournament(tournamentID);
   } else {

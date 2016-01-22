@@ -1,6 +1,5 @@
 //
 script(src="third_party/validator.min.js")
-link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/register.css")
 
 mixin drawSubscribe()
 	div(class="bloc l-bloc bgc-white bloc-tile-3 pull-right" id="bloc-15")
@@ -17,7 +16,7 @@ mixin drawSubscribe()
 							i(class="glyphicon glyphicon-remove" style="display:none;")
 							i(class="glyphicon glyphicon-user" style="")
 							i(class="glyphicon glyphicon-ok" style="display:none;")
-							//<input type="text" class="form-control" placeholder="Username" />
+							//<input type="text" class="form-control" placeholder="Username" /)
 							input(type="hidden" name="inviter" value="realmadrid")
 							input(id="email" class="form-control" type="email" name="email" placeholder="Email" required)
 						
@@ -68,16 +67,41 @@ doctype html
 html
 	head
 		title Онлайн турниры
-		include ../templates/head2
-		//link(rel="stylesheet" href="./css/animate.css")
+		include ../templates/head3
+		//link(rel="stylesheet" href="./css/realmadrid.css")
+		link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/realmadrid.css")
 		//link(rel="stylesheet" href="./css/ionicons.min.css")
-		link(rel="stylesheet" href="./css/main.css")
-	div(class="page-container" style='min-height:100%; min-width:100%; background: url("http://trivela.uol.com.br/wp-content/uploads/2015/11/AP_146245388718.jpg") no-repeat center center fixed; background-size: cover;')
-		//include ../templates/menu
-		div(class="b-divider" style="background-color:transparent;")
-			//div(class='bloc-group')
-			//+drawIcons()
-			+drawSubscribe()
-			//include ../templates/auth
-	//	include ../templates/footer
+		//link(rel="stylesheet" href="./css/main.css")
+		//link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/register.css")
+	div(class="page-container")
+		//+drawSubscribe()
+		div(id="hero-bloc" class="bloc hero bgc-white tc-white bg-713228705-14184269906151135930 d-bloc")
+			//div(class="container bloc-sm hero-nav")
+				nav(class="navbar row")
+					div(class="navbar-header")
+						a(class="navbar-brand" href="index.html") Регистрация на турнир
+					div(class="collapse navbar-collapse navbar-1")
+						ul(class="site-navigation nav navbar-nav pull-right")
+			div(class="v-center pull-right")
+				div(class="vc-content row")
+					div(class="col-sm-12")
+						div(class="row")
+							div(class="col-md-6 col-md-offset-3 col-sm-12")
+								form(id="form-1" action="/Register" method="post" autocomplete="on")
+									input(type="hidden" name="inviter" value="realmadrid")
+									//p
+										Lorem asdkjasdpqwoiepqw9ei1
+									h3(class="mg-md")
+										Зарегистрируйтесь, чтобы играть!
+									div(class="form-group")
+										label Email
+										input(id="email" class="form-control" type="email" name="email" placeholder="Email" required)
+										//input(id="email" class="form-control" type="email" required)
+									button(class="bloc-button btn btn-d btn-lg btn-block" style="background:#F44336;" type="submit")
+										Играть
+									include ../templates/vk-auth
+									+loadVKauth("realmadrid", "reg")
+
+
+
 

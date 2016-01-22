@@ -1,0 +1,34 @@
+//
+meta(charset="utf-8")
+meta(name="keywords" content="")
+meta(name="description" content="")
+//link(rel="shortcut icon" type="image/png" href="favicon.png")
+meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+
+link(rel="stylesheet" type="text/css" href="./css/bootstrap.css")
+link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/style.css")
+//link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/my_style.css")
+link(rel="stylesheet" href="./css/font-awesome.min.css")
+script(src="http://code.jquery.com/jquery-2.1.0.min.js")
+//./js/jquery-2.1.0.min.js
+script(async src="./js/bootstrap.js")
+script(src="./js/blocs.js")
+
+//script(src='./js/jqBootstrapValidation.js')
+//script(src='./js/formHandler.js')
+
+mixin title(name)
+	//div(class="bloc l-bloc bgc-white" id="bloc-1")
+		div(class="container")
+			div(class="row")
+				div(class="col-sm-12")
+					h2(class="mg-md text-center") #{name}
+	h2(class="mg-md text-center") #{name}
+
+mixin small_title(name)
+	//div(class="bloc l-bloc bgc-white" id="bloc-1")
+		div(class="container")
+			div(class="row")
+				div(class="col-sm-12")
+					h3(class="mg-md text-center") #{name}
+	h3(class="mg-md text-center") #{name}

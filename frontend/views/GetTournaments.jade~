@@ -64,7 +64,7 @@ mixin showPrize(prize, specPrize)
 			if isNaN(prize)
 				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize}
 			else
-				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize/convert}$
+				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize} р
 
 mixin showStreamPrize()
 	h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: Случайный
@@ -103,7 +103,7 @@ mixin drawRegButton(buyIn, ID)
 	if session && session.login
 		a(id="reg"+ID onclick="reg('"+session.login+"',"+ID+")" class="btn btn-lg btn-primary" style="border-radius:6px; ") 
 			if buyIn>0
-				| Играть за #{buyIn/convert}$
+				| Играть за #{buyIn} р
 			else
 				| Играть БЕСПЛАТНО
 		div(id="unregister"+ID style="display:none;")
