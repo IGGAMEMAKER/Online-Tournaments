@@ -58,12 +58,12 @@ function ManageReg(login, tID, url, regID){
 			}
 
 			//clearStorage();
-			//getProfile();
+			getProfile();
 			if (!(msg.result=='fail' && regID==1)) {
 				alert(txt);//msg.result
 			}
 			//console.log(msg);
-			reload(1000);
+			//reload(1000);
 	  }
 	});
 }
