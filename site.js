@@ -538,10 +538,10 @@ if (socket_enabled){
     , 'xhr-polling'
     , 'jsonp-polling'
   ]);*/
-  io.set('transports', [
+  /*io.set('transports', [
       'websocket'
     , 'polling'
-  ]);
+  ]);*/
   io.on('connection', function(socket){
     //console.log('IO connection');
     //socket.join('/111');
