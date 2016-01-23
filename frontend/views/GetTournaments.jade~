@@ -1,5 +1,5 @@
 //
-- tournWidth = 3;
+- tournWidth = 4;
 
 -var convert=100;
 
@@ -117,7 +117,7 @@ mixin drawRegButton(buyIn, ID)
 -var REGULARITY_REGULAR=1;
 -var REGULARITY_STREAM=2;
 
-mixin drawImage(t, imageUrl)
+mixin drawImage(t, imageUrl, ID)
 	// image
 	if t.settings && t.settings.special
 		+showImage('img/'+ID+'.jpg', t.gameNameID)
