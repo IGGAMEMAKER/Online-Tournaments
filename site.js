@@ -531,9 +531,19 @@ var clients = [];
 var io;
 if (socket_enabled){
   io = require('socket.io')(server);
+  /*io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);*/
+  io.set('transports', [
+      'websocket'
+    , 'polling'
+  ]);
   io.on('connection', function(socket){
     //console.log('IO connection');
-
     //socket.join('/111');
     socket.on('chat message', function(msg){
       console.log(msg);
