@@ -1,5 +1,5 @@
 //
-- tournWidth = 4;
+- tournWidth = 3;
 
 -var convert=100;
 
@@ -135,6 +135,12 @@ mixin drawPrize(t, prizes)
 		else
 			+showPrize(prizes)
 
+mixin drawBuyIn(buyIn)
+	if buyIn>0
+		p Стоимость: #{buyIn} руб
+	else
+		p Бесплатно!
+
 mixin showTournament(t,line, imageUrl)
 	if t
 		- var ID=t.tournamentID||115;
@@ -144,7 +150,7 @@ mixin showTournament(t,line, imageUrl)
 		- var maxPlayers = t.goNext[0];
 		- var winnersPlaces = t.goNext[1];
 		- var buyIn = t.buyIn || 0;
-		div(class="col-sm-3")
+		div(class="col-sm-3 thumbnailMax tournament sm-offset" style="")
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
@@ -153,17 +159,8 @@ mixin showTournament(t,line, imageUrl)
 				// prize
 				+drawPrize(t, prizes)
 				h4(class="mg-md")
-					if buyIn>0
-						p Стоимость: #{buyIn} руб
-					else
-						p Бесплатно!
+					//+drawBuyIn(buyIn)
 					p Призовых мест: #{winnersPlaces}
-					//if winnersPlaces>1
-						p Призовых мест: #{winnersPlaces}
-					//else
-						p
-					//Призовых мест: #{winnersPlaces}
-					br
 					div(id="plrs-"+ID) Участников : #{registered} из #{maxPlayers}
 				+drawRegButton(buyIn, ID)
 				
@@ -178,6 +175,7 @@ html
 	head
 		title!= 'Турниры'
 		include templates/head
+		link(rel="stylesheet" type="text/css" href="/css/tournament.css")
 		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 		script(src="registerUserInTournament.js")
 	body
@@ -189,8 +187,8 @@ html
 					div(class="row")
 						div(class="col-sm-12")
 							h3(class="mg-md text-center") Турниры
-			p!= JSON.stringify(msg)
-			//+showTournaments(msg)
+			//p!= JSON.stringify(msg)
+			+showTournaments(msg)
 			br
 			br
 			include templates/footer
