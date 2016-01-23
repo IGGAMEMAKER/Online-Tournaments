@@ -512,6 +512,8 @@ app.get('/vk-auth', vkAuth, vkAuthSuccess());
   //app.close();
 })*/
 
+
+
 server = app.listen(8888, function () {
   var host = server.address().address;
   var port = server.address().port;
@@ -549,4 +551,17 @@ if (socket_enabled){
 
 function SendToRoom( room, event, msg, socket){
   if (socket_enabled) io.of(room).emit(event, msg);
+}
+const GET_TOURNAMENTS_UPDATE = 6;
+RealtimeProvider(5000);
+function RealtimeProvider(period){
+  sender.sendRequest("GetTournaments", {purpose:GET_TOURNAMENTS_UPDATE}, "127.0.0.1", "DBServer", null, function (error, response, body, res){
+    if (!error){
+      io.emit('update', body);
+    }
+
+  })
+  setTimeout(function(){
+    RealtimeProvider(period)
+  }, period);
 }

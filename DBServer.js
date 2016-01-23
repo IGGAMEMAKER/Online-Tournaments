@@ -144,6 +144,7 @@ const GET_TOURNAMENTS_BALANCE = 2;
 const GET_TOURNAMENTS_GAMESERVER = 3;
 const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_RUNNING = 5;
+const GET_TOURNAMENTS_UPDATE = 6;
 
 const STREAM_ERROR = 'Err';
 const STREAM_TOURNAMENTS = 'Tournaments';
@@ -2064,7 +2065,7 @@ function getTournamentsQuery(query, fields, purpose){
 
 	switch(purpose){
 		case GET_TOURNAMENTS_USER:
-			console.log("GET_TOURNAMENTS_USER !!!!!!!!!!!!!!");
+			//console.log("GET_TOURNAMENTS_USER !!!!!!!!!!!!!!");
 			//query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 			query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
@@ -2078,7 +2079,18 @@ function getTournamentsQuery(query, fields, purpose){
 			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 			query = { $and : [query, run_or_reg] };
 		break;
+		default:
+			var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+			query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
+		break;
 	}
+
+	switch(purpose){
+		case GET_TOURNAMENTS_UPDATE:
+			fields= 'tournamentID players goNext status';
+		break;
+	}
+
 	if (query){
 		return { 
 			query: query,

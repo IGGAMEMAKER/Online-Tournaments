@@ -27,7 +27,7 @@ socket.on('StartTournament', function (msg){
   if (tournamentID) {
     StartTournament(tournamentID);
   } else {
-    prt('StartTournament, but no tournamentID');
+    prt('no tournamentID');
   }
   
   var host = msg.host; var port = msg.port; var running = msg.running;
@@ -54,6 +54,15 @@ socket.on('FinishTournament', function (msg) {
   getProfile();
   //drawPlayButtons();
 });
+
+socket.on('update', function (msg){
+  var tournaments = msg;
+  //console.log("---------------");
+  for (var i = tournaments.length - 1; i >= 0; i--) {
+    redrawTournament(tournaments[i]);
+    //console.log("update-"+i, tournaments[i]);
+  };
+})
 
 function showCloseTournamentModal(tournamentID, places, prizes) {
   //alert('FinishTournament ' + tournamentID);
@@ -151,7 +160,7 @@ setTimeout(blinker, 1000);
 
 // LOCALSTORAGE // addresses // tournaments // playing 
 /* CLIENT SIDE INFO:
-  Login Password
+  Login
   --Money
   Registered TournamentIDs
 

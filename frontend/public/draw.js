@@ -138,8 +138,25 @@ function drawPopup(){
   //prt('popup opened');
 }
 
+function drawTournamentStatus(tournamentID, status){
+
+}
+
+function redrawTournament(tournament){
+  var players = tournament.players;
+  var maxPlayers = tournament.goNext[0];
+
+  var tournamentID = tournament.tournamentID;
+  var status = tournament.status;
+  //console.log("redrawTournament", tournamentID, players, maxPlayers, status);
+  $("#plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
+  drawTournamentStatus(tournamentID, status);
+  //$("plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
+}
+
 var runningCount=0;
 var blinkCounter=0;
+
 function blinker(){
   var blinkStatus = runningCount;// getFromStorage('hasRunningTournaments');
   //prt(blinkStatus);
@@ -184,25 +201,6 @@ function getAddressFromAddrList(addresses, tournamentID){
   return null;
 }
 
-//var USD_TO_RUR=70;
-
-/*function drawPayingModal(data){
-  console.log('drawPayingModal', data);
-  var price = data / 100;
-  var tournamentPrice = data/100 + '$';
-
-  $("#tournamentPrice").html('Стоимость участия в турнире: <b>'+tournamentPrice+'</b>');
-  $("#needToPay").html('К оплате: <b>'+tournamentPrice+'</b>');
-
-  var link ="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM="+price*USD_TO_RUR+"&PAYSTO_PAYER_ID="+login;
-  $("#depositLink").attr("href", link);
-  $("#depositLink").html('Оплатить ' + tournamentPrice + ' ('+price * USD_TO_RUR + 'р) ');
-  var moneyNow = getFromStorage('money')/100;
-
-  $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
-
-  $(payModal).modal('show');
-}*/
 var USD_TO_RUR=1;
 
 function drawPayingModal(data){
@@ -234,54 +232,4 @@ function drawPayingModal(data){
   $("#needToPay").html('К оплате: <b>'+needToPay+'p</b>');
 
   if (needToPay>0) $(payModal).modal('show');
-
-  /*var buyInUSD = data/100;
-  var needToPay = (buyInUSD - getFromStorage('money')/100); // in USD
-  needToPay = Math.ceil(needToPay*100)/100;
-  
-  var needToPayRU = needToPay*USD_TO_RUR;
-  needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
-
-  //var price = data / 100;
-  var tournamentPrice = needToPay + '$';
-  //var moneyRu = price * USD_TO_RUR;
-  var moneyNow = getFromStorage('money')/100;
-
-  //moneyRu = needToPay*USD_TO_RUR/100;
-
-  $("#userLogin").attr("value", login);
-  $("#targets").attr("value", login);
-  $("#sumAttribute").attr("value", needToPayRU);
-
-  $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
-
-
-  $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + '$</b>');
-  $("#needToPay").html('К оплате: <b>'+needToPay+'$</b>');
-  $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' $</b>');
-
-  if (needToPay>0) $(payModal).modal('show');*/
 }
-
-/*
-  $("#userLogin").attr("value", login)
-  $("#targets").attr("value", login)
-  $("#sumAttribute").attr("value", 10*USD_TO_RUR)
-
-  $("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
-
-  $("#depositLink1").attr("value", "Пополнить счёт на "+ 10+"$")
-  //$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
-  var input = document.getElementById('deposit');
-
-  input.oninput = function (){
-    var sum = input.value;
-    var user = login;
-    var moneyRu = sum * USD_TO_RUR;
-
-    $("#depResult").html("Сумма в рублях: " + moneyRu + "р")
-    $("#sumAttribute").attr("value", moneyRu)
-    //document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
-    //$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
-    $("#depositLink1").attr("value", "Пополнить счёт на "+ tournamentPrice)
-  }*/
