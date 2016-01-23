@@ -211,11 +211,11 @@ var upload = multer({ storage: storage }).single('image');
 
 
 	app.all('/Tournaments', function (req, res){
-	  var data = req.body;
-	  data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+    var data = req.body;
+    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
 
-	  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
 	});
 	const GET_TOURNAMENTS_INFO = 4;
   const GET_TOURNAMENTS_USER = 1;

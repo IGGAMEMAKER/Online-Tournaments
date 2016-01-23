@@ -136,14 +136,14 @@ mixin drawPrize(t, prizes)
 			+showPrize(prizes)
 
 mixin showTournament(t,line, imageUrl)
-	//if t
+	if t
 		- var ID=t.tournamentID||115;
 		- var registered = t.players;
 		- var gameNameID = t.gameNameID;
-		- //var prizes = t.Prizes[0];
-		- //var maxPlayers = t.goNext[0];
-		- //var winnersPlaces = t.goNext[1];
-		- //var buyIn = t.buyIn || 0;
+		- var prizes = t.Prizes[0];
+		- var maxPlayers = t.goNext[0];
+		- var winnersPlaces = t.goNext[1];
+		- var buyIn = t.buyIn || 0;
 		div(class="col-sm-3")
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
@@ -151,7 +151,7 @@ mixin showTournament(t,line, imageUrl)
 				+drawImage(t, imageUrl)
 
 				// prize
-				//+drawPrize(t, prizes)
+				+drawPrize(t, prizes)
 				h4(class="mg-md")
 					if buyIn>0
 						p Стоимость: #{buyIn} руб
@@ -190,7 +190,7 @@ html
 						div(class="col-sm-12")
 							h3(class="mg-md text-center") Турниры
 			p!= JSON.stringify(msg)
-			+showTournaments(msg)
+			//+showTournaments(msg)
 			br
 			br
 			include templates/footer

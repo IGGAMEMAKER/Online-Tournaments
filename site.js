@@ -378,10 +378,14 @@ function JSLog(msg, topic){
 app.get('/Alive', function (req, res){ res.render('Alive'); })
 app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
+const GET_TOURNAMENTS_INFO = 4;
+const GET_TOURNAMENTS_USER = 1;
+
 app.get('/', function (req,res){
   if (isAuthenticated(req)){
     var data = req.body;
-    data.queryFields = 'tournamentID buyIn goNext gameNameID players';
+    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+    data.purpose = GET_TOURNAMENTS_USER;
     AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
   } else {
     res.render('main');
