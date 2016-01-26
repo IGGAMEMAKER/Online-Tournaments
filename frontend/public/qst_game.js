@@ -194,7 +194,7 @@ function DrawPlayers(results){
 
 		var winning;
 		if (ind<places[1]){
-			winning = prizes[0]/100+'$';//'<td>'+prizes[0]/100+'$</td>';
+			winning = prizes[0]+'p';//'<td>'+prizes[0]/100+'$</td>';
 		} else {
 			winning = '--';
 		}

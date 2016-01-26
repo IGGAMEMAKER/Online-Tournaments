@@ -1592,7 +1592,7 @@ function YoungerizeTournament(tournament){
 
 function KillFinishedTournaments(){
 	Tournament.find({status:TOURN_STATUS_FINISHED}, 'tournamentID', function (err, finishedTournaments){
-		Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
+		//Log('finishedTournaments: ' + JSON.stringify(finishedTournaments) );
 		/*var TRegIDs = [];
 		for (var i = finishedTournaments.length - 1; i >= 0; i--) {
 			var id = finishedTournaments[i].tournamentID;
