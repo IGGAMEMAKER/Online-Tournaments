@@ -72,7 +72,6 @@ app.post('/findOrCreateUser', findOrCreateUser);
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
 
-//app.post('/StartTournament', function (req, res) {StartTournament(req.body.tournamentID, null, res);});
 app.post('/RestartTournament', function (req, res) {StartTournament(req.body.tournamentID, true, res);});
 
 app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
@@ -103,6 +102,8 @@ app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
 app.post('/SetInviter', SetInviter);
+
+app.post('/Actions', Actions);
 
 app.post('/payment', function(req, res){ 
 	console.log("new payment");
@@ -232,6 +233,72 @@ var Tournament = mongoose.model('Tournament', {
 	startedTime: 		Date
 	//tournamentServerID: String
 });
+
+function dayQuery(date){
+	var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	var tmrw 	= new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	tmrw.setDate(tmrw.getDate() + 1);
+
+	console.log(today, tmrw);
+
+	var query = {
+		// $gte : ISODate("2015-11-02T00:00:00Z"), 
+		// $lt : ISODate("2014-07-03T00:00:00Z")
+		$gte : today, 
+		$lt : tmrw 
+	}
+	return query;
+}
+
+function get_money_transfers(req, res, next){
+	var todayQuery = dayQuery(new Date());
+
+	MoneyTransfer.find({date:todayQuery}, function (err, transfers){
+		if (err) { 
+			req.transfers = null;
+			Log("transfers err " + JSON.stringify(err), STREAM_ERROR);
+		} else {
+			req.transfers = transfers;
+		}
+
+		next();
+	})
+}
+
+function get_tournament_regs(req, res, next){
+	var todayQuery = dayQuery(new Date());
+
+	TournamentReg.find({date:todayQuery}, function (err, regs){
+		if (err) { 
+			req.regs = null;
+			Log("get_tournament_regs err " + JSON.stringify(err), STREAM_ERROR);
+		} else {
+			req.regs = regs;
+		}
+
+		next();
+	})
+}
+
+function get_today_tournaments(req, res, next){
+	var todayQuery = dayQuery(new Date());
+
+	TournamentReg.find({date:todayQuery}, function (err, regs){
+		if (err) { 
+			req.regs = null;
+			Log("get_tournament_regs err " + JSON.stringify(err), STREAM_ERROR);
+		} else {
+			req.regs = regs;
+		}
+
+		next();
+	})
+}
+
+function Actions(req, res){
+	return []
+}
+
 
 function SERVER_ERROR(err, res){
 	Error(err);
@@ -832,7 +899,7 @@ function payBuyIn(buyIn, login){
 
 function saveReg(tournamentID, login, promo){
 	return new Promise(function (resolve, reject){
-			var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
+			var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo, date:new Date() });
 			reg.save(function (err) {
 				if (err) reject(err);
 				
@@ -1170,6 +1237,7 @@ function ResetPassword(req, res){
 }
 
 
+
 function passwordCorrect(user, enteredPassword){
 	return security.passwordCorrect(user, enteredPassword);
 }
@@ -1414,7 +1482,7 @@ function saveTransfer(login, cash, source){
 
 function setTournStatus(tournamentID, status){
 	Log('Set tourn status of ' + tournamentID + ' to ' + status);
-	Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
+	Tournament.update({tournamentID:tournamentID}, {$set: {status:status, startedTime:new Date() }}, function (err,count){
 		if(err) { Log('Tournament status update Error: ' + JSON.stringify(err)); }
 	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
 }

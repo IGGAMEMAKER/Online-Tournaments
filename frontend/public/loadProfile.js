@@ -42,12 +42,40 @@ function saveProfile(){
 		}
 		var convert = 1;
 		//$('#money').html('You have '+money/100+'$ on account');
-		$('#money').html(login + ' (' + money/convert + 'p)');
+		//$('#money').html(login + ' (' + money/convert + 'p)');
+
 		$('#money1').html(money/convert + 'p');
 
+		$('#balance').html("На вашем счету " + getMoneyString(money) + ": ");
+		get_last(103);
+		get_last(102);
+		get_last(93);
+		get_last(1025);
 		//$(myModal).modal('show');
 
 	};
+}
+
+function get_last(s){ //s = number
+	var a = s.toString().substr(s.toString().length-1, 1);
+	console.log(s, "last", a);
+	return a;
+}
+
+function getMoneyString(money){
+	/*var number = get_last(money);
+	var word = "рублей";
+
+	switch(number){
+		case '0': word = "рублей"; break;
+		case '1': word = "рубль"; break;
+		case '2': word = "рубля"; break;
+		case '3': word = "рубля"; break;
+		case '4': word = "рубля"; break;
+		default : word = "рублей"; break;
+	}*/
+
+	return money + "p" + +"   ";
 }
 
 function hideAllButtons(tID){

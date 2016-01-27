@@ -1,5 +1,5 @@
 //id="bloc-6"
-div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
+div(class="bloc l-bloc bgc-white bloc-tile-2" id="dep")
 	div(class="container bloc-lg")
 		div(class="row")
 			div(class="col-sm-12")
@@ -7,28 +7,6 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 					div(class="panel-heading")
 						h3(class="mg-clear" id="depositMoney") Пополнить счет
 					div(class="panel-body")
-						//p Условия пополнения
-						//form(method="POST" action="https://money.yandex.ru/quickpay/confirm.xml")
-							input(type="hidden" name="receiver" value="410013860652119") 
-							input(type="hidden" name="formcomment" value="Проект «Железный человек»: реактор холодного ядерного синтеза") 
-							input(type="hidden" name="short-dest" value="Проект «Железный человек»: реактор холодного ядерного синтеза") 
-							input(type="hidden" name="label" value=login) 
-							input(type="hidden" name="quickpay-form" value="donate") 
-							input(type="hidden" name="targets" value="транзакция {order_id}") 
-							input(type="hidden" name="sum" value="4568.25" data-type="number") 
-							input(type="hidden" name="comment" value="Хотелось бы дистанционного управления.")
-							input(type="hidden" name="paymentType" value="AC")
-							//input(type="hidden" name="need-fio" value="true") 
-							//input(type="hidden" name="need-email" value="true") 
-							//input(type="hidden" name="need-phone" value="false") 
-							//input(type="hidden" name="need-address" value="false") 
-							//label Яндекс.Деньгами
-							//	input(type="radio" name="paymentType" value="PC")
-							//label Банковской картой
-								input(type="radio" name="paymentType" value="AC")
-							//label Со счёта мобильного
-								input(type="radio" name="paymentType" value="MC")
-							input(type="submit" value="Оплатить")
 						form(id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate)
 							div(class="form-group")
 								label Сумма (в рублях)
@@ -44,7 +22,4 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 								input(class="form-control" name="sum" id="deposit" value=500 required autocomplete="off")
 								label(id="depResult" style="display:none;") Сумма в рублях: 700p
 							input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
-							//p Эта сумма может меняться в зависимости от курса валюты
-							//a(href="bonus") Почему это выгодно?
-							//a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=700&PAYSTO_PAYER_ID="+session.login class="btn btn-lg btn-primary" style="display:none; width:100%; border-radius:6px; " id="depositLink12") Пополнить
 script(src="depositInput.js")

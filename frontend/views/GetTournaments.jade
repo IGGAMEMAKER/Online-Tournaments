@@ -6,6 +6,8 @@
 mixin showTournaments(tournaments)
 	div(class="bloc l-bloc bgc-white b-divider" id="hq1")
 		div(class="container bloc-sm")
+			+drawBalance()
+			br
 			- for (i=0; i<tournaments.length;i++) {
 				if i%tournWidth==0
 					- var lineID = i/tournWidth;

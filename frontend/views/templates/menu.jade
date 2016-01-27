@@ -1,6 +1,14 @@
 //
 	a(id="my-tournaments" href="#" onclick="drawPopup()") My Tournaments
 
+mixin drawBalance()
+	if (session.login && session.login.length>0)
+		div(class="" style="color:#000000;")
+			span(id="balance") #{session.login}     
+			a(href="profile#dep") Пополнить   
+			span /   
+			a(href="profile#cashoutMoney") Снять деньги
+
 div(class="bloc l-bloc bgc-white" id="nav-bloc")
 	div(class="container bloc-sm")
 		nav(class="navbar row")

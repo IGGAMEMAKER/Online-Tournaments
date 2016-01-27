@@ -137,9 +137,13 @@ function drawPopup(){
 
   //prt('popup opened');
 }
+const TOURN_STATUS_REGISTER = 1;
+const TOURN_STATUS_RUNNING = 2;
+const TOURN_STATUS_FINISHED = 3;
+const TOURN_STATUS_PAUSED = 4;
 
 function drawTournamentStatus(tournamentID, status){
-
+  
 }
 
 function redrawTournament(tournament){

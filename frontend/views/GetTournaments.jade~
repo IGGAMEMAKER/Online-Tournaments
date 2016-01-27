@@ -6,6 +6,7 @@
 mixin showTournaments(tournaments)
 	div(class="bloc l-bloc bgc-white b-divider" id="hq1")
 		div(class="container bloc-sm")
+			+drawBalance()
 			- for (i=0; i<tournaments.length;i++) {
 				if i%tournWidth==0
 					- var lineID = i/tournWidth;
@@ -154,7 +155,7 @@ mixin showTournament(t,line, imageUrl)
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
-				+drawImage(t, imageUrl)
+				+drawImage(t, imageUrl, ID)
 
 				// prize
 				+drawPrize(t, prizes)
