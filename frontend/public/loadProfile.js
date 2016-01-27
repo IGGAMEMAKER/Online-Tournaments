@@ -75,7 +75,7 @@ function getMoneyString(money){
 		default : word = "рублей"; break;
 	}*/
 
-	return money + "p" + +"   ";
+	return money + "p" +"   ";
 }
 
 function hideAllButtons(tID){
