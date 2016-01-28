@@ -20,8 +20,19 @@ function drawTournaments(){
 	//var tournaments = 
 }
 
+const HIDE_DELAY = 5000;
+const ANIM_SPEED = 2000;
+
+function hideTournament(id){
+	setTimeout(function(){
+		$("#tournamentWrapper"+id).hide(ANIM_SPEED);
+	}, HIDE_DELAY);
+}
+
+//hideTournament(587);
+
 function drawTournament(id, img, prize, winPlaces, players, Max){
-	var text = '<div style="" class="col-sm-3 thumbnailMax tournament sm-offset">';
+	var text = '<div style="display:none;" id="tournamentWrapper'+id+'" class="col-sm-3 thumbnailMax tournament sm-offset">';
 	text += '<center>';
 	text += drawName(id);
 				text += drawImage(img);
@@ -35,7 +46,8 @@ function drawTournament(id, img, prize, winPlaces, players, Max){
 	//console.log(getLogin());
 	//console.log(text);
 
-	$("#tournamentBlock").append(text);
+	$("#tournamentBlock").prepend(text);
+	$("#tournamentWrapper"+id).show(ANIM_SPEED);
 }
 
 function drawStdTournament(){
@@ -48,7 +60,7 @@ function drawStdTournament(){
 
 	setTimeout(function(){
 		drawTournament(id, img, prize, winPlaces, players, Max);
-	}, 400);
+	}, 2000);
 }
 
 function drawName(id){

@@ -12,7 +12,7 @@ mixin alternativeDraw(tournaments)
 mixin saveTournamentsInStorage(tournaments)
 	script.
 		var tourns = !{JSON.stringify(msg)};
-		console.log("asdasdasd",tourns);
+		saveInStorage("allTournaments", tourns);
 	
 mixin showTournaments(tournaments)
 	div(class="bloc l-bloc bgc-white b-divider" id="hq1")

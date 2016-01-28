@@ -148,7 +148,7 @@ mixin showTournament(t,line, imageUrl)
 		- var maxPlayers = t.goNext[0];
 		- var winnersPlaces = t.goNext[1];
 		- var buyIn = t.buyIn || 0;
-		div(class="col-sm-3 thumbnailMax tournament sm-offset" style="")
+		div(id="tournamentWrapper"+ID class="col-sm-3 thumbnailMax tournament sm-offset" style="")
 			center
 				h4(class="mg-md text-center" id="gname-"+ID)
 					+showGame(t.gameNameID, t.tournamentID)
