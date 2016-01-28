@@ -3,27 +3,24 @@
 
 -var convert=100;
 
+mixin alternativeDraw(tournaments)
+	div(id="tournamentBlock")
+		- for (i=0; i<tournaments.length;i++) {
+			+showTournament(tournaments[i] , 0)
+		- }
+
+mixin saveTournamentsInStorage(tournaments)
+	script.
+		var tourns = !{JSON.stringify(msg)};
+		console.log("asdasdasd",tourns);
+	
 mixin showTournaments(tournaments)
 	div(class="bloc l-bloc bgc-white b-divider" id="hq1")
 		div(class="container bloc-sm")
 			+drawBalance()
-			- for (i=0; i<tournaments.length;i++) {
-				if i%tournWidth==0
-					- var lineID = i/tournWidth;
-					div(class="row" id="line"+lineID)
-						//+showTournament(tournaments[i] , lineID, "img/CR2.jpg")
-
-						- for (j=0; j < tournWidth; j++) {
-							if (tournaments[i+j])
-								+showTournament(tournaments[i+j] , lineID)
-								//"img/CR2.jpg")
-								//+showTournament({buyIn:100, gameNameID:2, Prizes:['Футболка КР7'], goNext:[150, 3]} , 1 , "img/CR2.jpg")
-						-}
-					br
-					br
-			- }
-						//+showTournament(tournaments[0] , 1 , "img/CR2.jpg")
-			
+			br
+			+alternativeDraw(tournaments)
+			+saveTournamentsInStorage(tournaments)
 
 mixin showGame(gameNameID, ID)
 	case gameNameID
@@ -57,8 +54,8 @@ mixin showPrizes(prizes)
 						td #{prize/convert}$
 	br
 
-mixin showPrize(prize, specPrize)
-	if specPrize
+mixin showPrize(prize, specPrize, ID)
+	if specPrize && specPrize.length>0
 		h3(id="wnrs-"+ID style="height:55px; width:220px" ) #{specPrize}
 	else
 		if prize
@@ -67,7 +64,7 @@ mixin showPrize(prize, specPrize)
 			else
 				h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: #{prize}р
 
-mixin showStreamPrize()
+mixin showStreamPrize(ID)
 	h3(id="wnrs-"+ID style="height:55px; width:220px" ) Приз: Случайный
 
 
@@ -125,16 +122,16 @@ mixin drawImage(t, imageUrl, ID)
 	else
 		+showImage(imageUrl, t.gameNameID)
 
-mixin drawPrize(t, prizes)
+mixin drawPrize(t, prizes, ID)
 	// prize
 	if t.settings && t.settings.special
-		+showPrize(prizes, t.settings.specPrizeName)
+		+showPrize(prizes, t.settings.specPrizeName, ID)
 	else
 		//p!= t.settings.regularity
 		if t.settings && t.settings.regularity==REGULARITY_STREAM
-			+showStreamPrize()
+			+showStreamPrize(ID)
 		else
-			+showPrize(prizes)
+			+showPrize(prizes, "", ID)
 
 mixin drawBuyIn(buyIn)
 	if buyIn>0
@@ -158,7 +155,7 @@ mixin showTournament(t,line, imageUrl)
 				+drawImage(t, imageUrl, ID)
 
 				// prize
-				+drawPrize(t, prizes)
+				+drawPrize(t, prizes, ID)
 				h4(class="mg-md")
 					//+drawBuyIn(buyIn)
 					p Призовых мест: #{winnersPlaces}
@@ -179,6 +176,9 @@ html
 		link(rel="stylesheet" type="text/css" href="/css/tournament.css")
 		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 		script(src="registerUserInTournament.js")
+		script(src="drawTournaments.js")
+		script.
+			drawStdTournament();
 	body
 		div(class="page-container")
 			include client

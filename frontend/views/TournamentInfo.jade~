@@ -58,7 +58,7 @@ mixin showPlayers(players)
 
 
 mixin showFullTournament(t, players)
-	div(class="bloc l-bloc bgc-white" id="bloc-10")
+	//div(class="bloc l-bloc bgc-white" id="bloc-10")
 		div(class="container bloc-lg")
 			div(class="row")
 				div(class="col-sm-12")
@@ -107,7 +107,7 @@ html
 			+showFullTournament(msg[0], msg[1])
 
 			//+showTournament(msg[0])
-			//p!= JSON.stringify(msg)
+			p!= JSON.stringify(msg)
 
 			#gift
 				//p Click on gift to show it here!

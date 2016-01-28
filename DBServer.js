@@ -2229,7 +2229,7 @@ function AddTournament (req, res){
 			if (maxTournament) {
 				addTournament(maxTournament.tournamentID, tournament, res);
 			} else { 
-				addTournament(0,tournament, res); 
+				addTournament(0,tournament, res);
 			}
 		}	else {
 			multiLog('adding failed: ' + JSON.stringify(err), [STREAM_TOURNAMENTS, STREAM_ERROR] );	

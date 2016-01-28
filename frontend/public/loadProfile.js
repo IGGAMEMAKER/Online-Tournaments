@@ -46,11 +46,11 @@ function saveProfile(){
 
 		$('#money1').html(money/convert + 'p');
 
-		$('#balance').html("На вашем счету " + getMoneyString(money) + ": ");
-		get_last(103);
+		$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
+		/*get_last(103);
 		get_last(102);
 		get_last(93);
-		get_last(1025);
+		get_last(1025);*/
 		//$(myModal).modal('show');
 
 	};

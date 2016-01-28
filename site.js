@@ -569,7 +569,7 @@ function SendToRoom( room, event, msg, socket){
 const GET_TOURNAMENTS_UPDATE = 6;
 RealtimeProvider(5000);
 function RealtimeProvider(period){
-  sender.sendRequest("GetTournaments", {purpose:GET_TOURNAMENTS_UPDATE}, "127.0.0.1", "DBServer", null, function (error, response, body, res){
+  sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
     if (!error){
       io.emit('update', body);
     }

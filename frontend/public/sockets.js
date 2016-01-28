@@ -158,6 +158,11 @@ function addTournament(tournamentID){
 
 setTimeout(blinker, 1000);
 
+function getLogin(){
+  return login;
+}
+
+
 // LOCALSTORAGE // addresses // tournaments // playing 
 /* CLIENT SIDE INFO:
   Login
