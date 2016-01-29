@@ -79,23 +79,67 @@ function drawPlayButtons(){
   }
 }
 
+
+function hideAllButtons(tID){
+  $('#unregister' + tID).hide();
+  $('#reg' + tID).hide();
+  $('#auth' + tID).hide();
+}
+
+function drawUnRegButton(tID){
+  $('#unregister' + tID).show();
+  $('#reg' + tID).hide();
+  $('#auth' + tID).hide();
+}
+
+function drawRegButton(tID){
+  $('#unregister' + tID).hide();
+  $('#reg' + tID).show();
+  $('#auth' + tID).hide();
+}
+
+function drawAuthButton(tID){
+  $('#unregister' + tID).hide();
+  $('#reg' + tID).hide();
+  $('#auth' + tID).show();
+}
+
+function redraw_reg_button(tournament){
+  console.log('redrawRegButtons', tournament);
+  var tID = tournament.tournamentID;
+  //console.log('look at ', tID);
+  if (login){
+    if (userIsRegisteredIn(tID)){
+      drawUnRegButton(tID); //console.log('userIsRegisteredIn');
+    } else {
+      drawRegButton(tID); //console.log('no register');
+    }
+  } else {
+
+    drawAuthButton(tID); //console.log('no auth');
+
+  }
+
+}
+
 function redrawRegButtons(tournaments){
+  console.log('redrawRegButtons', tournaments);
   for (var i = tournaments.length - 1; i >= 0; i--) {
-    console.log('redrawRegButtons', tournaments[i]);
+    redraw_reg_button(tournaments[i])
+    /*
+    //console.log('redrawRegButtons', tournaments[i]);
     var tID = tournaments[i].tournamentID;
-    console.log('look at ', tID);
+    //console.log('look at ', tID);
     if (login){
       if (userIsRegisteredIn(tID)){
-        console.log('userIsRegisteredIn');
-        drawUnRegButton(tID);
+        drawUnRegButton(tID); //console.log('userIsRegisteredIn');
       } else {
-        console.log('no register');
-        drawRegButton(tID);
+        drawRegButton(tID); //console.log('no register');
       }
     } else {
-      console.log('no auth');
-      drawAuthButton(tID);
-    }    
+      drawAuthButton(tID); //console.log('no auth');
+    }*/
+
   };
   /*if (tID){
     console.log('tID: ' + tID);
@@ -154,6 +198,7 @@ function redrawTournament(tournament){
   var status = tournament.status;
   //console.log("redrawTournament", tournamentID, players, maxPlayers, status);
   $("#plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
+
   drawTournamentStatus(tournamentID, status);
   //$("plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
 }
@@ -215,7 +260,7 @@ function drawPayingModal(data){
   needToPay = Math.ceil(needToPay*100)/100;
   
   var needToPayRU = needToPay*USD_TO_RUR;
-  needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+  needToPayRU = 1+Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
 
   //var price = data / 100;
   var tournamentPrice = needToPay + 'p';

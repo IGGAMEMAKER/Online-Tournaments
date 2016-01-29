@@ -51,7 +51,7 @@ socket.on('FinishTournament', function (msg) {
   //drawWinningModal(msg);
   //console.log('FinishTournament');
   unsetFromObject('addresses', tournamentID);
-  getProfile();
+  if (login) getProfile();
 
   hideTournament(tournamentID);
   //drawPlayButtons();
@@ -114,13 +114,7 @@ function StartTournament(tournamentID){
       playAudio();
       drawPopup();
     }
-    /*setTimeout(drawPlayButtons, 50);
-    setTimeout(drawPlayButtons, 300);
-    setTimeout(drawPlayButtons, 1000);*/
   }
-  
-  // if (userIsRegisteredIn(tournamentID) )
-  //getProfile(); ///$('#news').append($('<button>').text(JSON.stringify(msg)));
 }
 
 function startGame(gameURL, port, tournamentID){
@@ -168,7 +162,7 @@ function isActiveTab(){ return true; }
 
 function userIsRegisteredIn(tournamentID){
   var tournaments = getTournaments();
-  //prt(tournaments);
+  prt("user registered in ",tournaments);
 
   for (var i=0; i<tournaments.length;++i){
     if (tournaments[i]==tournamentID){
@@ -183,6 +177,16 @@ function addTournament(tournamentID){
   var tournaments = getTournaments();
   tournaments.push(tournamentID);
   saveInStorage('tournaments', tournaments);
+}
+
+function deleteTournament(tournamentID){
+  var tournaments = getTournaments();
+  for (var i = tournaments.length - 1; i >= 0; i--) {
+    if (tournaments[i]== tournamentID){
+      var a = tournaments.splice(i,1);
+      return saveInStorage('tournaments', a);
+    }
+  };
 }
 
 setTimeout(blinker, 1000);

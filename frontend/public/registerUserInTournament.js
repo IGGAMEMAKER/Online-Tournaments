@@ -10,8 +10,8 @@ var TREG_FULL='TREG_FULL';
 var TREG_ALREADY = 'Registered';
 
 function ManageReg(login, tID, url, regID){
-	console.log(login);
-	console.log(tID); //console.log(btn);
+	//console.log(login);
+	//console.log(tID); //console.log(btn);
 	
 	$.ajax({
 		url: url,
@@ -51,7 +51,7 @@ function ManageReg(login, tID, url, regID){
 				}
 			}	else {
 				switch(msg.result){
-					case 'OK': txt='Вы снялись с турнира. Деньги возвращены'; break;
+					case 'OK': txt='Вы снялись с турнира. Деньги возвращены'; deleteTournament(tID);drawRegButton(tID); break; //drawRegButton(tID);
 					case 'fail': txt='Вы не участвуете в этом турнире'; break;
 					default : txt='Ошибка'; break;
 				}

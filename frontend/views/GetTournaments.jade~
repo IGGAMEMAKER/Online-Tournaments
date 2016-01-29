@@ -115,6 +115,8 @@ mixin drawRegButton(buyIn, ID)
 -var REGULARITY_REGULAR=1;
 -var REGULARITY_STREAM=2;
 
+
+
 mixin drawImage(t, imageUrl, ID)
 	// image
 	if t.settings && t.settings.special
@@ -169,6 +171,15 @@ mixin showTournament(t,line, imageUrl)
 
 //include templates/tournaments
 
+mixin googleAdvert()
+	script(async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
+	<!-- TestWidget -->
+	ins(class="adsbygoogle"
+	     style="display:inline-block;width:320px;height:100px"
+	     data-ad-client="ca-pub-1393762184125426"
+	     data-ad-slot="7311292594")
+	script.
+		(adsbygoogle = window.adsbygoogle || []).push({});
 html
 	head
 		title!= 'Турниры'
@@ -177,7 +188,7 @@ html
 		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 		script(src="registerUserInTournament.js")
 		script(src="drawTournaments.js")
-		script(src="updater.js")
+		//script(src="updater.js")
 		//script.
 			drawStdTournament();
 	body

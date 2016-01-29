@@ -78,30 +78,6 @@ function getMoneyString(money){
 	return money + "p" +"   ";
 }
 
-function hideAllButtons(tID){
-	$('#unregister' + tID).hide();
-	$('#reg' + tID).hide();
-	$('#auth' + tID).hide();
-}
-
-function drawUnRegButton(tID){
-	$('#unregister' + tID).show();
-	$('#reg' + tID).hide();
-	$('#auth' + tID).hide();
-}
-
-function drawRegButton(tID){
-	$('#unregister' + tID).hide();
-	$('#reg' + tID).show();
-	$('#auth' + tID).hide();
-}
-
-function drawAuthButton(tID){
-	$('#unregister' + tID).hide();
-	$('#reg' + tID).hide();
-	$('#auth' + tID).show();
-}
-
 function saveTournamentAddress(tID){
 	return function (data) {
 		var address = JSON.parse(data); // console.log(address); // 

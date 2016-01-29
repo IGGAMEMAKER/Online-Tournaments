@@ -92,6 +92,7 @@ function parseAndDrawTournament(tournament){
   var maxPlayers = tournament.goNext[0];
 
   var winnerPlaces = tournament.goNext[1];
+  var buyIn = tournament.buyIn;
 
 	var id= tournamentID
 	, img= getImageUrl(tournament)
@@ -101,11 +102,11 @@ function parseAndDrawTournament(tournament){
 	, Max= maxPlayers
 
 	setTimeout(function(){
-		drawTournament(id, img, prize, winPlaces, players, Max);
+		drawTournament(id, img, prize, winPlaces, players, Max, buyIn);
 	}, 2000*0);
 }
 
-function drawTournament(id, img, prize, winPlaces, players, Max){
+function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	var text = '<div style="display:none;" id="tournamentWrapper'+id+'" class="col-sm-3 thumbnailMax tournament sm-offset">';
 	text += '<center>';
 	text += drawName(id);
@@ -113,20 +114,21 @@ function drawTournament(id, img, prize, winPlaces, players, Max){
 				text += drawPrizes(prize, id);
 				text += Info(winPlaces, id, players, Max);
 
-				text += drawReg(login, id);
-				text += drawUnReg(login, id);
+				text += drawReg(buyIn, id, login||null);
+				text += drawUnReg(login||null, id);
+				text += drawAuth(id);
 	text += '</center>';
 	text += '</div>';
 	//console.log(getLogin());
 	//console.log(text);
-	console.log("drawTournament ", id)
-	/*console.log("drawTournament ", img)
-	console.log("drawTournament ", prize)
-	console.log("drawTournament ", winPlaces)
-	console.log("drawTournament ", players)
-	console.log("drawTournament ", Max);*/
+	//console.log("drawTournament ", id)
+	/*console.log("drawTournament ", img)*/
 
 	$("#tournamentBlock").prepend(text);
+	hideAllButtons(id);
+	redraw_reg_button({tournamentID:id});
+
+	//drawAuthButton(id);
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);
 }
 
@@ -151,14 +153,23 @@ function drawPrizes(prize, id){
 	return '<h3 id="wnrs-'+id+'" style="height:55px; width:220px">'+prize+'</h3>';
 }
 
-function drawReg(lgn, id){
-	return '<a id="'+lgn+'" onclick="reg(\''+lgn+'\','+id+')" style="border-radius:6px; " class="btn btn-lg btn-primary"> Играть БЕСПЛАТНО</a>';
+function drawReg(buyIn, id, lgn){
+	var phrase = "Играть БЕСПЛАТНО";
+	if (buyIn>0) phrase = "Играть за "+buyIn+" р";
+	return '<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" style="border-radius:6px; " class="btn btn-lg btn-primary"> '+phrase+'</a>';
 }
 
 function drawUnReg(lgn, id){
 	return '<div id="unregister'+id+'" style="display:none;">'+
 					'<a id="unReg'+id+'" onclick="unReg(\''+lgn+'\','+id+')" style="border-radius:6px;" class="btn btn-lg btn-danger">Сняться с турнира</a>' +
 				'</div>';
+}
+
+function drawAuth(ID){
+	return '<div id="auth'+ID+'">'+
+		'<h4> Авторизуйтесь, чтобы сыграть </h4>'+
+		'<a id="lgn'+ID+'" href="login" class="btn btn-lg btn-danger" style="border-radius:6px;" > Авторизоваться </a>'+
+	'</div>'
 }
 
 function drawImage(img){
@@ -168,6 +179,6 @@ function drawImage(img){
 function Info(winPlaces, id, players, Max){
 	return '<h4 class="mg-md">' +
 		'<p>Призовых мест: '+winPlaces+'</p>'+
-		'<div id="plrs-668">Участников : '+players+' из '+ Max+'</div>'+
+		'<div id="plrs-' + id + '">Участников : '+players+' из '+ Max+'</div>'+
 	'</h4>';
 }
