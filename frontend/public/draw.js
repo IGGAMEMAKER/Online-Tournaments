@@ -134,7 +134,7 @@ function drawPopup(){
   //prt('OPEN POPUUUUUUP!!!!');
   //document.getElementById('tournaments').style.display='block';
   $(myModal).modal('show');
-  alert("Турнир начинается");
+  //alert("Турнир начинается");
   //prt('popup opened');
 }
 const TOURN_STATUS_REGISTER = 1;

@@ -20,16 +20,90 @@ function drawTournaments(){
 	//var tournaments = 
 }
 
-const HIDE_DELAY = 5000;
+const HIDE_DELAY = 3000;
 const ANIM_SPEED = 2000;
 
 function hideTournament(id){
 	setTimeout(function(){
+		//alert("hiding " + id);
 		$("#tournamentWrapper"+id).hide(ANIM_SPEED);
 	}, HIDE_DELAY);
 }
 
 //hideTournament(587);
+function getImageUrl(t){
+	var ID = t.tournamentID;
+
+	if (t.settings && t.settings.special) {
+		return 'img/'+ID+'.jpg';
+	}	else {
+		return "/img/quiz.png";
+	}
+}
+
+var REGULARITY_NONE=0;
+var REGULARITY_REGULAR=1;
+var REGULARITY_STREAM=2;
+
+function isStream(t){
+	return t.settings && t.settings.regularity==REGULARITY_STREAM ;
+}
+
+function isSpecial(t){
+	return t.settings && t.settings.special;
+}
+
+function getPrize(t){
+	var prize = t.Prizes[0];
+	console.log("prize ", prize);
+	var ID = t.tournamentID;
+
+	if (isSpecial(t)) {
+		return showPrize(prize, t.settings.specPrizeName, ID);
+	}	else {
+		if (isStream(t)) {
+			return 'Приз: Случайный';
+		} else {
+			return showPrize(prize, "", ID);
+		}
+	}
+}
+
+function showPrize(prize, specPrize, ID){
+	if (specPrize && specPrize.length>0) {
+		return specPrize;
+	} else {
+		if (prize){
+			if (isNaN(prize)){
+				return "Приз: " + prize;
+			}	else {
+				return "Приз: " + prize +"р";
+			}
+		}
+	}
+}
+
+
+function parseAndDrawTournament(tournament){
+  var tournamentID = tournament.tournamentID;
+  var status = tournament.status;
+  
+	var players = tournament.players;
+  var maxPlayers = tournament.goNext[0];
+
+  var winnerPlaces = tournament.goNext[1];
+
+	var id= tournamentID
+	, img= getImageUrl(tournament)
+	, prize= getPrize(tournament)
+	, winPlaces= winnerPlaces
+	, players= players
+	, Max= maxPlayers
+
+	setTimeout(function(){
+		drawTournament(id, img, prize, winPlaces, players, Max);
+	}, 2000*0);
+}
 
 function drawTournament(id, img, prize, winPlaces, players, Max){
 	var text = '<div style="display:none;" id="tournamentWrapper'+id+'" class="col-sm-3 thumbnailMax tournament sm-offset">';
@@ -45,6 +119,12 @@ function drawTournament(id, img, prize, winPlaces, players, Max){
 	text += '</div>';
 	//console.log(getLogin());
 	//console.log(text);
+	console.log("drawTournament ", id)
+	/*console.log("drawTournament ", img)
+	console.log("drawTournament ", prize)
+	console.log("drawTournament ", winPlaces)
+	console.log("drawTournament ", players)
+	console.log("drawTournament ", Max);*/
 
 	$("#tournamentBlock").prepend(text);
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);
@@ -68,7 +148,7 @@ function drawName(id){
 }
 
 function drawPrizes(prize, id){
-	return '<h3 id="wnrs-'+id+'" style="height:55px; width:220px">Приз: '+prize+'</h3>';
+	return '<h3 id="wnrs-'+id+'" style="height:55px; width:220px">'+prize+'</h3>';
 }
 
 function drawReg(lgn, id){

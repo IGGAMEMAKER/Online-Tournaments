@@ -52,14 +52,43 @@ socket.on('FinishTournament', function (msg) {
   //console.log('FinishTournament');
   unsetFromObject('addresses', tournamentID);
   getProfile();
+
+  hideTournament(tournamentID);
   //drawPlayButtons();
 });
+
+function drawNewTournament(tournament){
+  parseAndDrawTournament(tournament);
+  /*var id=tournament.tournamentID
+  , img= "/img/quiz.png"
+  , prize= "Случайный"
+  , winPlaces= 1
+  , players= 0
+  , Max= 1
+
+  drawTournament(id, img, prize, winPlaces, players, Max);*/
+}
+
+function tournament_exists(ID){
+  return ( $("#tournamentWrapper"+ID).length );
+}
 
 socket.on('update', function (msg){
   var tournaments = msg;
   //console.log("---------------");
   for (var i = tournaments.length - 1; i >= 0; i--) {
-    redrawTournament(tournaments[i]);
+    var tournament = tournaments[i];
+    var ID = tournament.tournamentID;
+
+    if ( !tournament_exists(ID) ) {
+      //var tLikeObject = JSON.parse(JSON.stringify(tournament));
+      //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
+      drawNewTournament(tournament);
+      //parseAndDrawTournament(tournament);
+    } else {
+      redrawTournament(tournament);
+    }
+
     //console.log("update-"+i, tournaments[i]);
   };
 })

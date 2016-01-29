@@ -308,6 +308,11 @@ function Landing(name){
   }
 }
 
+app.post('/new_tournament', function (req, res){
+  res.end();
+  var tournament = req.body;
+  Send("NewTournament", tournament);
+})
 
 function FinishGame(req, res){
   var data = req.body;
@@ -318,7 +323,8 @@ function FinishGame(req, res){
   Log('FinishGame' + JSON.stringify(data), 'Tournaments');
   Answer(res, {result:'OK', message:'FinishGame'} );
   sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);*/
-  if (socket_enabled) io.emit('FinishTournament', { tournamentID : data.tournamentID, data:data } );
+  Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
+  //if (socket_enabled) io.emit('FinishTournament', { tournamentID : data.tournamentID, data:data } );
   Log(data, 'Tournaments');
 }
 
@@ -397,15 +403,7 @@ app.post('/', function (req, res){
   console.log('social auth', data);
 
   data.queryFields = 'tournamentID buyIn goNext gameNameID players';
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
-
-  //json_decode($s, true);
-  
-  //$user['network'] - соц. сеть, через которую авторизовался пользователь
-  //$user['identity'] - уникальная строка определяющая конкретного пользователя соц. сети
-  //$user['first_name'] - имя пользователя
-  //$user['last_name'] - фамилия пользователя
-                
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);                
 })
 
 //Error: Failed to serialize user into session
@@ -497,6 +495,13 @@ app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAut
 app.get('/vk-auth', vkAuth, vkAuthSuccess());
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess());
+
+app.post('/tellToFinishTournament', function (req, res){
+ var data = req.body;
+  sender.Answer(res, { result:'OK', message:'FinishGame' } );
+
+  Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
+})
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
   var first_name = req.params.first_name;
@@ -562,16 +567,29 @@ if (socket_enabled){
     });
   });
 }
+function Send(tag, message, force){
+  if (socket_enabled || force){
+    io.emit(tag, message);
+  }
+}
 
 function SendToRoom( room, event, msg, socket){
   if (socket_enabled) io.of(room).emit(event, msg);
 }
+
+function compare(tournaments, previous){
+
+}
+
+var previousTournaments=[];
+
 const GET_TOURNAMENTS_UPDATE = 6;
-RealtimeProvider(5000);
+RealtimeProvider(1000);
 function RealtimeProvider(period){
   sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
     if (!error){
       io.emit('update', body);
+      //compare(body, previousTournaments);
     }
 
   })

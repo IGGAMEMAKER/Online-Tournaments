@@ -1479,11 +1479,22 @@ function saveTransfer(login, cash, source){
 	}
 }
 
+/*function TellUsers (tag, message){
+	sender.sendRequest("TellUsers", {tag:tag||null, message:message||null}, "127.0.0.1", "site");
+}*/
 
 function setTournStatus(tournamentID, status){
 	Log('Set tourn status of ' + tournamentID + ' to ' + status);
 	Tournament.update({tournamentID:tournamentID}, {$set: {status:status, startedTime:new Date() }}, function (err,count){
-		if(err) { Log('Tournament status update Error: ' + JSON.stringify(err)); }
+		if(err) return Log('Tournament status update Error: ' + JSON.stringify(err));
+
+		/*if (status==TOURN_STATUS_REGISTER){
+			Tournament.findOne({tournamentID:tournamentID}, function (err, tournament){
+				if (err) return Log("CANNOT find tournament in setTournStatus #"+ tournamentID, STREAM_ERROR);
+				TellUsers("new_tournament", tournament);
+			})
+		}*/
+
 	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
 }
 
@@ -2155,7 +2166,7 @@ function getTournamentsQuery(query, fields, purpose){
 
 	switch(purpose){
 		case GET_TOURNAMENTS_UPDATE:
-			fields= 'tournamentID players goNext status';
+			fields= '';//tournamentID players goNext status
 		break;
 	}
 

@@ -80,6 +80,8 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
 
     strLog('FrontendServer StopTournament :::'+tournamentID, 'Manual');
     sender.sendRequest("StopTournament", {tournamentID:tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
+
+    sender.sendRequest("tellToFinishTournament", {tournamentID:tournamentID}, '127.0.0.1', 'site');
   }
 
   function runTournament(res, tournamentID){
