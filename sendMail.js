@@ -11,7 +11,7 @@ var canSend=0;
 
 this.set = function(mailAuth, Log){
     if (!mailAuth){
-        Log('NO MAIL CONFIGS!!!', 'Err');
+        if (Log) Log('NO MAIL CONFIGS!!!', 'Err');
         return;
     }
     canSend=1;

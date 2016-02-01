@@ -29,6 +29,8 @@ var mongoose = require('mongoose');
 var sessionDBAddress = configs.session;
 mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
+var Users = require('./models/users');
+
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 console.log(configs, configs.vk);
@@ -66,6 +68,7 @@ passport.use(new VKontakteStrategy({
     //User.findOrCreate({ vkontakteId: profile.id }, function (err, user) { return done(err, user); });
   }
 ));
+
 
 var bodyParser = require('body-parser')
 app.use(cookieParser());
@@ -214,6 +217,7 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
 
   }
 }
+
 
 
 function handleError(err, targetServer, reqUrl, res, options, parameters){
@@ -439,35 +443,16 @@ function vkAuthSuccess(){
 
     //var inviter = req.inviter;
     var inviter = req.session.inviter;
-    console.log("inviter", inviter);
+    //console.log("inviter", inviter);
 
     Log("SetInviter " + inviter + " for " + login, "Users");
-    if (!inviter) {
+    /*if (!inviter) {
       inviter = null;
       Log("no Inviter, no RM PAGE", "Users");
-    }
-
-    sender.sendRequest("SetInviter", { login:login, inviter:inviter }, "127.0.0.1", "DBServer", res, function (err, response, body, res){
-      if (!err && body && body.result=='OK') {
-        Log("got answer from DBServer: SetInviter OK", "Users");
-        saveSession(req, res, inviter, login);
-      } else {
-        Log("got err from DBServer: SetInviter OK " + err, "Users");
-        res.redirect(inviter);//, {msg: 'Server error'});
-      }
-    });
-    /*if (inviter) {
-
-
-      return;
     }*/
-    //saveSession(req, res, null, login);
-    //console.log(req.user, 'vk-auth authenticated');
 
-    
-    //req.session = {login:login};
-    // Successful authentication, redirect home.
-    //res.redirect('/tournaments');
+    if(inviter) Users.setInviter(login, inviter);
+    saveSession(req, res, inviter, login);
   }
 }
 
@@ -584,6 +569,7 @@ function compare(tournaments, previous){
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
+
 RealtimeProvider(1000);
 function RealtimeProvider(period){
   sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
@@ -591,7 +577,19 @@ function RealtimeProvider(period){
       io.emit('update', body);
       //compare(body, previousTournaments);
     }
+  })
+  setTimeout(function(){
+    RealtimeProvider(period)
+  }, period);
+}
 
+RealtimeProvider(1000);
+function RealtimeProvider(period){
+  sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
+    if (!error){
+      io.emit('update', body);
+      //compare(body, previousTournaments);
+    }
   })
   setTimeout(function(){
     RealtimeProvider(period)

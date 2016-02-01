@@ -54,41 +54,41 @@ var Stats = sender.Stats;
   next(err);
 });*/
 
-app.post('/GetTournaments',GetTournaments);
 
 app.post('/GetUsers', GetUsers);
-
-app.post('/AddTournament', AddTournament);
-
-
 app.post('/Register', Register);
-
-//app.post('/WinPrize', WinPrize);
-app.post('/FinishGame', FinishGame);
-
 app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/findOrCreateUser', findOrCreateUser);
+app.post('/Login', LoginUser);
+app.post('/Changepassword', Changepassword);
+app.post('/ResetPassword', ResetPassword);
+app.post('/SetInviter', SetInviter);
+
+
+app.post('/AddTournament', AddTournament);
+app.post('/GetTournaments',GetTournaments);
+//app.post('/WinPrize', WinPrize);
+app.post('/FinishGame', FinishGame);
+app.post('/RestartTournament', function (req, res) {StartTournament(req.body.tournamentID, true, res);});
+app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
+app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
+
+
+
+
 
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
 
-app.post('/RestartTournament', function (req, res) {StartTournament(req.body.tournamentID, true, res);});
 
-app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
-
-app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
-
-app.post('/Login', LoginUser);
 
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/CancelRegister', function (req, res) { CancelRegister(req.body, res); })
+app.post('/GetPlayers', GetPlayers);
 
-app.post('/Changepassword', Changepassword);
-app.post('/ResetPassword', ResetPassword);
 
 //app.post('/BanUser', BanUser);
 
-app.post('/GetPlayers', GetPlayers);
 
 app.post('/AddGift', function (req, res) {AddGift(req.body, res);});
 app.post('/ShowGifts', function (req, res){ShowGifts(req.body, res);});
@@ -101,9 +101,10 @@ app.post('/MoneyTransfers', MoneyTransfers);
 app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
-app.post('/SetInviter', SetInviter);
 
 app.post('/Actions', Actions);
+
+app.post('/UpdateFrontend', UpdateFrontend);
 
 app.post('/payment', function(req, res){ 
 	console.log("new payment");
@@ -184,6 +185,7 @@ var errObject = {result:'error'};
 var mongoose = require('mongoose');
 //mongoose.connect('mongodb://localhost/test');
 mongoose.connect('mongodb://'+configs.db+'/test');
+
 var User = mongoose.model('User', { login: String, password: String, money: Number, 
 	email: String, activated:String, date: Date, link: String, bonus: Object, 
 	salt:String, cryptVersion:Number, social:Object, inviter:Object });
@@ -206,6 +208,8 @@ var Message = mongoose.model('Message', {text:String, senderName:String, date: D
 
 //var TournamentResult = mongoose.model('TournamentResults', {tournamentID: String, userID: String, place:Number, giftID: String});
 //var TournamentResults = mongoose.model('TournamentResults', {tournamentID: String, results: Array});
+
+var Configs = mongoose.model('Configs', {name:String, value: String});
 
 var Tournament = mongoose.model('Tournament', { 
 	buyIn: 			Number,
@@ -234,12 +238,51 @@ var Tournament = mongoose.model('Tournament', {
 	//tournamentServerID: String
 });
 
+function create_config(name, value, res){
+
+	var cfg = new Configs({name: name, value: value});
+
+	cfg.save(function (err){
+		if (err) return sender.Answer(res, null);
+
+		return res.end(value);
+	})
+}
+
+function UpdateFrontend(req, res){
+	console.error('UpdateFrontend');
+	Configs.findOne({name:'frontendVersion'}, function (err, version){
+		if (err) return sender.Answer(res, Fail);
+
+		var v=1;
+		if (version){
+
+			v = parseInt(version.value, 10);
+			v++;
+			v+= "";
+			Configs.update({name:'frontendVersion'}, { $set : { value : v } }, function (err, count){
+				if (err) return sender.Answer(res, Fail);
+
+				if (!updated(count)) {	
+					v="not updated";
+				}
+
+				res.end(v); 
+			})
+		} else {
+			create_config('frontendVersion', v+"", res);
+		}
+
+	})
+}
+
+
 function dayQuery(date){
 	var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	var tmrw 	= new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	tmrw.setDate(tmrw.getDate() + 1);
 
-	console.log(today, tmrw);
+	//console.log(today, tmrw);
 
 	var query = {
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
@@ -313,6 +356,8 @@ function servError(err, res){
 		Answer(res, {result:'ServerError'} );
 	}
 }
+
+
 
 //var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609a7da4d4145c718549ab3' });//ObjectId(
 /*var uGift = new UserGift({ userID: 'Alvaro_Fernandez', giftID: '5609b3a58b659cb7194c78c5' });//ObjectId(
@@ -401,10 +446,6 @@ function ShowGifts(data, res){
 	}
 }
 
-/*var Server = mongoose.model('Server'{
-	host: String, port: Number,
-});*/
-
 var OBJ_EXITS = 11000;
 
 //addGame('Battle', 3, {port:5011, maxPlayersPerGame:2} );
@@ -481,12 +522,7 @@ function SetInviter(req, res){
 		} else {
 			Answer(res, OK);
 		}
-
-
 	})
-
-
-
 }
 
 function EnableTournament(data, res){
@@ -794,6 +830,7 @@ function MoneyTransfers(req, res){
 		}
 	})
 }
+
 function TournamentLog(tournamentID, message){
 	var time = new Date();
 	//console.log('TournamentLog LOGGING!!!!');
@@ -934,7 +971,6 @@ var REGULARITY_STREAM=2;
 var SPECIALITY_SPECIAL=1;
 
 function isStreamTournament(tournament){
-
 	return tournament.settings && tournament.settings.regularity==REGULARITY_STREAM;
 }
 
@@ -1057,8 +1093,7 @@ function RegisterUserInTournament(data, res){
 					if (updated(count)) { 
 						Log('goNext updated', STREAM_TOURNAMENTS); 
 					} else {
-						Log('goNext update FAILED', STREAM_TOURNAMENTS); 
-						setQuestions('goNext update FAILED', STREAM_ERROR); 
+						Log('goNext update FAILED', STREAM_TOURNAMENTS);
 					}
 				});
 			}
@@ -1331,7 +1366,6 @@ function GetUsers( req,res){
 }
 
 function send_cashout_email(login, money, cardNumber){
-
 	mailer.sendStd(configs.mailUser, 'Cashout Request', 'user ' + login + ' needs ' + money + '$.<br> User cardNumber is : ' + cardNumber,'TXT2', null);
 }
 
@@ -1382,6 +1416,7 @@ function IncreaseMoney(req,res) {
 	incrMoney(res, login, cash, {type: SOURCE_TYPE_DEPOSIT});
 	console.log("payment info" , data.info);
 }
+
 function DecreaseMoney(req, res) {
 
 	Log('DecreaseMoney!!!!');
@@ -1844,13 +1879,6 @@ function now(){
 	return new Date();
 }
 
-function createActivationLink(login){
-	var domainName = 'online-tournaments.org';
-	domainName = 'localhost';
-	Log('Rewrite createActivationLink. It must be less human-readable. guuid', STREAM_SHIT);
-	return login;
-}
-
 var USER_EXISTS = 11000;
 var INVALID_DATA = 100; 
 
@@ -2077,13 +2105,14 @@ function Register (req, res){
 	var data = req.body;
 	Log('Register '+ JSON.stringify(data), STREAM_USERS);
 	Stats('Register',{});
+
 	createUser(data)
 	//.then(sendActivationEmail)
 	.then(function (user){
 		//Log('Reg OK: ' + JSON.stringify(msg) , STREAM_USERS);
 		Answer(res, OK);
 		sendActivationEmail(user);
-		register_newbie_in_tournament(data.login);
+		//register_newbie_in_tournament(data.login);
 	})
 	.catch(function (msg){
 		Log('REG fail: ' + JSON.stringify(msg) , STREAM_USERS);
@@ -2268,22 +2297,6 @@ function AutoAddTournament (tournament1){
 		}
 	});
 }
-
-
-function Initialize(){
-	Tournament.find({status:null})
-	.exec(function (err, tournaments){
-		if (err) return err;
-		if (tournaments){
-			for (var i = tournaments.length - 1; i >= 0; i--) {
-				setTournStatus(tournaments[i].tournamentID, TOURN_STATUS_REGISTER);
-
-			};
-		}
-	})
-}
-//Initialize();
-
 
 function multiLog(message, streams){
 	for (var i = streams.length - 1; i >= 0; i--) {	Log(message,streams[i]); }

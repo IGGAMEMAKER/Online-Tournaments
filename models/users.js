@@ -1,15 +1,8 @@
 var Promise = require('bluebird');
 
 var configs = require('../configs');
-var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
-mongoose.connect('mongodb://'+configs.db+'/test');
-
-var User = mongoose.model('User', { 
-	login: String, password: String, money: Number, 
-	email: String, activated:String, date: Date, link: String, bonus:Object, 
-	salt:  String, cryptVersion:Number 
-});
+var models = require('../models')(configs.db);
+var User = models.User;
 
 var validator = require('validator');
 
@@ -30,7 +23,7 @@ function all(){
 	return new Promise(function(resolve, reject){
 		User.find({}, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
 			if (err) return reject(err);
-
+			//console.log(users)
 			return resolve(users||null);
 		});
 
@@ -48,11 +41,14 @@ function profile(login){
 	})
 }
 
-function create(login, password, email){
+function create(login, password, email, inviter){
 	return new Promise(function (resolve, reject){
 		if ( invalid_email(email) || invalid_login(login) || invalid_pass(password) ) return reject(INVALID_DATA);
 
 		var USER = get_new_user(login, password, email);
+
+		if (inviter && validator.isAlphanumeric(inviter)) USER.inviter= inviter;
+
 		var user = new User(USER);
 		user.save(function (err) {
 			if (err){
@@ -107,6 +103,29 @@ function changePassword(login, oldPass, newPass){
 			return update_password(login, newPass, CURRENT_CRYPT_VERSION);
 		})
 	})*/
+}
+
+function setInviter(login, inviter){
+	return new Promise(function (resolve, reject){
+		User.findOne({login:login}, function (err, user){
+			if (err) { return reject(err); }
+
+			if (!user || user.inviter) { return reject(null); }
+
+			User.update({login:login}, function (err, count){
+				if (err) { return reject(err); }
+
+				if (updated(count)) {
+					resolve(null);
+				} else {
+
+					reject(null);
+				}
+
+			})
+
+		})
+	})
 }
 
 function resetPassword(user){
@@ -325,3 +344,10 @@ function catcher(err){
 		log('null error');
 	}
 }
+
+module.exports.all = all;
+module.exports.profile = profile;
+module.exports.auth = auth;
+module.exports.setInviter = setInviter;
+module.exports.changePassword = changePassword;
+module.exports.resetPassword = resetPassword;

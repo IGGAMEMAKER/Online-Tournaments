@@ -1,9 +1,8 @@
 var Promise = require('bluebird');
 
 var configs = require('../configs');
-var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
-var db = mongoose.createConnection('mongodb://'+configs.db+'/test');
+var models = require('../models')(configs.db);
+var TournamentReg = models.TournamentReg;
 
 var helper = require('../helpers/helper');
 var log = helper.log;
@@ -11,7 +10,7 @@ var log = helper.log;
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
 
-var TournamentReg = db.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
+//var TournamentReg = db.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -55,14 +54,15 @@ function getParticipants(tournamentID){
 	});
 }
 
-function getPlayerRegs(login){
+function get(login){
 	return new Promise(function (resolve, reject){
 		TournamentReg
 		.find({userID:login, status : { $ne: TOURN_STATUS_FINISHED } })
 		.sort('-tournamentID')
 		.exec(function (err, tournaments){
+			//console.log('TournamentReg');
 			if (err) return reject(err);
-
+			console.log('TournamentReg', tournaments);
 			return resolve(tournaments || {});
 		})
 	});
@@ -156,3 +156,7 @@ function test_add(tournamentID, login, promo){
 .catch(helper.catcher)*/
 
 this.getParticipants = getParticipants;
+this.get = get;
+this.add = add;
+this.remove = remove;
+this.userRegistered = userRegistered;

@@ -18,12 +18,12 @@ function GetTournamentAddress(tID){
 
 function saveProfile(){
 	return function (data) {
-		var profile = JSON.parse(data); // prt(profile);
-		var tournaments = profile.tournaments;
+		var profile = JSON.parse(data); prt(profile);
+		var tournaments = profile.tournaments||{};
 		var money = profile.money;
 
-		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 		saveInStorage('money', money);
+		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 
 		resetRunningTournaments();
 		//var tournaments = getTournaments();

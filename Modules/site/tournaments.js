@@ -174,29 +174,6 @@ var upload = multer({ storage: storage }).single('image');
 		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
 	})
 
-	/*app.post('/FinishGame', FinishGame);
-	function FinishGame(req, res){
-    var data = req.body;
-    sender.Answer(res, {result:'OK', message:'FinishGame'} );
-    strLog(data, 'Tournaments');
-    sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
-	}*/
-
-	/*app.all('/StartTournament', function (req, res){
-		//console.log(req.url);
-		Log('StartTournament', 'ASD');
-		console.log('Site starts tournament');
-		var data = req.body;
-		//console.log(req.body);
-
-		//
-		sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
-		//
-
-		//io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
-		res.end();
-	});*/
-
 	app.post('/ServeTournament', ServeTournament);
 	function ServeTournament (req, res){
 		var data = req.body;

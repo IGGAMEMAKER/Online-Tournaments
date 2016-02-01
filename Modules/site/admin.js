@@ -1,5 +1,5 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
-
+  var Users = require('../../models/users');
 
   var multer  = require('multer')
 
@@ -74,6 +74,22 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     AsyncRender(servName, 'GetGames', res);
   }
 
+  function Respond(template){
+    return function (req, res){
+      if (template){
+        res.render(template, req.result||null);
+      } else {
+        res.end(JSON.stringify(req.result));
+      }
+    }
+  }
+
+  app.get("/UpdateFrontend", function (req, res) {
+    sender.sendRequest("UpdateFrontend", {}, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
+      res.end(JSON.stringify(body));
+    });
+  });
+
 
   function stopTournament(res, tournamentID){
     sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy);
@@ -111,11 +127,19 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   });
 
   app.get('/Users' , function (req, res){    
-    var data = req.body;
+    /*var data = req.body;
     data.query = {};//tournamentID:req.query.tID};
     data.queryFields = 'login money';
-    //siteAnswer(res, 'GetUsers', data, 'Users');//, {login: req.session.login?req.session.login:''} );//Users
     AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
+    */
+    Users.all()
+    .then(function(users){
+      console.log(users);
+      res.render('Users', {msg:users});
+    })
+    .catch(function(err){
+      res.end(JSON.stringify(err));
+    })
   });
 
   app.get('/Mail', function (req, res){
