@@ -6,9 +6,9 @@ function create_random_password () {
 }
 
 function passwordCorrect (user, enteredPassword){
-	console.log(user);
+	//console.log(user);
 	if (!user.cryptVersion) { return enteredPassword==user.password; }
-	console.log(user);
+	//console.log(user);
 
 	switch(user.cryptVersion){
 		case 0: return enteredPassword == user.password;						break;

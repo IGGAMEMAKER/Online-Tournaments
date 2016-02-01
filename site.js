@@ -33,7 +33,7 @@ var Users = require('./models/users');
 
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
-console.log(configs, configs.vk);
+//console.log(configs, configs.vk);
 
 
 passport.serializeUser(function(user, done) {
@@ -487,6 +487,20 @@ app.post('/tellToFinishTournament', function (req, res){
 
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
 })
+
+var middlewares = require('./middlewares');
+var authenticated = middlewares.authenticated;
+var isAdmin = middlewares.isAdmin;
+
+app.get('/Tell', isAdmin, function (req, res){
+  //res.render('Tell');
+  res.sendFile(__dirname + '/sock1.html');
+})
+
+app.post('/Tell', isAdmin, function (req, res){
+  var message = req.body.message;
+  Send('Tell', {message:message});
+})
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
   var first_name = req.params.first_name;
@@ -545,6 +559,8 @@ if (socket_enabled){
       console.log(message, 'message');
       sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
     });
+
+    //socket.on('')
 
     socket.on('event1', function(data){
       SendToRoom('/111', 'azz', 'LALKI', socket);

@@ -43,7 +43,7 @@ function profile(login){
 
 function create(login, password, email, inviter){
 	return new Promise(function (resolve, reject){
-		if ( invalid_email(email) || invalid_login(login) || invalid_pass(password) ) return reject(INVALID_DATA);
+		if ( invalid_email(email) || invalid_pass(password) ) return reject(INVALID_DATA);//|| invalid_login(login)
 
 		var USER = get_new_user(login, password, email);
 
@@ -70,17 +70,45 @@ function auth(login, password){
 	return new Promise(function(resolve, reject){
 		User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {
 			if (err) return reject(err);
-
+			//console.log('auth', user);
+			//console.log('--------------');
 			if (user && passwordCorrect(user, password) ){
-				resolve(OK);
-
+				resolve({login:user.login});//resolve(OK);
+				//console.log('passwordCorrect');
 				if (password_needs_update(user.cryptVersion)) update_password(login, password, CURRENT_CRYPT_VERSION);
 			}	else {
-				return resolve(null);
+				return reject(null);
 			}
 		});
 	})
 }
+
+/*function LoginUser(req, res){
+	var data = req.body;
+	cLog("LoginUser... " + JSON.stringify(data));
+
+	var login = data['login'];
+	var password = data['password'];
+	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', STREAM_USERS);
+
+	User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
+		if (err) {
+			Error(err, 'CANNOT LOG IN USER!!!');
+			Answer(res, {result: err});
+		}	else {
+			if (user && passwordCorrect(user, password) ){
+				Log('Logged in ' + JSON.stringify(user), STREAM_USERS);
+				Answer(res, OK);
+				if (user.cryptVersion!=CURRENT_CRYPT_VERSION){
+					update_password(login, password, CURRENT_CRYPT_VERSION);		    	
+				}
+			}	else {
+				Log('Invalid login/password : ' + login, STREAM_USERS);
+				Answer(res, {result:'Invalid reg'});
+			}
+		}
+ 	});
+}*/
 
 function changePassword(login, oldPass, newPass){
 	return auth(login, oldPass)
@@ -351,3 +379,4 @@ module.exports.auth = auth;
 module.exports.setInviter = setInviter;
 module.exports.changePassword = changePassword;
 module.exports.resetPassword = resetPassword;
+module.exports.create = create;

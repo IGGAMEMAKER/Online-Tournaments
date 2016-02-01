@@ -6,9 +6,12 @@ div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
 				center
 					h3(class="mg-md" id="loginForm") Вход
 				form(id="form-5" action="/Login" method="post" novalidate)
-					div(class="form-group")
+					//div(class="form-group")
 						label Логин
 						input(type="text" class="form-control" name="login")
+					div(class="form-group")
+						label Email
+						input(type="text" class="form-control" name="email")
 					div(class="form-group")
 						label Пароль
 						input(type="password" class="form-control" name="password")

@@ -1,6 +1,10 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
   var Users = require('../../models/users');
-
+  
+  var middlewares = require('../../middlewares');
+  var authenticated = middlewares.authenticated;
+  var isAdmin = middlewares.isAdmin;
+  
   var multer  = require('multer')
 
   var storage = multer.diskStorage({

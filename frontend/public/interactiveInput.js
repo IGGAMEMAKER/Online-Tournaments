@@ -28,6 +28,39 @@
 
 	var PASS_LENGTH = "Допустимая длина пароля от " + MIN_PASS_LENGTH + " до " + MAX_PASS_LENGTH + "символов";
 
+	function valid_field(field, isValid){
+		var value = document.getElementById(field).value;
+
+		var colour = WHITE;
+		var text = EMPTY;
+
+		if (value.length==0){
+			colour = WHITE;
+			text = EMPTY;
+		}	else {
+			if (isValid(value)){
+				colour=GREEN;
+				text = CORRECT;
+			}
+			else{
+				colour=RED;
+				switch(field){
+					case 'email' : text = EMAIL_INVALID; break;
+					case 'password' : text = PASS_INVALID; break;
+				}
+			}
+		}
+
+		if (text!=CORRECT){
+			HideSubmitButton(field, text);
+		} else {
+
+			ShowSubmitButton(field);
+		}
+
+		document.getElementById(field).setAttribute("style", "background-color:"+colour);
+	}
+
 	function emailListener(){
 		var field = "email";
 		//alert( document.getElementById("email").value );
@@ -59,7 +92,7 @@
 		}
 
 		document.getElementById("email").setAttribute("style", "background-color:"+colour);
-		document.getElementById("emailValidator").innerHTML=text;//("value", 1);
+		//document.getElementById("emailValidator").innerHTML=text;//("value", 1);
 	}
 
 	function PassListener(){
@@ -81,7 +114,6 @@
 				colour = obj.colour;
 				text = obj.text;
 			}
-			
 		}
 		
 		if (text!=CORRECT){
@@ -93,42 +125,8 @@
 		document.getElementById(field + "Validator").innerHTML=text;
 	}
 
-	function LoginListener(){
-		var field = "login";
-		var value = document.getElementById("login").value;
-
-		var colour = WHITE;
-		var text=EMPTY;
-
-		if (value.length==0){
-			colour = WHITE;
-			text = EMPTY;
-		}
-		else{
-			if (validator.isAlphanumeric(value)){
-				colour=GREEN;
-				text = CORRECT;
-			}
-			else{
-				colour=RED;
-				text = LOGIN_INVALID;
-			}
-		}
-		if (text!=CORRECT){
-			HideSubmitButton(field, text);
-		} else {
-			ShowSubmitButton(field);
-		}
-
-		drawLoginValidity()
-		document.getElementById("login").setAttribute("style", "background-color:"+colour);
-
-		document.getElementById("loginValidator").innerHTML=text;
-	}
-
-
 	function checkPassword(value){
-		if (validator.isAlphanumeric(value)){
+		/*if (validator.isAlphanumeric(value)){
 			return {
 				colour:GREEN,
 				text : CORRECT
@@ -139,7 +137,9 @@
 				colour:RED,
 				text : PASS_INVALID
 			}
-		}
+		}*/
+
+		return (validator.isAlphanumeric(value) && value.length >= MIN_PASS_LENGTH && value.length <= MAX_PASS_LENGTH);
 	}
 
 	function drawTypeButton(){
@@ -175,7 +175,7 @@
 
 
 	function ValidData(){
-		return validityData.email == OK;// &&validityData.password == OK &&  validityData.login == OK;
+		return validityData.email == OK && validityData.password == OK;// &&  validityData.login == OK;
 	}
 
 	function ShowSubmitButton(fieldName){
@@ -189,16 +189,36 @@
 		drawTypeButton();
 	}
 
+	function emailListener1(){
+		return valid_field("email", validator.isEmail);
+	}
+
+	function passwordIsValid(password){
+		var a = checkPassword(password);
+		console.log('checkPassword', password, a);
+		return a;
+	}
+
+	function passListener1(){
+		return valid_field("password", passwordIsValid);
+	}
+
 
 	function submitForm(event){
 		event.preventDefault();
 		console.log(asd);
 	}
 
-	document.getElementById("email").addEventListener("input", emailListener);
+	/*document.getElementById("email").addEventListener("input", emailListener);
 	document.getElementById("email").addEventListener("onchange", emailListener);
 
-	document.getElementById("email").setAttribute("placeholder","Email");
+	document.getElementById("password").addEventListener("input", PassListener);
+	document.getElementById("password").addEventListener("onchange", PassListener);*/
+	document.getElementById("email").addEventListener("input", emailListener1);
+	document.getElementById("email").addEventListener("onchange", emailListener1);
+
+	document.getElementById("password").addEventListener("input", passListener1);
+	document.getElementById("password").addEventListener("onchange", passListener1);
 
 	/*document.getElementById("loginValidator").setAttribute("style", "color:"+RED);
 	document.getElementById("emailValidator").setAttribute("style", "color:"+RED);

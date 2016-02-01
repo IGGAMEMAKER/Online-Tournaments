@@ -39,6 +39,10 @@ socket.on('StartTournament', function (msg){
   
 });
 
+socket.on('Tell', function (msg){
+  alert(msg);
+})
+
 socket.on('FinishTournament', function (msg) {
   var tournamentID = msg.tournamentID;
   console.log('I am ', login);
