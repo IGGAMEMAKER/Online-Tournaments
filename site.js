@@ -451,7 +451,7 @@ function vkAuthSuccess(){
       Log("no Inviter, no RM PAGE", "Users");
     }*/
 
-    if(inviter) Users.setInviter(login, inviter);
+    if (inviter) Users.setInviter(login, inviter);
     saveSession(req, res, inviter, login);
   }
 }
