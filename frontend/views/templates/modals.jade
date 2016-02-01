@@ -29,6 +29,17 @@ mixin closeTournamentModal()
 					p Some text in the modal.
 				div(class="modal-footer")
 					button(type="button" class="btn btn-default" data-dismiss="modal")Close
+mixin serverMessage()
+	div(id="serverMessage" class="modal fade" role="dialog")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					button(type="button" class="close" data-dismiss="modal") &times;
+					h4(class="modal-title") Сообщение от сервера
+				div(class="modal-body" id="close-body")
+					p(id="serverMsg") ...
+				div(class="modal-footer")
+					#buttonSpace
 
 mixin notEnoughMoney()
 	//button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#payModal") No money

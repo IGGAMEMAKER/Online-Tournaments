@@ -39,8 +39,29 @@ socket.on('StartTournament', function (msg){
   
 });
 
+function drawServerMessage(msg){
+  console.log('drawServerMessage', msg);
+  $('#serverMsg').html(msg.message);
+
+  switch(msg.action){
+    case 'reload':
+      setTimeout(function(){
+        reload();
+      }, 2000);
+      //$('#ServerMessageButtonSpace')html(',')
+    break;
+  }
+
+  $('#serverMessage').modal('show');
+}
+
+/*function drawReloadButton(place){
+  $(place).append('')
+}*/
+
 socket.on('Tell', function (msg){
-  alert(msg);
+  drawServerMessage(msg);
+  //alert('msg');
 })
 
 socket.on('FinishTournament', function (msg) {

@@ -282,3 +282,4 @@ function drawPayingModal(data){
 
   if (needToPay>0) $(payModal).modal('show');
 }
+

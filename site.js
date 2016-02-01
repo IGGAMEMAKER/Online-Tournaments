@@ -493,13 +493,18 @@ var authenticated = middlewares.authenticated;
 var isAdmin = middlewares.isAdmin;
 
 app.get('/Tell', isAdmin, function (req, res){
-  //res.render('Tell');
-  res.sendFile(__dirname + '/sock1.html');
+  res.render('Tell');
+  //res.sendFile(__dirname + '/sock1.html');
 })
 
 app.post('/Tell', isAdmin, function (req, res){
   var message = req.body.message;
-  Send('Tell', {message:message});
+  var action = req.body.action;
+
+  console.log('Tell', message, req.body);
+  Send('Tell', {message:message, action:action||null});
+
+  res.render('Tell');
 })
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
