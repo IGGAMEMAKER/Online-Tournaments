@@ -189,6 +189,10 @@ function statAttemptToStart(tournamentID){
   setAsync('AttemptToStart', { tournamentID: tournamentID });
 }
 
+function stat_noMoney(tournamentID, money){
+  setAsync('NoMoney', {tournamentID:tournamentID, money:money});
+}
+
 
 function getTournaments(){
   return JSON.parse(getFromStorage('tournaments')) ;

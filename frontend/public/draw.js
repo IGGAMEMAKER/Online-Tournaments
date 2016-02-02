@@ -280,6 +280,9 @@ function drawPayingModal(data){
   $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + 'p</b>');
   $("#needToPay").html('К оплате: <b>'+needToPay+'p</b>');
 
-  if (needToPay>0) $(payModal).modal('show');
+  if (needToPay>0) { 
+    stat_noMoney(0, needToPayRU);
+    $(payModal).modal('show');
+  }
 }
 

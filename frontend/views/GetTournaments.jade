@@ -180,9 +180,8 @@ html
 		//link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
 		script(src="registerUserInTournament.js")
 		script(src="drawTournaments.js")
-		//script(src="updater.js")
-		//script.
-			drawStdTournament();
+		script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251")
+		
 	body
 		div(class="page-container")
 			include client
@@ -194,6 +193,25 @@ html
 							h3(class="mg-md text-center") Турниры
 			//p!= JSON.stringify(msg)
 			+showTournaments(msg)
+			#vk_share_button
+			//script.
+				//document.getElementById('vk_share_button').innerHTML = VK.Share.button("http://online-tournaments.org", {type: 'button_nocount', text:'Поделиться'});
+				document.getElementById('vk_share_button').innerHTML = VK.Share.button("http://online-tournaments.org", {type: 'custom', text: '<p class="btn btn-primary">Поделиться с друзьями</p>'});
+
+				//document.write(VK.Share.button({url: "http://online-tournaments.org", title: "Мой классный сайт"}, {type: "custom", text: '<img src="http://vk.com/images/vk32.png" />'})); 
+				document.write(VK.Share.button(
+				{
+					url: "http://online-tournaments.org?title=awesomeSite",
+					title: 'Хороший сайт',
+					description: 'Это мой собственный сайт, я его очень долго делал',
+					image: "http://vk.com/images/vk32.png",
+					noparse: true
+				}));
 			br
 			br
+			div(id="vk_post_1_45616")
+			//script.
+				(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//vk.com/js/api/openapi.js?105"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'vk_openapi_js'));
+				(function() { window.VK && VK.Widgets && VK.Widgets.Post && VK.Widgets.Post("vk_post_111187123_6", 111187123, 6, 'ZMk4b98xpQZMJJRXVsL1ig', {width: 500}) || setTimeout(arguments.callee, 50);  }());
+
 			include templates/footer

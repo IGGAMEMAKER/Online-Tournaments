@@ -5,6 +5,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var Users = require('../../models/users');
 	var TournamentReg = require('../../models/tregs');
 	var mail = require('../../helpers/mail');
+	var Actions = require('../../models/actions');
 
 	var authenticated = require('../../middlewares').authenticated;
 
@@ -65,6 +66,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			console.log('registered', user);
 			mail.sendActivationEmail(user);
 			saveSession(req, res);
+
+			Actions.add(login, 'register');
+
 		})
 		.catch(function(err){
 			res.render('Register',{msg:err});
@@ -98,6 +102,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			console.log('logged In', user);
 			req.user= user;
 			saveSession(req, res);
+
+			Actions.add(login, 'login');
 		})
 		.catch(function(err){
 			res.render('Login',{msg:err});

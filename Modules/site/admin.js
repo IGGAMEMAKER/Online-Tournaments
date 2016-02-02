@@ -1,5 +1,6 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
   var Users = require('../../models/users');
+  var Actions = require('../../models/actions');
   
   var middlewares = require('../../middlewares');
   var authenticated = middlewares.authenticated;
@@ -146,8 +147,54 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     })
   });
 
+  app.get('/UserInfo/:login', function (req, res){
+    var login = req.params.login;
+    if (login){
+      Actions.findByLogin(login)
+      .then(function (actions){
+        res.json({
+          msg:'found info about '+ login
+          , result: actions||null
+        })
+      })
+      .catch(function(err){
+        res.json({msg:'err', text:err});
+      })
+    } else {
+      res.json({msg:'no login'})
+    }
+  })
+
+  app.get('/Actions', function (req, res){
+    Actions.findAllPerDay()
+    //.then(sendJSON(res))
+    .then(render(res, 'Actions'))
+    .catch(sendError(res));
+  })
+
   app.get('/Mail', function (req, res){
     AsyncRender("DBServer", 'Mail', res, {}, {});
   })
+
+  function render(res, page){
+    return function(data){
+      res.render(page, {msg:data});
+    }
+  }
+
+  function sendJSON(res){
+    return function (data){
+      res.json({
+        msg:'OK'
+        , result: data||null
+      })
+    }
+  }
+
+  function sendError(res){
+    return function (err){
+      res.json({msg:'err', text:err});
+    }
+  }
 
 }

@@ -34,6 +34,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 	})
 
+	app.post('/NoMoney', function (req, res){
+		var tournamentID = req.body.tournamentID;
+		var money = req.body.money||0;
+
+		strLog('No money for '+tournamentID + ' need: ' + money, 'Money');
+	})
+
 	
 	//statistics Data
 	app.get('/Stats', function (req, res){

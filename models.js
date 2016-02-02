@@ -53,6 +53,13 @@ module.exports = function(dbAddress){
 
 			startedTime: 		Date
 			//tournamentServerID: String
+		}),
+
+		Action : db.model('Action', {
+			login: String,
+			date: Date,
+			type: String,
+			auxillaries: Object
 		})
 
 	}
