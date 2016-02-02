@@ -1,6 +1,8 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, proxy){
 var Fail = { result:'fail'};
 
+//var Actions = require('../../models/actions');
+
 var PRICE_FREE = 4;
 var PRICE_TRAINING = 5;
 

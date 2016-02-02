@@ -42,6 +42,8 @@ var handler = require('./errHandler')(app, Log, serverName);
 
 var Stats = sender.Stats;
 
+var Actions = require('./models/actions');
+
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
@@ -102,7 +104,7 @@ app.post('/AddMessage', AddMessage);
 app.post('/GetMessages', GetMessages);
 
 
-app.post('/Actions', Actions);
+//app.post('/Actions', Actions);
 
 app.post('/UpdateFrontend', UpdateFrontend);
 app.post('/GetFrontendVersion', GetFrontendVersion);
@@ -351,9 +353,9 @@ function get_today_tournaments(req, res, next){
 	})
 }
 
-function Actions(req, res){
+/*function Actions(req, res){
 	return []
-}
+}*/
 
 
 function SERVER_ERROR(err, res){
@@ -910,6 +912,8 @@ function CancelRegister(data, res){
 	})
 	.then(function (msg){
 		Answer(res, OK);
+
+		Actions.add(login, 'tournament.leave', {tournamentID:tournamentID});
 	})
 	.catch(function (err){
 		cLog('CATCHED error while CancelRegister'); cLog(err);
@@ -1086,6 +1090,7 @@ function RegisterUserInTournament(data, res){
 	.then(function (saved){
 		//console.log('REGISTER OK!!!!!');
 		if (res) Answer(res, OK);
+		Actions.add(login, 'tournament.join', {tournamentID:tournamentID});
 
 		if (playerCount==maxPlayers-1){
 			StartTournament(tournamentID);
@@ -1094,8 +1099,8 @@ function RegisterUserInTournament(data, res){
 				// stream tournaments addition
 				var newGoNext = TT.goNext;
 
-				Log('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
-				Log('goNext was '+JSON.stringify(newGoNext), STREAM_USERS);
+				/*Log('goNext was '+JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
+				Log('goNext was '+JSON.stringify(newGoNext), STREAM_USERS);*/
 
 				newGoNext[0]++;
 				Log('goNext now ' + JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
@@ -1104,7 +1109,8 @@ function RegisterUserInTournament(data, res){
 					if (err) return 0;
 
 					if (updated(count)) { 
-						Log('goNext updated', STREAM_TOURNAMENTS); 
+						Log('goNext updated', STREAM_TOURNAMENTS);
+
 					} else {
 						Log('goNext update FAILED', STREAM_TOURNAMENTS);
 					}

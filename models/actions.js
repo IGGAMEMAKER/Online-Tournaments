@@ -31,7 +31,12 @@ module.exports = {
 
 	add: function(login, type, auxillaries) {
 		return new Promise(function (resolve, reject){
-			action = new Actions({login : login, type : type, date:new Date(), auxillaries : auxillaries || null});
+			action = new Actions({
+				login : login, 
+				type  : type, 
+				date  : new Date(), 
+				auxillaries : auxillaries || null
+			});
 			action.save(function (err){
 				if (err) return reject(err);
 
