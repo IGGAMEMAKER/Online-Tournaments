@@ -11,28 +11,40 @@ mixin drawAux(action)
 				span (!{action.auxillaries})
 
 mixin drawActions(actions)
-		table(class="table table-bordered table-striped" style="width:70%;")
-			thead
+	table(class="table table-bordered table-striped" style="width:70%;")
+		thead
+			tr
+				th №
+				th Игрок
+				th Действие
+				th Время
+		tbody
+			each action, ind in actions
 				tr
-					th №
-					th Игрок
-					th Действие
-					th Время
-			tbody
-				each action, ind in actions
-					tr
-						td!= ind
-						td
-							a(href="UserInfo/"+action.login) #{action.login}
-						td
-							span !{action.type}
-							+drawAux(action)
+					td!= ind
+					td
+						a(href="UserInfo/"+action.login) #{action.login}
+					td
+						span !{action.type}
+						+drawAux(action)
 
-						td!= action.date
+					td!= action.date
 
 			//p!= action
 mixin registeredIn(tournaments)
-	each t in tournaments
+	table(class="table table-bordered table-striped" style="width:70%;")
+		thead
+			tr
+				th №
+				th player
+				th tournamentID
+		tbody
+			each t, ind in tournaments
+				tr
+					td!= ind
+					td!= t.userID
+					td!= t.tournamentID
+	//each t in tournaments
 		p!=t
 
 html
@@ -63,8 +75,9 @@ html
 				a(href="https://vk.com/"+msg.social.screen_name target="_blank") VK #{msg.social.screen_name}
 			else
 				span !{msg.email}
-			h3 Active tournaments
+			a(href="/")
+				h3 Active tournaments
 			+registeredIn(msg.tournaments)
-			h3 Current tournaments
+			h3 Recent actions
 			+drawActions(msg.actions)
 			//+drawUsers(msg)

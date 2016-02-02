@@ -479,7 +479,7 @@ app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAut
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess());
 
-app.get('/vk-auth', vkAuth, vkAuthSuccess());
+//app.get('/vk-auth', vkAuth, vkAuthSuccess());
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
@@ -506,6 +506,7 @@ app.post('/Tell', isAdmin, function (req, res){
 
   res.render('Tell');
 })
+
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
   var first_name = req.params.first_name;
