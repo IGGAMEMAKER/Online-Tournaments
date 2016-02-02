@@ -54,6 +54,22 @@ function getParticipants(tournamentID){
 	});
 }
 
+function playedCount(login){
+	return new Promise(function (resolve, reject){
+		TournamentReg
+		.find({userID:login, status : TOURN_STATUS_FINISHED })
+		.sort('-tournamentID')
+		.exec(function (err, tournaments){
+			//console.log('TournamentReg');
+			if (err) return reject(err);
+			//console.log('playedCount', tournaments);
+			if (tournaments) return resolve(tournaments.length || 0);
+
+			return resolve(0);
+		})
+	})
+}
+
 function get(login){
 	return new Promise(function (resolve, reject){
 		TournamentReg
@@ -160,3 +176,4 @@ this.get = get;
 this.add = add;
 this.remove = remove;
 this.userRegistered = userRegistered;
+this.playedCount = playedCount;

@@ -1,6 +1,7 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
   var Users = require('../../models/users');
   var Actions = require('../../models/actions');
+  var TournamentReg = require('../../models/tregs');
   
   var middlewares = require('../../middlewares');
   var authenticated = middlewares.authenticated;
@@ -149,8 +150,36 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
 
   app.get('/UserInfo/:login', function (req, res){
     var login = req.params.login;
+
     if (login){
-      Actions.findByLogin(login)
+      var profile={
+        login:login,
+        tournaments:{}
+      }
+      Users.profile(login)
+      .then(function (user){
+        profile.money = user.money;
+        profile.email = user.email;
+        if (user.social) profile.social = user.social;
+        return TournamentReg.get(login)
+      })
+      .then(function (tournaments){
+        profile.tournaments = tournaments;
+        return Actions.findByLogin(login)
+      })
+      .then(function (actions){
+        profile.actions = actions;
+        return TournamentReg.playedCount(login);
+      })
+      .then(function (playedCount){
+        profile.playedCount = playedCount;
+        console.log('UserInfo,',profile);
+        return profile;
+      })
+      .then(render(res, 'UserInfo'))//sendJSON(res)
+      .catch(sendError(res))
+
+      /*Actions.findByLogin(login)
       .then(function (actions){
         res.json({
           msg:'found info about '+ login
@@ -159,11 +188,36 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
       })
       .catch(function(err){
         res.json({msg:'err', text:err});
-      })
+      })*/
     } else {
       res.json({msg:'no login'})
     }
   })
+
+  function get_profile(req, res, next){
+    var login = getLogin(req);
+    var profile={
+      login:login,
+      tournaments:{}
+    }
+    Users.profile(login)
+    .then(function (user){
+      profile.money = user.money;
+      profile.email = user.email;
+      return TournamentReg.get(login)
+    })
+    .then(function (tournaments){
+      profile.tournaments = tournaments;
+      req.profile = profile;
+      next()
+    })
+    .catch(function (err){
+      console.error('get_profile error', err);
+      req.profile = null;
+      next();
+      //next(err);
+    })
+  }
 
   app.get('/Actions', function (req, res){
     Actions.findAllPerDay()

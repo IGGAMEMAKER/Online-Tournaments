@@ -1,0 +1,70 @@
+//
+
+mixin drawAux(action)
+	if action.auxillaries
+		case action.type
+			when 'tournament.join'
+				span    !{action.auxillaries.tournamentID}
+			when 'tournament.leave'
+				span    !{action.auxillaries.tournamentID}
+			default 
+				span (!{action.auxillaries})
+
+mixin drawActions(actions)
+		table(class="table table-bordered table-striped" style="width:70%;")
+			thead
+				tr
+					th №
+					th Игрок
+					th Действие
+					th Время
+			tbody
+				each action, ind in actions
+					tr
+						td!= ind
+						td
+							a(href="UserInfo/"+action.login) #{action.login}
+						td
+							span !{action.type}
+							+drawAux(action)
+
+						td!= action.date
+
+			//p!= action
+mixin registeredIn(tournaments)
+	each t in tournaments
+		p!=t
+
+html
+	head
+		title!= title
+		meta(charset="utf-8")
+		meta(name="description" content="")
+		meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+
+		link(rel="stylesheet" type="text/css" href="../css/bootstrap.css")
+		link(rel="stylesheet" id="ppstyle" type="text/css" href="../css/style.css")
+		//link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/my_style.css")
+		link(rel="stylesheet" href="../css/font-awesome.min.css")
+		script(src="http://code.jquery.com/jquery-2.1.0.min.js")
+		script(src="../js/bootstrap.js")
+	body
+		//p!= JSON.stringify(msg)
+		center(style="width='100%;'")
+			h1 UserInfo
+			h2 !{msg.login} !{msg.money}p played:!{msg.playedCount}
+			if msg.social
+				//!msg.email
+				p!=msg.social.id
+				a(href="https://vk.com/id"+msg.login target="_blank") VK id#{msg.login}
+				br
+				a(href="https://vk.com/"+msg.login target="_blank") VK #{msg.login}
+				br
+				a(href="https://vk.com/"+msg.social.screen_name target="_blank") VK #{msg.social.screen_name}
+			else
+				span !{msg.email}
+			h3 Active tournaments
+			+registeredIn(msg.tournaments)
+			h3 Current tournaments
+			+drawActions(msg.actions)
+			//+drawUsers(msg)
