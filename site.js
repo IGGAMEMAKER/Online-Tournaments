@@ -590,12 +590,22 @@ function compare(tournaments, previous){
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
+var frontendVersion;
 
 RealtimeProvider(1000);
+UpdateFrontendVersion(20000);
+
 function RealtimeProvider(period){
   sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
     if (!error){
-      io.emit('update', body);
+      var tournaments = body;
+
+      var message = {
+        tournaments:tournaments
+      }
+
+      if (frontendVersion) message.frontendVersion= frontendVersion;
+      io.emit('update', message);
       //compare(body, previousTournaments);
     }
   })
@@ -604,15 +614,14 @@ function RealtimeProvider(period){
   }, period);
 }
 
-RealtimeProvider(1000);
-function RealtimeProvider(period){
-  sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
+function UpdateFrontendVersion(period){
+  sender.sendRequest("GetFrontendVersion", { }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
     if (!error){
-      io.emit('update', body);
+      frontendVersion = body? body.frontendVersion || null : null;
       //compare(body, previousTournaments);
     }
   })
   setTimeout(function(){
-    RealtimeProvider(period)
+    UpdateFrontendVersion(period)
   }, period);
 }

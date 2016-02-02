@@ -45,9 +45,10 @@ function drawServerMessage(msg){
 
   switch(msg.action){
     case 'reload':
-      setTimeout(function(){
+      /*setTimeout(function(){
         reload();
-      }, 2000);
+      }, 2000);*/
+      drawReloadButton('#ServerMessageButtonSpace');
       //$('#ServerMessageButtonSpace')html(',')
     break;
   }
@@ -55,9 +56,9 @@ function drawServerMessage(msg){
   $('#serverMessage').modal('show');
 }
 
-/*function drawReloadButton(place){
-  $(place).append('')
-}*/
+function drawReloadButton(place){
+  $(place).html('<a onclick=reload() class="btn btn-primary">Обновить</a>');
+}
 
 socket.on('Tell', function (msg){
   drawServerMessage(msg);
@@ -99,7 +100,9 @@ function tournament_exists(ID){
 }
 
 socket.on('update', function (msg){
-  var tournaments = msg;
+  var tournaments = msg.tournaments;
+  var frontendVersion = msg.frontendVersion.value;
+  //console.log('msg.frontendVersion', frontendVersion);
   //console.log("---------------");
   for (var i = tournaments.length - 1; i >= 0; i--) {
     var tournament = tournaments[i];
@@ -116,7 +119,31 @@ socket.on('update', function (msg){
 
     //console.log("update-"+i, tournaments[i]);
   };
-})
+
+  if (frontendVersion) {
+    updateFrontend(frontendVersion);
+  }
+});
+
+function getRandomArbitary(min, max)
+{
+  return Math.random() * (max - min) + min;
+}
+
+
+function updateFrontend(frontendVersion){
+  var current_frontendVersion = getCookie('frontendVersion');
+  //var x = document.cookie;
+  console.log('updateFrontend', frontendVersion, current_frontendVersion);//, x);
+
+  if (frontendVersion!=current_frontendVersion){
+    setTimeout(function(){
+      setCookie('frontendVersion', frontendVersion, {expires:3600*24*10}) 
+      reload(3000+getRandomArbitary(0, 3000));
+    }, 1000);
+  }
+
+}
 
 function showCloseTournamentModal(tournamentID, places, prizes) {
   //alert('FinishTournament ' + tournamentID);

@@ -105,6 +105,7 @@ app.post('/GetMessages', GetMessages);
 app.post('/Actions', Actions);
 
 app.post('/UpdateFrontend', UpdateFrontend);
+app.post('/GetFrontendVersion', GetFrontendVersion);
 
 app.post('/payment', function(req, res){ 
 	console.log("new payment");
@@ -274,6 +275,18 @@ function UpdateFrontend(req, res){
 		}
 
 	})
+}
+
+function GetFrontendVersion(req, res){
+	Configs.findOne({name:'frontendVersion'}, function (err, version){
+		if (err) return res.json({frontendVersion:null});//return sender.Answer(res, null);
+
+		if (version){
+			return res.json({frontendVersion:version});
+		} else {
+			return res.json({frontendVersion:null});
+		}
+	});
 }
 
 
