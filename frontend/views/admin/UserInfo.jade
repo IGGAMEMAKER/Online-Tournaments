@@ -23,7 +23,7 @@ mixin drawActions(actions)
 				tr
 					td!= ind
 					td
-						a(href="UserInfo/"+action.login) #{action.login}
+						a(href="../Actions") #{action.login}
 					td
 						span !{action.type}
 						+drawAux(action)
