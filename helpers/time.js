@@ -3,7 +3,14 @@ module.exports = {
 		return dayQuery(new Date(),1);
 	},
 	happened_this_week: function(){
-		return dayQuery(new Date(),-7);
+		var tomorrow = new Date();
+		tomorrow.setDate((new Date()).getDate()+1);
+		return dayQuery(tomorrow,-7);
+	},
+	happened_this_month: function(){
+		var tomorrow = new Date();
+		tomorrow.setDate((new Date()).getDate()+1);
+		return dayQuery(tomorrow,-30);
 	},
 	happened_since: function(date){
 		return queryPeriod(date, new Date());

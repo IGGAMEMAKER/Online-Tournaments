@@ -60,6 +60,13 @@ module.exports = function(dbAddress){
 			date: Date,
 			type: String,
 			auxillaries: Object
+		}),
+
+		Error : db.model('Error', {
+			login: String,
+			date: Date,
+			type: String,
+			auxillaries: Object
 		})
 
 	}

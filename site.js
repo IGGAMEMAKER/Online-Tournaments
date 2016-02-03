@@ -30,6 +30,7 @@ var sessionDBAddress = configs.session;
 mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
 var Users = require('./models/users');
+var Actions = require('./models/actions');
 
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
@@ -53,7 +54,7 @@ passport.use(new VKontakteStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     //console.log(accessToken, refreshToken, profile);
-    console.log('passport.use', profile);
+    //console.log('passport.use', profile);
 
     sender.sendRequest("findOrCreateUser", profile, '127.0.0.1', 'DBServer', null, function (err, response, body, res){
       if (err) return done(err, null);
@@ -451,7 +452,12 @@ function vkAuthSuccess(){
       Log("no Inviter, no RM PAGE", "Users");
     }*/
 
-    if (inviter) Users.setInviter(login, inviter);
+    if (inviter) { 
+      Users.setInviter(login, inviter);
+      Actions.add(login, 'login', { auth:'vk', inviter:inviter });
+    } else {
+      Actions.add(login, 'login', { auth:'vk' });
+    }
     saveSession(req, res, inviter, login);
   }
 }

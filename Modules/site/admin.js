@@ -220,7 +220,20 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   }
 
   app.get('/Actions', function (req, res){
-    Actions.findAllPerDay()
+    var period = req.query.period || null;
+    var f;
+    switch(period){
+      case 'week':
+        f = Actions.findAllPerWeek;        
+      break;
+      case 'month':
+        f = Actions.findAllPerMonth;
+      break;
+      default:
+        f = Actions.findAllPerDay;
+      break;
+    }
+    f()
     //.then(sendJSON(res))
     .then(render(res, 'Actions'))
     .catch(sendError(res));

@@ -8,7 +8,7 @@ mixin drawAux(action)
 			when 'tournament.leave'
 				span    !{action.auxillaries.tournamentID}
 			default 
-				span (!{action.auxillaries})
+				span (!{JSON.stringify(action.auxillaries)})
 
 mixin drawActions(actions)
 		table(class="table table-bordered table-striped" style="width:70%;")
@@ -49,5 +49,13 @@ html
 		- //p!= JSON.stringify(message);
 		center(style="width='100%;'")
 			h1 Actions
+			table
+				tr
+					td(width="30%")
+						a(href="Actions") Today
+					td(width="30%")
+						a(href="Actions?period=week") Week
+					td(width="30%")
+						a(href="Actions?period=month") Month
 			+drawActions(msg)
 			//+drawUsers(msg)

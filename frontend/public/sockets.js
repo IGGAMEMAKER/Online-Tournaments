@@ -185,7 +185,7 @@ function playAudio(){
 
 
 function statAttemptToStart(tournamentID){
-  prt('statAttemptToStart:'+tournamentID);
+  prt('statAttemptToStart:' + tournamentID);
   setAsync('AttemptToStart', { tournamentID: tournamentID });
 }
 
