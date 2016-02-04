@@ -1,6 +1,7 @@
 module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
   var Users = require('../../models/users');
   var Actions = require('../../models/actions');
+  var Errors = require('../../models/errors');
   var TournamentReg = require('../../models/tregs');
   
   var middlewares = require('../../middlewares');
@@ -132,6 +133,27 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
 
   });
 
+  app.get('/Errors', function (req, res){
+    var period = req.query.period || null;
+    var f;
+    switch(period){
+      case 'week':
+        f = Errors.findAllPerWeek;
+      break;
+      case 'month':
+        f = Errors.findAllPerMonth;
+      break;
+      default:
+        f = Errors.findAllPerDay;
+      break;
+    }
+    f()
+    //.then(sendJSON(res))
+    .then(render(res, 'Actions'))
+    .catch(sendError(res));
+  })
+
+
   app.get('/Users' , function (req, res){    
     /*var data = req.body;
     data.query = {};//tournamentID:req.query.tID};
@@ -224,7 +246,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     var f;
     switch(period){
       case 'week':
-        f = Actions.findAllPerWeek;        
+        f = Actions.findAllPerWeek;
       break;
       case 'month':
         f = Actions.findAllPerMonth;

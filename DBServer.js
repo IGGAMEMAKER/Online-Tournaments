@@ -43,7 +43,7 @@ var handler = require('./errHandler')(app, Log, serverName);
 var Stats = sender.Stats;
 
 var Actions = require('./models/actions');
-
+var Errors = require('./models/errors');
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
   //console.error(err.stack);
@@ -59,7 +59,7 @@ var Actions = require('./models/actions');
 
 app.post('/GetUsers', GetUsers);
 app.post('/Register', Register);
-app.post('/GetUserProfileInfo', GetUserProfileInfo);
+//app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/findOrCreateUser', findOrCreateUser);
 app.post('/Login', LoginUser);
 app.post('/Changepassword', Changepassword);
@@ -308,55 +308,6 @@ function dayQuery(date){
 	return query;
 }
 
-function get_money_transfers(req, res, next){
-	var todayQuery = dayQuery(new Date());
-
-	MoneyTransfer.find({date:todayQuery}, function (err, transfers){
-		if (err) { 
-			req.transfers = null;
-			Log("transfers err " + JSON.stringify(err), STREAM_ERROR);
-		} else {
-			req.transfers = transfers;
-		}
-
-		next();
-	})
-}
-
-function get_tournament_regs(req, res, next){
-	var todayQuery = dayQuery(new Date());
-
-	TournamentReg.find({date:todayQuery}, function (err, regs){
-		if (err) { 
-			req.regs = null;
-			Log("get_tournament_regs err " + JSON.stringify(err), STREAM_ERROR);
-		} else {
-			req.regs = regs;
-		}
-
-		next();
-	})
-}
-
-function get_today_tournaments(req, res, next){
-	var todayQuery = dayQuery(new Date());
-
-	TournamentReg.find({date:todayQuery}, function (err, regs){
-		if (err) { 
-			req.regs = null;
-			Log("get_tournament_regs err " + JSON.stringify(err), STREAM_ERROR);
-		} else {
-			req.regs = regs;
-		}
-
-		next();
-	})
-}
-
-/*function Actions(req, res){
-	return []
-}*/
-
 
 function SERVER_ERROR(err, res){
 	Error(err);
@@ -460,6 +411,7 @@ function ShowGifts(data, res){
 		Answer(res, Fail);
 	}
 }
+
 
 var OBJ_EXITS = 11000;
 
@@ -637,15 +589,13 @@ function retMoney(tournament){
 		for (var index in tournament.players){
 			var user = tournament.players[index];
 			var money = parseInt(tournament.buyIn);
-			console.error('Incr money of user ' + user+ ' by ' + money + ' points');
+			console.log('Incr money of user ' + user+ ' by ' + money + ' points');
 			if (money>0) { 
 				incrMoney(null, user, money, {
 					type:SOURCE_TYPE_CANCEL_REG, 
 					tournamentID: tournament.tournamentID
 				});
-
-			}
-			else {
+			}	else {
 				if (money<0) console.error('Money error: ' + money);
 				reject('Money error: '+ money);
 			}
@@ -858,16 +808,17 @@ function TournamentLog(tournamentID, message){
 
 function clearRegister(tournamentID, login){
 	return new Promise(function (resolve, reject){
-			TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
-				if (err){ reject(err); }
-				else{
-					if (removed(count)) { 
-						resolve(1);
-					}	else {
-						reject(null);
-					}
+		TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
+			if (err){ reject(err); }
+			else{
+				if (removed(count)) { 
+					resolve(1);
+				}	else {
+					reject(null);
 				}
-			});
+			}
+		});
+
 	});
 }
 
@@ -1088,7 +1039,6 @@ function RegisterUserInTournament(data, res){
 		return changePlayersCount(tournamentID);
 	})
 	.then(function (saved){
-		//console.log('REGISTER OK!!!!!');
 		if (res) Answer(res, OK);
 		Actions.add(login, 'tournament.join', {tournamentID:tournamentID});
 
@@ -1129,6 +1079,7 @@ function RegisterUserInTournament(data, res){
 			}
 		}
 		Error(err);
+		Errors.add(login, 'RegisterUserInTournament', { tournamentID:tournamentID, code:err })
 	})
 }
 
@@ -1812,74 +1763,6 @@ function findUser(login){
 	});
 }
 
-function findRegs(profileInfo){
-	return new Promise(function (resolve, reject){
-		TournamentReg
-		.find({userID:profileInfo.login, status : { $ne: TOURN_STATUS_FINISHED } })
-		.sort('-tournamentID')
-		.exec(function (err, tournaments){
-			if (err){
-				console.error(err);
-				reject(attachFieldToObj(profileInfo, 'err', err));
-			}
-			else{
-				resolve(attachFieldToObj(profileInfo, 'tournaments', tournaments||{} ));
-			}
-		})
-	});
-}
-
-function findGiftIDs(profileInfo){
-	return new Promise(function (resolve, reject){
-		UserGift.find({userID:profileInfo.login}, 'giftID', function (err, gifts){
-			console.log('findGiftIDs got '+JSON.stringify(profileInfo) );
-			if (err){
-				reject(attachFieldToObj(profileInfo, 'err', err));
-			}
-			else{
-				//var userGifts = killID(gifts || {}, 'giftID');
-				resolve(attachFieldToObj(profileInfo, 'gifts', gifts || {} ));
-			}
-		});
-	});
-}
-
-function findGifts(profileInfo){
-	return new Promise(function (resolve, reject){
-		var userGifts = killID(profileInfo.gifts, 'giftID');
-		Gift.find( { _id : {$in : userGifts}} , '', function (err, UserGifts){
-			if (err){
-				reject(attachFieldToObj(profileInfo, 'err', err));
-			}
-			else{
-				resolve(attachFieldToObj(profileInfo, 'userGifts', UserGifts || {} ));
-			}
-		});
-	});
-}
-
-function GetUserProfileInfo(req , res){
-	var data = req.body;
-	Log('Write Checker for sender validity.');
-	var login = data['login'];
-	Log('-----------USER PROFILE INFO -----ID=' + login + '------');
-	findUser(login)
-	.then(findRegs)
-	.then(findGiftIDs)
-	.then(findGifts)
-	.then(function (profileInfo){
-		Answer(res, profileInfo); //console.error('User profileInfo ' + JSON.stringify(profileInfo));
-	})
-	.catch(function (profileInfo){
-		if (profileInfo.err){
-			console.error(profileInfo.err);
-			Answer(res, profileInfo); // it means, that user exists
-		}	else {
-			Answer(res, Fail); // user does not exist
-		}
-	})
-}
-
 app.post('/userExists', user_exists);
 
 function user_exists (req, res) {
@@ -2285,11 +2168,9 @@ function AddTournament (req, res){
 		.sort('-tournamentID')
 		.exec(function searchTournamentWithMaxID (err, maxTournament){
 		if (!err){
-			if (maxTournament) {
-				addTournament(maxTournament.tournamentID, tournament, res);
-			} else { 
-				addTournament(0,tournament, res);
-			}
+			var id=0;
+			if (maxTournament) id = maxTournament.tournamentID;
+			addTournament(id, tournament, res);
 		}	else {
 			multiLog('adding failed: ' + JSON.stringify(err), [STREAM_TOURNAMENTS, STREAM_ERROR] );	
 			Answer(res, Fail);

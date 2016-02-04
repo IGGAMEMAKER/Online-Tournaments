@@ -38,7 +38,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		var tournamentID = req.body.tournamentID;
 		var money = req.body.money||0;
 
-		strLog('No money for '+tournamentID + ' need: ' + money, 'Money');
+		console.log('No money for '+tournamentID + ' need: ' + money, 'Money');
 	})
 
 	

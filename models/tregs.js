@@ -19,13 +19,13 @@ const TOURN_STATUS_PAUSED = 4;
 
 function add(tournamentID, login, promo){
 	return new Promise(function (resolve, reject){
-			var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
-			reg.save(function (err) {
-				if (err) return reject(err);
-				
-				log('added ' + login + ' to tournament ' + tournamentID);
-				return resolve(true);
-			});
+		var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
+		reg.save(function (err) {
+			if (err) return reject(err);
+			
+			log('added ' + login + ' to tournament ' + tournamentID);
+			return resolve(true);
+		});
 	})
 }
 

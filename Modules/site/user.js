@@ -59,19 +59,21 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		var password = req.user.password;
 		var email = req.user.email;
 		var inviter = req.user.inviter;
+		
 		console.log('trying to register', login, email, password, inviter);
 
 		Users.create(login, password, email, inviter)
 		.then(function(user){
 			console.log('registered', user);
-			mail.sendActivationEmail(user);
 			saveSession(req, res);
+			mail.sendActivationEmail(user);
 
 			Actions.add(login, 'register');
 
 		})
 		.catch(function(err){
-			res.render('Register',{msg:err});
+			
+			res.render('Register', { msg:err });
 		})
 	}
 
@@ -206,20 +208,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	
 
 	app.post('/Profile', authenticated, get_profile, function (req, res){
-		/*if (isAuthenticated(req)){
-			var login = getLogin(req);
-			AsyncRender("DBServer", "GetUserProfileInfo", res, {}, {login:login});
-			return;
-		}
-		sender.Answer(res, Fail);*/
-
-		/*.then(function (sss){
-			sender.Answer(res, profile);
-		})
-		.catch(function (err){
-			sender.Answer(res, Fail);
-		})*/
-	
 		if (req.profile){
 			sender.Answer(res, req.profile);
 		} else {
@@ -228,13 +216,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
-	  //var login = 'Alvaro_Fernandez';
-	  /*if (isAuthenticated(req) ){//req.session && req.session.login
-	    var login = getLogin(req);
-	    AsyncRender("DBServer", 'GetUserProfileInfo', res, {renderPage:'Profile'}, {login:login} );
-	    return;
-	  }
-	  res.redirect('Login');*/
 	  if (req.profile){
 	  	res.render('Profile', {msg:req.profile});
 	  } else {
