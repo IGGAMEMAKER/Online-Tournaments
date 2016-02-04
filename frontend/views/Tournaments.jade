@@ -1,0 +1,132 @@
+//
+
+mixin navigation()
+	nav(class="navbar navbar-default" role="navigation")
+		div(class="container-fluid")
+			div(class="navbar-header")
+				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
+					span(class="sr-only") Toggle navigation
+					span(class="icon-bar")
+					span(class="icon-bar")
+					span(class="icon-bar")
+				a(class="navbar-brand" href="#") Online-Tournaments
+			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+				ul(class="nav navbar-nav navbar-right")
+					li
+						a(href="#") О нас
+					li
+						a(href="#") Турниры
+					li(class="dropdown")
+						a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
+							b(class="caret")
+						ul(class="dropdown-menu")
+							li
+								a(href="#") Профиль
+							li
+								a(href="#") Пополнить баланс
+							li
+								a(href="#") Вывести приз                                                         
+							li(class="divider")
+					li
+						a(href="#") Выход
+mixin cover()
+	div(class="cover")
+		img(src="http://s28.postimg.org/p916fev0t/week.jpg" alt="")
+		div(class="info")
+			div(class="going")
+				i(class="fa fa-group") 25 Играют
+			div(class="tickets-left")
+				i(class="fa fa-ticket") 5 Мест
+mixin cardBody()
+	div(class="body")
+		div(class="artist")
+			h6(class="info") Тема
+			h4(class="name") Музыка
+		div(class="price")
+			div(class="from") Цена
+			div(class="value") 50 
+				b ₽
+		div(class="clearfix")
+		div(class="info")
+			p(class="location")
+				i(class="fa fa-map-marker") Приз : 100₽
+			p(class="date")
+				i(class="fa fa-calendar") Призовых мест: 1
+		div(class="clearfix")
+
+mixin collapse()
+	div(class="collapse")
+		ul(class="list-unstyled")
+			li
+				div(class="ticket")
+					h5 Basic Ticket
+					br
+					small 25 Tickets left
+				div(class="price")
+					div(class="value")
+						b $
+						599
+			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
+			li
+				div(class="ticket")
+					h5 Basic Ticket
+					br
+					small 25 Tickets left
+				div(class="price")
+					div(class="value")
+						b $
+						599
+			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
+			li
+				div(class="ticket")
+					h5 Basic Ticket
+					br
+					small 25 Tickets left
+				div(class="price")
+					div(class="value")
+						b $
+						599
+			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
+	div(class="footer")
+		button(class="btn toggle-tickets")
+			| Регистрация закрыта
+
+mixin showTournaments()
+	div(class="col-sm-6 col-md-4")
+		div(class="ticket-card")
+			+cover()
+			+cardBody()
+			+collapse()
+                        
+                                         
+                
+		
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport" content="width=device-width, initial-scale=1")
+		meta(name="description" content="")
+		meta(name="author" content="")
+		title Турниры
+		// Bootstrap core CSS
+		link(href="./css/new/bootstrap.css" rel="stylesheet")
+		// Custom styles for this template
+		link(href="./css/new/style.css" rel="stylesheet")
+		// HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
+		// [if lt IE 9]
+		script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
+		script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
+		//[endif]
+		link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
+	body(class="background")
+		div(class="container")
+		+navigation()
+		div(class="container containetWithTourn")
+			div(class="row")
+				+showTournaments()
+		//script(src="./js/jquery.min.js")
+		//script(src="./js/animateButton.js")
+		//script(src="./js/bootstrap.min.js")
+		// IE10 viewport hack for Surface/desktop Windows 8 bug
+		//script(src="assets/js/ie10-viewport-bug-workaround.js")

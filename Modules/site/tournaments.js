@@ -194,7 +194,7 @@ var upload = multer({ storage: storage }).single('image');
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
 
-    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
 	});
 	const GET_TOURNAMENTS_INFO = 4;
   const GET_TOURNAMENTS_USER = 1;

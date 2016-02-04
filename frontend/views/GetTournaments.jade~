@@ -142,6 +142,57 @@ mixin drawBuyIn(buyIn)
 		p Бесплатно!
 
 mixin showTournament(t,line, imageUrl)
+      div(class="row")
+        div(class="col-lg-4 col-md-6 col-sm-6")
+          div(class="ticket-card")
+            div(class="cover")
+              img(src="http://s28.postimg.org/p916fev0t/week.jpg" alt="")
+              div(class="info")
+                div(class="going")
+                  i(class="fa fa-group") 25 Играют
+                
+                div(class="tickets-left")
+                  i(class="fa fa-ticket") 5 Мест
+                
+              
+            
+            div(class="body")
+              
+              div(class="artist")
+                h6(class="info") Тема
+                h4(class="name") Музыка
+              div(class="price")
+                div(class="from") Цена
+                div(class="value") 50
+			b ₽
+              div(class="clearfix")
+              div(class="info")
+                p(class="location")
+                  i(class="fa fa-map-marker") Приз : 100₽
+                p(class="date")
+                  i(class="fa fa-calendar") Призовых мест: 1
+              div(class="clearfix")
+            div(class="collapse")
+              ul(class="list-unstyled")
+                li
+                  div(class="ticket")
+                    h5(Basic Ticket)
+		      br
+                      small 25 Tickets left
+                  
+                  div(class="price")
+                    div(class="value")
+			b $
+			599                  
+                  a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
+
+            div(class="footer">
+              button(class="btn toggle-tickets") 
+		| Регистрация закрыта
+            
+          
+        
+      
 	if t
 		- var ID=t.tournamentID||115;
 		- var registered = t.players;
@@ -194,7 +245,7 @@ html
 			//p!= JSON.stringify(msg)
 			+showTournaments(msg)
 			#vk_share_button
-			script.
+			//script.
 				//document.getElementById('vk_share_button').innerHTML = VK.Share.button("http://online-tournaments.org", {type: 'button_nocount', text:'Поделиться'});
 				document.getElementById('vk_share_button').innerHTML = VK.Share.button("http://online-tournaments.org", {type: 'custom', text: '<p class="btn btn-primary">Поделиться с друзьями</p>'});
 

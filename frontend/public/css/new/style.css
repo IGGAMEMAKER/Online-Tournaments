@@ -1,0 +1,36 @@
+
+
+.tournPos
+{
+    max-width: 70%;
+}
+
+.chatColumn
+{
+    background-color: #c7afaf;
+}
+
+.background
+{
+    background-image: url('photo-1448485780098-7e0b78781fc1.jpeg');
+}
+
+.containetWithTourn
+{
+    border-radius: 10px;
+}
+
+.chatrule
+{
+}
+
+.chatRule
+{
+    background: #F7F6F6;
+    border: 10px;
+    border-radius: 4px;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    min-height: 26em;
+}
+
