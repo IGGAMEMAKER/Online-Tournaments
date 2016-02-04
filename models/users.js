@@ -77,7 +77,7 @@ function auth(login, password){
 				//console.log('passwordCorrect');
 				if (password_needs_update(user.cryptVersion)) update_password(login, password, CURRENT_CRYPT_VERSION);
 			}	else {
-				return reject(null);
+				return reject('invalid_login or invalid_pass');
 			}
 		});
 	})

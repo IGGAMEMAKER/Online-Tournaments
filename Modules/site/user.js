@@ -2,10 +2,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var validator = require('validator');
 	var security = require('../DB/security');
 
+	var mail = require('../../helpers/mail');
+	
 	var Users = require('../../models/users');
 	var TournamentReg = require('../../models/tregs');
-	var mail = require('../../helpers/mail');
 	var Actions = require('../../models/actions');
+	var Errors = require('../../models/errors');
 
 	var authenticated = require('../../middlewares').authenticated;
 
@@ -64,16 +66,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.create(login, password, email, inviter)
 		.then(function(user){
-			console.log('registered', user);
-			saveSession(req, res);
+			//console.log('registered', user);
+			saveSession(req, res, 'register');
 			mail.sendActivationEmail(user);
 
 			Actions.add(login, 'register');
 
 		})
-		.catch(function(err){
-			
+		.catch(function (err){
 			res.render('Register', { msg:err });
+			Errors.add(login, 'register', { code:err })
 		})
 	}
 
@@ -94,30 +96,34 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	function logIN(req, res){
 		var login = get_login_from_email(req.body.email);
 		var password = req.body.password;
-		console.log('logIN', login, password);
+		//console.log('logIN', login, password);
 		req.user = {
 			login : login
 		}
 
 		Users.auth(login, password)//, req.user.email, req.user.inviter
-		.then(function(user){
+		.then(function (user){
 			console.log('logged In', user);
 			req.user= user;
-			saveSession(req, res);
+			saveSession(req, res, 'Login');
 
 			Actions.add(login, 'login');
 		})
-		.catch(function(err){
-			res.render('Login',{msg:err});
+		.catch(function (err){
+			res.render('Login', {msg : err});
+			Errors.add(login, 'logIN', { code:err })
 		})
 	}
 
-	function saveSession(req, res){
+	function saveSession(req, res, page){
+		var login = req.user.login;
+
 		req.session.save(function (err) {
 			// session saved
 			if (err) {
-				//console.error('SESSION SAVING ERROR', 'Err'); 
-				res.render(page,{msg:err});
+				//console.error('SESSION SAVING ERROR', 'Err');
+				res.render(page, { msg : err });
+				Errors.add(login, 'saveSession', { page:page, code:err })
 			} else {
 				req.session.login = req.user.login;
 				res.redirect('Tournaments');

@@ -149,7 +149,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     }
     f()
     //.then(sendJSON(res))
-    .then(render(res, 'Actions'))
+    .then(render(res, 'Errors'))
     .catch(sendError(res));
   })
 
