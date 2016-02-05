@@ -117,33 +117,39 @@ mixin leftTab()
 		table(class="table")
 			thead 
 				tr 
-					th # 
-					th First Name 
-					th Last Name 
-					th Username
+					th #
+					th Игрок
+					th Сыграно
+					th Побед
+					th Выигрыш
+					th Бонус
 			tbody
 				tr 
 					td 1 
 					td Mark 
-					td Otto 
-					td @mdo		                                                 
+					td 100 
+					td 62
+					td 300р
+					td +50р
 				tr 
 					td 2 
 					td Jacob 
-					td Thornton 
-					td @fat
+					td 87 
+					td 34
+					td 150р
+					td +10р
 	+user_stats()
 
 mixin statContent()
 	div(class="content")
 		div(class="data")
 			ul
-				li 2,934
-					span Tweets
-				li 1,119
-					span Followers
-				li 530
-					span Following
+				li 567
+					span Сыграно
+				li 61
+					span % побед
+				li 530 ₽
+					span Выиграно
 		div(class="follow")
 			div(class="icon-twitter") Follow
 
