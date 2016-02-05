@@ -40,3 +40,8 @@
 {
     opacity: 1;
 }
+
+.ticket-card .body .info
+{
+    color: #777777;
+}

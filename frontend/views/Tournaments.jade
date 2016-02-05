@@ -87,44 +87,46 @@ mixin showTournaments(tournaments)
 	//+showTournament()
 
 mixin head()
-		meta(charset="utf-8")
-		meta(http-equiv="X-UA-Compatible" content="IE=edge")
-		meta(name="viewport" content="width=device-width, initial-scale=1")
-		meta(name="description" content="")
-		meta(name="author" content="")
-		title Турниры
+	meta(charset="utf-8")
+	meta(http-equiv="X-UA-Compatible" content="IE=edge")
+	meta(name="viewport" content="width=device-width, initial-scale=1")
+	meta(name="description" content="")
+	meta(name="author" content="")
+	title Турниры
 
-		// Bootstrap core CSS
-		link(href="./css/new/bootstrap.css" rel="stylesheet")
-		// Custom styles for this template
-		link(href="./css/new/style.css" rel="stylesheet")
-		//		link(rel="stylesheet" href="./css/new/font-awesome.min.css")
-		// HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
-		// [if lt IE 9]
-		script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
-		script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
-		//[endif]
-		link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
-		link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
-		//link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
-		link(rel="stylesheet" href="./css/font-awesome.min.css")
+	// Bootstrap core CSS
+	link(href="./css/new/bootstrap.css" rel="stylesheet")
+	// Custom styles for this template
+	link(href="./css/new/style.css" rel="stylesheet")
+	//		link(rel="stylesheet" href="./css/new/font-awesome.min.css")
+	// HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
+	// [if lt IE 9]
+	script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
+	script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
+	//[endif]
+	link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
+	link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
+	//link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
+	link(rel="stylesheet" href="./css/font-awesome.min.css")
 
-		script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
-		script(type="text/javascript").
-			VK.init({apiId: 5205914, onlyWidgets: true});
-		link(rel="stylesheet" href="./css/new/vkComment.css")
+	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
+	script(type="text/javascript").
+		VK.init({apiId: 5205914, onlyWidgets: true});
+	link(rel="stylesheet" href="./css/new/vkComment.css")
 
-		link(rel="stylesheet" href="./css/new/my.css")
+	link(rel="stylesheet" href="./css/new/my.css")
+	meta(name="w1-verification" content="179817005946")
 html
 	head
-		+head()
+		include templates/header
+		script(src="tournaments.js")
 	body(class="background")
 		//div(class="wrapper")
 		div(class="container")
 			+navigation()
 			div(class="container containetWithTourn")
-				div(class="row")
-					+showTournaments(msg)
+				div(class="row" id="tournamentBlock")
+					//+showTournaments(msg)
 				div(class="row")
 					+nav_tabs()
 					+tabs()

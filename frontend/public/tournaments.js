@@ -38,21 +38,6 @@ function ManageReg(login, tID, url, regID){
 		success: function( data ) {
 			var msg = JSON.parse(data);//JSON.stringify(data);
 			var txt='';
-
-			/*if (regID==1){
-				switch(msg.result){
-					case 'OK': txt='You registered successfully!!'; addTournament(tID); break;
-					case 'fail': txt='Register failed :(('; break;
-					default : txt='Sorry, you need to login first :(('; break;
-				}
-			} else {
-				switch(msg.result){
-					case 'OK': txt='Register canceled. Check your money ammount'; break;
-					case 'fail': txt='unRegister failed :(('; break;
-					default : txt='Sorry, you need to login first :(('; break;
-				}
-			}*/
-
 			if (regID==1) {
 				// no money
 				if (!isNaN(msg.result)){
@@ -132,7 +117,7 @@ function getPrize(t){
 		return showPrize(prize, t.settings.specPrizeName, ID);
 	}	else {
 		if (isStream(t)) {
-			return 'Приз: Случайный';
+			return 'Случайный';//Приз: 
 		} else {
 			return showPrize(prize, "", ID);
 		}
@@ -145,9 +130,9 @@ function showPrize(prize, specPrize, ID){
 	} else {
 		if (prize){
 			if (isNaN(prize)){
-				return "Приз: " + prize;
+				return "" + prize;//Приз: 
 			}	else {
-				return "Приз: " + prize +"р";
+				return "" + prize +" ₽";//Приз: 
 			}
 		}
 	}
@@ -243,7 +228,7 @@ function drawAuth(ID){
 }
 
 function drawImage(img){
-	return '<img src="'+img+'" width="210" height="150">';
+	return '<img src="'+img+'" width="330" height="220">';//width="210" height="150"
 }
 
 function Info(winPlaces, id, players, Max){
@@ -256,55 +241,73 @@ function Info(winPlaces, id, players, Max){
 
 
 //
-function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
-	text += drawName(id);
-				text += drawImage(img);
-				text += drawPrizes(prize, id);
-				text += Info(winPlaces, id, players, Max);
+function getPlayerCount(players){
+	return players + ' участвуют';
+}
+function getPrizePlaces(winPlaces){
+	return winPlaces + ' Мест';
+}
 
-				text += drawReg(buyIn, id, login||null);
-				text += drawUnReg(login||null, id);
-				text += drawAuth(id);
-	
+function getTopic(){
+	return 'Музыка';
+}
+
+function getMainPrize(prize){
+	return prize + ' ';
+}
+
+function getBuyIn(buyIn){
+	return 'Цена : '+buyIn+' ₽';
+}
+
+function getPrizeCount(){
+	return 'Призовых мест: 1';
+}
+
+function buttons(){
+	return 	'<ul class="list-unstyled"><li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' + 
+	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +
+	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +
+	'</ul>';
+}
+
+function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
-	text += 
-	text += '<center>';
-	text += '</center>';
-	text += '</div>';
-	var text = '<div class="col-sm-6 col-md-4"><div class="ticket-card"><div class="cover">';
+
+	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card"><div class="cover">';
 	text += drawImage(img);
-	text += '<div class="info"><div class="going"><i class="fa fa-group">'
-	text += getPlayerCount(); //25 играют
-	text += '</i></div><div class="tickets-left"><i class="fa fa-ticket">';
-	text += getPrizePlaces(); //5 Мест
-	text += '</i></div></div></div><div class="body"><div class="artist"><h6 class="info">Тема</h6><h4 class="name">';
+	text += '<div class="info"><div class="going"><i class="fa fa-group"></i>'
+	text += getPlayerCount(players); //25 играют
+	text += '</div><div class="tickets-left"><i class="fa fa-ticket"></i>';
+	text += getPrizePlaces(Max); //5 Мест
+	text += '</div></div></div><div class="body"><div class="artist"><h6 class="info">Тема</h6><h4 class="name">';
 	text += getTopic(); //Музыка
 	text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
-	text += getMainPrize(); //5000 <b>₽</b>
-	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-map-marker">';
-	text += getBuyIn(); //Цена : 100₽
-	text += '</i></p><p class="date"><i class="fa fa-calendar">'
-	text += getPrizeCount(); //Призовых мест: 1
-	text += '</i></p></div><div class="clearfix"></div></div><div class="collapse"><ul class="list-unstyled">'
+	text += getMainPrize(prize); //5000 <b>₽</b>
+	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-rub"></i>';
+	text += getBuyIn(buyIn); //Цена : 100₽
+	text += '</p><p class="date"><i class="fa fa-calendar"></i>'
+	text += getPrizeCount(winPlaces); //Призовых мест: 1
+	text += '</p></div><div class="clearfix"></div></div><div class="collapse">'
 	text += buttons() 
+	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
-	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
-	</ul></div><div class="footer"><button class="btn toggle-tickets">Регистрация закрыта</button></div></div></div>
+	</ul>'*/
+	text += '</div><div class="footer"><button class="btn toggle-tickets">Регистрация закрыта</button></div></div></div>'
 	//console.log(getLogin());
 	//console.log(text);
 	//console.log("drawTournament ", id)
 	/*console.log("drawTournament ", img)*/
 
 	$("#tournamentBlock").prepend(text);
-	hideAllButtons(id);
+	/*hideAllButtons(id);
 	redraw_reg_button({tournamentID:id});
 
-	//drawAuthButton(id);
-	$("#tournamentWrapper"+id).show(ANIM_SPEED);
+	$("#tournamentWrapper"+id).show(ANIM_SPEED);*/
 }
 
-
+/*
 mixin showTournament()
 	div(class="col-sm-6 col-md-4")
 		div(class="ticket-card")
@@ -382,3 +385,4 @@ mixin collapse()
 		button(class="btn toggle-tickets")
 			| Регистрация закрыта
 
+*/
