@@ -1,100 +1,6 @@
 //
-mixin footer()
-	footer
-		h3 Connect with me on:
-			a(target="_blank" class="social-icon" href="https://twitter.com/axelut")
-				i(class="fa fa-twitter")
-			a(target="_blank" class="social-icon" href="https://www.facebook.com/axelut")
-				i(class="fa fa-facebook-square")
-			a(target="_blank" class="social-icon" href="https://dribbble.com/axelut")
-				i(class="fa fa-dribbble")
-			a(target="_blank" class="social-icon" href="https://github.com/alexandru-paduraru")
-				i(class="fa fa-envelope-o")
-			a(target="_blank" class="social-icon" href="https://www.reddit.com/user/alexpaduraru/")
-				i(class="fa fa-vk")
-
-mixin navigation()
-	nav(class="navbar navbar-default" role="navigation")
-		div(class="container-fluid")
-			div(class="navbar-header")
-				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
-					span(class="sr-only") Toggle navigation
-					span(class="icon-bar")
-					span(class="icon-bar")
-					span(class="icon-bar")
-				a(class="navbar-brand" href="#") Online-Tournaments
-			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
-				ul(class="nav navbar-nav navbar-right")
-					li
-						a(href="about") О нас
-					li
-						a(href="Tournaments") Турниры
-					li(class="dropdown")
-						a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
-							b(class="caret")
-						ul(class="dropdown-menu")
-							li
-								a(href="profile") Профиль
-							li
-								a(href="#") Пополнить баланс
-							li
-								a(href="#") Вывести приз                                                         
-							li(class="divider")
-					li
-						a(href="Logout") Выход
-mixin cover()
-	div(class="cover")
-		img(src="http://s28.postimg.org/p916fev0t/week.jpg" alt="")
-		div(class="info")
-			div(class="going")
-				i(class="fa fa-group") 25 Играют
-			div(class="tickets-left")
-				i(class="fa fa-ticket") 5 Мест
-mixin cardBody()
-	div(class="body")
-		div(class="artist")
-			h6(class="info") Тема
-			h4(class="name") Музыка
-		div(class="price")
-			div(class="from") Приз
-			div(class="value") 5000 
-				b ₽
-		div(class="clearfix")
-		div(class="info")
-			p(class="location")
-				i(class="fa fa-map-marker") Цена : 100₽
-			p(class="date")
-				i(class="fa fa-calendar") Призовых мест: 1
-		div(class="clearfix")
-
-mixin click_down()
-	li
-		div(class="ticket")
-			h5 Basic Ticket
-				br
-				small 25 Tickets left
-		div(class="price")
-			div(class="value")
-				b $
-				| 599
-		a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
-mixin collapse()
-	div(class="collapse")
-		ul(class="list-unstyled")
-			+click_down()
-			+click_down()
-			+click_down()
-
-	div(class="footer")
-		button(class="btn toggle-tickets")
-			| Регистрация закрыта
-
-mixin showTournaments()
-	div(class="col-sm-6 col-md-4")
-		div(class="ticket-card")
-			+cover()
-			+cardBody()
-			+collapse()
+include templates/basic
+include templates/card
 
 mixin nav_tabs()
 	ul(class="nav nav-tabs")
@@ -104,36 +10,22 @@ mixin nav_tabs()
 			a(href="#tab2" data-toggle="tab") Чат
 		li
 			a(href="#tab4" data-toggle="tab") Настройки
-mixin chat()
-	//div(class="col-md-12 chatColumn chatRule")
-		h3 Column title
-		//div(class="form-group")
-			label(class="control-label" for="formInput54") Field label
-			textarea(class="form-control" rows="3" id="formInput54")
-		//div(class="form-group")
-			label(class="control-label" for="formInput74") Field label
-			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
-	div(id="vk_comments")
-	//div(id="vk_comments_mini")
-	//div(id="vk_comments_lg")
-	script(type="text/javascript").
-		VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});
-		//VK.Widgets.Comments("vk_comments_mini", {limit: 10, width: "300", attach: "*"});
-		//VK.Widgets.Comments("vk_comments_lg", {limit: 10, width: "900", attach: "*"});
+
 mixin tabs()
 	div(class="tab-content")
 		div(class="tab-pane active" id="tab1")
 			div(class="container")
 				div(class="row")
-					+leftTab()
+					+rating()
+					+user_stats()
 		div(class="tab-pane" id="tab2")
 			+chat()
-		div(class="tab-pane" id="tab3")
+		//div(class="tab-pane" id="tab3")
 			p Tab 3 content goes here...
 		div(class="tab-pane" id="tab4")
-			p Tab 4 content goes here...
+			p Настройки
 
-mixin leftTab()
+mixin rating()
 	div(class="col-md-8 dataRule")
 		table(class="table")
 			thead 
@@ -159,7 +51,6 @@ mixin leftTab()
 					td 34
 					td 150р
 					td +10р
-	+user_stats()
 
 mixin statContent()
 	div(class="content")
@@ -188,6 +79,13 @@ mixin user_stats()
 					div(class="hover")
 						div(class="icon-twitter")
 			+statContent()
+
+mixin showTournaments(tournaments)
+	- for (i=0; i<tournaments.length;i++) {
+		+showTournament(tournaments[i] , 0)
+	- }
+	//+showTournament()
+
 mixin head()
 		meta(charset="utf-8")
 		meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -210,28 +108,28 @@ mixin head()
 		link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
 		//link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
 		link(rel="stylesheet" href="./css/font-awesome.min.css")
+
 		script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
 		script(type="text/javascript").
 			VK.init({apiId: 5205914, onlyWidgets: true});
 		link(rel="stylesheet" href="./css/new/vkComment.css")
+
+		link(rel="stylesheet" href="./css/new/my.css")
 html
 	head
 		+head()
 	body(class="background")
-		div(class="wrapper")
-			div(class="container")
-				+navigation()
-				div(class="container containetWithTourn")
-					div(class="row")
-						+showTournaments()
-						+showTournaments()
-						+showTournaments()
-						+showTournaments()
-					div(class="row")
-						+nav_tabs()
-						+tabs()
+		//div(class="wrapper")
+		div(class="container")
+			+navigation()
+			div(class="container containetWithTourn")
+				div(class="row")
+					+showTournaments(msg)
+				div(class="row")
+					+nav_tabs()
+					+tabs()
+		div(class="wrapper2")
 			+footer()
-			include templates/footer
 
 		script(src="http://code.jquery.com/jquery-2.1.0.min.js")
 		script(src="button_animation.js")

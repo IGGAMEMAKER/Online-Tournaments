@@ -1,0 +1,60 @@
+//
+mixin footer()
+	//br
+	//br
+	footer
+		h3 Наши контакты:
+		//a(target="_blank" class="social-icon" href="https://twitter.com/axelut")
+			i(class="fa fa-twitter")
+		//a(target="_blank" class="social-icon" href="https://www.facebook.com/axelut")
+			i(class="fa fa-facebook-square")
+		//a(target="_blank" class="social-icon" href="https://dribbble.com/axelut")
+			i(class="fa fa-dribbble")
+		a(target="_blank" class="social-icon" href="https://vk.com/o_tournaments")
+			i(class="fa fa-vk")
+		a(target="_blank" class="social-icon" href="mailto:mail@online-tournaments.org")
+			i(class="fa fa-envelope-o")
+	//include templates/footer
+
+mixin navigation()
+	nav(class="navbar navbar-default" role="navigation")
+		div(class="container-fluid")
+			div(class="navbar-header")
+				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
+					span(class="sr-only") Toggle navigation
+					span(class="icon-bar")
+					span(class="icon-bar")
+					span(class="icon-bar")
+				a(class="navbar-brand" href="#") Online-Tournaments
+			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+				ul(class="nav navbar-nav navbar-right")
+					li
+						a(href="about") О нас
+					li
+						a(href="Tournaments") Турниры
+					li(class="dropdown")
+						a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
+							b(class="caret")
+						ul(class="dropdown-menu")
+							li
+								a(href="profile") Профиль
+							li
+								a(href="#") Пополнить баланс
+							li
+								a(href="#") Вывести приз                                                         
+							li(class="divider")
+					li
+						a(href="Logout") Выход
+mixin chat()
+	//div(class="col-md-12 chatColumn chatRule")
+		h3 Column title
+		//div(class="form-group")
+			label(class="control-label" for="formInput54") Field label
+			textarea(class="form-control" rows="3" id="formInput54")
+		//div(class="form-group")
+			label(class="control-label" for="formInput74") Field label
+			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+	div(id="vk_comments")
+	script(type="text/javascript").
+		VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});
+
