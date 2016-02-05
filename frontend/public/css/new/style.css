@@ -34,3 +34,23 @@
     min-height: 26em;
 }
 
+.dataRule
+{
+    background: #F7F6F6;
+    border: 10px;
+    border-radius: 4px;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    min-height: 26em;
+    margin-left: 1em;
+}
+
+.columBio
+{
+    border: 10px;
+    border-radius: 4px;
+    min-height: 26em;
+    min-width: 24em;
+    margin: 2em 1em;
+}
+

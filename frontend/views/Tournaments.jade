@@ -43,50 +43,35 @@ mixin cardBody()
 			h6(class="info") Тема
 			h4(class="name") Музыка
 		div(class="price")
-			div(class="from") Цена
-			div(class="value") 50 
+			div(class="from") Приз
+			div(class="value") 5000 
 				b ₽
 		div(class="clearfix")
 		div(class="info")
 			p(class="location")
-				i(class="fa fa-map-marker") Приз : 100₽
+				i(class="fa fa-map-marker") Цена : 100₽
 			p(class="date")
 				i(class="fa fa-calendar") Призовых мест: 1
 		div(class="clearfix")
 
+mixin click_down()
+	li
+		div(class="ticket")
+			h5 Basic Ticket
+				br
+				small 25 Tickets left
+		div(class="price")
+			div(class="value")
+				b $
+				| 599
+		a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
 mixin collapse()
 	div(class="collapse")
 		ul(class="list-unstyled")
-			li
-				div(class="ticket")
-					h5 Basic Ticket
-					br
-					small 25 Tickets left
-				div(class="price")
-					div(class="value")
-						b $
-						599
-			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
-			li
-				div(class="ticket")
-					h5 Basic Ticket
-					br
-					small 25 Tickets left
-				div(class="price")
-					div(class="value")
-						b $
-						599
-			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
-			li
-				div(class="ticket")
-					h5 Basic Ticket
-					br
-					small 25 Tickets left
-				div(class="price")
-					div(class="value")
-						b $
-						599
-			a(href="#" class="btn btn-info btn-sm btn-buy") Buy Now!
+			+click_down()
+			+click_down()
+			+click_down()
+
 	div(class="footer")
 		button(class="btn toggle-tickets")
 			| Регистрация закрыта
@@ -97,10 +82,87 @@ mixin showTournaments()
 			+cover()
 			+cardBody()
 			+collapse()
-                        
-                                         
-                
-		
+
+mixin nav_tabs()
+	ul(class="nav nav-tabs")
+		li(class="active")
+			a(href="#tab1" data-toggle="tab") Сводка
+		li
+			a(href="#tab2" data-toggle="tab") Чат
+		li
+			a(href="#tab4" data-toggle="tab") Настройки
+mixin tabs()
+	div(class="tab-content")
+		div(class="tab-pane active" id="tab1")
+			div(class="container")
+				div(class="row")
+					+leftTab()
+		div(class="tab-pane" id="tab2")
+			div(class="col-md-12 chatColumn chatRule")
+				h3 Column title
+				div(class="form-group")
+					label(class="control-label" for="formInput54") Field label
+					textarea(class="form-control" rows="3" id="formInput54")
+				div(class="form-group")
+					label(class="control-label" for="formInput74") Field label
+					input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+			p Tab 2 content goes here...
+		div(class="tab-pane" id="tab3")
+			p Tab 3 content goes here...
+		div(class="tab-pane" id="tab4")
+			p Tab 4 content goes here...
+
+mixin leftTab()
+	div(class="col-md-8 dataRule")
+		table(class="table")
+			thead 
+				tr 
+					th # 
+					th First Name 
+					th Last Name 
+					th Username
+			tbody
+				tr 
+					td 1 
+					td Mark 
+					td Otto 
+					td @mdo		                                                 
+				tr 
+					td 2 
+					td Jacob 
+					td Thornton 
+					td @fat
+	+user_stats()
+
+mixin statContent()
+	div(class="content")
+		div(class="data")
+			ul
+				li 2,934
+					span Tweets
+				li 1,119
+					span Followers
+				li 530
+					span Following
+		div(class="follow")
+			div(class="icon-twitter") Follow
+
+mixin user_stats()
+	div(class="col-md-3 columBio")
+		div(class="containerico")
+			header
+				div(class="bio")
+					img(src="http://www.croop.cl/UI/twitter/images/up.jpg" alt="background" class="bg")
+					div(class="desc")
+						h3 @carlf
+						p Carl Fredricksen is the protagonist in Up. He also appeared in Dug's Special Mission as a minor character
+				div(class="avatarcontainer")
+					img(src="http://www.croop.cl/UI/twitter/images/carl.jpg" alt="avatar" class="avatar")
+					div(class="hover")
+						div(class="icon-twitter")
+			+statContent()
+
+
 html
 	head
 		meta(charset="utf-8")
@@ -119,6 +181,7 @@ html
 		script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
 		//[endif]
 		link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
+		link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
 	body(class="background")
 		div(class="container")
 		+navigation()
@@ -128,6 +191,10 @@ html
 				+showTournaments()
 				+showTournaments()
 				+showTournaments()
+			div(class="row")
+				+nav_tabs()
+				+tabs()
+
 		script(src="http://code.jquery.com/jquery-2.1.0.min.js")
 		script(src="button_animation.js")
 		script(src="./js/bootstrap.js")
