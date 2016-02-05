@@ -228,7 +228,7 @@ function drawAuth(ID){
 }
 
 function drawImage(img){
-	return '<img src="'+img+'" width="330" height="220">';//width="210" height="150"
+	return '<img src="'+img+'" width="280" height="220">';//width="210" height="150"
 }
 
 function Info(winPlaces, id, players, Max){
@@ -241,8 +241,12 @@ function Info(winPlaces, id, players, Max){
 
 
 //
-function getPlayerCount(players){
-	return players + ' участвуют';
+function getPlayerCount(players, Max){
+	return 'Игроки : '+ players + '/'+Max;
+}
+
+function pasteID(id){
+	return '№' + id;
 }
 function getMaxPlayers(winPlaces){
 	return winPlaces + ' Мест';
@@ -276,17 +280,17 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 
 	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card"><div class="cover">';
 	text += drawImage(img);
-	text += '<div class="info"><div class="going"><i class="fa fa-group"></i>'
-	text += getPlayerCount(players); //25 играют
-	text += '</div><div class="tickets-left"><i class="fa fa-ticket"></i>';
-	text += getMaxPlayers(Max); //5 Мест
-	text += '</div></div></div><div class="body"><div class="artist"><h6 class="info">Тема</h6><h4 class="name">';
+	text += '<div class="info"><div class="going"><i class="fa fa-group fa-lg"></i>'
+	text += getPlayerCount(players, Max); //25 играют
+	text += '</div><div class="tickets-left">';//<i class="fa fa-ticket"></i>
+	text += pasteID(id); //5 Мест
+	text += '</div></div></div><div class="body"><div class="artist"><h6 class="info">Тема викторины</h6><h4 class="name">';
 	text += getTopic(); //Музыка
 	text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
 	text += getMainPrize(prize); //5000 <b>₽</b>
 	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-money"></i>';
 	text += getBuyIn(buyIn); //Цена : 100₽
-	text += '</p><p class="date"><i class="fa fa-calendar"></i>'
+	text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
 	text += getPrizeCount(winPlaces); //Призовых мест: 1
 	text += '</p></div><div class="clearfix"></div></div><div class="collapse">'
 	text += buttons() 
