@@ -1,4 +1,17 @@
 //
+mixin footer()
+	footer
+		h3 Connect with me on:
+			a(target="_blank" class="social-icon" href="https://twitter.com/axelut")
+				i(class="fa fa-twitter")
+			a(target="_blank" class="social-icon" href="https://www.facebook.com/axelut")
+				i(class="fa fa-facebook-square")
+			a(target="_blank" class="social-icon" href="https://dribbble.com/axelut")
+				i(class="fa fa-dribbble")
+			a(target="_blank" class="social-icon" href="https://github.com/alexandru-paduraru")
+				i(class="fa fa-envelope-o")
+			a(target="_blank" class="social-icon" href="https://www.reddit.com/user/alexpaduraru/")
+				i(class="fa fa-vk")
 
 mixin navigation()
 	nav(class="navbar navbar-default" role="navigation")
@@ -91,6 +104,22 @@ mixin nav_tabs()
 			a(href="#tab2" data-toggle="tab") Чат
 		li
 			a(href="#tab4" data-toggle="tab") Настройки
+mixin chat()
+	//div(class="col-md-12 chatColumn chatRule")
+		h3 Column title
+		//div(class="form-group")
+			label(class="control-label" for="formInput54") Field label
+			textarea(class="form-control" rows="3" id="formInput54")
+		//div(class="form-group")
+			label(class="control-label" for="formInput74") Field label
+			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+	div(id="vk_comments")
+	//div(id="vk_comments_mini")
+	//div(id="vk_comments_lg")
+	script(type="text/javascript").
+		VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});
+		//VK.Widgets.Comments("vk_comments_mini", {limit: 10, width: "300", attach: "*"});
+		//VK.Widgets.Comments("vk_comments_lg", {limit: 10, width: "900", attach: "*"});
 mixin tabs()
 	div(class="tab-content")
 		div(class="tab-pane active" id="tab1")
@@ -98,15 +127,7 @@ mixin tabs()
 				div(class="row")
 					+leftTab()
 		div(class="tab-pane" id="tab2")
-			div(class="col-md-12 chatColumn chatRule")
-				h3 Column title
-				div(class="form-group")
-					label(class="control-label" for="formInput54") Field label
-					textarea(class="form-control" rows="3" id="formInput54")
-				div(class="form-group")
-					label(class="control-label" for="formInput74") Field label
-					input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
-			p Tab 2 content goes here...
+			+chat()
 		div(class="tab-pane" id="tab3")
 			p Tab 3 content goes here...
 		div(class="tab-pane" id="tab4")
@@ -167,20 +188,19 @@ mixin user_stats()
 					div(class="hover")
 						div(class="icon-twitter")
 			+statContent()
-
-
-html
-	head
+mixin head()
 		meta(charset="utf-8")
 		meta(http-equiv="X-UA-Compatible" content="IE=edge")
 		meta(name="viewport" content="width=device-width, initial-scale=1")
 		meta(name="description" content="")
 		meta(name="author" content="")
 		title Турниры
+
 		// Bootstrap core CSS
 		link(href="./css/new/bootstrap.css" rel="stylesheet")
 		// Custom styles for this template
 		link(href="./css/new/style.css" rel="stylesheet")
+		//		link(rel="stylesheet" href="./css/new/font-awesome.min.css")
 		// HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
 		// [if lt IE 9]
 		script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
@@ -188,18 +208,30 @@ html
 		//[endif]
 		link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
 		link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
+		//link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
+		link(rel="stylesheet" href="./css/font-awesome.min.css")
+		script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
+		script(type="text/javascript").
+			VK.init({apiId: 5205914, onlyWidgets: true});
+		link(rel="stylesheet" href="./css/new/vkComment.css")
+html
+	head
+		+head()
 	body(class="background")
-		div(class="container")
-		+navigation()
-		div(class="container containetWithTourn")
-			div(class="row")
-				+showTournaments()
-				+showTournaments()
-				+showTournaments()
-				+showTournaments()
-			div(class="row")
-				+nav_tabs()
-				+tabs()
+		div(class="wrapper")
+			div(class="container")
+				+navigation()
+				div(class="container containetWithTourn")
+					div(class="row")
+						+showTournaments()
+						+showTournaments()
+						+showTournaments()
+						+showTournaments()
+					div(class="row")
+						+nav_tabs()
+						+tabs()
+			+footer()
+			include templates/footer
 
 		script(src="http://code.jquery.com/jquery-2.1.0.min.js")
 		script(src="button_animation.js")
