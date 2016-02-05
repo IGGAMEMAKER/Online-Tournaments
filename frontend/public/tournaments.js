@@ -244,7 +244,7 @@ function Info(winPlaces, id, players, Max){
 function getPlayerCount(players){
 	return players + ' участвуют';
 }
-function getPrizePlaces(winPlaces){
+function getMaxPlayers(winPlaces){
 	return winPlaces + ' Мест';
 }
 
@@ -260,8 +260,8 @@ function getBuyIn(buyIn){
 	return 'Цена : '+buyIn+' ₽';
 }
 
-function getPrizeCount(){
-	return 'Призовых мест: 1';
+function getPrizeCount(winPlaces){
+	return 'Призовых мест: '+winPlaces;
 }
 
 function buttons(){
@@ -279,12 +279,12 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '<div class="info"><div class="going"><i class="fa fa-group"></i>'
 	text += getPlayerCount(players); //25 играют
 	text += '</div><div class="tickets-left"><i class="fa fa-ticket"></i>';
-	text += getPrizePlaces(Max); //5 Мест
+	text += getMaxPlayers(Max); //5 Мест
 	text += '</div></div></div><div class="body"><div class="artist"><h6 class="info">Тема</h6><h4 class="name">';
 	text += getTopic(); //Музыка
 	text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
 	text += getMainPrize(prize); //5000 <b>₽</b>
-	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-rub"></i>';
+	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-money"></i>';
 	text += getBuyIn(buyIn); //Цена : 100₽
 	text += '</p><p class="date"><i class="fa fa-calendar"></i>'
 	text += getPrizeCount(winPlaces); //Призовых мест: 1
@@ -302,9 +302,9 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 
 	$("#tournamentBlock").prepend(text);
 	/*hideAllButtons(id);
-	redraw_reg_button({tournamentID:id});
+	redraw_reg_button({tournamentID:id});*/
 
-	$("#tournamentWrapper"+id).show(ANIM_SPEED);*/
+	$("#tournamentWrapper"+id).show(ANIM_SPEED);
 }
 
 /*
