@@ -55,3 +55,8 @@
   /*background: #CCFF90;*/
   background-color: navajowhite;
 }
+
+.ticket-card .price .from
+{
+  color: #777777;
+}

@@ -17,7 +17,7 @@ text += '<center>';
 	</div>*/
 
 const UN_REG_FIELD= '#unregister';// '#UN_REG_FIELD';
-const REG_FIELD = '#reg';
+const REG_FIELD = '#register';
 const AUTH_FIELD = '#auth';
 
 function hideAllButtons(tID){
@@ -72,6 +72,10 @@ function redraw_reg_button(tournament){
 
   }
 
+}
+
+function drawNewTournament(tournament){
+  parseAndDrawTournament(tournament);
 }
 
 function redrawRegButtons(tournaments){
@@ -401,14 +405,14 @@ function drawReg(id, lgn, buyIn){
 	var phrase = "Играть БЕСПЛАТНО";
 	if (buyIn>0) phrase = "Играть за "+buyIn+" р";
 	//return '<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" style="border-radius:6px; " class="btn btn-lg btn-primary"> '+phrase+'</a>';
-	return draw_tournament_action('reg'+id, 'Участвовать в турнире', '', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '-'+buyIn)
+	return draw_tournament_action('register'+id , 'reg'+id, 'Участвовать в турнире', 'и выиграть приз!', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '-'+buyIn)
 }
 
 function drawUnReg(id, lgn, buyIn){
 	/*return '<div id="unregister'+id+'" style="display:none;">'+
 					'<a id="unReg'+id+'" onclick="unReg(\''+lgn+'\','+id+')" style="border-radius:6px;" class="btn btn-lg btn-danger">Сняться с турнира</a>' +
 				'</div>';*/
-	return draw_tournament_action('unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
+	return draw_tournament_action('unregister'+id , 'unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
 }
 
 function drawAuth(id){
@@ -416,15 +420,15 @@ function drawAuth(id){
 		'<h4> Авторизуйтесь, чтобы сыграть </h4>'+
 		'<a id="lgn'+ID+'" href="login" class="btn btn-lg btn-danger" style="border-radius:6px;" > Авторизоваться </a>'+
 	'</div>'*/
-	return draw_tournament_action('lgn'+id, 'Авторизуйтесь, чтобы сыграть', 'это быстро!', null, 'Login', 'Авторизоваться')
+	return draw_tournament_action('auth'+id , 'lgn'+id, 'Авторизуйтесь, чтобы сыграть', 'это быстро!', null, 'Login', 'Авторизоваться')
 }
 
 function draw_playButton(){
 
 }
 
-function draw_tournament_action(id_field, button_name, secondary_name, onclick, href, CTA, price_field){
-	var text = '<li>'+
+function draw_tournament_action(block_id, id_field, button_name, secondary_name, onclick, href, CTA, price_field){
+	var text = '<li id="'+ block_id + '">'+
 	'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
 	'<div class="price"><div class="value">';
 	if (price_field ) { text += '<b>$</b>' + price_field; }

@@ -83,18 +83,6 @@ socket.on('FinishTournament', function (msg) {
   //drawPlayButtons();
 });
 
-function drawNewTournament(tournament){
-  parseAndDrawTournament(tournament);
-  /*var id=tournament.tournamentID
-  , img= "/img/quiz.png"
-  , prize= "Случайный"
-  , winPlaces= 1
-  , players= 0
-  , Max= 1
-
-  drawTournament(id, img, prize, winPlaces, players, Max);*/
-}
-
 function tournament_exists(ID){
   return ( $("#tournamentWrapper"+ID).length );
 }
@@ -108,7 +96,7 @@ function getRandomArbitary(min, max)
 function updateFrontend(frontendVersion){
   var current_frontendVersion = getCookie('frontendVersion');
   //var x = document.cookie;
-  console.log('updateFrontend', frontendVersion, current_frontendVersion);//, x);
+  //console.log('updateFrontend', frontendVersion, current_frontendVersion);//, x);
 
   if (frontendVersion!=current_frontendVersion){
     setTimeout(function(){
