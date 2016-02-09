@@ -115,7 +115,6 @@ function redraw_reg_button(tournament){
       drawRegButton(tID); //console.log('no register');
     }
   } else {
-
     drawAuthButton(tID); //console.log('no auth');
 
   }

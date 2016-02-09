@@ -28,6 +28,7 @@ var TREG_FULL='TREG_FULL';
 var TREG_ALREADY = 'Registered';
 
 function ManageReg(login, tID, url, regID){
+	//console.log('ManageReg', url, login, regID);
 	//console.log(login);
 	//console.log(tID); //console.log(btn);
 	
@@ -92,7 +93,7 @@ function getImageUrl(t){
 	if (t.settings && t.settings.special) {
 		return 'img/'+ID+'.jpg';
 	}	else {
-		return "/img/quiz.png";
+		return "/img/713228168_131408_5354824504548356806.jpg";//quiz.png
 	}
 }
 
@@ -268,17 +269,88 @@ function getPrizeCount(winPlaces){
 	return 'Призовых мест: '+winPlaces;
 }
 
-function buttons(){
-	return 	'<ul class="list-unstyled"><li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' + 
+function drawReg(id, lgn, buyIn){
+	var phrase = "Играть БЕСПЛАТНО";
+	if (buyIn>0) phrase = "Играть за "+buyIn+" р";
+	//return '<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" style="border-radius:6px; " class="btn btn-lg btn-primary"> '+phrase+'</a>';
+	return draw_tournament_action('reg'+id, 'Участвовать в турнире', '', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '-'+buyIn)
+}
+
+function drawUnReg(lgn, id, buyIn){
+	/*return '<div id="unregister'+id+'" style="display:none;">'+
+					'<a id="unReg'+id+'" onclick="unReg(\''+lgn+'\','+id+')" style="border-radius:6px;" class="btn btn-lg btn-danger">Сняться с турнира</a>' +
+				'</div>';*/
+	return draw_tournament_action('unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
+}
+
+function drawAuth(id){
+	/*return '<div id="auth'+ID+'">'+
+		'<h4> Авторизуйтесь, чтобы сыграть </h4>'+
+		'<a id="lgn'+ID+'" href="login" class="btn btn-lg btn-danger" style="border-radius:6px;" > Авторизоваться </a>'+
+	'</div>'*/
+	return draw_tournament_action('lgn'+id, 'Авторизуйтесь, чтобы сыграть', 'это быстро!', null, 'Login', 'Авторизоваться')
+}
+
+function draw_playButton(){
+
+}
+
+function draw_tournament_action(id_field, button_name, secondary_name, onclick, href, CTA, price_field){
+	var text = '<li>'+
+	'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
+	'<div class="price"><div class="value">';
+	if (price_field ) { text += '<b>$</b>' + price_field; }
+	text+= '</div></div>'+
+	'<a class="btn btn-info btn-sm btn-buy" ';//'>Участвовать</a>'+
+
+	if (id_field) text += ' id="'+id_field+ '"';
+	if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+
+	if (href) text += ' href="' + href + '"';
+	text += '>'+ CTA +'</a>'+
+	'</li>';//"reg'+id+'"
+
+	return text;
+}
+
+//function drawButton(id, lgn){
+	/*return '<li>'+
+		'<div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div>'+
+		'<div class="price"><div class="value"><b>$</b>599</div></div>'+
+		'<a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a>'+
+		'</li>';*/
+
+		/*var text = '<li>';
+		var */
+
+	/*return '<li>'+
+		'<div class="ticket"><h5>Basic Ticket<br><small>1 Tickets left</small></h5></div>'+
+		'<div class="price"><div class="value"><b>$</b>599</div></div>'+
+		'<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" class="btn btn-info btn-sm btn-buy">Участвовать</a>'+
+		'</li>';*/
+/*	
+	return draw_tournament_action('reg'+id, 'Basic Ticket', '1 Tickets left', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '607')
+}*/
+
+
+
+function buttons(id, lgn, buyIn){
+	return 	'<ul class="list-unstyled">'+
+	drawReg(id, lgn, buyIn) +
+	drawUnReg(id, lgn, buyIn) +
+	drawAuth(id) +
+	//drawButton(id, lgn) +
+
+	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" id="unregister'+id+'" class="btn btn-info btn-sm btn-buy">Сняться</a></li>' + 
 	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +
-	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +
+	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +*/
 	'</ul>';
 }
 
 function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
 
-	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card"><div class="cover">';
+	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card participating"><div class="cover">';
 	text += drawImage(img);
 	text += '<div class="info"><div class="going"><i class="fa fa-group fa-lg"></i>'
 	text += getPlayerCount(players, Max); //25 играют
@@ -293,12 +365,12 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
 	text += getPrizeCount(winPlaces); //Призовых мест: 1
 	text += '</p></div><div class="clearfix"></div></div><div class="collapse">'
-	text += buttons() 
+	text += buttons(id, login, buyIn) 
 	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	</ul>'*/
-	text += '</div><div class="footer"><button class="btn toggle-tickets">Регистрация закрыта</button></div></div></div>'
+	text += '</div><div class="footer"><button class="btn toggle-tickets">Участвовать</button></div></div></div>'
 	//console.log(getLogin());
 	//console.log(text);
 	//console.log("drawTournament ", id)
@@ -310,7 +382,21 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);
 }
-
+setTimeout(function(){
+	$('.toggle-tickets').click(function() {
+	  $tickets = $(this).parent().siblings('.collapse');
+	 
+	  if ($tickets.hasClass('in')) {
+	    $tickets.collapse('hide');
+	    $(this).html('Подробнее');
+	    $(this).closest('.ticket-card').removeClass('active');
+	  } else {
+	    $tickets.collapse('show');
+	    $(this).html('Свернуть');
+	    $(this).closest('.ticket-card').addClass('active');
+	  }
+	});
+}, 1500);
 /*
 mixin showTournament()
 	div(class="col-sm-6 col-md-4")
