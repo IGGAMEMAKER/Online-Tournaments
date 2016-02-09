@@ -99,32 +99,6 @@ function tournament_exists(ID){
   return ( $("#tournamentWrapper"+ID).length );
 }
 
-socket.on('update', function (msg){
-  var tournaments = msg.tournaments;
-  var frontendVersion = msg.frontendVersion.value;
-  //console.log('msg.frontendVersion', frontendVersion);
-  //console.log("---------------");
-  for (var i = tournaments.length - 1; i >= 0; i--) {
-    var tournament = tournaments[i];
-    var ID = tournament.tournamentID;
-
-    if ( !tournament_exists(ID) ) {
-      //var tLikeObject = JSON.parse(JSON.stringify(tournament));
-      //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
-      drawNewTournament(tournament);
-      //parseAndDrawTournament(tournament);
-    } else {
-      redrawTournament(tournament);
-    }
-
-    //console.log("update-"+i, tournaments[i]);
-  };
-
-  if (frontendVersion) {
-    updateFrontend(frontendVersion);
-  }
-});
-
 function getRandomArbitary(min, max)
 {
   return Math.random() * (max - min) + min;
@@ -207,6 +181,14 @@ function setAsync(url, data, success){
   });
 }
 
+function mark(url, data){
+  $.ajax({
+    url:url
+    , method: 'POST'
+    , data:data||null
+  })
+}
+
 function prt(message) {
   if (message) console.log(message);
 }
@@ -218,31 +200,15 @@ function isActiveTab(){ return true; }
 
 function userIsRegisteredIn(tournamentID){
   var tournaments = getTournaments();
-  prt("user registered in ",tournaments);
+  //prt("user registered in ",tournaments);
 
   for (var i=0; i<tournaments.length;++i){
     if (tournaments[i]==tournamentID){
-      prt('userIsRegisteredIn : ' + tournamentID);
+      //prt('userIsRegisteredIn : ' + tournamentID);
       return true;
     }
   }
   return false;
-}
-
-function addTournament(tournamentID){
-  var tournaments = getTournaments();
-  tournaments.push(tournamentID);
-  saveInStorage('tournaments', tournaments);
-}
-
-function deleteTournament(tournamentID){
-  var tournaments = getTournaments();
-  for (var i = tournaments.length - 1; i >= 0; i--) {
-    if (tournaments[i]== tournamentID){
-      var a = tournaments.splice(i,1);
-      return saveInStorage('tournaments', a);
-    }
-  };
 }
 
 setTimeout(blinker, 1000);

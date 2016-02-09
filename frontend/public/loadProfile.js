@@ -1,13 +1,13 @@
 getProfile();
 //hideAllButtons();
-drawAuthButton();
+//drawAuthButton();
 //window.onfocus = getProfile;
 
 var myModal = '#myModal';
 
 function getProfile(drawFunction){
 	clearStorage();
-	getAsync('Profile', {}, saveProfile() );	
+	getAsync('Profile', {}, saveProfile(drawFunction||null) );	
 }
 
 var loadedAddrs=0;
@@ -16,10 +16,10 @@ function GetTournamentAddress(tID){
 	getAsync('GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
 }
 
-function saveProfile(){
+function saveProfile(drawFunction){
 	return function (data) {
 		var profile = JSON.parse(data); prt(profile);
-		var tournaments = profile.tournaments||{};
+		var tournaments = profile.tournaments||{}; // tregs
 		var money = profile.money;
 
 		saveInStorage('money', money);
@@ -28,13 +28,14 @@ function saveProfile(){
 		resetRunningTournaments();
 		//var tournaments = getTournaments();
 		//console.log('tournaments',tournaments);
+
 		loadedAddrs=0;
 		for (var i=0; i < tournaments.length; i++){
 			var tID1 = tournaments[i];
 			GetTournamentAddress(tID1.tournamentID);
 		}
 
-		redrawRegButtons(tournaments);
+		if (drawFunction) drawFunction();
 
 		if(tournaments.length==0) { 
 			console.log('no tournaments'); 
@@ -47,6 +48,7 @@ function saveProfile(){
 		$('#money1').html(money/convert + 'p');
 
 		$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
+
 		/*get_last(103);
 		get_last(102);
 		get_last(93);
@@ -63,7 +65,8 @@ function get_last(s){ //s = number
 }
 
 function getMoneyString(money){
-	/*var number = get_last(money);
+	/*
+	var number = get_last(money);
 	var word = "рублей";
 
 	switch(number){
@@ -98,12 +101,12 @@ function saveTournamentAddress(tID){
 }
 
 function resetRunningTournaments(){
-	saveInStorage('hasRunningTournaments',0);
+	saveInStorage('hasRunningTournaments', 0);
 }
 
 function setRunningTournaments(){
 	console.log('hasRunningTournaments');
-	saveInStorage('hasRunningTournaments',1);
+	saveInStorage('hasRunningTournaments', 1);
 }
 
 
@@ -115,7 +118,6 @@ function getAsync(url, data, success){
 		success: success
 	});
 }
-
 
 function killID(arr, field){
 	var list = [];

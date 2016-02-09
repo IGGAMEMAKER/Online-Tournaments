@@ -45,6 +45,10 @@
 {
     color: #777777;
 }
+.ticket-card .list-unstyled{
+  background: none;
+  overflow-X: hidden;
+}
 
 .participating
 {

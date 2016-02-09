@@ -56,7 +56,10 @@ function drawPlayButtons(){
   //$(PLAY_FIELD).html('<p onclick="closePopup(\'tournaments\');"> CLOSE </p>'); // drawHideLink
   
   if (tournaments && addresses){
-    clearButtonField();
+    //clearButtonField();
+    console.log('clearButtonField');
+    $(BUTTON_FIELD).html('<br />');
+
     for (var i = tournaments.length - 1; i >= 0; i--) {
       var tournamentID = tournaments[i]; // console.log(tournamentID);
       var address = getAddressFromAddrList(addresses, tournamentID);
@@ -79,93 +82,6 @@ function drawPlayButtons(){
   }
 }
 
-
-function hideAllButtons(tID){
-  $('#unregister' + tID).hide();
-  $('#reg' + tID).hide();
-  $('#auth' + tID).hide();
-}
-
-function drawUnRegButton(tID){
-  $('#unregister' + tID).show();
-  $('#reg' + tID).hide();
-  $('#auth' + tID).hide();
-}
-
-function drawRegButton(tID){
-  $('#unregister' + tID).hide();
-  $('#reg' + tID).show();
-  $('#auth' + tID).hide();
-}
-
-function drawAuthButton(tID){
-  $('#unregister' + tID).hide();
-  $('#reg' + tID).hide();
-  $('#auth' + tID).show();
-}
-
-function redraw_reg_button(tournament){
-  console.log('redrawRegButtons', tournament);
-  var tID = tournament.tournamentID;
-  //console.log('look at ', tID);
-  if (login){
-    if (userIsRegisteredIn(tID)){
-      drawUnRegButton(tID); //console.log('userIsRegisteredIn');
-    } else {
-      drawRegButton(tID); //console.log('no register');
-    }
-  } else {
-    drawAuthButton(tID); //console.log('no auth');
-
-  }
-
-}
-
-function redrawRegButtons(tournaments){
-  console.log('redrawRegButtons', tournaments);
-  for (var i = tournaments.length - 1; i >= 0; i--) {
-    redraw_reg_button(tournaments[i])
-    /*
-    //console.log('redrawRegButtons', tournaments[i]);
-    var tID = tournaments[i].tournamentID;
-    //console.log('look at ', tID);
-    if (login){
-      if (userIsRegisteredIn(tID)){
-        drawUnRegButton(tID); //console.log('userIsRegisteredIn');
-      } else {
-        drawRegButton(tID); //console.log('no register');
-      }
-    } else {
-      drawAuthButton(tID); //console.log('no auth');
-    }*/
-
-  };
-  /*if (tID){
-    console.log('tID: ' + tID);
-  }*/
-}
-
-function clearButtonField(){
-  console.log('clearButtonField');
-
-  $(BUTTON_FIELD).html('<br />');
-}
-
-function drawWindowForGame(gameURL, port, tournamentID){
-  /*var addr = 'http://'+gameURL+':'+port+'/Game?tournamentID='+tournamentID;
-    
-  var txt = '<form id="TheForm" method="post" action="'+addr+'" target="TheWindow"><input type="hidden" name="login" value="'+login+'" /> </form>';
-  console.log(txt);
-  $(PLAY_FIELD).append(txt);
-
-  
-  var wind = window.open('', 'TheWindow');
-  document.getElementById('TheForm').submit();
-  wind.focus();
-
-  closePopup('tournaments');*/
-}
-
 function closePopup(name){
   //prt('closePopup');
 
@@ -179,27 +95,6 @@ function drawPopup(){
   $(myModal).modal('show');
   //alert("Турнир начинается");
   //prt('popup opened');
-}
-const TOURN_STATUS_REGISTER = 1;
-const TOURN_STATUS_RUNNING = 2;
-const TOURN_STATUS_FINISHED = 3;
-const TOURN_STATUS_PAUSED = 4;
-
-function drawTournamentStatus(tournamentID, status){
-  
-}
-
-function redrawTournament(tournament){
-  var players = tournament.players;
-  var maxPlayers = tournament.goNext[0];
-
-  var tournamentID = tournament.tournamentID;
-  var status = tournament.status;
-  //console.log("redrawTournament", tournamentID, players, maxPlayers, status);
-  $("#plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
-
-  drawTournamentStatus(tournamentID, status);
-  //$("plrs-"+tournamentID).html("Участников : " + players + " из " + maxPlayers);
 }
 
 var runningCount=0;
