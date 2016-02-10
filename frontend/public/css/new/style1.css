@@ -82,11 +82,11 @@
 
 .ticket-card:hover .cover img, .ticket-card.active .cover img
 {
-    -moz-transform: translate(0, -50px);
+    /*-moz-transform: translate(0, -50px);
     -o-transform: translate(0, -50px);
     -ms-transform: translate(0, -50px);
     -webkit-transform: translate(0, -50px);
-    transform: translate(0, -50px);
+    transform: translate(0, -50px);*/
     box-shadow: 0 10px 20px -4px rgba(22, 22, 22, 0.5);
 }
 

@@ -12,6 +12,10 @@
   padding-top: 70px;
 }
 
+.background {
+  background-image: url('dark_blue.jpg');
+}
+
 
 .wrapper2 footer
 {
@@ -53,7 +57,9 @@
 .participating
 {
   /*background: #CCFF90;*/
-  background-color: navajowhite;
+  /*background-color: navajowhite;*/
+  background-color: #FFF176;
+  background-color: #F4FF81;
 }
 
 .ticket-card .price .from

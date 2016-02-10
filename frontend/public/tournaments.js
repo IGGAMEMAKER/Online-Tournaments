@@ -84,6 +84,8 @@ function redrawRegButtons(tournaments){
   };
 }
 
+/* $('.element').fadeTo(1000, 0.5, function() { $('.element').fadeTo(800, 1); }); */
+
 socket.on('update', function (msg){
   var tournaments = msg.tournaments;
   var frontendVersion = msg.frontendVersion.value;
@@ -361,7 +363,7 @@ function drawAuth(ID){
 }
 
 function drawImage(img){
-	return '<img src="'+img+'" width="280" height="220">';//width="210" height="150"
+	return '<img src="'+img+'" >';//width="210" height="150" // width="280" height="220"
 }
 
 function Info(winPlaces, id, players, Max){
