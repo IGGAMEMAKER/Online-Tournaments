@@ -58,6 +58,14 @@ script var login = "#{session.login}";
 	+closeTournamentModal()
 +serverMessage()
 
+mixin drawBalance()
+	if (session.login && session.login.length>0)
+		div(class="balance")
+			span(id="balance") #{session.login}     
+			a(href="profile#dep") Пополнить   
+			span /   
+			a(href="profile#cashoutMoney") Снять деньги
+
 script(src="YandexMetrica.js")
 noscript
 	div

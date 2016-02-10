@@ -607,7 +607,7 @@ setTimeout(function(){
 	 
 	  if ($tickets.hasClass('in')) {
 	    $tickets.collapse('hide');
-	    $(this).html('Подробнее');
+	    //$(this).html('Подробнее');
 	    $(this).closest('.ticket-card').removeClass('active');
 	  } else {
 	    $tickets.collapse('show');
