@@ -38,6 +38,7 @@ function drawUnRegButton(tID){
   $(AUTH_FIELD + tID).hide();
 
   $('#bgd'+tID).addClass('participating');
+  //setToggle(tID, 'Вы участвуете в турнире. Дождитесь начала')
 }
 
 function drawRegButton(tID){
@@ -48,6 +49,7 @@ function drawRegButton(tID){
   $(AUTH_FIELD + tID).hide();
 
   $('#bgd'+ tID).removeClass('participating');
+  //setToggle(tID, 'Вы можете принять участие')
 }
 
 function drawAuthButton(tID){
@@ -140,11 +142,51 @@ function redrawTournament(tournament){
 
   //console.log("redrawTournament", tournamentID, players, maxPlayers, status);
   var plrs = '<i class="fa fa-group fa-lg"></i>'+getPlayerCount(players, maxPlayers);
-  $("#plrs-"+tournamentID).html(plrs);
+  $("#plrs-"+tournamentID).html(plrs);// + '<br>'+status
 
   //updateTournamentButtonsByID(tournamentID);
   redraw_reg_button({tournamentID: tournamentID});
-  //drawTournamentStatus(tournamentID, status);
+  drawTournamentStatus(tournamentID, status);
+}
+
+function drawTournamentStatus(tournamentID, status){
+	var text;
+	console.log('drawTournamentStatus', arguments);
+	if (userIsRegisteredIn(tournamentID)){
+		switch(status){
+			case TOURN_STATUS_RUNNING:
+				text = 'Турнир начался, играйте!'
+			break;
+			case TOURN_STATUS_FINISHED:
+				text = 'Турнир завершён, ждём вас в других турнирах';
+			break;
+			case TOURN_STATUS_REGISTER: 
+				text = 'Вы участвуете. Дождитесь заполнения турнира';
+			break;
+			default:
+				text = 'Подробнее';
+			break;
+		}	
+	} else {
+		switch(status){
+			case TOURN_STATUS_RUNNING:
+				text = 'Турнир запущен';
+			break;
+			case TOURN_STATUS_FINISHED:
+				text = 'Турнир завершён';
+			break;
+			case TOURN_STATUS_REGISTER: 
+				text = 'Участвовать';
+			break;
+			default:
+				text = 'Подробнее';
+			break;
+		}	
+	}
+
+	//text = 'Я водитель НЛО'
+
+	setToggle(tournamentID, text);
 }
 
 //function check_buttons()
@@ -268,7 +310,9 @@ function getImageUrl(t){
 	}
 }
 
-
+function setToggle(tID, text){
+	$("#toggle"+tID).html(text);
+}
 
 var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
@@ -481,16 +525,48 @@ function buttons(id, lgn, buyIn){
 	'</ul>';
 }
 
+function draw_cover(id, img){
+	return '<div class="cover">' +
+	drawImage(img) + 
+	'</div>' ;
+}
+
+function draw_players_and_id(id, players, Max){
+	return '<div class="info">' + 
+		'<div class="going" id="plrs-' + id + '"'+' ><i class="fa fa-group fa-lg"></i>' + getPlayerCount(players, Max) + '</div>' +
+		'<div class="tickets-left">' + pasteID(id) + '</div>' +
+	'</div>'
+}
+
+var blink_period = 2000;
+
+function blink(tID){
+	var element = '.ticket-card';
+	
+	setTimeout(function(){
+		//light(element);
+		$(element).fadeTo(blink_period/2, 0.5).fadeTo(blink_period/2, 1.0);
+		blink();
+	}, blink_period);
+}
+
+//setTimeout(blink, 3000);
+
 function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
 
-	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card" id="bgd'+id+'" ><div class="cover">';
-	text += drawImage(img);
-	text += '<div class="info"><div class="going" id="plrs-' + id + '"'+' ><i class="fa fa-group fa-lg"></i>'
-	text += getPlayerCount(players, Max); //25 играют
-	text += '</div><div class="tickets-left">';//<i class="fa fa-ticket"></i>
-	text += pasteID(id); //5 Мест
-	text += '</div></div></div><div class="body"><div class="artist"><h6 class="info">Тема викторины</h6><h4 class="name">';
+	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card" id="bgd'+id+'" >';
+	text += '<div class="cover">' + drawImage(img) + '</div>';
+	
+	/*text += '<div class="info">'
+		text += '<div class="going" id="plrs-' + id + '"'+' ><i class="fa fa-group fa-lg"></i>' + getPlayerCount(players, Max) + '</div>';//<i class="fa fa-ticket"></i>
+		text += '<div class="tickets-left">' + pasteID(id) + '</div>';
+	text += '</div>';*/
+
+	text += '<div class="body">';
+	text += draw_players_and_id(id, players, Max);
+	text += '<br><br>'
+	text += '<div class="artist"><h6 class="info">Тема викторины</h6><h4 class="name">';
 	text += getTopic(); //Музыка
 	text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
 	text += getMainPrize(prize); //5000 <b>₽</b>
@@ -498,13 +574,15 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += getBuyIn(buyIn); //Цена : 100₽
 	text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
 	text += getPrizeCount(winPlaces); //Призовых мест: 1
-	text += '</p></div><div class="clearfix"></div></div><div class="collapse">'
+	text += '</p></div>';
+	//text += draw_players_and_id(id, players, Max);
+	text += '<div class="clearfix"></div></div><div class="collapse">'
 	text += buttons(id, login, buyIn) 
 	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
 	</ul>'*/
-	text += '</div><div class="footer"><button class="btn toggle-tickets">Участвовать</button></div></div></div>'
+	text += '</div><div class="footer"><button class="btn toggle-tickets" id="toggle'+ id +'">Участвовать</button></div></div></div>'
 	//console.log(getLogin());
 	//console.log(text);
 	//console.log("drawTournament ", id)

@@ -58,11 +58,27 @@
 {
   /*background: #CCFF90;*/
   /*background-color: navajowhite;*/
-  background-color: #FFF176;
-  background-color: #F4FF81;
+  /*background-color: #FFF176;*/
+  /*background-color: #F4FF81;*/
+  background-color: #FFECB3;
 }
 
 .ticket-card .price .from
 {
   color: #777777;
+}
+
+.ticket-card .cover img
+{
+  margin-top: 0px;
+}
+
+.ticket-card .body .info .going
+{
+  float: left;
+}
+
+.ticket-card .body .info .tickets-left
+{
+  float: right;
 }

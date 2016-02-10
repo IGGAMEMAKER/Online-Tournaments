@@ -68,6 +68,7 @@ function drawPlayButtons(){
       if (address) {
         
         runningCount++;
+        
         drawButton(address.host, address.port, tournamentID);
       }
     }

@@ -84,7 +84,7 @@ function getMoneyString(money){
 function saveTournamentAddress(tID){
 	return function (data) {
 		var address = JSON.parse(data); // console.log(address); // 
-		console.log(tID);
+		//console.log(tID);
 		
 		setInObject('addresses', tID, address.address); // console.log(address.running);
 		//var obj = getObject('addresses');
@@ -92,7 +92,7 @@ function saveTournamentAddress(tID){
 		//console.log(obj[tID].address);
 		var tournaments = getTournaments();
 		loadedAddrs++;
-		console.log('length', tournaments.length);
+		//console.log('length', tournaments.length);
 		if (loadedAddrs==tournaments.length){
 			drawPlayButtons();
 		}
