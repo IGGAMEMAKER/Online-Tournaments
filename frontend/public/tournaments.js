@@ -264,7 +264,7 @@ function getImageUrl(t){
 	if (t.settings && t.settings.special) {
 		return 'img/'+ID+'.jpg';
 	}	else {
-		return "/img/713228168_131408_5354824504548356806.jpg";//quiz.png
+		return "/img/std_cover.jpg";//quiz.png
 	}
 }
 
