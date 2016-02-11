@@ -20,14 +20,14 @@ const UN_REG_FIELD= '#unregister';// '#UN_REG_FIELD';
 const REG_FIELD = '#register';
 const AUTH_FIELD = '#auth';
 
-function hideAllButtons(tID){
+function hideAllButtons(tID, don_t_removeClass){
   //console.log('hideAllButtons');
   
   $(UN_REG_FIELD + tID).hide();
   $(REG_FIELD + tID).hide();
   $(AUTH_FIELD + tID).hide();
 
-  $('#bgd'+tID).removeClass('participating');
+  if (!don_t_removeClass) $('#bgd'+tID).removeClass('participating');
 }
 
 function drawUnRegButton(tID){
@@ -141,7 +141,7 @@ function redrawTournament(tournament){
   var status = tournament.status;
 
   //console.log("redrawTournament", tournamentID, players, maxPlayers, status);
-  var plrs = '<i class="fa fa-group fa-lg"></i>'+getPlayerCount(players, maxPlayers);
+  var plrs = '<i class="fa fa-group fa-lg"></i>' + getPlayerCount(players, maxPlayers);
   $("#plrs-"+tournamentID).html(plrs);// + '<br>'+status
 
   //updateTournamentButtonsByID(tournamentID);
@@ -151,11 +151,19 @@ function redrawTournament(tournament){
 
 function drawTournamentStatus(tournamentID, status){
 	var text;
-	console.log('drawTournamentStatus', arguments);
+	//console.log('drawTournamentStatus', arguments);
 	if (userIsRegisteredIn(tournamentID)){
 		switch(status){
 			case TOURN_STATUS_RUNNING:
 				text = 'Турнир начался, играйте!'
+				var element = '#bgd'+ tournamentID;
+				miniBlink(element, 1000);
+
+				//if (!play_button_exists(tournamentID)){
+				draw_playButton(tournamentID);
+				hideAllButtons(tournamentID, true);
+				//}
+				//$(element).fadeTo(blink_period/4, 0.5).fadeTo(blink_period/4, 1.0);
 			break;
 			case TOURN_STATUS_FINISHED:
 				text = 'Турнир завершён, ждём вас в других турнирах';
@@ -469,8 +477,52 @@ function drawAuth(id){
 	return draw_tournament_action('auth'+id , 'lgn'+id, 'Авторизуйтесь, чтобы сыграть', 'это быстро!', null, 'Login', 'Авторизоваться')
 }
 
-function draw_playButton(){
+function draw_playButton(tournamentID){
+	if (!play_button_exists(tournamentID)){
+		//var host
+		var addresses   = getObject('addresses');
+		console.log(addresses, tournamentID);
+		var address = getAddressFromAddrList(addresses, tournamentID);
+		console.log(address, tournamentID);
+		var host = address.host;
+		var port = address.port;
 
+		var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
+
+		/*var txt = '<form id="play-btn'+tournamentID+'" method="post" action="'+addr+'"  target="_blank"> '
+
+		+'<input type="hidden" name="login" value="'+login+'" />'
+		+'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
+		+'</form>';*/
+
+
+		var txt = '<li id="play-btn'+tournamentID + '">'+
+		'<form id="play-btn'+tournamentID+'" method="post" action="'+addr+'"  target="_blank"> '
+
+		+'<input type="hidden" name="login" value="'+login+'" />'
+		+'<input type="submit" class="btn btn-default" value="ИГРАТЬ!" />'
+		+'</form>'
+		+'</li>';
+
+		/*var text = '<li id="play-btn'+tournamentID + '">'+
+		'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
+		'<div class="price"><div class="value">';
+		if (price_field ) { text += '<b>$</b>' + price_field; }
+		text+= '</div></div>'+
+		'<a class="btn btn-info btn-sm btn-buy" ';//'>Участвовать</a>'+
+
+		if (id_field) text += ' id="'+id_field+ '"';
+		if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+
+		if (href) text += ' href="' + href + '"';
+		text += '>'+ CTA +'</a>'+
+		'</li>';//"reg'+id+'"
+		*/
+
+
+		$('#btn-list'+tournamentID).append(txt);
+		// hide all buttons
+	}
 }
 
 function draw_tournament_action(block_id, id_field, button_name, secondary_name, onclick, href, CTA, price_field){
@@ -513,10 +565,11 @@ function draw_tournament_action(block_id, id_field, button_name, secondary_name,
 
 
 function buttons(id, lgn, buyIn){
-	return 	'<ul class="list-unstyled">'+
+	return '<ul class="list-unstyled" id="btn-list'+id+'">'+
 	drawReg(id, lgn, buyIn) +
 	drawUnReg(id, lgn, buyIn) +
 	drawAuth(id) +
+	//draw_playButton('online')
 	//drawButton(id, lgn) +
 
 	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" id="unregister'+id+'" class="btn btn-info btn-sm btn-buy">Сняться</a></li>' + 
@@ -545,9 +598,14 @@ function blink(tID){
 	
 	setTimeout(function(){
 		//light(element);
-		$(element).fadeTo(blink_period/2, 0.5).fadeTo(blink_period/2, 1.0);
+		//$(element).fadeTo(blink_period/2, 0.5).fadeTo(blink_period/2, 1.0);
+		miniBlink(element, blink_period);
 		blink();
 	}, blink_period);
+}
+
+function miniBlink(element, period){
+	$(element).fadeTo(period/2, 0.5).fadeTo(period/2, 1.0);
 }
 
 //setTimeout(blink, 3000);
@@ -593,15 +651,26 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	redraw_reg_button({tournamentID:id});
 
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);
-
-	/*$("#tournamentBlock").prepend(text);
-	hideAllButtons(id);
-	redraw_reg_button({tournamentID:id});
-
-	//drawAuthButton(id);
-	$("#tournamentWrapper"+id).show(ANIM_SPEED);*/
+	set_toggle_collapse_listener(id);
 }
-setTimeout(function(){
+
+function set_toggle_collapse_listener(tournamentID){
+	$('#toggle'+tournamentID).click(function() {
+	  $tickets = $(this).parent().siblings('.collapse');
+	 
+	  if ($tickets.hasClass('in')) {
+	    $tickets.collapse('hide');
+	    //$(this).html('Подробнее');
+	    $(this).closest('.ticket-card').removeClass('active');
+	  } else {
+	    $tickets.collapse('show');
+	    $(this).html('Свернуть');
+	    $(this).closest('.ticket-card').addClass('active');
+	  }
+	});
+}
+
+/*setTimeout(function(){
 	$('.toggle-tickets').click(function() {
 	  $tickets = $(this).parent().siblings('.collapse');
 	 
@@ -615,7 +684,8 @@ setTimeout(function(){
 	    $(this).closest('.ticket-card').addClass('active');
 	  }
 	});
-}, 1500);
+}, 1500);*/
+
 /*
 mixin showTournament()
 	div(class="col-sm-6 col-md-4")

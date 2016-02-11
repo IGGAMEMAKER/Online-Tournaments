@@ -22,24 +22,16 @@ function drawButton(host, port, tournamentID){
   var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
     
   var txt = '<p>AAAAAAAA</p>';
-  /*
-  <form id="TheForm" method="post" action="'+addr+'" target="TheWindow">';
 
-  '<input type="hidden" name="login" value="'+login+'" /> '+
-  '<input type="submit" class="btn btn-default" value="111"> PLAY 111</input>'+
-  '</form>
-
-  */
   txt='<form id="form1" method="post" action="'+addr+'"  target="_blank"> '
-  //+'<p>aaaa</p>'
-  //+'<a href="http://google.com">google</a>'
+
   +'<input type="hidden" name="login" value="'+login+'" />'
   +'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
   +'</form>';
 
   
   $(BUTTON_FIELD).append(txt);
-  console.log('appended: ' + host, port, tournamentID);
+  //console.log('appended: ' + host, port, tournamentID);
 
   /*var wind = window.open('', 'TheWindow');
   document.getElementById('TheForm').submit();
@@ -70,6 +62,8 @@ function drawPlayButtons(){
         runningCount++;
         
         drawButton(address.host, address.port, tournamentID);
+
+        //if (!play_button_exists(tournamentID))
       }
     }
   }

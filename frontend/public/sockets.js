@@ -87,6 +87,10 @@ function tournament_exists(ID){
   return ( $("#tournamentWrapper"+ID).length );
 }
 
+function play_button_exists(ID){
+  return ( $("#play-btn"+ID).length );
+}
+
 function getRandomArbitary(min, max)
 {
   return Math.random() * (max - min) + min;
