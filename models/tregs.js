@@ -106,6 +106,9 @@ function leaderboard(){//time_function
 				_id: "$userID",
 				count: { $sum: 1 }
 			}
+		},
+		{
+			$sort: {count:-1}
 		}
 		], function (err, leaderboard){
 			if (err) return reject(err);
