@@ -167,6 +167,8 @@ var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log,
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
 
 
+var TournamentReg = require('./models/tregs');
+
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
   if (parameters) basicInfo += JSON.stringify(parameters);
@@ -601,6 +603,7 @@ var frontendVersion;
 
 RealtimeProvider(1000);
 UpdateFrontendVersion(20000);
+get_Leaderboard(8000);
 
 function RealtimeProvider(period){
   sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
@@ -628,7 +631,44 @@ function UpdateFrontendVersion(period){
       //compare(body, previousTournaments);
     }
   })
+
   setTimeout(function(){
     UpdateFrontendVersion(period)
   }, period);
 }
+
+
+
+function get_Leaderboard(period){
+  TournamentReg.leaderboard()
+  .then(function (leaderboard){
+    activity_board = leaderboard;
+    //res.json(leaderboard);
+    io.emit('leaderboard', activity_board);
+  })
+  .catch(function (err){
+    //console.log('error', 'get_Leaderboard', err);
+    //Errors.add('login', 'leaderboard', { code:err })
+    //res.json({code:'err', message:'Ошибка'})
+  })
+
+  setTimeout(function(){
+    get_Leaderboard(period)
+  }, period);
+}
+
+var activity_board;
+
+
+
+app.post('/Leaderboard', function (req, res){
+
+  /*TournamentReg.leaderboard()
+  .then(function (leaderboard){
+    res.json(leaderboard);
+  })
+  .catch(function (err){
+    Errors.add('login', 'leaderboard', { code:err })
+    res.json({code:'err', message:'Ошибка'})
+  })*/
+})

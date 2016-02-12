@@ -2,6 +2,8 @@ var Promise = require('bluebird');
 
 var configs = require('../configs');
 var models = require('../models')(configs.db);
+
+var time = require('../helpers/time');
 var TournamentReg = models.TournamentReg;
 
 var helper = require('../helpers/helper');
@@ -95,6 +97,24 @@ function userRegistered(login, tournamentID){
 	})
 }
 
+function leaderboard(){//time_function
+	return new Promise(function (resolve, reject){
+		TournamentReg.aggregate([
+		{ $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
+		{
+			$group: {
+				_id: "$userID",
+				count: { $sum: 1 }
+			}
+		}
+		], function (err, leaderboard){
+			if (err) return reject(err);
+			//	console.log(leaderboard);
+			return resolve(leaderboard||[]);
+		})
+	})
+}
+
 /*function Experiment(tournamentID, login){
 	return new Promise(function (resolve, reject){
 		TournamentReg.findOne({tournamentID:tournamentID, userID:login},'', function (err, reg){
@@ -177,3 +197,4 @@ this.add = add;
 this.remove = remove;
 this.userRegistered = userRegistered;
 this.playedCount = playedCount;
+this.leaderboard = leaderboard;

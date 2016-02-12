@@ -114,6 +114,33 @@ socket.on('update', function (msg){
   }
 });
 
+function prizeByPlace(place, length){
+	switch(place){
+		case 0:
+			return 100;
+		break;
+		case 1:
+			if (length>30) return 50;
+			return 0;
+		break;
+		default:
+			return 0;
+		break;
+	}
+}
+
+socket.on('leaderboard', function (msg){
+	var leaders = msg;
+	var rating = "#ratingTab";
+	$(rating).html("");
+	for (var i=0; i<leaders.length;i++){
+		var login = leaders[i]._id;
+		var count = leaders[i].count;
+		var prize = prizeByPlace(i, leaders.length);
+		$(rating).append("<tr>" + "<td>" + i + "</td>" + "<td>" + login + "</td>" + "<td>" + count + "</td>" + "<td>" + prize + "</td>" +"</tr>")
+	}
+})
+
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -336,7 +363,7 @@ function isSpecial(t){
 
 function getPrize(t){
 	var prize = t.Prizes[0];
-	console.log("prize ", prize);
+	//console.log("prize ", prize);
 	var ID = t.tournamentID;
 
 	if (isSpecial(t)) {

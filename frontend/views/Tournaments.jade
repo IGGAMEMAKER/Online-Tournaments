@@ -25,6 +25,25 @@ mixin tabs()
 		div(class="tab-pane" id="tab4")
 			p Настройки
 
+mixin rtg()
+	tr
+		td Рейтинг 
+		td обновляется 
+		td каждые 
+		td 8 секунд
+	//tr 
+		td 1 
+		td Mark 
+		td 100 
+		//td 62
+		td 100р
+	//tr 
+		td 2 
+		td Jacob 
+		td 87 
+		//td 34
+		td 50р
+
 mixin rating()
 	div(class="col-md-8 dataRule")
 		table(class="table")
@@ -33,21 +52,10 @@ mixin rating()
 					th #
 					th Игрок
 					th Сыграно
-					th Побед
+					//th Побед
 					th Приз
-			tbody
-				tr 
-					td 1 
-					td Mark 
-					td 100 
-					td 62
-					td 100р
-				tr 
-					td 2 
-					td Jacob 
-					td 87 
-					td 34
-					td 50р
+			tbody(id="ratingTab")
+				+rtg()
 
 mixin statContent()
 	div(class="content")
@@ -83,46 +91,40 @@ mixin showTournaments(tournaments)
 	- }
 	//+showTournament()
 
-mixin head()
-	meta(charset="utf-8")
-	meta(http-equiv="X-UA-Compatible" content="IE=edge")
-	meta(name="viewport" content="width=device-width, initial-scale=1")
-	meta(name="description" content="")
-	meta(name="author" content="")
-	title Турниры
-
-	// Bootstrap core CSS
-	link(href="./css/new/bootstrap.css" rel="stylesheet")
-	// Custom styles for this template
-	link(href="./css/new/style.css" rel="stylesheet")
-	//		link(rel="stylesheet" href="./css/new/font-awesome.min.css")
-	// HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
-	// [if lt IE 9]
-	script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
-	script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
-	//[endif]
-	link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
-	link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
-	//link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
-	link(rel="stylesheet" href="./css/font-awesome.min.css")
-
-	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
-	script(type="text/javascript").
-		VK.init({apiId: 5205914, onlyWidgets: true});
-	link(rel="stylesheet" href="./css/new/vkComment.css")
-
-	link(rel="stylesheet" href="./css/new/my.css")
-	meta(name="w1-verification" content="179817005946")
 html
 	head
 		include templates/header
 		script(src="tournaments.js")
+		script.
+			function authInfo(response) {    
+				if(response.status=='connected') {	// если пользователь залогинен в ВК     
+					if(typeof(response.session.user) == 'undefined') { // этого поля нет 
+						//тогда, когда пользователь был залогинен ранее
+						VK.Api.call('users.get', { uid: response.session.mid }, function(r) { 
+							$('#VKInfo').html(r.response[0].first_name+' '+r.response[0].last_name); 
+							$('#VKInfo').append('user_id: '+response.session.mid); });
+					}else {
+						// если авторизация прошла только что (от VK.Auth.login(authInfo);), то имя и фамилия уже будут в ответе   
+						$('#VKInfo').html(response.session.user.first_name+' '+response.session.user.last_name);
+						$('#VKInfo').append('user_id: '+response.session.mid);}
+				}else {
+					VK.Auth.login(authInfo); // опционально можем спалиться и вызвать всплывающее окно авторизации
+				}
+			}
+
+			//$(function() { VK.Auth.getLoginStatus(authInfo); }); // проверяем наличие входа в ВК, ответ отправляем в функцию обработчик
 		+notEnoughMoney()
 	body(class="background")
 		//div(class="wrapper")
 		+navigation()
 		div(class="container")
+			//script.
+				var asd = VK.Auth.getSession();
+				console.log(asd);
+			span(id="VKInfo")
 			+drawBalance()
+			
+			//p #{asd}
 			div(class="container containetWithTourn")
 				div(class="row" id="tournamentBlock")
 					//+showTournaments(msg)

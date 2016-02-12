@@ -47,7 +47,50 @@ function find_for_recent_period(time_function){
 	})*/
 }
 
+get_leaderboard(time.happened_today);
 
+function get_leaderboard(time_function){
+	return new Promise(function (resolve, reject){
+		Actions.aggregate([
+		{ $match: { date:time_function() } },
+		{
+			$group: {
+				_id: "$login",
+				count: { $sum: 1 }
+			}
+		}
+		], function (err, leaderboard){
+			if (err) return reject(err);
+				console.log(leaderboard);
+			return resolve(leaderboard||[]);
+		})
+	})
+}
+
+/*
+
+function get_leaderboard(time_function){
+	return new Promise(function (resolve, reject){
+		Actions.aggregate([
+		{
+     $group: {
+        _id: "$login",
+        count: { $sum: 1 }
+     }
+   	},
+   	{ 
+   		$match: { count: { $gt: 1 } } 
+   	}])
+   	.exec(
+			function (err, leaderboard){
+				if (err) return reject(err);
+				console.log(leaderboard);
+				return resolve(leaderboard||[]);
+			})
+	})
+}
+
+*/
 
 module.exports = {
 

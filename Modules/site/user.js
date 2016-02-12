@@ -211,8 +211,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	}
 
-	
-
 	app.post('/Profile', authenticated, get_profile, function (req, res){
 		if (req.profile){
 			sender.Answer(res, req.profile);
