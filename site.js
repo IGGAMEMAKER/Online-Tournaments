@@ -330,6 +330,7 @@ function FinishGame(req, res){
   Log('FinishGame' + JSON.stringify(data), 'Tournaments');
   Answer(res, {result:'OK', message:'FinishGame'} );
   sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);*/
+
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
   //if (socket_enabled) io.emit('FinishTournament', { tournamentID : data.tournamentID, data:data } );
   Log(data, 'Tournaments');
@@ -637,13 +638,19 @@ function UpdateFrontendVersion(period){
   }, period);
 }
 
-
+function getShortActivityBoard(leaderboard){
+  var short_activity_board=[];
+  for (var i=0; (i<leaderboard.length) && (i<10); i++ ){
+    short_activity_board.push(leaderboard[i]);
+  }
+  return short_activity_board;
+}
 
 function get_Leaderboard(period){
   TournamentReg.leaderboard()
   .then(function (leaderboard){
-    activity_board = leaderboard;
     //res.json(leaderboard);
+    activity_board = getShortActivityBoard(leaderboard);
     io.emit('leaderboard', activity_board);
   })
   .catch(function (err){

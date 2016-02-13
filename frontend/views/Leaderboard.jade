@@ -1,0 +1,34 @@
+//
+
+mixin drawLeader(leader, index)
+	tr 
+		td #{index}
+		td #{leader._id}
+		td #{leader.count}
+		+drawPrize(index)
+mixin drawPrize(i)
+	if i==0
+		td 100
+	else
+		td 0
+
+
+html
+	head
+		include templates/header
+		include templates/basic
+	body(class="background")
+		+navigation()
+		center
+			h1(class="" style="color:white;") Рейтинг активности
+		div(class="col-md-11 dataRule")
+			table(class="table")
+				thead 
+					tr 
+						th #
+						th Игрок
+						th Сыграно
+						th Приз
+				tbody(id="ratingTab")
+					each leader, index in msg
+						+drawLeader(leader, index)

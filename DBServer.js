@@ -678,7 +678,8 @@ function last (Arr){
 
 function FinishGame (req, res){
 	var data = req.body;
-	console.error('DBServer FinishGame');
+	//console.log('DBServer FinishGame');
+
 	Log(data);
 	var gameID = data['gameID'];
 	var tournamentID = data['tournamentID'];
@@ -694,8 +695,7 @@ function FinishGame (req, res){
 		Log('EndTournament: ' + tournamentID, 'Tournaments');
 		sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 		EndTournament(scores, gameID, tournamentID);
-	}
-	else{
+	} else {
 		sender.Answer(res, {result: 'OK', message: 'endingGame'+gameID});
 		Log('Middle results: ' + JSON.stringify(data), 'Tournaments');
 	}*/	
@@ -1022,20 +1022,16 @@ function RegisterUserInTournament(data, res){
 		}
 		return findTournamentReg(tournamentID, login);
 	})
-	.then(function (savingSuccess){
-		//console.log('savingSuccess');
+	.then(function (savingSuccess){	//console.log('savingSuccess');
 		return payBuyIn(buyIn, login);
 	})
 	.then(function (reg){
 		return saveReg(tournamentID, login, 'gaginho');
 	})
-	.then(function (paymentSucceed){
-		//console.log('paymentSucceed');
+	.then(function (paymentSucceed){ //console.log('paymentSucceed');
 		return pSaveTransfer(login, -buyIn, {type:SOURCE_TYPE_BUY_IN, tournamentID:tournamentID});
 	})
-	.then(function (increased){
-		//console.log('increased');
-		//return incrPlayersCount(tournamentID);
+	.then(function (increased){	//console.log('increased'); //return incrPlayersCount(tournamentID);
 		return changePlayersCount(tournamentID);
 	})
 	.then(function (saved){
@@ -1515,8 +1511,7 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 				Stats('GivePrize', {tournamentID: tournamentID});
 			}
 		});
-	}
-	else{
+	}	else {
 		//money
 		Log('mmmMoney!! ' + Prize);
 		if (Prize>0){
@@ -1551,8 +1546,8 @@ function getPrize(Prizes, goNext, i){
 	var next = 2;
 	if (i>goNext[1]){
 		return 0;
-	}
-	else{
+
+	}	else {
 		while(next<goNext.length && goNext[next] >= i){//playerRoundIndex<goNext.length-1 && 
 			roundIndex=next;
 			next = roundIndex+1;

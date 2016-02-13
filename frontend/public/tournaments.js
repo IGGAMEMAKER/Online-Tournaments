@@ -137,7 +137,8 @@ socket.on('leaderboard', function (msg){
 		var login = leaders[i]._id;
 		var count = leaders[i].count;
 		var prize = prizeByPlace(i, leaders.length);
-		$(rating).append("<tr>" + "<td>" + i + "</td>" + "<td>" + login + "</td>" + "<td>" + count + "</td>" + "<td>" + prize + "</td>" +"</tr>")
+		var number = i+1;
+		$(rating).append("<tr>" + "<td>" + number + "</td>" + "<td>" + login + "</td>" + "<td>" + count + "</td>" + "<td>" + prize + "</td>" +"</tr>")
 	}
 })
 

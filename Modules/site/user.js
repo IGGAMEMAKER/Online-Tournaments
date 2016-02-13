@@ -79,6 +79,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	}
 
+	app.get('/Leaderboard', function (req, res){
+		TournamentReg.leaderboard()
+		.then(function (leaderboard){
+			res.render('Leaderboard', {msg:leaderboard});
+		})
+		.catch(function (err){
+			res.render('Leaderboard', {msg:null});
+		})
+	});
+
 	function checkLoginData(req, res, next){
 		if (!ValidLoginData(req.body)){
 			Log('Invalid login data')
