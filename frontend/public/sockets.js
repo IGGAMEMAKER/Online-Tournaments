@@ -36,65 +36,41 @@ socket.on('StartTournament', function (msg){
   //setInObject('addresses', tournamentID, {host:host, port:port, running: TOURN_START } );
   
   // drawButton(host, port, tournamentID);
-  
 });
 
-function drawServerMessage(msg){
+socket.on('Tell', function (msg){
   console.log('drawServerMessage', msg);
+
   $('#serverMsg').html(msg.message);
 
   switch(msg.action){
     case 'reload':
-      /*setTimeout(function(){
-        reload();
-      }, 2000);*/
       drawReloadButton('#ServerMessageButtonSpace');
-      //$('#ServerMessageButtonSpace')html(',')
     break;
   }
 
   $('#serverMessage').modal('show');
-}
-
-function drawReloadButton(place){
-  $(place).html('<a onclick=reload() class="btn btn-primary">Обновить</a>');
-}
-
-socket.on('Tell', function (msg){
-  drawServerMessage(msg);
   //alert('msg');
 })
 
 socket.on('FinishTournament', function (msg) {
   var tournamentID = msg.tournamentID;
-  console.log('I am ', login);
+  console.log('FinishTournament ', tournamentID);
+  hideTournament(tournamentID);
 
   if (userIsRegisteredIn(tournamentID)){
-    console.log(msg);
-    showCloseTournamentModal(tournamentID, msg.places, msg.prizes);
+    showWinnerModal(msg);
+    unsetFromObject('addresses', tournamentID);
+    getProfile();
   }
-
-  //drawWinningModal(msg);
-  //console.log('FinishTournament');
-  unsetFromObject('addresses', tournamentID);
-  if (login) getProfile();
-
-  hideTournament(tournamentID);
-  //drawPlayButtons();
 });
 
-function tournament_exists(ID){
-  return ( $("#tournamentWrapper"+ID).length );
-}
+function drawReloadButton(place){ $(place).html('<a onclick=reload() class="btn btn-primary">Обновить</a>'); }
 
-function play_button_exists(ID){
-  return ( $("#play-btn"+ID).length );
-}
-
-function getRandomArbitary(min, max)
-{
-  return Math.random() * (max - min) + min;
-}
+function tournament_exists(ID){ return ( $("#tournamentWrapper"+ID).length ); }
+function play_button_exists(ID){ return ( $("#play-btn"+ID).length ); }
+function getRandomArbitary(min, max) { return Math.random() * (max - min) + min; }
+function reload(time){ setTimeout(function() { location.reload(); }, time); }
 
 
 function updateFrontend(frontendVersion){
@@ -111,17 +87,6 @@ function updateFrontend(frontendVersion){
 
 }
 
-function showCloseTournamentModal(tournamentID, places, prizes) {
-  //alert('FinishTournament ' + tournamentID);
-  
-  /*if(isWinner(login, places, prizes)){
-    //drawWinningModal()
-  }*/
-}
-
-function reload(time){
-  setTimeout(function() { location.reload(); }, time);
-}
 
 
 function StartTournament(tournamentID){
@@ -129,7 +94,9 @@ function StartTournament(tournamentID){
     if (userIsRegisteredIn(tournamentID)){
       window.scrollTo(0,0); 
       
-      playAudio();
+      // playAudio();
+      var audio = new Audio('sounds/TOURN_START.wav'); audio.play();
+      
       drawPopup();
     }
   }
@@ -142,13 +109,6 @@ function startGame(gameURL, port, tournamentID){
     //saveInStorage('hasRunningTournaments', 0);
   }
 }
-
-function playAudio(){
-  var audio = new Audio('sounds/TOURN_START.wav');
-  audio.play();
-}
-
-
 
 function statAttemptToStart(tournamentID){
   prt('statAttemptToStart:' + tournamentID);
@@ -203,7 +163,7 @@ function userIsRegisteredIn(tournamentID){
   return false;
 }
 
-setTimeout(blinker, 1000);
+//setTimeout(blinker, 1000);
 
 function getLogin(){
   return login;

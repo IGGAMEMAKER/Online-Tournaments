@@ -534,8 +534,7 @@ function FinishGame(ID, winnerID){ //winnerID== null means, that Game did not fi
 	
 	SaveGameResults(gameResult);
 
-	sender.sendRequest("FinishGame", appResult , '127.0.0.1', 
-			'GameFrontendServer', appResult , SendGameResultsHandler);
+	sender.sendRequest("FinishGame", gameResult , '127.0.0.1', 'GameFrontendServer', appResult , SendGameResultsHandler);
 	setTimeout(function(){
 		delete games[gameID];
 	}, 10000);

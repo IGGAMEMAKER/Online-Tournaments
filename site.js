@@ -151,6 +151,8 @@ app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
 
+var sort = require('./helpers/sort');
+
 
 //var compression = require('compression');
 //app.use(compression());
@@ -248,14 +250,14 @@ function renderInfo(targetServer, reqUrl, res, options, parameters){
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
-        server, res, function (error, response, body, res){
-          if (!error){
-            res.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
-          } else {
-            sender.Answer(res, { result:error });
-          }
-            console.log('***SITE_ANSWER***');
-        });
+      server, res, function (error, response, body, res){
+        if (!error){
+          res.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
+        } else {
+          sender.Answer(res, { result:error });
+        }
+          console.log('***SITE_ANSWER***');
+      });
   }
   else {
     console.log('INVALID siteAnswer');
@@ -324,22 +326,19 @@ app.post('/new_tournament', function (req, res){
 function FinishGame(req, res){
   var data = req.body;
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
-  sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer', null, sender.printer);
-
-  /*var data = req.body;
-  Log('FinishGame' + JSON.stringify(data), 'Tournaments');
-  Answer(res, {result:'OK', message:'FinishGame'} );
-  sender.sendRequest("FinishGame", data, '127.0.0.1', 'TournamentServer', null, sender.printer);*/
-
-  Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
-  //if (socket_enabled) io.emit('FinishTournament', { tournamentID : data.tournamentID, data:data } );
+  sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer');
   Log(data, 'Tournaments');
+  
+  console.log('FinishGame', data);
+  var winners = data.scores//sort.winners(data.scores);
+  var winnerCount = data.places[1]||null;
+  var prizes = data.prizes||null;
+
+  Send('FinishTournament', { tournamentID : data.tournamentID, winners:winners, count:winnerCount, prizes:prizes });
 }
 
 
 app.all('/StartTournament', function (req, res){
-  //console.log(req.url);
-  Log('StartTournament', 'ASD');
   console.log('Site starts tournament');
   var data = req.body;
 
@@ -596,6 +595,14 @@ function SendToRoom( room, event, msg, socket){
 function compare(tournaments, previous){
 
 }
+
+app.post('/Winners', function (req, res){
+  res.end('OK');
+  var winners = req.body.winners;
+  var tournamentID = req.body.tournamentID;
+
+  Send('winners', {winners:winners, tournamentID:tournamentID});
+})
 
 var previousTournaments=[];
 

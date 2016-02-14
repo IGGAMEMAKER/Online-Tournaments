@@ -77,6 +77,33 @@ function drawPlayButtons(){
   }
 }
 
+var winnerModal = "#winnerModal";
+function showWinnerModal(msg){
+  console.log('showWinnerModal', msg);
+  var winners = msg.winners;//.scores;
+  
+  var tournamentID = msg.tournamentID;
+
+  $(winnerModal).modal('show');
+
+  var message = "";//message
+  for (var i = winners.length - 1; i >= 0; i--) {
+    var winner = winners[i];
+    message += JSON.stringify(winner);
+    /*if (winners[i]==login){
+      if (winners[i]==0){
+        message = "<p>"+
+      }
+    }*/
+  };
+  $(winnerModal+"Msg").html(message);
+  $(winnerModal+"Footer").html(getAfterGameButtons);
+}
+
+function getAfterGameButtons(){
+  return 'getAfterGameButtons';
+}
+
 function closePopup(name){
   //prt('closePopup');
 

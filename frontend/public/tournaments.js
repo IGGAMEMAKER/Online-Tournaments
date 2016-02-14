@@ -76,10 +76,6 @@ function redraw_reg_button(tournament){
 
 }
 
-function drawNewTournament(tournament){
-  parseAndDrawTournament(tournament);
-}
-
 function redrawRegButtons(tournaments){
   for (var i = tournaments.length - 1; i >= 0; i--) {
     redraw_reg_button(tournaments[i])
@@ -90,8 +86,6 @@ function redrawRegButtons(tournaments){
 
 socket.on('update', function (msg){
   var tournaments = msg.tournaments;
-  var frontendVersion = msg.frontendVersion.value;
-  //console.log('msg.frontendVersion', frontendVersion);
   //console.log("---------------");
   for (var i = tournaments.length - 1; i >= 0; i--) {
     var tournament = tournaments[i];
@@ -100,8 +94,9 @@ socket.on('update', function (msg){
     if ( !tournament_exists(ID) ) {
       //var tLikeObject = JSON.parse(JSON.stringify(tournament));
       //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
-      drawNewTournament(tournament);
-      //parseAndDrawTournament(tournament);
+      //drawNewTournament(tournament);
+
+      parseAndDrawTournament(tournament);
     } else {
       redrawTournament(tournament);
     }
@@ -109,8 +104,11 @@ socket.on('update', function (msg){
     //console.log("update-"+i, tournaments[i]);
   };
 
-  if (frontendVersion) {
-    updateFrontend(frontendVersion);
+  //var frontendVersion; = msg.frontendVersion.value;
+  
+  //console.log('msg.frontendVersion', frontendVersion);
+  if (msg.frontendVersion && msg.frontendVersion.value) {
+    updateFrontend(msg.frontendVersion.value);
   }
 });
 
@@ -151,13 +149,7 @@ const TOURN_STATUS_PAUSED = 4;
 function redraw_tournament_actions(tID){
 	//redrawRegButtons(tournaments);
 	return function(profile){
-		//console.log('redraw_tournament_actions', profile, tID);
 		redraw_reg_button({ tournamentID:tID });
-		/*if (profile && profile.tournaments && profile.tournaments.length>0){
-			var t = profile.tournaments[tID];
-			
-			
-		}*/
 	}
 }
 
@@ -187,10 +179,8 @@ function drawTournamentStatus(tournamentID, status){
 				var element = '#bgd'+ tournamentID;
 				miniBlink(element, 1000);
 
-				//if (!play_button_exists(tournamentID)){
 				draw_playButton(tournamentID);
 				hideAllButtons(tournamentID, true);
-				//}
 				//$(element).fadeTo(blink_period/4, 0.5).fadeTo(blink_period/4, 1.0);
 			break;
 			case TOURN_STATUS_FINISHED:
@@ -221,11 +211,8 @@ function drawTournamentStatus(tournamentID, status){
 	}
 
 	//text = 'Я водитель НЛО'
-
 	setToggle(tournamentID, text);
 }
-
-//function check_buttons()
 
 function reg(login, tID){
 	ManageReg(login, tID, 'RegisterInTournament', 1);
@@ -261,8 +248,6 @@ var TREG_ALREADY = 'Registered';
 
 function ManageReg(login, tID, url, regID){
 	//console.log('ManageReg', url, login, regID);
-	//console.log(login);
-	//console.log(tID); //console.log(btn);
 	
 	$.ajax({
 		url: url,
@@ -303,7 +288,7 @@ function ManageReg(login, tID, url, regID){
 				alert(txt);//msg.result
 			}*/
 
-			alert(txt);
+			//alert(txt);
 			//console.log(msg);
 			//reload(1000);
 	  }
@@ -354,13 +339,8 @@ var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
 var REGULARITY_STREAM=2;
 
-function isStream(t){
-	return t.settings && t.settings.regularity==REGULARITY_STREAM ;
-}
-
-function isSpecial(t){
-	return t.settings && t.settings.special;
-}
+function isStream(t){ return t.settings && t.settings.regularity==REGULARITY_STREAM ; }
+function isSpecial(t){ return t.settings && t.settings.special; }
 
 function getPrize(t){
 	var prize = t.Prizes[0];
@@ -415,73 +395,19 @@ function parseAndDrawTournament(tournament){
 	}, 2000*0);
 }
 
-function drawName(id){
-	return '<h4 id="gname-'+id+'" class="mg-md text-center">Викторина #'+id+'</h4>';
-}
-
-function drawPrizes(prize, id){
-	return '<h3 id="wnrs-'+id+'" style="height:55px; width:220px">'+prize+'</h3>';
-}
-
-function drawReg(buyIn, id, lgn){
-	var phrase = "Играть БЕСПЛАТНО";
-	if (buyIn>0) phrase = "Играть за "+buyIn+" р";
-	return '<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" style="border-radius:6px; " class="btn btn-lg btn-primary"> '+phrase+'</a>';
-}
-
-function drawUnReg(lgn, id){
-	return '<div id="unregister'+id+'" style="display:none;">'+
-					'<a id="unReg'+id+'" onclick="unReg(\''+lgn+'\','+id+')" style="border-radius:6px;" class="btn btn-lg btn-danger">Сняться с турнира</a>' +
-				'</div>';
-}
-
-function drawAuth(ID){
-	return '<div id="auth'+ID+'">'+
-		'<h4> Авторизуйтесь, чтобы сыграть </h4>'+
-		'<a id="lgn'+ID+'" href="login" class="btn btn-lg btn-danger" style="border-radius:6px;" > Авторизоваться </a>'+
-	'</div>'
-}
 
 function drawImage(img){
 	return '<img src="'+img+'" >';//width="210" height="150" // width="280" height="220"
 }
 
-function Info(winPlaces, id, players, Max){
-	return '<h4 class="mg-md">' +
-		'<p>Призовых мест: '+winPlaces+'</p>'+
-		'<div id="plrs-' + id + '">Участников : '+players+' из '+ Max+'</div>'+
-	'</h4>';
-}
-
-
-
 //
-function getPlayerCount(players, Max){
-	return 'Игроки : '+ players + '/'+Max;
-}
-
-function pasteID(id){
-	return '№' + id;
-}
-function getMaxPlayers(winPlaces){
-	return winPlaces + ' Мест';
-}
-
-function getTopic(){
-	return 'Музыка';
-}
-
-function getMainPrize(prize){
-	return prize + ' ';
-}
-
-function getBuyIn(buyIn){
-	return 'Цена : '+buyIn+' ₽';
-}
-
-function getPrizeCount(winPlaces){
-	return 'Призовых мест: '+winPlaces;
-}
+function pasteID(id){	return '№' + id; }
+function getPlayerCount(players, Max){ return 'Игроки : '+ players + '/'+Max; }
+function getMaxPlayers(winPlaces){ return winPlaces + ' Мест'; }
+function getTopic(){ return 'Музыка'; }
+function getMainPrize(prize){ return prize + ' '; }
+function getBuyIn(buyIn){ return 'Цена : '+buyIn+' ₽'; }
+function getPrizeCount(winPlaces){ return 'Призовых мест: '+winPlaces; }
 
 function drawReg(id, lgn, buyIn){
 	var phrase = "Играть БЕСПЛАТНО";
@@ -509,7 +435,7 @@ function draw_playButton(tournamentID){
 	if (!play_button_exists(tournamentID)){
 		//var host
 		var addresses   = getObject('addresses');
-		console.log(addresses, tournamentID);
+		//console.log(addresses, tournamentID);
 		var address = getAddressFromAddrList(addresses, tournamentID);
 		console.log(address, tournamentID);
 		var host = address.host;
@@ -527,24 +453,25 @@ function draw_playButton(tournamentID){
 		var txt = '<li id="play-btn'+tournamentID + '">'+
 		'<form id="play-btn'+tournamentID+'" method="post" action="'+addr+'"  target="_blank"> '
 
-		+'<input type="hidden" name="login" value="'+login+'" />'
-		+'<input type="submit" class="btn btn-default" value="ИГРАТЬ!" />'
-		+'</form>'
-		+'</li>';
+		+ '<input type="hidden" name="login" value="'+login+'" />'
+		+ '<input type="submit" class="btn btn-default" value="ИГРАТЬ!" />'
+		+ '</form>'
+		+ '</li>';
 
-		/*var text = '<li id="play-btn'+tournamentID + '">'+
-		'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
-		'<div class="price"><div class="value">';
-		if (price_field ) { text += '<b>$</b>' + price_field; }
-		text+= '</div></div>'+
-		'<a class="btn btn-info btn-sm btn-buy" ';//'>Участвовать</a>'+
+		/*
+			var text = '<li id="play-btn'+tournamentID + '">'+
+			'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
+			'<div class="price"><div class="value">';
+			if (price_field ) { text += '<b>$</b>' + price_field; }
+			text+= '</div></div>'+
+			'<a class="btn btn-info btn-sm btn-buy" ';//'>Участвовать</a>'+
 
-		if (id_field) text += ' id="'+id_field+ '"';
-		if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+			if (id_field) text += ' id="'+id_field+ '"';
+			if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
 
-		if (href) text += ' href="' + href + '"';
-		text += '>'+ CTA +'</a>'+
-		'</li>';//"reg'+id+'"
+			if (href) text += ' href="' + href + '"';
+			text += '>'+ CTA +'</a>'+
+			'</li>';//"reg'+id+'"
 		*/
 
 
@@ -571,27 +498,6 @@ function draw_tournament_action(block_id, id_field, button_name, secondary_name,
 	return text;
 }
 
-//function drawButton(id, lgn){
-	/*return '<li>'+
-		'<div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div>'+
-		'<div class="price"><div class="value"><b>$</b>599</div></div>'+
-		'<a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a>'+
-		'</li>';*/
-
-		/*var text = '<li>';
-		var */
-
-	/*return '<li>'+
-		'<div class="ticket"><h5>Basic Ticket<br><small>1 Tickets left</small></h5></div>'+
-		'<div class="price"><div class="value"><b>$</b>599</div></div>'+
-		'<a id="reg'+id+'" onclick="reg(\''+lgn+'\','+id+')" class="btn btn-info btn-sm btn-buy">Участвовать</a>'+
-		'</li>';*/
-/*	
-	return draw_tournament_action('reg'+id, 'Basic Ticket', '1 Tickets left', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '607')
-}*/
-
-
-
 function buttons(id, lgn, buyIn){
 	return '<ul class="list-unstyled" id="btn-list'+id+'">'+
 	drawReg(id, lgn, buyIn) +
@@ -601,8 +507,8 @@ function buttons(id, lgn, buyIn){
 	//drawButton(id, lgn) +
 
 	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" id="unregister'+id+'" class="btn btn-info btn-sm btn-buy">Сняться</a></li>' + 
-	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +
 	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +*/
+	
 	'</ul>';
 }
 
@@ -661,13 +567,8 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
 	text += getPrizeCount(winPlaces); //Призовых мест: 1
 	text += '</p></div>';
-	//text += draw_players_and_id(id, players, Max);
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	text += buttons(id, login, buyIn) 
-	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
-	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
-	<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>
-	</ul>'*/
 	text += '</div><div class="footer"><button class="btn toggle-tickets" id="toggle'+ id +'">Участвовать</button></div></div></div>'
 	//console.log(getLogin());
 	//console.log(text);

@@ -41,6 +41,16 @@ mixin serverMessage()
 				div(class="modal-footer")
 					#ServerMessageButtonSpace
 
+mixin winnerModal()
+	div(id="winnerModal" class="modal fade" role="dialog")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					//button(type="button" class="close" data-dismiss="modal") &times;
+					h4(class="modal-title") Вы выиграли турнир!
+				div(class="modal-body" id="winnerModalMsg")
+				div(class="modal-footer" id="winnerModalFooter")
+
 mixin notEnoughMoney()
 	//button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#payModal") No money
 
