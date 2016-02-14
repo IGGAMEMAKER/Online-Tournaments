@@ -358,6 +358,8 @@ function getPrize(t){
 	}
 }
 
+function ruble(){ return '₽'; }
+
 function showPrize(prize, specPrize, ID){
 	if (specPrize && specPrize.length>0) {
 		return specPrize;
@@ -366,7 +368,7 @@ function showPrize(prize, specPrize, ID){
 			if (isNaN(prize)){
 				return "" + prize;//Приз: 
 			}	else {
-				return "" + prize +" ₽";//Приз: 
+				return "" + prize +" "+ruble();//Приз: 
 			}
 		}
 	}
@@ -406,7 +408,7 @@ function getPlayerCount(players, Max){ return 'Игроки : '+ players + '/'+M
 function getMaxPlayers(winPlaces){ return winPlaces + ' Мест'; }
 function getTopic(){ return 'Музыка'; }
 function getMainPrize(prize){ return prize + ' '; }
-function getBuyIn(buyIn){ return 'Цена : '+buyIn+' ₽'; }
+function getBuyIn(buyIn){ return 'Цена : '+buyIn+' ' + ruble(); }
 function getPrizeCount(winPlaces){ return 'Призовых мест: '+winPlaces; }
 
 function drawReg(id, lgn, buyIn){

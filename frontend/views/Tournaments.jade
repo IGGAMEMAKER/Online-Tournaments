@@ -2,7 +2,7 @@
 include templates/basic
 include templates/card
 
-mixin nav_tabs()
+mixin navTabs()
 	ul(class="nav nav-tabs")
 		li(class="active")
 			a(href="#tab1" data-toggle="tab") Рейтинг
@@ -17,7 +17,7 @@ mixin tabs()
 			div(class="container")
 				div(class="row")
 					+rating()
-					+user_stats()
+					+userStats()
 		div(class="tab-pane" id="tab2")
 			+chat()
 		//div(class="tab-pane" id="tab3")
@@ -71,7 +71,7 @@ mixin statContent()
 		div(class="follow")
 			div(class="icon-twitter") Follow
 
-mixin user_stats()
+mixin userStats()
 	div(class="col-md-3 columBio")
 		div(class="containerico")
 			header
@@ -94,9 +94,11 @@ mixin showTournaments(tournaments)
 
 html
 	head
+		script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
+		// charset="windows-1251"
 		include templates/header
 		script(src="tournaments.js")
-		script.
+		//script.
 			function authInfo(response) {    
 				if(response.status=='connected') {	// если пользователь залогинен в ВК     
 					if(typeof(response.session.user) == 'undefined') { // этого поля нет 
@@ -130,7 +132,7 @@ html
 				div(class="row" id="tournamentBlock")
 					//+showTournaments(msg)
 				div(class="row")
-					+nav_tabs()
+					+navTabs()
 					+tabs()
 		div(class="wrapper2")
 			+footer()

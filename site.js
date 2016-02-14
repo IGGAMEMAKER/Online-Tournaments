@@ -331,8 +331,8 @@ function FinishGame(req, res){
   
   console.log('FinishGame', data);
   var winners = data.scores//sort.winners(data.scores);
-  var winnerCount = data.places[1]||null;
-  var prizes = data.prizes||null;
+  var winnerCount = data.places[1] || null;
+  var prizes = data.prizes || null;
 
   Send('FinishTournament', { tournamentID : data.tournamentID, winners:winners, count:winnerCount, prizes:prizes });
 }

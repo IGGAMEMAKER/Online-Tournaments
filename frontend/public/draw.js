@@ -76,11 +76,17 @@ function drawPlayButtons(){
     drawPopup();
   }
 }
+setTimeout(function(){
+$(winnerModal).modal('show');
+  
+}, 2000);
 
 var winnerModal = "#winnerModal";
 function showWinnerModal(msg){
   console.log('showWinnerModal', msg);
   var winners = msg.winners;//.scores;
+  var winnerCount = msg.count;
+  var prizes = msg.prizes;
   
   var tournamentID = msg.tournamentID;
 
@@ -89,19 +95,28 @@ function showWinnerModal(msg){
   var message = "";//message
   for (var i = winners.length - 1; i >= 0; i--) {
     var winner = winners[i];
-    message += JSON.stringify(winner);
-    /*if (winners[i]==login){
-      if (winners[i]==0){
-        message = "<p>"+
+
+    //message += JSON.stringify(winner);
+
+    if (winners[i].login==login){
+      if (prizes[0]==0){
+        message = '<p> Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !' + '</p>';
+      } else {
+        message = '<p> Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ' + '</p>';
       }
-    }*/
+
+      break;
+    }
   };
+  //if (message.length<3); message = 'Увы, '
   $(winnerModal+"Msg").html(message);
-  $(winnerModal+"Footer").html(getAfterGameButtons);
+  //$(winnerModal+"Footer").html(getAfterGameButtons);
 }
+
 
 function getAfterGameButtons(){
   return 'getAfterGameButtons';
+
 }
 
 function closePopup(name){
