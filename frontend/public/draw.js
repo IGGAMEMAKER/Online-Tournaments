@@ -209,35 +209,45 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
       }); //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
     break;
     case EVENT_TYPE_LOSE:
-      footer = fast_register_button(); /*shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
+      footer = fast_register_button(); 
+      /*shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
       });*/
     break;
     default:
-      footer = shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
+      footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!' 
       });
     break;
   }
 
-  return footer;
+  return footer+'<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>';
 }
+
+function modal_pic(name){
+  return '<br><img width="300px" src="/img/'+name+'" />';// height="260px"
+}
+
+function winningPicture(){ return modal_pic('win_1.png'); }
+function ratingPicture(){ return modal_pic('win_2.jpg'); }
+
+function losePicture(){ return modal_pic('lose_1.jpg'); }
 
 function getAfterGameBody(tournamentID, prizes, eventType){
   var body;
 
   switch(eventType){
+    case EVENT_TYPE_LOSE:
+      body = main('Эх, не повезло( В следующий раз точно получится!') + losePicture();
+    break;
     case EVENT_TYPE_WIN_MONEY:
-      body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ');
+      body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать!') + winningPicture();
     break;
     case EVENT_TYPE_WIN_RATING:
-      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
-    break;
-    case EVENT_TYPE_LOSE:
-      body = main('Эх, не повезло( В следующий раз точно получится!');
+      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !') + ratingPicture();
     break;
     default:
-      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !') + ratingPicture();
     break;
   }
 
