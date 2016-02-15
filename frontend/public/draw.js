@@ -76,10 +76,18 @@ function drawPlayButtons(){
     drawPopup();
   }
 }
-setTimeout(function(){
+
+/*setTimeout(function(){
 $(winnerModal).modal('show');
   
-}, 2000);
+}, 2000);*/
+
+const EVENT_TYPE_WIN_MONEY=0;
+const EVENT_TYPE_WIN_RATING=1;
+const EVENT_TYPE_WIN_SPECIAL_PRIZE=2;
+const EVENT_TYPE_WIN_GIFT=4;
+
+const EVENT_TYPE_LOSE = 5;
 
 var winnerModal = "#winnerModal";
 function showWinnerModal(msg){
@@ -93,30 +101,128 @@ function showWinnerModal(msg){
   $(winnerModal).modal('show');
 
   var message = "";//message
+  var eventType=EVENT_TYPE_LOSE;
+
   for (var i = winners.length - 1; i >= 0; i--) {
     var winner = winners[i];
-
     //message += JSON.stringify(winner);
 
     if (winners[i].login==login){
-      if (prizes[0]==0){
-        message = '<p> Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !' + '</p>';
+      if (prizes[0]<2){
+        //message = '<p> Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !' + '</p>';
+        eventType = EVENT_TYPE_WIN_RATING;
       } else {
-        message = '<p> Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ' + '</p>';
+        //message = '<p> Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ' + '</p>';
+        eventType = EVENT_TYPE_WIN_MONEY;
       }
 
       break;
     }
   };
+
+  showEvent(tournamentID, prizes, eventType);
+
   //if (message.length<3); message = 'Увы, '
-  $(winnerModal+"Msg").html(message);
+/*$(winnerModal+"Msg").html(message);*/
   //$(winnerModal+"Footer").html(getAfterGameButtons);
 }
 
+function setWinnerBody(message) { $(winnerModal+"Msg").html(message); }
+function setWinnerFooter(message) { $(winnerModal+"Footer").html(message); }
 
-function getAfterGameButtons(){
-  return 'getAfterGameButtons';
+function main(message){
+  return '<p>' + message + '</p>';
+}
 
+function showEvent(tournamentID, prizes, eventType){
+  console.log('showEvent', arguments);
+  
+  var body = getAfterGameBody(tournamentID, prizes, eventType);
+  var footer = getAfterGameFooter(tournamentID, prizes, eventType);
+
+  // if there will be another events, you can always rewrite body/footer variables here
+  // e.g. check cookies for subscribing your group
+
+  setWinnerBody(body);
+  setWinnerFooter(footer);
+}
+
+function makeShareUrl(url, title, description, image, noparse){
+  if (!url) url = "http://online-tournaments.org/";
+
+  if (!title) title = "Онлайн турниры";
+  if (!description) description = "Участвуй в викторинах и выигрывай призы!";
+  if (!image) image = "http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg";
+  noparse = true;
+
+  return "http://vk.com/share.php?url="+url+"&title="+title+"&description="+description+"&image="+image+"&noparse=true";
+}
+
+function shareLink(text, className, obj){
+  return '<a href="'+makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null)+'" target="_blank" class="'+className+'" >' + text + '</a>';
+}
+
+function getAfterGameFooter(tournamentID, prizes, eventType){
+  var footer;
+  //a(class="btn btn-lg btn-primary" href="http://vk.com/share.php?url=http://online-tournaments.org/&title=Онлайн турниры&description=Участвуй в викторинах и выигрывай призы!&image=http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg&noparse=true" target="_blank") Поделиться
+  //document.getElementById('vk_share').innerHTML = VK.Share.button();
+  /*var obj = {
+    url: "http://online-tournaments.org/",
+    title: "Онлайн турниры",
+    description: "Участвуй в викторинах и выигрывай призы!",
+    image: "http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg",
+    noparse: true
+  }
+  var url = "http://vk.com/share.php?url="+obj.url+"&title="+obj.title+"&description="+obj.description+"&image="+obj.image+"&noparse=true";*/
+  var url = makeShareUrl();
+  var share = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', {});
+  
+  switch(eventType){
+    case EVENT_TYPE_WIN_MONEY:
+      footer = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', { 
+        description:'Я выиграл ' + prizes[0] + ruble() + ', присоединяйтесь!' 
+      });
+    break;
+    /*case EVENT_TYPE_WIN_RATING:
+      footer = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', { 
+        description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
+      });
+      //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+    break;*/
+    /*case EVENT_TYPE_LOSE:
+      footer = shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
+        description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
+      });
+    break;*/
+    default:
+      footer = shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
+        description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!' 
+      });
+    break;
+  }
+
+  return footer;
+}
+
+function getAfterGameBody(tournamentID, prizes, eventType){
+  var body;
+
+  switch(eventType){
+    case EVENT_TYPE_WIN_MONEY:
+      body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ');
+    break;
+    case EVENT_TYPE_WIN_RATING:
+      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+    break;
+    case EVENT_TYPE_LOSE:
+      body = main('Эх, не повезло( В следующий раз точно получится!');
+    break;
+    default:
+      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+    break;
+  }
+
+  return body;
 }
 
 function closePopup(name){
