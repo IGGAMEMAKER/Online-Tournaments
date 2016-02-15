@@ -115,6 +115,10 @@ function statAttemptToStart(tournamentID){
   setAsync('AttemptToStart', { tournamentID: tournamentID });
 }
 
+function autoreg(){
+  setAsync('autoreg', {});
+}
+
 function stat_noMoney(tournamentID, money){
   setAsync('NoMoney', {tournamentID:tournamentID, money:money});
 }

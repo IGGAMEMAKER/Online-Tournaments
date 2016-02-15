@@ -98,21 +98,18 @@ function showWinnerModal(msg){
   
   var tournamentID = msg.tournamentID;
 
-  $(winnerModal).modal('show');
 
   var message = "";//message
   var eventType=EVENT_TYPE_LOSE;
 
-  for (var i = winners.length - 1; i >= 0; i--) {
+  for (var i = 0; i < winners.length && i<winnerCount; i++) {
     var winner = winners[i];
     //message += JSON.stringify(winner);
 
     if (winners[i].login==login){
       if (prizes[0]<2){
-        //message = '<p> Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !' + '</p>';
         eventType = EVENT_TYPE_WIN_RATING;
       } else {
-        //message = '<p> Вы выиграли ' + prizes[0] + ruble() +' !! Так держать! ' + '</p>';
         eventType = EVENT_TYPE_WIN_MONEY;
       }
 
@@ -120,7 +117,12 @@ function showWinnerModal(msg){
     }
   };
 
+  if (prizes[0] < 2 && eventType == EVENT_TYPE_LOSE){
+    eventType = EVENT_TYPE_WIN_RATING;
+  }
+
   showEvent(tournamentID, prizes, eventType);
+  $(winnerModal).modal('show');
 
   //if (message.length<3); message = 'Увы, '
 /*$(winnerModal+"Msg").html(message);*/
@@ -131,12 +133,12 @@ function setWinnerBody(message) { $(winnerModal+"Msg").html(message); }
 function setWinnerFooter(message) { $(winnerModal+"Footer").html(message); }
 
 function main(message){
-  return '<p>' + message + '</p>';
+  return '<h3>' + message + '</h3>';
 }
 
 function showEvent(tournamentID, prizes, eventType){
   console.log('showEvent', arguments);
-  
+
   var body = getAfterGameBody(tournamentID, prizes, eventType);
   var footer = getAfterGameFooter(tournamentID, prizes, eventType);
 
@@ -162,6 +164,22 @@ function shareLink(text, className, obj){
   return '<a href="'+makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null)+'" target="_blank" class="'+className+'" >' + text + '</a>';
 }
 
+function add_questions_button(){
+  return '<a href="questions/new" target="_blank" class="btn btn-lg btn-primary"> Добавить свои вопросы </a>';
+}
+
+function add_new_tournament_button(){
+  //return '<a href'
+}
+
+function fast_register_button(){
+  return '<a class="btn btn-lg btn-primary" onclick="autoreg()"> Задать всем жару! </a>';
+}
+
+function joinVk_button(){
+  //return '<a '
+}
+
 function getAfterGameFooter(tournamentID, prizes, eventType){
   var footer;
   //a(class="btn btn-lg btn-primary" href="http://vk.com/share.php?url=http://online-tournaments.org/&title=Онлайн турниры&description=Участвуй в викторинах и выигрывай призы!&image=http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg&noparse=true" target="_blank") Поделиться
@@ -175,25 +193,26 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
   }
   var url = "http://vk.com/share.php?url="+obj.url+"&title="+obj.title+"&description="+obj.description+"&image="+obj.image+"&noparse=true";*/
   var url = makeShareUrl();
-  var share = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', {});
+  var share = shareLink('Поделиться', 'btn btn-lg btn-primary', {});
   
   switch(eventType){
     case EVENT_TYPE_WIN_MONEY:
-      footer = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', { 
-        description:'Я выиграл ' + prizes[0] + ruble() + ', присоединяйтесь!' 
+      //Поделиться победой с друзьями!
+      footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
+        description:'Я выиграл ' + prizes[0] + ruble() + '! Присоединяйтесь!'
       });
     break;
-    /*case EVENT_TYPE_WIN_RATING:
-      footer = shareLink('Поделиться победой с друзьями!', 'btn btn-lg btn-primary', { 
+
+    case EVENT_TYPE_WIN_RATING:
+      footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
+        description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!'
+      }); //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+    break;
+    case EVENT_TYPE_LOSE:
+      footer = fast_register_button(); /*shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
-      });
-      //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
-    break;*/
-    /*case EVENT_TYPE_LOSE:
-      footer = shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
-        description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
-      });
-    break;*/
+      });*/
+    break;
     default:
       footer = shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!' 
