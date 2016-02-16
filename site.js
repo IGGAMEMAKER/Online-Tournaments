@@ -399,7 +399,8 @@ app.get('/', function (req,res){
     var data = req.body;
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
-    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);
+    //res.render()
+    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
   } else {
     res.render('main');
   }
