@@ -406,7 +406,7 @@ function drawImage(img){
 function pasteID(id){	return '№' + id; }
 function getPlayerCount(players, Max){ return 'Игроки : '+ players + '/'+Max; }
 function getMaxPlayers(winPlaces){ return winPlaces + ' Мест'; }
-function getTopic(){ return 'Музыка'; }
+function getTopic(){ return 'Произвольная'; }
 function getMainPrize(prize){ return prize + ' '; }
 function getBuyIn(buyIn){ return 'Цена : '+buyIn+' ' + ruble(); }
 function getPrizeCount(winPlaces){ return 'Призовых мест: '+winPlaces; }

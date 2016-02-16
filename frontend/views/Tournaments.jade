@@ -73,8 +73,10 @@ mixin statContent()
 
 mixin userStats()
 	div(class="col-md-3 columBio")
+		//+subscribe()
 		div(class="containerico")
-			header
+			+subscribe()
+			//header
 				div(class="bio")
 					img(src="http://www.croop.cl/UI/twitter/images/up.jpg" alt="background" class="bg")
 					div(class="desc")
@@ -84,7 +86,7 @@ mixin userStats()
 					img(src="http://www.croop.cl/UI/twitter/images/carl.jpg" alt="avatar" class="avatar")
 					div(class="hover")
 						div(class="icon-twitter")
-			+statContent()
+			//+statContent()
 
 mixin showTournaments(tournaments)
 	- for (i=0; i<tournaments.length;i++) {
