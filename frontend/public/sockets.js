@@ -78,12 +78,25 @@ function updateFrontend(frontendVersion){
   //var x = document.cookie;
   //console.log('updateFrontend', frontendVersion, current_frontendVersion);//, x);
 
-  if (frontendVersion!=current_frontendVersion){
+  if (frontendVersion>current_frontendVersion){
     setTimeout(function(){
       setCookie('frontendVersion', frontendVersion, {expires:3600*24*10}) 
       reload(3000+getRandomArbitary(0, 3000));
     }, 1000);
+  } else {
+    setCookie('frontendVersion', frontendVersion, {expires:3600*24*10}) 
   }
+
+  /*if (frontendVersion!=current_frontendVersion){
+    if (current_frontendVersion==null || current_frontendVersion=='' || current_frontendVersion == 0){
+      setCookie('frontendVersion', frontendVersion, {expires:3600*24*10})
+    } else {
+      setTimeout(function(){
+        setCookie('frontendVersion', frontendVersion, {expires:3600*24*10}) 
+        reload(3000+getRandomArbitary(0, 3000));
+      }, 1000);
+    }
+  }*/
 
 }
 
