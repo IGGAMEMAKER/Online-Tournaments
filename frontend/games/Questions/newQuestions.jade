@@ -1,13 +1,27 @@
 //
 mixin question(q,i)
-	p!= q
+	tr
+		td #{i}
+		td #{q.createdBy}
+		td #{q.question}
+		td #{q.answers}
+		td №#{q.correct} - #{q.answers[q.correct-1]}
+		td #{q.date}
+	//p!= q
 
 html
 	head
 		title newQuestion
+		link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet")
 	body
-		//table
-			th id
-			th question
-		each q, index in msg
-			+question(q, i)
+		table(class="table table-bordered table-striped" style="width:70%;")
+			thead
+				th id
+				th created By
+				th question
+				th answers
+				th correct answer is
+				th time
+			tbody
+				each q, index in msg
+					+question(q, index)
