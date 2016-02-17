@@ -13,7 +13,7 @@ mixin drawPrize(i)
 		td 0
 
 
-html
+//html
 	head
 		include templates/header
 		include templates/basic
@@ -32,3 +32,23 @@ html
 				tbody(id="ratingTab")
 					each leader, index in msg
 						+drawLeader(leader, index)
+
+extends layout
+
+block title
+	title Рейтинг
+
+block content
+	center
+		h1(class="" style="color:white;") Рейтинг активности
+	div(class="col-md-11 dataRule")
+		table(class="table")
+			thead 
+				tr 
+					th #
+					th Игрок
+					th Сыграно
+					th Приз
+			tbody(id="ratingTab")
+				each leader, index in msg
+					+drawLeader(leader, index)
