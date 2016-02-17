@@ -406,6 +406,10 @@ app.get('/', function (req,res){
   }
 })
 
+/*app.get('/questions/new', authenticated, function (req, res){
+  
+})*/
+
 app.post('/', function (req, res){
   var data = req.body;
   console.log('social auth', data);

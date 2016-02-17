@@ -24,11 +24,21 @@ mongoose.connect('mongodb://'+configs.db+'/test');
 
 var random = require('mongoose-simple-random');
 
+
+const MODERATION_NONE = 0;
+const MODERATION_REJECTED = 1;
+const MODERATION_OK = 2;
+const MODERATION_MODIFIED = 3;
+
+
 var s = new mongoose.Schema({ 
 	question: String, language: String,
 	answers: Array, correct:Number,
 	tournamentID: Number, topic:String,
-	questionID: Number
+	questionID: Number,
+
+	moderation: Number,
+	createdBy: String
 });
 s.plugin(random);
 
