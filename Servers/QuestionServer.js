@@ -32,19 +32,36 @@ const MODERATION_MODIFIED = 3;
 
 
 var s = new mongoose.Schema({ 
-	question: String, language: String,
-	answers: Array, correct:Number,
+	question: String, answers: Array, correct:Number,
 	tournamentID: Number, topic:String,
 	questionID: Number,
+	language: String,
 
-	moderation: Number,
-	createdBy: String
+	moderation: Number, createdBy: String,
+	date:Date
 });
 s.plugin(random);
 
 var Question = mongoose.model('Question', s);
 
 var lg = console.log;
+
+app.post('/offerQuestion', function (req, res){
+	var obj = req.body;
+	obj.moderation = MODERATION_NONE;
+	obj.date = new Date();
+	strLog('offerQuestion ' + JSON.stringify(obj), 'Games');
+	AddQuestion(obj, res);
+})
+
+app.get('/questions', function (req, res){
+	Question.find({ moderation:MODERATION_NONE }, function (err, questions){
+		if (err) return res.json(err);
+
+		//res.end(JSON.stringify(questions));
+		res.render('newQuestions', {msg:questions});
+	})
+})
 
 app.get('/AddQuestion', function (req, res){
 	res.render('add_question');

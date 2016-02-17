@@ -35,8 +35,6 @@ mixin loadHead()
 			console.log("is not localhost")
 			VK.init({	apiId: 5205759, onlyWidgets: true });
 		}
-	//script(type="text/javascript").
-		VK.init({apiId: 5205759, onlyWidgets: true});
 
 	link(rel="stylesheet" href="./css/new/vkComment.css")
 
@@ -44,11 +42,8 @@ mixin loadHead()
 
 	meta(name="w1-verification" content="179817005946")
 
-	//include templates/libs
-	//script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
-	//script(src="http://code.jquery.com/jquery-1.11.1.js")
-	//include menu
+
 	include templates/modals
 
 	script(src="storage.js")
@@ -63,12 +58,13 @@ mixin loadHead()
 
 	script var login = "#{session.login}";
 	
-	#tournaments()
-		+modal()
-	#tournamentClose
-		+closeTournamentModal()
-	+serverMessage()
-	+winnerModal()
+	#modals
+		#tournaments()
+			+modal()
+		#tournamentClose
+			+closeTournamentModal()
+		+serverMessage()
+		+winnerModal()
 
 	mixin drawBalance()
 		if (session.login && session.login.length>0)

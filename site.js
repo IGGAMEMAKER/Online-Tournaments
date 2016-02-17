@@ -36,6 +36,8 @@ var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 //console.log(configs, configs.vk);
 
+var request = require('request');
+
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -170,6 +172,9 @@ var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer
 
 
 var TournamentReg = require('./models/tregs');
+
+var middlewares = require('./middlewares');
+var isAdmin = middlewares.isAdmin;
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
@@ -406,9 +411,51 @@ app.get('/', function (req,res){
   }
 })
 
-/*app.get('/questions/new', authenticated, function (req, res){
-  
-})*/
+app.get('/addQuestion', middlewares.authenticated, function (req, res){
+  res.render('AddQuestion');  
+})
+
+app.post('/addQuestion', middlewares.authenticated, function (req, res){
+  var login = getLogin(req);
+  var question = req.body.question;
+
+  //
+  var answer1 = req.body.answer1;
+  var answer2 = req.body.answer2;
+  var answer3 = req.body.answer3;
+  var answer4 = req.body.answer4;
+
+  var answers = [];
+  answers.push(answer1);
+  answers.push(answer2);
+  answers.push(answer3);
+  answers.push(answer4);
+
+  var correct = req.body.correct;
+  var obj = {
+    createdBy: login,
+    question: question,
+    answers: answers,
+    correct:correct
+  }
+  console.log(obj);
+  if (login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct)){
+    sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
+      if (error) return res.render('AddQuestion', { code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
+      if (body){
+        var code=0;
+        var message = 'Ошибка';
+        if (body.result=='ok') {
+          code = 1;
+          message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
+        }
+        res.render('AddQuestion', { code:code , msg:message });
+      }
+    });
+  } else {
+    res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
+  }
+})
 
 app.post('/', function (req, res){
   var data = req.body;
@@ -500,10 +547,6 @@ app.post('/tellToFinishTournament', function (req, res){
 
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
 })
-
-var middlewares = require('./middlewares');
-var authenticated = middlewares.authenticated;
-var isAdmin = middlewares.isAdmin;
 
 app.get('/Tell', isAdmin, function (req, res){
   res.render('Tell');

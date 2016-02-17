@@ -1,0 +1,13 @@
+//
+mixin question(q,i)
+	p!= q
+
+html
+	head
+		title newQuestion
+	body
+		//table
+			th id
+			th question
+		each q, index in msg
+			+question(q, i)

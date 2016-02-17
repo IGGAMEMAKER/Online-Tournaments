@@ -1,8 +1,53 @@
 //
-html
-	head
-		script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-		// charset="windows-1251"
-		include templates/header
-		script(src="tournaments.js")
-		include templates/googleAd
+extends layout
+
+block title
+	title Рейтинг
+
+mixin answer(num)
+	div(class="form-group")
+	label(class="white") Ответ №#{num}
+	input(type="text" class="form-control" name="answer"+num)
+mixin correct(num)
+	input(type="radio" name="correct" value=num)
+	| #{num}
+	span  
+
+block content
+	center
+		h1(class="white") Добавьте свой вопрос
+		h2(class="white") и мы покажем его другим игрокам!
+		div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
+			div(class="container bloc-lg")
+				div(class="row")
+					div(class="col-sm-12")
+						div(class="white")
+							if msg
+								p!= msg
+						form(id="form-5" action="/addQuestion" method="post" novalidate)
+							div(class="form-group")
+								label(class="white") Вопрос
+								input(type="text" class="form-control" name="question")
+							+answer(1)
+							+answer(2)
+							+answer(3)
+							+answer(4)
+							div
+								//a(href="ResetPassword") Забыли пароль?
+								//br
+								//a(href="/" ) Нет аккаунта? Зарегистрируйтесь!
+							div(class="form-group" class="white")
+								br
+								label(class="white") Правильный ответ : 
+								+correct(1)
+								+correct(2)
+								+correct(3)
+								+correct(4)
+								//radio(id="correct" name="correct")
+									option(value=1) №1
+									option(value=2) №2
+									option(value=3) №3
+									option(value=4) №4
+								//input(type="text" class="form-control" name="question")
+							br
+							button(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " type="submit") Добавить!

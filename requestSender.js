@@ -10,6 +10,7 @@ this.strLog = strLog;
 this.getPort = getPort;
 this.setServer = setServer;
 this.Stats = Stats;
+this.customSend = customSend
 
 this.getDay = getDay;
 
@@ -167,6 +168,18 @@ function initRequest(urlPath, curData, host, targetServer){
 
 function expressSendRequest(urlPath, curData, host, targetServer, res, responseCallBack){
 	port = getPort(targetServer);
+	request({
+		url: "http://" + host+':'+port+'/'+urlPath,
+	    //url: "http://127.0.0.1:5009/ServeGames",
+	    method: "POST",
+	    json: true,   // <--Very important!!!
+	    body: curData
+	}, Magic(res,responseCallBack));
+
+}
+
+function customSend(urlPath, curData, host, port, res, responseCallBack){
+	//port = getPort(targetServer);
 	request({
 		url: "http://" + host+':'+port+'/'+urlPath,
 	    //url: "http://127.0.0.1:5009/ServeGames",
