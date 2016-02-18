@@ -1,40 +1,65 @@
 //
+
+mixin answers(i, value)
+	label answer#{i} #{value}
+	input(type="text" name="answer"+i id="answer"+i value=value required)
+	br
 html
 	title add question
 	p add your question
-	form(action="/AddQuestion" method="post")
-		label question
-		input(type="text" name="question" id="question" required)
-		br
+	- var q='';
+	- var a1 = '';
+	- var a2 = '';
+	- var a3 = '';
+	- var a4 = '';
+	- var correct = 1;
+	if msg
+		script.
+			q = "#{msg.question}";
+			a1 = "#{msg.answer1}";
+			a2 = "#{msg.answer2}";
+			a3 = "#{msg.answer3}";
+			a4 = "#{msg.answer4}";
+			correct = "#{msg.correct}";
+		form(action="/editQuestion?id="+msg.id method="post")
+			label question
+			input(type="text" name="question" id="question" value=msg.question required)
+			br
 
-		label answer1
-		input(type="text" name="answer1" id="answer1" required)
-		br
+			+answers(1, msg.answer1)
+			+answers(2, msg.answer2)
+			+answers(3, msg.answer3)
+			+answers(4, msg.answer4)
 
-		label answer2
-		input(type="text" name="answer2" id="answer2" required)
-		br
+			label correct
+			input(type="text" name="correct" id="correct" value=msg.correct required)
+			br
+			br
 
-		label answer3
-		input(type="text" name="answer3" id="answer3" required)
-		br
+			input(type="submit" value="Edit")
+	else
+		form(action="/AddQuestion" method="post")
+			label question
+			input(type="text" name="question" id="question" value=q required)
+			br
 
-		label answer4
-		input(type="text" name="answer4" id="answer4" required)
-		br
+			+answers(1, a1)
+			+answers(2, a2)
+			+answers(3, a3)
+			+answers(4, a4)
 
-		label correct
-		input(type="text" name="correct" id="correct" required)
-		br
+			label correct
+			input(type="text" name="correct" id="correct" value=correct required)
+			br
+			br
+			label tournamentID
+			input(type="numer" name="tournamentID" id="tournamentID")
+			br
 
-		label tournamentID
-		input(type="numer" name="tournamentID" id="tournamentID")
-		br
+			label topic
+			input(type="numer" name="topic" id="topic")
+			br
 
-		label topic
-		input(type="numer" name="topic" id="topic")
-		br
+			input(type="submit" value="Add")
 
-		input(type="submit" value="Add")
-
-		p startSpecial/133
+			p startSpecial/133

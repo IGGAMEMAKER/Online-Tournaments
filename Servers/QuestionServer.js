@@ -63,9 +63,67 @@ app.get('/questions', function (req, res){
 	})
 })
 
+app.get('/editQuestion', function (req, res){
+	var id = req.query.id;
+	var question = req.query.question;
+	var answer1 = req.query.answer1;
+	var answer2 = req.query.answer2;
+	var answer3 = req.query.answer3;
+	var answer4 = req.query.answer4;
+	var correct = req.query.correct;
+	var msg = {
+		question:question,
+		answer1:answer1,
+		answer2:answer2,
+		answer3:answer3,
+		answer4:answer4,
+		correct:correct,
+		id:id
+	}
+	res.render('add_question', {msg:msg});
+})
+
+app.post('/editQuestion', function (req, res){
+	var data = req.body;
+	var id = req.query.id;
+	var answers=[];
+
+	answers.push(data.answer1);
+	answers.push(data.answer2);
+	answers.push(data.answer3);
+	answers.push(data.answer4);
+
+	var obj = {
+		question: data.question
+		,	answers: answers
+		,	correct: data.correct
+	}
+	
+	//AddQuestion(obj, res);
+	Question.update({'_id':id}, {$set: obj}, function (err, count){
+		if (err) return res.json(err);
+
+		return res.json(count);
+	})
+})
+
+app.get('/moderate/:id/:status', function (req, res){
+	var id = req.params.id;
+	var status = req.params.status;
+
+	Question.update({ '_id':id }, {$set : { moderation: status } }, function (err, count){
+		if (err) return res.json(err);
+
+		return res.json(count);
+	})
+})
+
+//app.post('/')
+
 app.get('/AddQuestion', function (req, res){
 	res.render('add_question');
 })
+
 app.post('/AddQuestion', function (req, res){
 
 	var data = req.body;
