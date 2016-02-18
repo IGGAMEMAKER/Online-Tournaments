@@ -284,9 +284,9 @@ function ManageReg(login, tID, url, regID){
 
 			getProfile(redraw_tournament_actions);
 
-			/*if (!(msg.result=='fail' && regID==1)) {
+			if (msg.result=='fail' && regID==1) {
 				alert(txt);//msg.result
-			}*/
+			}
 
 			//alert(txt);
 			//console.log(msg);

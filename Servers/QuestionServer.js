@@ -214,7 +214,7 @@ function find_random_question(gameID, left, count, attempts){
 		// and we did not add this question before
 		lg('tryToLoadQuestion: ', question.question);
 
-		if (is_not_special(question) && !attempts[offset]) { //!question_was_added(offset, attempts)
+		if (is_not_special(question) && !attempts[offset] && isModerated(question) ) { //!question_was_added(offset, attempts)
 			add_question_to_list(gameID, question); //attempts.push(offset);
 			attempts[offset] = 1;
 
@@ -223,6 +223,14 @@ function find_random_question(gameID, left, count, attempts){
 			find_random_question(gameID, left, count, attempts);
 		}
 	})
+}
+
+function isModerated(question){
+	if (question){
+		return question.moderation==MODERATION_MODIFIED || question.moderation==MODERATION_OK || question.moderation==null;
+	} else {
+		return null;
+	}
 }
 
 function question_was_added(offset, attempts){

@@ -6,6 +6,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	
 	var Users = require('../../models/users');
 	var TournamentReg = require('../../models/tregs');
+	var Tournaments = require('../../models/tournaments');
 	var Actions = require('../../models/actions');
 	var Errors = require('../../models/errors');
 
@@ -147,6 +148,25 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.post('/RegisterInTournament', function (req, res){
 	  regManager('RegisterUserInTournament',req, res);
 	  //console.log('WRITE Socket emitter!!!')
+	})
+
+	app.post('/autoreg', function (req, res){
+		//res.end('');
+		Tournaments.getStreamID()
+		.then(function (streamID){
+			if (isAuthenticated(req) && streamID){
+				var data = {
+					login: getLogin(req),
+					tournamentID:streamID
+				}
+				console.log('autoreg', data);
+				AsyncRender('DBServer', 'autoreg', res, null,  data);
+			}
+			else{
+				sender.Answer(res, fail);
+				//res.redirect('Login');
+			}
+		})
 	})
 
 	function get_login_from_email(email){

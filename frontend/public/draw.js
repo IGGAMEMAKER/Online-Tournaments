@@ -165,7 +165,7 @@ function shareLink(text, className, obj){
 }
 
 function add_questions_button(){
-  return '<a href="questions/new" target="_blank" class="btn btn-lg btn-primary"> Добавить свои вопросы </a>';
+  return '<a href="addQuestion" target="_blank" class="btn btn-lg btn-primary"> Добавить свои вопросы </a>';
 }
 
 function add_new_tournament_button(){
@@ -174,6 +174,10 @@ function add_new_tournament_button(){
 
 function fast_register_button(){
   return '<a class="btn btn-lg btn-primary" onclick="autoreg()"> Задать всем жару! </a>';
+}
+
+function continue_playing_button(){
+ return '<a class="btn btn-lg btn-primary" onclick="autoreg()"> Продолжить играть! </a>'; 
 }
 
 function joinVk_button(){
@@ -198,7 +202,7 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
   switch(eventType){
     case EVENT_TYPE_WIN_MONEY:
       //Поделиться победой с друзьями!
-      footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
+      footer = shareLink('Похвастаться', 'btn btn-lg btn-primary', { 
         description:'Я выиграл ' + prizes[0] + ruble() + '! Присоединяйтесь!'
       });
     break;
@@ -206,10 +210,10 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
     case EVENT_TYPE_WIN_RATING:
       footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!'
-      }); //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+      })+continue_playing_button(); //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
     break;
     case EVENT_TYPE_LOSE:
-      footer = fast_register_button(); 
+      footer = fast_register_button()+add_questions_button(); 
       /*shareLink('Пригласить друга', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главным призом, присоединяйтесь!' 
       });*/

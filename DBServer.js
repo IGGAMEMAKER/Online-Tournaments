@@ -90,6 +90,7 @@ app.post('/DecreaseMoney', DecreaseMoney);
 
 app.post('/RegisterUserInTournament', function (req, res) {RegisterUserInTournament(req.body, res);} );
 app.post('/CancelRegister', function (req, res) { CancelRegister(req.body, res); })
+app.post('/Autoreg', Autoreg);
 app.post('/GetPlayers', GetPlayers);
 
 
@@ -994,6 +995,22 @@ var TREG_ALREADY = 'Registered';
 
 function register_in_tournament(login, tournamentID){
 	return RegisterUserInTournament({tournamentID:tournamentID, login:login}, null);
+}
+
+function Autoreg(req, res){
+	var login = req.body.login;
+	var tournamentID = req.body.tournamentID;
+
+	if (login && tournamentID){
+		autoreg(login, tournamentID);
+	}
+
+	res.end('');
+}
+
+function autoreg(login, tournamentID){
+	register_in_tournament(login, tournamentID);
+	//return RegisterUserInTournament({tournamentID:tournamentID, login:login}, null);
 }
 
 function RegisterUserInTournament(data, res){
@@ -1980,7 +1997,7 @@ function register_to_stream(login, inviter){
 		})
 }
 
-function Register (req, res){
+function Register(req, res){
 
 	var data = req.body;
 	Log('Register '+ JSON.stringify(data), STREAM_USERS);

@@ -56,13 +56,14 @@ socket.on('Tell', function (msg){
 socket.on('FinishTournament', function (msg) {
   var tournamentID = msg.tournamentID;
   console.log('FinishTournament ', tournamentID);
-  hideTournament(tournamentID);
 
   if (userIsRegisteredIn(tournamentID)){
     showWinnerModal(msg);
     unsetFromObject('addresses', tournamentID);
     getProfile();
   }
+  
+  hideTournament(tournamentID);
 });
 
 function drawReloadButton(place){ $(place).html('<a onclick=reload() class="btn btn-primary">Обновить</a>'); }
@@ -129,7 +130,13 @@ function statAttemptToStart(tournamentID){
 }
 
 function autoreg(){
-  setAsync('autoreg', {});
+  setAsync('autoreg', {}, function(){
+    $("#winnerModal").modal('hide');
+    setTimeout(function(){
+      getProfile();
+    }, 1500);
+
+  });
 }
 
 function stat_noMoney(tournamentID, money){

@@ -22,6 +22,10 @@ const TOURN_STATUS_PAUSED = 4;
 
 const PROMO_COMISSION = 5;
 
+var REGULARITY_NONE=0;
+var REGULARITY_REGULAR=1;
+var REGULARITY_STREAM=2;
+
 var Tournament = db.model('Tournament', { 
 	buyIn: 			Number,
 	initFund: 		Number,
@@ -64,6 +68,25 @@ function getByID(tournamentID){
 			if (err) return reject(err);
 
 			return resolve(tournament||null);
+		})
+	})
+}
+
+function getStreamID(login){
+	return new Promise(function (resolve, reject){
+		Tournament.findOne({
+			'settings.regularity':REGULARITY_STREAM
+			,	'settings.hidden': {$ne: true}
+			,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+			,	buyIn: 0 
+		},
+		'tournamentID', function (err, tournament){
+			if (err) return reject(err);
+			if (tournament){
+				resolve(tournament.tournamentID);
+			} else {
+				resolve(null);
+			}
 		})
 	})
 }
@@ -200,3 +223,4 @@ this.stop = stop;
 this.enable = enable;
 this.add = add;
 this.finish = finish;
+this.getStreamID = getStreamID;
