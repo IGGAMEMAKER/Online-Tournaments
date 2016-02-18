@@ -1,8 +1,8 @@
 //
-include templates/basic
+//include templates/basic
 include templates/card
 
-mixin navTabs()
+mixin tabs()
 	ul(class="nav nav-tabs")
 		li(class="active")
 			a(href="#tab1" data-toggle="tab") Рейтинг
@@ -10,8 +10,6 @@ mixin navTabs()
 			a(href="#tab2" data-toggle="tab") Чат
 		li
 			a(href="#tab4" data-toggle="tab") Настройки
-
-mixin tabs()
 	div(class="tab-content")
 		div(class="tab-pane active" id="tab1")
 			div(class="container")
@@ -25,25 +23,6 @@ mixin tabs()
 		div(class="tab-pane" id="tab4")
 			p Настройки
 
-mixin rtg()
-	tr
-		td Рейтинг 
-		td обновляется 
-		td каждые 
-		td 8 секунд
-	//tr 
-		td 1 
-		td Mark 
-		td 100 
-		//td 62
-		td 100р
-	//tr 
-		td 2 
-		td Jacob 
-		td 87 
-		//td 34
-		td 50р
-
 mixin rating()
 	div(class="col-md-8 dataRule")
 		table(class="table")
@@ -55,7 +34,11 @@ mixin rating()
 					//th Побед
 					th Приз
 			tbody(id="ratingTab")
-				+rtg()
+				tr
+					td Рейтинг 
+					td обновляется 
+					td каждые 
+					td 8 секунд
 		a(href="Leaderboard" target="_blank") Полный рейтинг
 
 mixin statContent()
@@ -88,43 +71,17 @@ mixin userStats()
 						div(class="icon-twitter")
 			//+statContent()
 
-mixin showTournaments(tournaments)
-	- for (i=0; i<tournaments.length;i++) {
-		+showTournament(tournaments[i] , 0)
-	- }
-	//+showTournament()
 
-html
-	head
-		script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-		// charset="windows-1251"
-		include templates/header
-		script(src="tournaments.js")
-		include templates/googleAd
+extends layout
 
-		+notEnoughMoney()
-	body(class="background")
-		//div(class="wrapper")
-		+navigation()
-		div(class="container")
-			//script.
-				var asd = VK.Auth.getSession();
-				console.log(asd);
-			span(id="VKInfo")
-			+drawBalance()
-			
-			div(class="container containetWithTourn")
-				div(class="row" id="tournamentBlock")
-					//+showTournaments(msg)
-				div(class="row" id="tabz")
-					+navTabs()
-					+tabs()
-		div(class="wrapper2")
-			+googleAdvert()
-			+footer()
+block title
+	title Турниры
 
-		script(src="http://code.jquery.com/jquery-2.1.0.min.js")
-		script(src="button_animation.js")
-		script(src="./js/bootstrap.js")
-		// IE10 viewport hack for Surface/desktop Windows 8 bug
-		//script(src="assets/js/ie10-viewport-bug-workaround.js")
+block content
+	div(class="row" id="tournamentBlock")
+	div(class="row" id="tabz")
+		+tabs()
+block JSlibs
+	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
+	script(src="tournaments.js")
+	include templates/googleAd
