@@ -572,6 +572,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	text += buttons(id, login, buyIn) 
 	text += '</div><div class="footer"><button class="btn toggle-tickets" id="toggle'+ id +'">Участвовать</button></div></div></div>'
+	
 	//console.log(getLogin());
 	//console.log(text);
 	//console.log("drawTournament ", id)

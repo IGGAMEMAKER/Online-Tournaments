@@ -36,11 +36,13 @@ html
 		//link(rel="stylesheet" href="./css/animate.css")
 		link(rel="stylesheet" href="./css/ionicons.min.css")
 		link(rel="stylesheet" href="./css/main.css")
+		include templates/googleAd
 	div(class="page-container")
 		include templates/menu
 		div(class="b-divider")
 			//div(class='bloc-group')
 			+drawIcons()
 			include templates/auth
+			+googleAdvert()
 		include templates/footer
 

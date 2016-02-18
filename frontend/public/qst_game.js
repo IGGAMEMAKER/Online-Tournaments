@@ -300,11 +300,4 @@ function aj(url, callback){
 	method: 'POST',
 	data: {login:login, tournamentID:tournamentID, gameID:tournamentID },
 	success: callback});
-	/*
-	function( data ) {
-		var msg = JSON.stringify(data);
-		//alert(msg);
-		console.log(msg);
-	}
-	*/
 }
