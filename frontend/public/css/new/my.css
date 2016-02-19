@@ -118,7 +118,9 @@
 {
   max-width: 280px;
 }*/
-
+.wrap-text{
+  overflow: hidden;
+}
 .subscribe
 {
   padding-bottom: 40px;

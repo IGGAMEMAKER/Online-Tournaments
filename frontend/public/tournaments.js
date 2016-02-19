@@ -217,10 +217,10 @@ function drawTournamentStatus(tournamentID, status){
 				//$(element).fadeTo(blink_period/4, 0.5).fadeTo(blink_period/4, 1.0);
 			break;
 			case TOURN_STATUS_FINISHED:
-				text = 'Турнир завершён, ждём вас в других турнирах';
+				text = 'Турнир завершён <br>ждём вас в других турнирах';
 			break;
 			case TOURN_STATUS_REGISTER: 
-				text = 'Вы участвуете. Дождитесь заполнения турнира';
+				text = 'Вы участвуете. <br>Дождитесь заполнения турнира';
 			break;
 			default:
 				text = 'Подробнее';
@@ -604,7 +604,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '</p></div>';
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	text += buttons(id, login, buyIn) 
-	text += '</div><div class="footer"><button class="btn toggle-tickets" id="toggle'+ id +'">Участвовать</button></div></div></div>'
+	text += '</div><div class="footer"><button class="btn toggle-tickets wrap-text" id="toggle'+ id +'">Участвовать</button></div></div></div>'
 	
 	//console.log(getLogin());
 	//console.log(text);
