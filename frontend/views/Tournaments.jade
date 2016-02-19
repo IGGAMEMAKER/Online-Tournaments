@@ -3,32 +3,41 @@ mixin tabs()
 	ul(class="nav nav-tabs")
 		li(class="active")
 			a(href="#tab1" data-toggle="tab") Рейтинг
-		li
+		//li
 			a(href="#tab2" data-toggle="tab") Чат
-		li
+		//li
 			a(href="#tab4" data-toggle="tab") Настройки
 	div(class="tab-content")
 		div(class="tab-pane active" id="tab1")
 			div(class="container")
-				div(class="row")
+				div(class="row" style="padding-bottom:40px;")
 					+rating()
-					+userStats()
-		div(class="tab-pane" id="tab2")
-			+chat()
+					div(class="col-md-3 columBio")
+						+subscribe()
+					//+userStats()
+				div(class="row")
+					+chat()
+		//div(class="tab-pane" id="tab2")
 		//div(class="tab-pane" id="tab3")
 			p Tab 3 content goes here...
-		div(class="tab-pane" id="tab4")
+		//div(class="tab-pane" id="tab4")
 			p Настройки
 
+
 mixin rating()
-	div(class="col-md-8 dataRule")
-		table(class="table")
+		table(class="table rating")
 			thead 
-				tr 
+				//tr 
+					th Приз
+					th Игр
+					th Игрок
+					th #
+				tr
 					th #
 					th Игрок
-					th Сыграно
+					th Игр
 					th Приз
+
 			tbody(id="ratingTab")
 				tr
 					td Рейтинг 
@@ -52,8 +61,8 @@ mixin statContent()
 
 mixin userStats()
 	div(class="col-md-3 columBio")
-		//+subscribe()
-		div(class="containerico")
+		+subscribe()
+		//div(class="containerico")
 			+subscribe()
 			//header
 				div(class="bio")
@@ -74,9 +83,19 @@ block title
 	title Турниры
 
 block content
-	div(class="row" id="tournamentBlock")
-	div(class="row" id="tabz")
+	//div(class="row" id="tournamentBlock")
+	//div(class="row" id="tabz")
 		+tabs()
+	div(class="bloc l-bloc bgc-white" id="bloc-1")
+		div(class="container")
+			div(class="row")
+				div(class="col-md-8 dataRule2")
+					+rating()
+				div(class="col-md-4 subscribe")
+					+subscribe()
+			div(class="row")
+				+chat()
+
 block JSlibs
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
 	script(src="tournaments.js")

@@ -2,3 +2,8 @@
 			width: 100% !important;
 			/*max-height: 500px;*/
 		}
+
+		#vk_groups, #vk_groups iframe {
+			width: 100% !important;
+			/*max-height: 500px;*/
+		}

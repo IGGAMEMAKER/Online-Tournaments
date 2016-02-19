@@ -1,9 +1,12 @@
 //
 
 mixin drawLeader(leader, index)
-	tr 
-		td #{index+1}
-		td #{leader._id}
+	tr(id=leader._id)
+		td(class="rating-id") #{index+1}
+		if session && session.login==leader._id
+			td(class="rating-lgn" style="color:red;") #{leader._id}
+		else
+			td(class="rating-lgn") #{leader._id}
 		td #{leader.count}
 		+drawPrize(index)
 mixin drawPrize(i)
@@ -19,15 +22,21 @@ block title
 
 block content
 	center
-		h1(class="" style="color:white;") Рейтинг активности
-	div(class="col-md-11 dataRule")
-		table(class="table")
-			thead 
-				tr 
-					th #
-					th Игрок
-					th Сыграно
-					th Приз
-			tbody(id="ratingTab")
-				each leader, index in msg
-					+drawLeader(leader, index)
+		h1(class="" style="color:white;") Рейтинг активности 
+		if session
+			a(href="#"+session.login) где я?
+		
+	div(class="bloc l-bloc bgc-white" id="bloc-1")
+		div(class="container")
+			div(class="row")
+				div(class="col-md-8 dataRule2")
+					table(class="table rating")
+						thead 
+							tr 
+								th #
+								th Игрок
+								th Игр
+								th Приз
+						tbody(id="ratingTab")
+							each leader, index in msg
+								+drawLeader(leader, index)

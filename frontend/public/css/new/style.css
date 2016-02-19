@@ -10,11 +10,6 @@
     background-color: #c7afaf;
 }
 
-.background
-{
-    background-image: url('photo-1448485780098-7e0b78781fc1.jpeg');
-}
-
 .containetWithTourn
 {
     border-radius: 10px;
@@ -52,5 +47,9 @@
     min-height: 26em;
     min-width: 24em;
     margin: 2em 1em;
+}
+
+.background
+{
 }
 

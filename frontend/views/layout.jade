@@ -37,9 +37,6 @@ mixin loadHead()
 
 	link(rel="stylesheet" href="./css/new/vkComment.css")
 
-
-
-
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
 
 	include templates/modals
@@ -79,6 +76,11 @@ mixin drawBalance()
 			span /   
 			a(href="profile#cashoutMoney") Снять деньги
 
+mixin subscribe()
+	div(id="vk_groups")
+	script(type="text/javascript").
+		VK.Widgets.Group("vk_groups", {mode: 0, width: "auto", height: "360", color1: 'FFFFFF', color2: '2B587A', color3: '5B7FA6'}, 111187123);
+
 html
 	head
 		block title
@@ -90,11 +92,11 @@ html
 		//include templates/header
 		include templates/googleAd
 	body(class="background")
+		div(class="container")
 		+navigation()
-		div(class="container")			
-			div(class="container containetWithTourn")
-				+drawBalance()
-				block content
+		div(class="container containetWithTourn")
+			+drawBalance()
+			block content
 		div(class="wrapper2")
 			//+googleAdvert()
 			+footer()

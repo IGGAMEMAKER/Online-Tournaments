@@ -131,14 +131,47 @@ socket.on('leaderboard', function (msg){
 	var leaders = msg;
 	var rating = "#ratingTab";
 	$(rating).html("");
+
+	if ($(window).width() < 400) {
+		//alert('Less than 400');
+	}
+	else {
+		//alert('More than 400');
+	}
+
 	for (var i=0; i<leaders.length;i++){
-		var login = leaders[i]._id;
+		var lgn = leaders[i]._id;
 		var count = leaders[i].count;
 		var prize = prizeByPlace(i, leaders.length);
 		var number = i+1;
-		$(rating).append("<tr>" + "<td>" + number + "</td>" + "<td>" + login + "</td>" + "<td>" + count + "</td>" + "<td>" + prize + "</td>" +"</tr>")
+		var style="";
+
+		var shortedLogin = shortenizeLogin(lgn);
+
+		var text = '';
+
+		if (getLogin()==lgn) { style = "color:red;"}
+
+		/*text = '<tr id="'+ lgn +'">' + 
+			'<td>' + prize + '</td>' + 
+			'<td>' + count + '</td>' + 
+			'<td width="10px" class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
+			'<td class="rating-id">' + number + '</td>' + 
+		'</tr>';*/
+
+		text = '<tr id="'+ lgn +'">' + 
+			'<td class="rating-id">' + number + '</td>' + 
+			'<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
+			'<td>' + count + '</td>' + 
+			'<td>' + prize + '</td>' + 
+		'</tr>';
+		$(rating).append(text);
 	}
 })
+
+function shortenizeLogin(login){
+	return login;
+}
 
 
 const TOURN_STATUS_REGISTER = 1;
