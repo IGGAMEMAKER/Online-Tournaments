@@ -535,6 +535,10 @@ function redirectToAuth(req, res){
   res.redirect('/vk-auth');
 }
 
+app.get('/Marathon', function (req, res){
+  res.render('Marathon');
+})
+
 app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess());

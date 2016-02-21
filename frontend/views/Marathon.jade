@@ -1,0 +1,71 @@
+//
+extends layout
+
+block content
+		div(class="col-sm-12 white")
+			h1(class="mg-md text-center ") Марафон
+			p Отыграйте наибольшее количество турниров и выиграйте главный приз в еженедельном марафоне!
+		div(class="col-sm-12 white")
+			h2(class="mg-md text-center") Порядок проведения марафона
+			p В самом начале турнира
+		div(class="col-sm-12")
+			h2(class="mg-md text-center white") Стоимость участия
+			p(class="white") Стоимость участия в марафоне зависит от того, в какой день вы зарегистрируетесь. Чем раньше вы зарегистрируетесь, тем дешевле стоимость участия и дешевле множители
+			ul(class="list-group")
+				li(class="list-group-item") 10 монет в первые 3 дня марафона
+				li(class="list-group-item") 30 монет на 4й и 5й дни марафона
+				li(class="list-group-item") 60 монет на 6й день марафона
+				li(class="list-group-item") 200 монет на 7й день марафона
+		div(class="col-sm-12")
+			h2(class="mg-md text-center white") Что такое множитель?
+			p(class="white") Множитель - это коэффициент, на который умножается ваше количество сыгранных турниров. 
+			p(class="white") Например, если вы сыграли в 5 турниров с множителем "5", то вы получите 25 очков в таблице марафона
+		div(class="col-sm-12")
+			h2(class="mg-md text-center white") Стоимость множителей
+			p(class="white") Стоимость участия в марафоне зависит от того, в какой день вы зарегистрируетесь. Чем раньше вы зарегистрируетесь, тем дешевле
+			table(class="table marathon-multipliers")
+				//list-group list-group-item
+				thead
+					tr
+						th День
+						th 1
+						th 2
+						th 3
+						th 4
+						th 5
+						th 6
+						th 7
+				tbody
+					tr
+						td Множитель
+						td 1
+						td 1
+						td 1
+						td 2
+						td 2
+						td 5
+						td 10
+					tr
+						td Стоимость
+						td -
+						td -
+						td -
+						td 1
+						td 1
+						td 1
+						td 2
+		div(class="col-sm-12")
+			h2(class="mg-md text-center white") Могу ли я участвовать бесплатно?
+			p(class="white") Да, у вас есть такая возможность! Для этого нужно сделать одно из этих простых действий:
+			ul(class="list-group")
+				li(class="list-group-item")
+					a(href="invite" target="_blank") Приведи 
+					| друга и вы оба сможете участвовать в марафоне бесплатно!
+				li(class="list-group-item")
+					a(href="addQuestion" target="_blank") Добавь 
+					| 5 вопросов и после модерации ты будешь зачислен в марафон. Если ничего не происходит в течение дня, напиши администратору в 
+					a(href="/#vk_comments" target="_blank") чате
+			p(class="white") В противном случае, вам достанется лишь десятая часть от приза. Т.е. если вы претендуете на приз в 200 монет, то получите лишь 20.
+
+block title
+	title Гонка

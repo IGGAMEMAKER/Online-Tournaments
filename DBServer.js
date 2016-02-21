@@ -1966,11 +1966,11 @@ function findOrCreateUser (req, res){
 			var user = new User(USER);
 			user.save(function (err) {
 				if (err){
-					switch (err.code){
+					switch (err.code) {
 						case USER_EXISTS:	Log('Sorry, user ' + login + ' Exists', STREAM_USERS); break;
 						default: Error(err); break;
 					}
-					return sender.Answer(res, null);
+					return sender.Answer(res, USER);
 				} else {
 					Log('added User ' + login+'/' + uid, STREAM_USERS);
 					sender.Answer(res, USER);

@@ -229,7 +229,7 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
 }
 
 function modal_pic(name){
-  return '<br><img width="300px" src="/img/'+name+'" />';// height="260px"
+  return '<br><img width="100%" src="/img/'+name+'" />';// height="260px"
 }
 
 function winningPicture(){ return modal_pic('win_1.png'); }
@@ -274,34 +274,6 @@ function drawPopup(){
 }
 
 var runningCount=0;
-var blinkCounter=0;
-
-function blinker(){
-  var blinkStatus = runningCount;// getFromStorage('hasRunningTournaments');
-  //prt(blinkStatus);
-  blinkCounter++;
-
-  //$("#my-tournaments").css( "background-color" , defaultColour );
-  var colour = 'black';
-  var period;
-  if (blinkStatus==1){
-    if (blinkCounter%2){
-      colour = 'red';
-    }
-    else{
-      colour = 'blue';
-    }
-    period = 1001;
-  }
-  else{
-    period = 3000;
-  }
-
-  $("#my-tournaments").css( "background-color" , colour );
-
-  setTimeout(blinker , period);
-
-}
 
 //function drawProfile(money, tournaments, )
 

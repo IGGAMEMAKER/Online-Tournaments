@@ -54,6 +54,11 @@ module.exports = function(dbAddress){
 			startedTime: 		Date
 			//tournamentServerID: String
 		})
+		,Marathon : db.model('Marathon', {
+			start: Date,
+			finish: Date,
+			prizes: Array
+		})
 
 		,Action : db.model('Action', {
 			login: String,

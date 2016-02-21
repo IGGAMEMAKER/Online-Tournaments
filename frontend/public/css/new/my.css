@@ -114,6 +114,13 @@
     margin-left: 0em;
 }
 
+.marathon-multipliers
+{
+  /*background: #F7F6F6;*/
+  border-radius:4px; 
+  background-color:white;
+}
+
 /*.rating
 {
   max-width: 280px;
@@ -146,6 +153,12 @@
     overflow: hidden;
     max-width: 26px;
     /*display: none;*/
+  }
+
+  .marathon-multipliers
+  {
+    overflow: hidden;
+    margin-left: -20px;
   }
 }
 /*.rating-lgn
