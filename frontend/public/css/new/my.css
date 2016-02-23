@@ -154,13 +154,18 @@
     max-width: 26px;
     /*display: none;*/
   }
+}
 
+@media (max-width: 320px)
+{
   .marathon-multipliers
   {
     overflow: hidden;
     margin-left: -20px;
+    max-width: 260px;
   }
 }
+
 /*.rating-lgn
 {
   width: 10px;
