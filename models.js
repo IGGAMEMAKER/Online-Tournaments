@@ -55,9 +55,30 @@ module.exports = function(dbAddress){
 			//tournamentServerID: String
 		})
 		,Marathon : db.model('Marathon', {
+			MarathonID: Number,
 			start: Date,
 			finish: Date,
-			prizes: Array
+			prizes: Array, // if you want 3 prizes if 500 and 7 by 200 set [500, 200]
+			counts: Array, // [3, 7]
+
+			accelerators: Array, // value, price, sold, given upgade (index) [ {value: 4, price:20, sold:10, free:2, upgrade:0} , {value: 7, price:35, sold:10, free:3, upgrade:1} ]
+			upgrades: Array, // value, price, sold, given // upgade (index) [ {value: 12, price:20, sold:10, free:2} , {value: 10, price:35, sold:10, free:3} ]
+
+			soldAccelerators: Array,
+			soldUpgrades: Array,
+
+			freeAccelerators: Array,
+			freeUpgrades: Array	
+		})
+
+		,MarathonUser : db.model('MarathonUser', {
+			login: String,
+			MarathonID: Number,
+			accelerators: Array, // [ {value, index, buyDay, buyDate} , {value2, index2, buyDay2, buyDate2} ] // индекс 0 (4), 1 (7), день покупки
+			points: Number,
+			played: Number,
+			isFree: Number,
+			isSigned: Number
 		})
 
 		,Action : db.model('Action', {
