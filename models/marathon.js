@@ -5,7 +5,7 @@ var models = require('../models')(configs.db);
 
 
 var helper = require('../helpers/helper');
-var log = helper.log;
+var log = console.log;
 
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
@@ -24,53 +24,7 @@ const FREE_COMISSION = 80;
 var Marathon = models.Marathon;
 var MarathonUser = models.MarathonUser;
 
-function all(){
-	//null - инициализирован
-	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
-	//2 - running - турнир начат
-	//3 - finished - турнир окончен
-	//4 - paused - турнир приостановлен
-}
-
-function getByID(tournamentID){
-	return new Promise(function(resolve, reject){
-		Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
-			if (err) return reject(err);
-
-			return resolve(tournament||null);
-		})
-	})
-}
-
-function getStreamID(login){
-	return new Promise(function (resolve, reject){
-		Tournament.findOne({
-			'settings.regularity':REGULARITY_STREAM
-			,	'settings.hidden': {$ne: true}
-			,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
-			,	buyIn: 0 
-		},
-		'tournamentID', function (err, tournament){
-			if (err) return reject(err);
-			if (tournament){
-				resolve(tournament.tournamentID);
-			} else {
-				resolve(null);
-			}
-		})
-	})
-}
-
-function start(tournamentID){	setTournStatus(tournamentID, TOURN_STATUS_RUNNING); }
-
-function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED); }
-
-function enable(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_REGISTER); }
-
-function finish(tournamentID){ stop(tournamentID); }
-
 function add(marathon){
-	log('add')
 	return new Promise(function(resolve, reject){
 		Marathon
 			.findOne({})
@@ -113,7 +67,7 @@ function getDefaultMarathon(){
 		soldUpgrades: [0, 0],
 
 		freeAccelerators: [0, 0],
-		freeUpgrades: [0, 0],	
+		freeUpgrades: [0, 0]
 	};
 }
 
@@ -133,17 +87,6 @@ function get_tournaments(query, fields, filters, sort){
 		});
 	})
 }
-
-/*this.all = get_tournaments_default;
-this.get_tournaments_for_user = get_tournaments_for_user;
-this.getByID = getByID;
-
-this.start = start;
-this.stop = stop;
-this.enable = enable;
-this.add = add;
-this.finish = finish;
-this.getStreamID = getStreamID;*/
 
 function getCurrentMarathonID(MarathonID){
 	return new Promise(function (resolve, reject){
@@ -220,7 +163,17 @@ function find_or_create_user(login, MarathonID){
 			return create_marathon_user(login, MarathonID);
 		}
 	})
-	//.catch(helper.catcher);
+}
+
+function get_marathon_by_id(MarathonID){
+	return new Promise(function (resolve, reject){
+		Marathon.findOne({MarathonID:MarathonID}, function (err, marathon){
+			if (err) return reject(err);
+
+			//log('get_marathon_by_id  ' +  marathon||null);
+			return resolve(marathon||null);
+		})
+	})
 }
 
 function get_current_marathon(){ // returns current marathon
@@ -238,8 +191,10 @@ function get_current_marathon(){ // returns current marathon
 	})
 }
 
+
+
 function increase_points(login, MarathonID, accelerator){
-	console.log('increase_points', arguments);
+	log('increase_points', arguments);
 	return new Promise(function (resolve, reject){
 		MarathonUser.update({ login:login, MarathonID:MarathonID }, {$inc : { points: accelerator, played: 1 } }, function (err, count){
 			if (err) return reject(err);
@@ -254,14 +209,124 @@ function increase_points(login, MarathonID, accelerator){
 	})
 }
 
-find_or_create_user('Raja', 1)
+function setFreePlayer(login, MarathonID){
+	return new Promise(function (resolve, reject){
+		MarathonUser.update({ login:login, MarathonID:MarathonID}, {$set: { isFree: FREE_USER } }, function (err, count){
+			if (err) return reject(err);
+
+			if (helper.updated(count)){
+				return resolve(1);
+			} else {
+				return reject(null);
+			}
+
+		})
+	})
+}
+
+function isFreePlayer(login, MarathonID){
+	return getMarathonUser(login, MarathonID)
+	.then(function (user){
+		return isFreeUser(user||null);
+	})
+}
+
+function isFreeUser(user){
+	return (user && user.isFree== FREE_USER);
+}
+
+function set_accelerator (login, MarathonID, accelerator) {
+	
+}
+
+function prizesAndCountsAreValid(prizes, counts){
+	return (prizes && counts && Array.isArray(prizes) || Array.isArray(counts));
+}
+
+function update_prize_list(MarathonID, prizes, counts){ // two arrays
+
+	return new Promise(function (resolve, reject){
+		if (!prizesAndCountsAreValid(prizes, counts)) {
+			return reject('Invalid data');
+		}
+
+		var updObject = {};
+
+		if (prizes && Array.isArray(prizes)) updObject.prizes=prizes;
+		if (counts && Array.isArray(counts)) updObject.counts=counts;
+
+
+		Marathon.update({MarathonID: MarathonID}, {$set: updObject }, function (err, count){
+			if (err) return reject(err);
+
+			if (helper.updated(count)){
+				return resolve(1);
+			} else {
+				return resolve(null);
+			}
+
+		})
+	})
+}
+
+function try_to_increase_points(login, MarathonID){
+	return getMarathonUser(login, MarathonID)
+	.then(function getAccelerator (user){
+		return new Promise(function (resolve, reject){
+
+			if (user){
+				if (user.accelerators.length==0){
+					user.accelerator = ACCELERATOR_STANDARD;
+					return resolve(user);
+				}	else {
+					var accelerator = user.accelerators[user.accelerators.length - 1].value;
+					log(accelerator);
+					user.accelerator = accelerator;
+
+					return resolve(user);
+				}
+			} else {
+				return reject(null);
+			}
+
+		})
+	})
+	.then(function (user){
+		return increase_points(user.login, user.MarathonID, user.accelerator||ACCELERATOR_STANDARD);
+	})
+}
+
+
+// TESTS
+
+/*find_or_create_user('Raja', 1)
 .then(function (user){
 	log(user);
 })
-.catch(helper.catcher);
+.catch(helper.catcher);*/
 
+//try_to_increase_points('Raja', 1);
 
-getMarathonUser('Raja', 1)
+/*get_marathon_by_id(1);
+
+update_prize_list(1, [300], [2])
+.then(function (result){
+	if (result==1){
+		return get_marathon_by_id(1);
+	} else {
+		return null;
+	}
+})
+.then(function (marathon){
+	if (marathon){ 
+		log('update_prize_list OK', marathon); 
+	} else {
+		log('update_prize_list fail');
+	}
+})
+.catch(helper.catcher);*/
+
+/*getMarathonUser('Raja', 1)
 .then(function getAccelerator (user){
 	return new Promise(function (resolve, reject){
 
@@ -284,14 +349,39 @@ getMarathonUser('Raja', 1)
 })
 .then(function (user){
 	return increase_points(user.login, user.MarathonID, user.accelerator||1);
+})*/
+
+/*setFreePlayer('Raja', 1)
+.then(function (result){
+	log('setFreePlayer result', result)
+	
+	// return isFreePlayer('Raja', 1)
+});*/
+
+return isFreePlayer('Raja', 1)
+.then(function (result){
+	log('isFreePlayer ', result);
 })
+
+
+/*.then(function (result){
+	log('isFreePlayer ', result);
+})*/
+.catch(helper.catcher);
+
+// exports
 
 module.exports = {
 	add:add
 
-	, get_user: getMarathonUser
+	, get_user: 							getMarathonUser
 
-	, increase_points: increase_points
-	, find_or_create_user: find_or_create_user
-	, get_current_marathon: get_current_marathon
+	, increase_points: 				try_to_increase_points
+	, find_or_create_user: 		find_or_create_user
+	, get_current_marathon: 	get_current_marathon
+	, get_marathon_by_id: 		get_marathon_by_id
+	, update_prize_list: 			update_prize_list
+
+	, isFreePlayer: isFreePlayer
+	, setFreePlayer: setFreePlayer
 }
