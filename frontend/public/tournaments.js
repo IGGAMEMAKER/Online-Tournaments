@@ -141,7 +141,8 @@ function drawRating(msg){
 
 	for (var i=0; i<leaders.length;i++){
 		var lgn = leaders[i].login;
-		var count = leaders[i].points;
+		var count = leaders[i].played;
+		var points = leaders[i].points;
 		var prize = prizeByPlace(i, leaders.length);
 		var number = i+1;
 		var style="";
@@ -162,6 +163,7 @@ function drawRating(msg){
 		text = '<tr id="'+ lgn +'">' + 
 			'<td class="rating-id">' + number + '</td>' + 
 			'<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
+			'<td>' + points + '</td>' + 
 			'<td>' + count + '</td>' + 
 			'<td>' + prize + '</td>' + 
 		'</tr>';
