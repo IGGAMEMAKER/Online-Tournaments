@@ -172,6 +172,7 @@ var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer
 
 
 var TournamentReg = require('./models/tregs');
+var Marathon = require('./models/marathon');
 
 var middlewares = require('./middlewares');
 var isAdmin = middlewares.isAdmin;
@@ -706,11 +707,31 @@ function getShortActivityBoard(leaderboard){
   }
   return short_activity_board;
 }
-
+/*
 function get_Leaderboard(period){
   TournamentReg.leaderboard()
   .then(function (leaderboard){
     //res.json(leaderboard);
+    activity_board = getShortActivityBoard(leaderboard);
+    io.emit('leaderboard', activity_board);
+  })
+  .catch(function (err){
+    //console.log('error', 'get_Leaderboard', err);
+    //Errors.add('login', 'leaderboard', { code:err })
+    //res.json({code:'err', message:'Ошибка'})
+  })
+
+  setTimeout(function(){
+    get_Leaderboard(period)
+  }, period);
+}*/
+
+function get_Leaderboard(period){
+  console.log('get_Leaderboard');
+  Marathon.leaderboard()
+  .then(function (leaderboard){
+    //res.json(leaderboard);
+    console.log('leaderboard', leaderboard);
     activity_board = getShortActivityBoard(leaderboard);
     io.emit('leaderboard', activity_board);
   })

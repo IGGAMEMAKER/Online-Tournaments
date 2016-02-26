@@ -127,7 +127,7 @@ function prizeByPlace(place, length){
 	}
 }
 
-socket.on('leaderboard', function (msg){
+function drawRating(msg){
 	var leaders = msg;
 	var rating = "#ratingTab";
 	$(rating).html("");
@@ -140,8 +140,8 @@ socket.on('leaderboard', function (msg){
 	}
 
 	for (var i=0; i<leaders.length;i++){
-		var lgn = leaders[i]._id;
-		var count = leaders[i].count;
+		var lgn = leaders[i].login;
+		var count = leaders[i].points;
 		var prize = prizeByPlace(i, leaders.length);
 		var number = i+1;
 		var style="";
@@ -167,6 +167,11 @@ socket.on('leaderboard', function (msg){
 		'</tr>';
 		$(rating).append(text);
 	}
+	
+}
+
+socket.on('leaderboard', function (msg){
+	drawRating(msg);
 })
 
 function shortenizeLogin(login){

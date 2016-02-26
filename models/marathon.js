@@ -196,7 +196,10 @@ function get_current_marathon(){ // returns current marathon
 function increase_points(login, MarathonID, accelerator){
 	log('increase_points', arguments);
 	return new Promise(function (resolve, reject){
-		MarathonUser.update({ login:login, MarathonID:MarathonID }, {$inc : { points: accelerator, played: 1 } }, function (err, count){
+		MarathonUser.update({ login:login, MarathonID:MarathonID }, 
+			{$inc : { points: accelerator, played: 1 } }, 
+
+			function (err, count){
 			if (err) return reject(err);
 
 			if (helper.updated(count)){
@@ -225,7 +228,17 @@ function setFreePlayer(login, MarathonID){
 }
 
 function leaderboard(MarathonID){
-	MarathonUser.find({MarathonID:MarathonID})
+	console.log('search leaderboard', MarathonID);
+	return new Promise(function (resolve, reject){
+		MarathonUser.find({MarathonID:MarathonID})
+		.sort('-points')
+		.exec(function (err, users){
+			if (err) return reject(err);
+			console.log('users', users);
+
+			return resolve(users||null);
+		})
+	})
 }
 
 function isFreePlayer(login, MarathonID){
@@ -418,4 +431,13 @@ module.exports = {
 
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of
+	, leaderboard: 						function(){
+		return get_current_marathon()
+		.then(function (marathon){
+			console.log('get_current_marathon' , marathon);
+
+			if (marathon) return leaderboard(marathon.MarathonID||null);
+			return null;
+		})
+	}
 }
