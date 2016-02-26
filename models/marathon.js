@@ -235,7 +235,12 @@ function isFreeUser(user){
 	return (user && user.isFree== FREE_USER);
 }
 
-function set_accelerator (login, MarathonID, accelerator) {
+function set_accelerator (login, MarathonID, accelerator) { // accelerator: value or index?
+	return getMarathonUser(login, MarathonID)
+	.then()
+}
+
+function update_accelerator(login, MarathonID){
 	
 }
 
@@ -269,9 +274,9 @@ function update_prize_list(MarathonID, prizes, counts){ // two arrays
 	})
 }
 
-function try_to_increase_points(login, MarathonID){
+function get_accelerator_of(login, MarathonID){
 	return getMarathonUser(login, MarathonID)
-	.then(function getAccelerator (user){
+	.then(function (user){
 		return new Promise(function (resolve, reject){
 
 			if (user){
@@ -291,8 +296,15 @@ function try_to_increase_points(login, MarathonID){
 
 		})
 	})
+}
+
+function try_to_increase_points(login, MarathonID){
+	return get_accelerator_of(login, MarathonID)
 	.then(function (user){
-		return increase_points(user.login, user.MarathonID, user.accelerator||ACCELERATOR_STANDARD);
+		if (user){
+			return increase_points(user.login, user.MarathonID, user.accelerator||ACCELERATOR_STANDARD);
+		}
+		return null;
 	})
 }
 
@@ -382,6 +394,9 @@ module.exports = {
 	, get_marathon_by_id: 		get_marathon_by_id
 	, update_prize_list: 			update_prize_list
 
-	, isFreePlayer: isFreePlayer
-	, setFreePlayer: setFreePlayer
+	, isFreePlayer: 					isFreePlayer
+	, setFreePlayer: 					setFreePlayer
+
+	, set_accelerator: 				set_accelerator
+	, get_accelerator_of: 		get_accelerator_of
 }
