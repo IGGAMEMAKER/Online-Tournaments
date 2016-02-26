@@ -45,7 +45,11 @@ var Stats = sender.Stats;
 var Actions = require('./models/actions');
 var Errors = require('./models/errors');
 
+var Marathon = require('./models/marathon');
+
 var sort = require('./helpers/sort');
+
+var helper = require('./helpers/helper');
 
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
@@ -697,7 +701,62 @@ function FinishGame (req, res){
 	sender.Answer(res, {result: 'OK', message: 'endingTournament'+tournamentID} );
 }
 
+function give_marathon_points_to_user(login, MarathonID){
+	console.error('give_marathon_points_to_user', login, MarathonID);
+
+	Marathon.find_or_create_user(login, MarathonID)
+	.then(function (user){
+		console.error('user found or created', user);
+		return Marathon.increase_points(login, MarathonID);
+	})
+	.then(function (result){
+		Log('increased marathon points to ' + login + '  ' + str(result), STREAM_GAMES);
+	})
+	.catch(helper.catcher);
+}
+
+
+
+function give_marathon_points(tregs){
+		
+	console.error('give_marathon_points', tregs);
+	//console.error(Marathon);
+	Marathon.get_current_marathon()
+	.then(function (marathon){
+		if (marathon){
+			var MarathonID = marathon.MarathonID;
+			console.error('got marathon', marathon, tregs.length - 1);
+			for (var i = tregs.length - 1; i >= 0; i--) {
+				var login = tregs[i].userID;
+				console.error('aaaaaa', login)
+				Log('trying to increase marathon points to ' + login + '  ', STREAM_GAMES);
+				console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
+				give_marathon_points_to_user(login, MarathonID);
+			};
+		}
+	})
+	.catch(helper.catcher);
+
+}
+
+/*
+give_marathon_points([ { _id: '56d0db3a8d483382647d2219',
+    userID: 'g.iosebashvili',
+    tournamentID: 813,
+    promo: 'gaginho',
+    date: 'Sat Feb 27 2016 02:09:46 GMT+0300 (MSK)',
+    __v: 0 } ]);
+*/
 function EndTournament( scores, gameID, tournamentID){
+	TournamentReg.find({tournamentID: tournamentID}, function (err, tregs){
+		if (err) { 
+			SERVER_ERROR(err); 
+			console.error('CANNOT give_marathon_points. DB Error', err); 
+		} else {
+			give_marathon_points(tregs);
+		}
+	})
+
 	Tournament.findOne({tournamentID:tournamentID, status:TOURN_STATUS_RUNNING},'goNext', function (err, tournament){
 		if (err) { SERVER_ERROR(err); return; }
 

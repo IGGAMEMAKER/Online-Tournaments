@@ -31,6 +31,8 @@
   margin: 0 auto; */
 }
 
+
+
 .btn-overlay2{
   /*margin-bottom: -20px;*/
   margin-top: -70px;
@@ -72,6 +74,18 @@
   width: 100%;
   overflow: hidden;
   border-radius: 4px;
+
+  /*height: 300px;*/
+  /*background-image: url('img_flowers.jpg');*/
+  /*background-size: cover;*/
+}
+
+.promo2{
+  display: block;
+  max-width:520px;
+  max-height:300px;
+  width: auto;
+  height: auto;
 }
 
 .wrapper2 footer

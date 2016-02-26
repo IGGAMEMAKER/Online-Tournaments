@@ -74,7 +74,7 @@ function getDefaultMarathon(){
 //add(getDefaultMarathon())
 
 //--------------AUXILLARY FUNCTIONS----------
-function get_tournaments(query, fields, filters, sort){
+/*function get_tournaments(query, fields, filters, sort){
 	return new Promise(function(resolve, reject){
 		log('tournaments');
 		Tournament.find(query, fields, function (err, tournaments){
@@ -86,7 +86,7 @@ function get_tournaments(query, fields, filters, sort){
 			return resolve(tournaments||null);
 		});
 	})
-}
+}*/
 
 function getCurrentMarathonID(MarathonID){
 	return new Promise(function (resolve, reject){
@@ -224,6 +224,10 @@ function setFreePlayer(login, MarathonID){
 	})
 }
 
+function leaderboard(MarathonID){
+	MarathonUser.find({MarathonID:MarathonID})
+}
+
 function isFreePlayer(login, MarathonID){
 	return getMarathonUser(login, MarathonID)
 	.then(function (user){
@@ -256,7 +260,7 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 	return get_marathon_accelerators(MarathonID)
 	.then(function (accelerators){
 		// accelerator is index. 0 or 1 (cheap or expensive)
-		MarathonUser.update({login: login, 'accelerators[0].index': { $ne : accelerator } }, )
+		// MarathonUser.update({login: login, 'accelerators[0].index': { $exists: false } }, )
 	})
 }
 
@@ -390,16 +394,11 @@ update_prize_list(1, [300], [2])
 	// return isFreePlayer('Raja', 1)
 });*/
 
-return isFreePlayer('Raja', 1)
+/*return isFreePlayer('Raja', 1)
 .then(function (result){
 	log('isFreePlayer ', result);
 })
-
-
-/*.then(function (result){
-	log('isFreePlayer ', result);
-})*/
-.catch(helper.catcher);
+.catch(helper.catcher);*/
 
 // exports
 
