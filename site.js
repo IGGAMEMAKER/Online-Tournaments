@@ -381,7 +381,9 @@ app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
 
-
+app.get('/main', function (req, res){
+  res.render('main2');
+})
 
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});

@@ -235,9 +235,29 @@ function isFreeUser(user){
 	return (user && user.isFree== FREE_USER);
 }
 
-function set_accelerator (login, MarathonID, accelerator) { // accelerator: value or index?
-	return getMarathonUser(login, MarathonID)
-	.then()
+function get_marathon_accelerators (MarathonID){
+	return get_marathon_by_id(MarathonID)
+	.then(function (marathon){
+		accelerators = marathon.accelerators;
+		return new Promise(function (resolve, reject){
+			if (accelerators) {
+				return resolve(accelerators);
+			} else {
+				return reject(null);
+			}
+
+		})
+	})
+}
+
+function set_accelerator (login, MarathonID, accelerator) { // accelerator: index?
+	var usr;
+	var accelerators;
+	return get_marathon_accelerators(MarathonID)
+	.then(function (accelerators){
+		// accelerator is index. 0 or 1 (cheap or expensive)
+		MarathonUser.update({login: login, 'accelerators[0].index': { $ne : accelerator } }, )
+	})
 }
 
 function update_accelerator(login, MarathonID){
