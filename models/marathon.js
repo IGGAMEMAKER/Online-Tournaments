@@ -75,8 +75,11 @@ function getDefaultMarathon(){
 	};
 }
 
-function isDate(date){
-	return date instanceof Date && !isNaN(date.valueOf())
+function isDate(dateString){
+	var date = new Date(dateString);
+	var isDateBool = date instanceof Date && !isNaN(date.valueOf());
+	console.log(isDateBool);
+	return isDateBool;
 }
 
 function edit(data, MarathonID){
@@ -101,7 +104,7 @@ function edit(data, MarathonID){
 
 		if (start && isDate(start)) updObject.start= start;
 		if (finish && isDate(finish)) updObject.finish= finish;
-
+		console.log(updObject);
 
 		Marathon.update({MarathonID: MarathonID}, {$set: updObject }, function (err, count){
 			if (err) return reject(err);

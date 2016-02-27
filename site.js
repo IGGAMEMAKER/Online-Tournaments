@@ -585,17 +585,19 @@ app.post('/Marathon/new', isAdmin, function (req, res){
 
   Marathon.add()
   .then(function(marathon){
-    console.log('added', marathon);
+    // console.log('added', marathon);
     return Marathon.edit(data||null, marathon.MarathonID);
   })
   .then(function (result){
-    console.log('edit done');
+    // console.log('edit done');
     res.json({result:result});
   })
   .catch(function (error){
     res.json({error:error});
   })
 })
+
+//app.post('/')
 
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
