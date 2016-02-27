@@ -45,7 +45,8 @@ block content
 		table(class="table white" style="font-size:20px;")
 			+marathonHead()
 			tbody
-				+drawMarathon(msg)
+				if msg
+					+drawMarathon(msg)
 
 		#marathons
 			form(action="Marathon/new" method="POST")

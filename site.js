@@ -576,6 +576,8 @@ app.get('/MarathonInfo', isAdmin, function (req, res){
   .then(function (marathon){
     if (marathon){
       res.render('admin/MarathonInfo', {msg: marathon});
+    } else {
+      res.render('admin/MarathonInfo', {msg: null});
     }
   })
 })
