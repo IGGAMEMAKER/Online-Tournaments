@@ -30,26 +30,30 @@ function add(marathon){
 			.findOne({})
 			.sort('-MarathonID')
 			.exec(function searchMarathonWithMaxID (err, maxMarathon){
-			log('exec');
-			if (err) return reject({err:err, stage:'marathon.add find err'});
+				log('exec');
+				if (err) return reject({err:err, stage:'marathon.add find err'});
 
-			var newID=0;
-			if (maxMarathon) newID = maxMarathon.MarathonID || 0;
-			marathon.MarathonID = newID+1;
+				var newID=0;
+				if (maxMarathon) newID = maxMarathon.MarathonID || 0;
+				marathon.MarathonID = newID+1;
 
 
-			var marath = new Marathon(marathon);
-			marath.save(function (err1) {
-				if (err1) return reject({err:err1, stage:'marathon.add save err'});
+				log('add');
+				var marath = new Marathon(marathon);
+				marath.save(function (err1) {
+					log('saving ...');
 
-				log('added Marathon ' + JSON.stringify(tournament));
-				//enable(tournamentID);
-				//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
-				
-				return resolve(tournament);
-			});
-
+					if (err1) {
+						return reject({err:err1, stage:'marathon.add save err'});
+					}
+					log('added Marathon ' + JSON.stringify(marathon));
+					//enable(tournamentID);
+					//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
+					
+					return resolve(marathon);
+				});
 		});
+
 	});
 }
 
@@ -69,6 +73,52 @@ function getDefaultMarathon(){
 		freeAccelerators: [0, 0],
 		freeUpgrades: [0, 0]
 	};
+}
+
+function isDate(date){
+	return date instanceof Date && !isNaN(date.valueOf())
+}
+
+function edit(data, MarathonID){
+
+	log('edit', data, MarathonID);
+	return new Promise(function (resolve, reject){
+		if (data==null) return resolve(null);
+		log('edit', data);
+
+		var updObject = {};
+		var prizes = data.prizes;
+		var counts = data.counts;
+
+		var start = data.startDate;
+		var finish = data.finishDate;
+
+
+		//accelerators
+
+		if (prizes && Array.isArray(prizes)) updObject.prizes=prizes;
+		if (counts && Array.isArray(counts)) updObject.counts=counts;
+
+		if (start && isDate(start)) updObject.start= start;
+		if (finish && isDate(finish)) updObject.finish= finish;
+
+
+		Marathon.update({MarathonID: MarathonID}, {$set: updObject }, function (err, count){
+			if (err) return reject(err);
+
+			if (helper.updated(count)){
+				return resolve(1);
+			} else {
+				return resolve(null);
+			}
+
+		})
+
+	})
+}
+
+function addDefault(){
+	return add(getDefaultMarathon());
 }
 
 //add(getDefaultMarathon())
@@ -228,13 +278,13 @@ function setFreePlayer(login, MarathonID){
 }
 
 function leaderboard(MarathonID){
-	console.log('search leaderboard', MarathonID);
+	// console.log('search leaderboard', MarathonID);
 	return new Promise(function (resolve, reject){
 		MarathonUser.find({MarathonID:MarathonID})
 		.sort('-points')
 		.exec(function (err, users){
 			if (err) return reject(err);
-			console.log('users', users);
+			// console.log('users', users);
 
 			return resolve(users||null);
 		})
@@ -310,6 +360,8 @@ function update_prize_list(MarathonID, prizes, counts){ // two arrays
 		})
 	})
 }
+
+
 
 function get_accelerator_of(login, MarathonID){
 	return getMarathonUser(login, MarathonID)
@@ -416,8 +468,8 @@ update_prize_list(1, [300], [2])
 // exports
 
 module.exports = {
-	add:add
-
+	add:addDefault
+	, edit: 									edit
 	, get_user: 							getMarathonUser
 
 	, increase_points: 				try_to_increase_points
@@ -431,10 +483,11 @@ module.exports = {
 
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of
+
 	, leaderboard: 						function(){
 		return get_current_marathon()
 		.then(function (marathon){
-			console.log('get_current_marathon' , marathon);
+			// console.log('get_current_marathon' , marathon);
 
 			if (marathon) return leaderboard(marathon.MarathonID||null);
 			return null;

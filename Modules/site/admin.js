@@ -3,6 +3,8 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   var Actions = require('../../models/actions');
   var Errors = require('../../models/errors');
   var TournamentReg = require('../../models/tregs');
+
+  var Marathon = require('../../models/marathon');
   
   var middlewares = require('../../middlewares');
   var authenticated = middlewares.authenticated;
@@ -118,8 +120,6 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   function TournamentsRunning(res){
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
-
-
 
   app.get('/Admin', function (req, res){
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});

@@ -54,6 +54,19 @@ function GetGame(gameNameID){
 	});
 }
 
+function adminAsk(command, successCallback, specialData){
+	var data = specialData || {};
+	specialData.command = command;
+
+	$.ajax({
+	  url: 'Admin',
+	  method: 'POST',
+	  data: dt,
+	  success: successCallback
+	});
+
+}
+
 
 function GetTotalTournaments(){
 	$.ajax({
@@ -195,8 +208,17 @@ function drawTotalTournaments(msg){
 		$("#Tournaments").append(restart_game +'<br>');// '<b>'+JSON.stringify(msg)+'</b>';*/
 	}
 }
+
+function GetMarathon(){
+	adminAsk('GetMarathon', {}, function(data){
+		$("#marathon").append(JSON.stringify(data) + '<br>'); 
+	})
+}
+
+
 GetRunningTournaments();
 GetTotalTournaments();
+GetMarathon();
 /*var tmr = setInterval(GetRunningTournaments, 5000);
 var tmr2 = setInterval(GetTotalTournaments, 5000);*/
 window.onfocus = function(){location.reload(true);}

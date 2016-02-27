@@ -478,7 +478,8 @@ app.post('/', function (req, res){
 })*/
 
 function saveSession(req, res, inviterUrl, login){
-  if (!inviterUrl) inviterUrl = "Login"; 
+  if (!inviterUrl) inviterUrl = "Login";
+
   setTimeout(function(){
     req.session.save(function (err) {
       // session saved
@@ -568,6 +569,32 @@ app.post('/Tell', isAdmin, function (req, res){
   Send('Tell', {message:message, action:action||null});
 
   res.render('Tell');
+})
+
+app.get('/MarathonInfo', isAdmin, function (req, res){
+  Marathon.get_current_marathon()
+  .then(function (marathon){
+    if (marathon){
+      res.render('admin/MarathonInfo', {msg: marathon});
+    }
+  })
+})
+
+app.post('/Marathon/new', isAdmin, function (req, res){
+  var data = req.body;
+
+  Marathon.add()
+  .then(function(marathon){
+    console.log('added', marathon);
+    return Marathon.edit(data||null, marathon.MarathonID);
+  })
+  .then(function (result){
+    console.log('edit done');
+    res.json({result:result});
+  })
+  .catch(function (error){
+    res.json({error:error});
+  })
 })
 
 /*app.get('/vk-auth', function (req, res){
@@ -727,11 +754,11 @@ function get_Leaderboard(period){
 }*/
 
 function get_Leaderboard(period){
-  console.log('get_Leaderboard');
+  // console.log('get_Leaderboard');
   Marathon.leaderboard()
   .then(function (leaderboard){
     //res.json(leaderboard);
-    console.log('leaderboard', leaderboard);
+    // console.log('leaderboard', leaderboard);
     activity_board = getShortActivityBoard(leaderboard);
     io.emit('leaderboard', activity_board);
   })

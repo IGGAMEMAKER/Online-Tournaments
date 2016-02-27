@@ -1,0 +1,59 @@
+//
+mixin parameters(parameter, name)
+	p #{name} #{JSON.stringify(parameter)}
+mixin drawMarathon(marathon)
+	tr
+		td #{marathon.MarathonID}
+		td
+			p accelerators #{JSON.stringify(marathon.accelerators)}
+			p upgrades #{JSON.stringify(marathon.upgrades)}
+		td
+			//p!=JSON.stringify(marathon)
+			//p #{JSON.stringify(marathon.freeUpgrades)}
+			+parameters(marathon.freeUpgrades, "freeUpgrades")
+			+parameters(marathon.freeAccelerators, "freeAccelerators")
+			//p #{JSON.stringify(marathon.freeAccelerators)}
+			+parameters(marathon.soldUpgrades, "soldUpgrades")
+			//p #{JSON.stringify(marathon.soldUpgrades)}
+			//p #{JSON.stringify(marathon.soldAccelerators)}
+			+parameters(marathon.soldAccelerators, "soldAccelerators")
+		td
+			p #{marathon.start}
+			p #{marathon.finish}
+		td 
+			p #{marathon.prizes}
+			p #{marathon.counts}
+
+mixin marathonHead()
+	thead
+		th #
+		th all
+		th KPI
+		th start-finish
+		th prizes
+
+mixin drawMarathons(marathons)
+	table
+		+marathonHead()
+		tbody
+			each marathon in marathons
+				+drawMarathon(marathon)
+html
+	head
+	body
+		//p!=JSON.stringify(msg)
+		//+drawMarathons(msg)
+		table
+			+marathonHead()
+			tbody
+				+drawMarathon(msg)
+
+		#marathons
+			form(action="Marathon/new" method="POST")
+				Marathon start (date and time):
+				br
+				input(type="datetime-local" name="marathonStart")
+				br
+				input(type="datetime-local" name="marathonFinish")
+				br
+				input(type="submit" value="Create marathon")

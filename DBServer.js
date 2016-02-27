@@ -719,7 +719,8 @@ function give_marathon_points_to_user(login, MarathonID){
 
 function give_marathon_points(tregs){
 		
-	console.error('give_marathon_points', tregs);
+	// console.error('give_marathon_points', tregs);
+	
 	//console.error(Marathon);
 	Marathon.get_current_marathon()
 	.then(function (marathon){
@@ -728,9 +729,8 @@ function give_marathon_points(tregs){
 			console.error('got marathon', marathon, tregs.length - 1);
 			for (var i = tregs.length - 1; i >= 0; i--) {
 				var login = tregs[i].userID;
-				console.error('aaaaaa', login)
+				// console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
 				Log('trying to increase marathon points to ' + login + '  ', STREAM_GAMES);
-				console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
 				give_marathon_points_to_user(login, MarathonID);
 			};
 		}
