@@ -38,19 +38,18 @@ mixin drawMarathons(marathons)
 		tbody
 			each marathon in marathons
 				+drawMarathon(marathon)
-html
-	head
-	body
+extends ../layout
+block content
 		//p!=JSON.stringify(msg)
 		//+drawMarathons(msg)
-		table
+		table(class="table white" style="font-size:20px;")
 			+marathonHead()
 			tbody
 				+drawMarathon(msg)
 
 		#marathons
 			form(action="Marathon/new" method="POST")
-				Marathon start (date and time):
+				p(class="white") Marathon start (date and time):
 				br
 				input(type="datetime-local" name="startDate")
 				br
