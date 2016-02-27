@@ -237,9 +237,10 @@ function get_current_marathon(){ // returns current marathon
 			.exec(function (err, marathon){
 				if (err) return reject(err);
 
-				if (marathon) return resolve(marathon);
+				// if (marathon) return resolve(marathon);
 
-				reject(null);
+				// reject(null);
+				return resolve(marathon||null);
 			})
 	})
 }
