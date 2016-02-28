@@ -328,11 +328,31 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 	.then(function (accelerators){
 		// accelerator is index. 0 or 1 (cheap or expensive)
 		// MarathonUser.update({login: login, 'accelerators[0].index': { $exists: false } }, )
-	})
-}
+		var new_accelerator = accelerators[accelerator];
+		console.log(accelerators, new_accelerator);
+		
+		return new Promise(function (resolve, reject){
+			var updObject = {
+				value:new_accelerator.value, 
+				index: accelerator, 
+				buyDay: 0, 
+				buyDate: new Date()
+			}
 
-function update_accelerator(login, MarathonID){
-	
+			MarathonUser.update({login: login}, { $set : updObject }, function (err, count){
+				if (err) return reject(err);
+
+				if (helper.updated(count)) {
+					return resolve(1);
+				} else {
+					return resolve(null);
+				}
+
+			})
+			
+		})
+
+	})
 }
 
 function prizesAndCountsAreValid(prizes, counts){

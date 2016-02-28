@@ -112,73 +112,16 @@ socket.on('update', function (msg){
   }
 });
 
-function prizeByPlace(place, length){
-	switch(place){
-		case 0:
-			return 100;
-		break;
-		case 1:
-			if (length>30) return 50;
-			return 0;
-		break;
-		default:
-			return 0;
-		break;
-	}
-}
-
-function drawRating(msg){
-	var leaders = msg;
-	var rating = "#ratingTab";
-	$(rating).html("");
-
-	if ($(window).width() < 400) {
-		//alert('Less than 400');
-	}
-	else {
-		//alert('More than 400');
-	}
-
-	for (var i=0; i<leaders.length;i++){
-		var lgn = leaders[i].login;
-		var count = leaders[i].played;
-		var points = leaders[i].points;
-		var prize = prizeByPlace(i, leaders.length);
-		var number = i+1;
-		var style="";
-
-		var shortedLogin = shortenizeLogin(lgn);
-
-		var text = '';
-
-		if (getLogin()==lgn) { style = "color:red;"}
-
-		/*text = '<tr id="'+ lgn +'">' + 
-			'<td>' + prize + '</td>' + 
-			'<td>' + count + '</td>' + 
-			'<td width="10px" class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
-			'<td class="rating-id">' + number + '</td>' + 
-		'</tr>';*/
-
-		text = '<tr id="'+ lgn +'">' + 
-			'<td class="rating-id">' + number + '</td>' + 
-			'<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
-			'<td>' + points + '</td>' + 
-			'<td>' + count + '</td>' + 
-			'<td>' + prize + '</td>' + 
-		'</tr>';
-		$(rating).append(text);
-	}
-	
-}
+	// if ($(window).width() < 400) {
+	// 	//alert('Less than 400');
+	// }
+	// else {
+	// 	//alert('More than 400');
+	// }
 
 socket.on('leaderboard', function (msg){
 	drawRating(msg);
 })
-
-function shortenizeLogin(login){
-	return login;
-}
 
 
 const TOURN_STATUS_REGISTER = 1;

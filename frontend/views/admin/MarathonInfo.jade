@@ -6,14 +6,14 @@ mixin drawMarathon(marathon)
 		td #{marathon.MarathonID}
 		td
 			p accelerators #{JSON.stringify(marathon.accelerators)}
-			p upgrades #{JSON.stringify(marathon.upgrades)}
+			//p upgrades #{JSON.stringify(marathon.upgrades)}
 		td
 			//p!=JSON.stringify(marathon)
 			//p #{JSON.stringify(marathon.freeUpgrades)}
-			+parameters(marathon.freeUpgrades, "freeUpgrades")
+			//+parameters(marathon.freeUpgrades, "freeUpgrades")
 			+parameters(marathon.freeAccelerators, "freeAccelerators")
 			//p #{JSON.stringify(marathon.freeAccelerators)}
-			+parameters(marathon.soldUpgrades, "soldUpgrades")
+			//+parameters(marathon.soldUpgrades, "soldUpgrades")
 			//p #{JSON.stringify(marathon.soldUpgrades)}
 			//p #{JSON.stringify(marathon.soldAccelerators)}
 			+parameters(marathon.soldAccelerators, "soldAccelerators")

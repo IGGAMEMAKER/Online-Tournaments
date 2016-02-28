@@ -10,6 +10,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var Actions = require('../../models/actions');
 	var Errors = require('../../models/errors');
 
+	var Marathon = require('../../models/marathon');
+
 	var authenticated = require('../../middlewares').authenticated;
 
 
@@ -81,7 +83,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	app.get('/Leaderboard', function (req, res){
-		TournamentReg.leaderboard()
+		Marathon.leaderboard()
 		.then(function (leaderboard){
 			res.render('Leaderboard', {msg:leaderboard});
 		})

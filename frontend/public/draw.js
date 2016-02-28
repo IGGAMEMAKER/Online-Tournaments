@@ -184,6 +184,54 @@ function joinVk_button(){
   //return '<a '
 }
 
+function shortenizeLogin(login) { return login; }
+
+function prizeByPlace(place, length){
+  switch(place){
+    case 0:
+      return 100;
+    break;
+    case 1:
+      if (length>30) return 50;
+      return 0;
+    break;
+    default:
+      return 0;
+    break;
+  }
+}
+
+function drawRating(msg){
+  var leaders = msg;
+  var rating = "#ratingTab";
+  $(rating).html("");
+
+
+  for (var i=0; i<leaders.length;i++){
+    var lgn = leaders[i].login;
+    var count = leaders[i].played;
+    var points = leaders[i].points;
+    var prize = prizeByPlace(i, leaders.length);
+    var number = i+1;
+    var style="";
+
+    var shortedLogin = shortenizeLogin(lgn);
+
+    var text = '';
+
+    if (getLogin()==lgn) { style = "color:red;"}
+
+    text = '<tr id="'+ lgn +'">' + 
+      '<td class="rating-id">' + number + '</td>' + 
+      '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
+      '<td>' + points + '</td>' + 
+      '<td>' + count + '</td>' + 
+      '<td>' + prize + '</td>' + 
+    '</tr>';
+    $(rating).append(text);
+  }
+}
+
 function getAfterGameFooter(tournamentID, prizes, eventType){
   var footer;
   //a(class="btn btn-lg btn-primary" href="http://vk.com/share.php?url=http://online-tournaments.org/&title=Онлайн турниры&description=Участвуй в викторинах и выигрывай призы!&image=http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg&noparse=true" target="_blank") Поделиться

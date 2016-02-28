@@ -75,6 +75,8 @@ module.exports = function(dbAddress){
 			login: String,
 			MarathonID: Number,
 			accelerators: Array, // [ {value, index, buyDay, buyDate} , {value2, index2, buyDay2, buyDate2} ] // индекс 0 (4), 1 (7), день покупки
+
+			accelerator: Object,
 			points: Number,
 			played: Number,
 			isFree: Number,

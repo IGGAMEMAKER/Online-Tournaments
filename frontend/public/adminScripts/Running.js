@@ -218,7 +218,7 @@ function GetMarathon(){
 
 GetRunningTournaments();
 GetTotalTournaments();
-GetMarathon();
+//GetMarathon();
 /*var tmr = setInterval(GetRunningTournaments, 5000);
 var tmr2 = setInterval(GetTotalTournaments, 5000);*/
 window.onfocus = function(){location.reload(true);}
