@@ -85,7 +85,15 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.get('/Leaderboard', function (req, res){
 		Marathon.leaderboard()
 		.then(function (leaderboard){
-			res.render('Leaderboard', {msg:leaderboard});
+			console.log(leaderboard);
+
+			res.render('Leaderboard', { 
+				msg: {
+					leaderboard:leaderboard,
+					counts: leaderboard.counts,
+					prizes: leaderboard.prizes
+				}
+			});
 		})
 		.catch(function (err){
 			res.render('Leaderboard', {msg:null});

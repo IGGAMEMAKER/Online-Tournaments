@@ -791,10 +791,13 @@ function get_Leaderboard(period){
   // console.log('get_Leaderboard');
   Marathon.leaderboard()
   .then(function (leaderboard){
-    //res.json(leaderboard);
-    // console.log('leaderboard', leaderboard);
     activity_board = getShortActivityBoard(leaderboard);
-    io.emit('leaderboard', activity_board);
+    io.emit('leaderboard', {
+      leaderboard: activity_board, 
+      counts: leaderboard.counts, 
+      prizes: leaderboard.prizes 
+    }); 
+    // { leaderboard: activity_board } , counts: [1, 3], prizes:[150, 50]
   })
   .catch(function (err){
     //console.log('error', 'get_Leaderboard', err);
@@ -808,17 +811,3 @@ function get_Leaderboard(period){
 }
 
 var activity_board;
-
-
-
-app.post('/Leaderboard', function (req, res){
-
-  /*TournamentReg.leaderboard()
-  .then(function (leaderboard){
-    res.json(leaderboard);
-  })
-  .catch(function (err){
-    Errors.add('login', 'leaderboard', { code:err })
-    res.json({code:'err', message:'Ошибка'})
-  })*/
-})

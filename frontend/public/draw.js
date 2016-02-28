@@ -186,8 +186,11 @@ function joinVk_button(){
 
 function shortenizeLogin(login) { return login; }
 
-function prizeByPlace(place, length){
-  switch(place){
+function prizeByPlace(place, prizeList){
+  if (place>=prizeList.length) return 0;
+
+  return prizeList[place];
+  /*switch(place){
     case 0:
       return 100;
     break;
@@ -198,11 +201,32 @@ function prizeByPlace(place, length){
     default:
       return 0;
     break;
+  }*/
+}
+
+const DEFAULT_MARATHON_PRIZE = 100;
+
+function getPrizeList(prizes, counts){
+  if (prizes.length==0 || counts.length==0){
+    return [DEFAULT_MARATHON_PRIZE];
   }
+
+  var prizeList = [];
+  for (var i = 0; i < prizes.length; i++) {
+    var prize = prizes[i];
+
+    for (var j = 0; j < counts[i]; j++) {
+      prizeList.push(prize);
+    };
+  };
+  // console.log('prizeList', prizeList);
+  return prizeList;
 }
 
 function drawRating(msg){
-  var leaders = msg;
+  var leaders = msg.leaderboard;
+  // console.log('drawRating', msg);
+  var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
   var rating = "#ratingTab";
   $(rating).html("");
 
@@ -211,7 +235,7 @@ function drawRating(msg){
     var lgn = leaders[i].login;
     var count = leaders[i].played;
     var points = leaders[i].points;
-    var prize = prizeByPlace(i, leaders.length);
+    var prize = prizeByPlace(i, prizeList);
     var number = i+1;
     var style="";
 
@@ -247,8 +271,8 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
   var url = makeShareUrl();
   var share = shareLink('Поделиться', 'btn btn-lg btn-primary', {});
   
-  
-  
+
+
   switch(eventType){
     case EVENT_TYPE_WIN_MONEY:
       //Поделиться победой с друзьями!

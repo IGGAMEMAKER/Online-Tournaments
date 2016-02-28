@@ -91,10 +91,10 @@ function toArray(){}
 
 function edit(data, MarathonID){
 
-	log('edit', data, MarathonID);
+	// log('edit', data, MarathonID);
 	return new Promise(function (resolve, reject){
 		if (data==null) return resolve(null);
-		log('edit', data);
+		// log('edit', data);
 
 		var updObject = {};
 		var prizes = data.prizes;
@@ -293,15 +293,31 @@ function setFreePlayer(login, MarathonID){
 
 function leaderboard(MarathonID){
 	// console.log('search leaderboard', MarathonID);
+	var marathonInfo;
 	return new Promise(function (resolve, reject){
 		MarathonUser.find({MarathonID:MarathonID})
 		.sort('-points')
 		.exec(function (err, users){
 			if (err) return reject(err);
 			// console.log('users', users);
-
-			return resolve(users||null);
+			marathonInfo = users||null;
+			return resolve(marathonInfo);
 		})
+	})
+	.then(function (result){
+		if (result){
+			return get_marathon_by_id(MarathonID);
+		} else {
+			return null;
+		}
+	})
+	.then(function (marathon){
+		if (marathon){
+			marathonInfo.prizes = marathon.prizes || [];
+			marathonInfo.counts = marathon.counts || [];
+		}
+		
+		return marathonInfo;
 	})
 }
 
