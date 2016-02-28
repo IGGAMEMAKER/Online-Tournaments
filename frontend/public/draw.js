@@ -247,6 +247,8 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
   var url = makeShareUrl();
   var share = shareLink('Поделиться', 'btn btn-lg btn-primary', {});
   
+  
+  
   switch(eventType){
     case EVENT_TYPE_WIN_MONEY:
       //Поделиться победой с друзьями!
@@ -273,7 +275,7 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
     break;
   }
 
-  return footer+'<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>';
+  return footer;//+'<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>';
 }
 
 function modal_pic(name){

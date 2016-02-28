@@ -24,6 +24,19 @@ mixin drawMarathon(marathon)
 			p #{marathon.prizes}
 			p #{marathon.counts}
 
+		td
+			form(action="Marathon/edit/"+msg.MarathonID method="POST")
+				label prizes
+				input(type="text" value=JSON.stringify(marathon.prizes) name="prizes" class="black")
+				br
+				label counts
+				input(type="text" value=JSON.stringify(marathon.counts) name="counts" class="black")
+				br
+				label accelerators
+				input(type="text" value=JSON.stringify(marathon.accelerators) name="accelerators" class="black")
+				br
+				input(type="submit" value="edit marathon" + msg.MarathonID)
+
 mixin marathonHead()
 	thead
 		th #
@@ -31,6 +44,7 @@ mixin marathonHead()
 		th KPI
 		th start-finish
 		th prizes
+		th Actions
 
 mixin drawMarathons(marathons)
 	table

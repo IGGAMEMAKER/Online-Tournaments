@@ -82,6 +82,9 @@ function isDate(dateString){
 	return isDateBool;
 }
 
+function isArray (data){ console.log('isArray', data, Array.isArray(data)); return Array.isArray(data); }
+function toArray(){}
+
 function edit(data, MarathonID){
 
 	log('edit', data, MarathonID);
@@ -99,12 +102,12 @@ function edit(data, MarathonID){
 
 		//accelerators
 
-		if (prizes && Array.isArray(prizes)) updObject.prizes=prizes;
-		if (counts && Array.isArray(counts)) updObject.counts=counts;
+		if (prizes && isArray(prizes)) updObject.prizes=prizes;
+		if (counts && isArray(counts)) updObject.counts=counts;
 
 		if (start && isDate(start)) updObject.start= start;
 		if (finish && isDate(finish)) updObject.finish= finish;
-		console.log(updObject);
+		console.error('edit', updObject);
 
 		Marathon.update({MarathonID: MarathonID}, {$set: updObject }, function (err, count){
 			if (err) return reject(err);

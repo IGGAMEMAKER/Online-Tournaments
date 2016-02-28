@@ -582,6 +582,36 @@ app.get('/MarathonInfo', isAdmin, function (req, res){
   })
 })
 
+app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
+  var MarathonID = req.params.MarathonID;
+  var data = req.body||null;
+  if (MarathonID && !isNaN(MarathonID)){
+    if (data){
+      if (data.accelerators) { data.accelerators = JSON.parse(data.accelerators); }
+      if (data.prizes) { data.prizes = JSON.parse(data.prizes); }
+      if (data.counts) { data.counts = JSON.parse(data.counts); }
+
+    } else {
+      return res.json({result: 'no changes'});
+    }
+    Marathon.edit(data, MarathonID)
+    .then(function (result){
+      if (result){
+        res.redirect('/MarathonInfo');
+      } else {
+        res.json({result:result});
+        //res.end('fail. <a href="MarathonInfo"> go back');
+      }
+    })
+    .catch(function (err){
+      res.json({result:'fail', error: err });
+    })
+  } else {
+    res.json({result:'INVALID MarathonID' });
+  }
+
+})
+
 app.post('/Marathon/new', isAdmin, function (req, res){
   var data = req.body;
 
