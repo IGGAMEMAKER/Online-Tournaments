@@ -47,20 +47,6 @@
   /*margin: 0 auto;*/
 }
 
-.img-zone-up{
-  z-index: 2;
-  position:absolute;
-  width: 100%;
-  height: 75%;
-}
-
-.img-zone-down{
-  z-index: 2;
-  position:absolute;
-  height: 25%;
-  width: 100%;
-}
-
 .img-wrapper{
 /*  width: 100%;
   text-align: center;*/
@@ -68,8 +54,11 @@
 /*      position:relative;
     display:inline-block;
     text-align:center;*/
+  opacity: .83;
 }
-
+.img-wrapper:hover{
+  opacity: 1;
+}
 .promo{
   width: 100%;
   overflow: hidden;

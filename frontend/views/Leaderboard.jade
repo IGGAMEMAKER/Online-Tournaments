@@ -22,6 +22,22 @@ extends layout
 block title
 	title Рейтинг
 
+mixin ratingTable(msg)
+	table(class="table rating")
+		thead 
+			tr 
+				th #
+				th Игрок
+				th Очки
+				th Игры
+				th Приз
+		tbody(id="ratingTab")
+			script.
+				var msg= !{JSON.stringify(msg)};
+				drawRating(msg);
+			//each leader, index in msg
+				+drawLeader(leader, index)
+
 block content
 	center
 		h1(class="" style="color:white;") Рейтинг активности 
@@ -32,16 +48,4 @@ block content
 		div(class="container")
 			div(class="row")
 				div(class="col-md-8 dataRule2")
-					table(class="table rating")
-						thead 
-							tr 
-								th #
-								th Игрок
-								th Игр
-								th Приз
-						tbody(id="ratingTab")
-							script.
-								var msg= !{JSON.stringify(msg)};
-								drawRating(msg);
-							//each leader, index in msg
-								+drawLeader(leader, index)
+					+ratingTable(msg)
