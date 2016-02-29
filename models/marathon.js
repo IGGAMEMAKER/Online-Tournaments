@@ -539,6 +539,24 @@ module.exports = {
 			return null;
 		})
 	}
+	, sell_accelerator: function (login, MarathonID, acceleratorIndex){
+		return set_accelerator(login, MarathonID, acceleratorIndex)
+		.then(function (result){
+			if (result){
+				Marathon.update({MarathonID:MarathonID}, {$inc : { 'soldAccelerators['+acceleratorIndex+']' : 1} }, 
+					function (err, count){
+						if (err) {
+							Errors.add(login, 'sell_accelerator', { fail:1, code: err});
+						}
+
+						if (!helper.updated(count)) Errors.add(login, 'sell_accelerator', { fail:1, code: 'cannot update Marathon'});
+
+				})
+			}
+			
+			return result;
+		})
+	}
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of
 

@@ -31,6 +31,7 @@ mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
 var Users = require('./models/users');
 var Actions = require('./models/actions');
+var Money = require('./models/money');
 
 var c = require('constants');
 
@@ -631,6 +632,7 @@ app.post('/Marathon/new', isAdmin, function (req, res){
   })
 })
 
+
 const CODE_INVALID_DATA='Неправильные данные';
 
 app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res){
@@ -641,20 +643,41 @@ app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res
   // need price of accelerator
   if (accelerator && !isNaN(accelerator)){
     var marath;
+    var price;
     Marathon.get_current_marathon()
     .then(function (marathon){
       if (marathon){
         marath = marathon;
-        // return 
-        return Marathon.set_accelerator(login, marathon.MarathonID, accelerator);
+        price = marathon.accelerators[accelerator].price;
+        return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
+        .then(function (result){
+          return Marathon.sell_accelerator(login, marathon.MarathonID, accelerator);
+        })
       } else {
         return null;
       }
     })
-    // .then()
+    
   } else {
     res.json({result:0, code:CODE_INVALID_DATA});
   }
+})
+
+function cancel(res){ return res.json({result:0, code: CODE_INVALID_DATA }); }
+
+function isNumeric(num) { return !isNaN(num); }
+
+app.get('giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+  var login = req.params.login;
+  var ammount = req.params.ammount;
+
+  if (login && ammount && isNumeric(ammount) ){
+    // give money
+    money.
+  } else {
+    cancel(res);
+  }
+
 })
 
 //app.post('/')
