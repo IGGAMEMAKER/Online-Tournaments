@@ -543,17 +543,21 @@ module.exports = {
 		return set_accelerator(login, MarathonID, acceleratorIndex)
 		.then(function (result){
 			if (result){
-				Marathon.update({MarathonID:MarathonID}, {$inc : { 'soldAccelerators['+acceleratorIndex+']' : 1} }, 
-					function (err, count){
-						if (err) {
-							Errors.add(login, 'sell_accelerator', { fail:1, code: err});
-						}
+				var accelerators;
 
+				Marathon.findOne({MarathonID:MarathonID}, function (err, marathon){
+					accelerators = marathon.soldAccelerators;
+					accelerators[acceleratorIndex]++;
+				})
+				Marathon.update({MarathonID:MarathonID}, {$set : { soldAccelerators : accelerators} }, 
+					function (err, count){
+						if (err) { Errors.add(login, 'sell_accelerator', { fail:1, code: err}); }
+						
 						if (!helper.updated(count)) Errors.add(login, 'sell_accelerator', { fail:1, code: 'cannot update Marathon'});
 
 				})
 			}
-			
+
 			return result;
 		})
 	}

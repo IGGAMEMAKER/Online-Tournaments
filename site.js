@@ -33,7 +33,7 @@ var Users = require('./models/users');
 var Actions = require('./models/actions');
 var Money = require('./models/money');
 
-var c = require('constants');
+var c = require('./constants');
 
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
@@ -663,17 +663,31 @@ app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res
   }
 })
 
-function cancel(res){ return res.json({result:0, code: CODE_INVALID_DATA }); }
+function cancel(res, code, tag){ 
+  return res.json({
+    result:0, 
+    code: code||CODE_INVALID_DATA, 
+    tag:tag||null 
+  }); 
+}
 
 function isNumeric(num) { return !isNaN(num); }
 
-app.get('giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
   var login = req.params.login;
   var ammount = req.params.ammount;
 
   if (login && ammount && isNumeric(ammount) ){
-    // give money
-    money.
+    console.log('constants', c);
+
+    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
+    .then(function (result){
+      res.json({msg: 'grant', result:result})
+    })
+    .catch(function (err) { 
+      cancel(res, err, 'grant fail');
+    })
+
   } else {
     cancel(res);
   }
