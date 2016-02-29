@@ -940,6 +940,7 @@ const SOURCE_TYPE_BUY_IN = 'BuyIn'
 ,SOURCE_TYPE_CANCEL_REG = 'Cancel'
 ,SOURCE_TYPE_CASHOUT = 'Cashout'
 ,SOURCE_TYPE_DEPOSIT = 'Deposit';
+,SOURCE_TYPE_ACCELERATOR_BUY= 'BuyAccelerator';
 
 function payBuyIn(buyIn, login){
 	return new Promise(function (resolve, reject){
@@ -1463,6 +1464,18 @@ function DecreaseMoney(req, res) {
 	var login = data.login;
 	var money = data.money;
 	decrMoney(res, login, money, {type: SOURCE_TYPE_CASHOUT});
+}
+
+function pay(req, res){
+	var data = req.body;
+	var login = data.login;
+	var money = data.money;
+	var type = data.type;
+	if (data && login && money && !isNaN(money) && type){
+		decrMoney(res, login, money, {type:type})
+	} else {
+		res.json({result:0});
+	}
 }
 
 function decrMoney(res, login, cash, source) {

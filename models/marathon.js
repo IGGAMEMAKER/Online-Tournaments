@@ -354,9 +354,10 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 	.then(function (accelerators){
 		// accelerator is index. 0 or 1 (cheap or expensive)
 		// MarathonUser.update({login: login, 'accelerators[0].index': { $exists: false } }, )
-		var new_accelerator = accelerators[accelerator];
+		var new_accelerator = accelerators[accelerator] || null;
 		console.log(accelerators, new_accelerator);
-		
+		if (!new_accelerator) return null;
+
 		return new Promise(function (resolve, reject){
 			var updObject = {
 				value:new_accelerator.value, 
@@ -530,7 +531,14 @@ module.exports = {
 
 	, isFreePlayer: 					isFreePlayer
 	, setFreePlayer: 					setFreePlayer
+	, get_marathon_accelerators: function(){
+		return get_current_marathon()
+		.then(function (marathon){
+			if (marathon) return marathon.accelerators||null;
 
+			return null;
+		})
+	}
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of
 

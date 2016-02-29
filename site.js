@@ -32,6 +32,8 @@ mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 var Users = require('./models/users');
 var Actions = require('./models/actions');
 
+var c = require('constants');
+
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 //console.log(configs, configs.vk);
@@ -629,6 +631,32 @@ app.post('/Marathon/new', isAdmin, function (req, res){
   })
 })
 
+const CODE_INVALID_DATA='Неправильные данные';
+
+app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res){
+  var login = getLogin(req);
+
+  var accelerator = req.body.accelerator||null;
+
+  // need price of accelerator
+  if (accelerator && !isNaN(accelerator)){
+    var marath;
+    Marathon.get_current_marathon()
+    .then(function (marathon){
+      if (marathon){
+        marath = marathon;
+        // return 
+        return Marathon.set_accelerator(login, marathon.MarathonID, accelerator);
+      } else {
+        return null;
+      }
+    })
+    // .then()
+  } else {
+    res.json({result:0, code:CODE_INVALID_DATA});
+  }
+})
+
 //app.post('/')
 
 /*app.get('/vk-auth', function (req, res){
@@ -786,6 +814,8 @@ function get_Leaderboard(period){
     get_Leaderboard(period)
   }, period);
 }*/
+
+
 
 function get_Leaderboard(period){
   // console.log('get_Leaderboard');
