@@ -666,4 +666,5 @@ module.exports = {
 			return null;
 		})
 	}
+	, get_or_reject: 					get_current_marathon_or_reject
 }

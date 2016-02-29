@@ -632,10 +632,61 @@ app.post('/Marathon/new', isAdmin, function (req, res){
   })
 })
 
+function cancel(res, code, tag){ 
+  return res.json({
+    result:0, 
+    code: code||CODE_INVALID_DATA, 
+    tag:tag||null 
+  }); 
+}
+
+function isNumeric(num) { return !isNaN(num); }
 
 const CODE_INVALID_DATA='Неправильные данные';
 
-app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res){
+function getAcceleratorsAndMarathon(req, res, next){
+  var accelerator = req.params.accelerator||null;
+  if (accelerator && !isNaN(accelerator)){
+    req.accelerator = accelerator;
+    Marathon.get_or_reject()
+    .then(function (marathon){
+      req.marathon = marathon;
+      next()
+    })
+    .catch(function (err){
+      next(err);
+    })
+  } else {
+    // next(null);
+    // res.json({result:0, code:CODE_INVALID_DATA});
+    req.accelerator=null;
+    req.marathon=null;
+    next()
+  }
+}
+
+app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAcceleratorsAndMarathon, function (req, res){
+  var login = getLogin(req);
+  var accelerator = req.accelerator;
+  
+  console.log(accelerator,req.marathon);
+  if (accelerator && req.marathon){
+    var price = req.marathon.accelerators[accelerator].price;
+    // need price of accelerator
+    return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
+    .then(function (result){
+      return Marathon.sell_accelerator(login, marathon.MarathonID, accelerator);
+    })
+    .catch(function (err){
+      res.json({err:err})
+    })
+  } else {
+    cancel(res);
+    // res.json({result:0, code:CODE_INVALID_DATA});
+  }
+})
+
+/*app.get('/buyAccelerator/:index', middlewares.authenticated, function (req, res){
   var login = getLogin(req);
 
   var accelerator = req.body.accelerator||null;
@@ -661,17 +712,7 @@ app.post('/buyAccelerator/:index', middlewares.authenticated, function (req, res
   } else {
     res.json({result:0, code:CODE_INVALID_DATA});
   }
-})
-
-function cancel(res, code, tag){ 
-  return res.json({
-    result:0, 
-    code: code||CODE_INVALID_DATA, 
-    tag:tag||null 
-  }); 
-}
-
-function isNumeric(num) { return !isNaN(num); }
+})*/
 
 app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
   var login = req.params.login;
