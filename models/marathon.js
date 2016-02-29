@@ -366,7 +366,7 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 		// accelerator is index. 0 or 1 (cheap or expensive)
 		// MarathonUser.update({login: login, 'accelerators[0].index': { $exists: false } }, )
 		var new_accelerator = accelerators[accelerator] || null;
-		console.log(accelerators, new_accelerator);
+		// console.log(accelerators, new_accelerator);
 		if (!new_accelerator) return null;
 
 		return new Promise(function (resolve, reject){
@@ -378,9 +378,9 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 					buyDate: new Date()
 				}
 			}
-			console.log('marathonUser pre update', login, updObject)
+			// console.log('marathonUser pre update', login, updObject)
 			MarathonUser.update({ login: login , MarathonID:MarathonID }, { $set : updObject }, function (err, count){
-				console.log('tried to update', err, count);
+				// console.log('tried to update', err, count);
 				if (err) return reject(err);
 
 				if (helper.updated(count)) {
@@ -546,12 +546,13 @@ function giveAccelerator(login, acceleratorIndex, errorMessageTag, acceleratorCo
 	return get_current_marathon_or_reject()
 	.then(function (marathon){
 		marathonInfo = marathon;
-
+		console.log('giveAccelerator', marathon);
 		return set_accelerator(login, marathon.MarathonID, acceleratorIndex);
 	})
 	.then(function (result){
-		console.log('set_accelerator', result);
+		// console.log('set_accelerator', result);
 		if (result){
+			// console.log('set_accelerator::::', acceleratorIndex, marathonInfo)
 			accelerators = marathonInfo[acceleratorCount];//.'soldAccelerators'
 			accelerators[acceleratorIndex]++;
 

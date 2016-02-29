@@ -668,14 +668,19 @@ function getAcceleratorsAndMarathon(req, res, next){
 app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAcceleratorsAndMarathon, function (req, res){
   var login = getLogin(req);
   var accelerator = req.accelerator;
-  
-  console.log(accelerator,req.marathon);
-  if (accelerator && req.marathon){
-    var price = req.marathon.accelerators[accelerator].price;
+  var marathon = req.marathon;
+  // console.log(accelerator, marathon);
+  if (accelerator && marathon){
+    var price = marathon.accelerators[accelerator].price;
     // need price of accelerator
     return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
     .then(function (result){
-      return Marathon.sell_accelerator(login, marathon.MarathonID, accelerator);
+      // console.log('Money.pay', result, login, accelerator);
+      return Marathon.sell_accelerator(login, accelerator);
+    })
+    .then(function (result){
+      // console.log('marathon.sell_accelerator', result);
+      res.json({ result:result });
     })
     .catch(function (err){
       res.json({err:err})
