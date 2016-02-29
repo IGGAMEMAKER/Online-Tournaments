@@ -255,6 +255,17 @@ function get_current_marathon(){ // returns current marathon
 	})
 }
 
+function get_current_marathon_or_reject(){
+	return get_current_marathon()
+	.then(function (marathon){
+		return new Promise(function (resolve, reject){
+			if (marathon) return resolve(marathon);
+
+			return reject(null);
+		})
+	})
+}
+
 
 
 function increase_points(login, MarathonID, accelerator){
@@ -360,13 +371,16 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 
 		return new Promise(function (resolve, reject){
 			var updObject = {
-				value:new_accelerator.value, 
-				index: accelerator, 
-				buyDay: 0, 
-				buyDate: new Date()
+				accelerator: {
+					value:new_accelerator.value, 
+					index: accelerator, 
+					buyDay: 0, 
+					buyDate: new Date()
+				}
 			}
-
-			MarathonUser.update({login: login}, { $set : updObject }, function (err, count){
+			console.log('marathonUser pre update', login, updObject)
+			MarathonUser.update({ login: login , MarathonID:MarathonID }, { $set : updObject }, function (err, count){
+				console.log('tried to update', err, count);
 				if (err) return reject(err);
 
 				if (helper.updated(count)) {
@@ -374,9 +388,7 @@ function set_accelerator (login, MarathonID, accelerator) { // accelerator: inde
 				} else {
 					return resolve(null);
 				}
-
 			})
-			
 		})
 
 	})
@@ -420,7 +432,15 @@ function get_accelerator_of(login, MarathonID){
 		return new Promise(function (resolve, reject){
 
 			if (user){
-				if (user.accelerators.length==0){
+				if (!user.accelerator) {
+					user.accelerator = {
+						value:ACCELERATOR_STANDARD
+					};
+				}
+
+				log(user.accelerator);
+				return resolve(user)
+				/*if (user.accelerators.length==0){
 					user.accelerator = ACCELERATOR_STANDARD;
 					return resolve(user);
 				}	else {
@@ -429,7 +449,7 @@ function get_accelerator_of(login, MarathonID){
 					user.accelerator = accelerator;
 
 					return resolve(user);
-				}
+				}*/
 			} else {
 				return reject(null);
 			}
@@ -438,11 +458,14 @@ function get_accelerator_of(login, MarathonID){
 	})
 }
 
+// get_accelerator_of('g.iosebashvili', 2);
+
 function try_to_increase_points(login, MarathonID){
 	return get_accelerator_of(login, MarathonID)
 	.then(function (user){
 		if (user){
-			return increase_points(user.login, user.MarathonID, user.accelerator||ACCELERATOR_STANDARD);
+			console.log('try_to_increase_points of ', user);
+			return increase_points(user.login, user.MarathonID, user.accelerator.value||ACCELERATOR_STANDARD);
 		}
 		return null;
 	})
@@ -518,6 +541,37 @@ update_prize_list(1, [300], [2])
 
 // exports
 
+function giveAccelerator(login, acceleratorIndex, errorMessageTag, acceleratorCount){
+	var marathonInfo;
+	return get_current_marathon_or_reject()
+	.then(function (marathon){
+		marathonInfo = marathon;
+
+		return set_accelerator(login, marathon.MarathonID, acceleratorIndex);
+	})
+	.then(function (result){
+		console.log('set_accelerator', result);
+		if (result){
+			accelerators = marathonInfo[acceleratorCount];//.'soldAccelerators'
+			accelerators[acceleratorIndex]++;
+
+			var updObject = {};
+			updObject[acceleratorCount] = accelerators;
+			Marathon.update({MarathonID:marathonInfo.MarathonID}, {$set : updObject }, // .'soldAccelerators'
+				function (err, count){
+					if (err) { 
+						Errors.add(login, errorMessageTag, { fail:1, code: err}); 
+					}
+
+					if (!helper.updated(count)) {
+						Errors.add(login, errorMessageTag, { fail:1, code: 'cannot update Marathon'});
+					}
+			})
+		}
+		return result;
+	})
+}
+
 module.exports = {
 	add:addDefault
 	, edit: 									edit
@@ -539,7 +593,10 @@ module.exports = {
 			return null;
 		})
 	}
-	, sell_accelerator: function (login, MarathonID, acceleratorIndex){
+	, sell_accelerator: function (login, acceleratorIndex){
+		return giveAccelerator(login, acceleratorIndex, 'sell_accelerator', 'soldAccelerators')
+	}
+	/*, sell_accelerator: function (login, MarathonID, acceleratorIndex){
 		return set_accelerator(login, MarathonID, acceleratorIndex)
 		.then(function (result){
 			if (result){
@@ -548,18 +605,54 @@ module.exports = {
 				Marathon.findOne({MarathonID:MarathonID}, function (err, marathon){
 					accelerators = marathon.soldAccelerators;
 					accelerators[acceleratorIndex]++;
-				})
-				Marathon.update({MarathonID:MarathonID}, {$set : { soldAccelerators : accelerators} }, 
-					function (err, count){
-						if (err) { Errors.add(login, 'sell_accelerator', { fail:1, code: err}); }
-						
-						if (!helper.updated(count)) Errors.add(login, 'sell_accelerator', { fail:1, code: 'cannot update Marathon'});
 
+					Marathon.update({MarathonID:MarathonID}, {$set : { soldAccelerators : accelerators} }, 
+						function (err, count){
+							if (err) { 
+								Errors.add(login, 'sell_accelerator', { fail:1, code: err}); 
+							}
+
+							if (!helper.updated(count)) {
+								Errors.add(login, 'sell_accelerator', { fail:1, code: 'cannot update Marathon'});
+							}
+					})
 				})
 			}
 
 			return result;
 		})
+	}*/
+	, grant_accelerator: function (login, acceleratorIndex){
+		return giveAccelerator(login, acceleratorIndex, 'grant_accelerator', 'freeAccelerators')
+		
+/*		return get_current_marathon_or_reject()
+		.then(function (marathon){
+			return set_accelerator(login, MarathonID, acceleratorIndex);
+		})
+		.then(function (result){
+			if (result){
+				var accelerators;
+
+				Marathon.findOne({MarathonID:MarathonID}, function (err, marathon){
+					
+					accelerators = marathon.freeAccelerators;
+					accelerators[acceleratorIndex]++;
+
+					Marathon.update({MarathonID:MarathonID}, {$set : { freeAccelerators : accelerators} }, 
+						function (err, count){
+							if (err) { 
+								Errors.add(login, 'grant_accelerator', { fail:1, code: err}); 
+							}
+
+							if (!helper.updated(count)) {
+								Errors.add(login, 'grant_accelerator', { fail:1, code: 'cannot update Marathon'});
+							}
+					})
+				})
+			}
+
+			return result;
+		})*/
 	}
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of

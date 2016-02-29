@@ -678,7 +678,7 @@ app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res)
   var ammount = req.params.ammount;
 
   if (login && ammount && isNumeric(ammount) ){
-    console.log('constants', c);
+    // console.log('constants', c);
 
     Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
     .then(function (result){
@@ -691,7 +691,26 @@ app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res)
   } else {
     cancel(res);
   }
+})
 
+app.get('/giveAcceleratorTo/:login/:accelerator', middlewares.isAdmin, function (req, res){
+  var login = req.params.login;
+  var accelerator = req.params.accelerator;
+
+  if (login && accelerator && isNumeric(accelerator) ){
+    // console.log('constants', c);
+
+    Marathon.grant_accelerator(login, accelerator)
+    .then(function (result){
+      res.json({msg: 'grant', result:result})
+    })
+    .catch(function (err) { 
+      cancel(res, err, 'grant fail');
+    })
+
+  } else {
+    cancel(res);
+  }
 })
 
 //app.post('/')
