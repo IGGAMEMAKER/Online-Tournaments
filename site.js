@@ -607,7 +607,7 @@ app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, functio
   // saveSession(req, res, inviter, login);
 })
 
-//app.get('/invite')
+//app.get('/invite', )
 
 
 app.post('/tellToFinishTournament', function (req, res){

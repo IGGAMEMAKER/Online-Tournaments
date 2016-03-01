@@ -50,25 +50,6 @@ var ClientGameStats = mongoose.model('ClientGameStats', {
 	movements:Number // gt 0 - user increments this when he plays
 })
 
-/*var Profile = mongoose.model('Profile',{
-	//login:String,
-	register:Number,
-	registerOK:Number,
-	registerFail:Number,
-
-	resetPassword:Number,
-	resetPasswordOK:Number,
-	resetPasswordFail:Number,
-
-	date:Date
-})
-
-var Mail = mongoose.model('Mail',{
-	send:Number,
-	sendOK:Number,
-
-})*/
-
 var DailyStats = mongoose.model('DailyStats', {
 	mail:Number,
 	mailFail:Number,
@@ -83,6 +64,7 @@ var DailyStats = mongoose.model('DailyStats', {
 
 	date:Date
 })
+
 function getDefaultDailyStats(date){
 	return new DailyStats({
 		mail:0,
@@ -131,7 +113,7 @@ function dayQuery(date){
 	var tmrw 	= new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	tmrw.setDate(tmrw.getDate() + 1);
 
-	console.log(today, tmrw);
+	// console.log(today, tmrw);
 
 	var query = {
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
@@ -259,9 +241,7 @@ app.post('/ResetPasswordFail', function (req, res){
 	//var result = req.body.result;
 	//var login = req.body.login;
 	updateDaily({$inc : {resetPasswordFail:1}}, 'resetPasswordFail');
-	/*if (result==1){
-		Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login));
-	}*/
+	// if (result==1) { Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login)); }
 })
 
 app.post('/StartTournament', function (req, res){ // starts in tournament Server
@@ -275,10 +255,7 @@ app.post('/AttemptToStart', function (req, res){
 })
 
 
-app.post('/RestartTournament', function (req, res){
-	OK(res);
-	//var 
-})
+app.post('/RestartTournament', function (req, res){ OK(res); })
 
 app.post('/UserGetsData' , function (req, res){
 	OK(res);
@@ -302,7 +279,7 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 
 function processStats(tournaments, dailyStats){
 	console.log('dailyStats: ');
-	console.log(dailyStats);
+	// console.log(dailyStats);
 	var obj = {
 		/*started:0,
 		finished:0,
@@ -384,9 +361,16 @@ function getTodayQuery(date){
 	if (day<=9) day = '0'+day;
 	if (next<=9) next = '0'+next;
 
+	var monthNext = '1';
+	var month2 = month;
+	if (month<=9)	month2 = '0'+month
+
 	var c = "T00:00:00.000Z";
-	var dtToday = year+"-"+month+"-"+day;
-	var dtTommorow = year+"-" + month+"-"+ next;
+	var c2 = "T23:59:59.000Z";
+
+	var dtToday = year+"-"+month2+"-"+day;
+	var dtTommorow = year+"-" + monthNext+"-"+ next;
+
 	Log('dtToday: ' + dtToday + '  dtTommorow: ' + dtTommorow, STREAM_STATS);
 	//var query = {
 	var today = {
@@ -394,12 +378,33 @@ function getTodayQuery(date){
 		// $lt : ISODate("2014-07-03T00:00:00Z")
 
 		$gte : new Date(dtToday + c), 
-		$lt : new Date(dtTommorow + c) 
+		$lt : new Date(dtToday + c2) 
 	}
+	console.log('getTodayQuery',dtToday, dtTommorow, today);
 	return today;
 	//}
 }
 
+app.get('/', function (req, res){
+	// Log('/GetTournaments', STREAM_STATS);
+
+	var query = {
+		startDate: getTodayQuery()
+	}
+	console.log('query', query);
+
+	getTournamentStats(query)
+	.then(function (data){
+		console.log(data);
+		return getDailyStats(data);
+	})
+	.then(function (data){
+		// core.Answer(res, processStats(data.tournaments, data.dailyStats));
+		res.json({result:1, code:processStats(data.tournaments, data.dailyStats) })
+	})
+	.catch(stdCatcher(res));
+	// res.end('OK');
+})
 
 app.post('/GetTournaments', function (req, res){
 	Log('/GetTournaments', STREAM_STATS);
@@ -423,8 +428,9 @@ app.post('/GetTournaments', function (req, res){
 
 function stdCatcher(res){
 	return function (err){
-		console.log(err);
-		Fail(res);
+		// console.log(err);
+		// Fail(res);
+		res.json({code:err});
 	}
 }
 
@@ -435,7 +441,7 @@ function getTournamentStats(query){
 			if (err) { ERROR(err); reject(err); }
 			else{
 				var stats = { tournaments: data||null };
-				console.log(stats);
+				// console.log(stats);
 				resolve(stats);
 			}
 		})
@@ -512,15 +518,6 @@ function AttemptToStart (tournamentID, login, res){
 
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} }, 
 		stdUpdateHandler('AttemptToStart ClientGameStats.update'));
-
-	/*ClientGameStats.update({ID:tournamentID, login:login}, {$inc : { started:1 } }, function (err, count){
-		if (err) { Log(err); }
-		else{
-			if (!updated(count)){
-
-			}
-		}
-	})*/
 }
 
 function createStatTournament(tournamentID, players){
@@ -586,7 +583,7 @@ function stdFindHandler(message, res, dataProcessor){
 			if (dataProcessor) { 
 				var obj = dataProcessor(data); 
 				console.log('processed: ' + JSON.stringify(obj) );
-				console.log(obj);
+				// console.log(obj);
 				core.Answer(res, obj);
 				//res.json(obj);
 			}else{

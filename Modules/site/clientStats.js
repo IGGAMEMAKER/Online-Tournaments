@@ -44,6 +44,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	
 	//statistics Data
 	app.get('/Stats', function (req, res){
+		
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
 		//res.render('Stats');
 	})

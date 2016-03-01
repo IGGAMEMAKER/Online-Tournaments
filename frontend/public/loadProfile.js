@@ -23,10 +23,11 @@ function sendInviter(){
 		// alert(inviter, inviter_type);
 		deleteCookie('inviter');
 		deleteCookie('inviter_type');
-		
-		mark('setInviter/'+inviter_type + '/'+inviter, { }, 'GET');
+
+		mark('setInviter/' + inviter_type + '/' + inviter, { }, 'GET');
 	}
 }
+
 sendInviter();
 
 function saveProfile(drawFunction){
