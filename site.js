@@ -298,6 +298,19 @@ var PRICE_CUSTOM = 1;  //
   var COUNT_FIXED = 1;
 var COUNT_FLOATING = 2;
 
+
+function cancel(res, code, tag){ 
+  return res.json({
+    result:0, 
+    code: code||CODE_INVALID_DATA, 
+    tag:tag||null 
+  }); 
+}
+
+function isNumeric(num) { return !isNaN(num); }
+
+const CODE_INVALID_DATA='Неправильные данные';
+
 var Answer = sender.Answer;
 
 
@@ -358,9 +371,7 @@ app.all('/StartTournament', function (req, res){
 });
 
 
-function isAuthenticated(req){
-  return (req.session && req.session.login);// || req.user;
-}
+function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
 
 function getLogin(req){
   if (isAuthenticated(req)){
@@ -480,6 +491,7 @@ app.post('/', function (req, res){
   res.end('uid ' + uid + ' OK!');
 })*/
 
+/*
 function saveSession(req, res, inviterUrl, login){
   if (!inviterUrl) inviterUrl = "Login";
 
@@ -508,10 +520,6 @@ function vkAuthSuccess(){
     //console.log("inviter", inviter);
 
     Log("SetInviter " + inviter + " for " + login, "Users");
-    /*if (!inviter) {
-      inviter = null;
-      Log("no Inviter, no RM PAGE", "Users");
-    }*/
 
     if (inviter) { 
       Users.setInviter(login, inviter);
@@ -538,19 +546,69 @@ function setInviter(inviter){
 
 var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
 
-function redirectToAuth(req, res){
-  res.redirect('/vk-auth');
-}
+function redirectToAuth(req, res){ res.redirect('/vk-auth'); }
 
-app.get('/Marathon', function (req, res){
-  res.render('Marathon');
-})
 
 app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess());
+*/
 
-//app.get('/vk-auth', vkAuth, vkAuthSuccess());
+function vkAuthSuccess(req, res, next) {
+  var login = req.user.login;
+  req.login = login;
+  // Log("SetInviter " + inviter + " for " + login, "Users");
+
+  Actions.add(login, 'login', { auth:'vk' });
+  next();
+  // saveSession(req, res, inviter, login);
+}
+
+var AUTH_SUCCESS_REDIRECT_PAGE='Tournaments';
+
+function session_save(req, res, next){
+  var login = req.login;
+
+  req.session.save(function (err){
+    if (err) {
+      Errors.add(login, 'session_save', { err:err });
+      // res.render(inviterUrl,{msg:err});
+      return next(err);
+    }
+
+    req.session.login = login;
+    
+    res.redirect(AUTH_SUCCESS_REDIRECT_PAGE);
+    // next();
+  })
+}
+
+var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
+
+app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
+
+app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, function (req, res){
+  // when new user is redirected to main page I need to know, where he came from.
+  // user sends ajax request and i understand, who invited him/her
+  // even if this request fails, nothing breaks!
+
+  var login = getLogin(req);
+  var inviter = req.params.inviter;
+  var inviter_type = req.params.inviter_type;
+
+  Log("SetInviter " + inviter + " for " + login, "Users");
+
+  if (inviter && inviter_type) { 
+    Users.setInviter(login, inviter, inviter_type);
+    Actions.add(login, 'setInviter', { inviter:inviter, inviter_type:inviter_type });
+  }
+
+  res.end('');
+  // saveSession(req, res, inviter, login);
+})
+
+//app.get('/invite')
+
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
@@ -573,6 +631,26 @@ app.post('/Tell', isAdmin, function (req, res){
 
   res.render('Tell');
 })
+
+app.get('/Leaderboard', function (req, res){
+  Marathon.leaderboard()
+  .then(function (leaderboard){
+    console.log(leaderboard);
+
+    res.render('Leaderboard', { 
+      msg: {
+        leaderboard:leaderboard,
+        counts: leaderboard.counts,
+        prizes: leaderboard.prizes
+      }
+    });
+  })
+  .catch(function (err){
+    res.render('Leaderboard', {msg:null});
+  })
+});
+
+app.get('/Marathon', function (req, res){ res.render('Marathon'); })
 
 app.get('/MarathonInfo', isAdmin, function (req, res){
   Marathon.get_current_marathon()
@@ -632,18 +710,7 @@ app.post('/Marathon/new', isAdmin, function (req, res){
   })
 })
 
-function cancel(res, code, tag){ 
-  return res.json({
-    result:0, 
-    code: code||CODE_INVALID_DATA, 
-    tag:tag||null 
-  }); 
-}
-
-function isNumeric(num) { return !isNaN(num); }
-
-const CODE_INVALID_DATA='Неправильные данные';
-
+// Middleware
 function getAcceleratorsAndMarathon(req, res, next){
   var accelerator = req.params.accelerator||null;
   if (accelerator && !isNaN(accelerator)){
@@ -691,42 +758,15 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
   }
 })
 
-/*app.get('/buyAccelerator/:index', middlewares.authenticated, function (req, res){
-  var login = getLogin(req);
 
-  var accelerator = req.body.accelerator||null;
-
-  // need price of accelerator
-  if (accelerator && !isNaN(accelerator)){
-    var marath;
-    var price;
-    Marathon.get_current_marathon()
-    .then(function (marathon){
-      if (marathon){
-        marath = marathon;
-        price = marathon.accelerators[accelerator].price;
-        return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
-        .then(function (result){
-          return Marathon.sell_accelerator(login, marathon.MarathonID, accelerator);
-        })
-      } else {
-        return null;
-      }
-    })
-    
-  } else {
-    res.json({result:0, code:CODE_INVALID_DATA});
-  }
-})*/
-
-app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+app.get('/giveAcceleratorTo/:login/:accelerator', middlewares.isAdmin, function (req, res){
   var login = req.params.login;
-  var ammount = req.params.ammount;
+  var accelerator = req.params.accelerator;
 
-  if (login && ammount && isNumeric(ammount) ){
+  if (login && accelerator && isNumeric(accelerator) ){
     // console.log('constants', c);
 
-    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
+    Marathon.grant_accelerator(login, accelerator)
     .then(function (result){
       res.json({msg: 'grant', result:result})
     })
@@ -739,14 +779,15 @@ app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res)
   }
 })
 
-app.get('/giveAcceleratorTo/:login/:accelerator', middlewares.isAdmin, function (req, res){
-  var login = req.params.login;
-  var accelerator = req.params.accelerator;
 
-  if (login && accelerator && isNumeric(accelerator) ){
+app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+  var login = req.params.login;
+  var ammount = req.params.ammount;
+
+  if (login && ammount && isNumeric(ammount) ){
     // console.log('constants', c);
 
-    Marathon.grant_accelerator(login, accelerator)
+    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
     .then(function (result){
       res.json({msg: 'grant', result:result})
     })
@@ -789,7 +830,7 @@ server = app.listen(8888, function () {
   console.log('Example app listening at http://%s:%s', host, port);
 });
 
-
+// socket land
 
 var clients = [];
 var io;
@@ -812,10 +853,7 @@ if (socket_enabled){
     socket.on('chat message', function(msg){
       console.log(msg);
       io.emit('chat message', msg);
-      var message = {
-        text : msg
-        , sender:'common'
-      }
+      var message = { text : msg , sender:'common' }
       console.log(message, 'message');
       sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
     });

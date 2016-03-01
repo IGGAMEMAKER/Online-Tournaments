@@ -41,6 +41,17 @@ function profile(login){
 	})
 }
 
+function find_or_reject(login, parameters){
+	return new Promise(function (resolve, reject){
+		User.findOne({login:login}, parameters||'', function(err, user){
+			if (err) return reject(err);
+
+			if (!user) return reject(null);
+			return resolve(user);
+		})
+	})
+}
+
 function create(login, password, email, inviter){
 	return new Promise(function (resolve, reject){
 		if ( invalid_email(email) || invalid_pass(password) ) return reject(INVALID_DATA);//|| invalid_login(login)
@@ -133,7 +144,29 @@ function changePassword(login, oldPass, newPass){
 	})*/
 }
 
-function setInviter(login, inviter){
+function setInviter(login, inviter, inviter_type){
+	return find_or_reject(login)
+	.then(function (user){
+		return new Promise(function (resolve, reject){
+			if (user.inviter) return reject('isSet');
+
+			var updObject = { 
+				inviter:inviter, 
+				inviter_type:inviter_type||null 
+			}
+			
+			User.update({login:login}, {$set : updObject }, function (err, count){
+				if (err) return reject(err);
+
+				if (updated(count)) return resolve(1);
+				return reject('update failed');
+			})
+			
+		})
+	})
+}
+
+/*function setInviter(login, inviter){
 	return new Promise(function (resolve, reject){
 		User.findOne({login:login}, function (err, user){
 			if (err) { return reject(err); }
@@ -155,7 +188,7 @@ function setInviter(login, inviter){
 		})
 	})
 }
-
+*/
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
 		var login = user.login;
