@@ -16,6 +16,19 @@ function GetTournamentAddress(tID){
 	getAsync('GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
 }
 
+function sendInviter(){
+	var inviter = getCookie('inviter');
+	var inviter_type= getCookie('inviter_type') || 0;
+	if (inviter){
+		// alert(inviter, inviter_type);
+		deleteCookie('inviter');
+		deleteCookie('inviter_type');
+		
+		mark('setInviter/'+inviter_type + '/'+inviter, { }, 'GET');
+	}
+}
+sendInviter();
+
 function saveProfile(drawFunction){
 	return function (data) {
 		var profile = JSON.parse(data); prt(profile);

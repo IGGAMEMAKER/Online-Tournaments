@@ -157,10 +157,10 @@ function setAsync(url, data, success){
   });
 }
 
-function mark(url, data){
+function mark(url, data, method){
   $.ajax({
     url:url
-    , method: 'POST'
+    , method: method || 'POST'
     , data:data||null
   })
 }

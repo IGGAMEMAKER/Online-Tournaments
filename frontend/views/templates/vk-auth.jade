@@ -16,10 +16,11 @@ mixin loadVKauth(inviter, reg)
 	script.
 		if (document.location.hostname == "localhost") {
 			setTimeout(function() {
-				if (inviter)
+				$("#vk-url").attr("href", "http://localhost/vk-auth");
+				/*if (inviter)
 					$("#vk-url").attr("href", "http://localhost/vk-auth/"+inviter);
 				else {
 					$("#vk-url").attr("href", "http://localhost/vk-auth");
-				}
-			}, 1000);
+				}*/
+			}, 300);
 		}
