@@ -479,14 +479,45 @@ app.post('/GameLoaded', function (req, res){
 })
 
 function GameLoaded(tournamentID, login){
-	console.log('GameLoaded : ', tournamentID, login);
+	// console.log('GameLoaded : ', tournamentID, login);
+	
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
 		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));
 
 	updTournament(tournamentID, {$inc : {loaded :1} }, 'GameLoaded');
 }
 
+function update_tournament_stats(find, set, updateMessage){
+	ClientGameStats.update(find, set, stdUpdateHandler(updateMessage))
+}
 
+app.get('/ClientGameStats', function (req, res){
+	ClientGameStats.find({})
+	.sort('-tournamentID')
+	.exec(function (err, stats){
+		if (err) return res.json({err:err});
+
+		// res.render('')
+		res.json(stats||null);
+	})
+	/*.catch(function (err){
+		res.json({err:err});
+	})*/
+})
+
+app.post('/mark/game/:name', function (req, res){
+	res.end('');
+	var name = req.params.name;
+	var login = req.body.login;
+	var tournamentID = req.body.tournamentID;
+
+	switch(name){
+		case 'drawPopup':
+			update_tournament_stats({tournamentID:tournamentID})
+		break;
+	}
+	// update_tournament_stats({})
+})
 
 function GameWorks(tournamentID){
 	Tournament.update({ID:tournamentID}, {$inc: {works:1} }, stdUpdateHandler('GameWorks'));

@@ -90,6 +90,20 @@ module.exports = function(dbAddress){
 			auxillaries: Object
 		})
 
+		,Statistic : db.model('Statistic', {
+			// 2 types of stats:
+			// personal
+			// countable (daily)
+
+			// login: String,
+			date: Date,
+			tag: String, // topic
+			auxillaries: Object, // if personal it must be { login:login }
+			attempt: Number,
+			fail: Number,
+
+		})
+
 		,Error : db.model('Error', {
 			login: String,
 			date: Date,

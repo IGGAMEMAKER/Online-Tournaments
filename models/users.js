@@ -94,33 +94,6 @@ function auth(login, password){
 	})
 }
 
-/*function LoginUser(req, res){
-	var data = req.body;
-	cLog("LoginUser... " + JSON.stringify(data));
-
-	var login = data['login'];
-	var password = data['password'];
-	//Log('Try to login :' + login + '. (' + JSON.stringify(data) + ')', STREAM_USERS);
-
-	User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {    //'login money'  { item: 1, qty: 1, _id:0 }
-		if (err) {
-			Error(err, 'CANNOT LOG IN USER!!!');
-			Answer(res, {result: err});
-		}	else {
-			if (user && passwordCorrect(user, password) ){
-				Log('Logged in ' + JSON.stringify(user), STREAM_USERS);
-				Answer(res, OK);
-				if (user.cryptVersion!=CURRENT_CRYPT_VERSION){
-					update_password(login, password, CURRENT_CRYPT_VERSION);		    	
-				}
-			}	else {
-				Log('Invalid login/password : ' + login, STREAM_USERS);
-				Answer(res, {result:'Invalid reg'});
-			}
-		}
- 	});
-}*/
-
 function changePassword(login, oldPass, newPass){
 	return auth(login, oldPass)
 	.then(function (result){

@@ -118,8 +118,6 @@ app.get('/moderate/:id/:status', function (req, res){
 	})
 })
 
-//app.post('/')
-
 app.get('/AddQuestion', function (req, res){
 	res.render('add_question');
 })

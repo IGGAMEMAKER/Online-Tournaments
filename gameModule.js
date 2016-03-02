@@ -139,6 +139,7 @@ function MoveHead(data){
   	var movement = data.movement;
   	var userLogin = data.login;
   	//strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
+  	Stats('')
   	Move(tournamentID, gameID, movement, userLogin);
 }
 
@@ -168,6 +169,7 @@ const STANDARD_PREPARE_TICK_COUNT = 5;
 var gameHost = configs.gameHost || '127.0.0.1';
 var gamePort = configs.gamePort || '5010';
 var BEFORE_TOURNAMENT_START_DELAY = configs.delay || STANDARD_PREPARE_TICK_COUNT;
+
 
 
 function RenderGame (req, res){
@@ -289,18 +291,11 @@ function playerExists(gameID, userName){
 	return playerExistsVal ;
 }
 
-function getGameStatus(ID){
-	return games[ID].status;
-}
+function getGameStatus(ID){ return games[ID].status; }
 
-function tournamentIsValid(tournamentID, gameID){
-	return games[gameID].status === PREPARED;//
-}
+function tournamentIsValid(tournamentID, gameID){	return games[gameID].status === PREPARED; }
 
-function Answer(res, code){
-	res.end(code);
-	//strLog("......................");
-}
+function Answer(res, code) { res.end(code); }
 
 function isRunning(gameID){
 	var isr = games[gameID] && games[gameID].isRunning;
@@ -333,6 +328,17 @@ function setRoom(ID){
 		});
 	});
 }
+
+function gameExists(req, res, next){
+	var gameID = req.body.gameID;
+
+	if (gameID && games[gameID] && isRunning(gameID)){
+		next();
+	} else {
+		next('gameExists null');
+	}
+}
+
 app.post('/Join', function (req, res){
 	console.log('JoinPlayer Request');
 	var gameID = req.body.gameID;

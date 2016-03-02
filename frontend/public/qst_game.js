@@ -56,6 +56,17 @@ function countDown(seconds){
 	if (seconds>0){
 		setTimeout(function() { countDown(seconds-1); }, 1000);
 	}
+
+		/*setTimeout(function(){ setTicker(10); },0);
+		setTimeout(function(){ setTicker(9); },1000);
+		setTimeout(function(){ setTicker(8); },2000);
+		setTimeout(function(){ setTicker(7); },3000);
+		setTimeout(function(){ setTicker(6); },4000);
+		setTimeout(function(){ setTicker(5); },5000);
+		setTimeout(function(){ setTicker(4); },6000);
+		setTimeout(function(){ setTicker(3); },7000);
+		setTimeout(function(){ setTicker(2); },8000);
+		setTimeout(function(){ setTicker(1); },9000);*/
 }
 
 room.on('startGame', function(msg){
@@ -68,19 +79,8 @@ room.on('startGame', function(msg){
 		starter=1;
 
 		countDown(10);
-		/*setTimeout(function(){ setTicker(10); },0);
-		setTimeout(function(){ setTicker(9); },1000);
-		setTimeout(function(){ setTicker(8); },2000);
-		setTimeout(function(){ setTicker(7); },3000);
-		setTimeout(function(){ setTicker(6); },4000);
-		setTimeout(function(){ setTicker(5); },5000);
-		setTimeout(function(){ setTicker(4); },6000);
-		setTimeout(function(){ setTicker(3); },7000);
-		setTimeout(function(){ setTicker(2); },8000);
-		setTimeout(function(){ setTicker(1); },9000);*/
 		//show_answer_buttons();
-	}
-	else{
+	} else {
 		setTicker(ticks+10);
 	}
 	recievedData = 1;
@@ -114,19 +114,12 @@ room.on('finish', function(msg){
 })
 
 var gameDatas;// = [];
-var qTick = MAX_TICKS;
-var tickerID;
-
-
-/*var qTicker = function(){
-	setTicker()
-}*/
 
 function show_answer_buttons(){
 	document.getElementById("Answers").style.display = "block";
 }
 
-room.on('update', function(msg){
+room.on('update', function (msg){
 	//alert(JSON.stringify(msg));
 	recievedData = 1;
 	setQuestionTab(msg.question);
@@ -137,9 +130,11 @@ room.on('update', function(msg){
 	getMyPoints();
 
 	var MAX_SECONDS=MAX_TICKS / 1000;
+	
 	//for (var i=0; i<MAX_SECONDS; i++){
 	//	setTimeout(function(){ setTicker(MAX_SECONDS-i); }, i*1000);
 	//}
+
 	show_answer_buttons();
 	setTimeout(function(){ setTicker(10); },0);
 	setTimeout(function(){ setTicker(9); },1000);
@@ -212,58 +207,29 @@ function DrawPlayers(results){
 		text += '</tr>';
 		$(resultField).append(text);
 
-		//console.log(ind)
-		/*if (name==login){
-			//style="style = 'color: #FF0000;'";
-			//winBlock = '<td style="color: red;>'+winning+'</td>';
-			var text = '<tr>'
-			text += '<td style="color: red;"><b>'+name+'</b><br>('+score+')</td>';
-			//text += '<td style="color: red;">' + score + '</td>';
-			text += '<td style="color: red;">' + winning + '</td>';
-			text += '</tr>';
-			$(resultField).append(text);
-
-			//$('#Question').append($('<li style= "color: #FF0000;">').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );	
-		}
-		else{
-			//winBlock = '<td>'+winning+'</td>';
-			//var text = '<tr><td>'+name+'</td><td>'+ score +'</td>' + winBlock + '</tr>'
-			var text = '<tr>'
-			text += '<td ><b>'+name+'</b><br>('+score+')</td>';
-			//text += '<td >' + score + '</td>';
-			text += '<td >' + winning + '</td>';
-			text += '</tr>';
-
-			$(resultField).append(text);
-			//$('#Question').append($('<li>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
-		}*/
-		//$('#Question').append($('<li ' + style + '>').text(ind + ' : ' + results.players.scores[ind]) ); //JSON.stringify(results)) );
-
 		// show winner table
 		var winnerTable = document.getElementById("winnerTable");
 
 		winnerTable.style.display = 'block';
 		//$('#winnerTable').css('display', )
-
 	}
 }
 
-var default_colour = 'rgba(0,0,0, 0.3)';
 
 function blockAllButtons(){
+	var default_colour = 'rgba(0,0,0, 0.3)';
+
 	document.getElementById("a1").style.background = default_colour;
 	document.getElementById("a2").style.background = default_colour;
 	document.getElementById("a3").style.background = default_colour;
 	document.getElementById("a4").style.background = default_colour;
 }
 
-function colorize(id){
-	document.getElementById("a"+id).style.background = 'blueviolet';
-}
+function colorize(id){ document.getElementById("a"+id).style.background = 'blueviolet'; }
 
 
 function sendGameData(data1, url){
-	var sendData = { 
+	var sendData = {
 		movement: {answer:data1}, 
 		tournamentID: tournamentID, 
 		gameID: tournamentID, 

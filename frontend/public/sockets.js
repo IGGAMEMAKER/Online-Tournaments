@@ -106,12 +106,13 @@ function updateFrontend(frontendVersion){
 function StartTournament(tournamentID){
   if (isActiveTab()){
     if (userIsRegisteredIn(tournamentID)){
-      window.scrollTo(0,0); 
+      // window.scrollTo(0,0); 
       
       // playAudio();
       var audio = new Audio('sounds/TOURN_START.wav'); audio.play();
       
       drawPopup();
+      mark('mark/game/drawPopup', { tournamentID:tournamentID, login:login }); // , 'GET'
     }
   }
 }
