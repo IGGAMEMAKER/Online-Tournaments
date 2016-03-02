@@ -274,7 +274,7 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 
 	var tournamentID = req.body.tournamentID;
 	Log('FinishedTournament ' + tournamentID, STREAM_STATS);
-	updTournament(tournamentID, {$inc : {finished:1} }, 'FinishedTournament');
+	updTournament(tournamentID, {$inc : { finished:1 }}, 'FinishedTournament');
 })
 
 function processStats(tournaments, dailyStats){

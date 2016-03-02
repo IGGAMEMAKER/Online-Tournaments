@@ -123,26 +123,33 @@ function auth(login, password){
 
 function changePassword(login, oldPass, newPass){
 	return auth(login, oldPass)
-	.then(auth_printer)
-	.then(function(authenticated){
-		if (authenticated) {
-			return update_password(login, newPass, CURRENT_CRYPT_VERSION);
-		}
-		return null;
+	.then(function (result){
+		return update_password(login, newPass, CURRENT_CRYPT_VERSION);
 	})
-	.then(function(changed){
-		log('changed: ' + changed);
-	})
-	/*return new Promise(function(resolve, reject){
-		User.findOne({login:login}, '', function (err, user){
-			if (err) return reject(err);
-
-			if (!user || !passwordCorrect(user, oldPass)) return resolve(Fail);
-
-			return update_password(login, newPass, CURRENT_CRYPT_VERSION);
-		})
-	})*/
 }
+
+// function changePassword(login, oldPass, newPass){
+// 	return auth(login, oldPass)
+// 	.then(auth_printer)
+// 	.then(function(authenticated){
+// 		if (authenticated) {
+// 			return update_password(login, newPass, CURRENT_CRYPT_VERSION);
+// 		}
+// 		return null;
+// 	})
+// 	.then(function(changed){
+// 		log('changed: ' + changed);
+// 	})
+// 	/*return new Promise(function(resolve, reject){
+// 		User.findOne({login:login}, '', function (err, user){
+// 			if (err) return reject(err);
+
+// 			if (!user || !passwordCorrect(user, oldPass)) return resolve(Fail);
+
+// 			return update_password(login, newPass, CURRENT_CRYPT_VERSION);
+// 		})
+// 	})*/
+// }
 
 function setInviter(login, inviter, inviter_type){
 	return find_or_reject(login)

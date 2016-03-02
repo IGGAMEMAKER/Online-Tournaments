@@ -14,6 +14,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	var authenticated = require('../../middlewares').authenticated;
 
+	var Stats = sender.Stats;
 
 	var Fail = {
 		result: 'fail'
@@ -22,30 +23,35 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		result: 'OK'
 	}
 
-	app.get('/Logout', function (req, res){
+	function destroy_session(req, res, next){
+		var login = getLogin(req);
 		req.session.destroy(function (err){
-			if (err){ console.error('Session destroying error:' + err);}
+			if (err) { 
+				Errors.add(login, 'destroy_session', { err:err })
+				// console.error('Session destroying error:' + err); 
+			}
 		});
-		res.render('Login',{});
-	});
+		next();
+	}
 
-	app.get('/Login', function (req, res){ res.render('Login',{}); })
-	app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })
+	app.get('/Logout', destroy_session, render('Login',{}) )
+
+	// app.get('/Login', function (req, res){ res.render('Login',{}); })
+	// app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })
+
+	app.get('/Login', render('Login',{}) )
+	app.get('/Register', render(REG_TEMPLATE))
 
 	
-	app.get('/ResetPassword', function (req, res){ res.render('ResetPassword'); })
-	app.get('/Changepassword', function (req, res){ res.render('Changepassword'); })
+	app.get('/ResetPassword', render('ResetPassword') )
+	app.get('/Changepassword', authenticated, render('Changepassword') )
 
-	app.post('/Login', logIN);//std_auth('Login')
-	app.post('/Register', checkRegisterData, register);//std_auth('Register') 
+	app.post('/Login', Login);//std_auth('Login')
+	app.post('/Register', register);//std_auth('Register') 
 
 	var REG_TEMPLATE="Register";
 
-	function isValid(user){
-		return ValidEmail(user) && ValidPass(user.password||null);
-	}
-
-	function checkRegisterData(req, res, next){
+	function register(req, res){
 		var user = {
 			email: req.body.email
 			, login: get_login_from_email(req.body.email)
@@ -53,19 +59,17 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 		if (isValid(user)){
 			req.user= user;
-			next()
 		} else {
-			res.redirect('Register');
+			return res.redirect('Register');
 		}
-	}
 
-	function register(req, res){
+
 		var login = req.user.login;
 		var password = req.user.password;
 		var email = req.user.email;
 		var inviter = req.user.inviter;
 		
-		console.log('trying to register', login, email, password, inviter);
+		// console.log('trying to register', login, email, password, inviter);
 
 		Users.create(login, password, email, inviter)
 		.then(function(user){
@@ -76,45 +80,34 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			Actions.add(login, 'register');
 
 		})
-		.catch(function (err){
+		.catch(answer_and_save_error(res, 'Register', 'register', login))
+/*		.catch(function (err){
 			res.render('Register', { msg:err });
 			Errors.add(login, 'register', { code:err })
-		})
+		})*/
 	}
 
-	function checkLoginData(req, res, next){
-		if (!ValidLoginData(req.body)){
-			Log('Invalid login data')
-			res.render('Login', Fail); 
-			return;
-		}
-		req.user = {
-			email:req.body.email
-			, login:get_login_from_email(req.body.email)
-			, password: req.body.password
-		};
-		next();
-	}
-
-	function logIN(req, res){
+	function Login(req, res){
 		var login = get_login_from_email(req.body.email);
 		var password = req.body.password;
-		//console.log('logIN', login, password);
+		//console.log('Login', login, password);
 		req.user = {
 			login : login
 		}
 
+		Actions.add(login, 'login');
+
 		Users.auth(login, password)//, req.user.email, req.user.inviter
 		.then(function (user){
-			console.log('logged In', user);
+			// console.log('logged In', user);
 			req.user= user;
 			saveSession(req, res, 'Login');
 
-			Actions.add(login, 'login');
+			// Actions.add(login, 'login');
 		})
 		.catch(function (err){
 			res.render('Login', {msg : err});
-			Errors.add(login, 'logIN', { code:err })
+			Errors.add(login, 'Login', { code:err })
 		})
 	}
 
@@ -143,7 +136,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	})
 
 	app.post('/autoreg', function (req, res){
-		//res.end('');
 		Tournaments.getStreamID()
 		.then(function (streamID){
 			if (isAuthenticated(req) && streamID){
@@ -151,7 +143,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 					login: getLogin(req),
 					tournamentID:streamID
 				}
-				console.log('autoreg', data);
+				// console.log('autoreg', data);
 				AsyncRender('DBServer', 'autoreg', res, null,  data);
 			}
 			else{
@@ -161,42 +153,71 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	})
 
-	function get_login_from_email(email){
-		return email.split("@")[0];
-	}
-
 	app.post('/ResetPassword', function (req, res){
 		var email = req.body.email;
 		var login = req.body.login || get_login_from_email(email);
 
-		AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:login, email:email})
+		Actions.add(login, 'resetPassword');
+		// AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:login, email:email})
 
-		/*Users.resetPassword({login:login, email:email})
+		Users.resetPassword({login:login, email:email})
 		.then(mail.sendResetPasswordEmail)
 		.then(function (result){
 			res.render('ResetPassword', {msg:OK});
-			//Answer(res, OK);
-			////Stats('ResetPasswordOK', {login:login});
-			//Log("Sended mail and reset pass. Remember pass of User " + JSON.stringify(result), STREAM_USERS);
-			//Log('still in then function');
 		})
 		.catch(function (err){
 			res.render('ResetPassword', {msg:err})
-			//Log(err, STREAM_ERROR);
-			//Answer(res, err);
-			//Stats('ResetPasswordFail', {login:login});
-		})*/
+			Errors.add(login||null, 'resetPassword', { email:email, login:login, err:err });
+		})
 	})
 
-	app.post('/Changepassword' , function (req, res){
-		if (isAuthenticated(req) && req.body.password && req.body.password == req.body.passwordRepeat && ValidPass(req.body.newpassword)) {
-			AsyncRender("DBServer", 'Changepassword', res, {renderPage:'Changepassword'} , 
-				{oldPass:req.body.password, newPass: req.body.newpassword, login:getLogin(req) });
+	function change_password(req, res, next){
+		var password = req.body.password;
+		var passwordRepeat = req.body.passwordRepeat;
+		var newpassword = req.body.newpassword;
+		var login = getLogin(req);
+
+		var isInputValid = password && passwordRepeat && newpassword && password == passwordRepeat && ValidPass(newpassword);
+		if (!isInputValid) {
+			/*res.render('Changepassword', {msg:{result:'Некорректные данные'}} );
+			Errors.add(login||null, 'Changepassword', { email:email, login:login, err:err });
+			return;*/
+			return next('invalid input');
 		}
-		else{
-			res.render('Changepassword', {msg:{result:'Invalid data'}} );
+
+		Users.changePassword(login, password, newpassword)
+		.then(function (result){
+			res.render('Changepassword', { msg:result })
+		})
+		.catch(function (err){
+			return next(err);
+		})
+	}
+
+	function change_password_fail(err, req, res, next){
+		var login = getLogin(req);
+		res.render('Changepassword', { msg: { result:'Ошибка' } } );
+		Errors.add(login||null, 'Changepassword', { login:login, err:err });
+	}
+
+	app.post('/ChangePassword', authenticated, change_password, change_password_fail)
+
+/*
+function (req, res){
+		var password = req.body.password;
+		var passwordRepeat = req.body.passwordRepeat;
+		var newpassword = req.body.newpassword;
+		var login = getLogin(req);
+
+		var isInputValid = password && passwordRepeat && newpassword && password == passwordRepeat && ValidPass(newpassword);
+		if (!isInputValid) {
+			res.render('Changepassword', {msg:{result:'Некорректные данные'}} );
+			Errors.add(login||null, 'Changepassword', { login:login, err:err });
+			return;
 		}
-	})
+	}
+*/
+
 
 	app.get('/MoneyTransfers', function (req, res){
 		if (isAuthenticated(req)){
@@ -206,6 +227,25 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 
 		sender.Answer(res, Fail);
+	})
+
+
+
+	app.post('/Profile', authenticated, get_profile, function (req, res){
+		sender.Answer(res, req.profile || Fail);
+		/*if (req.profile){
+			sender.Answer(res, req.profile);
+		} else {
+			sender.Answer(res, Fail);
+		}*/
+	})
+
+	app.get('/Profile', authenticated, get_profile, function (req, res){
+	  if (req.profile){
+	  	res.render('Profile', {msg:req.profile});
+	  } else {
+	  	res.redirect('Login');
+	  }
 	})
 
 	function get_profile(req, res, next){
@@ -233,33 +273,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	}
 
-	app.post('/Profile', authenticated, get_profile, function (req, res){
-		if (req.profile){
-			sender.Answer(res, req.profile);
-		} else {
-			sender.Answer(res, Fail);
-		}
-	})
-
-	app.get('/Profile', authenticated, get_profile, function (req, res){
-	  if (req.profile){
-	  	res.render('Profile', {msg:req.profile});
-	  } else {
-	  	res.redirect('Login');
-	  }
-	})
-
-	var INVALID_LOGIN_OR_PASS = '';
-	var FIELD_MAX_LENGTH = 40;
-	var MIN_PASS_LENGTH = 6;
-
-	function ValidRegData(data)  { return ValidPass(data.password||null) && ValidEmail(data); }
-
-	function ValidLoginData(data){ return ValidEmail(data||null) && ValidPass(data.password||null);	}
-	function ValidEmail(data){ return (data.email && data.email.length<FIELD_MAX_LENGTH && validator.isEmail(data.email) ) }
-	function ValidPass(password){ return (password && password.length<FIELD_MAX_LENGTH && password.length>=MIN_PASS_LENGTH && validator.isAlphanumeric(password) ) }
-	function ValidLogin(data){ return (data.login && data.login.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(data.login) ) }
-
 	function regManager(command, req, res){
 		var data = req.body;
 		console.log(data.login, data.tournamentID);
@@ -272,4 +285,30 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 	}
 
+	var INVALID_LOGIN_OR_PASS = '';
+	var FIELD_MAX_LENGTH = 40;
+	var MIN_PASS_LENGTH = 6;
+	
+	function get_login_from_email(email){ return email.split("@")[0]; }
+	function ValidRegData(data)  { return ValidPass(data.password||null) && ValidEmail(data); }
+
+	function ValidLoginData(data){ return ValidEmail(data||null) && ValidPass(data.password||null);	}
+	function ValidEmail(data){ return (data.email && data.email.length<FIELD_MAX_LENGTH && validator.isEmail(data.email) ) }
+	function ValidPass(password){ return (password && password.length<FIELD_MAX_LENGTH && password.length>=MIN_PASS_LENGTH && validator.isAlphanumeric(password) ) }
+	function ValidLogin(data){ return (data.login && data.login.length<FIELD_MAX_LENGTH && validator.isAlphanumeric(data.login) ) }
+
+	function isValid(user){ return ValidEmail(user) && ValidPass(user.password || null); }
+
+	function render(page, data){
+		return function (req, res){
+			res.render(page, data);
+		}
+	}
+
+	function answer_and_save_error(res, renderPage, ErrorName, login){
+		return function (err){
+			res.render(renderPage, { msg: err });
+			Errors.add(login||null, ErrorName, { code: err });
+		}
+	}
 }

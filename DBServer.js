@@ -1238,7 +1238,7 @@ function HASH(password){
 	//return password;
 	return security.Hash(password, CURRENT_CRYPT_VERSION);
 }
-
+// 
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
 		var login = user.login;
@@ -1336,7 +1336,7 @@ function update_password (login, password, cryptVersion, res) {
 		}
 	});
 }
-
+// 
 function LoginUser(req, res){
 	var data = req.body;
 	cLog("LoginUser... " + JSON.stringify(data));

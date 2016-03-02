@@ -161,7 +161,7 @@ function mark(url, data, method){
   $.ajax({
     url:url
     , method: method || 'POST'
-    , data:data||null
+    , data:data || null
   })
 }
 
