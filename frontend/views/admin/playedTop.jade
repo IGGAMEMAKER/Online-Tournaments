@@ -1,0 +1,43 @@
+//
+
+mixin drawAux(action)
+	if action.auxillaries
+		case action.type
+			when 'tournament.join'
+				span    !{action.auxillaries.tournamentID}
+			when 'tournament.leave'
+				span    !{action.auxillaries.tournamentID}
+			default 
+				span (!{JSON.stringify(action.auxillaries)})
+
+mixin drawActions(actions)
+		p!="Count:" + actions.length
+		table(class="table table-bordered table-striped" style="width:70%;")
+			thead
+				tr
+					th №
+					th Игрок
+					th Количество игр
+					//th Время
+			tbody
+				each action, ind in actions
+					tr
+						td!= ind
+						td
+							//a(href="UserInfo/"+action.login) #{action.login}
+							p!=action._id
+						td
+							p!=action.count
+
+						//td!= action.date
+
+html
+	head
+		include ../templates/event_helper
+		+AdminHead()
+	body
+		//p!= JSON.stringify(msg)
+		center(style="width='100%;'")
+			+LinkHeader()
+			+TimeViewer("playedTop")
+			+drawActions(msg)
