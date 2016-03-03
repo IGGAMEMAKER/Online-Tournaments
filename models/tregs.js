@@ -117,6 +117,70 @@ function leaderboard(){//time_function
 		})
 	})
 }
+// works OK
+
+/*function playedTop(){
+	return new Promise(function (resolve, reject){
+		TournamentReg.aggregate([
+		{ $match: { status : TOURN_STATUS_FINISHED } },
+		{
+			$group: {
+				_id: "$userID",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { count: -1 }
+		}
+		], function (err, leaderboard){
+			if (err) return reject(err);
+			//	console.log(leaderboard);
+			return resolve(leaderboard||[]);
+		})
+	})
+}*/
+
+// ---
+
+function playedTop(playedMoreThan){
+	return new Promise(function (resolve, reject){
+		TournamentReg.aggregate([
+		{ $match: { status : TOURN_STATUS_FINISHED } },
+		{
+			$group: {
+				_id: "$userID",
+				count: { $sum: 1 }
+			}
+		},
+		{ $match: { count: { $gt: playedMoreThan || 1 } } },
+		{ $sort: { count: -1 } },
+		], function (err, leaderboard){
+			if (err) return reject(err);
+
+			return resolve(leaderboard||[]);
+		})
+	})
+}
+
+function regsMost(){
+
+}
+
+/*db.tournamentregs.aggregate( [
+   {
+     $group: {
+        _id: "$userID",
+        count: { $sum: 1 }
+     }
+   },
+   { $match: { status : TOURN_STATUS_FINISHED, count: { $gt: 1 } } }
+] ).itcount()*/
+
+// playedTop()
+// .then(function(data){
+// 	console.log(data);
+// })
+
 
 /*function Experiment(tournamentID, login){
 	return new Promise(function (resolve, reject){
@@ -201,3 +265,4 @@ this.remove = remove;
 this.userRegistered = userRegistered;
 this.playedCount = playedCount;
 this.leaderboard = leaderboard;
+this.playedTop = playedTop;

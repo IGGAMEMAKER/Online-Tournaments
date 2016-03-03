@@ -82,7 +82,7 @@ app.post('/UserGetsData', function (req, res){
 	var data = req.body;
 	res.end('');
 	//
-	
+
 })
 
 var OK = { result: 'OK' };
@@ -121,6 +121,13 @@ function LogToFile(filename, text){
 	})
 }
 
+
+
+function errorMiddleware(err, req, res, next){
+	console.error('errorMiddleware', err)
+	res.json({err:err});
+}
+
 function FastLog(text){
 	var time = new Date();
 	//strLog(time);
@@ -133,21 +140,99 @@ function FastLog(text){
 	//strLog('FastLog: ' + text);
 }
 
-app.post('/Move', function (req,res){
+function is_numeric(val){ return !isNaN(val); }
+
+// function isSendedMovement(login, gameID){
+// 	if (!(gameID && is_numeric(gameID) && login && playerExists(login, gameID)>=0 )) return;
+
+// 	if (games && games[gameID]){
+// 		if (!games[gameID].movements) {
+// 			games[gameID].movements = {} // if movements object doesn't exist - create it!
+// 		}
+
+// 	}
+// 	games[gameID].movements
+// }
+
+function gameExists(req, res, next){
+	var tournamentID = req.tournamentID;
+	if (!tournamentID) return next('gameExists: no tournamentID');
+
+	if (!is_numeric(tournamentID)) return next('gameExists: not numeric')
+
+	if (!games) return next('gameExists: NO GAMES!!');
+
+	if (!games[tournamentID]) return next('gameExists: gameExists false')
+
+	next();
+}
+
+function getGameID(req, res, next){
+	if (req.body.tournamentID) {
+		req.tournamentID = req.body.tournamentID;
+		next();
+	} else {
+		if (req.body.gameID) {
+			req.tournamentID = req.body.gameID;
+			next();
+		} else {
+			next('no gameID');
+		}
+	}
+}
+
+function loggedin(req, res, next){
+	if (req.body.login){
+		req.login = req.body.login;
+		next()
+	} else {
+		next('needs login');
+	}
+}
+
+function movement_stats(login, gameID){
+	if (!games[gameID].movements) games[gameID].movements = {};
+
+	if (!games[gameID].movements[login]){
+		games[gameID].movements[login] = 1;
+		sendStatistic('movement');
+	}
+}
+
+function count_movement_to_stats(req, res, next){ // needs game_available check and loggedin
+	var login = req.login;
+	var gameID = req.tournamentID;
+
+	var player_exists = playerExists(login, gameID) >= 0; // playerExists(login, gameID)>=0
+
+	if (req.body.movement && player_exists){
+		movement_stats(login, gameID);
+
+		console.error('movements', games[gameID].movements);
+	} else {
+		console.error('movement', 'player_exists', req.body.movement, player_exists)
+	}
+	next();
+}
+
+var game_available = [getGameID, gameExists]
+
+app.post('/Move', game_available, loggedin, count_movement_to_stats, function (req, res){
 	var data = req.body;
 	MoveHead(data);
 	var gameID = data.gameID;
+
 	res.json(games[gameID].gameDatas);
-});
+}, errorMiddleware);
 
 function MoveHead(data){
 	var tournamentID = data.tournamentID;
-  	var gameID = data.gameID;
-  	var movement = data.movement;
-  	var userLogin = data.login;
-  	//strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
-  	Stats('')
-  	Move(tournamentID, gameID, movement, userLogin);
+	var gameID = data.gameID;
+	var movement = data.movement;
+	var userLogin = data.login;
+	//strLog('Movement of '+ userLogin + ' is: '+ JSON.stringify(movement));
+
+	Move(tournamentID||null, gameID||null, movement||null, userLogin||null);
 }
 
 var OPTIONS = {};
@@ -198,6 +283,8 @@ function RenderGame (req, res){
 				login:login,
 				parameters: getParameters?getParameters(tID, login) : ''
 			});
+
+			sendStatistic('sended');
 		} else {
 			res.status(404);
 			res.type('txt').send('Турнир #'+ tID + ' завершён или не был начат. ');
@@ -264,6 +351,7 @@ function Move( tournamentID, gameID, movement, userName){//Must get move from Re
 			if (gameServerType==GST_SYNC){
 				if (playerID==games[gameID].curPlayerID){
 					Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
+					movement_stats(login, gameID);
 					//switchCurPlayerID(gameID);
 					return;
 				} //else{
@@ -271,6 +359,7 @@ function Move( tournamentID, gameID, movement, userName){//Must get move from Re
 			}
 			else{
 				Action(gameID, playerID, movement, userName);//GET ACTION FROM GAMESERVER
+				movement_stats(userName, gameID);
 				return;
 			}
 		} //	else{
@@ -334,16 +423,6 @@ function setRoom(ID){
 			MoveHead(data);
 		});
 	});
-}
-
-function gameExists(req, res, next){
-	var gameID = req.body.gameID;
-
-	if (gameID && games[gameID] && isRunning(gameID)){
-		next();
-	} else {
-		next('gameExists null');
-	}
 }
 
 app.post('/Join', function (req, res){
@@ -499,8 +578,7 @@ function stopGame(ID){
 	if (games[ID]){
 		games[ID].isRunning = false;
 		StopTMR(ID);
-	}
-	else{
+	} else {
 		strLog('stopGame that DOES NOT exist : ' + ID, 'WARN');
 	}
 	//games[ID] = null;
@@ -514,6 +592,11 @@ function stopGame(ID){
 	SendToRoom(ID, 'finish', { winner:'Error', players: {} });
 	
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
+}
+
+function sendStatistic(url){
+	// console.error(url);
+	sender.sendRequest('mark/game/'+url, {} , '127.0.0.1', 'site', null , sender.printer);
 }
 
 function ManualFinishGame(tournamentID, gameResult){
@@ -602,6 +685,7 @@ var host;
 var port;
 var gameName;
 var getParameters;
+
 function StartGameServer(options, initF, updateF, actionF, updateTime, parameterF){
 	//if (options.port)
 	strLog('Trying to StartGameServer: ' + options.gameName);

@@ -62,8 +62,15 @@ passport.use(new VKontakteStrategy({
     //console.log('passport.use', profile);
 
     sender.sendRequest("findOrCreateUser", profile, '127.0.0.1', 'DBServer', null, function (err, response, body, res){
-      if (err) return done(err, null);
-      if (!body) return done(12, null);
+      if (err) {
+        Errors.add(null, 'passport.use', { profile:profile, err:err });
+        return done(err, null);
+      }
+
+      if (!body) {
+        Errors.add(null, 'passport.use.body.null', { err:err });
+        return done(12, null);
+      }
 
       return done(null, body);
     });
@@ -107,6 +114,7 @@ app.use(function(req,res,next){
   //console.log('req.user', req.user, 'req.session', req.session);
 
   requestCounter++;
+  /*
   switch(req.url){
     case '/Log':
     case '/Admin':
@@ -121,6 +129,7 @@ app.use(function(req,res,next){
       //console.log('Site: Request! ' + req.url);
     break;
   }
+  */
   
   res.locals.session = req.session;
   //res.locals.vkUser = req.user;
@@ -582,6 +591,8 @@ function session_save(req, res, next){
     // next();
   })
 }
+
+
 
 var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
 

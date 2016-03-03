@@ -142,14 +142,14 @@ function autoreg(){
   });
 }
 
-function stat_noMoney(tournamentID, money){
-  setAsync('NoMoney', {tournamentID:tournamentID, money:money});
+function stat_noMoney(tournamentID, money){ 
+  setAsync('NoMoney', {tournamentID:tournamentID, money:money}); 
+
+  mark('NoMoney');
 }
 
 
-function getTournaments(){
-  return JSON.parse(getFromStorage('tournaments')) ;
-}
+function getTournaments(){ return JSON.parse(getFromStorage('tournaments')); }
 
 function setAsync(url, data, success){
   $.ajax({
@@ -165,7 +165,7 @@ function mark(url, data, method){
   $.ajax({
     url:url
     , method: method || 'POST'
-    , data:printer
+    , data:data
   })
 }
 

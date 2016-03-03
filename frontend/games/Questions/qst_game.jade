@@ -18,7 +18,7 @@ mixin drawTableOfResults()
 html
 head
 	include ../../views/templates/head
-	include ../../views/templates/googleAd
+	//include ../../views/templates/googleAd
 	link(rel="stylesheet" type="text/css" href="qst_game.css")
 center
 	h1!= Questions
@@ -41,7 +41,7 @@ center
 						//+radioButton(5, 'Answer5')
 						div#results
 							+drawTableOfResults()
-						+googleAdvert()
+						//+googleAdvert()
 								
 
 script( src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").

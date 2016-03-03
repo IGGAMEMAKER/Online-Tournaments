@@ -24,7 +24,7 @@ function drawButton(host, port, tournamentID){
   var txt = '<p>AAAAAAAA</p>';
 
   var onclick = "mark('mark/game/push')";//, { login:login }
-  console.log(onclick);
+  // console.log(onclick);
 
   txt='<form id="form1" method="post" onclick="'+ onclick + '" action="'+addr+'"  target="_blank"> '
 
@@ -32,7 +32,7 @@ function drawButton(host, port, tournamentID){
   +'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
   +'</form>';
 
-  console.log('drawButton', txt);
+  // console.log('drawButton', txt);
   
   $(BUTTON_FIELD).append(txt);
   //console.log('appended: ' + host, port, tournamentID);
@@ -346,7 +346,7 @@ function closePopup(name){
 function drawPopup(){
   //prt('OPEN POPUUUUUUP!!!!');
   //document.getElementById('tournaments').style.display='block';
-  console.log('StartTournament mark');
+  // console.log('StartTournament mark');
   mark('mark/game/drawPopup', { login:login }); // , 'GET'
   // console.log('StartTournament mark ended');
 

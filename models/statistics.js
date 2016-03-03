@@ -267,7 +267,7 @@ function updateDaily(tag, updateQuery){
 			if (helper.updated(count)) return resolve(1);
 
 			// throw new Error('updateDaily failed')
-			console.error('updateDaily', tag, updateQuery);
+			// console.error('updateDaily', tag, updateQuery);
 			return reject('updateDaily failed ' + tag);
 		})
 	})

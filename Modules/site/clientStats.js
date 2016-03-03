@@ -4,6 +4,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var Promise = require('bluebird');
 	// var Stats = sender.Stats;
 	var Stats = require('../../models/statistics');
+	var TournamentRegs = require('../../models/tregs')
 	var time = require('../../helpers/time');
 	//var strLog = Log;
 
@@ -65,7 +66,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		Stats.attempt('game-'+ name)
 
 		// Stats('/mark/game/'+name, {login:login, tournamentID:tournamentID });
-		// Stats.attempt('')
 	})
 	
 	//statistics Data
@@ -74,6 +74,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
 		//res.render('Stats');
 	})
+
+// middlewares and helpers
 
 	function json(req, res, next){
 		if (req.err) {
@@ -106,11 +108,43 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 	var std = [json, send_error];
 
+	var draw_list = [drawList, send_error];
+
+	function drawList(req, res, next){
+		var list = req.data || [];
+		var txt='';
+		console.log(list);
+		for (var i=0; i<list.length; i++){
+			txt += JSON.stringify(list[i]) + '\n';
+		}
+		res.end(txt);
+		// if (txt) {
+		// 	next();
+		// } else {
+		// 	next({});
+		// }
+	}
+
+	app.get('/playedTop', function (req, res, next){
+		// var num = parseInt(req.query.num||1);
+		var playedMoreThan = parseInt(req.query.num) || 1; //req.query.num || 1;
+		TournamentRegs.playedTop(playedMoreThan)
+		.then(answer(req, next))
+		.catch(next);
+
+	}, draw_list)
+
+	function render(renderPage){
+		return function(req,res, next){
+			res.render(renderPage, { msg: req.data })
+		}
+	}
+
 	app.get('/Stats2', function (req, res, next){
 		var date = req.query.date || null;
 
 		Stats.get(date)
-		.then(printer)
+		// .then(printer)
 		.then(answer(req, next))
 		.catch(next)
 
@@ -121,7 +155,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 			next();
 
 			// res.json({ data:data })
-		})*/
+		})
+*/
 
-	}, std)
+	}, render('statistics') ) //draw_list
 }
