@@ -158,5 +158,5 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		})
 */
 
-	}, render('statistics') ) //draw_list
+	}, render('Statistics'), send_error) //draw_list
 }

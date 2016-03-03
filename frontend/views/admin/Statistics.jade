@@ -15,7 +15,7 @@ mixin drawActions(actions)
 			thead
 				tr
 					th №
-					th Игрок
+					th Название
 					th Действие
 					th Время
 			tbody
@@ -23,11 +23,13 @@ mixin drawActions(actions)
 					tr
 						td!= ind
 						td
-							a(href="UserInfo/"+action.login) #{action.login}
+							//a(href="UserInfo/"+action.login) #{action.login}
+							p!= action.tag
 						td
-							span !{action.type}
-							+drawAux(action)
-
+							//span !{action.type}
+							//+drawAux(action)
+							p!= "Attempts: " + action.attempt
+							p!= "Fail: " + action.fail
 						td!= action.date
 
 html
@@ -35,8 +37,8 @@ html
 		include ../templates/event_helper
 		+AdminHead()
 	body
-		- //p!= JSON.stringify(message);
+		p!= JSON.stringify(msg)
 		center(style="width='100%;'")
 			+LinkHeader()
-			+TimeViewer("Errors")
+			+TimeViewer("Stats")
 			+drawActions(msg)
