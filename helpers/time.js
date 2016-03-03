@@ -17,6 +17,9 @@ module.exports = {
 	},
 	happened_in_period: function(d1, d2){
 		return queryPeriod(d1, d2);
+	},
+	happened_during_N_days: function(N){
+		return dayQuery(new Date(), -N);
 	}
 
 }

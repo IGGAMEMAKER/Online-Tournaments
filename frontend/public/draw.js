@@ -23,12 +23,16 @@ function drawButton(host, port, tournamentID){
     
   var txt = '<p>AAAAAAAA</p>';
 
-  txt='<form id="form1" method="post" action="'+addr+'"  target="_blank"> '
+  var onclick = "mark('mark/game/push')";//, { login:login }
+  console.log(onclick);
+
+  txt='<form id="form1" method="post" onclick="'+ onclick + '" action="'+addr+'"  target="_blank"> '
 
   +'<input type="hidden" name="login" value="'+login+'" />'
   +'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
   +'</form>';
 
+  console.log('drawButton', txt);
   
   $(BUTTON_FIELD).append(txt);
   //console.log('appended: ' + host, port, tournamentID);
@@ -40,7 +44,7 @@ function drawButton(host, port, tournamentID){
 
 
 function drawPlayButtons(){
-  console.log('------------\ndrawPlayButtons');
+  // console.log('------------\ndrawPlayButtons');
   runningCount=0;
   var tournaments = getTournaments();        // prt(tournaments);
   var addresses   = getObject('addresses');  // console.log('addresses',addresses);
@@ -49,7 +53,7 @@ function drawPlayButtons(){
   
   if (tournaments && addresses){
     //clearButtonField();
-    console.log('clearButtonField');
+    // console.log('clearButtonField');
     $(BUTTON_FIELD).html('<br />');
 
     for (var i = tournaments.length - 1; i >= 0; i--) {
@@ -69,7 +73,7 @@ function drawPlayButtons(){
   }
 
   if (runningCount==0) { 
-    console.log('no tournaments. runningCount=0');
+    // console.log('no tournaments. runningCount=0');
     $(BUTTON_FIELD).append('Нет запущенных турниров'); //closePopup('tournaments');
     //drawPopup();
   } else {
@@ -342,6 +346,10 @@ function closePopup(name){
 function drawPopup(){
   //prt('OPEN POPUUUUUUP!!!!');
   //document.getElementById('tournaments').style.display='block';
+  console.log('StartTournament mark');
+  mark('mark/game/drawPopup', { login:login }); // , 'GET'
+  // console.log('StartTournament mark ended');
+
   $(myModal).modal('show');
   //alert("Турнир начинается");
   //prt('popup opened');

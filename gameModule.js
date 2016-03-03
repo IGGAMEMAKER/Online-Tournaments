@@ -78,8 +78,15 @@ app.get('/Move', function (req, res){
 	res.end('Move GET works');
 });
 
-var OK = {result: 'OK'};
-var Fail = {result: 'Fail'};
+app.post('/UserGetsData', function (req, res){
+	var data = req.body;
+	res.end('');
+	//
+	
+})
+
+var OK = { result: 'OK' };
+var Fail = { result: 'Fail' };
 
 app.post('/IsRunning', function (req, res) {
 	var data = req.body;

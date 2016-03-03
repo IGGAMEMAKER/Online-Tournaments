@@ -147,7 +147,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				AsyncRender('DBServer', 'autoreg', res, null,  data);
 			}
 			else{
-				sender.Answer(res, fail);
+				sender.Answer(res, Fail);
 				//res.redirect('Login');
 			}
 		})

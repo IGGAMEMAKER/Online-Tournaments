@@ -52,7 +52,7 @@ function saveProfile(drawFunction){
 		if (drawFunction) drawFunction();
 
 		if(tournaments.length==0) { 
-			console.log('no tournaments'); 
+			// console.log('no tournaments'); 
 			drawPlayButtons(); 
 		}
 		var convert = 1;
@@ -119,7 +119,7 @@ function resetRunningTournaments(){
 }
 
 function setRunningTournaments(){
-	console.log('hasRunningTournaments');
+	// console.log('hasRunningTournaments');
 	saveInStorage('hasRunningTournaments', 1);
 }
 

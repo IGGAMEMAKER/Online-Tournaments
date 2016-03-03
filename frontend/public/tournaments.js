@@ -434,9 +434,10 @@ function draw_playButton(tournamentID){
 		+'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
 		+'</form>';*/
 
+		var onclick = "mark('mark/game/push')";
 
 		var txt = '<li id="play-btn'+tournamentID + '">'+
-		'<form id="play-btn'+tournamentID+'" method="post" action="'+addr+'"  target="_blank"> '
+		'<form id="play-btn'+tournamentID+'" method="post" onclick="'+onclick + '" action="'+addr+'"  target="_blank"> '
 
 		+ '<input type="hidden" name="login" value="'+login+'" />'
 		+ '<input type="submit" class="btn btn-default" value="ИГРАТЬ!" />'

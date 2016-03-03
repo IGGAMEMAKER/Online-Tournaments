@@ -1,28 +1,28 @@
 /*
 
-var ClientGameStats = mongoose.model('ClientGameStats', {
-	ID:String, //tournamentID
-	login:String,
-	started:Number, //1 - tournament started
-	loaded:Number,
-	recievedData:Number, // 1 - if user got data from backend (questions in QS, coordinates in PP)
-	movements:Number // gt 0 - user increments this when he plays
-})
+	var ClientGameStats = mongoose.model('ClientGameStats', {
+		ID:String, //tournamentID
+		login:String,
+		started:Number, //1 - tournament started
+		loaded:Number,
+		recievedData:Number, // 1 - if user got data from backend (questions in QS, coordinates in PP)
+		movements:Number // gt 0 - user increments this when he plays
+	})
 
-var DailyStats = mongoose.model('DailyStats', {
-	mail:Number,
-	mailFail:Number,
+	var DailyStats = mongoose.model('DailyStats', {
+		mail:Number,
+		mailFail:Number,
 
-	register:Number,
-	registerOK:Number,
-	registerFail:Number,
+		register:Number,
+		registerOK:Number,
+		registerFail:Number,
 
-	resetPassword:Number,
-	resetPasswordOK:Number,
-	resetPasswordFail:Number,
+		resetPassword:Number,
+		resetPasswordOK:Number,
+		resetPasswordFail:Number,
 
-	date:Date
-})
+		date:Date
+	})
 
 */
 
@@ -93,7 +93,7 @@ function findOrCreateDaily(tag){
 	}*/
 
 	return new Promise(function (resolve, reject){
-		Statistic.findOne({ date: time.happened_today() })
+		Statistic.findOne({tag:tag, date: time.happened_today() })
 		.exec(function (err, statistic){
 			if (err) return reject(err);
 			// if (stat)
@@ -266,7 +266,9 @@ function updateDaily(tag, updateQuery){
 
 			if (helper.updated(count)) return resolve(1);
 
-			reject(null);
+			// throw new Error('updateDaily failed')
+			console.error('updateDaily', tag, updateQuery);
+			return reject('updateDaily failed ' + tag);
 		})
 	})
 }
@@ -278,7 +280,7 @@ var log = console.log;
 function attempt_daily(tag, auxillaries){
 	return findOrCreateDaily(tag)
 	.then(function (result){
-		// log('findOrCreateDaily', result);
+		log('findOrCreateDaily', tag, result);
 		return updateDaily(tag, {$inc: { attempt: 1 } })
 	})
 }
@@ -292,20 +294,15 @@ function fail_daily(tag, auxillaries){
 }
 
 
-function get_daily(){
-	return Statistic.find({ date : time.happened_today() })
-	.exec(function (err, statistics){
+function get_daily(date){
+	var dateString = date ? time.happened_during_N_days(date) : time.happened_today();
+	return Statistic.find({ date : dateString }, function (err, statistics) {
 		return new Promise(function (resolve, reject){
 			if (err) return reject(err);
 
 			resolve(statistics||null);
+			// reject('ARR');
 		})
-		/*.then(function (statistics){
-			// log('get_daily', statistics)
-		})
-		.catch(function (err){
-			// log('get_daily', err)
-		})*/
 	})
 }
 

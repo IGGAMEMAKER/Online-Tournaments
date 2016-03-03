@@ -104,15 +104,17 @@ function updateFrontend(frontendVersion){
 
 
 function StartTournament(tournamentID){
+  console.log('StartTournament', tournamentID);
+
   if (isActiveTab()){
     if (userIsRegisteredIn(tournamentID)){
       // window.scrollTo(0,0); 
       
       // playAudio();
       var audio = new Audio('sounds/TOURN_START.wav'); audio.play();
-      
       drawPopup();
-      mark('mark/game/drawPopup', { tournamentID:tournamentID, login:login }); // , 'GET'
+    } else {
+      console.log('Not registered in', tournamentID);
     }
   }
 }
@@ -159,10 +161,11 @@ function setAsync(url, data, success){
 }
 
 function mark(url, data, method){
+  // console.log('mark', url, data, method);
   $.ajax({
     url:url
     , method: method || 'POST'
-    , data:data || null
+    , data:printer
   })
 }
 

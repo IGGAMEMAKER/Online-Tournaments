@@ -4,6 +4,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var Promise = require('bluebird');
 	// var Stats = sender.Stats;
 	var Stats = require('../../models/statistics');
+	var time = require('../../helpers/time');
 	//var strLog = Log;
 
 	app.post('/AttemptToStart', function (req, res){
@@ -34,9 +35,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 		var login = req.body.login;// getLogin(req);
 		var tournamentID = req.body.tournamentID;
+
 		// console.log('GameLoaded : ' + login + ' ' + tournamentID);
 		// Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 
+		console.log('Stats CATCHED HERE', 'GameLoaded : ' + login + ' ' + tournamentID);
 		Stats.attempt('gameLoaded')
 	})
 
@@ -48,13 +51,18 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		// console.log('No money for '+tournamentID + ' need: ' + money, 'Money');
 	})
 
-	app.post('/mark/game/:name', function (req, res){
-		res.end('');
-		var tournamentID = req.body.tournamentID;
-		var name = req.params.name;
-		var login = req.body.login||null;
+	// Stats.attempt('game-drawPopup')
 
-		console.log('mark/game/', name, tournamentID, login);
+	app.post('/mark/game/:name', function (req, res){
+		res.end('MARK GAME RECEIVED');
+
+		// var tournamentID = req.body.tournamentID;
+		var name = req.params.name;
+		// var login = req.body.login||null;
+
+		// console.log('mark/game/', name)//, tournamentID, login);
+
+		Stats.attempt('game-'+ name)
 
 		// Stats('/mark/game/'+name, {login:login, tournamentID:tournamentID });
 		// Stats.attempt('')
@@ -63,17 +71,57 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	//statistics Data
 	
 	app.get('/Stats', function (req, res){
-		
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
 		//res.render('Stats');
 	})
-	app.get('/Stat2', function (req, res){
-		Stats.get()
+
+	function json(req, res, next){
+		if (req.err) {
+			res.json({ err: req.err })
+		} else {
+			res.json({ data: req.data || null })
+		}
+	}
+
+	function send_error(err, req, res, next){
+		console.error(err);
+		res.json({ err: err });
+	}
+
+	// function get_stats(req, res, next){
+	// 	return
+	// }
+
+	function answer(req, next){
+		return function (data){
+			req.data = data;
+			next();
+		}
+	}
+
+	function printer(msg){
+		console.log(msg);
+		return msg;
+	}
+
+	var std = [json, send_error];
+
+	app.get('/Stats2', function (req, res, next){
+		var date = req.query.date || null;
+
+		Stats.get(date)
+		.then(printer)
+		.then(answer(req, next))
+		.catch(next)
+
+/*		
 		.then(function (data){
-			res.json({data:data})
-		})
-		.catch(function (err){
-			res.json({err:err})
-		})
-	})
+			// throw new Error('my','bla bla');
+			req.data = data;
+			next();
+
+			// res.json({ data:data })
+		})*/
+
+	}, std)
 }

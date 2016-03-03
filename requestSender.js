@@ -70,6 +70,7 @@ function strLog(text, topic){
 	var txt = serverName +' : ' + text;
 	
 	var logDirectory = __dirname + '/Logs/'+getDay(time)+'/';
+	// var logDirectory = '/tournaments/Logs/'+getDay(time)+'/';
 	
 	fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 	var path = 'Full_message_';
