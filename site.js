@@ -365,7 +365,12 @@ function FinishGame(req, res){
   var winnerCount = data.places[1] || null;
   var prizes = data.prizes || null;
 
-  Send('FinishTournament', { tournamentID : data.tournamentID, winners:winners, count:winnerCount, prizes:prizes });
+  Send('FinishTournament', { 
+    tournamentID : data.tournamentID,
+    winners:winners,
+    count:winnerCount,
+    prizes:prizes 
+  });
 }
 
 
@@ -638,7 +643,7 @@ app.post('/Tell', isAdmin, function (req, res){
   var action = req.body.action;
 
   console.log('Tell', message, req.body);
-  Send('Tell', {message:message, action:action||null});
+  Send('Tell', { message:message, action:action || null });
 
   res.render('Tell');
 })
@@ -847,6 +852,7 @@ var clients = [];
 var io;
 if (socket_enabled){
   io = require('socket.io')(server);
+
   /*io.set('transports', [
       'websocket'
     , 'flashsocket'
@@ -858,9 +864,13 @@ if (socket_enabled){
       'websocket'
     , 'polling'
   ]);*/
+
+  
+
   io.on('connection', function(socket){
     //console.log('IO connection');
     //socket.join('/111');
+
     socket.on('chat message', function(msg){
       console.log(msg);
       io.emit('chat message', msg);
@@ -869,12 +879,11 @@ if (socket_enabled){
       sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
     });
 
-    //socket.on('')
+    // socket.on('event1', function(data){
+    //   SendToRoom('/111', 'azz', 'LALKI', socket);
+    //   //io.of('/111').emit('azz','LALKI');
+    // });
 
-    socket.on('event1', function(data){
-      SendToRoom('/111', 'azz', 'LALKI', socket);
-      //io.of('/111').emit('azz','LALKI');
-    });
   });
 }
 function Send(tag, message, force){

@@ -132,7 +132,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		.then(answer(req, next))
 		.catch(next);
 
-	}, draw_list)
+	}, render('playedTop'), send_error) //draw_list)
 
 	function render(renderPage){
 		return function(req,res, next){
