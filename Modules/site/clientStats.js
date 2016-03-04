@@ -5,6 +5,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	// var Stats = sender.Stats;
 	var Stats = require('../../models/statistics');
 	var TournamentRegs = require('../../models/tregs')
+	var Users = require('../../models/users')
 	var time = require('../../helpers/time');
 	//var strLog = Log;
 
@@ -128,6 +129,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		.catch(next);
 
 	}, render('playedTop'), send_error) //draw_list)
+
+
+	app.get('/moneyTop', function (req, res, next){
+		var moneyMoreThan = parseInt(req.query.money) || 1;
+		Users.moneyTop(moneyMoreThan)
+		.then(answer(req, next))
+		.catch(next);
+	}, render('Users'), send_error)
 
 	function render(renderPage){
 		return function(req,res, next){

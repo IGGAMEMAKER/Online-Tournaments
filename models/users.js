@@ -146,23 +146,16 @@ function setInviter(login, inviter, inviter_type){
 	})
 }
 
-function playedTop(playedMoreThan){
+function moneyTop(moneyMoreThan){
 	return new Promise(function (resolve, reject){
-		User.aggregate([
-		// { $match: { status : TOURN_STATUS_FINISHED } },
-		{
-			$group: {
-				_id: "$userID",
-				count: { $sum: 1 }
-			}
-		},
-		{ $match: { count: { $gt: playedMoreThan || 1 } } },
-		{ $sort: { count: -1 } },
-		], function (err, leaderboard){
+		User.find({ money : {$gt: moneyMoreThan } })
+		.sort('-money')
+		.exec(function (err, users){
 			if (err) return reject(err);
 
-			return resolve(leaderboard||[]);
+			return resolve(users||[]);
 		})
+
 	})
 }
 
@@ -413,3 +406,4 @@ module.exports.setInviter = setInviter;
 module.exports.changePassword = changePassword;
 module.exports.resetPassword = resetPassword;
 module.exports.create = create;
+module.exports.moneyTop = moneyTop;
