@@ -91,6 +91,12 @@ function getStreamID(login){
 	})
 }
 
+function specials(){
+	return new Promise(function (resolve, reject){
+		Tournament.find({ })
+	})
+}
+
 function start(tournamentID){	setTournStatus(tournamentID, TOURN_STATUS_RUNNING); }
 
 function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED); }

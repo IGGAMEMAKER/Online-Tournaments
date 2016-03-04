@@ -146,6 +146,26 @@ function setInviter(login, inviter, inviter_type){
 	})
 }
 
+function playedTop(playedMoreThan){
+	return new Promise(function (resolve, reject){
+		User.aggregate([
+		// { $match: { status : TOURN_STATUS_FINISHED } },
+		{
+			$group: {
+				_id: "$userID",
+				count: { $sum: 1 }
+			}
+		},
+		{ $match: { count: { $gt: playedMoreThan || 1 } } },
+		{ $sort: { count: -1 } },
+		], function (err, leaderboard){
+			if (err) return reject(err);
+
+			return resolve(leaderboard||[]);
+		})
+	})
+}
+
 /*function setInviter(login, inviter){
 	return new Promise(function (resolve, reject){
 		User.findOne({login:login}, function (err, user){

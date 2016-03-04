@@ -753,6 +753,7 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
   var login = getLogin(req);
   var index = req.accelerator;
   var marathon = req.marathon;
+  
   // console.log(index, marathon);
   if (index && marathon && marathon.accelerators[index]){
     var price = marathon.accelerators[index].price;
@@ -764,12 +765,15 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
     })
     .then(function (result){
       // console.log('marathon.sell_accelerator', result);
+      Actions.add(login, 'buyAccelerator', {accelerator:index})
       res.json({ result:result });
     })
     .catch(function (err){
+      Errors.add(login, 'buyAccelerator', { err:err, accelerator:index })
       res.json({err:err})
     })
   } else {
+    Errors.add(login, 'buyAccelerator', { err:'invalid data', accelerator:index })
     cancel(res);
     // res.json({result:0, code:CODE_INVALID_DATA});
   }
