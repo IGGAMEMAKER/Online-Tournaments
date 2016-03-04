@@ -148,13 +148,26 @@ function stat_noMoney(tournamentID, money){
   mark('NoMoney');
 }
 
+function buyAcceleratorResult(msg){
+  console.log('buyAcceleratorResult', msg);
+  if (msg.result==0 || msg.err){
+    alert('Ошибка. Возможно, на вашем счету недостаточно средств')
+  } else {
+    alert('Поздравляем! Вы будете набирать очки быстрее!')
+  }
+  // alert(msg);
+}
+
+function buyAccelerator(index){
+  setAsync('buyAccelerator/'+index, { }, buyAcceleratorResult, 'GET'); // maybe you need to show success modal?
+}
 
 function getTournaments(){ return JSON.parse(getFromStorage('tournaments')); }
 
-function setAsync(url, data, success){
+function setAsync(url, data, success, method){
   $.ajax({
     url: url,
-    method: 'POST',
+    method: method || 'POST',
     data:data,
     success: success|| printer
   });

@@ -3,6 +3,24 @@ extends layout
 
 include Leaderboard
 
+mixin parameter(text, value)
+	//p(class="white")!= text + ": " + value 
+	if value<=4
+		p(class="white text-center")!= text + " " + value + " балла за турнир!"
+	else
+		p(class="white text-center")!= text + " " + value + " баллов за турнир!" 
+
+mixin accelerator(id, value, price)
+	div(class="col-sm-4 accelerator" id="accelerator"+id)
+			h2(class="white text-center") Ускоритель #{value}
+			//div(class="col-sm-12")
+			img(width="100%" height="200")
+			br
+			+parameter("Получите ", value)
+			center
+				a(onclick="buyAccelerator("+id+")" class="btn btn-success") Купить за #{price} монет
+
+
 block content
 
 	div(class="col-sm-12 white")
@@ -26,14 +44,16 @@ block content
 	div(class="col-sm-12" id="accelerator")
 		h2(class="mg-md text-center white") Что такое ускоритель?
 		p(class="white") Ускоритель - это то, что поможет набирать очки быстрее соперников!
-		p(class="white") Вы получаете 1 очко за каждый сыгранный турнир.
-		p(class="white") С ускорителем 10, вы получите 10 очков за каждый сыгранный турнир!
+		p(class="white") Вы получаете 1 балл за каждый сыгранный турнир.
+		p(class="white") С ускорителем 9, вы получите 9 очков за каждый сыгранный турнир!
 
-		p(class="white") Ускоритель 4 стоит 20 монет. Вы сможете улучшить его до 12 (за 20 монет)
-		p(class="white") Ускоритель 7 стоит 35 монет. Вы сможете улучшить его до 10 (за 35 монет)
+		// p(class="white") Ускоритель 4 стоит 20 монет.
+		// p(class="white") Ускоритель 7 стоит 35 монет.
 
-		//p(class="white") Ускоритель 40 стоит 80 монет. Это самый лучший ускоритель! 
-			Вы можете приобрести его в воскресенье, если у вас нет ускорителей 4, 7, 10 и 12.
+		br
+		+accelerator(0, 4, 20)
+		+accelerator(1, 7, 35)
+		+accelerator(2, 9, 50)
 
 	div(class="col-sm-12" id="free")
 		h2(class="mg-md text-center white") Хотите получить ускоритель бесплатно?
@@ -58,7 +78,7 @@ block content
 						//	$( "#shareLink1" ).click(function() {
 						//		$( "#shareLink" ).focus();
 						//	});
-					input(id="shareLink" onclick="SelectAll('shareLink');" style="width:450; box-sizing : border-box;" type="text" value="http://online-tournaments.org/register?inviter="+session.login)
+					input(id="shareLink" onclick="SelectAll('shareLink');" style="width:100%; box-sizing : border-box;" type="text" value="http://online-tournaments.org/register?inviter="+session.login class="fit")
 					// p(id="shareLink" onclick="SelectAll('shareLink');") aaa
 					//| http://online-tournaments.org/register?inviter=+session.login
 			li(class="list-group-item")

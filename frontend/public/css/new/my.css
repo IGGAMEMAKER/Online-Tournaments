@@ -138,6 +138,21 @@
   float: left;
 }
 
+.fit
+{
+  overflow-X: hidden;
+}
+
+.accelerator
+{
+  /*height: 400px;*/
+  padding-top: 10px;
+  padding-bottom: 20px;
+
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
 .ticket-card .body .info .tickets-left
 {
   float: right;
