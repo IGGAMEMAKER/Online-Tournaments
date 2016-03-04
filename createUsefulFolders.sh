@@ -7,3 +7,9 @@ mkdir -p /tournaments/configs
 	mkdir -p /tournaments/configs/app
 	mkdir -p /tournaments/configs/games
 	mkdir -p /tournaments/configs/nginx
+mkdir -p /tournaments/Logs
+	mkdir -p /tournaments/Logs/Errors
+	mkdir -p /tournaments/Logs/Games
+	mkdir -p /tournaments/Logs/Output
+	mkdir -p /tournaments/Logs/Tournaments
+	mkdir -p /tournaments/Logs/Users

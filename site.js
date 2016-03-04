@@ -114,22 +114,6 @@ app.use(function(req,res,next){
   //console.log('req.user', req.user, 'req.session', req.session);
 
   requestCounter++;
-  /*
-  switch(req.url){
-    case '/Log':
-    case '/Admin':
-    break;
-    case '/Profile':
-      //asd();
-      //var a = 1/0;
-      //console.error(a);
-      //throw new Error('Catch Me If You Can');
-    break;
-    default:
-      //console.log('Site: Request! ' + req.url);
-    break;
-  }
-  */
   
   res.locals.session = req.session;
   //res.locals.vkUser = req.user;
@@ -623,12 +607,29 @@ app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, functio
   // saveSession(req, res, inviter, login);
 })
 
+var fs = require('fs');
+
 //app.get('/invite', )
 
+app.get('/getLogs', isAdmin, sender.getLogs, function (req, res){
+  // res.json({msg:'OK'})
+  res.render('Logs', { time:req.time, msg:req.files })
+}, function (err, req, res, next){
+  res.json({err:err});
+})
+
+app.get('/getLogFile', isAdmin, sender.getLogFile, function (req, res){
+  // res.json({msg:'OK'})
+  res.render('logViewer', { time:req.time, msg:req.file })
+}, function (err, req, res, next){
+  res.json({err:err});
+})
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
+
+  Actions.add('stopTournament', {tournamentID:tournamentID});
 
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
 })
@@ -775,7 +776,7 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
 })
 
 
-app.get('/giveAcceleratorTo/:login/:accelerator', middlewares.isAdmin, function (req, res){
+app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   var login = req.params.login;
   var accelerator = req.params.accelerator;
 
@@ -796,7 +797,7 @@ app.get('/giveAcceleratorTo/:login/:accelerator', middlewares.isAdmin, function 
 })
 
 
-app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
   var ammount = req.params.ammount;
 

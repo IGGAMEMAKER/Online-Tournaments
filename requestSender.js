@@ -11,6 +11,8 @@ this.getPort = getPort;
 this.setServer = setServer;
 this.Stats = Stats;
 this.customSend = customSend
+this.getLogs = getLogs;
+this.getLogFile = getLogFile;
 
 this.getDay = getDay;
 
@@ -51,6 +53,8 @@ gameNameIDList['4'] = 5003;
 
 var serverName;
 
+var topics = {};
+
 function setServer(srvName){
 	serverName = srvName;
 }
@@ -62,24 +66,71 @@ function getPort (r){
 function getGamePort (r){
 	return gameNameIDList[r];
 }
+
+var LOG_PATH =__dirname + '/Logs/';
+
+function getLogs (req, res, next){
+	var date = req.date|| new	Date();
+	
+	if (!date) return next('no date in logs');
+	var dir = LOG_PATH + getDay(date) + '/';
+
+	fs.readdir(dir, function (err, files){
+		console.log('readdir', dir);
+
+		if (err) return next(err);
+
+		var time = getDay(date);
+		req.time = time;
+		req.files = files;
+		next()
+	})
+}
+
+function getLogFile(req, res, next){
+	// console.log('getLogFile middleware')
+	var name = req.query.name;
+	var date = req.query.date || new Date();
+
+	// console.log(name, date);
+	
+	if (!name) return next('no filename');
+	var dir = LOG_PATH + date + '/';
+
+	var filename = dir + name;
+	// console.log('DIR NAME DATE', dir, name, date, '=', filename);
+
+	fs.readFile(filename,'utf8', function (err, file){
+		// console.log('readfile', filename);
+		if (err) return next(err);
+		// console.log(file);
+		var lines = file.split("\n");
+		req.file = lines;
+		next();
+	})
+}
+
 function strLog(text, topic){
+	topics[topic?topic:'all'] = 1;
 	var time = new Date();
 	//console.log(time);
 	//var txt = time+' ' + text;// + "\n";
 	var host = '127.0.0.1';
 	var txt = serverName +' : ' + text;
 	
-	var logDirectory = __dirname + '/Logs/'+getDay(time)+'/';
+	// var logDirectory = __dirname + '/Logs/'+getDay(time)+'/';
+	var logDirectory = LOG_PATH + getDay(time)+'/';
 	// var logDirectory = '/tournaments/Logs/'+getDay(time)+'/';
 	
 	fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
 	var path = 'Full_message_';
 	if (topic=='::') topic = 'Forever';
 	if (topic) path = topic;
 	logDirectory += path;
 	// ensure log directory exists
 	// console.log(txt);//logDirectory+':::::'+'\r\n'+
-	fs.appendFile(logDirectory+'.txt', '\r\n\n' +time +' '+ txt, function (err) {//'Logs/Full_message_'
+	fs.appendFile(logDirectory+'.txt', '\r\n' +time +' '+ txt, function (err) {//'Logs/Full_message_'
 		if (err) {
 			console.error('err: ' + JSON.stringify(err)); 
 			//sendRequest('Log', {msg:txt + ' err: ' + JSON.stringify(err)}, host, 'site', null, printer);

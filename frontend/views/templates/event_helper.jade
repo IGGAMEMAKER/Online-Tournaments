@@ -10,6 +10,8 @@ mixin LinkHeader()
 		+link("Errors", "Errors")
 		+link("Stats2", "Statistics")
 		+link("playedTop", "playedTop")
+		br
+		+link("getLogs", "getLogs")
 
 mixin TimeViewer(name)
 	h1 !{name}
@@ -21,7 +23,7 @@ mixin AdminHead()
 	title!= title
 	meta(charset="utf-8")
 	meta(name="description" content="")
-	meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+	//meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
 
 	link(rel="stylesheet" type="text/css" href="./css/bootstrap.css")
 	link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/style.css")

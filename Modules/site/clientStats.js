@@ -118,11 +118,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 			txt += JSON.stringify(list[i]) + '\n';
 		}
 		res.end(txt);
-		// if (txt) {
-		// 	next();
-		// } else {
-		// 	next({});
-		// }
 	}
 
 	app.get('/playedTop', function (req, res, next){

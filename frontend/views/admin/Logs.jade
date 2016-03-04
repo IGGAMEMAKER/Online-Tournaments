@@ -1,0 +1,16 @@
+//
+extends List
+
+block head
+	th #
+	th Название
+	th Время
+block raw
+
+block content
+	td!= ind
+
+	td
+		a(href="getLogFile?date="+time+"&name="+item target="_blank") #{item}
+	td
+		p!= time

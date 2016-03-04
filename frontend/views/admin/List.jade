@@ -1,0 +1,49 @@
+//
+
+mixin drawAux(action)
+	if action.auxillaries
+		case action.type
+			when 'tournament.join'
+				span    !{action.auxillaries.tournamentID}
+			when 'tournament.leave'
+				span    !{action.auxillaries.tournamentID}
+			default 
+				span (!{JSON.stringify(action.auxillaries)})
+
+
+
+mixin drawActions(items)
+		table(class="table table-bordered table-striped" style="width:70%;")
+			thead
+				tr
+					block head
+						th №
+						th Название
+						th Действие
+						th Время
+			tbody
+				each item, ind in items
+					tr
+						block content
+							td!= ind
+							td
+								//a(href="UserInfo/"+action.login) #{action.login}
+								p!= item.tag
+							td
+								//span !{action.type}
+								//+drawAux(action)
+								p!= "Attempts: " + item.attempt
+								p!= "Fail: " + item.fail
+							td!= item.date
+
+html
+	head
+		include ../templates/event_helper
+		+AdminHead()
+	body
+		block raw
+			p!= JSON.stringify(msg)
+		center(style="width='100%;'")
+			+LinkHeader()
+			+TimeViewer("Stats")
+			+drawActions(msg)
