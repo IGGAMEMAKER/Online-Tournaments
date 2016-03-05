@@ -91,9 +91,25 @@ function getStreamID(login){
 	})
 }
 
+/*
+function isSpecialTournament(tournament){
+	return tournament.settings && tournament.settings.special==SPECIALITY_SPECIAL;
+}
+*/
+var REGULARITY_NONE=0;
+var REGULARITY_REGULAR=1;
+var REGULARITY_STREAM=2;
+
+var SPECIALITY_SPECIAL=1;
+
 function specials(){
 	return new Promise(function (resolve, reject){
-		Tournament.find({ })
+		Tournament.find({ 'settings.special': SPECIALITY_SPECIAL, status:TOURN_STATUS_REGISTER }
+		, function (err, tournaments){
+			if (err) return reject(err);
+
+			resolve(tournaments);
+		})
 	})
 }
 
@@ -230,3 +246,8 @@ this.enable = enable;
 this.add = add;
 this.finish = finish;
 this.getStreamID = getStreamID;
+this.specials = specials;
+
+// specials()
+// .then(console.log)
+// .catch(console.error)

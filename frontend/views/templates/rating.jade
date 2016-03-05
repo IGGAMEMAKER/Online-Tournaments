@@ -1,0 +1,15 @@
+table(class="table rating")
+	thead 
+		tr 
+			th #
+			th Игрок
+			th Очки
+			th(class="games") Игры
+			th Приз
+			th(class="acceleratorValue") Ускоритель
+	tbody(id="ratingTab")
+		script.
+			var msg= !{JSON.stringify(msg)};
+			drawRating(msg||{ leaderboard:[] });
+div(class="col-md-12")
+		a(href="Marathon#accelerator0" class="btn btn-danger center-block" target="_blank") Заработайте очки быстрее!

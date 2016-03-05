@@ -13,8 +13,8 @@
 }
 
 .background {
-  /*background-image: url('dark_blue.jpg');*/
-  background-image: url('dark_brown.png');
+  background-image: url('dark_blue.jpg');
+  /*background-image: url('dark_brown.png');*/
 }
 
 .navbar-my{
@@ -194,6 +194,7 @@
     margin-left: 0em;
 }
 
+
 .marathon-multipliers
 {
   /*background: #F7F6F6;*/
@@ -217,22 +218,29 @@
 {
   .rating
   {
-    max-width: 260px;
+    /*max-width: 260px;*/
+    max-width: inherit;
+    /*width: 100%*/
+    overflow: hidden;
     margin-left: 0;
   }
   .subscribe
   {
-    max-width: 260px;
+    /*max-width: 260px;*/
+    max-width: inherit;
   }
-  /*.rating-id
-  {
-    display: none;
-  }*/
   .rating-lgn
   {
     overflow: hidden;
     max-width: 26px;
-    /*display: none;*/
+  }
+}
+
+@media (max-width: 470px)
+{
+  .acceleratorValue
+  {
+    display: none;
   }
 }
 
@@ -243,6 +251,10 @@
     overflow: hidden;
     margin-left: -20px;
     max-width: 260px;
+  }
+  .games
+  {
+    display: none;
   }
 }
 

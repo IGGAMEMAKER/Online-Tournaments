@@ -184,6 +184,14 @@ function continue_playing_button(){
  return '<a class="btn btn-lg btn-primary" onclick="autoreg()"> Продолжить играть! </a>'; 
 }
 
+function drawAutoReg(anchor){
+  $(anchor).append(autoRegButton());
+}
+
+function autoRegButton(){
+ return '<a class="btn btn-lg btn-primary center-block" style="margin-top:100px;" onclick="autoreg()"> Играть! </a>';  
+}
+
 function joinVk_button(){
   //return '<a '
 }
@@ -248,13 +256,17 @@ function drawRating(msg){
     var text = '';
 
     if (getLogin()==lgn) { style = "color:red;"}
-
+    var acceleratorValue = 1;
+    if (leaders[i].accelerator && leaders[i].accelerator.value){
+      acceleratorValue = leaders[i].accelerator.value;
+    }
     text = '<tr id="'+ lgn +'">' + 
       '<td class="rating-id">' + number + '</td>' + 
       '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
       '<td>' + points + '</td>' + 
-      '<td>' + count + '</td>' + 
+      '<td class="games">' + count + '</td>' + 
       '<td>' + prize + '</td>' + 
+      '<td class="acceleratorValue">' + acceleratorValue + '</td>'
     '</tr>';
     $(rating).append(text);
   }

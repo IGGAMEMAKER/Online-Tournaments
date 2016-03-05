@@ -47,9 +47,6 @@ block content
 		p(class="white") Вы получаете 1 балл за каждый сыгранный турнир.
 		p(class="white") С ускорителем 9, вы получите 9 очков за каждый сыгранный турнир!
 
-		// p(class="white") Ускоритель 4 стоит 20 монет.
-		// p(class="white") Ускоритель 7 стоит 35 монет.
-
 		br
 		+accelerator(0, 4, 20)
 		+accelerator(1, 7, 35)
@@ -88,8 +85,10 @@ block content
 
 		p(class="white" id="shareLink1") В случае победы вам достанется лишь 20% от приза. Т.е. если вы претендуете на приз в 1000 монет, то получите лишь 200.
 	
-	//div(class="col-sm-12")
-		h2(class="mg-md text-center white" id="Leaderboard") Таблица лидеров
+	div(class="col-sm-12" id="registerButton")
+		script.
+			drawAutoReg("#registerButton");
+		//h2(class="mg-md text-center white" id="Leaderboard") Таблица лидеров
 
 block title
 	title Гонка
