@@ -74,6 +74,15 @@
   /*margin: 0 auto;*/
 }
 
+.offset-bg{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.ratingHead{
+  padding-top:15px;
+}
+
 .img-wrapper{
 /*  width: 100%;
   text-align: center;*/
@@ -81,7 +90,8 @@
 /*      position:relative;
     display:inline-block;
     text-align:center;*/
-  opacity: .83;
+  /*opacity: .83;*/
+  opacity: .9;
 }
 .img-wrapper:hover{
   opacity: 1;
@@ -91,7 +101,10 @@
   overflow: hidden;
   border-radius: 4px;
 
-  /*height: 300px;*/
+
+  /*width-m: 280px;*/
+  /*height: 200px;*/
+
   /*background-image: url('img_flowers.jpg');*/
   /*background-size: cover;*/
 }

@@ -40,7 +40,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	// app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })
 
 	app.get('/Login', render('Login',{}) )
-	app.get('/Register', render(REG_TEMPLATE))
+	app.get('/Register', render('Register'))
 
 	
 	app.get('/ResetPassword', render('ResetPassword') )
@@ -60,7 +60,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		if (isValid(user)){
 			req.user= user;
 		} else {
-			return res.redirect('Register');
+			return res.redirect('/');
 		}
 
 

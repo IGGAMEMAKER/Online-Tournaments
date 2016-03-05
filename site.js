@@ -422,7 +422,7 @@ app.get('/', function (req,res){
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
     //res.render()
-    AsyncRender('DBServer', 'GetTournaments', res, { renderPage:'Tournaments' }, data);
+    AsyncRender('DBServer', 'GetTournaments', res, { renderPage:'main2' }, data);
   } else {
     res.render('main');
   }
@@ -565,7 +565,7 @@ function vkAuthSuccess(req, res, next) {
   // saveSession(req, res, inviter, login);
 }
 
-var AUTH_SUCCESS_REDIRECT_PAGE='Tournaments';
+var AUTH_SUCCESS_REDIRECT_PAGE='/';
 
 function session_save(req, res, next){
   var login = req.login;

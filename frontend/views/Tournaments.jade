@@ -25,11 +25,13 @@ mixin tabs()
 
 
 mixin rating()
-	h3(class="text-center" style="padding-top:15px;")
+	h3(class="text-center ratingHead")
 		| ТОП10 (
 		a(href="Leaderboard") все участники
 		| )
 	include templates/rating
+	//div(class="col-md-12")
+		a(href="Leaderboard") все участники
 
 mixin statContent()
 	div(class="content")
