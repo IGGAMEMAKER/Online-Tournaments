@@ -189,7 +189,7 @@ function drawAutoReg(anchor){
 }
 
 function autoRegButton(){
- return '<a class="btn btn-lg btn-primary center-block" style="margin-top:100px;" onclick="autoreg()"> Играть! </a>';  
+ return '<a class="btn btn-primary center-block" style="margin-top:8px;" onclick="autoreg()"> Играть! </a>';  
 }
 
 function joinVk_button(){
@@ -236,39 +236,41 @@ function getPrizeList(prizes, counts){
 }
 
 function drawRating(msg){
-  var leaders = msg.leaderboard;
-  // console.log('drawRating', msg);
-  var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
-  var rating = "#ratingTab";
-  $(rating).html("");
+  if (msg && msg.leaderboard){
+    var leaders = msg.leaderboard;
+    // console.log('drawRating', msg);
+    var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
+    var rating = "#ratingTab";
+    $(rating).html("");
 
+    for (var i=0; i<leaders.length;i++){
+      var lgn = leaders[i].login;
+      var count = leaders[i].played;
+      var points = leaders[i].points;
+      var prize = prizeByPlace(i, prizeList);
+      var number = i+1;
+      var style="";
 
-  for (var i=0; i<leaders.length;i++){
-    var lgn = leaders[i].login;
-    var count = leaders[i].played;
-    var points = leaders[i].points;
-    var prize = prizeByPlace(i, prizeList);
-    var number = i+1;
-    var style="";
+      var shortedLogin = shortenizeLogin(lgn);
 
-    var shortedLogin = shortenizeLogin(lgn);
+      var text = '';
 
-    var text = '';
-
-    if (getLogin()==lgn) { style = "color:red;"}
-    var acceleratorValue = 1;
-    if (leaders[i].accelerator && leaders[i].accelerator.value){
-      acceleratorValue = leaders[i].accelerator.value;
-    }
-    text = '<tr id="'+ lgn +'">' + 
-      '<td class="rating-id">' + number + '</td>' + 
-      '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
-      '<td>' + points + '</td>' + 
-      '<td class="games">' + count + '</td>' + 
-      '<td>' + prize + '</td>' + 
-      '<td class="acceleratorValue">' + acceleratorValue + '</td>'
-    '</tr>';
-    $(rating).append(text);
+      if (getLogin()==lgn) { style = "color:red;"}
+      var acceleratorValue = 1;
+      if (leaders[i].accelerator && leaders[i].accelerator.value){
+        acceleratorValue = leaders[i].accelerator.value;
+      }
+      text = '<tr id="'+ lgn +'">' + 
+        '<td class="rating-id">' + number + '</td>' + 
+        '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
+        '<td>' + points + '</td>' + 
+        '<td class="games">' + count + '</td>' + 
+        '<td>' + prize + '</td>' + 
+        '<td class="acceleratorValue">' + acceleratorValue + '</td>'
+      '</tr>';
+      $("#loading").hide();
+      $(rating).append(text);
+    } 
   }
 }
 

@@ -1,3 +1,4 @@
+//
 table(class="table rating")
 	thead 
 		tr 
@@ -9,7 +10,10 @@ table(class="table rating")
 			th(class="acceleratorValue") Ускоритель
 	tbody(id="ratingTab")
 		script.
-			var msg= !{JSON.stringify(msg)};
-			drawRating(msg||{ leaderboard:[] });
+			var msg= !{JSON.stringify(msg)}
+			drawRating(msg||{ leaderboard:[] })
+div(class="col-md-12")
+	center
+		img(id="loading" src="/img/loading1.gif")
 div(class="col-md-12")
 		a(href="Marathon#accelerator0" class="btn btn-danger center-block" target="_blank") Заработайте очки быстрее!

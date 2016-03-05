@@ -13,8 +13,30 @@
 }
 
 .background {
-  background-image: url('dark_blue.jpg');
+  /*background-image: url('dark_blue.jpg');*/
+  /*background: url('http://cdn.pcwallart.com/images/dark-wallpaper-2.jpg');*/
+  /*background: url('http://firmusasia.com/img/slide-03.jpg'); */
+  background: url('slide-03.jpg'); 
+  /* good one! */
+
+  /*background: url('https://images4.alphacoders.com/485/48578.jpg'); */
+
+  /*background-color: #263238;*/
+
   /*background-image: url('dark_brown.png');*/
+}
+
+.acceleratorImage{
+  opacity: 0.9;
+  border-radius: 3px;
+}
+
+.acceleratorImage:hover{
+  opacity: 1;
+}
+
+.offset{
+  margin-top: 20px;
 }
 
 .navbar-my{

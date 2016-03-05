@@ -8,36 +8,22 @@ block title
 	title Рейтинг
 
 mixin ratingTable(msg)
-	//h3(class="text-center" style="padding-top:15px;")
-		| Таблица участников марафона (
-		a(href="/") назад
-		| )
 	include templates/rating
-	//table(class="table rating")
-		thead 
-			tr 
-				th #
-				th Игрок
-				th Очки
-				th(class="games") Игры
-				th Приз
-				th(class="acceleratorValue") Ускоритель
-		tbody(id="ratingTab")
-			script.
-				var msg= !{JSON.stringify(msg)};
-				drawRating(msg);
 
 block content
 	center
 		h1(class="" style="color:white;")
-			| Таблица участников марафона(
-			a(href="/") назад
-			| )
+			| Таблица участников марафона
+			//(
+			//a(href="/") назад
+			//| )
 		if session
-			a(href="#"+session.login) где я?
+			a(href="#"+session.login) найти меня в списке
 		
 	div(class="bloc l-bloc bgc-white" id="bloc-1")
 		div(class="container")
 			div(class="row")
-				div(class="col-md-8 dataRule2")
+				div(class="col-sm-12 dataRule2")
 					+ratingTable(msg)
+					script.
+						$("#loading").hide();
