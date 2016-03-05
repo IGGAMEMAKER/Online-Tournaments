@@ -189,7 +189,7 @@ function drawAutoReg(anchor){
 }
 
 function autoRegButton(){
- return '<a class="btn btn-primary center-block" style="margin-top:8px;" onclick="autoreg()"> Играть! </a>';  
+ return '<a class="btn btn-primary center-block offset-md" onclick="autoreg()"> Играть! </a>';  
 }
 
 function joinVk_button(){
@@ -265,8 +265,8 @@ function drawRating(msg){
         '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
         '<td>' + points + '</td>' + 
         '<td class="games">' + count + '</td>' + 
-        '<td>' + prize + '</td>' + 
-        '<td class="acceleratorValue">' + acceleratorValue + '</td>'
+        '<td class="acceleratorValue">' + acceleratorValue + '</td>' +
+        '<td>' + prize + ' руб</td>' + 
       '</tr>';
       $("#loading").hide();
       $(rating).append(text);

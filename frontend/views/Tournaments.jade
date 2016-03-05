@@ -25,33 +25,11 @@ mixin tabs()
 
 
 mixin rating()
-
 	h3(class="text-center" style="padding-top:15px;")
 		| ТОП10 (
 		a(href="Leaderboard") все участники
 		| )
 	include templates/rating
-	//table(class="table rating" id="rating")
-		thead
-			tr
-				th #
-				th Игрок
-				th Очки
-				th(class="games") Игры
-				th Приз
-				th(class="acceleratorValue") Ускоритель
-		tbody(id="ratingTab")
-			//tr
-				td Рейтинг 
-				td обновляется 
-				td каждые 
-				td 8
-				td секунд
-	//div(class="col-md-12")
-		a(href="Leaderboard" class="btn btn-primary" target="_blank") Полный рейтинг
-	//br
-	//div(class="col-md-12")
-		a(href="Marathon#accelerator0" class="btn btn-danger center-block" target="_blank") Заработайте очки быстрее!
 
 mixin statContent()
 	div(class="content")

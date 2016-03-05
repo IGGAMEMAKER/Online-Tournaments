@@ -39,6 +39,11 @@
   margin-top: 20px;
 }
 
+.offset-md{
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
 .navbar-my{
   /*margin-top: 25px;*/
 }
