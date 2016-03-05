@@ -369,6 +369,8 @@ app.all('/StartTournament', function (req, res){
 });
 
 
+
+
 function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
 
 function getLogin(req){
@@ -420,7 +422,7 @@ app.get('/', function (req,res){
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
     //res.render()
-    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
+    AsyncRender('DBServer', 'GetTournaments', res, { renderPage:'Tournaments' }, data);
   } else {
     res.render('main');
   }
@@ -471,6 +473,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
     res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
   }
 })
+
 
 app.post('/', function (req, res){
   var data = req.body;

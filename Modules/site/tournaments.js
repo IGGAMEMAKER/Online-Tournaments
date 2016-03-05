@@ -1,6 +1,8 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, proxy){
 var Fail = { result:'fail'};
 
+var Tournaments = require('../../models/tournaments');
+var middlewares = require('../../middlewares')
 //var Actions = require('../../models/actions');
 
 var PRICE_FREE = 4;
@@ -170,6 +172,17 @@ var upload = multer({ storage: storage }).single('image');
       default: return 'null'; break;
     }
   }
+
+  app.get('/specials', middlewares.isAdmin, function (req, res){
+    Tournaments.specials()
+    .then(function (result){
+      console.log('specials', result);
+      res.json({ msg:result });
+    })
+    .catch(function (err){
+      res.json({ err:err });
+    })
+  })
 
 	app.post('/GetTournamentAddress', function (req, res){
 		//Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
