@@ -1,9 +1,6 @@
 //
 extends layout
 
-block title
-	title Рейтинг
-
 mixin answer(num)
 	div(class="form-group")
 	label(class="white") Ответ №#{num}
@@ -12,6 +9,9 @@ mixin correct(num)
 	input(type="radio" name="correct" value=num)
 	| #{num}
 	span  
+
+block title
+	title Добавить вопрос
 
 block content
 	center

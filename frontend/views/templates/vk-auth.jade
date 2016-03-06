@@ -5,7 +5,7 @@ mixin loadVKauth(inviter, reg)
 	script(src="vk-auth.js")
 	div(id="vk_auth")
 	div(id="login_button" onclick="VK.Auth.login(authInfo);")
-		a(id="vk-url" class="btn btn-lg btn-primary btn-std" href="http://online-tournaments.org/vk-auth")
+		a(id="vk-url" class="btn btn-lg btn-primary btn-std" style="width:100%" href="http://online-tournaments.org/vk-auth")
 			if reg
 				span(class="fa fa-vk")
 				|    Играть
