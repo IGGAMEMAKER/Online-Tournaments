@@ -2,19 +2,10 @@
 mixin footer()
 	footer
 		h3 Наши контакты:
-		//a(target="_blank" class="social-icon" href="https://twitter.com/axelut")
-			i(class="fa fa-twitter")
-		//a(target="_blank" class="social-icon" href="https://www.facebook.com/axelut")
-			i(class="fa fa-facebook-square")
-		//a(target="_blank" class="social-icon" href="https://dribbble.com/axelut")
-			i(class="fa fa-dribbble")
 		a(target="_blank" class="social-icon" href="https://vk.com/o_tournaments")
-			i(class="fa fa-vk") 
-			//| Группа в ВК
+			i(class="fa fa-vk")
 		a(target="_blank" class="social-icon" href="mailto:mail@online-tournaments.org")
-			i(class="fa fa-envelope-o") 
-			//| mail@online-tournaments.org
-	//include templates/footer
+			i(class="fa fa-envelope-o")
 
 mixin navigation()
 	nav(class="navbar navbar-default navbar-my" role="navigation")
@@ -33,8 +24,6 @@ mixin navigation()
 					li
 						a(href="Marathon") МАРАФОН
 					li
-						a(href="Tournaments") Турниры
-					//li
 						a(href="Tournaments") Турниры
 					if session && session.login
 						li(class="dropdown")
@@ -62,4 +51,4 @@ mixin chat()
 			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
 	div(id="vk_comments")
 		script(type="text/javascript").
-			VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});
+			VK.Widgets.Comments("vk_comments", {limit: 10, width: "auto", height: "501", attach: "*"});

@@ -3,13 +3,41 @@
   /*min-height: 930px;*/
   display: block;
   position: relative;
+  
   /*background: #333333;*/
   /*background-image: url("photo-1448485780098-7e0b78781fc1.jpeg");*/
   /*background-size: cover;
   background-position: center center;*/
-  position: relative;
   padding-bottom: 50px;
   padding-top: 70px;
+}
+
+.wrapper2 footer
+{
+    /*position: absolute;*/
+    z-index: 3;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.wrapper2 footer h3
+{
+    color: #FFFFFF;
+    font-weight: 200;
+}
+
+.wrapper2 footer .social-icon
+{
+    color: #FFFFFF;
+    opacity: 0.8;
+    font-size: 34px;
+    margin: 20px;
+}
+
+.wrapper2 footer .social-icon:hover
+{
+    opacity: 1;
 }
 
 .background {
@@ -123,34 +151,6 @@
   max-height:300px;
   width: auto;
   height: auto;
-}
-
-.wrapper2 footer
-{
-    position: absolute;
-    z-index: 3;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-}
-
-.wrapper2 footer h3
-{
-    color: #FFFFFF;
-    font-weight: 200;
-}
-
-.wrapper2 footer .social-icon
-{
-    color: #FFFFFF;
-    opacity: 0.8;
-    font-size: 34px;
-    margin: 20px;
-}
-
-.wrapper2 footer .social-icon:hover
-{
-    opacity: 1;
 }
 
 .ticket-card .body .info
@@ -294,6 +294,8 @@
     max-width: 26px;
   }
 }
+
+
 
 @media (max-width: 470px)
 {

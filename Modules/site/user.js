@@ -45,6 +45,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	
 	app.get('/ResetPassword', render('ResetPassword') )
 	app.get('/Changepassword', authenticated, render('Changepassword') )
+	app.post('/ChangePassword', authenticated, change_password, change_password_fail)
 
 	app.post('/Login', Login);//std_auth('Login')
 	app.post('/Register', register);//std_auth('Register') 
@@ -187,7 +188,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.changePassword(login, password, newpassword)
 		.then(function (result){
-			res.render('Changepassword', { msg:result })
+			// res.render('Changepassword', { msg:result })
+			res.redirect('Profile');
 		})
 		.catch(function (err){
 			return next(err);
@@ -200,7 +202,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Errors.add(login||null, 'Changepassword', { login:login, err:err });
 	}
 
-	app.post('/ChangePassword', authenticated, change_password, change_password_fail)
+	
 
 /*
 function (req, res){

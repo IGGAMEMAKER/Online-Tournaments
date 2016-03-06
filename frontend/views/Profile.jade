@@ -128,8 +128,11 @@ mixin drawTournamentRegs(tournaments)
 			tbody
 				+drawRegs(tournaments)
 	else
-		h3 Вы не зарегистрированы ни в одном турнире(
-		a(href="Tournaments" onclick="autoreg()") Начните играть !
+		div(class="text-center white")
+			//h3 Вы не зарегистрированы ни в одном турнире(
+			a(href="Tournaments" onclick="autoreg()") Начните играть !
+			br
+			br
 
 mixin changePass()
 	include templates/changepassword
@@ -166,10 +169,14 @@ block content
 		h2(class="text-center white") Мои турниры
 		+drawTournamentRegs(msg.tournaments)
 	div(class="col-sm-12")
-		div(class="col-sm-6 col-xs-12 killPaddings")
-			+info()
-		div(class="col-sm-6 col-xs-12 killPaddings")
-			+changePass()
+		if msg && msg.email
+			div(class="col-sm-6 col-xs-12 killPaddings")
+				+info()
+			div(class="col-sm-6 col-xs-12 killPaddings")
+				+changePass()
+		else
+			div(class="col-sm-12 col-xs-12 killPaddings")
+				+info()
 	div(class="col-sm-12")
 		h2(class="text-center white") Денежные операции
 		div(class="col-sm-6 col-xs-12 killPaddings")

@@ -1,28 +1,4 @@
 //
-mixin tabs()
-	ul(class="nav nav-tabs")
-		li(class="active")
-			a(href="#tab1" data-toggle="tab") Рейтинг
-		//li
-			a(href="#tab2" data-toggle="tab") Чат
-		//li
-			a(href="#tab4" data-toggle="tab") Настройки
-	div(class="tab-content")
-		div(class="tab-pane active" id="tab1")
-			div(class="container")
-				div(class="row" style="padding-bottom:40px;")
-					+rating()
-					div(class="col-md-3 columBio")
-						+subscribe()
-					//+userStats()
-				div(class="row")
-					+chat()
-		//div(class="tab-pane" id="tab2")
-		//div(class="tab-pane" id="tab3")
-			p Tab 3 content goes here...
-		//div(class="tab-pane" id="tab4")
-			p Настройки
-
 
 mixin rating()
 	h3(class="text-center ratingHead")
@@ -30,39 +6,6 @@ mixin rating()
 		a(href="Leaderboard") все участники
 		| )
 	include templates/rating
-	//div(class="col-md-12")
-		a(href="Leaderboard") все участники
-
-mixin statContent()
-	div(class="content")
-		div(class="data")
-			ul
-				li 567
-					span Сыграно
-				li 61
-					span % побед
-				li 530 ₽
-					span Выиграно
-		div(class="follow")
-			div(class="icon-twitter") Follow
-
-mixin userStats()
-	div(class="col-md-3 columBio")
-		+subscribe()
-		//div(class="containerico")
-			+subscribe()
-			//header
-				div(class="bio")
-					img(src="http://www.croop.cl/UI/twitter/images/up.jpg" alt="background" class="bg")
-					div(class="desc")
-						h3 @carlf
-						p Carl Fredricksen is the protagonist in Up. He also appeared in Dug's Special Mission as a minor character
-				div(class="avatarcontainer")
-					img(src="http://www.croop.cl/UI/twitter/images/carl.jpg" alt="avatar" class="avatar")
-					div(class="hover")
-						div(class="icon-twitter")
-			//+statContent()
-
 
 extends layout
 
@@ -70,16 +13,55 @@ block title
 	title Турниры
 
 block content
-	div(class="row" id="tournamentBlock")
-	div(class="bloc l-bloc bgc-white" id="bloc-1")
+	div(class="col-sm-12 killPaddings" id="tournamentBlock")
+	div(class="col-sm-12 bgc-white" id="bloc-1")
+		div(class="col-sm-8 dataRule2")
+			+rating()
+		div(class="col-sm-4 subscribe")
+			+subscribe()
+	div(class="col-sm-12 offset-bg")
+		+chat()
+
+	//div(class="bloc l-bloc bgc-white" id="bloc-1")
 		div(class="container")
 			div(class="row")
-				div(class="col-md-8 dataRule2")
-					+rating()
-				div(class="col-md-4 subscribe")
-					+subscribe()
-			div(class="row")
 				+chat()
+	//div(class="white")
+		//div(class="col-sm-6")
+			h1(class="mg-md text-center") Участвуй в марафоне и выиграй приз!
+			div(class="img-wrapper")
+				image(class="promo" style="background-color:purple;" src="/img/Marathon.png")
+				div(class="text-center")
+					//center
+					a(href="" onclick="autoreg()" class="btn btn-success btn-lg btn-overlay2") Играть
+			div(class="text-center")
+				a(href="Leaderboard") Текущий рейтинг
+		//div(class="col-sm-6")
+			h1(class="mg-md text-center") Выиграй футболку Криштиану Роналду!
+			div(class="img-wrapper")
+				image(class="promo" src="/img/CR2.jpg")
+				center
+					a(href="" class="btn btn-success btn-lg btn-overlay2") Играть (39РУБ)
+			div(class="text-center")
+				a(href="Tournaments") Другие турниры
+		//div(class="col-sm-12 offset-bg black")
+			div(class="col-sm-8 dataRule2")
+				h3(class="text-center ratingHead")
+					| ТОП10 (
+					a(href="Leaderboard") все участники
+					| )
+				include templates/rating
+			div(class="col-sm-4 subscribe")
+				+subscribe()
+
+		div(class="col-sm-12 bgc-white killPaddings" id="bloc-1")
+			div(class="col-sm-8 dataRule2")
+				+rating()
+			div(class="col-sm-4 subscribe")
+				+subscribe()
+
+		div(class="col-sm-12 offset-bg")
+			+chat()
 
 block JSlibs
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
