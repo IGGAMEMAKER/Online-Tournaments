@@ -217,6 +217,19 @@
   color: #000000;
 }
 
+#vk_comments, #vk_comments iframe, .fb-comments, .fb-comments iframe[style], .fb-comments span, .fb-comments iframe span[style] {
+  width: 100% !important;
+  /*max-height: 500px;*/
+}
+
+#vk_groups, #vk_groups iframe {
+  width: 100% !important;
+  max-width: inherit;
+  /*max-height: 500px;*/
+}
+
+
+
 .columBio2
 {
     border: 10px;

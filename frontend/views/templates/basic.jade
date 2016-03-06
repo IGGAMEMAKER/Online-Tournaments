@@ -1,7 +1,5 @@
 //
 mixin footer()
-	//br
-	//br
 	footer
 		h3 Наши контакты:
 		//a(target="_blank" class="social-icon" href="https://twitter.com/axelut")
@@ -37,22 +35,22 @@ mixin navigation()
 					li
 						a(href="Tournaments") Турниры
 					//li
-						a(href="Bonus") Акции
-					li(class="dropdown")
-						a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
-							b(class="caret")
-						ul(class="dropdown-menu")
-							li
-								a(href="profile") Профиль
-							li
-								a(href="#") Пополнить баланс
-							li
-								a(href="#") Вывести приз                                                         
-							li(class="divider")
-							li
-								a(href="addQuestion") Добавить вопрос
-					li
-						a(href="Logout") Выход
+						a(href="Tournaments") Турниры
+					if session && session.login
+						li(class="dropdown")
+							a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
+								b(class="caret")
+							ul(class="dropdown-menu")
+								li
+									a(href="profile") Профиль
+								//li(class="divider")
+								li
+									a(href="addQuestion") Добавить вопрос
+						li
+							a(href="Logout") Выход
+					else
+						li
+							a(href="Login") Вход
 mixin chat()
 	//div(class="col-md-12 chatColumn chatRule")
 		h3 Column title
@@ -63,6 +61,5 @@ mixin chat()
 			label(class="control-label" for="formInput74") Field label
 			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
 	div(id="vk_comments")
-	script(type="text/javascript").
-		VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});
-
+		script(type="text/javascript").
+			VK.Widgets.Comments("vk_comments", {limit: 5, width: "auto", height: "501", attach: "*"});

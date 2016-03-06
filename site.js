@@ -21,7 +21,6 @@ var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
 
 app.use(express.static('./frontend/public'));
-//app.use(express.static('./frontend/public'));
 
 var configs = require('./configs');
 
@@ -417,7 +416,8 @@ const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_USER = 1;
 
 app.get('/', function (req,res){
-  if (isAuthenticated(req)){
+  res.render('main2');
+  /*if (isAuthenticated(req)){
     var data = req.body;
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
     data.purpose = GET_TOURNAMENTS_USER;
@@ -425,7 +425,7 @@ app.get('/', function (req,res){
     AsyncRender('DBServer', 'GetTournaments', res, { renderPage:'main2' }, data);
   } else {
     res.render('main');
-  }
+  }*/
 })
 
 app.get('/addQuestion', middlewares.authenticated, function (req, res){
@@ -652,6 +652,12 @@ app.post('/Tell', isAdmin, function (req, res){
   res.render('Tell');
 })
 
+/*function updateLeaderboard(){
+  setTimeout(function(){
+
+  }, )
+}*/
+
 app.get('/Leaderboard', function (req, res){
   Marathon.leaderboard()
   .then(function (leaderboard){
@@ -853,6 +859,8 @@ server = app.listen(8888, function () {
 
   console.log('Example app listening at http://%s:%s', host, port);
 });
+// var WebSocketServer = require('ws').Server;
+
 
 // socket land
 
