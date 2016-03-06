@@ -60,7 +60,8 @@ mixin loadHead()
 			+closeTournamentModal()
 		+serverMessage()
 		+winnerModal()
-	
+	block CSSlibs
+
 	block JSlibs
 
 	script(src="YandexMetrica.js")
@@ -98,6 +99,8 @@ html
 			+navigation()
 			+drawBalance()
 			block content
+		block JSasync
+
 		block ftr
 			div(class="wrapper2")
 				//+googleAdvert()

@@ -7,9 +7,6 @@ mixin ErrorHandler(msg)
 			//p Server Error. Report about this bug
 		when 11000
 			div(class="alert alert-danger")
-				//strong Пользователь с таким логином уже существует( 
-				//br
-				//Придумайте другой логин
 				strong Пользователь с таким Email-ом уже существует( 
 				br
 				p Используйте форму 
@@ -29,61 +26,54 @@ mixin ErrorHandler(msg)
 mixin drawAlerts()
 	div(class="alert alert-success" id="validOK" style="display:none;")
 		strong Данные корректны!
-	div(class="alert alert-warning" id="typeData1")
-		strong На этот email придёт письмо с вашим логином и паролем
-		br
-		strong Допустимая длина пароля от 6 до 35 символов
+	div(class="alert alert-warning" style="display:none;" id="typeData1")
+		//strong На этот email придёт письмо с вашим логином и паролем
+		//br
+		//strong Допустимая длина пароля от 6 до 35 символов
 	div(class="alert alert-danger" id="invalid" style="display:none;")
 		strong Длина логина не более 25 символов
 
-script(src="third_party/validator.min.js")
+mixin registerForm()
+	form(id="form-4" action="/Register" method="post" autocomplete="on")
+		h3(class="mg-md white text-center" id="registerForm") Регистрация
+		h5(class="mg-md white text-center")
+			a(href="/Login") Я уже регистрировался
+		div(class="form-group")
+			label(class="white") Email
+			div(class="inner-addon left-addon")
+				i(class="glyphicon glyphicon-remove" style="display:none;")
+				i(class="glyphicon glyphicon-envelope" style="")
+				i(class="glyphicon glyphicon-ok" style="display:none;")
+				//<input type="text" class="form-control" placeholder="Username" />
+				input(id="email" class="form-control" type="email" name="email" placeholder="email" required)
+		div(class="form-group")
+			label(class="white") Пароль (минимум 6 символов)
+			//label(class="white") Пароль (длина пароля от 6 до 35 символов)
+			div(class="inner-addon left-addon")
+				i(class="glyphicon glyphicon-remove" style="display:none;")
+				i(class="glyphicon glyphicon-lock" style="")
+				i(class="glyphicon glyphicon-ok" style="display:none;")
+				input(id="password" class="form-control" type="password" name="password" placeholder="*******" required)
+			
+		//a(href="login") Я уже регистрировался!
+		//br
+		+drawAlerts()
+		//br
+		button(class="btn btn-lg btn-success btn-std" id="register" type="submit") Начать бесплатно
+		include vk-auth
+		+loadVKauth()
+
+//script(src="third_party/validator.min.js")
 link(rel="stylesheet" id="ppstyle" type="text/css" href="./css/register.css")
 
 
-//div(class="inner-addon left-addon")
-	i(class="glyphicon glyphicon-user" style="display:none;")
-	//<input type="text" class="form-control" placeholder="Username" />
-	input(id="email" class="form-control" type="email" name="email" required)
-
-
-div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-15")
+//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-15")
 	div(class="container bloc-lg")
 		div(class="row")
-			div(class="col-sm-12")
-				if msg
-					+ErrorHandler(msg)
+div(class="col-sm-12")
+	if msg
+		+ErrorHandler(msg)
 
-				form(id="form-4" action="/Register" method="post" autocomplete="on")
-					center
-						h3(class="mg-md" id="registerForm") Регистрация
-					//div(class="form-group")
-						label Логин
-						input(id="login" class="form-control" type="text" name="login" required)
-					//div(class="form-group")
-						label Email
-						input(id="email" class="form-control" type="email" name="email" required)
-					div(class="form-group")
-						label Email
-						div(class="inner-addon left-addon")
-							i(class="glyphicon glyphicon-remove" style="display:none;")
-							i(class="glyphicon glyphicon-user" style="")
-							i(class="glyphicon glyphicon-ok" style="display:none;")
-							//<input type="text" class="form-control" placeholder="Username" />
-							input(id="email" class="form-control" type="email" name="email" placeholder="email" required)
-					div(class="form-group")
-						label Пароль
-						div(class="inner-addon left-addon")
-							i(class="glyphicon glyphicon-remove" style="display:none;")
-							i(class="glyphicon glyphicon-lock" style="")
-							i(class="glyphicon glyphicon-ok" style="display:none;")
-							input(id="password" class="form-control" type="password" name="password" placeholder="*******" required)
-						
-					a(href="login") Я уже регистрировался!
-					br
-					+drawAlerts()
-					br
-					button(class="btn btn-lg btn-primary" style="width:100%; border-radius:6px;" id="register" type="submit") Начать бесплатно
-					include vk-auth
-					+loadVKauth()
+	+registerForm()
 
-script(src="interactiveInput.js")
+//script(src="interactiveInput.js")
