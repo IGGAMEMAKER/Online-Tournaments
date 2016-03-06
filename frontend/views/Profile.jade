@@ -10,7 +10,12 @@ mixin drawReg(val)
 		//td #{val.promo}
 		td регистрация
 		td
-			a(href="#") сняться с турнира
+			//script.
+				var lgn="lol";
+				var id = 752;
+				var txt = "unReg(\'"+"lol"+"\',"+id+")";
+				alert(txt)
+			a(href="" onclick='unReg(1, ' + val.tournamentID + ')' ) сняться с турнира
 
 mixin tLink(id)
 	i #{id}
@@ -109,22 +114,22 @@ mixin drawTournamentRegs(tournaments)
 	//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
 		div(class="container bloc-lg")
 			div(class="row")
-	div(class="col-sm-12 text-center")
-		if tournaments && tournaments.length>0
-			center
-				table(class="table table-bordered panel" style="width:50%;")
-					thead
-						tr
-							th №
-							//th Приглашён
-							th Статус
-							th Действие
-		
-					tbody
-						+drawRegs(tournaments)
-		else
-			h3 Вы не зарегистрированы ни в одном турнире(
-			a(href="Tournaments") Начните играть !
+	//div(class="col-sm-12 text-center")
+	if tournaments && tournaments.length>0
+		//center
+		table(class="table table-bordered panel")
+			thead
+				tr
+					th №
+					//th Приглашён
+					th Статус
+					th Действие
+
+			tbody
+				+drawRegs(tournaments)
+	else
+		h3 Вы не зарегистрированы ни в одном турнире(
+		a(href="Tournaments" onclick="autoreg()") Начните играть !
 
 mixin changePass()
 	include templates/changepassword
@@ -149,56 +154,16 @@ mixin modal()
 				div(class="modal-footer")
 					button(type="button" class="btn btn-default" data-dismiss="modal") Close
 
-//html
-	head
-		include templates/head
-	//p!= JSON.stringify(msg.gifts)(msg.userGifts)
-	
-	//script(src="loadProfile.js")
-	
-	div(class="page-container")
-		include client
-		+title("Профиль")
-		div(class="bloc l-bloc bgc-white b-divider" id="hq1")
-			div(class="container bloc-sm")
-				+small_title("Мои турниры")
-				div(class="bloc-group")
-					+drawTournamentRegs(msg.tournaments)
-
-				div(class="bloc-group")
-					+info()
-					+changePass()
-
-				+title("Денежные операции")
-				div(class="bloc-group")
-					+deposit()
-					+cashout()
-		include templates/footer
-
 extends layout
 
+block JSlibs
+	script(src="tournaments.js")
+
 block content
-	//div(class="page-container")
-		//include client
-		h2(class="text-center white") Профиль
-		div(class="bloc l-bloc bgc-white b-divider" id="hq1")
-			div(class="container bloc-sm")
-				h2(class="text-center  white") Мои турниры
-				div(class="bloc-group")
-					+drawTournamentRegs(msg.tournaments)
-
-				div(class="bloc-group")
-					+info()
-					+changePass()
-
-				h2(class="text-center  white") Денежные операции
-				div(class="bloc-group")
-					+deposit()
-					+cashout()
 	div(class="col-sm-12")
 		h2(class="text-center white") Профиль
 	div(class="col-sm-12")
-		h2(class="text-center  white") Мои турниры
+		h2(class="text-center white") Мои турниры
 		+drawTournamentRegs(msg.tournaments)
 	div(class="col-sm-12")
 		div(class="col-sm-6 col-xs-12 killPaddings")

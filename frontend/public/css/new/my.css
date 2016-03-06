@@ -34,6 +34,11 @@
   border-radius: 3px;
 }
 
+.container{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .acceleratorImage:hover{
   opacity: 1;
 }

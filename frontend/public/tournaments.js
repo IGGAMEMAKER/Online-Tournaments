@@ -200,7 +200,8 @@ function drawTournamentStatus(tournamentID, status){
 function reg(login, tID){
 	ManageReg(login, tID, 'RegisterInTournament', 1);
 }
-function unReg(login, tID){
+function unReg(lgn, tID){
+
 	ManageReg(login, tID, 'CancelRegister', 0);
 }
 
