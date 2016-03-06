@@ -5,7 +5,7 @@ $("#sumAttribute").attr("value", 500)
 
 //$("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
 
-$("#depositLink1").attr("value", "Пополнить счёт на "+ 500+"p")
+$("#depositLink1").attr("value", "Пополнить счёт")
 //$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
 
 var input = document.getElementById('deposit');
@@ -18,5 +18,5 @@ input.oninput = function (){
 	$("#sumAttribute").attr("value", sum)
 	//document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
 	//$("#depositLink1").html("Пополнить счёт на "+ sum+"$");
-	$("#depositLink1").attr("value", "Пополнить счёт на "+ sum+"p")
+	// $("#depositLink1").attr("value", "Пополнить счёт на "+ sum+"p")
 }

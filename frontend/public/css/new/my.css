@@ -228,8 +228,6 @@
   /*max-height: 500px;*/
 }
 
-
-
 .columBio2
 {
     border: 10px;
@@ -297,6 +295,10 @@
   .acceleratorValue
   {
     display: none;
+  }
+  .killPaddings{
+    padding-left: 0px;
+    padding-right: 0px;
   }
 }
 

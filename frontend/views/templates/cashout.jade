@@ -1,21 +1,21 @@
 // id="bloc-7"
 script(src="cashout.js")
-div(class="bloc l-bloc bgc-white bloc-tile-2" id="cashoutMoney")
+//div(class="bloc l-bloc bgc-white bloc-tile-2" id="cashoutMoney")
 	div(class="container bloc-lg")
 		div(class="row")
 			div(class="col-sm-12")
-				div(class="panel")
-					div(class="panel-heading")
-						h3(class="mg-clear") Вывести деньги
+div(class="panel")
+	div(class="panel-heading")
+		h3(class="mg-clear") Вывести деньги
 
-					div(class="panel-body")
-						p Минимальная сумма вывода - 3000 рублей
-						p Деньги будут переведены на указанную вами карту в течение 7 дней
-						form(id="form-564" novalidate)
-							div(class="form-group")
-								label Сумма (в рублях)
-								input(class="form-control" name="ammount" id="cashout" value=3000 required)
-							div(class="form-group")
-								label Номер карты
-								textarea(id="cardNumber" placeholder="0123912888542938" class="form-control" rows="1" cols="50" required)
-							a(class="btn btn-lg btn-primary" onclick="cashout()" style="width:100%; border-radius:6px; " type="submit") Вывести
+	div(class="panel-body")
+		p Минимальная сумма вывода - 3000 рублей
+		p Деньги будут переведены на указанную вами карту в течение 7 дней
+		form(id="form-564" novalidate)
+			div(class="form-group")
+				label Сумма (в рублях)
+				input(class="form-control" name="ammount" id="cashout" value=3000 required)
+			div(class="form-group")
+				label Номер карты
+				textarea(id="cardNumber" placeholder="0123912888542938" class="form-control" rows="1" cols="50" required)
+			a(class="btn btn-lg btn-primary" onclick="cashout()" style="width:100%; border-radius:6px; " type="submit") Вывести
