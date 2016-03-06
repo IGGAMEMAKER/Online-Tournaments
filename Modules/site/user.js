@@ -34,7 +34,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		next();
 	}
 
-	app.get('/Logout', destroy_session, render('Login',{}) )
+	app.get('/Logout', destroy_session, function (req, res){
+		res.redirect('Login');
+	});// render('Login',{}) )
 
 	// app.get('/Login', function (req, res){ res.render('Login',{}); })
 	// app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })

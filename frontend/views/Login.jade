@@ -1,6 +1,6 @@
 //
-doctype html
-html
+//doctype html
+//html
 	head
 		title Login
 		include templates/head
@@ -9,10 +9,13 @@ html
 		include templates/menu
 		div(class='bloc-group')
 			include templates/login
-		//center
-			h4(class="mg-md" id="loginForm") или
-			//h3(class="mg-md" id="loginForm") Вход
-		//div(class='bloc-group')
-			center
-				include templates/vk-auth
 		include templates/footer
+
+
+extends layout
+
+block content
+	div(class="col-sm-12" style="margin-top:-20px;")
+		include templates/login
+
+block ftr

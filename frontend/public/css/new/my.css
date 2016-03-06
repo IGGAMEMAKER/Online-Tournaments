@@ -9,7 +9,12 @@
   /*background-size: cover;
   background-position: center center;*/
   padding-bottom: 50px;
-  padding-top: 70px;
+  /*padding-top: 70px;*/
+}
+
+.btn-std{
+  border-radius:4px;
+  width:100%;
 }
 
 .wrapper2 footer
