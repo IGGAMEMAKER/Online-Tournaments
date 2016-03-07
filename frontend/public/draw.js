@@ -398,7 +398,7 @@ function drawPayingModal(data){
   needToPay = Math.ceil(needToPay*100)/100;
   
   var needToPayRU = needToPay*USD_TO_RUR;
-  needToPayRU = 1+Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+  needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
 
   //var price = data / 100;
   var tournamentPrice = needToPay + 'p';
@@ -412,7 +412,8 @@ function drawPayingModal(data){
   $("#sumAttribute").attr("value", needToPayRU);
 
   $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
-
+  $("#depositLink1").attr("onclick", "mark('mark/payment/"+login+"/"+needToPay+"')")
+  // $("#depositLink1").attr("onclick", "mark('mark/payment/"+needToPay+"')" )
 
   $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' p</b>');
   $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + 'p</b>');
@@ -421,6 +422,8 @@ function drawPayingModal(data){
   if (needToPay>0) { 
     stat_noMoney(0, needToPayRU);
     $(payModal).modal('show');
-  }
-}
 
+
+  }
+
+}

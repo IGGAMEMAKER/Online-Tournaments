@@ -246,6 +246,7 @@ function ManageReg(login, tID, url, regID){
 					console.log('TREG_NO_MONEY');
 					return drawPayingModal(msg.result);
 				}
+				
 				console.log('ManageReg', msg.result);
 				switch(msg.result){
 					case 'OK': txt='Вы зарегистрировались в турнире!'; register_success(tID); break;

@@ -145,7 +145,7 @@ function autoreg(){
 function stat_noMoney(tournamentID, money){ 
   setAsync('NoMoney', {tournamentID:tournamentID, money:money}); 
 
-  mark('NoMoney');
+  // mark('mark/NoMoney');
 }
 
 function buyAcceleratorResult(msg){

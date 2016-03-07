@@ -7,7 +7,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var TournamentRegs = require('../../models/tregs')
 	var Users = require('../../models/users')
 	var time = require('../../helpers/time');
-	//var strLog = Log;
+	var strLog = Log;
+
+	var middlewares = require('../../middlewares');
 
 	app.post('/AttemptToStart', function (req, res){
 		console.log('AttemptToStart');
@@ -50,10 +52,33 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		var money = req.body.money||0;
 
 		res.end('');
-		// console.log('No money for '+tournamentID + ' need: ' + money, 'Money');
+		Stats.attempt('NO-MONEY')
+		strLog('No money for ' + tournamentID + ' need: ' + money, 'Money')
+
+		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
 	})
+	
+/*	app.post('/mark/NoMoney', function (req, res){
+		// var tournamentID = req.body.tournamentID;
+		// var money = req.body.money||0;
+
+		res.end('');
+		Stats.attempt('NO-MONEY')
+		// strLog('No money for ' + tournamentID + ' need: ' + money, 'Money')
+
+		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
+	})*/
 
 	// Stats.attempt('game-drawPopup')
+	app.all('/mark/payment/:login/:ammount', function (req, res){
+		var login = req.params.login;
+		var ammount = req.params.ammount;
+
+		res.end('')
+
+		Stats.attempt('PRESSED-PAYMENT')
+		strLog('TRIED TO PAY! ' + login + ' ' + ammount, 'Money');
+	})
 
 	app.post('/mark/game/:name', function (req, res){
 		res.end('MARK GAME RECEIVED');
