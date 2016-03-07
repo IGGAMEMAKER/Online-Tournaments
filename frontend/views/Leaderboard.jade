@@ -11,19 +11,35 @@ mixin ratingTable(msg)
 	include templates/rating
 
 block content
-	center
+	//center
 		h1(class="" style="color:white;")
 			| Таблица участников марафона
 			//(
 			//a(href="/") назад
 			//| )
-		if session
+		if session && session.login
 			a(href="#"+session.login) найти меня в списке
 		
-	div(class="bloc l-bloc bgc-white" id="bloc-1")
+	//div(class="bloc l-bloc bgc-white" id="bloc-1")
 		div(class="container")
 			div(class="row")
-				div(class="col-sm-12 dataRule2")
-					+ratingTable(msg)
-					script.
-						$("#loading").hide();
+	//div(class="col-sm-12 offset-bg black")
+		div(class="col-sm-12 dataRule2")
+			+ratingTable(msg)
+			script.
+				$("#loading").hide();
+	h2(class="mg-md text-center white") Таблица участников марафона
+	if session && session.login
+		center
+			a(class="mg-md text-center" href="#"+session.login) найти меня в списке
+	div(class="col-sm-12 dataRule2 offset" id="leaders")
+		+ratingTable(msg)
+		script.
+			$("#loading").hide();
+		//include templates/rating
+		//div(class="col-sm-12" id="registerButton")
+			if session && session.login
+				script.
+					drawAutoReg("#registerButton");
+			else
+				a(href="Login" class="btn btn-primary center-block") Авторизуйтесь, чтобы сыграть
