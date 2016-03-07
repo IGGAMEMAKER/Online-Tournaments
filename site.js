@@ -30,6 +30,8 @@ mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 
 var Users = require('./models/users');
 var Actions = require('./models/actions');
+var Errors = require('./models/errors');
+
 var Money = require('./models/money');
 
 var c = require('./constants');
@@ -768,21 +770,26 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
     // need price of accelerator
     return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
     .then(function (result){
-      // console.log('Money.pay', result, login, index);
+      // if (!result) return null;
+      console.error('Money.pay', result, login, index);
       return Marathon.sell_accelerator(login, index);
     })
     .then(function (result){
-      // console.log('marathon.sell_accelerator', result);
-      Actions.add(login, 'buyAccelerator', {accelerator:index})
+      // if (result){
+      // }
+        console.log('marathon.sell_accelerator', result);
+        Actions.add(login, 'buyAccelerator', {accelerator:index})
+
       res.json({ result:result });
     })
     .catch(function (err){
       Errors.add(login, 'buyAccelerator', { err:err, accelerator:index })
-      res.json({err:err})
+      res.json({ err:err })
     })
   } else {
     Errors.add(login, 'buyAccelerator', { err:'invalid data', accelerator:index })
-    cancel(res);
+    res.json({ err:null })
+    // cancel(res);
     // res.json({result:0, code:CODE_INVALID_DATA});
   }
 })

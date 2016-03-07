@@ -150,11 +150,12 @@ function stat_noMoney(tournamentID, money){
 
 function buyAcceleratorResult(msg){
   console.log('buyAcceleratorResult', msg);
-  if (msg.result==0 || msg.err){
-    alert('Ошибка. Возможно, на вашем счету недостаточно средств')
-  } else {
+  if (msg.result==1){
     alert('Поздравляем! Вы будете набирать очки быстрее!')
     getProfile();
+  } else {
+    alert('Ошибка. На вашем счету недостаточно средств')
+    // payment!!
   }
   // alert(msg);
 }

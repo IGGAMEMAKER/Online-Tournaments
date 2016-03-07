@@ -35,7 +35,7 @@ function saveTransfer(login, cash, source, tag){
 
 }
 
-function money_worker (login, ammount, source, find, set, tag) {
+function money_worker (login, ammount, source, find, set, tag, hard) {
 
 	return saveTransfer(login, ammount, source || null, tag)
 	.then(function (result){
@@ -45,15 +45,36 @@ function money_worker (login, ammount, source, find, set, tag) {
 			User.update(find, set, function (err, count) {
 				if (err) return reject(err);
 
+				if (hard && !helper.updated(count)) return reject(null);
+
 				resolve(helper.updated(count)||null);
 			});
 		})
+
 	})
 	.catch(function (err){
 		console.log(tag + ' failed', login, ammount, source, err);
 		return { result:0, err:err };
 	})
 
+}
+
+function money_worker2 (login, ammount, source, find, set, tag, hard) {
+
+	return saveTransfer(login, ammount, source || null, tag)
+	.then(function (result){
+		console.log('saveTransfer ', result);
+
+		return new Promise(function (resolve, reject){
+			User.update(find, set, function (err, count) {
+				if (err) return reject(err);
+
+				if (hard && !helper.updated(count)) return reject(null);
+
+				resolve(helper.updated(count)||null);
+			});
+		})
+	})
 }
 
 module.exports = {
@@ -97,7 +118,8 @@ module.exports = {
 		return money_worker(login, ammount, c.SOURCE_TYPE_GRANT, { login:login }, {$inc: { money: ammount }}, 'increase');
 	}*/
 	, pay: function(login, ammount, source){
-			return money_worker(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay');
+			return money_worker2(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay', true);
+		
 		/*return saveTransfer(login, ammount, source || null, 'pay')
 		.then(function (result){
 			return new Promise(function (resolve, reject){

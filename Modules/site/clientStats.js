@@ -57,17 +57,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
 	})
-	
-/*	app.post('/mark/NoMoney', function (req, res){
-		// var tournamentID = req.body.tournamentID;
-		// var money = req.body.money||0;
-
-		res.end('');
-		Stats.attempt('NO-MONEY')
-		// strLog('No money for ' + tournamentID + ' need: ' + money, 'Money')
-
-		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
-	})*/
 
 	// Stats.attempt('game-drawPopup')
 	app.all('/mark/payment/:login/:ammount', function (req, res){
