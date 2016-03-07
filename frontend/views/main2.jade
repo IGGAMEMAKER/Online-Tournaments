@@ -6,6 +6,19 @@ block title
 block JSlibs
 	script(src="tournaments.js")
 
+mixin drawPromos(promos)
+	div(class="col-sm-6")
+		h1(class="mg-md text-center") Выиграй футболку Криштиану Роналду!
+		div(class="img-wrapper")
+			image(class="promo" src="/img/CR2.jpg")
+			center
+				if session && session.login
+					a(href="" class="btn btn-success btn-lg btn-overlay2") Играть (39РУБ)
+				else
+					a(href="" class="btn btn-danger btn-lg btn-overlay2") Авторизуйтесь
+		div(class="text-center")
+			a(href="Tournaments") Другие турниры
+
 block content
 	div(class="white")
 		div(class="col-sm-6")
@@ -14,17 +27,13 @@ block content
 				image(class="promo" style="background-color:purple;" src="/img/Marathon.png")
 				div(class="text-center")
 					//center
-					a(href="" onclick="autoreg()" class="btn btn-success btn-lg btn-overlay2") Играть
+					if session && session.login
+						a(href="" onclick="autoreg()" class="btn btn-success btn-lg btn-overlay2") Играть
+					else
+						a(href="Login" class="btn btn-danger btn-lg btn-overlay2") Авторизуйтесь
 			div(class="text-center")
 				a(href="Leaderboard") Текущий рейтинг
-		div(class="col-sm-6")
-			h1(class="mg-md text-center") Выиграй футболку Криштиану Роналду!
-			div(class="img-wrapper")
-				image(class="promo" src="/img/CR2.jpg")
-				center
-					a(href="" class="btn btn-success btn-lg btn-overlay2") Играть (39РУБ)
-			div(class="text-center")
-				a(href="Tournaments") Другие турниры
+		+drawPromos()
 		div(class="col-sm-12 offset-bg black")
 			div(class="col-sm-8 dataRule2")
 				h3(class="text-center ratingHead")

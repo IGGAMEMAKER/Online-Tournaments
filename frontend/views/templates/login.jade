@@ -15,13 +15,11 @@ div(class="col-sm-12 col-xs-12 white")
 			input(type="text" class="form-control" name="email")
 		div(class="form-group")
 			label Пароль (
-				a(href="ResetPassword") Я забыл пароль
+				a(href="ResetPassword") Не помню пароль
 				| )
 			input(type="password" class="form-control" name="password")
 			br
-			//a(href="/" ) Нет аккаунта? Зарегистрируйтесь!
 		button(class="btn btn-lg btn-success btn-std" type="submit") Войти
 		br
 		include vk-auth
 		+loadVKauth()
-		//button(class="bloc-button btn btn-d btn-lg btn-block" style="width:45%;" type="submit") Войти

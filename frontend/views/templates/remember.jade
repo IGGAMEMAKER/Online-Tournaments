@@ -1,28 +1,37 @@
 //
-div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
+//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-14")
 	div(class="container bloc-lg")
 		div(class="row")
 			div(class="col-sm-12")
 				center
 					h3(class="mg-md") Восстановление пароля
 
-				form(id="form-5" action="/ResetPassword" method="post" novalidate)
-					//div(class="form-group")
-						label Логин
-						input(type="text" class="form-control" name="login")
+				form(id="form-5" action="/ResetPassword" method="post" autocomplete="on")
 					div(class="form-group")
 						label Email
 						input(type="email" class="form-control" name="email")
-					//a(href="ResetPassword") Забыли пароль?
-					//br
-					//br
 					div(class="alert alert-warning" id="typeData")
 						strong После отправки данных проверьте ваш почтовый ящик
 						br
 						Вы получите новый пароль
 
 					button(class="btn btn-lg btn-primary" style="width:60%; border-radius:6px;" type="submit") Сбросить пароль
-					//button(class="bloc-button btn btn-d btn-lg btn-block" style="width:45%;" type="submit") Войти
-				//a(href="Register") Нет аккаунта? Зарегистрируйтесь!
 				br
 				a(href="Login#loginForm") Войти
+
+div(class="col-sm-12 col-xs-12 white")
+	h3(class="mg-md text-center") Восстановление пароля
+	h5(class="mg-md text-center")
+		a(href="/Login") Войти
+
+div(class="col-sm-12 col-xs-12 white")
+	form(id="form-5" action="/ResetPassword" method="post" autocomplete="on")
+		div(class="form-group")
+			label(class="pull-left") Email
+			input(type="text" class="form-control" name="email")
+		div(class="alert alert-warning" id="typeData")
+			strong После отправки данных проверьте ваш почтовый ящик
+			br
+			Вы получите новый пароль
+
+		button(class="btn btn-lg btn-primary center-block" style="border-radius:6px;" type="submit") Сбросить пароль

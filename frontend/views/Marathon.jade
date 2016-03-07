@@ -14,37 +14,59 @@ mixin accelerator(id, value, price, colour)
 	div(class="col-md-4 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"+id)
 		center
 			h2(class="white text-center") Ускоритель #{value}
-			//div(class="col-sm-12")
 			img(class="acceleratorImage" width="260" height="200" src="/img/accelerator"+value+".png" style="background-color:"+colour)
 			br
 			+parameter("Получите ", value)
-			a(onclick="buyAccelerator("+id+")" class="btn btn-lg btn-success") Купить за #{price} монет
+			if session && session.login
+				a(onclick="buyAccelerator("+id+")" class="btn btn-lg btn-success") Купить за #{price} монет
+			else
+				a(href="Login" class="btn btn-lg btn-danger") Авторизуйтесь, чтобы купить
 
+
+mixin freeAccelerators()
+	h2(class="mg-md text-center white") Хотите получить ускоритель бесплатно?
+	p(class="white") У вас есть такая возможность! Для этого нужно сделать одно из этих простых действий:
+	
+	p(class="white")
+		a(href="https://vk.com/o_tournaments" target="_blank") Подпишитесь 
+		| и получите ускоритель 2!
+
+	ul(class="list-group")
+		li(class="list-group-item")
+			//a(href="invite" target="_blank")  
+			| Приведи друга и вы оба получите ускоритель бесплатно!
+			if session && session.login
+				br
+				script.
+					function SelectAll(id)
+					{
+						document.getElementById(id).focus();
+						document.getElementById(id).select();
+					}
+				input(id="shareLink" onclick="SelectAll('shareLink');" style="width:100%; box-sizing : border-box;" type="text" value="http://online-tournaments.org/register?inviter="+session.login class="fit")
+
+		li(class="list-group-item")
+			a(href="addQuestion" target="_blank") Добавь 
+			| 7 вопросов и после модерации ты получишь ускоритель бесплатно! Если ничего не происходит в течение дня, напиши администратору в 
+			a(href="/#vk_comments" target="_blank") чате
+
+	p(class="white" id="shareLink1") В случае победы вам достанется лишь 20% от приза. Т.е. если вы претендуете на приз в 1000 рублей, то получите лишь 200.
 
 block content
-
 	div(class="col-sm-12 white")
-		h1(class="mg-md text-center ") Марафон
-		// p Накопите наибольшее количество очков и выиграйте главный приз в еженедельном марафоне!
+		h1(class="mg-md text-center") Марафон
 		p Участвуйте в турнирах, накапливайте очки и выиграйте главный приз в еженедельном марафоне!
 		p Участие в марафоне абсолютно бесплатно и у вас всегда будут шансы на победу!
 		p За каждый сыгранный турнир вы получаете 1 очко в 
 			a(href="#leaders") таблице лидеров
-		
-		//p Набирать больше очков вам помогут 
-			a(href="#accelerator") ускорители 
-			| , которые вы можете 
-			a(href="#accelerator0") купить 
-			| или получить
-			a(href="#free") бесплатно
 
 		p Набирать больше очков вам помогут 
 			a(href="#accelerator") ускорители 
 			| , которые вы можете купить или получить бесплатно
 
 		p Марафон длится 6 дней (с понедельника по субботу). По мере роста призового фонда, количество призов и их размер также растёт. 
-
-	p(class="white" id="todayConditions")
+	div(class="col-sm-12")
+		p(class="white" id="todayConditions")
 	
 	div(class="col-sm-12" id="accelerator")
 		h2(class="mg-md text-center white") Что такое ускоритель?
@@ -57,39 +79,10 @@ block content
 		+accelerator(1, 7, 35, "purple")
 		+accelerator(2, 9, 50, "gold")
 
-	div(class="col-sm-12" id="free")
-		h2(class="mg-md text-center white") Хотите получить ускоритель бесплатно?
-		p(class="white") У вас есть такая возможность! Для этого нужно сделать одно из этих простых действий:
-		
-		p(class="white")
-			a(href="https://vk.com/o_tournaments" target="_blank") Подпишитесь 
-			| и получите ускоритель 2!
-
-		ul(class="list-group")
-			li(class="list-group-item")
-				//a(href="invite" target="_blank")  
-				| Приведи друга и вы оба получите ускоритель бесплатно!
-				if session && session.login
-					br
-					script.
-						function SelectAll(id)
-						{
-							document.getElementById(id).focus();
-							document.getElementById(id).select();
-						}
-						//	$( "#shareLink1" ).click(function() {
-						//		$( "#shareLink" ).focus();
-						//	});
-					input(id="shareLink" onclick="SelectAll('shareLink');" style="width:100%; box-sizing : border-box;" type="text" value="http://online-tournaments.org/register?inviter="+session.login class="fit")
-					// p(id="shareLink" onclick="SelectAll('shareLink');") aaa
-					//| http://online-tournaments.org/register?inviter=+session.login
-			li(class="list-group-item")
-				a(href="addQuestion" target="_blank") Добавь 
-				| 7 вопросов и после модерации ты получишь ускоритель бесплатно! Если ничего не происходит в течение дня, напиши администратору в 
-				a(href="/#vk_comments" target="_blank") чате
-
-		p(class="white" id="shareLink1") В случае победы вам достанется лишь 20% от приза. Т.е. если вы претендуете на приз в 1000 рублей, то получите лишь 200.
+	div(class="container-fluid" id="free")
+		+freeAccelerators()
 	
+
 	div(class="col-sm-12 dataRule2 offset" id="leaders")
 		h2(class="mg-md text-center") ТОП10 игроков
 			| (
@@ -97,9 +90,11 @@ block content
 			| )
 		include templates/rating
 		div(class="col-sm-12" id="registerButton")
-			script.
-				drawAutoReg("#registerButton");
-		//h2(class="mg-md text-center white" id="Leaderboard") Таблица лидеров
+			if session && session.login
+				script.
+					drawAutoReg("#registerButton");
+			else
+				a(href="Login" class="btn btn-primary center-block") Авторизуйтесь, чтобы сыграть
 
 block JSlibs
 	script(src="tournaments.js")
