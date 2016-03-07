@@ -154,6 +154,7 @@ function buyAcceleratorResult(msg){
     alert('Ошибка. Возможно, на вашем счету недостаточно средств')
   } else {
     alert('Поздравляем! Вы будете набирать очки быстрее!')
+    getProfile();
   }
   // alert(msg);
 }

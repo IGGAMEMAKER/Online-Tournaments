@@ -235,21 +235,18 @@ function (req, res){
 
 
 
-	app.post('/Profile', authenticated, get_profile, function (req, res){
+	app.post('/Profile', authenticated, get_profile, get_marathon, function (req, res){
 		sender.Answer(res, req.profile || Fail);
-		/*if (req.profile){
-			sender.Answer(res, req.profile);
-		} else {
-			sender.Answer(res, Fail);
-		}*/
+	}, function (err, req, res, next){
+	  	res.redirect('Login');
+	  	Errors.add(req.user.login, 'get profile', {err:err});
 	})
 
-	app.get('/Profile', authenticated, get_profile, function (req, res){
-	  if (req.profile){
-	  	res.render('Profile', {msg:req.profile});
-	  } else {
+	app.get('/Profile', authenticated, get_profile, get_marathon, function (req, res){
+	  res.render('Profile', {msg:req.profile});
+	}, function (err, req, res, next){
 	  	res.redirect('Login');
-	  }
+	  	Errors.add(req.user.login, 'get profile', {err:err});
 	})
 
 	function get_profile(req, res, next){
@@ -272,8 +269,20 @@ function (req, res){
 		.catch(function (err){
 			console.error('get_profile error', err);
 			req.profile = null;
-			next();
+			next(err);
 			//next(err);
+		})
+	}
+
+	function get_marathon(req, res, next){
+		var login = req.user.login;
+		Marathon.get_current_marathon_user(login)
+		.then(function (user){
+			req.profile.marathon = user;
+		  next();
+		})
+		.catch(function (err){
+		  next();
 		})
 	}
 

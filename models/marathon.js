@@ -169,7 +169,7 @@ function getCurrentMarathonID(MarathonID){
 	})
 }
 
-function getMarathonUser(login, MarathonID){
+function getMarathonUser(login, MarathonID, hard){
 	return new Promise(function (resolve, reject){
 		MarathonUser.findOne({login:login, MarathonID:MarathonID}, function (err, marathonUser){
 			if (err) return reject(err);
@@ -179,11 +179,11 @@ function getMarathonUser(login, MarathonID){
 				return resolve(marathonUser);
 			}
 			log('no marathonUser');
+			if (hard) return reject(null);
 			resolve(null);
 		})
 	})
 }
-
 
 function getDefaultMarathonUser(login, MarathonID){
 	return {
@@ -657,7 +657,13 @@ module.exports = {
 	}
 	, set_accelerator: 				set_accelerator
 	, get_accelerator_of: 		get_accelerator_of
-
+	
+	, get_current_marathon_user: function(login){
+		return get_current_marathon_or_reject()
+		.then(function (marathon){
+			return getMarathonUser(login, marathon.MarathonID, true);
+		})
+	}
 	, leaderboard: 						function(){
 		return get_current_marathon()
 		.then(function (marathon){

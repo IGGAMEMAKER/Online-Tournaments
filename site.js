@@ -661,7 +661,6 @@ app.post('/Tell', isAdmin, function (req, res){
 app.get('/Leaderboard', function (req, res){
   Marathon.leaderboard()
   .then(function (leaderboard){
-    console.log(leaderboard);
 
     res.render('Leaderboard', { 
       msg: {
