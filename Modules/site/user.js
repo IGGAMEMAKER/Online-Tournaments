@@ -238,15 +238,19 @@ function (req, res){
 	app.post('/Profile', authenticated, get_profile, get_marathon, function (req, res){
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
+			var login = getLogin(req) || null;
+	  	Errors.add(login, 'get profile', {err:err});
 
-	  	Errors.add(req.user.login, 'get profile', {err:err});
-	  	res.redirect('Login');
+	  	// res.json({msg: null});
+	  	sender.Answer(res, Fail);
 	})
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('Profile', {msg:req.profile});
 	}, function (err, req, res, next){
-	  	Errors.add(req.user.login, 'get profile', {err:err});
+			var login = getLogin(req) || null;
+	  	Errors.add(login, 'get profile', {err:err});
+
 	  	res.redirect('Login');
 	})
 

@@ -390,6 +390,8 @@ function getAddressFromAddrList(addresses, tournamentID){
 
 var USD_TO_RUR=1;
 
+
+
 function drawPayingModal(data){
   console.log('drawPayingModal', data);
 
@@ -422,8 +424,56 @@ function drawPayingModal(data){
   if (needToPay>0) { 
     stat_noMoney(0, needToPayRU);
     $(payModal).modal('show');
-
-
   }
+}
+
+var modal = {
+  title :   function (msg) { $("#cTitle").html(msg); }
+  ,body  :  function (msg) { $("#cBody").html(msg); }
+  ,footer:  function (msg) { $("#cFooter").html(msg); }
+
+  ,show:    function () { $("#customModal").modal('show'); }
+  ,hide:    function () { $("#customModal").modal('hide'); }
+  ,pay_btn: function (ammount) {
+    var onclick = "mark('mark/payment/"+login+"/"+ammount+"')";
+    return '<a href="" class="btn btn-primary" onclick="'+onclick+'"> Оплатить </a>';
+  }
+}
+
+function drawPayingModalAccelerator(data){
+  console.log('drawPayingModalAccelerator', data);
+
+  var sum = data;
+  var moneyNow = getFromStorage('money');
+
+  var needToPayRU = sum - moneyNow;
+  console.log('needToPayRU', needToPayRU);
+  // var buyInUSD = data;
+  // var needToPay = (buyInUSD - getFromStorage('money')); // in USD
+
+  // needToPay = Math.ceil(needToPay*100)/100;
+  
+  // var needToPayRU = needToPay*USD_TO_RUR;
+  // needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+
+
+  //moneyRu = needToPay*USD_TO_RUR/100;
+
+  // title
+  modal.title("Вам не хватает совсем чуть чуть(");
+
+  // body
+  var body = "<b> На вашем счету : </b>" + moneyNow + " руб" + "<br>";
+  body += "<b> Стоимость ускорителя: </b>" + sum + " руб" + "<br><br>";
+  body += "<b> Нужно оплатить: </b>" + needToPayRU + " руб";
+  modal.body(body);
+
+  // footer
+  modal.footer(modal.pay_btn(needToPayRU));
+
+  // if (needToPayRU>0) { 
+  //   stat_noMoney(0, needToPayRU);
+  // }
+  modal.show();
 
 }

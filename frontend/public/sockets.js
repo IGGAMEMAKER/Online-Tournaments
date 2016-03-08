@@ -19,8 +19,21 @@ $(document).mouseup(function (e)
     }
 });
 
+function Tell (msg){
+  console.log('drawServerMessage', msg);
 
-socket.on('StartTournament', function (msg){
+  $('#serverMsg').html(msg.message);
+
+  switch(msg.action){
+    case 'reload':
+      drawReloadButton('#ServerMessageButtonSpace');
+    break;
+  }
+
+  $('#serverMessage').modal('show');
+}
+
+function StartTournament (msg){
   prt('StartTournament');
   var tournamentID = msg.tournamentID;
   
@@ -36,24 +49,14 @@ socket.on('StartTournament', function (msg){
   //setInObject('addresses', tournamentID, {host:host, port:port, running: TOURN_START } );
   
   // drawButton(host, port, tournamentID);
-});
+}
 
-socket.on('Tell', function (msg){
-  console.log('drawServerMessage', msg);
 
-  $('#serverMsg').html(msg.message);
+socket.on('Tell', Tell);
+socket.on('StartTournament', StartTournament);
+socket.on('FinishTournament', FinishTournament);
 
-  switch(msg.action){
-    case 'reload':
-      drawReloadButton('#ServerMessageButtonSpace');
-    break;
-  }
-
-  $('#serverMessage').modal('show');
-  //alert('msg');
-})
-
-socket.on('FinishTournament', function (msg) {
+function FinishTournament(msg){
   var tournamentID = msg.tournamentID;
   console.log('FinishTournament ', tournamentID);
 
@@ -64,7 +67,7 @@ socket.on('FinishTournament', function (msg) {
   }
   
   hideTournament(tournamentID);
-});
+}
 
 function drawReloadButton(place){ $(place).html('<a onclick=reload() class="btn btn-primary">Обновить</a>'); }
 
@@ -87,7 +90,6 @@ function updateFrontend(frontendVersion){
   } else {
     setCookie('frontendVersion', frontendVersion, {expires:3600*24*10}) 
   }
-
   /*if (frontendVersion!=current_frontendVersion){
     if (current_frontendVersion==null || current_frontendVersion=='' || current_frontendVersion == 0){
       setCookie('frontendVersion', frontendVersion, {expires:3600*24*10})
@@ -98,7 +100,6 @@ function updateFrontend(frontendVersion){
       }, 1000);
     }
   }*/
-
 }
 
 
@@ -135,17 +136,13 @@ function statAttemptToStart(tournamentID){
 function autoreg(){
   setAsync('autoreg', {}, function(){
     $("#winnerModal").modal('hide');
-    setTimeout(function(){
-      getProfile();
-    }, 1500);
-
+    getProfile();
+  
   });
 }
 
 function stat_noMoney(tournamentID, money){ 
   setAsync('NoMoney', {tournamentID:tournamentID, money:money}); 
-
-  // mark('mark/NoMoney');
 }
 
 function buyAcceleratorResult(msg){
@@ -154,7 +151,13 @@ function buyAcceleratorResult(msg){
     alert('Поздравляем! Вы будете набирать очки быстрее!')
     getProfile();
   } else {
-    alert('Ошибка. На вашем счету недостаточно средств')
+
+    if (msg.pay){
+      drawPayingModalAccelerator(msg.pay);
+    } else {
+      alert('Ошибка(');
+    }
+
     // payment!!
   }
   // alert(msg);

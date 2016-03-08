@@ -24,12 +24,10 @@
     /*overflow-y: scroll !important;*/
 }
 
-.modal-body2 {
-    max-height: 60vh;
-    overflow-y: auto;
+/*.modal-body2 {*/
     /*max-height: 60vh;*/
-    /*overflow-y: scroll !important;*/
-}
+    /*overflow-y: auto;*/
+/*}*/
 
 .wrapper2 footer
 {

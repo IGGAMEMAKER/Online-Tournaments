@@ -1,8 +1,0 @@
-html
-	head
-		title!= 'Alive!!'
-	body
-		h1 SITE IS ALIVE
-		p!= JSON.stringify(message)
-		script.
-			setTimeout(function(){location.reload(true);} , 5000);

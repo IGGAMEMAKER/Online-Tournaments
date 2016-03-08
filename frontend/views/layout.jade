@@ -20,26 +20,21 @@ mixin loadHead()
 	link(href="./css/new/bootstrap.css" rel="stylesheet")
 	link(href="./css/new/style.css" rel="stylesheet")
 	link(href="./css/new/style1.css" rel="stylesheet" type="text/css")
-	//link(href="./css/new/style2.css" rel="stylesheet" type="text/css")
 	link(href="./css/new/my.css" rel="stylesheet")
 
-	link(rel="stylesheet" href="./css/font-awesome.min.css")
+	link(href="./css/font-awesome.min.css" rel="stylesheet")
 
 	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
 	script.
 		if (document.location.hostname == "localhost") {
-			//console.log("is localhost")
 			VK.init({	apiId: 5205914, onlyWidgets: true });
 		} else {
-			//console.log("is not localhost")
 			VK.init({	apiId: 5205759, onlyWidgets: true });
 		}
 
 	link(rel="stylesheet" href="./css/new/vkComment.css")
 
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
-
-	include templates/modals
 
 	script(src="storage.js")
 	script(src="draw.js")
@@ -49,10 +44,10 @@ mixin loadHead()
 	if session && session.login
 		script(src="loadProfile.js")
 
-	//script(src="stats.js")
-
 	script var login = "#{session.login}";
-	
+
+	include templates/modals
+
 	#modals
 		#tournaments()
 			+modal()
@@ -60,8 +55,11 @@ mixin loadHead()
 			+closeTournamentModal()
 		+serverMessage()
 		+winnerModal()
+		+customModal()
+
 	block modals
 		+notEnoughMoney()
+
 	block CSSlibs
 
 	block JSlibs
@@ -72,7 +70,7 @@ mixin loadHead()
 			img(src="https://mc.yandex.ru/watch/34298935" style="position:absolute; left:-9999px;" alt="")
 
 mixin drawBalance()
-	if (session.login && session.login.length>0)
+	if session.login && session.login.length>0
 		div(class="balance")
 			span(id="balance") #{session.login}     
 			a(href="profile#dep") Пополнить   
@@ -101,6 +99,7 @@ html
 			+navigation()
 			+drawBalance()
 			block content
+
 		block JSasync
 
 		block ftr

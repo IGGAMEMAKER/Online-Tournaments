@@ -495,66 +495,66 @@ app.post('/', function (req, res){
 })*/
 
 /*
-function saveSession(req, res, inviterUrl, login){
-  if (!inviterUrl) inviterUrl = "Login";
+  function saveSession(req, res, inviterUrl, login){
+    if (!inviterUrl) inviterUrl = "Login";
 
-  setTimeout(function(){
-    req.session.save(function (err) {
-      // session saved
-      if (err) {
-        console.error('SESSION SAVING ERROR', 'Err'); 
-        res.render(inviterUrl,{msg:err});
+    setTimeout(function(){
+      req.session.save(function (err) {
+        // session saved
+        if (err) {
+          console.error('SESSION SAVING ERROR', 'Err'); 
+          res.render(inviterUrl,{msg:err});
+        } else {
+          req.session.inviter = null;
+          req.session.login = login;
+          res.redirect('Tournaments');
+        }
+      })
+    }, 1000);
+  }
+
+  function vkAuthSuccess(){
+    return function (req, res) {
+      var login = req.user.login;
+      var user = req.user;
+
+      //var inviter = req.inviter;
+      var inviter = req.session.inviter;
+      //console.log("inviter", inviter);
+
+      Log("SetInviter " + inviter + " for " + login, "Users");
+
+      if (inviter) { 
+        Users.setInviter(login, inviter);
+        Actions.add(login, 'login', { auth:'vk', inviter:inviter });
       } else {
-        req.session.inviter = null;
-        req.session.login = login;
-        res.redirect('Tournaments');
+        Actions.add(login, 'login', { auth:'vk' });
       }
-    })
-  }, 1000);
-}
-
-function vkAuthSuccess(){
-  return function (req, res) {
-    var login = req.user.login;
-    var user = req.user;
-
-    //var inviter = req.inviter;
-    var inviter = req.session.inviter;
-    //console.log("inviter", inviter);
-
-    Log("SetInviter " + inviter + " for " + login, "Users");
-
-    if (inviter) { 
-      Users.setInviter(login, inviter);
-      Actions.add(login, 'login', { auth:'vk', inviter:inviter });
-    } else {
-      Actions.add(login, 'login', { auth:'vk' });
+      saveSession(req, res, inviter, login);
     }
-    saveSession(req, res, inviter, login);
   }
-}
 
-function setInviter(inviter){
-  return function (req, res, next){
-    req.session.save(function (err){
-      if (err){
-      } else {
-        req.session.inviter = inviter;
-      }
-      console.log("setInviter middleware :", err, inviter);
-      next();
-    })
+  function setInviter(inviter){
+    return function (req, res, next){
+      req.session.save(function (err){
+        if (err){
+        } else {
+          req.session.inviter = inviter;
+        }
+        console.log("setInviter middleware :", err, inviter);
+        next();
+      })
+    }
   }
-}
 
-var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
+  var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
 
-function redirectToAuth(req, res){ res.redirect('/vk-auth'); }
+  function redirectToAuth(req, res){ res.redirect('/vk-auth'); }
 
 
-app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
+  app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
 
-app.get('/vk-auth', vkAuth, vkAuthSuccess());
+  app.get('/vk-auth', vkAuth, vkAuthSuccess());
 */
 
 function vkAuthSuccess(req, res, next) {
@@ -654,27 +654,32 @@ app.post('/Tell', isAdmin, function (req, res){
   res.render('Tell');
 })
 
-/*function updateLeaderboard(){
-  setTimeout(function(){
+var Leaderboard=null;
+updateLeaderboard();
 
-  }, )
-}*/
+function updateLeaderboard(){
+
+  setInterval(function(){
+    Marathon.leaderboard()
+    .then(function (leaderboard){
+
+        Leaderboard = {
+          leaderboard:leaderboard,
+          counts: leaderboard.counts,
+          prizes: leaderboard.prizes
+        }
+
+    })
+    .catch(function (err){
+      Errors.add('', 'updateLeaderboard', { err:err });
+    })
+
+  }, 5000)
+
+}
 
 app.get('/Leaderboard', function (req, res){
-  Marathon.leaderboard()
-  .then(function (leaderboard){
-
-    res.render('Leaderboard', { 
-      msg: {
-        leaderboard:leaderboard,
-        counts: leaderboard.counts,
-        prizes: leaderboard.prizes
-      }
-    });
-  })
-  .catch(function (err){
-    res.render('Leaderboard', {msg:null});
-  })
+  res.render('Leaderboard', { msg: Leaderboard });
 });
 
 app.get('/Marathon', function (req, res){ res.render('Marathon'); })
@@ -767,10 +772,10 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
   var login = getLogin(req);
   var index = req.accelerator;
   var marathon = req.marathon;
-  
+  var price;
   // console.log(index, marathon);
   if (index && marathon && marathon.accelerators[index]){
-    var price = marathon.accelerators[index].price;
+    price = marathon.accelerators[index].price;
     // need price of accelerator
     return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
     .then(function (result){
@@ -788,7 +793,7 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
     })
     .catch(function (err){
       Errors.add(login, 'buyAccelerator', { err:err, accelerator:index })
-      res.json({ err:err })
+      res.json({ err:err, pay:price||0 })
     })
   } else {
     Errors.add(login, 'buyAccelerator', { err:'invalid data', accelerator:index })

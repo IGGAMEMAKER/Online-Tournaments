@@ -1,4 +1,5 @@
 getProfile();
+
 //hideAllButtons();
 //drawAuthButton();
 //window.onfocus = getProfile;
@@ -6,6 +7,7 @@ getProfile();
 var myModal = '#myModal';
 
 function getProfile(drawFunction){
+	console.log("getProfile");
 	clearStorage();
 	getAsync('Profile', {}, saveProfile(drawFunction||null) );	
 }
@@ -30,12 +32,12 @@ function sendInviter(){
 
 sendInviter();
 
-function exists(element){
-	return document.getElementById(element);
-}
+function exists(element){ return document.getElementById(element); }
 
 function saveProfile(drawFunction){
 	return function (data) {
+		console.log('saveProfile');
+
 		var profile = JSON.parse(data); prt(profile);
 		var tournaments = profile.tournaments||{}; // tregs
 		var money = profile.money;
@@ -84,17 +86,11 @@ function saveProfile(drawFunction){
 			drawPlayButtons(); 
 		}
 		var convert = 1;
-		//$('#money').html('You have '+money/100+'$ on account');
-		//$('#money').html(login + ' (' + money/convert + 'p)');
 
 		$('#money1').html(money/convert + 'p');
 
 		$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
 
-		/*get_last(103);
-		get_last(102);
-		get_last(93);
-		get_last(1025);*/
 		//$(myModal).modal('show');
 
 	};
@@ -106,22 +102,7 @@ function get_last(s){ //s = number
 	return a;
 }
 
-function getMoneyString(money){
-	/*
-	var number = get_last(money);
-	var word = "рублей";
-
-	switch(number){
-		case '0': word = "рублей"; break;
-		case '1': word = "рубль"; break;
-		case '2': word = "рубля"; break;
-		case '3': word = "рубля"; break;
-		case '4': word = "рубля"; break;
-		default : word = "рублей"; break;
-	}*/
-
-	return money + "p" +"   ";
-}
+function getMoneyString(money){ return money + "p" +"   "; }
 
 function saveTournamentAddress(tID){
 	return function (data) {
@@ -129,9 +110,11 @@ function saveTournamentAddress(tID){
 		//console.log(tID);
 		
 		setInObject('addresses', tID, address.address); // console.log(address.running);
+		
 		//var obj = getObject('addresses');
 		//console.log('saveTournamentAddress', address.address);
 		//console.log(obj[tID].address);
+
 		var tournaments = getTournaments();
 		loadedAddrs++;
 		//console.log('length', tournaments.length);
