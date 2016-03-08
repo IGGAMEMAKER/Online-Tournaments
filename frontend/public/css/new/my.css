@@ -23,6 +23,12 @@
     /*max-height: 60vh;*/
     /*overflow-y: scroll !important;*/
 }
+.modal-body2 {
+    max-height: 60vh;
+    overflow-y: auto;
+    /*max-height: 60vh;*/
+    /*overflow-y: scroll !important;*/
+}
 
 .wrapper2 footer
 {
