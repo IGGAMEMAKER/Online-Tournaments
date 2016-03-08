@@ -417,8 +417,10 @@ app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); })
 const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_USER = 1;
 
+
+
 app.get('/', function (req,res){
-  res.render('main2');
+  res.render('main2', { msg:specials });
   /*if (isAuthenticated(req)){
     var data = req.body;
     data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';

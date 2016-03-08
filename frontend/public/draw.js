@@ -129,20 +129,16 @@ function showWinnerModal(msg){
   $(winnerModal).modal('show');
 
   //if (message.length<3); message = 'Увы, '
-/*$(winnerModal+"Msg").html(message);*/
+  /*$(winnerModal+"Msg").html(message);*/
   //$(winnerModal+"Footer").html(getAfterGameButtons);
 }
 
 function setWinnerBody(message) { $(winnerModal+"Msg").html(message); }
 function setWinnerFooter(message) { $(winnerModal+"Footer").html(message); }
 
-function main(message){
-  return '<h3>' + message + '</h3>';
-}
+function main(message) { return '<h3>' + message + '</h3>'; }
 
 function showEvent(tournamentID, prizes, eventType){
-  // console.log('showEvent', arguments);
-
   var body = getAfterGameBody(tournamentID, prizes, eventType);
   var footer = getAfterGameFooter(tournamentID, prizes, eventType);
 
@@ -165,7 +161,7 @@ function makeShareUrl(url, title, description, image, noparse){
 }
 
 function shareLink(text, className, obj){
-  return '<a href="'+makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null)+'" target="_blank" class="'+className+'" >' + text + '</a>';
+  return '<a href="'+makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null) + '" target="_blank" class="'+className+'" >' + text + '</a>';
 }
 
 function add_questions_button(){
@@ -249,7 +245,7 @@ function drawRating(msg){
       var points = leaders[i].points;
       var prize = prizeByPlace(i, prizeList);
       var number = i+1;
-      var style="";
+      var style = "";
 
       var shortedLogin = shortenizeLogin(lgn);
 
@@ -326,7 +322,6 @@ function modal_pic(name){
 
 function winningPicture(){ return modal_pic('win_1.png'); }
 function ratingPicture(){ return modal_pic('win_2.jpg'); }
-
 function losePicture(){ return modal_pic('lose_1.jpg'); }
 
 function getAfterGameBody(tournamentID, prizes, eventType){
@@ -441,7 +436,7 @@ var modal = {
 }
 
 function drawPayingModalAccelerator(data){
-  console.log('drawPayingModalAccelerator', data);
+  // console.log('drawPayingModalAccelerator', data);
 
   var sum = data;
   var moneyNow = getFromStorage('money');
@@ -455,9 +450,8 @@ function drawPayingModalAccelerator(data){
   
   // var needToPayRU = needToPay*USD_TO_RUR;
   // needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
-
-
   //moneyRu = needToPay*USD_TO_RUR/100;
+
 
   // title
   modal.title("Вам не хватает совсем чуть чуть(");
@@ -471,9 +465,9 @@ function drawPayingModalAccelerator(data){
   // footer
   modal.footer(modal.pay_btn(needToPayRU));
 
-  // if (needToPayRU>0) { 
-  //   stat_noMoney(0, needToPayRU);
-  // }
-  modal.show();
+  if (needToPayRU>0) { 
+    stat_noMoney(0, needToPayRU);
+    modal.show();
+  }
 
 }
