@@ -518,7 +518,7 @@ function draw_tournament_action(block_id, id_field, button_name, secondary_name,
 	if (href) text += ' href="' + href + '"';
 	if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
 	
-	text += 'id="'+ id_field +'">' + CTA + '</a>';
+	text += 'id="'+ block_id +'">' + CTA + '</a>';
 	
 	// var text = '<li id="'+ block_id + '">'+
 	// '<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
@@ -536,15 +536,15 @@ function draw_tournament_action(block_id, id_field, button_name, secondary_name,
 }
 
 function buttons(id, lgn, buyIn){
-	return '<ul class="list-unstyled" id="btn-list'+id+'">'+
-	drawReg(id, lgn, buyIn) +
+	// return '<ul class="list-unstyled" id="btn-list'+id+'">'+
+	return '' + drawReg(id, lgn, buyIn) +
 	drawUnReg(id, lgn, buyIn) +
-	drawAuth(id) +
+	drawAuth(id);
 
 	/*'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" id="unregister'+id+'" class="btn btn-info btn-sm btn-buy">Сняться</a></li>' + 
 	'<li><div class="ticket"><h5>Basic Ticket<br><small>25 Tickets left</small></h5></div><div class="price"><div class="value"><b>$</b>599</div></div><a href="#" class="btn btn-info btn-sm btn-buy">Buy Now!</a></li>' +*/
 	
-	'</ul>';
+	// '</ul>';
 }
 
 function draw_cover(id, img){
