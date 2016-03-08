@@ -141,7 +141,7 @@ function main(message){
 }
 
 function showEvent(tournamentID, prizes, eventType){
-  console.log('showEvent', arguments);
+  // console.log('showEvent', arguments);
 
   var body = getAfterGameBody(tournamentID, prizes, eventType);
   var footer = getAfterGameFooter(tournamentID, prizes, eventType);

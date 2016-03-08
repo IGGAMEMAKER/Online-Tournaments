@@ -17,6 +17,13 @@
   width:100%;
 }
 
+.modal-body {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    /*max-height: 60vh;*/
+    /*overflow-y: scroll !important;*/
+}
+
 .wrapper2 footer
 {
     /*position: absolute;*/

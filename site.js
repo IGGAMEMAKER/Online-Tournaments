@@ -720,6 +720,10 @@ app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
 
 })
 
+app.get('/ModalTest', function (req, res) { 
+  res.render('ModalTest');
+})
+
 app.post('/Marathon/new', isAdmin, function (req, res){
   var data = req.body;
 
