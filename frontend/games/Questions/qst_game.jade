@@ -15,11 +15,16 @@ mixin drawTableOfResults()
 				th Приз
 		tbody(id="resultField")
 
+
 html
 head
 	include ../../views/templates/head
 	//include ../../views/templates/googleAd
 	link(rel="stylesheet" type="text/css" href="qst_game.css")
+	script.
+		function closePage(){
+			window.close();
+		}
 center
 	h1!= Questions
 	div(class="page-container")
@@ -33,7 +38,9 @@ center
 						h3(class="text-center" id="Question") Турнир начнётся через
 						h4(id="ticker")
 						//h4 секунд
-						button(class="display:none;" onclick="closePage()") Закрыть
+						div(id="closeButton" style="display:none; color:black;")
+							button(onclick="closePage()") Закрыть
+							br
 						div#Answers(style="display:none;")
 							+radioButton(1, '')
 							+radioButton(2, '')

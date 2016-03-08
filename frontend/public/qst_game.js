@@ -107,7 +107,7 @@ room.on('finish', function(msg){
 
 	DrawPlayers(msg);
 	//getMyPoints();
-
+	$("#closeButton").show();
 	//setTimeout(window.close, 7000);
 	
 	//alert('Winner is :' + msg.winner);
