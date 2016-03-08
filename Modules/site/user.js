@@ -239,15 +239,15 @@ function (req, res){
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
 
-	  	res.redirect('Login');
 	  	Errors.add(req.user.login, 'get profile', {err:err});
+	  	res.redirect('Login');
 	})
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('Profile', {msg:req.profile});
 	}, function (err, req, res, next){
-	  	res.redirect('Login');
 	  	Errors.add(req.user.login, 'get profile', {err:err});
+	  	res.redirect('Login');
 	})
 
 	function get_profile(req, res, next){
