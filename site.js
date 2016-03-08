@@ -724,10 +724,6 @@ app.get('/ModalTest', function (req, res) {
   res.render('ModalTest');
 })
 
-app.get('/forceUpdate', function (req, res){
-  
-})
-
 app.post('/Marathon/new', isAdmin, function (req, res){
   var data = req.body;
 

@@ -238,11 +238,12 @@ function (req, res){
 	app.post('/Profile', authenticated, get_profile, get_marathon, function (req, res){
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
+
 	  	res.redirect('Login');
 	  	Errors.add(req.user.login, 'get profile', {err:err});
 	})
 
-	app.get('/Profile', authenticated, get_profile, get_marathon, function (req, res){
+	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('Profile', {msg:req.profile});
 	}, function (err, req, res, next){
 	  	res.redirect('Login');
