@@ -1,0 +1,91 @@
+//
+extends layout
+
+
+mixin longtext()
+	p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vel vehicula erat. Phasellus vestibulum leo eu mi tempor
+		| blandit. Suspendisse eget iaculis lectus. Donec vitae tempus enim, quis tristique magna. Donec lobortis, sem ac pretium
+		| viverra, leo nisl consequat arcu, sit amet ullamcorper nunc turpis ac erat. In rutrum auctor ligula, quis mattis enim
+		| lacinia eu. Aliquam at magna a erat laoreet iaculis quis a justo. 
+		| Donec porttitor vulputate massa, nec suscipit nisi mollis sed.
+
+mixin LongModal()
+	button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#LongModal") Open Modal
+
+	div(id="LongModal" class="modal fade" role="dialog")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					button(type="button" class="close" data-dismiss="modal") &times;
+					h4(class="modal-title") Запущенные турниры
+				#playButtons
+				div(class="modal-body" id="modal-body")
+					//button(type="button" class="btn btn-default" data-dismiss="modal") Close
+					+longtext()
+					+longtext()
+					+longtext()
+					+longtext()
+					+longtext()
+					+longtext()
+					+longtext()
+					+longtext()
+				div(class="modal-footer")
+					button(type="button" class="btn btn-default" data-dismiss="modal") Close
+
+block content
+	div(class="col-sm-12 white")
+		h1(class="mg-md text-center") Марафон
+		p Участвуйте в турнирах, накапливайте очки и выиграйте главный приз в еженедельном марафоне!
+		p Участие в марафоне абсолютно бесплатно и у вас всегда будут шансы на победу!
+		p За каждый сыгранный турнир вы получаете 1 очко в 
+			a(href="#leaders") таблице лидеров
+
+		p Набирать больше очков вам помогут 
+			a(href="#accelerator") ускорители 
+			| , которые вы можете купить или получить бесплатно
+	+LongModal()
+	script.
+		//var winnerModal = "#winnerModal";
+		/*showWinnerModal({
+			winners:['23i03g'],
+			tournamentID:*/
+		/*function showWinnerModal(msg){
+		  console.log('showWinnerModal', msg);
+		  var winners = msg.winners;//.scores;
+		  var winnerCount = msg.count;
+		  var prizes = msg.prizes;
+		  
+		  var tournamentID = msg.tournamentID;
+
+
+		  var message = "";//message
+		  var eventType=EVENT_TYPE_LOSE;
+
+		  for (var i = 0; i < winners.length && i<winnerCount; i++) {
+		    var winner = winners[i];
+		    //message += JSON.stringify(winner);
+
+		    if (winners[i].login==login){
+		      if (prizes[0]<2){
+			eventType = EVENT_TYPE_WIN_RATING;
+		      } else {
+			eventType = EVENT_TYPE_WIN_MONEY;
+		      }
+
+		      break;
+		    }
+		  };
+
+		  if (prizes[0] < 2 && eventType == EVENT_TYPE_LOSE){
+		    eventType = EVENT_TYPE_WIN_RATING;
+		  }
+
+		  showEvent(tournamentID, prizes, eventType);
+		  $(winnerModal).modal('show');
+		}*/
+
+block JSlibs
+	script(src="tournaments.js")
+
+block title
+	title Марафон
