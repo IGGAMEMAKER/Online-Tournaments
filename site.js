@@ -98,9 +98,15 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   secret: '1234567890QWERTY'
 }));*/
 
+var SESSION_EXPIRATION_HOURS = 24*30;
+var maxAge = SESSION_EXPIRATION_HOURS * 60 * 60 * 1000;
+
+console.log('maxAge', maxAge);
+
 app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     secret: '1234567890QWERTY',
+    cookie: { maxAge: maxAge },
     resave: true,
     saveUninitialized: true,
 }));
