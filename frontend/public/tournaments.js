@@ -71,7 +71,6 @@ function redraw_reg_button(tournament){
     }
   } else {
     drawAuthButton(tID); //console.log('no auth');
-
   }
 
 }
@@ -91,7 +90,7 @@ socket.on('update', function (msg){
     var tournament = tournaments[i];
     var ID = tournament.tournamentID;
 
-    if ( !tournament_exists(ID) ) {
+    if (!tournament_exists(ID) ) {
       //var tLikeObject = JSON.parse(JSON.stringify(tournament));
       //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
       //drawNewTournament(tournament);
@@ -222,7 +221,6 @@ function deleteTournament_from_storage(tournamentID){
 }
 
 function updateTournamentButtonsByID(id){
-	//var tournament = 
 	redraw_reg_button({tournamentID: id})
 }
 
@@ -439,6 +437,33 @@ function drawAuth(id){
 }
 
 
+// function draw_playButton(tournamentID){
+// 	if (!play_button_exists(tournamentID)){
+// 		//var host
+// 		var addresses   = getObject('addresses');
+// 		//console.log(addresses, tournamentID);
+// 		var address = getAddressFromAddrList(addresses, tournamentID);
+// 		console.log(address, tournamentID);
+// 		var host = address.host;
+// 		var port = address.port;
+
+// 		var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
+
+// 		var onclick = "mark('mark/game/push')";
+
+// 		var txt = '<li id="play-btn'+tournamentID + '">'+
+// 		'<form id="play-btn'+tournamentID+'" method="post" onclick="'+onclick + '" action="'+addr+'"  target="_blank"> '
+
+// 		+ '<input type="hidden" name="login" value="'+login+'" />'
+// 		+ '<input type="submit" class="btn btn-default" value="ИГРАТЬ!" />'
+// 		+ '</form>'
+// 		+ '</li>';
+
+// 		$('#btn-list'+tournamentID).append(txt);
+// 		// hide all buttons
+// 	}
+// }
+
 function draw_playButton(tournamentID){
 	if (!play_button_exists(tournamentID)){
 		//var host
@@ -451,13 +476,14 @@ function draw_playButton(tournamentID){
 
 		var addr = 'http://'+host+':'+port+'/Game?tournamentID='+tournamentID;
 
-		/*var txt = '<form id="play-btn'+tournamentID+'" method="post" action="'+addr+'"  target="_blank"> '
-
-		+'<input type="hidden" name="login" value="'+login+'" />'
-		+'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
-		+'</form>';*/
-
 		var onclick = "mark('mark/game/push')";
+
+	var text = '<a class="btn toggle-tickets wrap-text"';
+	if (href) text += ' href="' + href + '"';
+	if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+	
+	text += 'id="'+ block_id +'">' + CTA + '</a>';
+	
 
 		var txt = '<li id="play-btn'+tournamentID + '">'+
 		'<form id="play-btn'+tournamentID+'" method="post" onclick="'+onclick + '" action="'+addr+'"  target="_blank"> '
@@ -467,24 +493,14 @@ function draw_playButton(tournamentID){
 		+ '</form>'
 		+ '</li>';
 
-		/*
-			var text = '<li id="play-btn'+tournamentID + '">'+
-			'<div class="ticket"><h5>' + button_name + '<br><small>'+secondary_name+'</small></h5></div>'+
-			'<div class="price"><div class="value">';
-			if (price_field ) { text += '<b>$</b>' + price_field; }
-			text+= '</div></div>'+
-			'<a class="btn btn-info btn-sm btn-buy" ';//'>Участвовать</a>'+
+		// function draw_tournament_action(block_id, id_field, button_name, secondary_name, onclick, href, CTA, price_field){
+	/*var text = '<a class="btn toggle-tickets wrap-text"';
+	if (href) text += ' href="' + href + '"';
+	if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+	
+	text += 'id="'+ block_id +'">' + CTA + '</a>';*/
 
-			if (id_field) text += ' id="'+id_field+ '"';
-			if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
-
-			if (href) text += ' href="' + href + '"';
-			text += '>'+ CTA +'</a>'+
-			'</li>';//"reg'+id+'"
-		*/
-
-
-		$('#btn-list'+tournamentID).append(txt);
+		$("#footer"+tournamentID).append(txt);
 		// hide all buttons
 	}
 }
@@ -506,12 +522,6 @@ function draw_playButton(tournamentID){
 
 // 	return text;
 // }
-
-
-// draw_tournament_action('register'+id , 'reg'+id, 'Участвовать в турнире', 'и выиграть приз!', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '-'+buyIn)
-// draw_tournament_action('unregister'+id , 'unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
-// draw_tournament_action('auth'+id , 'lgn'+id, 'Авторизуйтесь, чтобы сыграть', 'это быстро!', null, 'Login', 'Авторизоваться')
-
 
 function draw_tournament_action(block_id, id_field, button_name, secondary_name, onclick, href, CTA, price_field){
 	var text = '<a class="btn toggle-tickets wrap-text"';
@@ -605,7 +615,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	// text += buttons(id, login, buyIn) 
 	text += '</div>';
-	text += '<div class="footer">'
+	text += '<div class="footer" id="footer'+id+'">'
 	// text += '<button class="btn toggle-tickets wrap-text" id="toggle'+ id +'">Участвовать</button>'
 	text += buttons(id, login, buyIn) 
 	text += '</div></div></div>'

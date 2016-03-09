@@ -161,7 +161,8 @@ function makeShareUrl(url, title, description, image, noparse){
 }
 
 function shareLink(text, className, obj){
-  return '<a href="'+makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null) + '" target="_blank" class="'+className+'" >' + text + '</a>';
+  var url = makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null);
+  return '<a href="'+ url + '" target="_blank" class="'+className+'" >' + text + '</a>';
 }
 
 function add_questions_button(){
