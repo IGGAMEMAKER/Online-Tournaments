@@ -31,7 +31,6 @@ function hideAllButtons(tID, don_t_removeClass){
 }
 
 function drawUnRegButton(tID){
-  //console.log('drawUnRegButton');
 
   $(UN_REG_FIELD + tID).show();
   $(REG_FIELD + tID).hide();
@@ -66,6 +65,7 @@ function redraw_reg_button(tournament){
   if (login){
     if (userIsRegisteredIn(tID)){
       drawUnRegButton(tID); //console.log('userIsRegisteredIn');
+      // drawTournamentStatus(tID, TOURN_STATUS_REGISTER)
     } else {
       drawRegButton(tID); //console.log('no register');
     }
@@ -153,7 +153,6 @@ function redrawTournament(tournament){
 
 function drawTournamentStatus(tournamentID, status){
 	var text;
-	//console.log('drawTournamentStatus', arguments);
 	if (userIsRegisteredIn(tournamentID)){
 		switch(status){
 			case TOURN_STATUS_RUNNING:
@@ -165,30 +164,16 @@ function drawTournamentStatus(tournamentID, status){
 				hideAllButtons(tournamentID, true);
 				//$(element).fadeTo(blink_period/4, 0.5).fadeTo(blink_period/4, 1.0);
 			break;
-			case TOURN_STATUS_FINISHED:
-				text = 'Турнир завершён <br>ждём вас в других турнирах';
-			break;
-			case TOURN_STATUS_REGISTER: 
-				text = 'Вы участвуете. <br>Дождитесь заполнения турнира';
-			break;
-			default:
-				text = 'Подробнее';
-			break;
+			case TOURN_STATUS_FINISHED: text = 'Турнир завершён <br>ждём вас в других турнирах'; break;
+			case TOURN_STATUS_REGISTER: text = 'Вы участвуете. <br>Дождитесь заполнения турнира'; break;
+			default: text = 'Подробнее'; break;
 		}	
 	} else {
 		switch(status){
-			case TOURN_STATUS_RUNNING:
-				text = 'Турнир запущен';
-			break;
-			case TOURN_STATUS_FINISHED:
-				text = 'Турнир завершён';
-			break;
-			case TOURN_STATUS_REGISTER: 
-				text = 'Участвовать';
-			break;
-			default:
-				text = 'Подробнее';
-			break;
+			case TOURN_STATUS_RUNNING : text = 'Турнир запущен'; break;
+			case TOURN_STATUS_FINISHED: text = 'Турнир завершён'; break;
+			case TOURN_STATUS_REGISTER: text = 'Участвовать'; break;
+			default: text = 'Подробнее'; break;
 		}	
 	}
 
@@ -429,7 +414,8 @@ function drawReg(id, lgn, buyIn){
 
 function drawUnReg(id, lgn, buyIn){
 
-	return draw_tournament_action('unregister'+id , 'unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
+	// return draw_tournament_action('unregister'+id , 'unReg'+id, 'Отказаться от турнира', 'деньги будут возвращены', 'unReg(\''+lgn+'\','+id+')', null, 'Отказаться', '+'+buyIn)
+	return draw_tournament_action('unregister'+id , 'unReg'+id, 'Вы участвуете в турнире', 'деньги будут возвращены', null, null, 'Вы участвуете в турнире <br>Дождитесь начала', '+'+buyIn)
 }
 
 function drawAuth(id){
