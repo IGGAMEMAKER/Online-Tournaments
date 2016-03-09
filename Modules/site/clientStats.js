@@ -135,6 +135,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		res.end(txt);
 	}
 
+	function render(renderPage){
+		return function(req,res, next){
+			res.render(renderPage, { msg: req.data })
+		}
+	}
+
 	app.get('/playedTop', function (req, res, next){
 		// var num = parseInt(req.query.num||1);
 		var playedMoreThan = parseInt(req.query.num) || 1; //req.query.num || 1;
@@ -151,12 +157,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		.then(answer(req, next))
 		.catch(next);
 	}, render('Users'), send_error)
-
-	function render(renderPage){
-		return function(req,res, next){
-			res.render(renderPage, { msg: req.data })
-		}
-	}
 
 	app.get('/Stats2', function (req, res, next){
 		var date = req.query.date || null;

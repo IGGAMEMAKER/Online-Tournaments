@@ -12,7 +12,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	var Marathon = require('../../models/marathon');
 
-	var authenticated = require('../../middlewares').authenticated;
+
+	var middlewares = require('../../middlewares');
+	var authenticated = middlewares.authenticated;
 
 	var Stats = sender.Stats;
 
@@ -233,9 +235,20 @@ function (req, res){
 		sender.Answer(res, Fail);
 	})
 
+	app.get('/mailUsers', authenticated, function (req, res, next){
+		Users.groupByEmails()
+		// .then(function (result){
+		// 	// console.log(result);
+		// 	res.json({msg: result})
+		// })
+		.then(middlewares.answer(req, next))
+		.catch(next)
+		// .catch(function (err){ res.json({err: err}) })
+	// })
+	}, middlewares.render('Lists/mailUsers'), middlewares.send_error)
 
-
-	app.post('/Profile', authenticated, get_profile, get_marathon, function (req, res){
+// , get_marathon
+	app.post('/Profile', authenticated, get_profile, function (req, res){ 
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
 			var login = getLogin(req) || null;

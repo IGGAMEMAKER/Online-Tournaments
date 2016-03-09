@@ -1,0 +1,18 @@
+//
+extends ../List
+
+block head
+	th #
+	th mail
+	th количество
+//block raw
+
+block content
+	td!= ind
+
+	td
+		//p asd
+		//a(href="getLogFile?date="+time+"&name="+item target="_blank") #{item}
+		p!= item._id
+	td
+		p!= item.count

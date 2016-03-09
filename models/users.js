@@ -146,6 +146,54 @@ function setInviter(login, inviter, inviter_type){
 	})
 }
 
+function groupByEmails(){
+	return new Promise(function (resolve, reject){
+		User.aggregate([
+		// { $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
+		{
+			$group: {
+				_id: "$email",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: {count:-1}
+		}
+		], function (err, users){
+			if (err) return reject(err);
+			//	console.log(users);
+			return resolve(users||[]);
+		})
+	})
+}
+
+function mailers(){
+	return new Promise(function (resolve, reject){
+		User.find({ $exists: {email: 1} }, function (err, users){
+			if (err) return reject(err);
+
+			return resolve(users||[]);
+		})
+
+		// TournamentReg.aggregate([
+		// // { $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
+		// {
+		// 	$group: {
+		// 		_id: "$Email",
+		// 		count: { $sum: 1 }
+		// 	}
+		// },
+		// {
+		// 	$sort: {count:-1}
+		// }
+		// ], function (err, users){
+		// 	if (err) return reject(err);
+		// 	//	console.log(users);
+		// 	return resolve(users||[]);
+		// })
+	})
+}
+
 function moneyTop(moneyMoreThan){
 	return new Promise(function (resolve, reject){
 		User.find({ money : {$gt: moneyMoreThan } })
@@ -407,3 +455,4 @@ module.exports.changePassword = changePassword;
 module.exports.resetPassword = resetPassword;
 module.exports.create = create;
 module.exports.moneyTop = moneyTop;
+module.exports.groupByEmails = groupByEmails;

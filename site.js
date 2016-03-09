@@ -812,6 +812,7 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
 })
 
 
+
 app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   var login = req.params.login;
   var accelerator = req.params.accelerator;
@@ -832,6 +833,25 @@ app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   }
 })
 
+app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
+  var login = req.params.login;
+  var ammount = req.params.ammount;
+
+  if (login && ammount && isNumeric(ammount) ){
+    // console.log('constants', c);
+
+    Money.set(login, ammount, c.SOURCE_TYPE_SET)
+    .then(function (result){
+      res.json({msg: 'grant', result:result})
+    })
+    .catch(function (err) { 
+      cancel(res, err, 'grant fail');
+    })
+
+  } else {
+    cancel(res);
+  }
+})
 
 app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;

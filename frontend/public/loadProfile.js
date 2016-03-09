@@ -87,9 +87,14 @@ function saveProfile(drawFunction){
 		}
 		var convert = 1;
 
-		$('#money1').html(money/convert + 'p');
-
+		if (isNaN(money)){
+			money = parseInt(money);
+		}
+		
 		$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
+
+		$('#money1').html(money + 'p');
+
 
 		//$(myModal).modal('show');
 

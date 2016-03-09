@@ -7,7 +7,7 @@ module.exports = {
 	,SOURCE_TYPE_DEPOSIT : 'Deposit'
 	,SOURCE_TYPE_ACCELERATOR_BUY: 'BuyAccelerator'
 	,SOURCE_TYPE_GRANT: 'Grant'
-
+	,SOURCE_TYPE_SET: 'Set'
 
 	,INVITER_HUMAN:0
 	,INVITER_GROUP:1 // groups in VK (maybe need another for FB groups)
