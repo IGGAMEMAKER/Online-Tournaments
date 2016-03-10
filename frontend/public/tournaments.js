@@ -464,11 +464,11 @@ function draw_playButton(tournamentID){
 
 		var onclick = "mark('mark/game/push')";
 
-	var text = '<a class="btn toggle-tickets wrap-text"';
-	if (href) text += ' href="' + href + '"';
-	if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
-	
-	text += 'id="'+ block_id +'">' + CTA + '</a>';
+		// var text = '<a class="btn toggle-tickets wrap-text"';
+		// if (href) text += ' href="' + href + '"';
+		// if (onclick) text += ' onclick="'+ onclick + '"';//reg(\''+lgn+'\','+id+')
+		
+		// text += 'id="'+ block_id +'">' + CTA + '</a>';
 	
 
 		var txt = '<li id="play-btn'+tournamentID + '">'+

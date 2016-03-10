@@ -293,16 +293,21 @@ function (req, res){
 	}
 
 	function get_marathon(req, res, next){
-		var login = req.user.login;
+		var login = getLogin(req);
 		Marathon.get_current_marathon_user(login)
 		.then(function (user){
-			req.profile.marathon = user;
+			req.marathon_user = user;
 		  next();
 		})
 		.catch(function (err){
-		  next();
+		  next(err);
 		})
 	}
+
+	app.post('/marathon_user', middlewares.authenticated, get_marathon, function (req, res){
+		var marathon_user = req.marathon_user;
+		res.json({ result: marathon_user });
+	}, middlewares.send_error)
 
 	function regManager(command, req, res){
 		var data = req.body;

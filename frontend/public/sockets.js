@@ -150,6 +150,7 @@ function buyAcceleratorResult(msg){
   if (msg.result==1){
     alert('Поздравляем! Вы будете набирать очки быстрее!')
     getProfile();
+    get_marathon_user();
   } else {
 
     if (msg.pay){
@@ -157,7 +158,7 @@ function buyAcceleratorResult(msg){
     } else {
       alert('Ошибка(');
     }
-
+    get_marathon_user();
     // payment!!
   }
   // alert(msg);

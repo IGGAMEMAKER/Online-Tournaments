@@ -42,33 +42,15 @@ function saveProfile(drawFunction){
 		var tournaments = profile.tournaments||{}; // tregs
 		var money = profile.money;
 
-		var marathon = profile.marathon;
-		console.log('marathon info', marathon);
+		// var marathon = profile.marathon;
+		// console.log('marathon info', marathon);
 
 
 
 		saveInStorage('money', money);
 		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 
-		saveInStorage('marathon', marathon);
-
 		resetRunningTournaments();
-
-		// Marathon page
-		if (exists('accelerator0') && marathon && marathon.accelerator){
-			var accelerator = marathon.accelerator;
-
-			console.log('it means, that i am on marathon page');
-			var acceleratorIndex = parseInt(accelerator.index);
-			console.log('acceleratorIndex', acceleratorIndex)
-			// var acceleratorIndex = 0
-			for (var i = acceleratorIndex; i >= 0; i--) {
-				$("#accelerator"+i).hide();
-			};
-
-			$("#todayConditions").html("Вы обладаете ускорителем " + accelerator.value);
-			// alert('exists');
-		}
 
 		//var tournaments = getTournaments();
 		//console.log('tournaments',tournaments);
@@ -95,9 +77,7 @@ function saveProfile(drawFunction){
 
 		$('#money1').html(money + 'p');
 
-
 		//$(myModal).modal('show');
-
 	};
 }
 
