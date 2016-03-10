@@ -974,18 +974,16 @@ var frontendVersion;
 
 RealtimeProvider(1000);
 UpdateFrontendVersion(20000);
-get_Leaderboard(8000);
+get_Leaderboard(4000);
 
 function RealtimeProvider(period){
   sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
     if (!error){
       var tournaments = body;
 
-      var message = {
-        tournaments:tournaments
-      }
+      var message = { tournaments:tournaments }
+      if (frontendVersion) message.frontendVersion = frontendVersion;
 
-      if (frontendVersion) message.frontendVersion= frontendVersion;
       io.emit('update', message);
       //compare(body, previousTournaments);
     }
@@ -1015,26 +1013,6 @@ function getShortActivityBoard(leaderboard){
   }
   return short_activity_board;
 }
-/*
-function get_Leaderboard(period){
-  TournamentReg.leaderboard()
-  .then(function (leaderboard){
-    //res.json(leaderboard);
-    activity_board = getShortActivityBoard(leaderboard);
-    io.emit('leaderboard', activity_board);
-  })
-  .catch(function (err){
-    //console.log('error', 'get_Leaderboard', err);
-    //Errors.add('login', 'leaderboard', { code:err })
-    //res.json({code:'err', message:'Ошибка'})
-  })
-
-  setTimeout(function(){
-    get_Leaderboard(period)
-  }, period);
-}*/
-
-
 
 function get_Leaderboard(period){
   // console.log('get_Leaderboard');
@@ -1050,7 +1028,7 @@ function get_Leaderboard(period){
   })
   .catch(function (err){
     //console.log('error', 'get_Leaderboard', err);
-    //Errors.add('login', 'leaderboard', { code:err })
+    Errors.add('', 'leaderboard', { code:err })
     //res.json({code:'err', message:'Ошибка'})
   })
 

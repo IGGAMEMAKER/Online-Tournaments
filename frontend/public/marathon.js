@@ -27,12 +27,3 @@ function get_marathon_user() {
 }
 
 get_marathon_user();
-
-// function setAsync(url, data, success, method){
-//   $.ajax({
-//     url: url,
-//     method: method || 'POST',
-//     data:data,
-//     success: success|| printer
-//   });
-// }
