@@ -81,7 +81,7 @@ function create_login_link(login, email){
 		return set_login_link(login, link)
 	})
 	.then(function (result){
-		return update_password2(login, newPass)
+		return update_password2(login, newPass, CURRENT_CRYPT_VERSION)
 	})
 	.then(function (result){
 		return {
