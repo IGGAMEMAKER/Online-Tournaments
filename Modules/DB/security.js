@@ -30,6 +30,15 @@ function Hash (password, cryptVersion) {
 	}
 }
 
+const secret = 'oloCN92834UAOSDdhaksd';
+
+function sha(text){
+	var hash = crypto.createHmac('sha256', secret)
+               .update(text)
+               .digest('hex');
+
+	return hash;
+}
 
 //algorithms
 function alg_md5 (password) {
@@ -45,3 +54,4 @@ function alg_md5 (password) {
 this.passwordCorrect = passwordCorrect;
 this.Hash = Hash;
 this.create_random_password = create_random_password;
+this.sha = sha;

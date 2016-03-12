@@ -5,9 +5,13 @@ var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
 mailer.set(mailAuth);
 
 function makeResetPasswordText(user){
+	// var domainName = 'online-tournaments.org';
+	var domainName = configs.gameHost || 'localhost';
 	var text = 'Вы сбросили ваш пароль. Ваш новый пароль : ' + user.password;
-	text+=  ' . Настоятельно рекомендуем Вам изменить его в вашем профиле';
-
+	text += ' . Настоятельно рекомендуем Вам изменить его в вашем профиле';
+	text += '<br> Также, Вы можете войти на сайт не вводя пароль по этой ';
+	text += '<a href="http://'+domainName+'/linker/'+user.login+'/'+ user.link+'">ссылке</a>'
+	console.log(text);
 	return text;
 }
 
@@ -29,6 +33,13 @@ function makeRegisterText(user, link){
 }
 
 module.exports = {
+/*	sendResetPasswordEmail: function (user) {
+		user.to = user.email;
+		user.subject = 'Сброс пароля';
+		user.html = makeResetPasswordText(user);
+
+		return mailer.send(user);
+	},*/
 	sendResetPasswordEmail: function (user) {
 		user.to = user.email;
 		user.subject = 'Сброс пароля';

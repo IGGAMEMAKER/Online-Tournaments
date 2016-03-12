@@ -43,13 +43,86 @@ function profile(login){
 
 function find_or_reject(login, parameters){
 	return new Promise(function (resolve, reject){
-		User.findOne({login:login}, parameters||'', function(err, user){
+		User.findOne({login:login}, parameters||'', function (err, user){
 			if (err) return reject(err);
-
 			if (!user) return reject(null);
+
 			return resolve(user);
 		})
 	})
+}
+
+function update_password2 (login, password, cryptVersion) {
+	return new Promise(function (resolve, reject){
+		var newPass = security.Hash(password, cryptVersion);
+
+		User.update({login:login}, {$set : {password:newPass, cryptVersion:cryptVersion||CURRENT_CRYPT_VERSION} }, function (err, count){
+			if (err) return reject(err);
+			
+			if (!updated(count)) return reject(null);
+
+			return resolve(1);
+		});
+	})
+}
+
+function create_login_link(login, email){
+	var newPass;
+	var link;
+
+	console.log('create_login_link', login)
+
+	return find_or_reject(login)
+	.then(function (user){
+		newPass = security.create_random_password();
+
+		link = createLink(newPass);
+		console.log(link);
+		return set_login_link(login, link)
+	})
+	.then(function (result){
+		return update_password2(login, newPass)
+	})
+	.then(function (result){
+		return {
+			password:newPass,
+			link:link,
+			login:login,
+			email:email
+		};
+	})
+}
+
+function set_login_link(login, link){
+	return new Promise(function (resolve, reject){
+		User.update({login:login}, {$set: { link:link } }, function (err, count){
+			if (err) return reject(err);
+
+			if (!updated(count)) return reject(null);
+
+			return resolve(1);
+		})
+	})
+}
+
+function createLink(newPass){
+	return security.sha(newPass);
+}
+
+function get(find){
+	return new Promise(function (resolve, reject){
+		User.findOne(find, function (err, user){
+			if (err) return reject(err);
+
+			if (!user) return reject(null);
+
+			resolve(user)
+		})
+	})
+}
+
+function auth_by_link(login, link){
+	return get({login:login, link:link})
 }
 
 function create(login, password, email, inviter){
@@ -230,14 +303,16 @@ function moneyTop(moneyMoreThan){
 	})
 }
 */
+
 function resetPassword(user){
 	return new Promise(function (resolve, reject){
-		var login = user.login;
+		// var login = user.login;
 		var email = user.email;
 		var newPass = security.create_random_password();//HASH();
 		//Log('Filter passwords, when you change them!!', STREAM_SHIT);
 
-		User.update({login:login, email:email}, {$set : { password:HASH(newPass), cryptVersion:CURRENT_CRYPT_VERSION } }, function (err, count){
+		// login:login, 
+		User.update({email:email}, {$set : { password:HASH(newPass), cryptVersion:CURRENT_CRYPT_VERSION } }, function (err, count){
 			//if (err) { Log(err, STREAM_ERROR); reject(err); }
 			if (err) return reject(err);
 			
@@ -356,7 +431,7 @@ function hasEnoughMoney(login, ammount){
 // -----------------------AUXILARY FUNCTIONS--------------------------
 
 function update_password (login, password, cryptVersion) {
-	return new Promise(function(resolve, reject){
+	return new Promise(function (resolve, reject){
 		var newPass = security.Hash(password, cryptVersion);
 
 		User.update({login:login}, {$set : {password:newPass, cryptVersion:cryptVersion} }, function (err, count){
@@ -452,7 +527,9 @@ module.exports.profile = profile;
 module.exports.auth = auth;
 module.exports.setInviter = setInviter;
 module.exports.changePassword = changePassword;
-module.exports.resetPassword = resetPassword;
+// module.exports.resetPassword = resetPassword;
 module.exports.create = create;
 module.exports.moneyTop = moneyTop;
 module.exports.groupByEmails = groupByEmails;
+module.exports.resetPassword = create_login_link;
+module.exports.auth_by_link = auth_by_link;

@@ -158,6 +158,27 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	})
 
+	app.get('/linker/:login/:link', function (req, res){
+		var login = req.params.login;
+		var link = req.params.link;
+
+
+		Actions.add(login, 'linker');
+		// Users.auth(login, password)//, req.user.email, req.user.inviter
+		Users.auth_by_link(login, link)
+		.then(function (user){
+			// console.log('logged In', user);
+			req.user= user;
+			saveSession(req, res, 'Login');
+
+			// Actions.add(login, 'login');
+		})
+		.catch(function (err){
+			res.render('Login', {msg : err});
+			Errors.add(login, 'linker', { code:err })
+		})
+	})
+
 	// var test_lgn = get_login_from_email('Andrey_vasilyev1994@mail.ru');
 	// console.error(test_lgn);
 
@@ -165,14 +186,22 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		var email = req.body.email;
 		var login = req.body.login || get_login_from_email(email);
 
+		var link_pass;
+
 		Actions.add(login, 'resetPassword');
 
-		Users.resetPassword({login:login, email:email})
+		Users.resetPassword(login, email)
+		.then(function (linkAndPass){
+			link_pass = linkAndPass;
+			console.log(link_pass);
+			return linkAndPass;
+		})
 		.then(mail.sendResetPasswordEmail)
 		.then(function (result){
 			res.render('ResetPassword', {msg:OK});
 		})
 		.catch(function (err){
+			console.log(link_pass, err);
 			res.render('ResetPassword', {msg:err})
 			Errors.add(login||null, 'resetPassword', { email:email, login:login, err:err });
 		})
