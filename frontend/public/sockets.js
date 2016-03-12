@@ -33,7 +33,7 @@ function Tell (msg){
   $('#serverMessage').modal('show');
 }
 
-function StartTournament (msg){
+function StartTournament_socket (msg){
   prt('StartTournament');
   var tournamentID = msg.tournamentID;
   
@@ -53,7 +53,7 @@ function StartTournament (msg){
 
 
 socket.on('Tell', Tell);
-socket.on('StartTournament', StartTournament);
+socket.on('StartTournament', StartTournament_socket);
 socket.on('FinishTournament', FinishTournament);
 
 function FinishTournament(msg){

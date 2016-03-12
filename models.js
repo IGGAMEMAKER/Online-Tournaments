@@ -24,7 +24,17 @@ module.exports = function(dbAddress){
 		UserGift : db.model('UserGifts', { userID: String, giftID: String }),
 		MoneyTransfer : db.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date}),
 
-		Message : db.model('Message', {text:String, senderName:String, date: Date, isPrivate: Boolean}),
+		Message : db.model('Message', {
+			text:String, 
+			senderName:String, 
+			date: Date, 
+			isPrivate: Boolean, 
+			isSystem: Object
+			/*
+				it is in alert;
+				code action code
+			*/
+		}),
 
 		Configs : db.model('Configs', {name:String, value: String}),
 
@@ -51,7 +61,9 @@ module.exports = function(dbAddress){
 
 			settings: 			Object,
 
-			startedTime: 		Date
+			startedTime: 		Date,
+			playTime: Date,
+			finishTime: Date
 			//tournamentServerID: String
 		})
 		,Marathon : db.model('Marathon', {

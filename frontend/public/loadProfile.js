@@ -45,8 +45,6 @@ function saveProfile(drawFunction){
 		// var marathon = profile.marathon;
 		// console.log('marathon info', marathon);
 
-
-
 		saveInStorage('money', money);
 		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 

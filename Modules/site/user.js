@@ -158,12 +158,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	})
 
+	// var test_lgn = get_login_from_email('Andrey_vasilyev1994@mail.ru');
+	// console.error(test_lgn);
+
 	app.post('/ResetPassword', function (req, res){
 		var email = req.body.email;
 		var login = req.body.login || get_login_from_email(email);
 
 		Actions.add(login, 'resetPassword');
-		// AsyncRender("DBServer", 'ResetPassword', res, {renderPage:'ResetPassword'}, {login:login, email:email})
 
 		Users.resetPassword({login:login, email:email})
 		.then(mail.sendResetPasswordEmail)

@@ -71,7 +71,7 @@ app.post('/Register', Register);
 //app.post('/GetUserProfileInfo', GetUserProfileInfo);
 app.post('/findOrCreateUser', findOrCreateUser);
 app.post('/Login', LoginUser);
-app.post('/Changepassword', Changepassword);
+// app.post('/Changepassword', Changepassword);
 app.post('/ResetPassword', ResetPassword);
 app.post('/SetInviter', SetInviter);
 
@@ -223,32 +223,38 @@ var Message = mongoose.model('Message', {text:String, senderName:String, date: D
 
 var Configs = mongoose.model('Configs', {name:String, value: String});
 
-var Tournament = mongoose.model('Tournament', { 
-	buyIn: 			Number,
-	initFund: 		Number,
-	gameNameID: 	Number,
+var models = require('./models.js')(configs.db);
+// console.log(models);
 
-	pricingType: 	Number,
+var Tournament = models.Tournament;
+// var Tournament = mongoose.model('Tournament', { 
+// 	buyIn: 			Number,
+// 	initFund: 		Number,
+// 	gameNameID: 	Number,
 
-	rounds: 		Number,
-	goNext: 		Array,
-		places: 		Array,
-		Prizes: 		Array,
-		prizePools: 	Array,
+// 	pricingType: 	Number,
 
-	comment: 		String,
+// 	rounds: 		Number,
+// 	goNext: 		Array,
+// 		places: 		Array,
+// 		Prizes: 		Array,
+// 		prizePools: 	Array,
 
-	playersCountStatus: Number,///Fixed or float
-		startDate: 		Date,
-		status: 		Number,	
-		players: 		Number,
-	tournamentID:		Number,
+// 	comment: 		String,
 
-	settings: 			Object,
+// 	playersCountStatus: Number,///Fixed or float
+// 		startDate: 		Date,
+// 		status: 		Number,	
+// 		players: 		Number,
+// 	tournamentID:		Number,
 
-	startedTime: 		Date
-	//tournamentServerID: String
-});
+// 	settings: 			Object,
+
+// 	startedTime: 		Date,
+// 	playTime: Date,
+// 	finishTime: Date
+// 	//tournamentServerID: String
+// });
 
 function create_config(name, value, res){
 
@@ -592,6 +598,35 @@ function getRunningTournaments (res) {
 	})
 }
 
+
+checkRunningTournaments();
+
+function checkRunningTournaments () {
+	setTimeout(function (){
+		// console.error('checkRunningTournaments');
+		Tournament.find({status:TOURN_STATUS_RUNNING},'', function (err, tournaments){
+			if (err) { 
+				Errors.add('','checkRunningTournaments', {err:err}) 
+			} else {
+				for (var i = tournaments.length - 1; i >= 0; i--) {
+					var t = tournaments[i];
+					var tournamentID = t.tournamentID;
+					var diff = (new Date() - t.playTime)/1000;
+
+					if (diff>120){
+						console.error('NEEDS TO STOP', tournamentID, diff)
+						Errors.add('', 'force-stop', { tournament: t});
+						StopTournament(t);
+						AutoAddTournament(t);
+					}
+					console.error(tournamentID, diff);
+				};
+			}
+		})
+		checkRunningTournaments();
+	}, 5000)
+}
+
 function retMoney(tournament){
 	return new Promise( function (resolve, reject){
 		// console.error('Last Promise ' + JSON.stringify(tournament) );
@@ -625,18 +660,21 @@ function ReturnBuyInsToPlayers(tournamentID){
 function StopTournament(data, res){
 	Log('DB.StopTournament needs promises!!!', STREAM_SHIT);
 	Log('RETURN MONEY TO USERS, WHO TOOK PART IN STOPPED TOURNAMENT', STREAM_SHIT);
+
 	if (data && data.tournamentID){
 		Log('DBServer starts tournament '+ data.tournamentID, STREAM_TOURNAMENTS);
 		setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
 		ClearRegistersInTournament([data.tournamentID]);
 		ReturnBuyInsToPlayers(data.tournamentID);
-		Answer(res, OK);
+
+		if (res) Answer(res, OK);
+		
 		multiLog('StopTournament ' + JSON.stringify(data), [STREAM_TOURNAMENTS, 'Manual'] );
 	}
 	else{
 		Log('StopTournament: no tournamentID, no fun!', STREAM_WARN);
 
-		Answer(res, Fail);
+		if (res) Answer(res, Fail);
 	}
 }
 
@@ -739,14 +777,6 @@ function give_marathon_points(tregs){
 
 }
 
-/*
-give_marathon_points([ { _id: '56d0db3a8d483382647d2219',
-    userID: 'g.iosebashvili',
-    tournamentID: 813,
-    promo: 'gaginho',
-    date: 'Sat Feb 27 2016 02:09:46 GMT+0300 (MSK)',
-    __v: 0 } ]);
-*/
 function EndTournament( scores, gameID, tournamentID){
 	TournamentReg.find({tournamentID: tournamentID}, function (err, tregs){
 		if (err) { 
@@ -1263,7 +1293,7 @@ function resetPassword(user){
 	})
 }
 
-function Changepassword(req, res){
+/*function Changepassword(req, res){
 	var data = req.body;
 	var login = data.login;
 	var oldPass = data.oldPass;
@@ -1286,7 +1316,7 @@ function Changepassword(req, res){
 			}
 		}
 	})
-}
+}*/
 
 
 function ResetPassword(req, res){
@@ -1572,7 +1602,24 @@ function saveTransfer(login, cash, source){
 
 function setTournStatus(tournamentID, status){
 	Log('Set tourn status of ' + tournamentID + ' to ' + status);
-	Tournament.update({tournamentID:tournamentID}, {$set: {status:status, startedTime:new Date() }}, function (err,count){
+	var updateObj = {
+		status:status
+	}
+
+	switch(status){
+		case TOURN_STATUS_RUNNING:
+			updateObj.playTime = new Date();
+		break;
+		case TOURN_STATUS_FINISHED:
+			updateObj.finishTime = new Date();
+		break;
+		default:
+			updateObj.startedTime = new Date();
+			// Errors.add('', 'invalid setTournStatus', {err:status});
+		break;
+	}
+	// { status: status, startedTime: new Date() }
+	Tournament.update({tournamentID:tournamentID}, {$set: updateObj}, function (err,count){
 		if(err) return Log('Tournament status update Error: ' + JSON.stringify(err));
 
 		/*if (status==TOURN_STATUS_REGISTER){
@@ -1716,6 +1763,7 @@ function WinPrize(data, res){
 			AutoAddTournament(tournament);
 		}
 	})
+
 }
 
 function YoungerizeTournament(tournament){

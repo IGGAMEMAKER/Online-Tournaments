@@ -59,6 +59,7 @@ function drawAuthButton(tID){
   $(AUTH_FIELD + tID).show();
 }
 
+
 function redraw_reg_button(tournament){
   var tID = tournament.tournamentID;
   //console.log('look at ', tID);
@@ -181,13 +182,8 @@ function drawTournamentStatus(tournamentID, status){
 	setToggle(tournamentID, text);
 }
 
-function reg(login, tID){
-	ManageReg(login, tID, 'RegisterInTournament', 1);
-}
-function unReg(lgn, tID){
-
-	ManageReg(login, tID, 'CancelRegister', 0);
-}
+function reg(login, tID) { ManageReg(login, tID, 'RegisterInTournament', 1); }
+function unReg(lgn, tID) { ManageReg(login, tID, 'CancelRegister', 0); }
 
 function addTournament_to_storage(tournamentID){
   var tournaments = getTournaments();
@@ -232,7 +228,7 @@ function ManageReg(login, tID, url, regID){
 				
 				console.log('ManageReg', msg.result);
 				switch(msg.result){
-					case 'OK': txt='Вы зарегистрировались в турнире!'; register_success(tID); break;
+					case 'OK': txt='Вы зарегистрировались в турнире!'; addTournament_to_storage(tID); /*register_success(tID);*/ break;
 					case 'fail': txt='Ошибка регистрации'; break;
 					case TREG_ALREADY: txt='Вы уже зарегистрировались в турнире. Обновите страницу'; break;
 					case TREG_FULL: txt='Регистрация участников завершена'; break;
@@ -261,17 +257,6 @@ function ManageReg(login, tID, url, regID){
 			//reload(1000);
 	  }
 	});
-}
-
-function register_success(tID){
-  //$('#bgd'+tID).addClass('participating');
-  addTournament_to_storage(tID);
-
-  //drawRegButton(tID);
-  //alert('Вы зарегистрировались в турнире!');
-	//participating
-
-	//getProfile();
 }
 
 function drawTournaments(){
@@ -326,7 +311,7 @@ function getPrize(t){
 	}
 }
 
-function ruble(){ return '₽'; }
+function ruble(){ return 'P'; }
 
 function showPrize(prize, specPrize, ID){
 	if (specPrize && specPrize.length>0) {

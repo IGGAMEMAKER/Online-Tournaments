@@ -106,7 +106,7 @@ console.log('maxAge', maxAge);
 app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
     secret: '1234567890QWERTY',
-    cookie: { maxAge: maxAge },
+    cookie: { maxAge: new Date(Date.now() + maxAge) },
     resave: true,
     saveUninitialized: true,
 }));

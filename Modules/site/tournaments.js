@@ -2,6 +2,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy){
 var Fail = { result:'fail'};
 
 var Tournaments = require('../../models/tournaments');
+var TournamentRegs = require('../../models/tregs');
+
 var middlewares = require('../../middlewares')
 //var Actions = require('../../models/actions');
 
@@ -212,12 +214,32 @@ var upload = multer({ storage: storage }).single('image');
 	const GET_TOURNAMENTS_INFO = 4;
   const GET_TOURNAMENTS_USER = 1;
 
-	app.get('/TournamentInfo', function (req, res){
-	  var data = req.body;
-	  data.query = {tournamentID:req.query.tID};
-	  data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
-	  data.purpose = GET_TOURNAMENTS_INFO;  
+	app.get('/TournamentInfo/:tournamentID', middlewares.authenticated, function (req, res){
+    var tournamentID = req.params.tournamentID;
 
-	  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
+    var TournamentInfo= {
+      tournament:null,
+      players:null
+    }
+
+    Tournaments.getByID(tournamentID)
+    .then(function (tournament){
+      TournamentInfo.tournament = tournament;
+      return TournamentRegs.getParticipants(tournamentID)
+    })
+    .then(function (players){
+      TournamentInfo.players = players;
+      res.json({msg: TournamentInfo});
+    })
+    .catch(function (error){
+      res.json({error:error});
+    })
+	  // var data = req.body;
+	  // data.query = {tournamentID:req.query.tID};
+	  // data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
+	  // data.purpose = GET_TOURNAMENTS_INFO;  
+
+	  // AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
+
 	});
 }

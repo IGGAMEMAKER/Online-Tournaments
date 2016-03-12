@@ -10,10 +10,10 @@ var log = helper.log;
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
 
-var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
+// var mongoose = require('mongoose');
+// //mongoose.connect('mongodb://localhost/test');
 log(configs.db);
-var db = mongoose.createConnection('mongodb://'+configs.db+'/test');
+// var db = mongoose.createConnection('mongodb://'+configs.db+'/test');
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -26,32 +26,37 @@ var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
 var REGULARITY_STREAM=2;
 
-var Tournament = db.model('Tournament', { 
-	buyIn: 			Number,
-	initFund: 		Number,
-	gameNameID: 	Number,
+var models = require('../models')(configs.db);
+var Tournament = models.Tournament;
 
-	pricingType: 	Number,
+// var Tournament = mongoose.model('Tournament', { 
+// 	buyIn: 			Number,
+// 	initFund: 		Number,
+// 	gameNameID: 	Number,
 
-	rounds: 		Number,
-	goNext: 		Array,
-		places: 		Array,
-		Prizes: 		Array,
-		prizePools: 	Array,
+// 	pricingType: 	Number,
 
-	comment: 		String,
+// 	rounds: 		Number,
+// 	goNext: 		Array,
+// 		places: 		Array,
+// 		Prizes: 		Array,
+// 		prizePools: 	Array,
 
-	playersCountStatus: Number,///Fixed or float
-		startDate: 		Date,
-		status: 		Number,	
-		players: 		Number,
-	tournamentID:		Number,
+// 	comment: 		String,
 
-	settings: 			Object, 
+// 	playersCountStatus: Number,///Fixed or float
+// 		startDate: 		Date,
+// 		status: 		Number,	
+// 		players: 		Number,
+// 	tournamentID:		Number,
 
-	startedTime: 		Date
-	//tournamentServerID: String
-});
+// 	settings: 			Object,
+
+// 	startedTime: 		Date,
+// 	playTime: Date,
+// 	finishTime: Date
+// 	//tournamentServerID: String
+// });
 
 
 function all(){
