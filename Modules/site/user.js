@@ -174,7 +174,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			// Actions.add(login, 'login');
 		})
 		.catch(function (err){
-			res.render('Login', {msg : err});
+
+			res.redirect('/Login');//, {msg : err});
 			Errors.add(login, 'linker', { code:err })
 		})
 	})

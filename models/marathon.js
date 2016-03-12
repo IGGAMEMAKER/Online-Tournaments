@@ -64,13 +64,13 @@ function getDefaultMarathon(){
 		prizes: [100],
 		counts: [1], 
 
-		accelerators: [{value: 4, price: 20}, {value: 7, price: 35}], // value, price, sold, given upgade (index) [ {value: 4, price:20, sold:10, free:2, upgrade:0} , {value: 7, price:35, sold:10, free:3, upgrade:1} ]
+		accelerators: [{value: 4, price: 20}, {value: 7, price: 35}, {value: 9, price: 50}], // value, price, sold, given upgade (index) [ {value: 4, price:20, sold:10, free:2, upgrade:0} , {value: 7, price:35, sold:10, free:3, upgrade:1} ]
 		upgrades: [{value: 12, price: 20}, {value: 10, price: 35}], // value, price, sold, given // upgade (index) [ {value: 12, price:20, sold:10, free:2} , {value: 10, price:35, sold:10, free:3} ]
 
-		soldAccelerators: [0, 0],
-		soldUpgrades: [0, 0],
+		soldAccelerators: [0, 0, 0],
+		freeAccelerators: [0, 0, 0],
 
-		freeAccelerators: [0, 0],
+		soldUpgrades: [0, 0],
 		freeUpgrades: [0, 0]
 	};
 }
