@@ -224,8 +224,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.changePassword(login, password, newpassword)
 		.then(function (result){
-			// res.render('Changepassword', { msg:result })
-			res.redirect('Profile');
+			res.render('Changepassword', { msg:result })
+			// res.redirect('Profile');
 		})
 		.catch(function (err){
 			return next(err);

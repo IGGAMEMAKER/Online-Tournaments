@@ -70,14 +70,14 @@ function create_login_link(login, email){
 	var newPass;
 	var link;
 
-	console.log('create_login_link', login)
+	// console.log('create_login_link', login)
 
 	return find_or_reject(login)
 	.then(function (user){
 		newPass = security.create_random_password();
 
 		link = createLink(newPass);
-		console.log(link);
+		// console.log(link);
 		return set_login_link(login, link)
 	})
 	.then(function (result){
