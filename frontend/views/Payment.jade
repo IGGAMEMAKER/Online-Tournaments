@@ -1,0 +1,42 @@
+//
+extends layout
+
+block JSlibs
+	script(src="hashes.js")
+
+block title
+	title Оплата
+
+block content
+	h1(class="white text-center") Пополнение счёта
+	div(class="col-sm-12")
+		script.
+			var sMrchLogin = "OnlineTournaments";
+			var sOutSum = 10;
+			var nInvId = 0;
+			var mrh_pass1 = "q0P1yShw05JePvqfKq7e";
+			var str = sMrchLogin+":"+sOutSum+":"+nInvId+":"+mrh_pass1;
+			var sCrc = hex_md5(str);
+			var sDesc = "Пополнение счёта на сайте online-tournaments.org"
+
+			var sCulture = "ru";
+
+			// кодировка
+			// encoding
+			var sEncoding = "utf-8";
+
+
+			var src = "<script language=JavaScript ";
+			src+= "src=\"https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?";
+			src+= "MerchantLogin=" + sMrchLogin;
+			src+= "&OutSum=" + sOutSum;
+			src+= "&InvoiceID=" + nInvId;
+			//src+= "&shp_Item=" + sShpItem;
+			src+= "&SignatureValue=" + sCrc;
+			src+= "&Description=" + sDesc;
+			//src+= "&Culture=" + sCulture;
+			src+= "&Encoding=" + sEncoding;
+			src+= "\"><\/script>";
+			//console.log(src);
+			document.write(src);
+	//"https://auth.robokassa.ru/Merchant/PaymentForm/FormM.js"

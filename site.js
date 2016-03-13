@@ -952,6 +952,10 @@ app.post('/Winners', function (req, res){
   Send('winners', {winners:winners, tournamentID:tournamentID});
 })
 
+app.get('/Payment', middlewares.authenticated, function (req, res){
+  res.render('Payment');
+})
+
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
