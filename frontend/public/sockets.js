@@ -179,6 +179,10 @@ function setAsync(url, data, success, method){
   });
 }
 
+function loadRating(){
+  
+}
+
 function mark(url, data, method){
   // console.log('mark', url, data, method);
   $.ajax({

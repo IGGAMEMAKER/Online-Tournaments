@@ -11,7 +11,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var Errors = require('../../models/errors');
 
 	var Marathon = require('../../models/marathon');
-
+	var statistics = require('../../models/statistics');
 
 	var middlewares = require('../../middlewares');
 	var authenticated = middlewares.authenticated;
@@ -105,7 +105,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Users.auth(login, password)//, req.user.email, req.user.inviter
 		.then(function (user){
 			// console.log('logged In', user);
-			req.user= user;
+			req.user = user;
 			saveSession(req, res, 'Login');
 
 			// Actions.add(login, 'login');
@@ -180,21 +180,32 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	})
 
+	app.get('/killUser/:login', middlewares.isAdmin, function (req, res){
+		var login = req.params.login;
+
+		Users.kill(login)
+		.then(function (result){
+			res.json({result:result})
+		})
+		.catch(function (err){
+			res.json({err:err});
+		})
+	})
+
 	// var test_lgn = get_login_from_email('Andrey_vasilyev1994@mail.ru');
 	// console.error(test_lgn);
 
 	app.post('/ResetPassword', function (req, res){
 		var email = req.body.email;
-		var login = req.body.login || get_login_from_email(email);
+		// var login = req.body.login || get_login_from_email(email);
 
 		var link_pass;
 
-		Actions.add(login, 'resetPassword');
+		statistics.attempt('resetPassword', {email:email});
 
-		Users.resetPassword(login, email)
+		Users.resetPassword(email)
 		.then(function (linkAndPass){
-			link_pass = linkAndPass;
-			console.log(link_pass);
+			link_pass = linkAndPass; // console.log(link_pass);
 			return linkAndPass;
 		})
 		.then(mail.sendResetPasswordEmail)
@@ -202,9 +213,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.render('ResetPassword', {msg:OK});
 		})
 		.catch(function (err){
-			console.log(link_pass, err);
+			statistics.fail('resetPassword', {email:email, err:err}); // console.log(link_pass, err);
 			res.render('ResetPassword', {msg:err})
-			Errors.add(login||null, 'resetPassword', { email:email, login:login, err:err });
+
+			Errors.add(email||null, 'resetPassword', { email:email, err:err });
 		})
 	})
 

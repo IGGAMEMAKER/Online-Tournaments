@@ -215,13 +215,11 @@ function GetMarathon(){
 	})
 }
 
-
-GetRunningTournaments();
-GetTotalTournaments();
 //GetMarathon();
 /*var tmr = setInterval(GetRunningTournaments, 5000);
 var tmr2 = setInterval(GetTotalTournaments, 5000);*/
-window.onfocus = function(){location.reload(true);}
+
+
 
 //var tmr3 = setInterval(GetPingPongGames, 4000);
 //var tmr4 = setInterval(GetQuestionGames, 4000);

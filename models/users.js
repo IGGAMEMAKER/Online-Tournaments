@@ -4,6 +4,8 @@ var configs = require('../configs');
 var models = require('../models')(configs.db);
 var User = models.User;
 
+var helper = require('../helpers/helper');
+
 var validator = require('validator');
 
 var security = require('../Modules/DB/security');
@@ -36,7 +38,18 @@ function profile(login){
 			if (err) return reject(err);
 			
 			if (!user) return resolve(null);
-			return resolve(user);			
+			return resolve(user);
+		});
+	})
+}
+
+function profileByMail(email){
+	return new Promise(function(resolve,reject){
+		User.findOne({email:email}, 'login money email social', function (err, user) {
+			if (err) return reject(err);
+			
+			if (!user) return resolve(null);
+			return resolve(user);
 		});
 	})
 }
@@ -52,11 +65,13 @@ function find_or_reject(login, parameters){
 	})
 }
 
-function update_password2 (login, password, cryptVersion) {
+function update_password_by_email (email, password) {
 	return new Promise(function (resolve, reject){
+		var cryptVersion = CURRENT_CRYPT_VERSION;
+
 		var newPass = security.Hash(password, cryptVersion);
 
-		User.update({login:login}, {$set : {password:newPass, cryptVersion:cryptVersion||CURRENT_CRYPT_VERSION} }, function (err, count){
+		User.update({email:email}, {$set : {password:newPass, cryptVersion:cryptVersion} }, function (err, count){
 			if (err) return reject(err);
 			
 			if (!updated(count)) return reject(null);
@@ -66,22 +81,32 @@ function update_password2 (login, password, cryptVersion) {
 	})
 }
 
-function create_login_link(login, email){
-	var newPass;
-	var link;
+function kill(login){
+	return new Promise(function (resolve, reject){
+		User.remove({login:login}, function (err, count){
+			if (err) return reject(err);
 
+			if (helper.removed(count)) return resolve(1);
+
+			return reject(null);
+		})
+	})
+}
+
+function create_login_link(email){
+	var login;
+	
+	var newPass = security.create_random_password();
+	var link = createLink(newPass);
+	
 	// console.log('create_login_link', login)
-
-	return find_or_reject(login)
+	return profileByMail(email)
 	.then(function (user){
-		newPass = security.create_random_password();
-
-		link = createLink(newPass);
-		// console.log(link);
-		return set_login_link(login, link)
+		login = user.login;
+		return set_login_link(email, link)
 	})
 	.then(function (result){
-		return update_password2(login, newPass, CURRENT_CRYPT_VERSION)
+		return update_password_by_email(email, newPass)
 	})
 	.then(function (result){
 		return {
@@ -91,11 +116,12 @@ function create_login_link(login, email){
 			email:email
 		};
 	})
+
 }
 
-function set_login_link(login, link){
+function set_login_link(email, link){
 	return new Promise(function (resolve, reject){
-		User.update({login:login}, {$set: { link:link } }, function (err, count){
+		User.update({email:email}, {$set: { link:link } }, function (err, count){
 			if (err) return reject(err);
 
 			if (!updated(count)) return reject(null);
@@ -507,7 +533,7 @@ function auth_printer(authenticated){
 }
 
 function p_printer (obj) {
-	return new Promise(function(resolve, reject){
+	return new Promise(function (resolve, reject){
 		printer(obj);
 		return resolve(obj);
 	})
@@ -533,3 +559,5 @@ module.exports.moneyTop = moneyTop;
 module.exports.groupByEmails = groupByEmails;
 module.exports.resetPassword = create_login_link;
 module.exports.auth_by_link = auth_by_link;
+
+module.exports.kill = kill;

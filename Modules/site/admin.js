@@ -37,7 +37,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     
   var upload = multer({ storage: storage }).single('questions');
 
-  app.post('/Admin', Admin);
+  app.post('/Admin', isAdmin, Admin);
   function Admin(req, res){
     var command = req.body.command || '';
     switch(command){
@@ -121,7 +121,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
-  app.get('/Admin', function (req, res){
+  app.get('/Admin', isAdmin, function (req, res){
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
     res.render('AdminPanel', {msg:'hola!'});
       return;

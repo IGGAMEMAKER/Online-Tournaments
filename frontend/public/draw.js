@@ -238,6 +238,7 @@ function drawRating(msg){
     // console.log('drawRating', msg);
     var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
     var rating = "#ratingTab";
+
     $(rating).html("");
 
     for (var i=0; i<leaders.length;i++){
@@ -335,11 +336,11 @@ function getAfterGameBody(tournamentID, prizes, eventType){
     case EVENT_TYPE_WIN_MONEY:
       body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать!') + winningPicture();
     break;
-    case EVENT_TYPE_WIN_RATING:
-      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !') + ratingPicture();
-    break;
+    // case EVENT_TYPE_WIN_RATING:
+    //   body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a><br> !') + ratingPicture();
+    // break;
     default:
-      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !') + ratingPicture();
+      body = main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a><br>Наберите больше всех баллов и выиграйте главный приз!') + ratingPicture();
     break;
   }
 

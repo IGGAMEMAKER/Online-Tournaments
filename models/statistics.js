@@ -280,7 +280,8 @@ var log = console.log;
 function attempt_daily(tag, auxillaries){
 	return findOrCreateDaily(tag)
 	.then(function (result){
-		log('findOrCreateDaily', tag, result);
+		// log('findOrCreateDaily', tag, result);
+		log('attempt', tag, auxillaries)
 		return updateDaily(tag, {$inc: { attempt: 1 } })
 	})
 }
@@ -289,6 +290,7 @@ function fail_daily(tag, auxillaries){
 	return findOrCreateDaily(tag)
 	.then(function (result){
 		// log('findOrCreateDaily', result);
+		log('fail', tag, auxillaries)
 		return updateDaily(tag, {$inc: { fail: 1 } })
 	})
 }

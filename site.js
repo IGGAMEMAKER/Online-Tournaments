@@ -662,30 +662,6 @@ app.post('/Tell', isAdmin, function (req, res){
   res.render('Tell');
 })
 
-var Leaderboard=null;
-updateLeaderboard();
-
-function updateLeaderboard(){
-
-  setInterval(function(){
-    Marathon.leaderboard()
-    .then(function (leaderboard){
-
-        Leaderboard = {
-          leaderboard:leaderboard,
-          counts: leaderboard.counts,
-          prizes: leaderboard.prizes
-        }
-
-    })
-    .catch(function (err){
-      Errors.add('', 'updateLeaderboard', { err:err });
-    })
-
-  }, 5000)
-
-}
-
 app.get('/Leaderboard', function (req, res){
   res.render('Leaderboard', { msg: Leaderboard });
 });
@@ -873,6 +849,15 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   }
 })
 
+app.get('/api/mini-rating', function (req, res){
+
+  res.json({
+    leaderboard: activity_board, 
+    counts: leaderboard_min.counts, 
+    prizes: leaderboard_min.prizes 
+  })
+})
+
 //app.post('/')
 
 /*app.get('/vk-auth', function (req, res){
@@ -972,6 +957,33 @@ var previousTournaments=[];
 const GET_TOURNAMENTS_UPDATE = 6;
 var frontendVersion;
 
+var Leaderboard=null;
+updateLeaderboard();
+
+function updateLeaderboard(){
+
+  setInterval(function(){
+    Marathon.leaderboard()
+    .then(function (leaderboard){
+
+        Leaderboard = {
+          leaderboard:leaderboard,
+          counts: leaderboard.counts,
+          prizes: leaderboard.prizes
+        }
+
+    })
+    .catch(function (err){
+      Errors.add('', 'updateLeaderboard', { err:err });
+    })
+
+  }, 5000)
+
+}
+
+
+
+
 RealtimeProvider(1000);
 UpdateFrontendVersion(20000);
 get_Leaderboard(4000);
@@ -1014,11 +1026,14 @@ function getShortActivityBoard(leaderboard){
   return short_activity_board;
 }
 
+var leaderboard_min={};
+
 function get_Leaderboard(period){
   // console.log('get_Leaderboard');
   Marathon.leaderboard()
   .then(function (leaderboard){
     activity_board = getShortActivityBoard(leaderboard);
+    leaderboard_min = leaderboard;
     io.emit('leaderboard', {
       leaderboard: activity_board, 
       counts: leaderboard.counts, 
