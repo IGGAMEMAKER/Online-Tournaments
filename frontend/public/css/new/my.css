@@ -335,7 +335,7 @@
   }
 }
 
-@media (min-width: 471px and max-width: 650px){
+@media (min-width: 471px) and (max-width: 650px){
 /*  .marathon-multipliers {
     overflow: hidden;
     margin-left: -20px;
