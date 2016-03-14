@@ -414,10 +414,10 @@ function drawAuth(id){
 // 
 
 function drawReg(id, lgn, buyIn){
-	var phrase = "Играть БЕСПЛАТНО";
+	var phrase = 'Участвовать';// 'Участвовать'
 	if (buyIn>0) phrase = "Играть за "+buyIn+" р";
 
-	return draw_tournament_action('register'+id , 'reg'+id, 'Участвовать в турнире', 'и выиграть приз!', 'reg(\''+lgn+'\','+id+')', null, 'Участвовать', '-'+buyIn)
+	return draw_tournament_action('register'+id , 'reg'+id, 'Участвовать в турнире', 'и выиграть приз!', 'reg(\''+lgn+'\','+id+')', null, phrase, '-'+buyIn)
 }
 
 function drawUnReg(id, lgn, buyIn){
@@ -645,14 +645,15 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 	// }
 	text += '<br>'
 	text += '</div><div class="clearfix"></div>';
-	text += '<div class="info">';
-	text += '<p class=""><i class="fa fa-money"></i>' + getBuyIn(buyIn) + '</p>'; //Цена : 100₽
 
-	// text += '<p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
-	// text += getPrizeCount(winPlaces); //Призовых мест: 1
-	// text += '</p>'
+	// text += '<div class="info">';
+	// text += '<p class=""><i class="fa fa-money"></i>' + getBuyIn(buyIn) + '</p>'; //Цена : 100₽
+
+	// // text += '<p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
+	// // text += getPrizeCount(winPlaces); //Призовых мест: 1
+	// // text += '</p>'
 	
-	text += '</div>';
+	// text += '</div>';
 	
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	// text += buttons(id, login, buyIn) 
