@@ -335,6 +335,11 @@
   }
 }
 
+.ticket-card .price{
+  float: none;
+  text-align: center;
+}
+
 @media (min-width: 471px) and (max-width: 650px){
 /*  .marathon-multipliers {
     overflow: hidden;

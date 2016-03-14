@@ -321,7 +321,7 @@ function getPrize(t){
 		return showPrize(prize, t.settings.specPrizeName, ID);
 	}	else {
 		if (isStream(t)) {
-			return '+<a href="#rating">Рейтинг</a>';//Приз:  aria-expanded="true"  data-toggle="tab"
+			return '+<a href="#ratingField">Рейтинг</a>';//Приз:  aria-expanded="true"  data-toggle="tab"
 		} else {
 			return showPrize(prize, "", ID);
 		}
@@ -362,9 +362,9 @@ function parseAndDrawTournament(tournament){
 	, players= players
 	, Max= maxPlayers
 
-	setTimeout(function(){
-		drawTournament(id, img, prize, winPlaces, players, Max, buyIn);
-	}, 2000*0);
+	drawTournament(id, img, prize, winPlaces, players, Max, buyIn);
+	// setTimeout(function(){
+	// }, 2000*0);
 }
 
 
@@ -378,7 +378,13 @@ function getPlayerCount(players, Max){ return 'Игроки : '+ players + '/'+M
 function getMaxPlayers(winPlaces){ return winPlaces + ' Мест'; }
 function getTopic(){ return 'Произвольная'; }
 function getMainPrize(prize){ return prize + ' '; }
-function getBuyIn(buyIn){ return 'Цена : '+buyIn+' ' + ruble(); }
+
+function getBuyIn(buyIn){
+	if (buyIn == 0){
+		return 'Цена : БЕСПЛАТНО';
+	}
+	return 'Цена : '+buyIn+' ' + ruble(); 
+}
 function getPrizeCount(winPlaces){ return 'Призовых мест: '+winPlaces; }
 
 /*function drawReg(id, lgn, buyIn){
@@ -588,18 +594,60 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 		text += '<div class="tickets-left">' + pasteID(id) + '</div>';
 	text += '</div>';*/
 
+	// text += '<div class="body">';
+	// text += draw_players_and_id(id, players, Max);
+	// text += '<br><br>'
+	// text += '<div class="artist"><h6 class="info">Тема викторины</h6><h4 class="name">';
+	// text += getTopic(); //Музыка
+	// text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
+	// text += getMainPrize(prize); //5000 <b>₽</b>
+	// text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-money"></i>';
+	// text += getBuyIn(buyIn); //Цена : 100₽
+	// text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
+	// text += getPrizeCount(winPlaces); //Призовых мест: 1
+	// text += '</p></div>';
+	// text += '<div class="clearfix"></div></div><div class="collapse">'
+	// // text += buttons(id, login, buyIn) 
+	// text += '</div>';
+	// text += '<div class="footer" id="footer'+id+'">'
+	// // text += '<button class="btn toggle-tickets wrap-text" id="toggle'+ id +'">Участвовать</button>'
+	// text += buttons(id, login, buyIn) 
+	// text += '</div></div></div>'
+
+
+
 	text += '<div class="body">';
 	text += draw_players_and_id(id, players, Max);
-	text += '<br><br>'
-	text += '<div class="artist"><h6 class="info">Тема викторины</h6><h4 class="name">';
-	text += getTopic(); //Музыка
-	text += '</h4></div><div class="price"><div class="from">Приз</div><div class="value">';
-	text += getMainPrize(prize); //5000 <b>₽</b>
-	text += '</div></div><div class="clearfix"></div><div class="info"><p class="location"><i class="fa fa-money"></i>';
-	text += getBuyIn(buyIn); //Цена : 100₽
-	text += '</p><p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
-	text += getPrizeCount(winPlaces); //Призовых мест: 1
-	text += '</p></div>';
+	text += '<br>'
+	// text += '<div class="artist">';
+	// text += getTopic(); //Музыка
+	text += '<div class="price text-center"><div class="from">Призы</div>';
+
+
+	if (winPlaces == 1){
+		text += '<div class="value">';
+		text += getMainPrize(prize); //5000 <b>₽</b>
+		text += '</div>';
+	} else {
+
+		for (var i = 0; i < winPlaces; i++){
+			var ii = i+1;
+			text += '<div class="value">';
+			text += ii + "-е место - " + getMainPrize(prize); //5000 <b>₽</b>
+			text += '</div>';
+		}
+	}
+
+	text += '</div><div class="clearfix"></div>';
+	text += '<div class="info">';
+	text += '<p class=""><i class="fa fa-money"></i>' + getBuyIn(buyIn) + '</p>'; //Цена : 100₽
+
+	// text += '<p class="date"><i class="fa fa-gift fa-lg"></i>';//fa-calendar
+	// text += getPrizeCount(winPlaces); //Призовых мест: 1
+	// text += '</p>'
+	
+	text += '</div>';
+	
 	text += '<div class="clearfix"></div></div><div class="collapse">'
 	// text += buttons(id, login, buyIn) 
 	text += '</div>';
@@ -609,7 +657,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '</div></div></div>'
 
 	$("#tournamentBlock").prepend(text);
-	hideAllButtons(id);
+	// hideAllButtons(id);
 	redraw_reg_button({tournamentID:id});
 
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);

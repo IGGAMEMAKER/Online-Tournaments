@@ -237,8 +237,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.changePassword(login, password, newpassword)
 		.then(function (result){
-			console.log(result);
-			
+			// console.log(result);
+
 			res.render('Changepassword', { msg:result })
 			// res.redirect('Profile');
 		})
@@ -249,7 +249,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function change_password_fail(err, req, res, next){
 		var login = getLogin(req);
-		res.render('Changepassword', { msg: { result:'Ошибка' } } );
+		res.render('Changepassword', { msg: { result:'Проверьте введённые данные' } } );
 		Errors.add(login||null, 'Changepassword', { login:login, err:err });
 	}
 
