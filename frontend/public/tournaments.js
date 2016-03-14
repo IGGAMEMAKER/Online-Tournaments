@@ -89,7 +89,8 @@ function getTournamentsFromServer(){
 }
 
 function drawTournaments(tournaments){
-  for (var i = tournaments.length - 1; i >= 0; i--) {
+  // for (var i = tournaments.length - 1; i >= 0; i--) {
+  for (var i = 0; i < tournaments.length; i++) {
     var tournament = tournaments[i];
     var ID = tournament.tournamentID;
 
