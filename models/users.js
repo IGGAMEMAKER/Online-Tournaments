@@ -177,7 +177,7 @@ function create(login, password, email, inviter){
 }
 
 function auth(login, password){
-	return new Promise(function(resolve, reject){
+	return new Promise(function (resolve, reject){
 		User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {
 			if (err) return reject(err);
 			//console.log('auth', user);

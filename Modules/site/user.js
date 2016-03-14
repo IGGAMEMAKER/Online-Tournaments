@@ -93,6 +93,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	function Login(req, res){
+		// var login = get_login_from_email(req.body.email);
 		var login = get_login_from_email(req.body.email);
 		var password = req.body.password;
 		//console.log('Login', login, password);
@@ -236,6 +237,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.changePassword(login, password, newpassword)
 		.then(function (result){
+			console.log(result);
+			
 			res.render('Changepassword', { msg:result })
 			// res.redirect('Profile');
 		})
