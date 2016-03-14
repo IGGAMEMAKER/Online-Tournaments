@@ -203,14 +203,16 @@ var upload = multer({ storage: storage }).single('image');
 		sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
 	}
 
+  
 
-	app.all('/Tournaments', function (req, res){
-    var data = req.body;
-    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
-    data.purpose = GET_TOURNAMENTS_USER;
+	// app.all('/Tournaments', function (req, res){
+ //    var data = req.body;
+ //    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+ //    data.purpose = GET_TOURNAMENTS_USER;
 
-    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
-	});
+ //    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
+	// });
+
 	const GET_TOURNAMENTS_INFO = 4;
   const GET_TOURNAMENTS_USER = 1;
 

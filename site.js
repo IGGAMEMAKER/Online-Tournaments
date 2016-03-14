@@ -31,6 +31,7 @@ mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
 var Users = require('./models/users');
 var Actions = require('./models/actions');
 var Errors = require('./models/errors');
+var Tournaments = require('./models/tournaments');
 
 var Money = require('./models/money');
 
@@ -956,6 +957,22 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
   res.render('Payment');
 })
 
+app.get('/Tournaments', function (req, res){
+  res.render('Tournaments', {msg: updater.tournaments||[] });
+})
+
+app.post('/Tournaments', function (req, res){
+  res.json({msg: updater.tournaments || [] });
+})
+
+app.all('/Tournaments', function (req, res){
+  var data = req.body;
+  data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+  data.purpose = GET_TOURNAMENTS_USER;
+
+  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
+});
+
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
@@ -988,7 +1005,9 @@ function updateLeaderboard(){
 
 
 
-RealtimeProvider(1000);
+// RealtimeProvider(1000);
+RealtimeProvider2(1000);
+
 UpdateFrontendVersion(20000);
 get_Leaderboard(4000);
 
@@ -1006,6 +1025,27 @@ function RealtimeProvider(period){
   })
   setTimeout(function(){
     RealtimeProvider(period)
+  }, period);
+}
+
+var updater = {
+  tournaments: []
+};
+
+function RealtimeProvider2(period){
+  Tournaments.get()
+  .then(function (tournaments){
+    if (tournaments) updater.tournaments = tournaments;
+    if (frontendVersion) updater.frontendVersion = frontendVersion;
+
+    io.emit('update', updater);
+  })
+  .catch(function (err){
+    Errors.add('CANNOT GET Tournaments', {err:err});
+  })
+
+  setTimeout(function(){
+    RealtimeProvider2(period)
   }, period);
 }
 
@@ -1038,11 +1078,13 @@ function get_Leaderboard(period){
   .then(function (leaderboard){
     activity_board = getShortActivityBoard(leaderboard);
     leaderboard_min = leaderboard;
-    io.emit('leaderboard', {
-      leaderboard: activity_board, 
-      counts: leaderboard.counts, 
-      prizes: leaderboard.prizes 
-    }); 
+
+    // io.emit('leaderboard', {
+    //   leaderboard: activity_board, 
+    //   counts: leaderboard.counts, 
+    //   prizes: leaderboard.prizes 
+    // });
+
     // { leaderboard: activity_board } , counts: [1, 3], prizes:[150, 50]
   })
   .catch(function (err){

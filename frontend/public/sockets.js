@@ -180,7 +180,10 @@ function setAsync(url, data, success, method){
 }
 
 function loadRating(){
-  
+  setTimeout(function (){
+    console.log("loadRating");
+    setAsync("api/mini-rating", {}, drawRating, "GET");
+  }, 500);
 }
 
 function mark(url, data, method){

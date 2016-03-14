@@ -82,11 +82,13 @@ function redrawRegButtons(tournaments){
   };
 }
 
-/* $('.element').fadeTo(1000, 0.5, function() { $('.element').fadeTo(800, 1); }); */
+function getTournamentsFromServer(){
+	setAsync('/Tournaments', {}, function (tournaments){
+		if (tournaments) drawTournaments(tournaments);
+	})
+}
 
-socket.on('update', function (msg){
-  var tournaments = msg.tournaments;
-  //console.log("---------------");
+function drawTournaments(tournaments){
   for (var i = tournaments.length - 1; i >= 0; i--) {
     var tournament = tournaments[i];
     var ID = tournament.tournamentID;
@@ -100,9 +102,31 @@ socket.on('update', function (msg){
     } else {
       redrawTournament(tournament);
     }
-
-    //console.log("update-"+i, tournaments[i]);
   };
+}
+
+/* $('.element').fadeTo(1000, 0.5, function() { $('.element').fadeTo(800, 1); }); */
+
+socket.on('update', function (msg){
+  var tournaments = msg.tournaments;
+  //console.log("---------------");
+  if (tournaments) drawTournaments(tournaments);
+
+  // for (var i = tournaments.length - 1; i >= 0; i--) {
+  //   var tournament = tournaments[i];
+  //   var ID = tournament.tournamentID;
+
+  //   if (!tournament_exists(ID) ) {
+  //     //var tLikeObject = JSON.parse(JSON.stringify(tournament));
+  //     //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
+  //     //drawNewTournament(tournament);
+
+  //     parseAndDrawTournament(tournament);
+  //   } else {
+  //     redrawTournament(tournament);
+  //   }
+  //   //console.log("update-"+i, tournaments[i]);
+  // };
 
   //var frontendVersion; = msg.frontendVersion.value;
   
@@ -257,10 +281,6 @@ function ManageReg(login, tID, url, regID){
 			//reload(1000);
 	  }
 	});
-}
-
-function drawTournaments(){
-	//var tournaments = 
 }
 
 const HIDE_DELAY = 3000;

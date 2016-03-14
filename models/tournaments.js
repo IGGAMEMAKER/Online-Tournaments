@@ -164,27 +164,35 @@ function setTournStatus(tournamentID, status){
 var COUNT_FIXED = 1;
 
 function get_tournaments_for_user(){
-	log('called');
+	// log('called');
 	return get_tournaments_default();
 	//query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 	//return get_tournaments(query, '', null, null);
 }
 
 function get_tournaments_balance(){
-	query = {status:null};
+	var query = {status:null};
 	return get_tournaments(query, '', null, null);
 }
 
 function get_tournaments_gameserver(){
 	var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
-	query = { $and : [query, run_or_reg] };
+	var query = { $and : [query, run_or_reg] };
 	return get_tournaments(query, '', null, null);
 }
 
 function get_tournaments_default(){
-	log('get_tournaments_default');
-	query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+	// log('get_tournaments_default');
+	var query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 	return get_tournaments(query, 'tournamentID buyIn goNext gameNameID players Prizes', null, null);
+}
+
+function get_tournaments_update(){
+	// log('get_tournaments_default');
+	var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+	var query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
+
+	return get_tournaments(query, '', null, null);
 }
 
 /*get_tournaments_for_user()
@@ -229,10 +237,10 @@ function get_tournaments_default(){
 //--------------AUXILLARY FUNCTIONS----------
 function get_tournaments(query, fields, filters, sort){
 	return new Promise(function(resolve, reject){
-		log('tournaments');
+		// log('tournaments');
 		Tournament.find(query, fields, function (err, tournaments){
 
-			log('Asynced');
+			// log('Asynced');
 			if (err) return reject(err);
 
 			//log(tournaments);
@@ -243,6 +251,8 @@ function get_tournaments(query, fields, filters, sort){
 
 this.all = get_tournaments_default;
 this.get_tournaments_for_user = get_tournaments_for_user;
+this.get = get_tournaments_update;
+
 this.getByID = getByID;
 
 this.start = start;
