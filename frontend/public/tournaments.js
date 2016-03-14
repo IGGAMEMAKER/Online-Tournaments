@@ -82,11 +82,11 @@ function redrawRegButtons(tournaments){
   };
 }
 
-function getTournamentsFromServer(){
-	setAsync('/Tournaments', {}, function (tournaments){
-		if (tournaments) drawTournaments(tournaments);
-	})
-}
+// function getTournamentsFromServer(){
+// 	setAsync('/Tournaments', {}, function (tournaments){
+// 		if (tournaments) drawTournaments(tournaments);
+// 	})
+// }
 
 function drawTournaments(tournaments){
   // for (var i = tournaments.length - 1; i >= 0; i--) {
@@ -95,10 +95,6 @@ function drawTournaments(tournaments){
     var ID = tournament.tournamentID;
 
     if (!tournament_exists(ID) ) {
-      //var tLikeObject = JSON.parse(JSON.stringify(tournament));
-      //console.log("new tournament", tournament.tournamentID, JSON.stringify(tournament) );
-      //drawNewTournament(tournament);
-
       parseAndDrawTournament(tournament);
     } else {
       redrawTournament(tournament);

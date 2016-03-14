@@ -851,7 +851,6 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
 })
 
 app.get('/api/mini-rating', function (req, res){
-
   res.json({
     leaderboard: activity_board, 
     counts: leaderboard_min.counts, 
@@ -958,20 +957,20 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
 })
 
 app.get('/Tournaments', function (req, res){
-  res.render('Tournaments', {msg: updater.tournaments||[] });
+  res.render('Tournaments');//, {msg: updater.tournaments||[] }
 })
 
 app.post('/Tournaments', function (req, res){
   res.json({msg: updater.tournaments || [] });
 })
 
-app.all('/Tournaments', function (req, res){
-  var data = req.body;
-  data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
-  data.purpose = GET_TOURNAMENTS_USER;
+// app.all('/Tournaments', function (req, res){
+//   var data = req.body;
+//   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
+//   data.purpose = GET_TOURNAMENTS_USER;
 
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
-});
+//   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
+// });
 
 var previousTournaments=[];
 
@@ -1001,9 +1000,6 @@ function updateLeaderboard(){
   }, 5000)
 
 }
-
-
-
 
 // RealtimeProvider(1000);
 RealtimeProvider2(1000);

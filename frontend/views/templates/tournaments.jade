@@ -66,13 +66,13 @@ mixin showTournament(t,line, imageUrl)
 					+showPrize(prizes)
 				h4(class="mg-md")
 					if buyIn>0
-						Стоимость: #{buyIn/convert}$
+						| Стоимость: #{buyIn/convert}$
 					else
-						Бесплатно!
+						| Бесплатно!
 					br
-					Призовых мест: #{winnersPlaces}
+					| Призовых мест: #{winnersPlaces}
 					div(id="plrs-"+ID)
-						Участников : #{registered} из #{maxPlayers}
+						| Участников : #{registered} из #{maxPlayers}
 				a(href="TournamentInfo?tID="+ID class="btn btn-lg btn-primary" style="width:60%; border-radius:6px; ") Играть
 
 mixin showImage(imageUrl, gameNameID)
@@ -116,7 +116,7 @@ mixin showMaxTournament(t,line, imageUrl)
 	
 		center
 			h4(class="mg-md text-center" id="gname-"+ID)
-				Игра : 
+				| Игра : 
 				+showGameName(t.gameNameID, t.tournamentID)
 			if t.settings && t.settings.special
 				+showImage('img/'+ID+'.png', t.gameNameID)

@@ -232,6 +232,13 @@ function getPrizeList(prizes, counts){
   return prizeList;
 }
 
+function loadRating(){
+  setTimeout(function (){
+    console.log("loadRating");
+    setAsync("api/mini-rating", {}, drawRating, "GET");
+  }, 500);
+}
+
 function drawRating(msg){
   if (msg && msg.leaderboard){
     var leaders = msg.leaderboard;
@@ -266,7 +273,7 @@ function drawRating(msg){
         '<td class="rating-acceleratorValue">' + acceleratorValue + '</td>' +
         '<td>' + prize + ' руб</td>' + 
       '</tr>';
-      $("#loading").hide();
+      // $("#loading").hide();
       $(rating).append(text);
     } 
   }
