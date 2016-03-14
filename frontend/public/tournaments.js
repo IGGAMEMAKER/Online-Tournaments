@@ -362,7 +362,7 @@ function parseAndDrawTournament(tournament){
 	, players= players
 	, Max= maxPlayers
 
-	drawTournament(id, img, prize, winPlaces, players, Max, buyIn);
+	drawTournament(id, img, prize, winPlaces, players, Max, buyIn, tournament);
 	// setTimeout(function(){
 	// }, 2000*0);
 }
@@ -583,7 +583,7 @@ function miniBlink(element, period){
 
 //setTimeout(blink, 3000);
 
-function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
+function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
 
 	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card" id="bgd'+id+'" >';
@@ -624,12 +624,17 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 	text += '<div class="price text-center"><div class="from">Призы</div>';
 
 
-	if (winPlaces == 1){
+	// if (winPlaces == 1){
+	// 	text += '<div class="value">';
+	// 	text += getMainPrize(prize); //5000 <b>₽</b>
+	// 	text += '</div>';
+	// } else {
+	if (isStream(t)) {
 		text += '<div class="value">';
 		text += getMainPrize(prize); //5000 <b>₽</b>
 		text += '</div>';
 	} else {
-
+		
 		for (var i = 0; i < winPlaces; i++){
 			var ii = i+1;
 			text += '<div class="value">';
@@ -637,7 +642,8 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn){
 			text += '</div>';
 		}
 	}
-
+	// }
+	text += '<br>'
 	text += '</div><div class="clearfix"></div>';
 	text += '<div class="info">';
 	text += '<p class=""><i class="fa fa-money"></i>' + getBuyIn(buyIn) + '</p>'; //Цена : 100₽
