@@ -329,9 +329,20 @@
     padding-left: 0px;
     padding-right: 0px;
   }
-  .rating-lgn
-  {
+  .rating-lgn{
     overflow: hidden;
     max-width: 26px;
+  }
+}
+
+@media (min-width: 471px and max-width: 650px){
+/*  .marathon-multipliers {
+    overflow: hidden;
+    margin-left: -20px;
+    max-width: 350px;
+  }*/
+  .rating-lgn{
+    overflow: hidden;
+    max-width: 50px;
   }
 }
