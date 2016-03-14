@@ -8,7 +8,8 @@ mixin drawUsers(message)
 		each user in message
 			tr
 				td
-					p!= user.login
+					a(href="UserInfo/"+user.login) #{user.login}
+					//p!= user.login
 				td
 					p!= user.money
 				td
