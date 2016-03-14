@@ -290,8 +290,18 @@
   padding-bottom: 40px;
 }
 
-@media (max-width: 400px)
-{
+@media (max-width: 360px){
+  .marathon-multipliers {
+    overflow: hidden;
+    margin-left: -20px;
+    max-width: 260px;
+  }
+  .rating-games {
+    display: none;
+  }
+}
+
+@media (max-width: 400px){
   .rating
   {
     /*max-width: 260px;*/
@@ -305,51 +315,23 @@
     /*max-width: 260px;*/
     max-width: inherit;
   }
+}
+
+@media (max-width: 430px){
+  .rating-acceleratorValue {
+    overflow: hidden;
+    max-width: 40px;
+  }
+}
+
+@media (max-width: 470px){
+  .killPaddings {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
   .rating-lgn
   {
     overflow: hidden;
     max-width: 26px;
   }
 }
-
-/*@media (max-width: 520px)
-{
-  .acceleratorValue{
-    display: none;
-  }
-}*/
-
-@media (max-width: 470px)
-{
-  .rating-acceleratorValue {
-    /*display: none;*/
-    overflow: hidden;
-    max-width: 31px;
-  }
-  .killPaddings {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-}
-
-@media (max-width: 360px)
-{
-  .marathon-multipliers {
-    overflow: hidden;
-    margin-left: -20px;
-    max-width: 260px;
-  }
-  .rating-games {
-    display: none;
-  }
-  .rating-acceleratorValue {
-    /*display: none;*/
-    overflow: hidden;
-    max-width: 26px;
-  }
-}
-
-/*.rating-lgn
-{
-  width: 10px;
-}*/
