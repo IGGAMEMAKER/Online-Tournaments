@@ -154,18 +154,18 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   })
 
 
-  app.get('/Users' , function (req, res){    
+  app.get('/Users', function (req, res){    
     /*var data = req.body;
     data.query = {};//tournamentID:req.query.tID};
     data.queryFields = 'login money';
     AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
     */
     Users.all()
-    .then(function(users){
-      console.log(users);
+    .then(function (users){
+      // console.log(users);
       res.render('Users', {msg:users});
     })
-    .catch(function(err){
+    .catch(function (err){
       res.end(JSON.stringify(err));
     })
   });

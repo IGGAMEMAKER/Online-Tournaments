@@ -24,18 +24,19 @@ html
 		title!= title
 	body
 		include ../templates/tAuth
-		- console.log('incoming message Browser:');
-		- console.log(message);
-		- //console.log(JSON.stringify(message));
+		//
+			- console.log('incoming message Browser:');
+			- console.log(message);
+			- //console.log(JSON.stringify(message));
 
-		- //p!= JSON.stringify(message);
-		- var login = session.login;
-		- console.log('Browser login =' + login);
-		- //if(login) { alert(login); console.log('login = ' + login); }
-		
-		- //for (var item in message){
-		- //p!= message.length
-		-//p!= JSON.stringify(message);
+			- //p!= JSON.stringify(message);
+			- var login = session.login;
+			- console.log('Browser login =' + login);
+			- //if(login) { alert(login); console.log('login = ' + login); }
+			
+			- //for (var item in message){
+			- //p!= message.length
+			-//p!= JSON.stringify(message);
 		center
 			h1 Users
 			+drawUsers(msg)
