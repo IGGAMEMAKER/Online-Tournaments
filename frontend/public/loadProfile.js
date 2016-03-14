@@ -1,5 +1,3 @@
-getProfile();
-
 //hideAllButtons();
 //drawAuthButton();
 //window.onfocus = getProfile;

@@ -44,6 +44,8 @@ mixin loadHead()
 
 	if session && session.login
 		script(src="loadProfile.js")
+		script.
+			getProfile();
 
 	script var login = "#{session.login}";
 
