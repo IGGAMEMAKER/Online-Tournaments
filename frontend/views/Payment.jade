@@ -10,7 +10,7 @@ block title
 block content
 	h1(class="white text-center") Пополнение счёта
 	div(class="col-sm-12")
-		script.
+		//script.
 			var sMrchLogin = "OnlineTournaments";
 			var sOutSum = 10;
 			var nInvId = 0;
@@ -39,4 +39,11 @@ block content
 			src+= "\"><\/script>";
 			//console.log(src);
 			document.write(src);
+		form(id="payment" name="payment" method="post" action="https://sci.interkassa.com/" enctype="utf-8")
+			input(type="hidden" name="ik_co_id" value="5696a6513d1eaf964f8b456e" )
+			input(type="hidden" name="ik_pm_no" value="ID_4233" )
+			input(type="hidden" name="ik_am" value="100.00" )
+			input(type="hidden" name="ik_cur" value="RUB" )
+			input(type="hidden" name="ik_desc" value="Пополнение счёта на сайте online-tournaments.org" )
+			input(type="submit" value="Pay")
 	//"https://auth.robokassa.ru/Merchant/PaymentForm/FormM.js"

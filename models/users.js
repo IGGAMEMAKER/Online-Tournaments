@@ -23,7 +23,7 @@ var money_koef = 100;
 
 function all(){
 	return new Promise(function(resolve, reject){
-		User.find({}, 'login money' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
+		User.find({}, 'login money email social' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
 			if (err) return reject(err);
 			//console.log(users)
 			return resolve(users||null);

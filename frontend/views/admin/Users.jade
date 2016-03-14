@@ -2,19 +2,22 @@
 mixin drawUsers(message)
 	table
 		tr
-			td.
-				login
-			td.
-				money
-		- if (message.length>0){ for (i=0; i<message.length;i++){
+			td login
+			td money
+			td email
+		each user in message
 			tr
 				td
-					p!= message[i].login
+					p!= user.login
 				td
-					p!= message[i].money
-			//p!= message
-		- }}
-
+					p!= user.money
+				td
+					if user.email
+						p!= user.email
+					else
+						//p!= JSON.stringify(user.social)
+						if user.social
+							a(target="_blank" href="http://vk.com/id"+user.social.id) VK
 html
 	head
 		title!= title
