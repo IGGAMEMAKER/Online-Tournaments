@@ -312,31 +312,40 @@
   }
 }
 
-
+/*@media (max-width: 520px)
+{
+  .acceleratorValue{
+    display: none;
+  }
+}*/
 
 @media (max-width: 470px)
 {
-  .acceleratorValue
-  {
-    display: none;
+  .rating-acceleratorValue {
+    /*display: none;*/
+    overflow: hidden;
+    max-width: 31px;
   }
-  .killPaddings{
+  .killPaddings {
     padding-left: 0px;
     padding-right: 0px;
   }
 }
 
-@media (max-width: 320px)
+@media (max-width: 360px)
 {
-  .marathon-multipliers
-  {
+  .marathon-multipliers {
     overflow: hidden;
     margin-left: -20px;
     max-width: 260px;
   }
-  .games
-  {
+  .rating-games {
     display: none;
+  }
+  .rating-acceleratorValue {
+    /*display: none;*/
+    overflow: hidden;
+    max-width: 26px;
   }
 }
 

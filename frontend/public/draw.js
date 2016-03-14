@@ -262,8 +262,8 @@ function drawRating(msg){
         '<td class="rating-id">' + number + '</td>' + 
         '<td class="rating-lgn" style="'+style+'">' + shortedLogin + '</td>' + 
         '<td>' + points + '</td>' + 
-        '<td class="games">' + count + '</td>' + 
-        '<td class="acceleratorValue">' + acceleratorValue + '</td>' +
+        '<td class="rating-games">' + count + '</td>' + 
+        '<td class="rating-acceleratorValue">' + acceleratorValue + '</td>' +
         '<td>' + prize + ' руб</td>' + 
       '</tr>';
       $("#loading").hide();
