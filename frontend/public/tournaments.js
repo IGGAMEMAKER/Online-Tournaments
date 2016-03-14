@@ -638,12 +638,12 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 		for (var i = 0; i < winPlaces; i++){
 			var ii = i+1;
 			text += '<div class="value">';
-			text += ii + "-е место - " + getMainPrize(prize); //5000 <b>₽</b>
+			text += ii + "-е место : " + getMainPrize(prize); //5000 <b>₽</b>
 			text += '</div>';
 		}
 	}
 	// }
-	text += '<br>'
+	// text += '<br>'
 	text += '</div><div class="clearfix"></div>';
 
 	// text += '<div class="info">';

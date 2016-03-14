@@ -340,6 +340,17 @@
   text-align: center;
 }
 
+.ticket-card .cover{
+  margin: 0;
+  margin-bottom: 15px;
+}
+
+.ticket-card .cover img{
+  border-radius: 0;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
 @media (min-width: 471px) and (max-width: 650px){
 /*  .marathon-multipliers {
     overflow: hidden;
