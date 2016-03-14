@@ -345,4 +345,8 @@
     overflow: hidden;
     max-width: 50px;
   }
+  .rating-acceleratorValue {
+    overflow: hidden;
+    max-width: 80px;
+  }
 }
