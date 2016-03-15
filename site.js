@@ -158,7 +158,7 @@ app.set('view engine', 'jade');
 var sender = require('./requestSender');
 
 var sort = require('./helpers/sort');
-
+var aux = require('./models/auxillary')
 
 //var compression = require('compression');
 //app.use(compression());
@@ -963,6 +963,28 @@ app.get('/Tournaments', function (req, res){
 app.post('/Tournaments', function (req, res){
   res.json({msg: updater.tournaments || [] });
 })
+
+
+
+app.get('/mailLists', middlewares.isAdmin, function (req, res, next){
+  aux.mailLists()
+  .then(function (lists){
+    req.data = lists.data[0];
+    next();
+  })
+  .catch(next);
+
+}, aux.json, aux.err)
+
+app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
+  aux.mailUsers()
+  .then(function (lists){
+    req.data = lists;
+    next();
+  })
+  .catch(next);
+
+}, aux.json, aux.err)
 
 // app.all('/Tournaments', function (req, res){
 //   var data = req.body;

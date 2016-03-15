@@ -452,6 +452,7 @@ function drawPayingModalAccelerator(data){
 
   var needToPayRU = sum - moneyNow;
   console.log('needToPayRU', needToPayRU);
+
   // var buyInUSD = data;
   // var needToPay = (buyInUSD - getFromStorage('money')); // in USD
 

@@ -26,7 +26,8 @@ module.exports = function(dbAddress){
 
 		Message : db.model('Message', {
 			text:String, 
-			senderName:String, 
+			senderName:String,
+			target: String,
 			date: Date, 
 			isPrivate: Boolean, 
 			isSystem: Object

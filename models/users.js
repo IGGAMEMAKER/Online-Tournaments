@@ -176,6 +176,32 @@ function create(login, password, email, inviter){
 	});
 }
 
+function richUsers(min, max){
+	return new Promise(function (resolve, reject){
+		User.find({ money : {$gt: min, $lt: max } })
+		.sort('-money')
+		.exec(function (err, users){
+			if (err) return reject(err);
+
+			return resolve(users||[]);
+		})
+
+	})
+}
+
+function poorUsers(max){
+	return new Promise(function (resolve, reject){
+		User.find({ money : { $lt: max } })
+		.sort('-money')
+		.exec(function (err, users){
+			if (err) return reject(err);
+
+			return resolve(users||[]);
+		})
+
+	})
+}
+
 function auth(login, password){
 	return new Promise(function (resolve, reject){
 		User.findOne({login:login}, 'login password cryptVersion salt' , function (err, user) {
@@ -561,3 +587,5 @@ module.exports.resetPassword = create_login_link;
 module.exports.auth_by_link = auth_by_link;
 
 module.exports.kill = kill;
+module.exports.rich = richUsers;
+module.exports.poor = poorUsers;

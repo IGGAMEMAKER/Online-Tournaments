@@ -20,6 +20,8 @@ config.session	=	configs.session;
 config.cacheTemplates = configs.cacheTemplates || null;
 config.vk = configs.vk;
 
+config.mailchimp = configs.mailchimp;
+
 
 //game configs
 config.quizQuestionPeriod = configs.quizQuestionPeriod || 4000;

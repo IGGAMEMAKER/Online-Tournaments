@@ -20,7 +20,7 @@ function updated(count){
 }
 
 function p_printer (obj) {
-	return new Promise(function(resolve, reject){
+	return new Promise(function (resolve, reject){
 		printer(obj);
 		return resolve(obj);
 	})
