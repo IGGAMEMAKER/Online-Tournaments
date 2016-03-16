@@ -664,7 +664,20 @@ app.post('/Tell', isAdmin, function (req, res){
 })
 
 app.get('/Leaderboard', function (req, res){
-  res.render('Leaderboard', { msg: Leaderboard });
+  Marathon.leaderboard()
+  .then(function (leaderboard){
+    var ldbd = {
+      leaderboard:leaderboard,
+      counts: leaderboard.counts,
+      prizes: leaderboard.prizes
+    }
+    res.render('Leaderboard', { msg: ldbd });
+  })
+  .catch(function (err){
+    Errors.add('Leaderboard', {err:err})
+    
+    res.render('Leaderboard', { msg: Leaderboard });
+  })
 });
 
 app.get('/Marathon', function (req, res){ res.render('Marathon'); })
