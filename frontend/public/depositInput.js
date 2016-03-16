@@ -5,7 +5,7 @@ var USD_TO_RUR=1;
 
 //$("#depResult").html("Сумма в рублях: " + 10*USD_TO_RUR + "р")
 
-$("#depositLink").html("Пополнить счёт")
+$("#depositLink3").html("Пополнить счёт на 200 руб")
 
 //$("#depositLink1").html("Пополнить счёт на "+ 10+"$");
 
@@ -19,8 +19,8 @@ input.oninput = function (){
 	///$("#depResult").html("Сумма в рублях: " + moneyRu + "р")
 	// $("#sumAttribute").attr("value", sum)
 
-	$("#depositLink").attr("href", "/Payment?ammount="+moneyRu+"&buyType=2")
-	$("#depositLink").html("Оплатить")
+	$("#depositLink3").attr("href", "/Payment?ammount="+moneyRu+"&buyType=2")
+	$("#depositLink3").html("Пополнить счёт на " + moneyRu + " руб")
 
 	//document.getElementById('depResult').innerHTML = "Сумма в рублях: "+ sum*USD_TO_RUR+"р";
 	//$("#depositLink1").html("Пополнить счёт на "+ sum+"$");

@@ -7,7 +7,9 @@ block JSlibs
 block title
 	title Оплата
 
-mixin paymentForm()
+block ftr
+
+mixin paymentForm(value, login)
 	form(id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate)
 		div(class="form-group")
 			//label Сумма (в долларах)
@@ -17,12 +19,12 @@ mixin paymentForm()
 			input(type="hidden" id="userLogin" name="label" value=login) 
 			input(type="hidden" name="quickpay-form" value="shop") 
 			input(type="hidden" id="targets" name="targets" value="Пополнение счёта у " + login) 
-			input(type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number") 
+			input(type="hidden" id="sumAttribute" name="sum" value=value data-type="number") 
 			input(type="hidden" name="comment" value="Платёж принят!")
 			input(type="hidden" name="paymentType" value="AC")
 			//input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
 			//label(id="depResult") Сумма в рублях: 700p
-		input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
+		input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить " + value+ " руб")
 
 block content
 	h1(class="white text-center") Пополнение счёта
@@ -56,7 +58,8 @@ block content
 			src+= "\"><\/script>";
 			//console.log(src);
 			document.write(src);
-		+paymentForm()
+		center
+			+paymentForm(ammount, session.login)
 		//form(id="payment" name="payment" method="post" action="https://sci.interkassa.com/" enctype="utf-8")
 			input(type="hidden" name="ik_co_id" value="5696a6513d1eaf964f8b456e" )
 			input(type="hidden" name="ik_pm_no" value="ID_4233" )

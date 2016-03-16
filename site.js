@@ -956,10 +956,10 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
 
-  res.render('Payment', { ammount:ammount, type:type });
-
   var login = getLogin(req);
   Actions.add(login, 'Payment-page', { ammount:ammount, type:type })
+
+  res.render('Payment', { ammount:ammount, type:type });
 })
 
 app.get('/Tournaments', function (req, res){
