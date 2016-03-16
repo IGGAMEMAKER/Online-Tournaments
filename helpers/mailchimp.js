@@ -115,9 +115,10 @@ function addSubscribers(subscribers1){
 
 
 // subscribe_user('23i03g@mail.ru' , { MONEY:100 })
-addSubscribers()
-.then(console.log)
-.catch(console.error)
+
+// addSubscribers()
+// .then(console.log)
+// .catch(console.error)
 
 // update_field_of_subscriber({
 //     "MONEY": 100

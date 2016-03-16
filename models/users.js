@@ -116,6 +116,30 @@ function create_login_link(email){
 			email:email
 		};
 	})
+}
+
+function update_auth_links(users){
+	for (var i = users.length - 1; i >= 0; i--) {
+		update_auth_link(users[i].email)
+	};
+}
+
+function update_auth_link(email){
+	var login;
+	
+	var newPass = security.create_random_password();
+	var link = createLink(newPass);
+	
+	// console.log('create_login_link', login)
+	return profileByMail(email)
+	.then(function (user){
+		login = user.login;
+		return set_login_link(email, link)
+	})
+	.then(function (result){
+
+	})
+	.catch(console.error)
 
 }
 
@@ -591,3 +615,4 @@ module.exports.rich = richUsers;
 module.exports.poor = poorUsers;
 
 module.exports.mailers = mailers;
+module.exports.update_auth_links = update_auth_links;

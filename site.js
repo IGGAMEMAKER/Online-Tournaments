@@ -972,7 +972,18 @@ app.post('/Tournaments', function (req, res){
 
 var json2csv = require('json2csv');
 
+//app.get('/getCSV', middlewares.isAdmin, function())
 app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
+  Users.mailers()
+  .then(function(users){
+    req.data = 'found';
+    next();
+    Users.update_auth_links(users)
+  })
+  .catch(next)
+}, aux.raw, aux.err)
+
+app.get('/getCSV', middlewares.isAdmin, function (req, res, next){
   var fields = ['email', 'money', 'link'];
   
   Users.mailers()
@@ -989,9 +1000,7 @@ app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
       }
     });
   })
-  .catch(function (err){
-    next(err);
-  })
+  .catch(next)
 
 }, aux.raw, aux.err)
 // app.get('/fillList', middlewares.isAdmin, function (req, res, ))
