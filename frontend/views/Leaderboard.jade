@@ -8,7 +8,21 @@ block title
 	title Рейтинг
 
 mixin ratingTable(msg)
-	include templates/rating
+	table(class="table rating" id="rating")
+		thead 
+			tr 
+				th #
+				th Игрок
+				th Очки
+				th(class="rating-games") Игры
+				th(class="rating-acceleratorValue") Ускоритель
+				th Приз
+		tbody(id="ratingTab")
+			script.
+				var msg= !{JSON.stringify(msg)}
+				drawRating(msg||{ leaderboard:[] })
+	div(class="col-md-12")
+		a(href="Marathon#accelerator0" class="btn btn-danger center-block offset-md") Заработайте очки быстрее!
 
 block content
 	//center
