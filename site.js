@@ -970,7 +970,31 @@ app.post('/Tournaments', function (req, res){
   res.json({msg: updater.tournaments || [] });
 })
 
+var json2csv = require('json2csv');
 
+app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
+  var fields = ['email', 'money', 'link'];
+  
+  Users.mailers()
+  .then(function (users){
+    // console.log(users);
+
+    json2csv({ data: users, fields: fields }, function (err, csv) {
+      if (err) {
+        next(err);
+      } else {
+        console.log(csv);
+        req.data = csv;
+        next();
+      }
+    });
+  })
+  .catch(function (err){
+    next(err);
+  })
+
+}, aux.raw, aux.err)
+// app.get('/fillList', middlewares.isAdmin, function (req, res, ))
 
 app.get('/mailLists', middlewares.isAdmin, function (req, res, next){
   aux.mailLists()

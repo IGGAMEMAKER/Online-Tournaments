@@ -52,6 +52,9 @@ module.exports = {
 	,json : function(req, res){
 		res.json({msg: req.data})
 	}
+	,raw : function (req, res){
+		res.end(req.data);
+	}
 	,err : function(err, req, res, next){
 		res.json({err: err})
 	}

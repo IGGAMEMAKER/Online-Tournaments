@@ -56,7 +56,7 @@ function send(){
     // })
 }
 
-var list_id = '7b99e93346';//a904cfeefe
+var list_id = '1dabb9957a';//7b99e93346//a904cfeefe
 
 function users(){
     return call('lists', 'members', { id: list_id } )
@@ -71,16 +71,57 @@ function update_field_of_subscriber(merge_vars, email){
     })
 }
 
-function subscribe_user(mail, data){
-    // return call('lists', 'subscribe', {})
+function subscribe_user(email, data){
+    return call('lists', 'subscribe', {
+        apikey: apiKey,
+        id:list_id
+        , email : { email:email }
+        , merge_vars : data
+        , send_welcome : false
+    })
 }
 
-users()
-// .then(console.log)
-// .catch(console.error)
-update_field_of_subscriber({
-    "MONEY": 100
-} , "23i03g@mail.ru")
+
+var subscribers = [
+    { 
+        email: { email:'23i03g@mail.ru' }
+        // ,email_type: "html"
+        , merge_vars: {
+            MONEY:100
+        }
+    }
+    ,{
+        email: { email: 'mail@online-tournaments.org' }
+        // , email_type: "html"
+        , merge_vars: {
+            MONEY:120
+        }
+    }
+    //alexeyking2012@yandex.ru'
+];
+
+
+function addSubscribers(subscribers1){
+
+    return call('lists', 'batch-subscribe', {
+        id: list_id
+        , batch: subscribers
+        ,"double_optin": true
+        ,"update_existing": true
+        ,"replace_interests": true
+        ,send_welcome: true
+    })
+}
+
+
+// subscribe_user('23i03g@mail.ru' , { MONEY:100 })
+addSubscribers()
+.then(console.log)
+.catch(console.error)
+
+// update_field_of_subscriber({
+//     "MONEY": 100
+// } , "23i03g@mail.ru")
 
 module.exports = {
     send: function (email, letter){
@@ -89,7 +130,5 @@ module.exports = {
     ,list: getList
     ,users: function(){
         users()
-        .then(console.log)
-        .catch(console.error)
     }
 }

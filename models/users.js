@@ -294,7 +294,7 @@ function groupByEmails(){
 
 function mailers(){
 	return new Promise(function (resolve, reject){
-		User.find({ $exists: {email: 1} }, function (err, users){
+		User.find({ email: {$exists: true} }, function (err, users){
 			if (err) return reject(err);
 
 			return resolve(users||[]);
@@ -589,3 +589,5 @@ module.exports.auth_by_link = auth_by_link;
 module.exports.kill = kill;
 module.exports.rich = richUsers;
 module.exports.poor = poorUsers;
+
+module.exports.mailers = mailers;
