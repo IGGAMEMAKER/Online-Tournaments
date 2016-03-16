@@ -953,7 +953,13 @@ app.post('/Winners', function (req, res){
 })
 
 app.get('/Payment', middlewares.authenticated, function (req, res){
-  res.render('Payment');
+  var ammount = req.query.ammount || null;
+  var type = req.query.buyType || null;
+
+  res.render('Payment', { ammount:ammount, type:type });
+
+  var login = getLogin(req);
+  Actions.add(login, 'Payment-page', { ammount:ammount, type:type })
 })
 
 app.get('/Tournaments', function (req, res){

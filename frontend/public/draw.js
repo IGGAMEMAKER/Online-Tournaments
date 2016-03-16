@@ -394,7 +394,9 @@ function getAddressFromAddrList(addresses, tournamentID){
 
 var USD_TO_RUR=1;
 
-
+var PAYMENT_TOURNAMENT = 0;
+var PAYMENT_ACCELERATOR = 1;
+var PAYMENT_FULLFILL = 2;
 
 function drawPayingModal(data){
   console.log('drawPayingModal', data);
@@ -417,8 +419,12 @@ function drawPayingModal(data){
   $("#targets").attr("value", login);
   $("#sumAttribute").attr("value", needToPayRU);
 
-  $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
+  // $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
+  $("#depositLink1").html('Оплатить ' + needToPayRU + 'р');
   $("#depositLink1").attr("onclick", "mark('mark/payment/"+login+"/"+needToPay+"')")
+  $("#depositLink1").attr("href", '/Payment?ammount='+ needToPayRU+'&buyType='+PAYMENT_TOURNAMENT)
+  // return '<a href="Payment?ammount='+ ammount + '" class="btn btn-primary" onclick="'+onclick+'"> Оплатить </a>';
+  
   // $("#depositLink1").attr("onclick", "mark('mark/payment/"+needToPay+"')" )
 
   $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' p</b>');
@@ -431,6 +437,45 @@ function drawPayingModal(data){
   }
 }
 
+
+// function drawPayingModal(data){
+//   console.log('drawPayingModal', data);
+
+//   var buyInUSD = data;
+//   var needToPay = (buyInUSD - getFromStorage('money')); // in USD
+//   needToPay = Math.ceil(needToPay*100)/100;
+  
+//   var needToPayRU = needToPay*USD_TO_RUR;
+//   needToPayRU = Math.ceil((needToPayRU)*100)/100;// Math.ceil((7.114)*100)/100
+
+//   //var price = data / 100;
+//   var tournamentPrice = needToPay + 'p';
+//   /*var moneyRu = price * USD_TO_RUR;*/
+//   var moneyNow = getFromStorage('money');
+
+//   //moneyRu = needToPay*USD_TO_RUR/100;
+
+//   $("#userLogin").attr("value", login);
+//   $("#targets").attr("value", login);
+//   $("#sumAttribute").attr("value", needToPayRU);
+
+//   $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
+//   $("#depositLink1").attr("onclick", "mark('mark/payment/"+login+"/"+needToPay+"')")
+//   $("#depositLink1").attr("href", '/Payment?ammount='+ needToPayRU)
+//   // return '<a href="Payment?ammount='+ ammount + '" class="btn btn-primary" onclick="'+onclick+'"> Оплатить </a>';
+  
+//   // $("#depositLink1").attr("onclick", "mark('mark/payment/"+needToPay+"')" )
+
+//   $("#moneyNow").html('Денег на счету: <b>' + moneyNow + ' p</b>');
+//   $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + buyInUSD + 'p</b>');
+//   $("#needToPay").html('К оплате: <b>'+needToPay+'p</b>');
+
+//   if (needToPay>0) { 
+//     stat_noMoney(0, needToPayRU);
+//     $(payModal).modal('show');
+//   }
+// }
+
 var modal = {
   title :   function (msg) { $("#cTitle").html(msg); }
   ,body  :  function (msg) { $("#cBody").html(msg); }
@@ -438,9 +483,10 @@ var modal = {
 
   ,show:    function () { $("#customModal").modal('show'); }
   ,hide:    function () { $("#customModal").modal('hide'); }
-  ,pay_btn: function (ammount) {
+  ,pay_btn: function (ammount, buyType) {
     var onclick = "mark('mark/payment/"+login+"/"+ammount+"')";
-    return '<a href="" class="btn btn-primary" onclick="'+onclick+'"> Оплатить </a>';
+    // $("#depositLink1").attr("href", "Payment/"+login+"/"+needToPay+"')")
+    return '<a href="Payment?ammount='+ ammount + '&buyType='+buyType +'" class="btn btn-primary" onclick="'+onclick+'"> Оплатить '+ammount+' руб</a>';
   }
 }
 
@@ -473,7 +519,7 @@ function drawPayingModalAccelerator(data){
   modal.body(body);
 
   // footer
-  modal.footer(modal.pay_btn(needToPayRU));
+  modal.footer(modal.pay_btn(needToPayRU, PAYMENT_ACCELERATOR));
 
   if (needToPayRU>0) { 
     stat_noMoney(0, needToPayRU);

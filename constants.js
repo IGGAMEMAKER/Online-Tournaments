@@ -13,4 +13,8 @@ module.exports = {
 	,INVITER_GROUP:1 // groups in VK (maybe need another for FB groups)
 	,INVITER_SITE:2 // partner sites
 	,INVITER_VIDEO:3 // youtube
+
+	,PAYMENT_TOURNAMENT:0
+	,PAYMENT_ACCELERATOR:1
+	,PAYMENT_FULLFILL:2
 }

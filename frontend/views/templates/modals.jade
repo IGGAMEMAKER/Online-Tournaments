@@ -8,11 +8,11 @@ mixin modal()
 				div(class="modal-header")
 					button(type="button" class="close" data-dismiss="modal") &times;
 					h4(class="modal-title") Запущенные турниры
-				#playButtons
 				div(class="modal-body" id="modal-body")
+					#playButtons
 					button(type="button" class="btn btn-default" data-dismiss="modal") Close
-				div(class="modal-footer")
-					button(type="button" class="btn btn-default" data-dismiss="modal") Close
+				//div(class="modal-footer")
+					//button(type="button" class="btn btn-default" data-dismiss="modal") Close
 
 mixin closeTournamentModal()
 	//button(type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#closeTournament") Open Modal
@@ -63,8 +63,6 @@ mixin winnerModal()
 				div(class="modal-body" id="winnerModalMsg")
 				div(class="modal-footer" id="winnerModalFooter")
 					//+subscribe()
-	//script.
-		$("#winnerModal").modal('show');
 
 mixin customModal()
 	div(id="customModal" class="modal fade" role="dialog")
@@ -92,7 +90,7 @@ mixin notEnoughMoney()
 					p(id="needToPay") К оплате 
 
 				div(class="modal-footer")
-					form(id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate)
+					//form(id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate)
 						div(class="form-group")
 							//label Сумма (в долларах)
 							input(type="hidden" name="receiver" value="410013860652119") 
@@ -106,7 +104,9 @@ mixin notEnoughMoney()
 							input(type="hidden" name="paymentType" value="AC")
 							//input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
 							//label(id="depResult") Сумма в рублях: 700p
-						input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
+					a(id="depositLink1" class="btn btn-lg btn-primary")
+					
+
 					//a(href="https://paysto.com/ru/upBalance?PAYSTO_SHOP_ID=22855&PAYSTO_SUM=100&PAYSTO_PAYER_ID="+session.login class="btn btn-primary" id="depositLink") Оплатить (1.5$)
 
 					//button(type="button" class="btn btn-default" data-dismiss="modal") Close

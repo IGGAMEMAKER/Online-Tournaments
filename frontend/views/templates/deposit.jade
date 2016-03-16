@@ -19,7 +19,7 @@ div(class="panel")
 				input(type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number") 
 				input(type="hidden" name="comment" value="Платёж принят!")
 				input(type="hidden" name="paymentType" value="AC")
-				input(class="form-control" name="sum" id="deposit" value=500 required autocomplete="off")
-				label(id="depResult" style="display:none;") Сумма в рублях: 700p
-			input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
+				input(class="form-control" name="sum" id="deposit" value=200 required autocomplete="off")
+			//input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить")
+			a(id="depositLink" href="/Payment?ammount=200&buyType=2" class="btn btn-lg btn-primary") Оплатить
 script(src="depositInput.js")
