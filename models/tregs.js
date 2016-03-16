@@ -80,7 +80,7 @@ function get(login){
 		.exec(function (err, tournaments){
 			//console.log('TournamentReg');
 			if (err) return reject(err);
-			console.log('TournamentReg', tournaments);
+			// console.log('TournamentReg', tournaments);
 			return resolve(tournaments || {});
 		})
 	});

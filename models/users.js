@@ -323,23 +323,6 @@ function mailers(){
 
 			return resolve(users||[]);
 		})
-
-		// TournamentReg.aggregate([
-		// // { $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
-		// {
-		// 	$group: {
-		// 		_id: "$Email",
-		// 		count: { $sum: 1 }
-		// 	}
-		// },
-		// {
-		// 	$sort: {count:-1}
-		// }
-		// ], function (err, users){
-		// 	if (err) return reject(err);
-		// 	//	console.log(users);
-		// 	return resolve(users||[]);
-		// })
 	})
 }
 
@@ -441,6 +424,23 @@ function moneyDecrease(login, ammount){
 			return resolve(Fail);
 		});
 	});
+}
+
+function grantMoney(login){
+	return new Promise(function (resolve, reject){
+		User.findOne({login:login}, function (err, user){
+			if (err) return reject(err);
+
+			if (user && user.money < 100){
+				// User.update({login:login}, {})
+				moneyIncrease(login, 100)
+				return resolve(1);
+			}
+
+			return reject(null);
+		})
+
+	})
 }
 
 
@@ -616,3 +616,5 @@ module.exports.poor = poorUsers;
 
 module.exports.mailers = mailers;
 module.exports.update_auth_links = update_auth_links;
+
+module.grantMoney = grantMoney

@@ -90,6 +90,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		//res.render('Stats');
 	})
 
+	// app.post('/mark/Here/:login', function (req, res){
+	// 	var login = req.params.login;//getLogin(req);
+	// 	console.log('mark/Here');
+	// 	strLog('Online: ' + login, 'Users');
+	// 	res.end('');
+	// })
+
 // middlewares and helpers
 
 	function json(req, res, next){

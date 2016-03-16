@@ -1041,6 +1041,22 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err)
 
+var players = [];
+setInterval(function (){
+  Send('players', {msg: players});
+  Log('Online: ' + JSON.stringify(players), 'Users');
+  players=[];
+}, 50000)
+
+app.post('/mark/Here/:login', function (req, res){
+  var login = req.params.login;//getLogin(req);
+  // console.log('mark/Here');
+  // strLog('Online: ' + login, 'Users');
+  players.push(login);
+
+  res.end('');
+})
+
 // app.all('/Tournaments', function (req, res){
 //   var data = req.body;
 //   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';

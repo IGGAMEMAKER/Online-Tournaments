@@ -30,6 +30,11 @@ function sendInviter(){
 
 sendInviter();
 
+setInterval(function (){
+  console.log('here');
+  mark('mark/Here/'+login, {});
+}, 45000)
+
 function exists(element){ return document.getElementById(element); }
 
 function saveProfile(drawFunction){

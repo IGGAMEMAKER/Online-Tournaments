@@ -170,12 +170,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.then(function (user){
 			// console.log('logged In', user);
 			req.user= user;
+
+			Users.grantMoney(login); //increase money if has no money
+
 			saveSession(req, res, 'Login');
 
 			// Actions.add(login, 'login');
 		})
 		.catch(function (err){
-
 			res.redirect('/Login');//, {msg : err});
 			Errors.add(login, 'linker', { code:err })
 		})
