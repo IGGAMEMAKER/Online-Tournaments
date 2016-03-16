@@ -32,6 +32,7 @@ var Users = require('./models/users');
 var Actions = require('./models/actions');
 var Errors = require('./models/errors');
 var Tournaments = require('./models/tournaments');
+var Message = require('./models/message');
 
 var Money = require('./models/money');
 
@@ -1041,12 +1042,18 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err)
 
+// Message.notifications
+
 var players = [];
 setInterval(function (){
-  Send('players', {msg: players});
+  // Send('players', {msg: players});
   Log('Online: ' + JSON.stringify(players), 'Users');
+  // players=[];
+}, 20000)
+
+setInterval(function (){
   players=[];
-}, 50000)
+}, 60000)
 
 app.post('/mark/Here/:login', function (req, res){
   var login = req.params.login;//getLogin(req);

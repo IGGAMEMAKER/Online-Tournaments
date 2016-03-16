@@ -28,7 +28,11 @@ module.exports = function(dbAddress){
 			text:String, 
 			senderName:String,
 			target: String,
-			date: Date, 
+			date: Date,
+			status: String,
+
+			CTA: Object, // buttons -- if we grant money to user, we propose him to play paid tournaments or buy accelerators
+			// if we grant an accelerator to user, we expect him to play in marathon tournaments e.t.c
 			isPrivate: Boolean, 
 			isSystem: Object
 			/*
