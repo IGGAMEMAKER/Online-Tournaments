@@ -983,13 +983,16 @@ app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
   .catch(next)
 }, aux.raw, aux.err)
 
+var domainName = configs.gameHost || 'localhost';
+
 app.get('/getCSV', middlewares.isAdmin, function (req, res, next){
-  var fields = ['email', 'money', 'link'];
-  
+  var fields = ['email', 'money', 'authlink'];
   Users.mailers()
   .then(function (users){
     // console.log(users);
-
+    for (var i = users.length - 1; i >= 0; i--) {
+      users[i].authlink = 'http://' + domainName+'/linker/'+users[i].login+'/'+ users[i].link;
+    };
     json2csv({ data: users, fields: fields }, function (err, csv) {
       if (err) {
         next(err);
