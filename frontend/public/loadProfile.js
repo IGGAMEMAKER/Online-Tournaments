@@ -30,10 +30,22 @@ function sendInviter(){
 
 sendInviter();
 
-setInterval(function (){
-  console.log('here');
-  mark('mark/Here/'+login, {});
-}, 45000)
+function stayOnline(){
+	setInterval(function (){
+	  console.log('here');
+	  mark('mark/Here/'+login, {});
+	}, 45000)
+}
+
+function checkNews(){
+	setTimeout(function (){
+		console.log('checkNews');
+		setAsync('notifications/news', null, drawNewsModal, 'GET')
+	}, 1500);
+}
+
+stayOnline();
+checkNews();
 
 function exists(element){ return document.getElementById(element); }
 

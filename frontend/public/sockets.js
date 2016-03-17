@@ -136,6 +136,7 @@ function statAttemptToStart(tournamentID){
 function autoreg(){
   setAsync('autoreg', {}, function(){
     $("#winnerModal").modal('hide');
+    $("#newsModal").modal('hide');
     getProfile();
   
   });
@@ -174,7 +175,7 @@ function setAsync(url, data, success, method){
   $.ajax({
     url: url,
     method: method || 'POST',
-    data:data,
+    data:data || null,
     success: success|| printer
   });
 }

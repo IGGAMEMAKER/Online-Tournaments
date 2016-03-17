@@ -21,6 +21,8 @@ var Message = models.Message;
 
 var c = require('../constants');
 
+var helpers = require('../helpers/helper')
+
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
 // function add(){
 // 	return new Promise(function (resolve, reject){
@@ -71,6 +73,21 @@ function save(modelName, item){
 	})
 }
 
+function update(modelName, find, update, options){
+	return new Promise(function (resolve, reject){
+		models[modelName].update(find, update, options||null, function (err, count){
+			if (err) return reject(err);
+
+			if (helpers.updated(count)){
+				return resolve(1);
+			}
+
+			return reject(null);
+		})
+	})
+}
+
+
 function all() {
 	return search('Message', {})
 }
@@ -83,7 +100,13 @@ var notifications = {
 		return search('Message', { target:login , status: {$exists: false } })
 	}
 	,personal: function (target, text){ // creates personal notification
-		return save('Message', {target:target, text:text})
+		return save('Message', { target:target, text:text })
+	}
+	,read: function (id, login){
+		return update('Message', {"_id": id, target:login }, { status : c.MESSAGE_READ })
+	}
+	,readAll: function(login){
+		return update('Message', { target:login, status: { $exists: false } }, { status : c.MESSAGE_READ }, {multi: true})
 	}
 }
 
@@ -93,6 +116,9 @@ function find_all_by_target_login(login){}
 
 // all()
 // notifications.all('Raja')
+
+// notifications.news('Raja')
+
 notifications.personal('Raja', 'Come on!')
 .then(console.log)
 .catch(console.error)

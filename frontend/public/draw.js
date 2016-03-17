@@ -398,6 +398,41 @@ var PAYMENT_TOURNAMENT = 0;
 var PAYMENT_ACCELERATOR = 1;
 var PAYMENT_FULLFILL = 2;
 
+function drawNewsModal(data){
+  var messages = data.msg;
+    // alert('News!!');
+    // console.log(messages);
+  if (messages.length>0){
+    /*for (var i = messages.length - 1; i >= 0; i--) {
+      messages[i]
+    };*/
+    var message = messages[0];
+
+    news.hide();
+
+    news.title(message.text)
+    news.body(message.text);
+
+    news.footer(news.CTA());
+
+    news.show();
+  }
+}
+
+var news = {
+  title :   function (msg) { $("#newsTitle").html(msg); }
+  ,body  :  function (msg) { $("#newsBody").html(msg); }
+  ,footer:  function (msg) { $("#newsFooter").html(msg); }
+
+  ,show:    function () { $("#newsModal").modal('show'); }
+  ,hide:    function () { $("#newsModal").modal('hide'); }
+  ,CTA: function (ammount, buyType) {
+    var onclick = "autoreg()";
+    // $("#depositLink1").attr("href", "Payment/"+login+"/"+needToPay+"')")
+    return '<a class="btn btn-primary" onclick="'+onclick+'"> Продолжить играть </a>';
+  }
+}
+
 function drawPayingModal(data){
   console.log('drawPayingModal', data);
 

@@ -1042,6 +1042,40 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err)
 
+app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
+  // var login = req.params.login;
+  console.log('news');
+  var login = getLogin(req);
+
+  Message.notifications.news(login)
+  .then(function (news){
+    req.data = news;
+
+    Message.notifications.readAll(login)
+    // .then(console.log)
+    .catch(function(){})
+
+    next()
+  })
+  .catch(next)
+}, aux.json, aux.err)
+
+app.get('/notifications/all', middlewares.authenticated, function (req, res, next){
+  // var login = req.params.login;
+  var login = getLogin(req);
+
+  Message.notifications.all(login)
+  .then(function (news){
+    req.data = news;
+
+    Message.notifications.readAll(login)
+    .catch(function(){})
+
+    next()
+  })
+  .catch(next)
+}, aux.json, aux.err)
+
 // Message.notifications
 
 var players = [];
