@@ -437,7 +437,7 @@ function grantMoney(login){
 				return resolve(1);
 			}
 
-			return reject(null);
+			return resolve(1);
 		})
 
 	})
