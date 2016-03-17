@@ -814,6 +814,17 @@ app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
     Marathon.grant_accelerator(login, accelerator)
     .then(function (result){
       res.json({msg: 'grant', result:result})
+
+      Message.notifications.personal(login, 'Лови бонус!', {
+        type: c.NOTIFICATION_GIVE_ACCELERATOR,
+        body:'Набирайте очки быстрее с помощью ускорителя',
+        index:accelerator
+      })
+      .then(function(){
+        forceTakingNews(login)
+      })
+      .catch(console.error)
+
     })
     .catch(function (err) { 
       cancel(res, err, 'grant fail');
@@ -844,6 +855,10 @@ app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
   }
 })
 
+function forceTakingNews(login){
+  io.emit('newsUpdate', {msg:login})
+}
+
 app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
   var ammount = req.params.ammount;
@@ -854,6 +869,17 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
     Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
     .then(function (result){
       res.json({msg: 'grant', result:result})
+
+      Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+        type: c.NOTIFICATION_GIVE_MONEY,
+        body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+        ammount:ammount
+      })
+      .then(function(){
+        forceTakingNews(login)
+      })
+      .catch(console.error)
+
     })
     .catch(function (err) { 
       cancel(res, err, 'grant fail');
@@ -1051,7 +1077,7 @@ app.get('/notifications/news', middlewares.authenticated, function (req, res, ne
   .then(function (news){
     req.data = news;
 
-    Message.notifications.readAll(login)
+    Message.notifications.markAll(login)
     // .then(console.log)
     .catch(function(){})
 
@@ -1068,7 +1094,7 @@ app.get('/notifications/all', middlewares.authenticated, function (req, res, nex
   .then(function (news){
     req.data = news;
 
-    Message.notifications.readAll(login)
+    Message.notifications.markAll(login)
     .catch(function(){})
 
     next()

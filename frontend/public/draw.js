@@ -411,7 +411,7 @@ function drawNewsModal(data){
     news.hide();
 
     news.title(message.text)
-    news.body(message.text);
+    news.body(message.data.body);
 
     news.footer(news.CTA());
 

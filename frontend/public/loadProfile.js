@@ -28,6 +28,13 @@ function sendInviter(){
 	}
 }
 
+socket.on('newsUpdate', function (msg){
+  console.log(msg);
+  if (msg && msg.msg==login){
+    checkNews();
+  }
+})
+
 sendInviter();
 
 function stayOnline(){

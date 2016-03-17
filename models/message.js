@@ -99,13 +99,13 @@ var notifications = {
 	,news: function (login){
 		return search('Message', { target:login , status: {$exists: false } })
 	}
-	,personal: function (target, text){ // creates personal notification
-		return save('Message', { target:target, text:text })
+	,personal: function (target, text, data){ // creates personal notification
+		return save('Message', { target:target, text:text, data:data })
 	}
 	,read: function (id, login){
 		return update('Message', {"_id": id, target:login }, { status : c.MESSAGE_READ })
 	}
-	,readAll: function(login){
+	,markAll: function(login){
 		return update('Message', { target:login, status: { $exists: false } }, { status : c.MESSAGE_READ }, {multi: true})
 	}
 }
