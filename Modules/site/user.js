@@ -171,7 +171,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			// console.log('logged In', user);
 			req.user= user;
 
-			Users.grantMoney(login); //increase money if has no money
+			// Users.grantMoney(login); //increase money if has no money
 
 			saveSession(req, res, 'Login');
 
