@@ -428,21 +428,27 @@ function moneyDecrease(login, ammount){
 
 function grantMoney(login){
 	return new Promise(function (resolve, reject){
+		console.log('grantMoney', login)
 		User.findOne({login:login}, function (err, user){
 			if (err) return reject(err);
+			// console.log(err, user);
 
 			if (user && user.money < 100){
 				// User.update({login:login}, {})
-				moneyIncrease(login, 100)
-				return resolve(1);
+				return moneyIncrease(login, 100)
+				// .then(console.log)
+
+				// .catch(console.error)
+				// return resolve(1);
 			}
 
-			return resolve(1);
+			return reject(null);
 		})
 
 	})
 }
 
+// grantMoney('Raja')
 
 function hasEnoughMoney(login, ammount){
 	return new Promise(function(resolve, reject){

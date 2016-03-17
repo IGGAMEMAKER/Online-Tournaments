@@ -859,6 +859,45 @@ function forceTakingNews(login){
   io.emit('newsUpdate', {msg:login})
 }
 
+app.get('/linker/:login/:link', function (req, res){
+  var login = req.params.login;
+  var link = req.params.link;
+
+
+  Actions.add(login, 'linker');
+  // Users.auth(login, password)//, req.user.email, req.user.inviter
+  Users.auth_by_link(login, link)
+  .then(function (user){
+    // console.log('logged In', user);
+    req.user= user;
+
+
+    saveSession(req, res, 'Login');
+
+
+    // Actions.add(login, 'login');
+  })
+  .catch(function (err){
+    res.redirect('/Login');//, {msg : err});
+    Errors.add(login, 'linker', { code:err })
+  })
+  
+  Users.grantMoney(login) //increase money if has no money
+  .then(function(result){
+    var ammount = 100;
+        return Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+          type: c.NOTIFICATION_GIVE_MONEY,
+          body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+          ammount:ammount
+        })
+        .then(function(){
+          forceTakingNews(login)
+        })
+        // .catch(console.error)
+  })
+  .catch(console.error)
+})
+
 app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
   var ammount = req.params.ammount;
@@ -870,15 +909,17 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
     .then(function (result){
       res.json({msg: 'grant', result:result})
 
-      Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
-        type: c.NOTIFICATION_GIVE_MONEY,
-        body:'Вы получаете ' + ammount + ' руб на счёт!!!',
-        ammount:ammount
-      })
-      .then(function(){
-        forceTakingNews(login)
-      })
-      .catch(console.error)
+      if (ammount>0){
+        Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+          type: c.NOTIFICATION_GIVE_MONEY,
+          body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+          ammount:ammount
+        })
+        .then(function(){
+          forceTakingNews(login)
+        })
+        .catch(console.error)
+      }
 
     })
     .catch(function (err) { 
