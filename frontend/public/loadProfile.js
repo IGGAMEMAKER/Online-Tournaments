@@ -35,7 +35,7 @@ socket.on('newsUpdate', function (msg){
   }
 })
 
-sendInviter();
+
 
 function stayOnline(){
 	setInterval(function (){
@@ -51,6 +51,9 @@ function checkNews(){
 	}, 1500);
 }
 
+// init zone
+
+sendInviter();
 stayOnline();
 checkNews();
 
@@ -58,46 +61,65 @@ function exists(element){ return document.getElementById(element); }
 
 function saveProfile(drawFunction){
 	return function (data) {
+
 		console.log('saveProfile');
+		try {
+			var profile = JSON.parse(data); prt(profile);
+			var tournaments = profile.tournaments||{}; // tregs
+			var money = profile.money;
 
-		var profile = JSON.parse(data); prt(profile);
-		var tournaments = profile.tournaments||{}; // tregs
-		var money = profile.money;
+			// var marathon = profile.marathon;
+			// console.log('marathon info', marathon);
 
-		// var marathon = profile.marathon;
-		// console.log('marathon info', marathon);
+			saveInStorage('money', money);
+			saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 
-		saveInStorage('money', money);
-		saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
+			resetRunningTournaments();
 
-		resetRunningTournaments();
+			//var tournaments = getTournaments();
+			//console.log('tournaments',tournaments);
 
-		//var tournaments = getTournaments();
-		//console.log('tournaments',tournaments);
+			// var a = null;
+			// a[222] = null;
 
-		loadedAddrs=0;
-		for (var i=0; i < tournaments.length; i++){
-			var tID1 = tournaments[i];
-			GetTournamentAddress(tID1.tournamentID);
+			loadedAddrs=0;
+			for (var i=0; i < tournaments.length; i++){
+				var tID1 = tournaments[i];
+				GetTournamentAddress(tID1.tournamentID);
+			}
+
+			if (drawFunction) drawFunction();
+
+			if(tournaments.length==0) { 
+				// console.log('no tournaments'); 
+				drawPlayButtons(); 
+			}
+			var convert = 1;
+
+			if (isNaN(money)){
+				money = parseInt(money);
+			}
+			
+			$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
+
+			$('#money1').html(money + 'p');
+
+			//$(myModal).modal('show');
+		} catch(err){
+			// console.log(err.message);
+			// console.log(err.name);
+			// console.log(err.stack);
+
+			mark('mark/clientError', { err: err,
+				where: {
+					func_name: 'saveProfile',
+					stack:err.stack,
+					name:err.name,
+					msg:err.message 
+				}
+			})
 		}
 
-		if (drawFunction) drawFunction();
-
-		if(tournaments.length==0) { 
-			// console.log('no tournaments'); 
-			drawPlayButtons(); 
-		}
-		var convert = 1;
-
-		if (isNaN(money)){
-			money = parseInt(money);
-		}
-		
-		$('#balance').html("  На вашем счету " + getMoneyString(money) + ": ");
-
-		$('#money1').html(money + 'p');
-
-		//$(myModal).modal('show');
 	};
 }
 
@@ -130,14 +152,9 @@ function saveTournamentAddress(tID){
 	}
 }
 
-function resetRunningTournaments(){
-	saveInStorage('hasRunningTournaments', 0);
-}
+function resetRunningTournaments(){	saveInStorage('hasRunningTournaments', 0); }
 
-function setRunningTournaments(){
-	// console.log('hasRunningTournaments');
-	saveInStorage('hasRunningTournaments', 1);
-}
+function setRunningTournaments(){ saveInStorage('hasRunningTournaments', 1); }
 
 
 function getAsync(url, data, success){

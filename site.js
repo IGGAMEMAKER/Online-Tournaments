@@ -861,25 +861,27 @@ function forceTakingNews(login, delay){
   }, delay||0);
 }
 
-  app.post('/autoreg', function (req, res){
-    Tournaments.getStreamID()
-    .then(function (streamID){
-      if (isAuthenticated(req) && streamID){
-        var data = {
-          login: getLogin(req),
-          tournamentID:streamID
-        }
-        // console.log('autoreg', data);
-        AsyncRender('DBServer', 'autoreg', res, null,  data);
+app.post('/autoreg', function (req, res){
+  Tournaments.getStreamID()
+  .then(function (streamID){
+    if (isAuthenticated(req) && streamID){
+      var login = getLogin(req);
+      
+      var data = {
+        login: login,
+        tournamentID:streamID
+      }
+      // console.log('autoreg', data);
+      AsyncRender('DBServer', 'autoreg', res, null,  data);
 
-        forceTakingNews(login, 500);
-      }
-      else{
-        sender.Answer(res, Fail);
-        //res.redirect('Login');
-      }
-    })
+      forceTakingNews(login, 500);
+    }
+    else{
+      sender.Answer(res, Fail);
+      //res.redirect('Login');
+    }
   })
+})
 
 // app.get('/linker/:login/:link', function (req, res){
 //   var login = req.params.login;

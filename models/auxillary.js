@@ -23,9 +23,9 @@ var mailsender = require('../helpers/mailchimp');
 
 // 
 
-var Actions = models.Action;
-var Errors = models.Error;
-var Stats = models.Statistic;
+var Actions = require('./actions');// models.Action;
+var Errors = require('./errors');//models.Error;
+var Stats = require('./statistics');//models.Statistic;
 
 // AuxillarySpec
 // writing logs
@@ -43,26 +43,33 @@ module.exports = {
 	,isAdmin : middlewares.isAdmin
 
 	// ,attempt : Stats.attempt
+	,clientside : function(login, auxillaries){
+		// console.error('clientside', arguments)
+		return Actions.add(login, 'clientside', auxillaries)
+	}
+	,clientsideError: function (login, auxillaries){
+		return Errors.add(login, 'clientside', auxillaries)
+	}
 	,done : Actions.add
 	,fail : Errors.add
 
 	,updated: helper.updated
 	,removed: helper.removed
 
-	,json : function(req, res){
+	,json : function (req, res){
 		res.json({msg: req.data})
 	}
 	,raw : function (req, res){
 		res.end(req.data);
 	}
-	,err : function(err, req, res, next){
+	,err : function (err, req, res, next){
 		res.json({err: err})
 	}
 
 	// send message and page
-	,answer : function(page){
+	,answer : function (page){
 		return function (req, res){
-			res.render(page, {msg: req.data});
+			res.render(page, { msg: req.data });
 		}
 	}
 	,error: function (page, message, tag, code){

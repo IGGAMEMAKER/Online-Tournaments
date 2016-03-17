@@ -7,6 +7,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var TournamentRegs = require('../../models/tregs')
 	var Users = require('../../models/users')
 	var time = require('../../helpers/time');
+
+	var aux = require('../../models/auxillary')
+
 	var strLog = Log;
 
 	var middlewares = require('../../middlewares');
@@ -44,7 +47,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		// Stats('GameLoaded', { login:login , tournamentID:tournamentID});
 
 		console.log('Stats CATCHED HERE', 'GameLoaded : ' + login + ' ' + tournamentID);
-		Stats.attempt('gameLoaded')
+		Stats.attempt('gameLoaded');
+
+		// aux.
 	})
 
 	app.post('/NoMoney', function (req, res){
@@ -85,11 +90,24 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 	app.post('/message/shown', middlewares.authenticated, function (req, res){
 		res.end('');
-		console.log('message/shown')
+		// console.log('message/shown')
 		
 		var login = getLogin(req);
 		var id = req.body.id;
-		console.log('show', login, id)
+		// console.log('show', login, id)
+		aux.clientside(login, { type: 'message/shown', id:id})
+	})
+
+	app.post('/mark/clientError', middlewares.authenticated, function (req, res){
+		res.end('');
+
+		var login = getLogin(req);
+		var err = req.body.err;
+		var where = req.body.where;
+
+
+
+		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
 	})
 	
 	//statistics Data
