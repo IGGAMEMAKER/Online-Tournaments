@@ -141,23 +141,25 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
-	app.post('/autoreg', function (req, res){
-		Tournaments.getStreamID()
-		.then(function (streamID){
-			if (isAuthenticated(req) && streamID){
-				var data = {
-					login: getLogin(req),
-					tournamentID:streamID
-				}
-				// console.log('autoreg', data);
-				AsyncRender('DBServer', 'autoreg', res, null,  data);
-			}
-			else{
-				sender.Answer(res, Fail);
-				//res.redirect('Login');
-			}
-		})
-	})
+	// app.post('/autoreg', function (req, res){
+	// 	Tournaments.getStreamID()
+	// 	.then(function (streamID){
+	// 		if (isAuthenticated(req) && streamID){
+	// 			var data = {
+	// 				login: getLogin(req),
+	// 				tournamentID:streamID
+	// 			}
+	// 			// console.log('autoreg', data);
+	// 			AsyncRender('DBServer', 'autoreg', res, null,  data);
+
+				
+	// 		}
+	// 		else{
+	// 			sender.Answer(res, Fail);
+	// 			//res.redirect('Login');
+	// 		}
+	// 	})
+	// })
 
 	app.get('/linker/:login/:link', function (req, res){
 		var login = req.params.login;
@@ -168,7 +170,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		// Users.auth(login, password)//, req.user.email, req.user.inviter
 		Users.auth_by_link(login, link)
 		.then(function (user){
-			console.log('logged In', user);
+			// console.log('logged In', user);
 			req.user= user;
 
 			// Users.grantMoney(login); //increase money if has no money

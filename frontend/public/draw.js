@@ -416,6 +416,8 @@ function drawNewsModal(data){
     news.footer(news.CTA());
 
     news.show();
+
+    mark('message/shown', { id : message._id })
   }
 }
 

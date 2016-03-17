@@ -855,9 +855,31 @@ app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
   }
 })
 
-function forceTakingNews(login){
-  io.emit('newsUpdate', {msg:login})
+function forceTakingNews(login, delay){
+  setTimeout(function() {
+    io.emit('newsUpdate', {msg:login})
+  }, delay||0);
 }
+
+  app.post('/autoreg', function (req, res){
+    Tournaments.getStreamID()
+    .then(function (streamID){
+      if (isAuthenticated(req) && streamID){
+        var data = {
+          login: getLogin(req),
+          tournamentID:streamID
+        }
+        // console.log('autoreg', data);
+        AsyncRender('DBServer', 'autoreg', res, null,  data);
+
+        forceTakingNews(login, 500);
+      }
+      else{
+        sender.Answer(res, Fail);
+        //res.redirect('Login');
+      }
+    })
+  })
 
 // app.get('/linker/:login/:link', function (req, res){
 //   var login = req.params.login;
