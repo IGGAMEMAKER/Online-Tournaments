@@ -882,20 +882,22 @@ app.get('/linker/:login/:link', function (req, res){
     Errors.add(login, 'linker', { code:err })
   })
   
-  Users.grantMoney(login) //increase money if has no money
-  .then(function(result){
-    var ammount = 100;
-        return Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
-          type: c.NOTIFICATION_GIVE_MONEY,
-          body:'Вы получаете ' + ammount + ' руб на счёт!!!',
-          ammount:ammount
-        })
-        .then(function(){
-          forceTakingNews(login)
-        })
-        // .catch(console.error)
-  })
-  .catch(console.error)
+  setTimeout(function(){
+    Users.grantMoney(login) //increase money if has no money
+    .then(function(result){
+      var ammount = 100;
+          return Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+            type: c.NOTIFICATION_GIVE_MONEY,
+            body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+            ammount:ammount
+          })
+          .then(function(){
+            forceTakingNews(login)
+          })
+          // .catch(console.error)
+    })
+    .catch(console.error)
+  }, 2000)
 })
 
 app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
