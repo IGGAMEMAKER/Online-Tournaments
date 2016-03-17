@@ -623,4 +623,4 @@ module.exports.poor = poorUsers;
 module.exports.mailers = mailers;
 module.exports.update_auth_links = update_auth_links;
 
-module.grantMoney = grantMoney
+module.exports.grantMoney = grantMoney
