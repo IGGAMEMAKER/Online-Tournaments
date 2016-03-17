@@ -159,6 +159,31 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	})
 
+	app.get('/linker/:login/:link', function (req, res){
+		var login = req.params.login;
+		var link = req.params.link;
+
+
+		Actions.add(login, 'linker');
+		// Users.auth(login, password)//, req.user.email, req.user.inviter
+		Users.auth_by_link(login, link)
+		.then(function (user){
+			console.log('logged In', user);
+			req.user= user;
+
+			// Users.grantMoney(login); //increase money if has no money
+
+			saveSession(req, res, 'Login');
+
+
+			// Actions.add(login, 'login');
+		})
+		.catch(function (err){
+			res.redirect('/Login');//, {msg : err});
+			Errors.add(login, 'linker', { code:err })
+		})
+	})
+
 	app.get('/killUser/:login', middlewares.isAdmin, function (req, res){
 		var login = req.params.login;
 
