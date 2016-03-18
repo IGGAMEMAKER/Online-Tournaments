@@ -421,6 +421,8 @@ function drawNewsModal(data){
   }
 }
 
+
+
 var news = {
   title :   function (msg) { $("#newsTitle").html(msg); }
   ,body  :  function (msg) { $("#newsBody").html(msg); }

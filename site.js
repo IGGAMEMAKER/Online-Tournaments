@@ -872,11 +872,22 @@ app.post('/autoreg', function (req, res){
         tournamentID:streamID
       }
       // console.log('autoreg', data);
-      AsyncRender('DBServer', 'autoreg', res, null,  data);
-
-      forceTakingNews(login, 500);
-    }
-    else{
+      // AsyncRender('DBServer', 'autoreg', res, null,  data);
+      sender.sendRequest('autoreg', data, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
+        if (err){
+          aux.fail(login, 'autoreg', data)
+          sender.Answer(res, Fail);
+        } else {
+          if (body){
+            sender.Answer(res, body);
+            forceTakingNews(login, 500);
+          } else {
+            sender.Answer(res, Fail);
+          }
+        }
+      })
+      // 
+    } else {
       sender.Answer(res, Fail);
       //res.redirect('Login');
     }
@@ -1118,6 +1129,16 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
   .catch(next);
 
 }, aux.json, aux.err)
+
+app.get('/messages', middlewares.isAdmin, function (req, res, next){
+  var login = req.query.login;
+  Message.notifications.all(login)
+  .then(function (news){
+    req.data = news;
+    next()
+  })
+  .catch(next)
+}, aux.answer('Notifications'), aux.err)
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
   // var login = req.params.login;

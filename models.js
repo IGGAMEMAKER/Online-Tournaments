@@ -25,7 +25,8 @@ module.exports = function(dbAddress){
 		MoneyTransfer : db.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date}),
 
 		Message : db.model('Message', {
-			text:String, 
+			text:String, // title
+
 			senderName:String,
 			target: String,
 			date: Date,
@@ -110,6 +111,12 @@ module.exports = function(dbAddress){
 			type: String,
 			auxillaries: Object
 		})
+		,Error : db.model('Error', {
+			login: String,
+			date: Date,
+			type: String,
+			auxillaries: Object
+		})
 
 		,Statistic : db.model('Statistic', {
 			// 2 types of stats:
@@ -125,12 +132,6 @@ module.exports = function(dbAddress){
 
 		})
 
-		,Error : db.model('Error', {
-			login: String,
-			date: Date,
-			type: String,
-			auxillaries: Object
-		})
 
 		,Attempt : db.model('Attempts', {
 			login: String,

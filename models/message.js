@@ -93,7 +93,7 @@ function all() {
 }
 
 var notifications = {
-	all: function (login){
+	all: function (login) {
 		return search('Message', { target:login })
 	}
 	,news: function (login){
@@ -108,6 +108,8 @@ var notifications = {
 	,markAll: function(login){
 		return update('Message', { target:login, status: { $exists: false } }, { status : c.MESSAGE_READ }, {multi: true})
 	}
+
+
 }
 
 
@@ -119,9 +121,9 @@ function find_all_by_target_login(login){}
 
 // notifications.news('Raja')
 
-notifications.personal('Raja', 'Come on!')
-.then(console.log)
-.catch(console.error)
+// notifications.personal('Raja', 'Come on!')
+// .then(console.log)
+// .catch(console.error)
 
 function profile(login){
 	return new Promise(function(resolve,reject){

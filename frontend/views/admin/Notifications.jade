@@ -1,0 +1,19 @@
+//
+extends List
+
+block head
+	th #
+	th Название
+	th Время
+	th Статус
+block raw
+
+block content
+	td!= ind
+
+	td
+		a(href="message?date="+time+"&name="+item target="_blank") #{item}
+	td
+		p!= time
+	td
+		p #{item.status}

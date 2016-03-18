@@ -27,6 +27,8 @@ var Actions = require('./actions');// models.Action;
 var Errors = require('./errors');//models.Error;
 var Stats = require('./statistics');//models.Statistic;
 
+var Message = require('./message');
+
 // AuxillarySpec
 // writing logs
 // log errors
@@ -52,6 +54,8 @@ module.exports = {
 	}
 	,done : Actions.add
 	,fail : Errors.add
+
+	,notify : Message.notifications.personal
 
 	,updated: helper.updated
 	,removed: helper.removed

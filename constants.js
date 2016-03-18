@@ -20,7 +20,7 @@ module.exports = {
 
 	,MESSAGE_READ:1
 
-	,NOTIFICATION_GIVE_ACCELERATOR:1
-	,NOTIFICATION_GIVE_MONEY:2
+	,NOTIFICATION_GIVE_ACCELERATOR:1 // give to user an accelerator
+	,NOTIFICATION_GIVE_MONEY:2 // gitve user money
 
 }

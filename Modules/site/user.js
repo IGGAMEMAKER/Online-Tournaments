@@ -16,8 +16,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var middlewares = require('../../middlewares');
 	var authenticated = middlewares.authenticated;
 
-	var Stats = sender.Stats;
-
 	var Fail = {
 		result: 'fail'
 	};
@@ -207,7 +205,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		var link_pass;
 
-		statistics.attempt('resetPassword', {email:email});
+		statistics.attempt('resetPassword', { email:email });
 
 		Users.resetPassword(email)
 		.then(function (linkAndPass){
@@ -219,7 +217,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.render('ResetPassword', {msg:OK});
 		})
 		.catch(function (err){
-			statistics.fail('resetPassword', {email:email, err:err}); // console.log(link_pass, err);
+			statistics.fail('resetPassword', { email:email, err:err }); // console.log(link_pass, err);
 			res.render('ResetPassword', {msg:err})
 
 			Errors.add(email||null, 'resetPassword', { email:email, err:err });
