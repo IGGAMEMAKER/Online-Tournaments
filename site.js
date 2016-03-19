@@ -818,7 +818,19 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
   }
 })
 
+app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next){
+  var login = req.params.login;
+  console.log('requestPlaying', login);
+  aux.alert(login, c.NOTIFICATION_FORCE_PLAYING, {
 
+  })
+  .then(function (result){
+    req.data = result;
+    next();
+  })
+  .catch(next)
+
+}, aux.json, aux.err)
 
 app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   var login = req.params.login;

@@ -445,6 +445,7 @@ const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
 const NOTIFICATION_GIVE_MONEY = 2 // give user money
 const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
 const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
+const NOTIFICATION_FORCE_PLAYING = 5 // force playing
 
 function drawNewsModal(data){
   try{
@@ -505,7 +506,12 @@ function drawNewsModal(data){
 
           footer = news.buttons.skip('Урра!')
         break;
+        case NOTIFICATION_FORCE_PLAYING:
+          header = 'Настало время играть!'
+          body = '<script>alert("Поиграй со мной")</script>'
 
+          footer = fast_register_button();
+        break;
         default:
           header = message.text;
           body = info.body;
@@ -520,6 +526,7 @@ function drawNewsModal(data){
       news.show();
 
       mark('message/shown', { id : messageID })
+      getProfile();
     }
   } catch(err){
     sendError(err, 'drawNewsModal');

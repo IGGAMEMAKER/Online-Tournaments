@@ -25,6 +25,7 @@ module.exports = {
 	,NOTIFICATION_ACCEPT_MONEY:3 // give money to a user if he clicks on button
 	
 	,NOTIFICATION_MARATHON_PRIZE:4 // give user money
+	,NOTIFICATION_FORCE_PLAYING:5 // force playing
 
 	// ,MESSAGE_TYPE_
 }
