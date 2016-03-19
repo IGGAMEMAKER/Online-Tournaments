@@ -15,7 +15,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var middlewares = require('../../middlewares');
 
 	app.post('/AttemptToStart', function (req, res){
-		console.log('AttemptToStart');
+		// console.log('AttemptToStart');
 		sender.Answer(res, OK);
 
 		var login = getLogin(req);

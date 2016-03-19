@@ -37,9 +37,16 @@ var Message = require('./message');
 // useful functions : isUpdated, isRemoved
 
 
+function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
+function isNumeric(num) { return !isNaN(num); }
+var io;
 module.exports = {
 	debug : debug
 	,log : log
+
+	,io: function(socket){
+		io = socket;
+	}
 
 	,isAuthenticated : middlewares.authenticated
 	,isAdmin : middlewares.isAdmin
@@ -52,10 +59,18 @@ module.exports = {
 	,clientsideError: function (login, auxillaries){
 		return Errors.add(login, 'clientside', auxillaries)
 	}
+	,catcher : console.error
 	,done : Actions.add
 	,fail : Errors.add
 
 	,notify : Message.notifications.personal
+	
+	,alert: function(login, text, data){
+		return Message.notifications.personal(login, text, data)
+		.then(function (result){
+			io.forceTakingNews(login);
+		})
+	}
 
 	,updated: helper.updated
 	,removed: helper.removed
@@ -68,6 +83,13 @@ module.exports = {
 	}
 	,err : function (err, req, res, next){
 		res.json({err: err})
+	}
+	,getLogin: function (req){
+	  if (isAuthenticated(req)){
+	    return req.session.login;
+	  } else {
+	    return 0;
+	  }
 	}
 
 	// send message and page

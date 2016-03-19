@@ -410,6 +410,10 @@ function drawNewsModal(data){
 
     news.hide();
 
+    switch(message.data.type){
+      
+    }
+
     news.title(message.text)
     news.body(message.data.body);
 

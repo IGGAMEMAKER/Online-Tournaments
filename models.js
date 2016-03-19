@@ -26,18 +26,21 @@ module.exports = function(dbAddress){
 
 		Message : db.model('Message', {
 			text:String, // title
-
-			senderName:String,
 			target: String,
-			date: Date,
 			status: String,
-			
+			type: Number,
 			data: Object, // paste here all you want
 			// expect body parameter
 			// type
+			process: String, // if you need to give money to user only if he will press "accept" button
+
+			date: Date,
+			
 
 			CTA: Object, // buttons -- if we grant money to user, we propose him to play paid tournaments or buy accelerators
 			// if we grant an accelerator to user, we expect him to play in marathon tournaments e.t.c
+			
+			senderName:String,
 			isPrivate: Boolean, 
 			isSystem: Object
 			/*

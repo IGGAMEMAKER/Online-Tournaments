@@ -159,20 +159,33 @@ app.set('view engine', 'jade');
 var sender = require('./requestSender');
 
 var sort = require('./helpers/sort');
-var aux = require('./models/auxillary')
 
 //var compression = require('compression');
 //app.use(compression());
 if (configs.cacheTemplates) app.set('view cache', true);
 
+server = app.listen(8888, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+// socket land
+
+var io;
+var SOCKET = require('./socket')(app, server)
+if (socket_enabled){
+  io = SOCKET.io;
+}
+var aux = require('./models/auxillary')
+aux.io(SOCKET); // set socket in aux
 
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
-var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
-
+var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
 
 
@@ -664,23 +677,6 @@ app.post('/Tell', isAdmin, function (req, res){
   res.render('Tell');
 })
 
-app.get('/Leaderboard', function (req, res){
-  Marathon.leaderboard()
-  .then(function (leaderboard){
-    var ldbd = {
-      leaderboard:leaderboard,
-      counts: leaderboard.counts,
-      prizes: leaderboard.prizes
-    }
-    res.render('Leaderboard', { msg: ldbd });
-  })
-  .catch(function (err){
-    Errors.add('Leaderboard', {err:err})
-    
-    res.render('Leaderboard', { msg: Leaderboard });
-  })
-});
-
 app.get('/Marathon', function (req, res){ res.render('Marathon'); })
 
 app.get('/MarathonInfo', isAdmin, function (req, res){
@@ -693,6 +689,26 @@ app.get('/MarathonInfo', isAdmin, function (req, res){
     }
   })
 })
+
+app.get('/Leaderboard', function (req, res){
+  // Marathon.leaderboard()
+  // .then(function (leaderboard){
+  //   var ldbd = {
+  //     leaderboard:leaderboard,
+  //     counts: leaderboard.counts,
+  //     prizes: leaderboard.prizes
+  //   }
+  //   res.render('Leaderboard', { msg: ldbd });
+  // })
+  // .catch(function (err){
+  //   Errors.add('Leaderboard', {err:err})
+    
+  //   res.render('Leaderboard', { msg: Leaderboard });
+  // })
+  res.render('Leaderboard', { msg: Leaderboard });
+
+});
+
 
 app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
   var MarathonID = req.params.MarathonID;
@@ -815,15 +831,22 @@ app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
     .then(function (result){
       res.json({msg: 'grant', result:result})
 
-      Message.notifications.personal(login, 'Лови бонус!', {
+      aux.alert(login, 'Лови бонус!', {
         type: c.NOTIFICATION_GIVE_ACCELERATOR,
         body:'Набирайте очки быстрее с помощью ускорителя',
         index:accelerator
       })
-      .then(function(){
-        forceTakingNews(login)
-      })
-      .catch(console.error)
+      .catch(aux.catcher)
+        
+      // Message.notifications.personal(login, 'Лови бонус!', {
+      //   type: c.NOTIFICATION_GIVE_ACCELERATOR,
+      //   body:'Набирайте очки быстрее с помощью ускорителя',
+      //   index:accelerator
+      // })
+      // .then(function(){
+      //   forceTakingNews(login)
+      // })
+      // .catch(console.error)
 
     })
     .catch(function (err) { 
@@ -931,15 +954,21 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
       res.json({msg: 'grant', result:result})
 
       if (ammount>0){
-        Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+        aux.alert(login, 'Деньги, деньги, деньги!', {
           type: c.NOTIFICATION_GIVE_MONEY,
           body:'Вы получаете ' + ammount + ' руб на счёт!!!',
           ammount:ammount
         })
-        .then(function(){
-          forceTakingNews(login)
-        })
-        .catch(console.error)
+        .catch(aux.catcher)
+        // Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
+        //   type: c.NOTIFICATION_GIVE_MONEY,
+        //   body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+        //   ammount:ammount
+        // })
+        // .then(function(){
+        //   forceTakingNews(login)
+        // })
+        // .catch(console.error)
       }
 
     })
@@ -982,59 +1011,26 @@ app.get('/api/mini-rating', function (req, res){
 })*/
 
 
-
-server = app.listen(8888, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-
-  console.log('Example app listening at http://%s:%s', host, port);
-});
-// var WebSocketServer = require('ws').Server;
-
-
-// socket land
-
 var clients = [];
-var io;
-if (socket_enabled){
-  io = require('socket.io')(server);
 
-  /*io.set('transports', [
-      'websocket'
-    , 'flashsocket'
-    , 'htmlfile'
-    , 'xhr-polling'
-    , 'jsonp-polling'
-  ]);*/
-  /*io.set('transports', [
-      'websocket'
-    , 'polling'
-  ]);*/
+// server = app.listen(8888, function () {
+//   var host = server.address().address;
+//   var port = server.address().port;
 
-  
+//   console.log('Example app listening at http://%s:%s', host, port);
+// });
+// // socket land
 
-  io.on('connection', function(socket){
-    //console.log('IO connection');
-    //socket.join('/111');
+// var io;
+// var SOCKET = require('./socket')(app, server)
+// if (socket_enabled){
+//   io = SOCKET.io;
+// }
 
-    socket.on('chat message', function(msg){
-      console.log(msg);
-      io.emit('chat message', msg);
-      var message = { text : msg , sender:'common' }
-      console.log(message, 'message');
-      sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
-    });
-
-    // socket.on('event1', function(data){
-    //   SendToRoom('/111', 'azz', 'LALKI', socket);
-    //   //io.of('/111').emit('azz','LALKI');
-    // });
-
-  });
-}
 function Send(tag, message, force){
   if (socket_enabled || force){
     io.emit(tag, message);
+    // deleted here
   }
 }
 
@@ -1059,7 +1055,7 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
   var type = req.query.buyType || null;
 
   var login = getLogin(req);
-  Actions.add(login, 'Payment-page', { ammount:ammount, type:type })
+  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type })
 
   res.render('Payment', { ammount:ammount, type:type });
 })
@@ -1307,11 +1303,11 @@ function get_Leaderboard(period){
     activity_board = getShortActivityBoard(leaderboard);
     leaderboard_min = leaderboard;
 
-    // io.emit('leaderboard', {
-    //   leaderboard: activity_board, 
-    //   counts: leaderboard.counts, 
-    //   prizes: leaderboard.prizes 
-    // });
+    io.emit('leaderboard', {
+      leaderboard: activity_board, 
+      counts: leaderboard.counts, 
+      prizes: leaderboard.prizes 
+    });
 
     // { leaderboard: activity_board } , counts: [1, 3], prizes:[150, 50]
   })

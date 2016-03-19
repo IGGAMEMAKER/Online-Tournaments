@@ -22,5 +22,5 @@ module.exports = {
 
 	,NOTIFICATION_GIVE_ACCELERATOR:1 // give to user an accelerator
 	,NOTIFICATION_GIVE_MONEY:2 // gitve user money
-
+	// ,MESSAGE_TYPE_
 }
