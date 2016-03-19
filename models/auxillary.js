@@ -59,14 +59,13 @@ module.exports = {
 	,clientsideError: function (login, auxillaries){
 		return Errors.add(login, 'clientside', auxillaries)
 	}
-	,catcher : console.error
 	,done : Actions.add
 	,fail : Errors.add
 
 	,notify : Message.notifications.personal
 	
-	,alert: function(login, text, data){
-		return Message.notifications.personal(login, text, data)
+	,alert: function(login, type, data){
+		return Message.notifications.personal(login, type, data)
 		.then(function (result){
 			io.forceTakingNews(login);
 		})
@@ -105,6 +104,7 @@ module.exports = {
 			// write errors here
 		}
 	}
+	,catcher : console.error
 
 
 	// mail

@@ -99,8 +99,8 @@ var notifications = {
 	,news: function (login){
 		return search('Message', { target:login , status: {$exists: false } })
 	}
-	,personal: function (target, text, data){ // creates personal notification
-		return save('Message', { target:target, text:text, data:data })
+	,personal: function (target, type, data){ // creates personal notification
+		return save('Message', { target:target, type:type, data:data })
 	}
 	,read: function (id, login){
 		return update('Message', {"_id": id, target:login }, { status : c.MESSAGE_READ })

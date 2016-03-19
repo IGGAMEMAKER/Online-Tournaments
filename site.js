@@ -831,13 +831,11 @@ app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
     .then(function (result){
       res.json({msg: 'grant', result:result})
 
-      aux.alert(login, 'Лови бонус!', {
-        type: c.NOTIFICATION_GIVE_ACCELERATOR,
-        body:'Набирайте очки быстрее с помощью ускорителя',
+      aux.alert(login, c.NOTIFICATION_GIVE_ACCELERATOR, {
         index:accelerator
       })
       .catch(aux.catcher)
-        
+
       // Message.notifications.personal(login, 'Лови бонус!', {
       //   type: c.NOTIFICATION_GIVE_ACCELERATOR,
       //   body:'Набирайте очки быстрее с помощью ускорителя',
@@ -954,12 +952,11 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
       res.json({msg: 'grant', result:result})
 
       if (ammount>0){
-        aux.alert(login, 'Деньги, деньги, деньги!', {
-          type: c.NOTIFICATION_GIVE_MONEY,
-          body:'Вы получаете ' + ammount + ' руб на счёт!!!',
+        aux.alert(login, c.NOTIFICATION_GIVE_MONEY, {
           ammount:ammount
         })
         .catch(aux.catcher)
+
         // Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
         //   type: c.NOTIFICATION_GIVE_MONEY,
         //   body:'Вы получаете ' + ammount + ' руб на счёт!!!',

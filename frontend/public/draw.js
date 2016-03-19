@@ -392,11 +392,35 @@ function getAddressFromAddrList(addresses, tournamentID){
   return null;
 }
 
+function getAcceleratorValue(index){
+  switch(index) {
+    case 0: return 4; break;
+    case 1: return 7; break;
+    case 2: return 9; break;
+    default: return 1; break;
+  }
+}
+function getAcceleratorColour(index){
+  switch(index) {
+    case 0: return 'rgb(0, 55, 255)'; break;
+    case 1: return 'purple'; break;
+    case 2: return 'gold'; break;
+    default: 
+      console.log(index);
+      return 'gold'; 
+    break;
+  }
+}
+
 var USD_TO_RUR=1;
 
 var PAYMENT_TOURNAMENT = 0;
 var PAYMENT_ACCELERATOR = 1;
 var PAYMENT_FULLFILL = 2;
+
+const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
+const NOTIFICATION_GIVE_MONEY = 2 // give user money
+const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
 
 function drawNewsModal(data){
   var messages = data.msg;
@@ -407,24 +431,61 @@ function drawNewsModal(data){
       messages[i]
     };*/
     var message = messages[0];
+    var info = message.data || {};
+    var messageID = message._id;
 
     news.hide();
+    var header='';
+    var body='';
+    var footer='';
 
-    switch(message.data.type){
-      
+    switch(message.type){
+      case NOTIFICATION_GIVE_MONEY:
+        header = 'Деньги, деньги, деньги!';
+        body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
+        footer = news.buttons.skip()
+      break;
+      case NOTIFICATION_GIVE_ACCELERATOR:
+        // header = 'Вы будете набирать очки быстрее!';
+        var id = parseInt(info.index);
+        var value = getAcceleratorValue(id);
+        var colour = getAcceleratorColour(id);
+        
+        header = 'Вы получаете ускоритель ' + value + '!';
+        // console.log(info, id, value, colour)
+        body += '<div class="col-md-6 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"'+id+'>';
+        body +=   '<center>';
+        body += 'Вы будете набирать очки в ' + value + ' раза быстрее!';//Набирайте очки быстрее с помощью ускорителя
+        body += '<br>';
+        // body +=     '<h2 class="white text-center"> Ускоритель '+value+' </h2>';
+        body +=   '<img class="acceleratorImage" width="100%" src="/img/accelerator'+value+'.png" style="background-color:'+colour+'">';
+        body +=   '</center>';
+        body += '</div>';
+
+        footer = news.buttons.skip()
+      break;
+      case NOTIFICATION_ACCEPT_MONEY:
+        header = 'Бонус!';
+        body = 'Примите ' + info.ammount + 'рублей на счёт!';
+
+        footer = news.buttons.action(0, messageID, { text:'Спасибо!' })
+      break;
+      default:
+        header = message.text;
+        body = info.body;
+        footer = news.CTA();
+      break;
     }
 
-    news.title(message.text)
-    news.body(message.data.body);
-
-    news.footer(news.CTA());
+    news.title(header)
+    news.body(body);
+    news.footer(footer);
 
     news.show();
 
-    mark('message/shown', { id : message._id })
+    mark('message/shown', { id : messageID })
   }
 }
-
 
 
 var news = {
@@ -438,7 +499,28 @@ var news = {
     var onclick = "autoreg()";
     // $("#depositLink1").attr("href", "Payment/"+login+"/"+needToPay+"')")
     return '<a class="btn btn-primary" onclick="'+onclick+'"> Продолжить играть </a>';
+  },
+  answer: function(code, messageID){
+    mark('message/action/' + code + '/' + messageID);
   }
+  ,empty: function() { return ''; }
+  ,buttons : {
+    skip: function() {
+      return '<a class="btn btn-primary" onclick="news.hide();"> Продолжить</a>';
+    },
+    action: function(code, messageID, style){
+      // style.text
+      // style.class
+      // style.style
+      return '<a class="btn btn-primary" onclick="news.answer('+code+','+messageID+');">'+ style.text + '</a>';
+    },
+    next: function(i){
+      return '';
+    }
+  },
+
+  // others: save other messages here
+  // next: draw next message here
 }
 
 function drawPayingModal(data){
