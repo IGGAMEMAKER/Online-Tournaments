@@ -109,15 +109,15 @@ function saveProfile(drawFunction){
 			// console.log(err.message);
 			// console.log(err.name);
 			// console.log(err.stack);
-
-			mark('mark/clientError', { err: err,
-				where: {
-					func_name: 'saveProfile',
-					stack:err.stack,
-					name:err.name,
-					msg:err.message 
-				}
-			})
+			sendError(err, 'saveProfile')
+			// mark('mark/clientError', { err: err,
+			// 	where: {
+			// 		func_name: 'saveProfile',
+			// 		stack:err.stack,
+			// 		name:err.name,
+			// 		msg:err.message 
+			// 	}
+			// })
 		}
 
 	};

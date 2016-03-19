@@ -180,15 +180,6 @@ function setAsync(url, data, success, method){
   });
 }
 
-function mark(url, data, method){
-  // console.log('mark', url, data, method);
-  $.ajax({
-    url:url
-    , method: method || 'POST'
-    , data:data
-  })
-}
-
 function prt(message) {
   if (message) console.log(message);
 }

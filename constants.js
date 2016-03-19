@@ -23,5 +23,8 @@ module.exports = {
 	,NOTIFICATION_GIVE_ACCELERATOR:1 // give to user an accelerator
 	,NOTIFICATION_GIVE_MONEY:2 // give user money
 	,NOTIFICATION_ACCEPT_MONEY:3 // give money to a user if he clicks on button
+	
+	,NOTIFICATION_MARATHON_PRIZE:4 // give user money
+
 	// ,MESSAGE_TYPE_
 }

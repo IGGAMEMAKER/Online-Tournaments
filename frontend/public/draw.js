@@ -239,6 +239,27 @@ function loadRating(){
   }, 500);
 }
 
+function mark(url, data, method){
+  // console.log('mark', url, data, method);
+  $.ajax({
+    url:url
+    , method: method || 'POST'
+    , data:data
+  })
+}
+
+function sendError(err, func_name){
+  mark('mark/clientError', { 
+    err: err,
+    where: {
+      func_name: func_name,
+      stack:err.stack,
+      name:err.name,
+      msg:err.message 
+    }
+  })
+}
+
 function drawRating(msg){
   if (msg && msg.leaderboard){
     var leaders = msg.leaderboard;
@@ -291,7 +312,7 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
     noparse: true
   }
   var url = "http://vk.com/share.php?url="+obj.url+"&title="+obj.title+"&description="+obj.description+"&image="+obj.image+"&noparse=true";*/
-  var url = makeShareUrl();
+  // var url = makeShareUrl();
   var share = shareLink('Поделиться', 'btn btn-lg btn-primary', {});
   
 
@@ -305,9 +326,11 @@ function getAfterGameFooter(tournamentID, prizes, eventType){
     break;
 
     case EVENT_TYPE_WIN_RATING:
-      footer = shareLink('Поделиться', 'btn btn-lg btn-primary', { 
+      footer = continue_playing_button();
+      /*shareLink('Поделиться', 'btn btn-lg btn-primary', { 
         description:'Я участвую в еженедельной гонке за главный приз, присоединяйтесь!'
-      })+continue_playing_button(); //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
+      }) */
+      //main('Повышение в ' + '<a href="Leaderboard" target="_blank"> Рейтинге </a> !');
     break;
     case EVENT_TYPE_LOSE:
       footer = fast_register_button()+add_questions_button(); 
@@ -421,69 +444,85 @@ var PAYMENT_FULLFILL = 2;
 const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
 const NOTIFICATION_GIVE_MONEY = 2 // give user money
 const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
+const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
 
 function drawNewsModal(data){
-  var messages = data.msg;
-    // alert('News!!');
-    // console.log(messages);
-  if (messages.length>0){
-    /*for (var i = messages.length - 1; i >= 0; i--) {
-      messages[i]
-    };*/
-    var message = messages[0];
-    var info = message.data || {};
-    var messageID = message._id;
+  try{
+    var messages = data.msg;
+      // alert('News!!');
+      // console.log(messages);
+    if (messages.length>0){
+      /*for (var i = messages.length - 1; i >= 0; i--) {
+        messages[i]
+      };*/
+      var message = messages[0];
+      var info = message.data || {};
+      var messageID = message._id;
 
-    news.hide();
-    var header='';
-    var body='';
-    var footer='';
+      news.hide();
+      var header='';
+      var body='';
+      var footer='';
 
-    switch(message.type){
-      case NOTIFICATION_GIVE_MONEY:
-        header = 'Деньги, деньги, деньги!';
-        body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
-        footer = news.buttons.skip()
-      break;
-      case NOTIFICATION_GIVE_ACCELERATOR:
-        // header = 'Вы будете набирать очки быстрее!';
-        var id = parseInt(info.index);
-        var value = getAcceleratorValue(id);
-        var colour = getAcceleratorColour(id);
-        
-        header = 'Вы получаете ускоритель ' + value + '!';
-        // console.log(info, id, value, colour)
-        body += '<div class="col-md-6 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"'+id+'>';
-        body +=   '<center>';
-        body += 'Вы будете набирать очки в ' + value + ' раза быстрее!';//Набирайте очки быстрее с помощью ускорителя
-        body += '<br>';
-        // body +=     '<h2 class="white text-center"> Ускоритель '+value+' </h2>';
-        body +=   '<img class="acceleratorImage" width="100%" src="/img/accelerator'+value+'.png" style="background-color:'+colour+'">';
-        body +=   '</center>';
-        body += '</div>';
+      // var a = null;
+      // a[222] = null;
 
-        footer = news.buttons.skip()
-      break;
-      case NOTIFICATION_ACCEPT_MONEY:
-        header = 'Бонус!';
-        body = 'Примите ' + info.ammount + 'рублей на счёт!';
+      switch(message.type){
+        case NOTIFICATION_GIVE_MONEY:
+          header = 'Деньги, деньги, деньги!';
+          body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
+          footer = news.buttons.skip('Спасибо!')
+        break;
+        case NOTIFICATION_GIVE_ACCELERATOR:
+          // header = 'Вы будете набирать очки быстрее!';
+          var id = parseInt(info.index);
+          var value = getAcceleratorValue(id);
+          var colour = getAcceleratorColour(id);
+          
+          header = 'Вы получаете ускоритель ' + value + '!';
+          // console.log(info, id, value, colour)
+          // function modal_pic(name){
+          body += '<div class="col-md-6 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"'+id+'>';
+          body +=   '<center>';
+          body += 'Вы будете набирать очки в ' + value + ' раза быстрее!';//Набирайте очки быстрее с помощью ускорителя
+          body += '<br>';
+          // body +=     '<h2 class="white text-center"> Ускоритель '+value+' </h2>';
+          body +=   '<img class="acceleratorImage" width="100%" src="/img/accelerator'+value+'.png" style="background-color:'+colour+'">';
+          body +=   '</center>';
+          body += '</div>';
 
-        footer = news.buttons.action(0, messageID, { text:'Спасибо!' })
-      break;
-      default:
-        header = message.text;
-        body = info.body;
-        footer = news.CTA();
-      break;
+          footer = news.buttons.skip('Спасибо!')
+        break;
+        case NOTIFICATION_ACCEPT_MONEY:
+          header = 'Бонус!';
+          body = 'Примите ' + info.ammount + 'рублей на счёт!';
+
+          footer = news.buttons.action(0, messageID, { text:'Спасибо!' })
+        break;
+        case NOTIFICATION_MARATHON_PRIZE:
+          header = 'Победа в марафоне!'
+          body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
+
+          footer = news.buttons.skip('Урра!')
+        break;
+
+        default:
+          header = message.text;
+          body = info.body;
+          footer = news.CTA();
+        break;
+      }
+
+      news.title(header)
+      news.body(body);
+      news.footer(footer);
+
+      news.show();
+
+      mark('message/shown', { id : messageID })
     }
-
-    news.title(header)
-    news.body(body);
-    news.footer(footer);
-
-    news.show();
-
-    mark('message/shown', { id : messageID })
+  } catch(err){
+    sendError(err, 'drawNewsModal');
   }
 }
 
@@ -505,8 +544,9 @@ var news = {
   }
   ,empty: function() { return ''; }
   ,buttons : {
-    skip: function() {
-      return '<a class="btn btn-primary" onclick="news.hide();"> Продолжить</a>';
+    skip: function(text) {
+      if (!text) text = 'Продолжить';
+      return '<a class="btn btn-primary" onclick="news.hide();">' + text + '</a>';
     },
     action: function(code, messageID, style){
       // style.text
