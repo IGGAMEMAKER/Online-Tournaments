@@ -9,7 +9,7 @@ mixin drawAux(action)
 				span    !{action.auxillaries.tournamentID}
 			default 
 				if action.type=='clientside' && action.auxillaries && action.auxillaries.type=='message/shown'
-					a(href="get_message?id="+action.auxillaries.id target="_blank")   Message
+					a(href="get_message?id="+action.auxillaries.id target="_blank")  shown Message
 				else
 					span (!{JSON.stringify(action.auxillaries)})
 
