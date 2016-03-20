@@ -507,8 +507,12 @@ function drawNewsModal(data){
           footer = news.buttons.skip('Урра!')
         break;
         case NOTIFICATION_FORCE_PLAYING:
-          header = 'Настало время играть!'
-          body = '<script>alert("Поиграй со мной")</script>'
+          // header = 'Настало время играть!'
+          // body = '<script>alert("Поиграй со мной")</script>'
+
+          // header = 'Настало время играть!'
+          body = 'Настало время играть!'
+
 
           footer = fast_register_button();
         break;

@@ -46,6 +46,8 @@ mixin registeredIn(tournaments)
 					td!= t.tournamentID
 	//each t in tournaments
 		p!=t
+mixin drawMessages(login)
+	a(href="/messages?login="+login) All messages
 
 html
 	head
@@ -78,6 +80,7 @@ html
 			a(href="/")
 				h3 Active tournaments
 			+registeredIn(msg.tournaments)
+			+drawMessages(msg.login)
 			h3 Recent actions
 			+drawActions(msg.actions)
 			//+drawUsers(msg)

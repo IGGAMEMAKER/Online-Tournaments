@@ -20,8 +20,8 @@ block content
 		//p #{item.status}
 
 mixin drawStatus(item)
-	case(item.status)
-		when 1:
+	case item.status
+		when '1'
 			p Прочитано
-		default:
+		default
 			p Не прочитано
