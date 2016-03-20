@@ -72,7 +72,9 @@ passport.use(new VKontakteStrategy({
 
       if (!body) {
         Errors.add(null, 'passport.use.body.null', { err:err });
-        return done(12, null);
+        // done(null, {})
+        // return done(12, null);
+        done(null, {})
       }
 
       return done(null, body);
@@ -818,6 +820,38 @@ app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAccelerato
   }
 })
 
+app.get('/notifications/send', middlewares.isAdmin, aux.answer('admin/SendMessage'))
+
+app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
+  var data = req.body;
+  var target = data.target;
+  var notificationType = data.type;
+
+  var header = data.header;
+  var imageUrl = data.imageUrl;
+  var text = data.text;
+
+  //var targetType = typeof(target);
+  
+  if (!target){
+    return next(null);
+  }
+  var obj = {
+    imageUrl: imageUrl,
+    text: text,
+    header : header
+  };
+  console.log(obj, target);
+
+  aux.alert(target, notificationType||6, obj)
+  .then(function (result){
+    req.data = result;
+    next();
+  })
+  .catch(next)
+
+}, aux.json, aux.err)
+
 app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next){
   var login = req.params.login;
   console.log('requestPlaying', login);
@@ -1154,6 +1188,8 @@ app.get('/messages', middlewares.isAdmin, function (req, res, next){
   })
   .catch(next)
 }, aux.answer('Notifications'), aux.err)
+
+
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
   // var login = req.params.login;

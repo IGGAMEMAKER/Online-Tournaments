@@ -446,6 +446,7 @@ const NOTIFICATION_GIVE_MONEY = 2 // give user money
 const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
 const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
 const NOTIFICATION_FORCE_PLAYING = 5 // force playing
+const NOTIFICATION_CUSTOM = 6
 
 function drawNewsModal(data){
   try{
@@ -515,6 +516,15 @@ function drawNewsModal(data){
 
 
           footer = fast_register_button();
+        break;
+        case NOTIFICATION_CUSTOM:
+          header = info.header;
+          body = info.text;
+          if (info.imageUrl){
+            body += modal_pic(info.imageUrl)
+          }
+
+          footer = news.buttons.skip('Хорошо');
         break;
         default:
           header = message.text;

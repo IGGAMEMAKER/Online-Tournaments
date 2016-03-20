@@ -26,6 +26,10 @@ module.exports = {
 	
 	,NOTIFICATION_MARATHON_PRIZE:4 // give user money
 	,NOTIFICATION_FORCE_PLAYING:5 // force playing
+	,NOTIFICATION_CUSTOM:6 // custom message. needs fields
+	,NOTIFICATION_UPDATE:7 // update page
+	,NOTIFICATION_FIRST_MESSAGE:8
+	,NOTIFICATION_MARATHON_CURRENT:9
 
 	// ,MESSAGE_TYPE_
 }

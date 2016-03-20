@@ -94,7 +94,7 @@ module.exports = {
 	// send message and page
 	,answer : function (page){
 		return function (req, res){
-			res.render(page, { msg: req.data });
+			res.render(page, { msg: req.data||null });
 		}
 	}
 	,error: function (page, message, tag, code){
