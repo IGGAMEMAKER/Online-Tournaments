@@ -1135,6 +1135,16 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err)
 
+app.get('/get_message', middlewares.isAdmin, function (req, res, next){
+  var id = req.query.id;
+  Message.notifications.getByID(id)
+  .then(function (notification){
+    req.data = notification;
+    next();
+  })
+  .catch(next)
+}, aux.json, aux.err)
+
 app.get('/messages', middlewares.isAdmin, function (req, res, next){
   var login = req.query.login;
   Message.notifications.all(login)

@@ -108,6 +108,9 @@ var notifications = {
 	,markAll: function(login){
 		return update('Message', { target:login, status: { $exists: false } }, { status : c.MESSAGE_READ }, {multi: true})
 	}
+	,getByID: function(id){
+		return findOne('Message', { "_id": id })
+	}
 
 
 }
