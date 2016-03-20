@@ -12,8 +12,16 @@ block content
 	td!= ind
 
 	td
-		a(href="get_message?id="item.id target="_blank") #{item}
+		a(href="get_message?id="+item.id target="_blank") #{item}
 	td
 		p!= time
 	td
-		p #{item.status}
+		+drawStatus(item)
+		//p #{item.status}
+
+mixin drawStatus(item)
+	case(item.status)
+		when 1:
+			p Прочитано
+		default:
+			p Не прочитано

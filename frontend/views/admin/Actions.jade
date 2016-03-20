@@ -8,7 +8,10 @@ mixin drawAux(action)
 			when 'tournament.leave'
 				span    !{action.auxillaries.tournamentID}
 			default 
-				span (!{JSON.stringify(action.auxillaries)})
+				if action.type=='clientside' && action.auxillaries && action.auxillaries.type=='message/shown'
+					a(href="get_message?id="+action.auxillaries.id target="_blank")   Message
+				else
+					span (!{JSON.stringify(action.auxillaries)})
 
 mixin drawActions(actions)
 		table(class="table table-bordered table-striped" style="width:70%;")
