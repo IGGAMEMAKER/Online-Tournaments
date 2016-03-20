@@ -6,6 +6,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var Stats = require('../../models/statistics');
 	var TournamentRegs = require('../../models/tregs')
 	var Users = require('../../models/users')
+	var Messages = require('../../models/message')
 	var time = require('../../helpers/time');
 
 	var aux = require('../../models/auxillary')
@@ -101,8 +102,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 			obj.options = options;
 		}
 		aux.clientside(login, obj)
-
-		aux.notifications.read(id, login);
+		// console.log(id, login,'read')
+		Messages.notifications.read(id, login);
 	})
 
 	app.post('/mark/clientError', middlewares.authenticated, function (req, res){

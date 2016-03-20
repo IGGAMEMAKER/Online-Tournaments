@@ -744,7 +744,7 @@ function give_marathon_points_to_user(login, MarathonID){
 
 	Marathon.find_or_create_user(login, MarathonID)
 	.then(function (user){
-		console.error('user found or created', user);
+		// console.error('user found or created', user);
 		return Marathon.increase_points(login, MarathonID);
 	})
 	.then(function (result){

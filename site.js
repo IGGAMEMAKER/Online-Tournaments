@@ -1200,9 +1200,9 @@ app.get('/notifications/news', middlewares.authenticated, function (req, res, ne
   .then(function (news){
     req.data = news;
 
-    Message.notifications.markAll(login)
-    // .then(console.log)
-    .catch(function(){})
+    // Message.notifications.markAll(login)
+    // // .then(console.log)
+    // .catch(function(){})
 
     next()
   })
@@ -1224,6 +1224,11 @@ app.get('/notifications/all', middlewares.authenticated, function (req, res, nex
   })
   .catch(next)
 }, aux.json, aux.err)
+
+// app.post('/message/read/:id', middlewares.authenticated, function (req, res, next){
+//   var id = req.params.id;
+//   var login 
+// })
 
 // Message.notifications
 

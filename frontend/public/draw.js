@@ -453,6 +453,7 @@ var c = {
   ,NOTIFICATION_FIRST_MESSAGE:8
   ,NOTIFICATION_MARATHON_CURRENT:9
   ,NOTIFICATION_AUTOREG:10
+  ,NOTIFICATION_JOIN_VK:11
 }
 console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
 
@@ -470,10 +471,13 @@ console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
 
 function drawNewsModal(data){
   try{
+    if (news.isActive) return;
+
     var messages = data.msg;
       // alert('News!!');
       // console.log(messages);
-    if (messages.length>0){
+    var count = messages.length;
+    if (count>0){
       /*for (var i = messages.length - 1; i >= 0; i--) {
         messages[i]
       };*/
@@ -493,7 +497,7 @@ function drawNewsModal(data){
         case c.NOTIFICATION_GIVE_MONEY:
           header = 'Деньги, деньги, деньги!';
           body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
-          footer = news.buttons.skip('Спасибо!')
+          footer = news.buttons.skip('Спасибо!', messageID)
         break;
         case c.NOTIFICATION_GIVE_ACCELERATOR:
           // header = 'Вы будете набирать очки быстрее!';
@@ -513,7 +517,7 @@ function drawNewsModal(data){
           body +=   '</center>';
           body += '</div>';
 
-          footer = news.buttons.skip('Спасибо!')
+          footer = news.buttons.skip('Спасибо!', messageID)
         break;
         case c.NOTIFICATION_ACCEPT_MONEY:
           header = 'Бонус!';
@@ -525,7 +529,7 @@ function drawNewsModal(data){
           header = 'Победа в марафоне!'
           body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
 
-          footer = news.buttons.skip('Урра!')
+          footer = news.buttons.skip('Урра!', messageID)
         break;
         case c.NOTIFICATION_FORCE_PLAYING:
           // header = 'Настало время играть!'
@@ -544,7 +548,7 @@ function drawNewsModal(data){
             body += modal_pic(info.imageUrl)
           }
 
-          footer = news.buttons.skip('Хорошо');
+          footer = news.buttons.skip('Хорошо', messageID);
         break;
 
         case c.NOTIFICATION_AUTOREG:
@@ -553,7 +557,9 @@ function drawNewsModal(data){
             getProfile();
           }, 1000);
         break;
+        case c.NOTIFICATION_JOIN_VK:
 
+        break;
         default:
           // header = message.text;
           // body = info.body;
@@ -564,11 +570,12 @@ function drawNewsModal(data){
         mark('message/shown', { id : messageID , option:'default'})
         return
       }
-      news.title(header)
+      news.title(header + ' (' + count+')')
       news.body(body);
       news.footer(footer);
 
       news.show();
+      news.isActive = 1;
 
       mark('message/shown', { id : messageID })
       getProfile();
@@ -581,24 +588,30 @@ function drawNewsModal(data){
 
 var news = {
   title :   function (msg) { $("#newsTitle").html(msg); }
+  ,isActive : 0
   ,body  :  function (msg) { $("#newsBody").html(msg); }
   ,footer:  function (msg) { $("#newsFooter").html(msg); }
 
   ,show:    function () { $("#newsModal").modal('show'); }
-  ,hide:    function () { $("#newsModal").modal('hide'); }
+  ,hide:    function () { $("#newsModal").modal('hide'); news.isActive = 0;}
   ,CTA: function (ammount, buyType) {
     var onclick = "autoreg()";
     // $("#depositLink1").attr("href", "Payment/"+login+"/"+needToPay+"')")
     return '<a class="btn btn-primary" onclick="'+onclick+'"> Продолжить играть </a>';
-  },
-  answer: function(code, messageID){
+  }
+  ,markRead: function (messageID){
+    news.hide();
+    checkNews();
+    // mark('/message/read/'+messageID);
+  }
+  ,answer: function(code, messageID){
     mark('message/action/' + code + '/' + messageID);
   }
   ,empty: function() { return ''; }
   ,buttons : {
-    skip: function(text) {
+    skip: function(text, messageID) {
       if (!text) text = 'Продолжить';
-      return '<a class="btn btn-primary" onclick="news.hide();">' + text + '</a>';
+      return '<a class="btn btn-primary" onclick="news.markRead(\''+messageID+'\'); ">' + text + '</a>';
     },
     action: function(code, messageID, style){
       // style.text
