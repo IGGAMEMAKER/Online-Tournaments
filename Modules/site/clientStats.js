@@ -94,8 +94,15 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		
 		var login = getLogin(req);
 		var id = req.body.id;
+		var options = req.body.options;
 		// console.log('show', login, id)
-		aux.clientside(login, { type: 'message/shown', id:id})
+		var obj	= { type: 'message/shown', id:id };
+		if (options){
+			obj.options = options;
+		}
+		aux.clientside(login, obj)
+
+		aux.notifications.read(id, login);
 	})
 
 	app.post('/mark/clientError', middlewares.authenticated, function (req, res){

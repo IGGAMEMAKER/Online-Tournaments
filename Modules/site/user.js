@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, Fail){
+module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux){
 	var validator = require('validator');
 	var security = require('../DB/security');
 
@@ -15,6 +15,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	var middlewares = require('../../middlewares');
 	var authenticated = middlewares.authenticated;
+
+	var c = require('../../constants')
 
 	var Fail = {
 		result: 'fail'
@@ -75,7 +77,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		// console.log('trying to register', login, email, password, inviter);
 
 		Users.create(login, password, email, inviter)
-		.then(function(user){
+		.then(autoregNewbieOrLongPassed(login))
+		.then(function (user){
 			//console.log('registered', user);
 			saveSession(req, res, 'register');
 			mail.sendActivationEmail(user);
@@ -102,6 +105,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Actions.add(login, 'login');
 
 		Users.auth(login, password)//, req.user.email, req.user.inviter
+		.then(autoregNewbieOrLongPassed(login))
 		.then(function (user){
 			// console.log('logged In', user);
 			req.user = user;
@@ -159,6 +163,29 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	// 	})
 	// })
 
+	// aux.alert('Raja', c.NOTIFICATION_AUTOREG, { })
+	// .then(function (result) { 
+	// 	console.log(result);
+	// })
+	// .catch(function (err) { 
+	// 	console.error(err);
+	// })
+
+	function autoregNewbieOrLongPassed(login){
+		return function (user){
+			// Users.grantMoney(login); //increase money if has no money
+			return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
+			.then(function (result) { 
+				// console.log(result);
+				return user;
+			})
+			.catch(function (err) { 
+				// console.error(err);
+				return user;
+			})
+		}
+	}
+
 	app.get('/linker/:login/:link', function (req, res){
 		var login = req.params.login;
 		var link = req.params.link;
@@ -167,14 +194,25 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Actions.add(login, 'linker');
 		// Users.auth(login, password)//, req.user.email, req.user.inviter
 		Users.auth_by_link(login, link)
+		.then(autoregNewbieOrLongPassed(login))
+		// 	function (user){
+		// 	// Users.grantMoney(login); //increase money if has no money
+		// 	return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
+		// 	.then(function (result) { 
+		// 		console.log(result);
+		// 		return user;
+		// 	})
+		// 	.catch(function (err) { 
+		// 		console.error(err);
+		// 		return user;
+		// 	})
+		// }
 		.then(function (user){
 			// console.log('logged In', user);
 			req.user= user;
 
-			// Users.grantMoney(login); //increase money if has no money
 
 			saveSession(req, res, 'Login');
-
 
 			// Actions.add(login, 'login');
 		})

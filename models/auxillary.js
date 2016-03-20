@@ -68,6 +68,7 @@ module.exports = {
 		return Message.notifications.personal(login, type, data)
 		.then(function (result){
 			io.forceTakingNews(login);
+			return result;
 		})
 	}
 

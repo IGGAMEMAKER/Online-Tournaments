@@ -441,12 +441,32 @@ var PAYMENT_TOURNAMENT = 0;
 var PAYMENT_ACCELERATOR = 1;
 var PAYMENT_FULLFILL = 2;
 
-const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
-const NOTIFICATION_GIVE_MONEY = 2 // give user money
-const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
-const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
-const NOTIFICATION_FORCE_PLAYING = 5 // force playing
-const NOTIFICATION_CUSTOM = 6
+var c = {
+  NOTIFICATION_GIVE_ACCELERATOR:1 // give to user an accelerator
+  ,NOTIFICATION_GIVE_MONEY:2 // give user money
+  ,NOTIFICATION_ACCEPT_MONEY:3 // give money to a user if he clicks on button
+  
+  ,NOTIFICATION_MARATHON_PRIZE:4 // give user money
+  ,NOTIFICATION_FORCE_PLAYING:5 // force playing
+  ,NOTIFICATION_CUSTOM:6 // custom message. needs fields
+  ,NOTIFICATION_UPDATE:7 // update page
+  ,NOTIFICATION_FIRST_MESSAGE:8
+  ,NOTIFICATION_MARATHON_CURRENT:9
+  ,NOTIFICATION_AUTOREG:10
+}
+console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
+
+// const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
+// const NOTIFICATION_GIVE_MONEY = 2 // give user money
+// const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
+// const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
+// const NOTIFICATION_FORCE_PLAYING = 5 // force playing
+// const NOTIFICATION_CUSTOM = 6
+
+// const NOTIFICATION_UPDATE:7 // update page
+// const NOTIFICATION_FIRST_MESSAGE:8
+// const NOTIFICATION_MARATHON_CURRENT:9
+// const NOTIFICATION_AUTOREG:10
 
 function drawNewsModal(data){
   try{
@@ -470,12 +490,12 @@ function drawNewsModal(data){
       // a[222] = null;
 
       switch(message.type){
-        case NOTIFICATION_GIVE_MONEY:
+        case c.NOTIFICATION_GIVE_MONEY:
           header = 'Деньги, деньги, деньги!';
           body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
           footer = news.buttons.skip('Спасибо!')
         break;
-        case NOTIFICATION_GIVE_ACCELERATOR:
+        case c.NOTIFICATION_GIVE_ACCELERATOR:
           // header = 'Вы будете набирать очки быстрее!';
           var id = parseInt(info.index);
           var value = getAcceleratorValue(id);
@@ -495,19 +515,19 @@ function drawNewsModal(data){
 
           footer = news.buttons.skip('Спасибо!')
         break;
-        case NOTIFICATION_ACCEPT_MONEY:
+        case c.NOTIFICATION_ACCEPT_MONEY:
           header = 'Бонус!';
           body = 'Примите ' + info.ammount + 'рублей на счёт!';
 
           footer = news.buttons.action(0, messageID, { text:'Спасибо!' })
         break;
-        case NOTIFICATION_MARATHON_PRIZE:
+        case c.NOTIFICATION_MARATHON_PRIZE:
           header = 'Победа в марафоне!'
           body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
 
           footer = news.buttons.skip('Урра!')
         break;
-        case NOTIFICATION_FORCE_PLAYING:
+        case c.NOTIFICATION_FORCE_PLAYING:
           // header = 'Настало время играть!'
           // body = '<script>alert("Поиграй со мной")</script>'
 
@@ -517,7 +537,7 @@ function drawNewsModal(data){
 
           footer = fast_register_button();
         break;
-        case NOTIFICATION_CUSTOM:
+        case c.NOTIFICATION_CUSTOM:
           header = info.header;
           body = info.text;
           if (info.imageUrl){
@@ -526,13 +546,24 @@ function drawNewsModal(data){
 
           footer = news.buttons.skip('Хорошо');
         break;
+
+        case c.NOTIFICATION_AUTOREG:
+          autoreg();
+          setTimeout(function (){
+            getProfile();
+          }, 1000);
+        break;
+
         default:
-          header = message.text;
-          body = info.body;
-          footer = news.CTA();
+          // header = message.text;
+          // body = info.body;
+          // footer = news.CTA();
         break;
       }
-
+      if (!header && !body && !footer){
+        mark('message/shown', { id : messageID , option:'default'})
+        return
+      }
       news.title(header)
       news.body(body);
       news.footer(footer);

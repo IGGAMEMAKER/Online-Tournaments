@@ -186,7 +186,7 @@ var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Lo
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy);
 
-var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
+var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
 
@@ -832,7 +832,7 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
   var text = data.text;
 
   //var targetType = typeof(target);
-  
+
   if (!target){
     return next(null);
   }
