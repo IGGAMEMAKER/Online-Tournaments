@@ -348,11 +348,16 @@ app.get('/about', function (req, res){
 
 app.post('/FinishGame', FinishGame);
 
-app.get('/realmadrid', Landing('realmadrid'));
 
-function Landing(name){
+app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
+app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
+
+function Landing(name, picture){
   return function(req, res){
-    res.render('landing/'+name);
+    var obj = { landing:name }
+    if (picture) obj.picture = picture;
+
+    res.render('landing/'+name, obj);
   }
 }
 
