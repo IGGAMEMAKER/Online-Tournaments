@@ -196,7 +196,7 @@ function movement_stats(login, gameID){
 
 	if (!games[gameID].movements[login]){
 		games[gameID].movements[login] = 1;
-		sendStatistic('movement');
+		sendStatistic('movement', { login:login });
 	}
 }
 
@@ -271,7 +271,9 @@ function RenderGame (req, res){
 	var login = req.body.login;
 	/*Log(req.query);
 	Log(req.body);*/
-	console.log(req.query.tournamentID);
+
+	// console.log(req.query.tournamentID);
+
 	if ( isNaN(tID)){// || !games[tID] 
 		res.status(404);
 		res.type('txt').send('Игра не найдена');
@@ -285,10 +287,12 @@ function RenderGame (req, res){
 				parameters: getParameters?getParameters(tID, login) : ''
 			});
 
-			sendStatistic('sended');
+			sendStatistic('sended', { login:login, tournamentID:tID });
 		} else {
 			res.status(404);
 			res.type('txt').send('Турнир #'+ tID + ' завершён или не был начат. ');
+
+			sendStatistic('sendedFail', { login:login, tournamentID:tID });
 		}
 	}
 
@@ -595,9 +599,11 @@ function stopGame(ID){
 	strLog('FIX IT!!! GAMEID=tournamentID','shitCode');
 }
 
-function sendStatistic(url){
+function sendStatistic(url, data){
 	// console.error(url);
-	sender.sendRequest('mark/game/'+url, {} , '127.0.0.1', 'site', null , sender.printer);
+	var txt = 'gamestats/'+url;
+	// if (login) txt+= '?login=' + login;
+	sender.sendRequest(txt, data || {} , '127.0.0.1', 'site', null , sender.printer);
 }
 
 function ManualFinishGame(tournamentID, gameResult){

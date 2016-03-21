@@ -111,7 +111,7 @@ function showWinnerModal(msg){
     //message += JSON.stringify(winner);
 
     if (winners[i].login==login){
-      if (prizes[0]<2){
+      if (prizes[0] < 2){
         eventType = EVENT_TYPE_WIN_RATING;
       } else {
         eventType = EVENT_TYPE_WIN_MONEY;
@@ -456,18 +456,6 @@ var c = {
   ,NOTIFICATION_JOIN_VK:11
 }
 console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
-
-// const NOTIFICATION_GIVE_ACCELERATOR = 1 // give to user an accelerator
-// const NOTIFICATION_GIVE_MONEY = 2 // give user money
-// const NOTIFICATION_ACCEPT_MONEY = 3 // give money to a user if he clicks on button
-// const NOTIFICATION_MARATHON_PRIZE = 4 // give money to a user if he clicks on button
-// const NOTIFICATION_FORCE_PLAYING = 5 // force playing
-// const NOTIFICATION_CUSTOM = 6
-
-// const NOTIFICATION_UPDATE:7 // update page
-// const NOTIFICATION_FIRST_MESSAGE:8
-// const NOTIFICATION_MARATHON_CURRENT:9
-// const NOTIFICATION_AUTOREG:10
 
 function drawNewsModal(data){
   try{

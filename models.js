@@ -7,9 +7,16 @@ module.exports = function(dbAddress){
 	return {
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 
-			salt:String, cryptVersion:Number, social:Object, inviter:Object 
-		}) ,
-
+			salt:String, cryptVersion:Number, social:Object, inviter:Object,
+			info: Object
+		}),
+		Inviter : db.model('Inviter', {
+			type: Number,
+			landingPicture: String, //url to picture for landing page
+			landingUrl: String,  // if VKgroup - groupUrl
+			url: String,
+			topics: Object			
+		}),
 		Game : db.model('Game', { 
 			gameName: String, gameNameID: Number,
 			minPlayersPerGame: Number, maxPlayersPerGame:Number,

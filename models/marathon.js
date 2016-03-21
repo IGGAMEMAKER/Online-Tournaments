@@ -5,7 +5,8 @@ var models = require('../models')(configs.db);
 
 
 var helper = require('../helpers/helper');
-var log = console.log;
+// var log = console.log;
+var log = function(){};
 
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
@@ -464,7 +465,7 @@ function try_to_increase_points(login, MarathonID){
 	return get_accelerator_of(login, MarathonID)
 	.then(function (user){
 		if (user){
-			console.log('try_to_increase_points of ', user);
+			// console.log('try_to_increase_points of ', user);
 			return increase_points(user.login, user.MarathonID, user.accelerator.value||ACCELERATOR_STANDARD);
 		}
 		return null;

@@ -4,19 +4,6 @@ var configs = require('../configs');
 var models = require('../models')(configs.db);
 var User = models.User;
 
-var validator = require('validator');
-
-var security = require('../Modules/DB/security');
-const CURRENT_CRYPT_VERSION = 2;
-
-var USER_EXISTS = 11000;
-var UNKNOWN_ERROR=500;
-
-var Fail = { result: 'fail' };
-var OK = { result: 'OK' };
-
-var money_koef = 100;
-
 var Message = models.Message;
 
 var c = require('../constants');
@@ -24,11 +11,6 @@ var c = require('../constants');
 var helpers = require('../helpers/helper')
 
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
-// function add(){
-// 	return new Promise(function (resolve, reject){
-// 		Message.find()
-// 	})
-// }
 
 function search(modelName, find, parameters){
 	return new Promise(function (resolve, reject){
@@ -112,13 +94,10 @@ var notifications = {
 		return findOne('Message', { "_id": id })
 	}
 
-
 }
 
 
-function find_all_by_target_login(login){}
-
-
+//----------------------Tests-----------------------------
 // all()
 // notifications.all('Raja')
 
@@ -128,133 +107,10 @@ function find_all_by_target_login(login){}
 // .then(console.log)
 // .catch(console.error)
 
-function profile(login){
-	return new Promise(function(resolve,reject){
-		User.findOne({login:login}, 'login money email social', function (err, user) {
-			if (err) return reject(err);
-			
-			if (!user) return resolve(null);
-			return resolve(user);			
-		});
-	})
-}
-
-function find_or_reject(login, parameters){
-	return new Promise(function (resolve, reject){
-		User.findOne({login:login}, parameters||'', function(err, user){
-			if (err) return reject(err);
-
-			if (!user) return reject(null);
-			return resolve(user);
-		})
-	})
-}
-
-function create(login, password, email, inviter){
-	return new Promise(function (resolve, reject){
-		if ( invalid_email(email) || invalid_pass(password) ) return reject(INVALID_DATA);//|| invalid_login(login)
-
-		var USER = get_new_user(login, password, email);
-
-		if (inviter && validator.isAlphanumeric(inviter)) USER.inviter= inviter;
-
-		var user = new User(USER);
-		user.save(function (err) {
-			if (err){
-				if (err.code==USER_EXISTS) {
-					log('USER_EXISTS : ' + login);
-					return reject(USER_EXISTS);
-				}
-				return reject(UNKNOWN_ERROR);
-			}
-
-			log('added User ' + login+'/' + email);
-			return resolve(USER);
-		})
-
-	});
-}
-
-function groupByEmails(){
-	return new Promise(function (resolve, reject){
-		User.aggregate([
-		// { $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
-		{
-			$group: {
-				_id: "$email",
-				count: { $sum: 1 }
-			}
-		},
-		{
-			$sort: {count:-1}
-		}
-		], function (err, users){
-			if (err) return reject(err);
-			//	console.log(users);
-			return resolve(users||[]);
-		})
-	})
-}
-
-function moneyTop(moneyMoreThan){
-	return new Promise(function (resolve, reject){
-		User.find({ money : {$gt: moneyMoreThan } })
-		.sort('-money')
-		.exec(function (err, users){
-			if (err) return reject(err);
-
-			return resolve(users||[]);
-		})
-
-	})
-}
-
-//----------------------Tests-----------------------------
-
 
 // -----------------------AUXILARY FUNCTIONS--------------------------
 
 function now(){ return new Date(); }
-
-function HASH(password){
-	//return password;
-	return security.Hash(password, CURRENT_CRYPT_VERSION);
-}
-
-function password_needs_update(cryptVersion){ return cryptVersion!=CURRENT_CRYPT_VERSION; }
-
-
-
-
-function passwordCorrect(user, enteredPassword) { return security.passwordCorrect(user, enteredPassword); }
-
-function updated(count){
-	//console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
-	return count.n>0;
-}
-
-function invalid_email(email){ return !validator.isEmail(email); }
-function invalid_login(login){ return !validator.isAlphanumeric(login); }
-function invalid_pass(pass)  { return !validator.isAlphanumeric(pass);}
-
-
-function get_new_user(login, password, email){
-	return {
-		login:login, 
-		password: HASH(password, CURRENT_CRYPT_VERSION), 
-		money:0, 
-		email:email, 
-		date: now(), 
-		activate:0, 
-		bonus:{},
-
-		cryptVersion:CURRENT_CRYPT_VERSION,
-		salt:''
-		//link:createActivationLink(login) 
-	};
-}
-
-
 
 function log(msg){ console.log(msg); }
 

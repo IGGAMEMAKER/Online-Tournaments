@@ -563,6 +563,9 @@ function get_new_user(login, password, email){
 		date: now(), 
 		activate:0, 
 		bonus:{},
+		info:{
+			status: c.USER_STATUS_NEWBIE
+		},
 
 		cryptVersion:CURRENT_CRYPT_VERSION,
 		salt:''

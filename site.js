@@ -188,7 +188,7 @@ var money =       require('./Modules/site/money')       (app, AsyncRender, Answe
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
-var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin);
+var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux);
 
 
 var TournamentReg = require('./models/tregs');
@@ -369,18 +369,95 @@ function FinishGame(req, res){
   Log(data, 'Tournaments');
   
   console.log('FinishGame', data);
+
   var winners = data.scores//sort.winners(data.scores);
   var winnerCount = data.places[1] || null;
   var prizes = data.prizes || null;
 
-  Send('FinishTournament', { 
+  var obj = { 
     tournamentID : data.tournamentID,
     winners:winners,
     count:winnerCount,
     prizes:prizes 
-  });
+  }
+
+  Send('FinishTournament', obj);
+  
+  console.log(obj);
+
+  var is_money_tournament = (prizes[0] >= 2);
+  if (is_money_tournament){
+    //show win or lose message
+    for (var i = 0; i < winners.length; i++) {
+      var winner = winners[i];
+      var login = winner.login;
+
+      if (i<winnerCount){
+        //send winning message
+        aux.alert(login, c.NOTIFICATION_WIN_MONEY, { ammount:prizes[i] })
+      } else {
+        //send lose message
+        aux.alert(login, c.NOTIFICATION_LOSE_TOURNAMENT, {})
+      }
+
+    }
+  } else {
+    //send custom messages
+    Marathon.get_current_marathon()
+    .then(function (marathon){
+      var mainPrize = marathon.prizes[0];
+
+
+    })
+    sendAfterGameNotification(winners[i].login, winners, prizes, winnerCount);
+  }
 }
 
+function sendAfterGameNotification(login, mainPrize){
+  Users.find_or_reject(login)
+  .then(function (profile){
+    var profileInfo = profile.info;
+    
+    var notificationCode='';
+
+    if (!profileInfo) {
+      // notificationCode 
+    } else {
+      // what we can send?
+      // win
+      // lose
+
+      // advise (if newbie)
+      // rating +
+
+      // check
+      // was it money tournament?
+      // did he win money?
+      // is
+      var is_newbie = profileInfo.status;
+      if (is_money_tournament){
+        //show win or lose message
+      }
+
+      // for (var i = 0; i < winners.length && i<winnerCount; i++) {
+      //   var winner = winners[i];
+      //   //message += JSON.stringify(winner);
+
+      //   if (winners[i].login==login){
+      //     if (prizes[0] < 2){
+      //       eventType = EVENT_TYPE_WIN_RATING;
+      //     } else {
+      //       eventType = EVENT_TYPE_WIN_MONEY;
+      //     }
+
+      //     break;
+      //   }
+      // };
+
+    }
+
+  })
+}
 
 app.all('/StartTournament', function (req, res){
   console.log('Site starts tournament');
@@ -693,20 +770,22 @@ app.get('/MarathonInfo', isAdmin, function (req, res){
 })
 
 app.get('/Leaderboard', function (req, res){
-  // Marathon.leaderboard()
-  // .then(function (leaderboard){
-  //   var ldbd = {
-  //     leaderboard:leaderboard,
-  //     counts: leaderboard.counts,
-  //     prizes: leaderboard.prizes
-  //   }
-  //   res.render('Leaderboard', { msg: ldbd });
-  // })
-  // .catch(function (err){
-  //   Errors.add('Leaderboard', {err:err})
+/*
+  Marathon.leaderboard()
+  .then(function (leaderboard){
+    var ldbd = {
+      leaderboard:leaderboard,
+      counts: leaderboard.counts,
+      prizes: leaderboard.prizes
+    }
+    res.render('Leaderboard', { msg: ldbd });
+  })
+  .catch(function (err){
+    Errors.add('Leaderboard', {err:err})
     
-  //   res.render('Leaderboard', { msg: Leaderboard });
-  // })
+    res.render('Leaderboard', { msg: Leaderboard });
+  })
+*/
   res.render('Leaderboard', { msg: Leaderboard });
 
 });
@@ -742,9 +821,7 @@ app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
 
 })
 
-app.get('/ModalTest', function (req, res) { 
-  res.render('ModalTest');
-})
+app.get('/ModalTest', aux.answer('ModalTest'))
 
 app.post('/Marathon/new', isAdmin, function (req, res){
   var data = req.body;
@@ -836,12 +913,13 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
   if (!target){
     return next(null);
   }
+
   var obj = {
     imageUrl: imageUrl,
     text: text,
     header : header
   };
-  console.log(obj, target);
+  // console.log(obj, target);
 
   aux.alert(target, notificationType||6, obj)
   .then(function (result){
@@ -877,9 +955,7 @@ app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
     .then(function (result){
       res.json({msg: 'grant', result:result})
 
-      aux.alert(login, c.NOTIFICATION_GIVE_ACCELERATOR, {
-        index:accelerator
-      })
+      aux.alert(login, c.NOTIFICATION_GIVE_ACCELERATOR, { index:accelerator })
       .catch(aux.catcher)
 
       // Message.notifications.personal(login, 'Лови бонус!', {
@@ -1193,7 +1269,7 @@ app.get('/messages', middlewares.isAdmin, function (req, res, next){
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
   // var login = req.params.login;
-  console.log('news');
+  // console.log('news');
   var login = getLogin(req);
 
   Message.notifications.news(login)

@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin){
+module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux){
 	var Fail = { result:'fail' };
 	var OK = { result:'OK' };
 	var Promise = require('bluebird');
@@ -9,7 +9,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 	var Messages = require('../../models/message')
 	var time = require('../../helpers/time');
 
-	var aux = require('../../models/auxillary')
+	// var aux = require('../../models/auxillary')
 
 	var strLog = Log;
 
@@ -50,7 +50,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		console.log('Stats CATCHED HERE', 'GameLoaded : ' + login + ' ' + tournamentID);
 		Stats.attempt('gameLoaded');
 
-		// aux.
+		
 	})
 
 	app.post('/NoMoney', function (req, res){
@@ -75,16 +75,49 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		strLog('TRIED TO PAY! ' + login + ' ' + ammount, 'Money');
 	})
 
-	app.post('/mark/game/:name', function (req, res){
+	app.post('/gamestats/:name', function (req, res){
+		res.end('');
+
+		var name = req.params.name;
+		var data = req.body;
+		var login = data.login;
+		// var tournamentID = req.body.tournamentID;
+		// var login = req.body.login;
+
+		if (name && data && login){
+			data.type = 'game-'+ name;
+			// var obj	= { type: 'game-'+ name }
+			aux.clientside(login, data)
+		}
+
+		// Stats.attempt('game-'+ name)
+
+
+	})
+
+	app.post('/mark/game/:name', middlewares.authenticated, function (req, res){
 		res.end('MARK GAME RECEIVED');
 
-		// var tournamentID = req.body.tournamentID;
+		var tournamentID = req.body.tournamentID;
 		var name = req.params.name;
+		var login = getLogin(req);
 		// var login = req.body.login||null;
 
 		// console.log('mark/game/', name)//, tournamentID, login);
 
 		Stats.attempt('game-'+ name)
+
+
+		var obj	= { type: 'game-'+ name }
+		aux.clientside(login, obj)
+
+		// aux.done(login, 'game-'+ name)
+		// .then(function (result){
+		// 	console.log(result);
+		// })
+		// .catch(function (err){
+		// 	console.log(err);
+		// })
 
 		// Stats('/mark/game/'+name, {login:login, tournamentID:tournamentID });
 	})

@@ -186,6 +186,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 	}
 
+	
+	// app.get('/userStatus/update', middlewares.isAdmin, aux.answer('updateUserStatus'))
+
 	app.get('/linker/:login/:link', function (req, res){
 		var login = req.params.login;
 		var link = req.params.link;

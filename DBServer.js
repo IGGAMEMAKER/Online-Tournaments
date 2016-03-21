@@ -764,7 +764,7 @@ function give_marathon_points(tregs){
 	.then(function (marathon){
 		if (marathon){
 			var MarathonID = marathon.MarathonID;
-			console.error('got marathon', marathon, tregs.length - 1);
+			// console.error('got marathon', marathon, tregs.length - 1);
 			for (var i = tregs.length - 1; i >= 0; i--) {
 				var login = tregs[i].userID;
 				// console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
