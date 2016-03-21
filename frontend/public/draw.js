@@ -450,16 +450,29 @@ var c = {
   ,NOTIFICATION_FORCE_PLAYING:5 // force playing
   ,NOTIFICATION_CUSTOM:6 // custom message. needs fields
   ,NOTIFICATION_UPDATE:7 // update page
+
   ,NOTIFICATION_FIRST_MESSAGE:8
   ,NOTIFICATION_MARATHON_CURRENT:9
+
   ,NOTIFICATION_AUTOREG:10
   ,NOTIFICATION_JOIN_VK:11
+
+  ,NOTIFICATION_WIN_MONEY:12
+  ,NOTIFICATION_LOSE_TOURNAMENT:13
+
+  ,NOTIFICATION_ADVICE:14
 }
-console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
+
+// console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
+
 
 function drawNewsModal(data){
   try{
-    if (news.isActive) return;
+    // if (news.isActive) return;
+    if ($('#newsModal').hasClass('in')){
+      console.log('news are still showing... hold a little')
+      return;
+    }
 
     var messages = data.msg;
       // alert('News!!');
@@ -545,9 +558,24 @@ function drawNewsModal(data){
             getProfile();
           }, 1000);
         break;
-        case c.NOTIFICATION_JOIN_VK:
+        case c.NOTIFICATION_FIRST_MESSAGE:
+          var mainPrize = info.mainPrize;
+          console.log(mainPrize);
 
+          header = 'Выиграй ценный приз'
+          // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
+          body = 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!';
+          footer = news.CTA();
         break;
+        // case c.NOTIFICATION_FIRST_MESSAGE:
+        //   var mainPrize = info.mainPrize;
+        //   console.log(mainPrize);
+
+        //   header = 'Выиграй ценный приз'
+        //   // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
+        //   body = 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!';
+        //   footer = news.CTA();
+        // break;
         default:
           // header = message.text;
           // body = info.body;
@@ -558,12 +586,15 @@ function drawNewsModal(data){
         mark('message/shown', { id : messageID , option:'default'})
         return
       }
-      news.title(header + ' (' + count+')')
+      var title = header;
+      if (count>1) title += ' (' + count+')';
+
+      news.title(title);
       news.body(body);
       news.footer(footer);
 
       news.show();
-      news.isActive = 1;
+      // news.isActive = 1;
 
       mark('message/shown', { id : messageID })
       getProfile();
@@ -576,16 +607,29 @@ function drawNewsModal(data){
 
 var news = {
   title :   function (msg) { $("#newsTitle").html(msg); }
-  ,isActive : 0
+  // ,isActive : 0
+  // ,isActive : function (){
+  //   return $('#newsModal').hasClass('in');
+  // }
+  ,disable: function (){
+    // news.isActive = 0;
+  }
   ,body  :  function (msg) { $("#newsBody").html(msg); }
   ,footer:  function (msg) { $("#newsFooter").html(msg); }
 
   ,show:    function () { $("#newsModal").modal('show'); }
-  ,hide:    function () { $("#newsModal").modal('hide'); news.isActive = 0;}
+  ,hide:    function () { $("#newsModal").modal('hide'); news.disable(); }
   ,CTA: function (ammount, buyType) {
-    var onclick = "autoreg()";
+    var onclick = "news.actions.autoreg()";
     // $("#depositLink1").attr("href", "Payment/"+login+"/"+needToPay+"')")
     return '<a class="btn btn-primary" onclick="'+onclick+'"> Продолжить играть </a>';
+  }
+  ,actions: {
+    autoreg: function(){
+      news.hide();
+      // news.disable();
+      autoreg();
+    }
   }
   ,markRead: function (messageID){
     news.hide();
@@ -594,22 +638,19 @@ var news = {
   }
   ,answer: function(code, messageID){
     mark('message/action/' + code + '/' + messageID);
+    news.hide();
   }
+
   ,empty: function() { return ''; }
   ,buttons : {
     skip: function(text, messageID) {
       if (!text) text = 'Продолжить';
       return '<a class="btn btn-primary" onclick="news.markRead(\''+messageID+'\'); ">' + text + '</a>';
     },
-    action: function(code, messageID, style){
-      // style.text
-      // style.class
-      // style.style
+    action: function(code, messageID, style){ // style.text // style.class // style.style
       return '<a class="btn btn-primary" onclick="news.answer('+code+','+messageID+');">'+ style.text + '</a>';
     },
-    next: function(i){
-      return '';
-    }
+    next: function(i){ return ''; }
   },
 
   // others: save other messages here

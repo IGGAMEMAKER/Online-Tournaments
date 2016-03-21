@@ -381,7 +381,7 @@ function FinishGame(req, res){
     prizes:prizes 
   }
 
-  Send('FinishTournament', obj);
+  // Send('FinishTournament', obj);
   
   console.log(obj);
 
@@ -407,22 +407,31 @@ function FinishGame(req, res){
     .then(function (marathon){
       var mainPrize = marathon.prizes[0];
 
-
+      for (var i = 0; i < winners.length; i++) {
+        var user = winners[i];
+        var login = user.login
+        
+        sendAfterGameNotification(login, mainPrize);
+      }
     })
-    sendAfterGameNotification(winners[i].login, winners, prizes, winnerCount);
   }
 }
 
+function getMarathonUser(login){
+  return Leaderboard
+}
+
 function sendAfterGameNotification(login, mainPrize){
-  Users.find_or_reject(login)
+  Users.profile(login)
   .then(function (profile){
+    if (!profile) return null;
     var profileInfo = profile.info;
     
     var notificationCode='';
 
-    if (!profileInfo) {
-      // notificationCode 
-    } else {
+    // if (!profileInfo) {
+    //   // notificationCode 
+    // } else {
       // what we can send?
       // win
       // lose
@@ -434,28 +443,34 @@ function sendAfterGameNotification(login, mainPrize){
       // was it money tournament?
       // did he win money?
       // is
-      var is_newbie = profileInfo.status;
-      if (is_money_tournament){
-        //show win or lose message
+      var is_newbie = (!profileInfo || !profileInfo.status || profileInfo.status==c.USER_STATUS_NEWBIE) ;
+      if (is_newbie){
+        // //show newbie messages
+        // //analyze, what he knows about us
+
+        // show hello message
+        aux.alert(login, c.NOTIFICATION_FIRST_MESSAGE, {mainPrize: mainPrize})
+
+        console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
+
+      } else {
+        // send rating
+        console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
+
+        var marathonUser = {
+          points: 3,
+          place: 10,
+          accelerator: 7
+        }
+        aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
+
+
+        // send advices
+        // send bonuses
       }
-
-      // for (var i = 0; i < winners.length && i<winnerCount; i++) {
-      //   var winner = winners[i];
-      //   //message += JSON.stringify(winner);
-
-      //   if (winners[i].login==login){
-      //     if (prizes[0] < 2){
-      //       eventType = EVENT_TYPE_WIN_RATING;
-      //     } else {
-      //       eventType = EVENT_TYPE_WIN_MONEY;
-      //     }
-
-      //     break;
-      //   }
-      // };
-
-    }
-
+  })
+  .catch(function (err){
+    console.error('sendAfterGameNotification', err);
   })
 }
 
@@ -1344,11 +1359,17 @@ var frontendVersion;
 var Leaderboard=null;
 updateLeaderboard();
 
+var MarathonPlaces = {};
+function getPlaces(leaderboard){
+  return {};
+}
+
 function updateLeaderboard(){
 
   setInterval(function(){
     Marathon.leaderboard()
     .then(function (leaderboard){
+        MarathonPlaces = getPlaces(leaderboard);
 
         Leaderboard = {
           leaderboard:leaderboard,

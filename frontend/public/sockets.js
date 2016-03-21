@@ -138,7 +138,10 @@ function autoreg(){
     $("#winnerModal").modal('hide');
     $("#newsModal").modal('hide');
     getProfile();
-  
+
+    setTimeout(function (){
+      getProfile();
+    }, 2000);
   });
 }
 

@@ -33,8 +33,8 @@ function all(){
 }
 
 function profile(login){
-	return new Promise(function(resolve,reject){
-		User.findOne({login:login}, 'login money email social', function (err, user) {
+	return new Promise(function(resolve, reject){
+		User.findOne({login:login}, 'login money email social info', function (err, user) {
 			if (err) return reject(err);
 			
 			if (!user) return resolve(null);
