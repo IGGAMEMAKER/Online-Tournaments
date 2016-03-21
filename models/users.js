@@ -3,6 +3,7 @@ var Promise = require('bluebird');
 var configs = require('../configs');
 var models = require('../models')(configs.db);
 var User = models.User;
+var c = require('../constants');
 
 var helper = require('../helpers/helper');
 
@@ -62,6 +63,40 @@ function find_or_reject(login, parameters){
 
 			return resolve(user);
 		})
+	})
+}
+
+function update_user(find, update, parameters){
+	return new Promise(function (resolve, reject){
+		User.update(find, update, parameters, function(err, count){
+			if (err) return reject(err)
+
+			if (!updated(count)) return reject(null)
+			resolve(1);
+		})
+	})
+}
+
+function update_user_status(login, status){
+	return find_or_reject(login)
+	.then(function (profile){
+		if (!profile.info){
+			var upd = {
+				$set : { 
+					info: { status: c.USER_STATUS_NEWBIE } 
+				} 
+			};
+			return update_user({login:login}, upd, {})
+		}
+		return 1;
+	})
+	.then(function (result){
+		var upd = {
+			$set : {
+				'info.status' : status
+			}
+		}
+		return update_user({login:login}, upd, {})
 	})
 }
 
@@ -627,3 +662,4 @@ module.exports.mailers = mailers;
 module.exports.update_auth_links = update_auth_links;
 
 module.exports.grantMoney = grantMoney
+module.exports.update_user_status = update_user_status

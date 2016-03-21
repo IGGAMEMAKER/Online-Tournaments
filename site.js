@@ -421,6 +421,11 @@ function getMarathonUser(login){
   return Leaderboard
 }
 
+// Users.update_user_status('Raja', c.USER_STATUS_READ_FIRST_MESSAGE)
+// .catch(function (err){
+//   console.error('update_user_status failed', err);
+// })
+
 function sendAfterGameNotification(login, mainPrize){
   Users.profile(login)
   .then(function (profile){
@@ -453,6 +458,11 @@ function sendAfterGameNotification(login, mainPrize){
 
         console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
 
+        Users.update_user_status(login, c.USER_STATUS_READ_FIRST_MESSAGE)
+        .catch(function (err){
+          console.error('update_user_status failed', err);
+        })
+
       } else {
         // send rating
         console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
@@ -460,8 +470,10 @@ function sendAfterGameNotification(login, mainPrize){
         var marathonUser = {
           points: 3,
           place: 10,
-          accelerator: 7
+          accelerator: 7,
         }
+        marathonUser.mainPrize = mainPrize;
+
         aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
 
 

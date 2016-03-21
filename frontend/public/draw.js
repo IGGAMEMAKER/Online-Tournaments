@@ -567,15 +567,28 @@ function drawNewsModal(data){
           body = 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!';
           footer = news.CTA();
         break;
-        // case c.NOTIFICATION_FIRST_MESSAGE:
-        //   var mainPrize = info.mainPrize;
-        //   console.log(mainPrize);
+        case c.NOTIFICATION_MARATHON_CURRENT:
+          var mainPrize = info.mainPrize;
+          console.log(c.NOTIFICATION_MARATHON_CURRENT, info);
 
-        //   header = 'Выиграй ценный приз'
-        //   // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
-        //   body = 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!';
-        //   footer = news.CTA();
-        // break;
+          var earned_points= '1 балл';
+          if (info.accelerator>1 && info.accelerator<5){
+            earned_points = info.accelerator + ' балла'
+          } else {
+            earned_points = info.accelerator + ' баллов'
+          }
+          // header = 'Повышение в марафоне!'
+          header = 'Вы заработали ' + earned_points;
+
+          // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
+          body = '<b>Набери больше всех баллов и выиграй ' + info.mainPrize + ' рублей и кучу других призов!</b><br>'
+
+          // body += 
+          body += 'Итого баллов: ' + info.points + ' <br>';
+          body += 'Место в рейтинге: ' + info.place;
+
+          footer = news.CTA();
+        break;
         default:
           // header = message.text;
           // body = info.body;
