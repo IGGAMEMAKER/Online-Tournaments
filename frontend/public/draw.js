@@ -574,7 +574,8 @@ function drawNewsModal(data){
           var earned_points= '1 балл';
           if (info.accelerator>1 && info.accelerator<5){
             earned_points = info.accelerator + ' балла'
-          } else {
+          } 
+          if (info.accelerator>5) {
             earned_points = info.accelerator + ' баллов'
           }
           // header = 'Повышение в марафоне!'

@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy){
+module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux){
 	var Fail = { result:'fail' };
 	var OK = { result: 'OK' };
 
@@ -14,9 +14,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			if (data.money && !isNaN(data.money) ) money = data.money;
 			if (data.cash  && !isNaN(data.cash) ) money = data.cash;
 
-			if (isNaN(cardNumber)){
-				return sender.Answer(res, Fail);
-			}
+			// if (isNaN(cardNumber)){
+			// 	return sender.Answer(res, Fail);
+			// }
 			
 			if (money){
 				data.money=money*100;

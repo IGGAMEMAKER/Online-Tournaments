@@ -10,12 +10,12 @@ div(class="panel")
 
 	div(class="panel-body")
 		p Минимальная сумма вывода - 500 рублей
-		p Деньги будут переведены на указанную вами карту в течение 7 дней
+		p Деньги будут переведены на указанный вами номер мобильного или банковскую карту в течение 7 дней
 		form(id="form-564" novalidate)
 			div(class="form-group")
 				label Сумма (в рублях)
 				input(class="form-control" name="ammount" id="cashout" value=500 required)
 			div(class="form-group")
-				label Номер карты
+				label Номер банковской карты или мобильный номер
 				textarea(id="cardNumber" placeholder="0123912888542938" class="form-control" rows="1" cols="50" required)
 			a(class="btn btn-lg btn-primary" onclick="cashout()" style="width:100%; border-radius:6px; " type="submit") Вывести
