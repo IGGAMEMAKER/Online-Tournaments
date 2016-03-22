@@ -20,8 +20,6 @@ mixin navigation()
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
 				ul(class="nav navbar-nav navbar-right")
 					li
-						a(href="about") О нас
-					li
 						a(href="Marathon") МАРАФОН
 					li
 						a(href="Tournaments") Турниры
@@ -38,8 +36,12 @@ mixin navigation()
 								li
 									a(href="addQuestion") Добавить вопрос
 						li
+							a(href="about") О нас
+						li
 							a(href="Logout") Выход
 					else
+						li
+							a(href="about") О нас
 						li
 							a(href="Login") Вход
 mixin chat()
