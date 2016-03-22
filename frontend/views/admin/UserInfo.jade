@@ -8,7 +8,7 @@ mixin drawAux(action)
 			when 'tournament.leave'
 				span    !{action.auxillaries.tournamentID}
 			default 
-				span (!{action.auxillaries})
+				span (!{JSON.stringify(action.auxillaries)})
 
 mixin drawActions(actions)
 	table(class="table table-bordered table-striped" style="width:70%;")

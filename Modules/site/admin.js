@@ -195,7 +195,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
       })
       .then(function (playedCount){
         profile.playedCount = playedCount;
-        console.log('UserInfo,',profile);
+        // console.log('UserInfo,',profile);
         return profile;
       })
       .then(render(res, 'UserInfo'))//sendJSON(res)

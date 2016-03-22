@@ -8,7 +8,7 @@ mixin drawAux(action)
 			when 'tournament.leave'
 				span    !{action.auxillaries.tournamentID}
 			default 
-				if action.type=='clientside' && action.auxillaries && action.auxillaries.type=='message/shown'
+				if action.type=='clientside' && action.auxillaries.type=='message/shown'
 					a(href="get_message?id="+action.auxillaries.id target="_blank")  message/shown
 				else
 					span (!{JSON.stringify(action.auxillaries)})
@@ -23,15 +23,17 @@ mixin drawActions(actions)
 					th Время
 			tbody
 				each action, ind in actions
-					tr
-						td!= ind
-						td
-							a(href="UserInfo/"+action.login) #{action.login}
-						td
-							span !{action.type}
-							+drawAux(action)
+					if action.auxillaries && action.type=='clientside' && action.auxillaries.type!='message/shown'
+					else
+						tr
+							td!= ind
+							td
+								a(href="UserInfo/"+action.login) #{action.login}
+							td
+								span !{action.type}
+								+drawAux(action)
 
-						td!= action.date
+							td!= action.date
 
 html
 	head
