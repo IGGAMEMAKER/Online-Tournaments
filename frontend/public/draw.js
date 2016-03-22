@@ -562,9 +562,12 @@ function drawNewsModal(data){
           var mainPrize = info.mainPrize;
           console.log(mainPrize);
 
-          header = 'Проверь свои знания и выигрывай призы!'
+          header = 'С почином!'
           // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
-          body = 'Участвуй в <a href="/Tournaments">турнирах</a><br><br> побеждай в <a href="/Marathon">марафонах</a><br><br> выигрывай ценные призы!';
+          body = 'Вы сыграли в первом турнире<br>'
+          body += 'Продолжайте играть и выигрывайте призы благодаря своим знаниям!'
+          // body += 'Получай ценные призы <br>'
+          // body = 'Для этого нужно участвовать в <a href="/Tournaments">турнирах</a> и выигрывай ценные призы!';
           footer = news.CTA();
         break;
         case c.NOTIFICATION_MARATHON_CURRENT:
