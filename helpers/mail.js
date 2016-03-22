@@ -20,8 +20,9 @@ function makeRegisterText(user, link){
 	var password = user.basePass;
 	//console.log(user);
 	//console.log(link);
-	var text = '<html><br>Спасибо за регистрацию на сайте online-tournaments.org!<br>';
-	text+= 'Ваш логин : ' + login + '<br>';
+	var text = '<html><br>Спасибо за регистрацию на сайте online-tournaments.org<br>';
+	// text+= 'Ваш логин : ' + login + '<br>';
+	text += 'Удачной игры!<br>'
 	//text+= 'Ваш пароль : ' + password;
 	/*text+= 'Follow the link below to activate your account: '
 	text+= '<br><a href="'+link+'">'+link+'</a>';*/
