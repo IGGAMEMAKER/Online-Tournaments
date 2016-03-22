@@ -40,6 +40,10 @@ mixin loadFastHead()
 
 	//script(src="third_party/validator.min.js")
 	script(src="inviter.js")
+	script(src="YandexMetrica.js")
+	noscript
+		div
+			img(src="https://mc.yandex.ru/watch/34298935" style="position:absolute; left:-9999px;" alt="")
 
 mixin title(name)
 	h2(class="mg-md text-center") #{name}
