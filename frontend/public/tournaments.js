@@ -321,7 +321,7 @@ function getPrize(t){
 		return showPrize(prize, t.settings.specPrizeName, ID);
 	}	else {
 		if (isStream(t)) {
-			return '+<a href="#ratingField">Рейтинг</a>';//Приз:  aria-expanded="true"  data-toggle="tab"
+			return '+<a href="#ratingField">Марафон</a>';//Приз:  aria-expanded="true"  data-toggle="tab"
 		} else {
 			return showPrize(prize, "", ID);
 		}
