@@ -26,10 +26,10 @@ function drawButton(host, port, tournamentID){
   var onclick = "mark('mark/game/push')";//, { login:login }
   // console.log(onclick);
 
-  txt='<form id="form1" method="post" onclick="'+ onclick + '" action="'+addr+'"  target="_blank"> '
+  txt='<form id="form1" method="post" onclick="'+ onclick + '" action="'+addr+'"  > '//target="_blank"
 
   +'<input type="hidden" name="login" value="'+login+'" />'
-  +'<input type="submit" class="btn btn-default" value="Сыграть в турнир #'+tournamentID+'" />'
+  +'<input type="submit" class="btn btn-primary btn-lg" value="Сыграть в турнир #'+tournamentID+'" />'
   +'</form>';
 
   // console.log('drawButton', txt);

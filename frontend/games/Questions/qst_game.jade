@@ -12,7 +12,7 @@ mixin drawTableOfResults()
 			tr
 				th Игрок
 				//th Набранные очки
-				th Приз
+				th Очки
 		tbody(id="resultField")
 
 
@@ -39,7 +39,7 @@ center
 						h4(id="ticker")
 						//h4 секунд
 						div(id="closeButton" style="display:none; color:black;")
-							a(href="http://online-tournaments.org") Закрыть
+							a(href="http://online-tournaments.org" class="btn btn-primary btn-lg") Закрыть
 							br
 						div#Answers(style="display:none;")
 							+radioButton(1, '')

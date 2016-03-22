@@ -187,12 +187,12 @@ function DrawPlayers(results){
 		var name = scores[ind].login;
 		var score = Math.round(scores[ind].value);
 
-		var winning;
-		if (ind<places[1]){
-			winning = prizes[0]+'p';//'<td>'+prizes[0]/100+'$</td>';
-		} else {
-			winning = '--';
-		}
+		// var winning;
+		// if (ind<places[1]){
+		// 	winning = prizes[0]+'p';//'<td>'+prizes[0]/100+'$</td>';
+		// } else {
+		// 	winning = '--';
+		// }
 
 		var winBlock;
 		var style = '';
@@ -201,9 +201,13 @@ function DrawPlayers(results){
 		}
 
 		var text = '<tr>';
-		text += '<td ' + style + '><b>'+name+'</b><br>('+score+')</td>';
+		// text += '<td ' + style + '><b>'+name+'</b><br>('+score+')</td>';
+		// //text += '<td style="color: red;">' + score + '</td>';
+		// text += '<td ' + style + '>' + winning + '</td>';
+		// text += '</tr>';
+		text += '<td ' + style + '><b>' + name + '</b></td>';
 		//text += '<td style="color: red;">' + score + '</td>';
-		text += '<td ' + style + '>' + winning + '</td>';
+		text += '<td ' + style + '>' + score + '</td>';
 		text += '</tr>';
 		$(resultField).append(text);
 
