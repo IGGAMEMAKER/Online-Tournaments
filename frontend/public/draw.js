@@ -562,9 +562,9 @@ function drawNewsModal(data){
           var mainPrize = info.mainPrize;
           console.log(mainPrize);
 
-          header = 'Выиграй ценный приз'
+          header = 'Проверь свои знания и выигрывай призы!'
           // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
-          body = 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!';
+          body = 'Участвуй в <a href="/Tournaments">турнирах</a><br><br> побеждай в <a href="/Marathon">марафонах</a><br><br> выигрывай ценные призы!';
           footer = news.CTA();
         break;
         case c.NOTIFICATION_MARATHON_CURRENT:
