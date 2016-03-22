@@ -547,7 +547,7 @@ function giveAccelerator(login, acceleratorIndex, errorMessageTag, acceleratorCo
 	return get_current_marathon_or_reject()
 	.then(function (marathon){
 		marathonInfo = marathon;
-		console.log('giveAccelerator', marathon);
+		// console.log('giveAccelerator', marathon);
 		return set_accelerator(login, marathon.MarathonID, acceleratorIndex);
 	})
 	.then(function (result){

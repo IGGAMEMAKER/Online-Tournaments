@@ -146,11 +146,20 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		var err = req.body.err;
 		var where = req.body.where;
 
+		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
+	})
+	
+	app.get('/mark/clientError', middlewares.authenticated, function (req, res){
+		res.end('');
+
+		var login = getLogin(req);
+		var err = req.body.err;
+		var where = req.body.where;
+
 
 
 		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
 	})
-	
 	//statistics Data
 	
 	app.get('/Stats', function (req, res){

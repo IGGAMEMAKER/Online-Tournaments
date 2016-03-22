@@ -388,9 +388,10 @@ function FinishGame(req, res){
 
   // Send('FinishTournament', obj);
   
-  console.log(obj);
+  console.log('FinishTournament FinishGame', obj);
 
   var is_money_tournament = (prizes[0] >= 2);
+  console.log('is_money_tournament', is_money_tournament);
   if (is_money_tournament){
     //show win or lose message
     for (var i = 0; i < winners.length; i++) {
@@ -399,10 +400,12 @@ function FinishGame(req, res){
 
       if (i<winnerCount){
         //send winning message
-        aux.alert(login, c.NOTIFICATION_WIN_MONEY, { ammount:prizes[i] })
+        console.log(login, 'WINS TOURNAMENT')
+        aux.alert(login, c.NOTIFICATION_WIN_MONEY, obj)
       } else {
         //send lose message
-        aux.alert(login, c.NOTIFICATION_LOSE_TOURNAMENT, {})
+        console.log(login, 'LOSES TOURNAMENT')
+        aux.alert(login, c.NOTIFICATION_LOSE_TOURNAMENT, obj)
       }
 
     }
@@ -477,7 +480,7 @@ function sendAfterGameNotification(login, mainPrize){
 
       } else {
         // send rating
-        console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
+        // console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
 
         var marathonUser = getMarathonUser(login);
         marathonUser.mainPrize = mainPrize;

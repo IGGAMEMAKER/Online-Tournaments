@@ -590,7 +590,26 @@ function drawNewsModal(data){
           footer = news.CTA();
         break;
         case c.NOTIFICATION_WIN_MONEY:
-          // body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать!') + winningPicture();
+          // { 
+          //   tournamentID : data.tournamentID,
+          //   winners:winners,
+          //   count:winnerCount,
+          //   prizes:prizes 
+          // }
+          // alert('Win');
+          header = 'Вы победили в турнире #' + info.tournamentID;
+
+          body = main('Вы выиграли ' + info.prizes[0] + ruble() +' !! Так держать!') + winningPicture();
+
+          footer = news.buttons.skip('Урра!', messageID)
+        break;
+        case c.NOTIFICATION_LOSE_TOURNAMENT:
+          // alert('lose');
+          header = 'Турнир #' + info.tournamentID + " завершён";
+          body = main('Эх, не повезло( <br>В следующий раз точно получится!') + losePicture();
+
+          footer = news.buttons.skip('Продолжить', messageID)
+          // footer = news.skip('Продолжить')
         break;
         default:
           // header = message.text;
