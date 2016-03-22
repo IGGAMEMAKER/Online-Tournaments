@@ -581,13 +581,16 @@ function drawNewsModal(data){
           header = 'Вы заработали ' + earned_points;
 
           // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
-          body = '<b>Набери больше всех баллов и выиграй ' + info.mainPrize + ' рублей и кучу других призов!</b><br>'
+          body = '<b>Набери больше всех баллов и выиграй ' + info.mainPrize + ' рублей и кучу других призов!</b><br><br>'
 
           // body += 
           body += 'Итого баллов: ' + info.points + ' <br>';
-          body += 'Место в рейтинге: ' + info.place;
+          body += 'Место в <a href="/Leaderboard">рейтинге</a>: ' + info.place;
 
           footer = news.CTA();
+        break;
+        case c.NOTIFICATION_WIN_MONEY:
+          // body = main('Вы выиграли ' + prizes[0] + ruble() +' !! Так держать!') + winningPicture();
         break;
         default:
           // header = message.text;
@@ -600,7 +603,7 @@ function drawNewsModal(data){
         return
       }
       var title = header;
-      if (count>1) title += ' (' + count+')';
+      if (count>1) title += ' (' + count + ')';
 
       news.title(title);
       news.body(body);

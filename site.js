@@ -423,8 +423,15 @@ function FinishGame(req, res){
 }
 
 function getMarathonUser(login){
-  return Leaderboard
+  return MarathonPlaces[login];
+  // return {
+  //   points: 3,
+  //   place: 10,
+  //   accelerator: 7,
+  //   pretends: 34
+  // }
 }
+
 
 // Users.update_user_status('Raja', c.USER_STATUS_READ_FIRST_MESSAGE)
 // .catch(function (err){
@@ -472,11 +479,7 @@ function sendAfterGameNotification(login, mainPrize){
         // send rating
         console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
 
-        var marathonUser = {
-          points: 3,
-          place: 10,
-          accelerator: 7,
-        }
+        var marathonUser = getMarathonUser(login);
         marathonUser.mainPrize = mainPrize;
 
         aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
@@ -1376,9 +1379,98 @@ var frontendVersion;
 var Leaderboard=null;
 updateLeaderboard();
 
-var MarathonPlaces = {};
-function getPlaces(leaderboard){
-  return {};
+var MarathonPlaces = {
+  // 'Raja': {
+  //   points: 3,
+  //   place: 10,
+  //   accelerator: 7,
+  //   pretends: 34
+  // }
+  // places : {},
+  // prizes : {}
+};
+
+// setTimeout(function (){
+//   var marathonUser = getMarathonUser('Raja');
+//   // marathonUser.mainPrize = 100500;
+
+//   aux.alert('Raja', c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
+  
+// }, 4000);
+
+
+// login => marathonUser
+
+// login => place
+// login => prize
+
+function prizeByPlace(place, prizeList){
+  if (place>=prizeList.length) return 0;
+
+  return prizeList[place];
+}
+function updatePlaces(){
+
+  var leaders = Leaderboard.leaderboard;
+  // console.log('updatePlaces', leaders.length);
+  var prizes = Leaderboard.prizes|| [];
+  var counts = Leaderboard.counts|| [];
+
+  var prizeList = getPrizeList(prizes, counts);
+
+  var obj = {}
+
+  for (var i=0; i<leaders.length; i++){
+  try{
+    var login = leaders[i].login;
+    // console.log(login);
+    var count = leaders[i].played;
+    var points = leaders[i].points;
+    var prize = prizeByPlace(i, prizeList);
+    var number = i+1; //place
+
+    // console.log(login, count, points, prize, number);
+
+    var acceleratorValue = 1;
+    if (leaders[i].accelerator && leaders[i].accelerator.value){
+      acceleratorValue = leaders[i].accelerator.value;
+    }
+
+    obj[login] = {
+      points: points,
+      place: number,
+      accelerator: acceleratorValue,
+      mainPrize:prizes[0]
+    }
+    if (prize) obj.pretends = prize;
+      // pretends: 34
+    // if (prizes.length && counts.length && )
+    } catch(error){
+      console.error(error);
+    }
+  }
+  // console.log(obj);
+  // return MarathonPlaces;
+  return obj;
+}
+
+const DEFAULT_MARATHON_PRIZE = 100;
+
+function getPrizeList(prizes, counts){
+  if (prizes.length==0 || counts.length==0){
+    return [DEFAULT_MARATHON_PRIZE];
+  }
+
+  var prizeList = [];
+  for (var i = 0; i < prizes.length; i++) {
+    var prize = prizes[i];
+
+    for (var j = 0; j < counts[i]; j++) {
+      prizeList.push(prize);
+    };
+  };
+  // console.log('prizeList', prizeList);
+  return prizeList;
 }
 
 function updateLeaderboard(){
@@ -1386,20 +1478,19 @@ function updateLeaderboard(){
   setInterval(function(){
     Marathon.leaderboard()
     .then(function (leaderboard){
-        MarathonPlaces = getPlaces(leaderboard);
-
         Leaderboard = {
           leaderboard:leaderboard,
           counts: leaderboard.counts,
           prizes: leaderboard.prizes
         }
 
+        MarathonPlaces = updatePlaces();
     })
     .catch(function (err){
       Errors.add('', 'updateLeaderboard', { err:err });
     })
 
-  }, 5000)
+  }, 3000)
 
 }
 
