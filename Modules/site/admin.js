@@ -153,7 +153,6 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     .catch(sendError(res));
   })
 
-
   app.get('/Users', function (req, res){    
     /*var data = req.body;
     data.query = {};//tournamentID:req.query.tID};

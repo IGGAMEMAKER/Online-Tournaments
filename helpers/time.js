@@ -2,6 +2,9 @@ module.exports = {
 	happened_today: function(){
 		return dayQuery(new Date(),1);
 	},
+	happened_yesterday: function(){
+		return dayQuery(new Date(),-1);
+	},
 	happened_this_week: function(){
 		var tomorrow = new Date();
 		tomorrow.setDate((new Date()).getDate()+1);

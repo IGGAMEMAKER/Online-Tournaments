@@ -1,66 +1,68 @@
-var Promise = require('bluebird');
+var db = require('../db');
 
-var configs = require('../configs');
-var mongoose = require('mongoose');
-//mongoose.connect('mongodb://localhost/test');
-mongoose.connect('mongodb://'+configs.db+'/test');
-
-var helper = require('../helpers/helper');
-var log = helper.log;
-
-var Fail = { result: 'fail' };
-var OK = { result: 'OK' };
-
-var Gift = mongoose.model('Gift', { 
-	name: String, photoURL: String, 
-	description: String, URL: String, 
-	price: Number, sended:Object, 
-	date:Date 
-});
+// var helper = require('../helpers/helper');
 
 function all(query){
-	return new Promise(function(resolve, reject){
-		Gift.find(query||{}, function (err, gifts){
-			if (err) return reject(err);
-
-			return resolve(gifts||null);
-		});
-	})
+	return db.list('Gift', query)
 }
 
 function getByID(giftID){
-	return new Promise(function(resolve, reject){
-		Gift.findOne({ _id : giftID}, function (err, gift){
-			if (err) return reject(err);
-
-			return resolve(gift||null);
-		});
-	});
+	return db.findOne('Gift', { _id : giftID })
 }
 
-function add(data){
-	return new Promise(function(resolve, reject){
-		log('trying to add gift '+ JSON.stringify(data)+ ' Gifts');
+// console.log('go')
+// db.list('Gift', {})
+all({})
+.then(console.log)
+.catch(function (err){
+	console.log(err)
+})
 
-		if (data){
-			gift = new Gift(data);
-			gift.save(function (err){
-				if (err) return reject(err);
+// function all(query){
+// 	return new Promise(function(resolve, reject){
+// 		Gift.find(query||{}, function (err, gifts){
+// 			if (err) return reject(err);
 
-				log('Added gift ' + JSON.stringify(data) + ' Gifts');
-				return resolve(OK);
-			})
-		} else {
-			log('No addition. Gift is null' + ' Gifts');
-			return reject(Fail);
-		}
-	});
+// 			return resolve(gifts||null);
+// 		});
+// 	})
+// }
 
-}
+// function getByID(giftID){
+// 	return new Promise(function(resolve, reject){
+// 		Gift.findOne({ _id : giftID}, function (err, gift){
+// 			if (err) return reject(err);
 
-log('asdddd');
-getByID('5622b320ecdf83f91ef09036')
-.then(helper.p_printer)
-.catch(helper.catcher);
+// 			return resolve(gift||null);
+// 		});
+// 	});
+// }
 
-//function log(msg){ console.log(msg); }
+
+
+// function add(data){
+// 	return new Promise(function(resolve, reject){
+// 		log('trying to add gift '+ JSON.stringify(data)+ ' Gifts');
+
+// 		if (data){
+// 			gift = new Gift(data);
+// 			gift.save(function (err){
+// 				if (err) return reject(err);
+
+// 				log('Added gift ' + JSON.stringify(data) + ' Gifts');
+// 				return resolve(OK);
+// 			})
+// 		} else {
+// 			log('No addition. Gift is null' + ' Gifts');
+// 			return reject(Fail);
+// 		}
+// 	});
+
+// }
+
+// log('asdddd');
+// getByID('5622b320ecdf83f91ef09036')
+// .then(helper.p_printer)
+// .catch(helper.catcher);
+
+// //function log(msg){ console.log(msg); }

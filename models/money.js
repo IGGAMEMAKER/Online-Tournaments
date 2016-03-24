@@ -15,6 +15,10 @@ var Errors = require('./errors');
 var User = models.User;
 var MoneyTransfer = models.MoneyTransfer;
 
+
+var time = require('../helpers/time');
+
+
 function saveTransfer(login, cash, source, tag){
 	console.log('saveTransfer', arguments);
 	return new Promise(function (resolve, reject){
@@ -80,63 +84,28 @@ function money_worker2 (login, ammount, source, find, set, tag, hard) {
 module.exports = {
 	increase: function(login, ammount, source){
 		return money_worker(login, ammount, source, { login:login }, {$inc: { money: ammount }}, 'increase');
-		/*return saveTransfer(login, ammount, source || null, 'increase')
-		.then(function (result){
-			return new Promise(function (resolve, reject){
-				User.update({ login:login }, {$inc: { money: ammount }} , function (err, count) {
-					if (err) return reject(err);
-
-					resolve(helper.updated(count)||null);
-				});
-			})
-		})
-		.catch(function (err){
-			console.log('increase failed', login, ammount, source);
-			return { result:0, err:err };
-		})*/
-	}
-	, decrease: function(login, ammount, source){
-			return money_worker(login, ammount, source, { login:login }, {$inc: { money: -ammount }}, 'decrease');
-		
-/*		return saveTransfer(login, ammount, source || null, 'decrease')
-		.then(function (result){
-			return new Promise(function (resolve, reject){
-				User.update({ login:login }, {$inc: { money: -ammount }} , function (err, count) {
-					if (err) return reject(err);
-
-					resolve(helper.updated(count)||null);
-				});
-			})
-		})
-		.catch(function (err){
-			console.log('decrease failed', login, ammount, source);
-			return { result:0, err:err };
-		})*/
-
-	}
+	},
+	decrease: function(login, ammount, source){
+		return money_worker(login, ammount, source, { login:login }, {$inc: { money: -ammount }}, 'decrease');
+	},
 	/*, grant: function(login, ammount, source){
 		return money_worker(login, ammount, c.SOURCE_TYPE_GRANT, { login:login }, {$inc: { money: ammount }}, 'increase');
 	}*/
-	, pay: function(login, ammount, source){
-			return money_worker2(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay', true);
-		
-		/*return saveTransfer(login, ammount, source || null, 'pay')
-		.then(function (result){
-			return new Promise(function (resolve, reject){
-				User.update({login:login, money: {$not : {$lt: ammount }} } , {$inc: {money:-ammount} }, function (err, count) {
-					if (err) return reject(err);
+	pay: function(login, ammount, source){
+		return money_worker2(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay', true);
+	},
+	all: function (){
+		return new Promise(function (resolve, reject){
+			MoneyTransfer.find({}, function (err, transfers){
+				if (err) return reject(err);
 
-					if (helper.updated(count)) return resolve(1);
-					
-					return reject({ result:0 };);
-					//resolve(||null);
-				});
+				resolve(transfers);
 			})
 		})
-		.catch(function (err){
-			console.log('pay failed', login, ammount, source);
-			return { result:0, err:err };
-		})*/
+	},
+	recent: function (){
+		return new Promise(function (resolve, reject){
+			MoneyTransfer.find({})
+		})
 	}
-
 }

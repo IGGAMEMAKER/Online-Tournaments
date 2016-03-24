@@ -352,8 +352,12 @@ app.post('/FinishGame', FinishGame);
 app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
 app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
 
+app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
+  
+})
+
 function Landing(name, picture){
-  return function(req, res){
+  return function (req, res){
     var obj = { landing:name }
     if (picture) obj.picture = picture;
 

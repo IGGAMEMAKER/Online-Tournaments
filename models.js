@@ -1,9 +1,13 @@
+var Promise = require('bluebird');
+var helpers = require('./helpers/helper')
+
 module.exports = function(dbAddress){
 	var mongoose = require('mongoose');
 	//mongoose.connect('mongodb://localhost/test');
 	//mongoose.connect('mongodb://'+dbAddress+'/test');
 	db = mongoose.createConnection('mongodb://'+dbAddress+'/test');
 	
+
 	return {
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 
@@ -15,7 +19,7 @@ module.exports = function(dbAddress){
 			landingPicture: String, //url to picture for landing page
 			landingUrl: String,  // if VKgroup - groupUrl
 			url: String,
-			topics: Object			
+			topics: Object
 		}),
 		Game : db.model('Game', { 
 			gameName: String, gameNameID: Number,
@@ -24,12 +28,26 @@ module.exports = function(dbAddress){
 			token: String
 		}),
 
-		TournamentReg : db.model('TournamentRegs', { tournamentID: Number, userID: String, promo:String, status:Number, date:Date }),
+		TournamentReg : db.model('TournamentRegs', { 
+			tournamentID: Number, 
+			userID: String, 
+			promo:String, 
+			status:Number, 
+			date:Date 
+		}),
 
-		Gift : db.model('Gift', { name: String, photoURL: String, description: String, URL: String, price: Number, sended:Object, date:Date }),
+		Gift : db.model('Gift', { 
+			name: String,
+			photoURL: String, 
+			description: String, 
+			URL: String, 
+			price: Number, 
+			sended:Object, 
+			date:Date 
+		}),
 
-		UserGift : db.model('UserGifts', { userID: String, giftID: String }),
-		MoneyTransfer : db.model('MoneyTransfer', {userID: String, ammount:Number, source: Object, date: Date}),
+		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object }),
+		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
 
 		Message : db.model('Message', {
 			text:String, // title
