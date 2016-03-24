@@ -80,9 +80,9 @@ var usergifts = {
 
 // Tests
 
-// addCard('NachoFernandez', 'Nacho', '6.png', 100, c.RARITY_HIGH, {})
 // addCard('CR7', 'C. Ronaldo', '7.png', 100, c.RARITY_RARE, {})
 // addCard('Luka', 'L. Modric', '19.png', 100, c.RARITY_MID, {})
+// addCard('NachoFernandez', 'Nacho', '6.png', 100, c.RARITY_HIGH, {})
 
 // addCard('Navas', 'K. Navas', '1.png', 100, c.RARITY_RARE, {})
 // addCard('Kroos', 'T. Kroos', '8.png', 100, c.RARITY_LOW, {})

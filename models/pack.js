@@ -50,25 +50,47 @@ cardHandler[c.RARITY_HIGH] = []
 // .then(function (cards){
 // 	console.log('cards', cards);
 // })
-
+fillCardHandler();
 function getCardsByRarity(rarity){
 	Gifts.cards(rarity)
 	.then(function (cards){
-		console.log('cards', cards);
+		// console.log('cards', cards);
 		cardHandler[rarity] = cards;
 	})
 }
 
-getCardsByRarity(c.RARITY_RARE)
+var stats = {0:0, 1:0, 2:0, 3:0}
+
+function fillCardHandler(){
+	getCardsByRarity(c.RARITY_RARE);
+	getCardsByRarity(c.RARITY_LOW);
+	getCardsByRarity(c.RARITY_MID);
+	getCardsByRarity(c.RARITY_HIGH);
+}
+
+// setInterval(function(){
+// 	var crd = get_random_card();
+
+// 	// console.log(crd);
+// }, 10)
+
+// setInterval(function(){
+// 	console.log('stats', stats);
+// }, 3000)
 
 function get_random_card() {
 	var rarity = getRandomRarity();
+	stats[rarity]++;
 
 	var max = cardHandler[rarity].length;
-	var offset = getRandomInt(0, max)
+	var offset = getRandomInt(0, max - 1)
 
 	var card = cardHandler[rarity][offset];
-	console.log(card);
+	if (!card) {
+		console.log(max, offset, cardHandler[rarity]);
+	} else{
+		// console.log(card.name);
+	}
 	return card;
 }
 
