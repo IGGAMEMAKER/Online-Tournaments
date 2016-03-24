@@ -59,6 +59,21 @@ function update(modelName, find, update, options){
 		})
 	})
 }
+
+function remove(modelName, find, parameters, options)
+	return new Promise(function (resolve, reject){
+		models[modelName].remove(find, function (err, count){
+			if (err) return reject(err);
+
+			if (helpers.removed(count)) {
+				return resolve(1);
+			}
+
+			return reject(null);
+		})
+	})
+}
+
 // console.log(models['Gift'])
 // list('Gift', {}, '')
 // .then(console.log)

@@ -61,7 +61,7 @@ function get_leaderboard(time_function){
 		}
 		], function (err, leaderboard){
 			if (err) return reject(err);
-				console.log(leaderboard);
+				// console.log(leaderboard);
 			return resolve(leaderboard||[]);
 		})
 	})
