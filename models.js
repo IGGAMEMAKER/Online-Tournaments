@@ -47,7 +47,7 @@ module.exports = function(dbAddress){
 			sended:Object,
 			date:Date,
 
-			properties: Object // tags, status (bronze, silver, gold)
+			properties: Object // tags, status (bronze, silver, gold), isCard:Boolean, rarity
 		}),
 
 		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object, date: Date, actual:Boolean }),

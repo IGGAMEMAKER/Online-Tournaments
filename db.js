@@ -50,7 +50,7 @@ function save(modelName, item){
 
 function update(modelName, find, updateObj, options){
 	return new Promise(function (resolve, reject){
-		console.log(modelName, find, updateObj, options);
+		// console.log(modelName, find, updateObj, options);
 
 		models[modelName].update(find, updateObj, options || null, function (err, count){
 			if (err) return reject(err);
