@@ -3,6 +3,8 @@ var Promise = require('bluebird');
 var configs = require('./configs');
 var models = require('./models')(configs.db);
 
+var helpers = require('./helpers/helper')
+
 function list(modelName, find, parameters){
 	return new Promise(function (resolve, reject){
 		models[modelName].find(find || {}, parameters || '', function (err, array){
@@ -46,9 +48,11 @@ function save(modelName, item){
 	})
 }
 
-function update(modelName, find, update, options){
+function update(modelName, find, updateObj, options){
 	return new Promise(function (resolve, reject){
-		models[modelName].update(find, update, options||null, function (err, count){
+		console.log(modelName, find, updateObj, options);
+
+		models[modelName].update(find, updateObj, options || null, function (err, count){
 			if (err) return reject(err);
 
 			if (helpers.updated(count)){
@@ -74,8 +78,11 @@ function remove(modelName, find, parameters, options){
 	})
 }
 
+
+
 // console.log(models['Gift'])
 // list('Gift', {}, '')
+// update('User', { login: 'Raja' }, { $set: { money: 1060 } })
 // .then(console.log)
 // .catch(console.error)
 
@@ -93,8 +100,8 @@ var wrap = function(modelName){
 		save: function(item){
 			return save(modelName, item)
 		},
-		update: function(find, update, options){
-			return update(modelName, find, update, options)
+		update: function(find, updateObj, options){
+			return update(modelName, find, updateObj, options)
 		},
 		remove: function(find, parameters, options){
 			return remove(modelName, find, parameters, options)

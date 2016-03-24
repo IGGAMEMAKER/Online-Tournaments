@@ -17,15 +17,19 @@ function add(data){
 	return Gifts.save(data)
 }
 
+
+
 var usergifts = {
 
 }
 
 // Tests
-all({})
-// getByID('5622b320ecdf83f91ef09036')
-.then(console.log)
-.catch(console.error)
+
+// all({})
+// // getByID('5622b320ecdf83f91ef09036')
+// Gifts.update()
+// .then(console.log)
+// .catch(console.error)
 
 module.exports = {
 	all:all,
