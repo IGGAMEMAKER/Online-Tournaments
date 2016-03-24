@@ -184,6 +184,10 @@ if (socket_enabled){
 var aux = require('./models/auxillary')
 aux.io(SOCKET); // set socket in aux
 
+var updatables = {};
+
+var realtime = require('./helpers/realtime')(app, io)
+
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
 var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
@@ -251,7 +255,9 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
   }
 }
 
-
+// setInterval(function(){
+//   console.log(realtime().counter);
+// }, 3000)
 
 function handleError(err, targetServer, reqUrl, res, options, parameters){
   Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null, parameters||null) + ':::'+ JSON.stringify(err), 'Err');
@@ -565,6 +571,15 @@ app.get('/Log', function (req, res){
 app.get('/main', function (req, res){
   res.render('main2');
 })
+
+app.get('/Packs', function (req, res){
+  res.render('Packs', { 
+    msg:{
+      cards: realtime().cards
+    }
+  });
+})
+
 
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
@@ -1525,7 +1540,8 @@ function updateLeaderboard(){
 }
 
 // RealtimeProvider(1000);
-RealtimeProvider2(1000);
+
+// RealtimeProvider2(1000);
 
 UpdateFrontendVersion(20000);
 get_Leaderboard(4000);

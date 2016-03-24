@@ -57,13 +57,13 @@ function attachGift(id, giftID){
 var giftID = '5609a7da4d4145c718549ab3';
 var colID = '56f438b27c7ccf0914389f1d';
 
-all({})
+// all({})
 // add([], 'col1', {})
 // attachGift(colID, giftID)
 // clear(colID)
 // getByID(colID)
-.then(console.log)
-.catch(console.error)
+// .then(console.log)
+// .catch(console.error)
 
 // all({})
 // getByID('5622b320ecdf83f91ef09036')

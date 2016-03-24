@@ -86,11 +86,11 @@ function get_random_card() {
 	var offset = getRandomInt(0, max - 1)
 
 	var card = cardHandler[rarity][offset];
-	if (!card) {
-		console.log(max, offset, cardHandler[rarity]);
-	} else{
-		// console.log(card.name);
-	}
+	// if (!card) {
+	// 	console.log(max, offset, cardHandler[rarity]);
+	// } else{
+	// 	// console.log(card.name);
+	// }
 	return card;
 }
 

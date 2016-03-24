@@ -4,11 +4,14 @@ extends layout
 include Leaderboard
 
 mixin parameter(text, value)
-	//p(class="white")!= text + ": " + value 
-	if value<=4
-		p(class="white text-center")!= text + " " + value + " балла за турнир!"
+	//p(class="white")!= text + ": " + value
+	if value==1
+		p(class="white text-center")!= text + " " + value + " балл за турнир!"
 	else
-		p(class="white text-center")!= text + " " + value + " баллов за турнир!" 
+		if value<=4
+			p(class="white text-center")!= text + " " + value + " балла за турнир!"
+		else
+			p(class="white text-center")!= text + " " + value + " баллов за турнир!" 
 
 mixin accelerator(id, value, price, colour)
 	div(class="col-md-4 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"+id)

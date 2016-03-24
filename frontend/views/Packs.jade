@@ -1,0 +1,19 @@
+//
+extends layout
+
+block title
+	title Паки
+block JSlibs
+	script(src="packs.js")
+
+block content
+	div(class="col-sm-12")
+		h1(class="white text-center") Паки
+	div(class="col-sm-12" id="cards")
+		script.
+			//var msg = "#{msg}";
+			var msg = !{JSON.stringify(msg)}; 
+			//console.log(msg);
+			var Cards = msg.cards;
+			drawCards(Cards);
+			console.log(Cards)
