@@ -33,6 +33,8 @@ var Actions = require('./models/actions');
 var Errors = require('./models/errors');
 var Tournaments = require('./models/tournaments');
 var Message = require('./models/message');
+var Gifts = require('./models/gifts');
+
 
 var Money = require('./models/money');
 
@@ -355,6 +357,27 @@ app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
 app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
   
 })
+
+// app.get('/Gifts', function (req, res, next){
+//   Gifts.all()
+//   .then(
+//   //   function (giftList){
+//   //   req.data = giftList
+//   // }
+//   aux.setData(req, next)
+//   )
+//   .catch(next)
+// }, aux.raw, aux.err)
+
+// app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
+//   Users.mailers()
+//   .then(function(users){
+//     req.data = 'found';
+//     next();
+//     Users.update_auth_links(users)
+//   })
+//   .catch(next)
+// }, aux.raw, aux.err)
 
 function Landing(name, picture){
   return function (req, res){

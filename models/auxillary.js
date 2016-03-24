@@ -52,15 +52,19 @@ module.exports = {
 	,isAdmin : middlewares.isAdmin
 
 	// ,attempt : Stats.attempt
-	,clientside : function(login, auxillaries){
+	,clientside: function(login, auxillaries){
 		// console.error('clientside', arguments)
 		return Actions.add(login, 'clientside', auxillaries)
 	}
 	,clientsideError: function (login, auxillaries){
 		return Errors.add(login, 'clientside', auxillaries)
 	}
-	,done : Actions.add
-	,fail : Errors.add
+	,done : function(login, type, auxillaries) {
+		return Actions.add(login, type, auxillaries)
+	}
+	,fail : function(login, type, auxillaries) {
+		return Errors.add(login, type, auxillaries)
+	}
 
 	,notify : Message.notifications.personal
 	
@@ -75,6 +79,12 @@ module.exports = {
 	,updated: helper.updated
 	,removed: helper.removed
 
+	,setData: function(req, next){
+		return function (data){
+			req.data = data;
+			next();
+		}
+	}
 	,json : function (req, res){
 		res.json({msg: req.data})
 	}

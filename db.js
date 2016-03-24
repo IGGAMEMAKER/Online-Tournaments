@@ -60,7 +60,7 @@ function update(modelName, find, update, options){
 	})
 }
 
-function remove(modelName, find, parameters, options)
+function remove(modelName, find, parameters, options){
 	return new Promise(function (resolve, reject){
 		models[modelName].remove(find, function (err, count){
 			if (err) return reject(err);
@@ -79,10 +79,36 @@ function remove(modelName, find, parameters, options)
 // .then(console.log)
 // .catch(console.error)
 
+var wrap = function(modelName){
+	return {
+		list: function(find, parameters) {
+			return list(modelName, find, parameters)
+		},
+		find: function (find, parameters){
+			return searchOne(modelName, find, parameters)
+		},
+		findOne: function (find, parameters){
+			return findOne(modelName, find, parameters)
+		},
+		save: function(item){
+			return save(modelName, item)
+		},
+		update: function(find, update, options){
+			return update(modelName, find, update, options)
+		},
+		remove: function(find, parameters, options){
+			return remove(modelName, find, parameters, options)
+		}
+	}
+}
+
 module.exports = {
 	list: list,
 	find: searchOne,
 	findOne: findOne,
 	save: save,
-	update: update
+	update: update,
+	remove: remove,
+
+	wrap: wrap
 }

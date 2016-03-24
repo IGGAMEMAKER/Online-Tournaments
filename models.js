@@ -9,6 +9,8 @@ module.exports = function(dbAddress){
 	
 
 	return {
+		Collection: db.model('Collection', { list: Array, name: String, reward: Object }),
+
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 
 			salt:String, cryptVersion:Number, social:Object, inviter:Object,
@@ -42,11 +44,14 @@ module.exports = function(dbAddress){
 			description: String, 
 			URL: String, 
 			price: Number, 
-			sended:Object, 
-			date:Date 
+			sended:Object,
+			date:Date,
+
+			properties: Object // tags, status (bronze, silver, gold)
 		}),
 
-		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object }),
+		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object, date: Date, actual:Boolean }),
+
 		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
 
 		Message : db.model('Message', {
