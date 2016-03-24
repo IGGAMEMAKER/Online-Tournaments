@@ -10,13 +10,24 @@ function getByID(giftID){
 	return db.findOne('Gift', { _id : giftID })
 }
 
+function add(data){
+	return db.save('Gift', data)
+}
+
 // console.log('go')
 // db.list('Gift', {})
-all({})
+// all({})
+getByID('5622b320ecdf83f91ef09036')
 .then(console.log)
 .catch(function (err){
 	console.log(err)
 })
+
+module.exports = {
+	all:all,
+	getByID:getByID,
+	add:add
+}
 
 // function all(query){
 // 	return new Promise(function(resolve, reject){
