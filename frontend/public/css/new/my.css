@@ -293,6 +293,14 @@
 .containerdiv { float: left; position: relative; } 
 .cornerimage { position: absolute; top: 0; left: 0; } 
 
+.card{
+  background-size:     cover;                      /* <------ */
+  background-repeat:   no-repeat;
+  background-position: center center;
+  border-radius: 35px;
+  width: 100%;
+}
+
 @media (max-width: 360px){
   .marathon-multipliers {
     overflow: hidden;
