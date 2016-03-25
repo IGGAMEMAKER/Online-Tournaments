@@ -115,8 +115,18 @@ function get_random_card() {
 	var card = cardHandler[rarity][offset];
 
 	var colour = getRandomColour();
-	card.colour = colour;
-	
+	// card.colour = colour;
+
+	var crd = {
+		description: card.description,
+		name: card.name,
+		photoURL: card.photoURL,
+		price: card.price,
+		properties: card.properties,
+
+		colour: colour
+	}
+	console.log(card, crd);
 	stats[colour]++;
 	stats.counter++;
 
@@ -125,7 +135,7 @@ function get_random_card() {
 	// } else{
 	// 	// console.log(card.name);
 	// }
-	return card;
+	return crd;
 }
 
 module.exports = {

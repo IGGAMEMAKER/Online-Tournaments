@@ -462,6 +462,16 @@ var c = {
 
   ,NOTIFICATION_ADVICE:14
   ,NOTIFICATION_CARD_GIVEN:15
+
+  ,RARITY_RARE: 0
+  ,RARITY_LOW: 1
+  ,RARITY_MID: 2
+  ,RARITY_HIGH: 3
+
+  ,CARD_COLOUR_RED:1
+  ,CARD_COLOUR_BLUE:2
+  ,CARD_COLOUR_GREEN:3
+  ,CARD_COLOUR_GRAY:4
 }
 
 // console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
@@ -619,12 +629,14 @@ function drawNewsModal(data){
           header = 'Вы получаете карточку!';
           var card = info;
           console.log(card);
-          body = '<div class="col-sm-10 col-md-10 col-xs-12">' + drawCard(card)
+          body = '<div >' //class="col-sm-10 col-md-10 col-xs-12"
           body += '<p class="card-name">'+card.description+'</p>';
+          body += drawCard(card);
           body += '</div>';
           // footer = news.buttons.skip('Спасибо!', messageID)
           var open_more = '<button class="btn btn-primary" onclick="openPack()"> Открыть ещё! </button>'
-          footer = open_more;
+          var close = '<button class="btn btn-default" onclick="news.hide()"> Закрыть </button>'
+          footer = open_more + close;
         break;
         default:
           // header = message.text;
@@ -668,14 +680,30 @@ function drawCard(card){
   // var backgroundImage = '\'http://cdn.pcwallart.com/images/gold-texture-wallpaper-1.jpg\''
   // var backgroundImage = '\'https://i.ytimg.com/vi/nKbQqN8sazg/maxresdefault.jpg\''
 
-
-
+  var backgroundImage = '\'';
+  var image_card_red = 'http://www.ujut.hu/img/back.jpg';
+  var image_card_gray = 'img/cardLayers/6895569-silver-abstract-wallpaper.jpg';
+  var image_card_green = 'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg';
+  var image_card_blue = 'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg';
+  // console.log('before switch', card.colour)
+  switch(card.colour){
+    case c.CARD_COLOUR_GRAY: backgroundImage += image_card_gray; break;
+    case c.CARD_COLOUR_BLUE: backgroundImage += image_card_blue; break;
+    case c.CARD_COLOUR_GREEN: backgroundImage += image_card_green; break;
+    
+    // case c.CARD_COLOUR_RED: backgroundImage = image_card_red break;
+    default: backgroundImage += image_card_red; break;
+  }
+  backgroundImage += '\'';
+  console.log(backgroundImage);
   // var backgroundImage = '\'http://img15.nnm.me/3/3/c/6/f/ab1fb05250ab9dde13490a37bed.jpg\'' red bad
   // var backgroundImage = '\'http://m-static.flikie.com/ImageData/WallPapers/d1b8dc2a2b424a6fbb5b55cdaee405cf.jpg\'' //red
   // var backgroundImage = '\'http://www.ujut.hu/img/back.jpg\'' // good one RED
   // var backgroundImage = '\'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg\''  //green
   // var backgroundImage = '\'http://www.pspinfo.ru/uploads/gallery/main/27/7e3bc.jpg\''  //blue2
-  var backgroundImage = '\'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg\''  //blue
+  
+  // var backgroundImage = '\'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg\''  //blue
+  
   // var backgroundImage = '\'http://img0.mxstatic.com/wallpapers/46b62e792ac6da0dac319899e2d57450_large.jpeg\''  //purple
   // var backgroundImage = '\'img/cardLayers/6895569-silver-abstract-wallpaper.jpg\''  //gray
 
