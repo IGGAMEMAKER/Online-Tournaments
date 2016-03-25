@@ -1,5 +1,6 @@
 var db = require('../db');
 var Gifts = db.wrap('Gift');
+var UserGifts = db.wrap('UserGift');
 
 var c = require('../constants')
 // var await = require('await')
@@ -73,7 +74,17 @@ function remove(id){
 }
 
 var usergifts = {
-
+	saveGift: function (login, giftID, isCard){
+		var usergift = {
+			userID: login,
+			giftID: giftID
+		}
+		if (isCard) usergift.isCard = true;
+		return UserGifts.save(usergift)
+	},
+	cards: function (login){
+		return UserGifts.list({ userID: login, isCard:true})
+	}
 }
 // addCard()
 // add({})

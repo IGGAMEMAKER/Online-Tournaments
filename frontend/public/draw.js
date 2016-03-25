@@ -461,6 +461,7 @@ var c = {
   ,NOTIFICATION_LOSE_TOURNAMENT:13
 
   ,NOTIFICATION_ADVICE:14
+  ,NOTIFICATION_CARD_GIVEN:15
 }
 
 // console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
@@ -551,7 +552,6 @@ function drawNewsModal(data){
 
           footer = news.buttons.skip('Хорошо', messageID);
         break;
-
         case c.NOTIFICATION_AUTOREG:
           autoreg();
           setTimeout(function (){
@@ -615,6 +615,17 @@ function drawNewsModal(data){
           footer = news.buttons.skip('Продолжить', messageID)
           // footer = news.skip('Продолжить')
         break;
+        case c.NOTIFICATION_CARD_GIVEN:
+          header = 'Вы получаете карточку!';
+          var card = info;
+          console.log(card);
+          body = '<div class="col-sm-10 col-md-10 col-xs-12">' + drawCard(card)
+          body += '<p class="card-name">'+card.description+'</p>';
+          body += '</div>';
+          // footer = news.buttons.skip('Спасибо!', messageID)
+          var open_more = '<button class="btn btn-primary" onclick="openPack()"> Открыть ещё! </button>'
+          footer = open_more;
+        break;
         default:
           // header = message.text;
           // body = info.body;
@@ -643,6 +654,57 @@ function drawNewsModal(data){
   }
 }
 
+function drawCard(card){
+  // document.write(JSON.stringify(card))
+/*
+  <img border="0" src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt=""">
+  <img class="cornerimage" border="0" src="http://www.gravatar.com/avatar/" alt="">
+*/
+  // $(cardField).append('<img border="0" style="background-color:blue" src="/img/topics/realmadrid/'+card.photoURL+'">')
+
+  // $(cardField).append('<img border="0" style="background-color:blue" src="http://cdn.pcwallart.com/images/gold-texture-wallpaper-1.jpg">')
+  // $(cardField).append('<img class="cornerimage" border="0" src="/img/topics/realmadrid/'+card.photoURL+'">')
+  // $(cardField).append('<div>')
+  // var backgroundImage = '\'http://cdn.pcwallart.com/images/gold-texture-wallpaper-1.jpg\''
+  // var backgroundImage = '\'https://i.ytimg.com/vi/nKbQqN8sazg/maxresdefault.jpg\''
+
+
+
+  // var backgroundImage = '\'http://img15.nnm.me/3/3/c/6/f/ab1fb05250ab9dde13490a37bed.jpg\'' red bad
+  // var backgroundImage = '\'http://m-static.flikie.com/ImageData/WallPapers/d1b8dc2a2b424a6fbb5b55cdaee405cf.jpg\'' //red
+  // var backgroundImage = '\'http://www.ujut.hu/img/back.jpg\'' // good one RED
+  // var backgroundImage = '\'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg\''  //green
+  // var backgroundImage = '\'http://www.pspinfo.ru/uploads/gallery/main/27/7e3bc.jpg\''  //blue2
+  var backgroundImage = '\'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg\''  //blue
+  // var backgroundImage = '\'http://img0.mxstatic.com/wallpapers/46b62e792ac6da0dac319899e2d57450_large.jpeg\''  //purple
+  // var backgroundImage = '\'img/cardLayers/6895569-silver-abstract-wallpaper.jpg\''  //gray
+
+
+
+  // var backgroundImage = '\'http://cdn.superbwallpapers.com/wallpapers/abstract/silver-blur-31345-400x250.jpg\''  //green
+  // var backgroundImage = '\'img/cardLayers/gold.jpg\''
+  // var backgroundImage = '\'img/cardLayers/gold2.jpg\''
+  //328 276
+
+  // var text = '<div class="col-sm-4 col-md-4 col-xs-12">'
+  var text = ''
+  var style = 'background-image:url('+backgroundImage+')'
+  text+= '<img border="0" class="card img-wrapper" style="'+style+'" src="/img/topics/realmadrid/'+card.photoURL+'">'
+  // text+= '<p class="card-name">'+card.description+'</p>';
+
+  // text+= '</div>';
+  // $(cardField).append(text);
+
+/*  $(cardField).append('<div class="col-sm-4">')
+  $(cardField).append('<img border="0" class="card img-wrapper" style="background-image:url('+backgroundImage+')" src="/img/topics/realmadrid/'+card.photoURL+'">')
+  $(cardField).append('</div>')*/
+  
+  // $(cardField).append('<img border="0" style="background-color:purple" src="/img/topics/realmadrid/'+card.photoURL+'">')
+  // $(cardField).append('<img class="cornerimage" border="0" src="http://cdn.pcwallart.com/images/gold-texture-wallpaper-1.jpg" />')
+  // $(cardField).append('<img class="cornerimage" border="0" src="http://www.gravatar.com/avatar/" />')
+
+  return text;
+}
 
 var news = {
   title :   function (msg) { $("#newsTitle").html(msg); }

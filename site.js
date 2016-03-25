@@ -35,6 +35,7 @@ var Tournaments = require('./models/tournaments');
 var Message = require('./models/message');
 var Gifts = require('./models/gifts');
 
+var Packs = require('./models/packs')
 
 var Money = require('./models/money');
 
@@ -554,6 +555,28 @@ function getLogin(req){
     return 0;
   }
 }
+
+app.post('/openPack', middlewares.authenticated, function (req, res){
+  var login = getLogin(req);
+  var price = 10*0;
+  res.end('')
+  // return Money.pay(login, price, c.SOURCE_TYPE_OPEN_PACK)
+  // .then(function (result){
+  //   console.log(login, price, result);
+    var card = Packs.get_random_card();
+    console.log(card);
+  //   return card;
+  // })
+  // .then(function (card){
+
+    Gifts.user.saveGift(login, card._id ,true)
+    aux.alert(login, c.NOTIFICATION_CARD_GIVEN, card)
+  // })
+  // .catch(function (err){
+  //   Errors.add(login, { err: err })
+  // })
+  // .catch(next)
+})
 
 app.post('/Log', function (req, res){
   //res.end('sended');

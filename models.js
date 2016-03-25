@@ -50,7 +50,7 @@ module.exports = function(dbAddress){
 			properties: Object // tags, status (bronze, silver, gold), isCard:Boolean, rarity
 		}),
 
-		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object, date: Date, actual:Boolean }),
+		UserGift : db.model('UserGifts', { userID: String, giftID: String, source: Object, date: Date, isCard:Boolean, actual:Boolean }),
 
 		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
 

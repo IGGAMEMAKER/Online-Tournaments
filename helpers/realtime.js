@@ -28,6 +28,7 @@ function send(name){
 
 Collection.all({}).then(save('collections'));//.then(console.log)
 Gifts.cards().then(save('cards'));//.then(console.log)
+
 update_tournaments(1000);
 
 

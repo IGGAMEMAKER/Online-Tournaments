@@ -297,8 +297,15 @@
   background-size:     cover;                      /* <------ */
   background-repeat:   no-repeat;
   background-position: center center;
-  border-radius: 35px;
+  border-radius: 15px;
+/*  border-width: 1px;
+  border-color: red;*/
+  margin-bottom: 15px;
   width: 100%;
+}
+.card-name{
+  /*color: white;*/
+  font-size: 21px;
 }
 
 @media (max-width: 360px){
