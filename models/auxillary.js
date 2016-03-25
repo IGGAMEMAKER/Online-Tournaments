@@ -85,6 +85,12 @@ module.exports = {
 			next();
 		}
 	}
+	,save: function (objects, name){
+		return function (result){
+			objects[name] = result;
+			return result;
+		}
+	}
 	,json : function (req, res){
 		res.json({msg: req.data})
 	}
@@ -101,7 +107,17 @@ module.exports = {
 	    return 0;
 	  }
 	}
-
+	,result: function (req, next){
+		return function (value){
+			req.data = value;
+			next();
+		}
+	}
+	,render : function (page){
+		return function (req, res){
+			res.render(page, { msg: req.data||null });
+		}
+	}
 	// send message and page
 	,answer : function (page){
 		return function (req, res){

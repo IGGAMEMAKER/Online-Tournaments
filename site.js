@@ -189,9 +189,9 @@ var updatables = {};
 
 var realtime = require('./helpers/realtime')(app, io)
 
-var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy);
-var admin =       require('./Modules/site/admin')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
-var money =       require('./Modules/site/money')       (app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
+var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy, aux);
+var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
+var money = require('./Modules/site/money')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy);
@@ -601,6 +601,19 @@ app.get('/Packs', function (req, res){
       cards: realtime().cards
     }
   });
+})
+
+app.get('/api/collections/rewardme/:collectionID', aux.authenticated, function (req, res, next){
+  var login = getLogin(req);
+  var collectionID = req.params.collectionID;
+  Collection.getByID(collectionID)
+  .then(function (collection){
+    if (collection.reward){
+      switch (collection.reward){
+        
+      }
+    }
+  })
 })
 
 

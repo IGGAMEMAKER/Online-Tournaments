@@ -1,0 +1,46 @@
+//
+mixin radioButton(val, ans)
+	div(id=val)
+		input(type="radio", value=val, name='answer').
+		| #{ans}
+		br
+mixin inp(tdName, inpName)
+	tr
+		td #{tdName}
+		td
+			input(type="text", name=inpName).
+mixin inpRarity()
+	//,RARITY_RARE: 0
+	//,RARITY_LOW: 1
+	//,RARITY_MID: 2
+	//,RARITY_HIGH: 3
+	tr
+		td Rarity
+		td
+			select
+				option(name="rarity" value=0) RARE
+				option(name="rarity" value=1) LOW
+				option(name="rarity" value=2) MID
+				option(name="rarity" selected value=3) HIGH
+html
+	head
+		title AddGift
+center
+	br
+	br
+	br
+	- if(msg)
+		#addResult
+			p!=JSON.stringify(msg)
+	p AddCard 
+	form(acion='', method="POST")
+		table( BORDER="1" CELLPADDING="10" CELLSPACING="0" BORDERCOLOR="000000")
+			+inp('Gift name','name')
+			+inp('description', 'description')
+			+inp('price','price')
+			+inp('photoURL','photoURL')
+			+inp('URL','URL')
+			+inpRarity()
+		input(type="submit", value="Add Gift")
+	br
+	a(href="ShowGifts") ShowGifts

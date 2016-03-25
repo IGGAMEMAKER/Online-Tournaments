@@ -1,4 +1,6 @@
-module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy){
+module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, aux){
+  var Gifts = require('../../models/gifts')
+  var Collections = require('../../models/collections')
 
   app.get('/AddGift', function (req, res){
     res.render('AddGift');
@@ -9,8 +11,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy){
     Log('AddGift ' + JSON.stringify(data), 'Manual');
     if (data){
       sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
-            res.render('AddGift', {msg:body});
-          });
+        res.render('AddGift', {msg:body});
+      });
     }
     else{
       Answer(res, Fail);
@@ -18,6 +20,42 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy){
     //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
           
   });
+
+  app.get('/api/collections/get/:collectionID', aux.isAdmin, function (req, res, next){
+    var collectionID = req.params.collectionID;
+    Collections.getByID(collectionID)
+    .then(aux.result(req, next))
+    .catch(next);
+  }, aux.json, aux.error)
+
+  app.get('/api/collections/all', aux.isAdmin, function (req, res, next){
+    Collections.all({})
+    .then(aux.result(req, next))
+    .catch(next);
+  }, aux.json, aux.error)
+
+  app.get('/api/collections/attach/:collectionID/:giftID', aux.isAdmin, function (req, res, next){
+    var collectionID = req.params.collectionID;
+    var giftID = req.params.giftID;
+    Collections.attachGift(collectionID, giftID)
+    .then(aux.result(req, next))
+    .catch(next);
+  }, aux.json, aux.error)
+
+  app.get('/AddCard', aux.isAdmin, aux.render('AddCard'))
+
+  app.post('/AddCard', aux.isAdmin, function (req, res, next){
+    var data = req.body;
+    var name = data.name;
+    var description = data.description;
+    var photoURL = data.photoURL;
+    var price = data.price;
+    var rarity = data.rarity;
+
+    Gifts.addCard(name, description, photoURL, price, rarity)
+    .then(aux.result(req, next))
+    .catch(next);
+  }, aux.json, aux.error) // aux.render('AddCard')
 
   app.get('/ShowGifts', function (req, res){
     /*var data = req.body;
