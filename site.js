@@ -556,28 +556,6 @@ function getLogin(req){
   }
 }
 
-app.post('/openPack', middlewares.authenticated, function (req, res){
-  var login = getLogin(req);
-  var price = 10*0;
-  res.end('')
-  // return Money.pay(login, price, c.SOURCE_TYPE_OPEN_PACK)
-  // .then(function (result){
-  //   console.log(login, price, result);
-    var card = Packs.get_random_card();
-    console.log(card);
-  //   return card;
-  // })
-  // .then(function (card){
-
-    Gifts.user.saveGift(login, card._id ,true)
-    aux.alert(login, c.NOTIFICATION_CARD_GIVEN, card)
-  // })
-  // .catch(function (err){
-  //   Errors.add(login, { err: err })
-  // })
-  // .catch(next)
-})
-
 app.post('/Log', function (req, res){
   //res.end('sended');
   res.end('');
@@ -603,18 +581,32 @@ app.get('/Packs', function (req, res){
   });
 })
 
-app.get('/api/collections/rewardme/:collectionID', aux.authenticated, function (req, res, next){
-  var login = getLogin(req);
-  var collectionID = req.params.collectionID;
-  Collection.getByID(collectionID)
-  .then(function (collection){
-    if (collection.reward){
-      switch (collection.reward){
-        
-      }
-    }
-  })
-})
+// app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
+//   var login = getLogin(req);
+//   Gifts.user.cards(login)
+//   .then(aux.setData(req, next))
+//   .catch(next)
+// }, aux.json, aux.error);
+
+// app.get('/api/usergifts/removeAll/', middlewares.authenticated, function (req, res, next){
+//   var login = getLogin(req);
+//   Gifts.user.removeAll(login)
+//   .then(aux.setData(req, next))
+//   .catch(next)
+// }, aux.json, aux.error);
+
+// app.get('/api/collections/rewardme/:collectionID', aux.authenticated, function (req, res, next){
+//   var login = getLogin(req);
+//   var collectionID = req.params.collectionID;
+//   Collection.getByID(collectionID)
+//   .then(function (collection){
+//     if (collection.reward){
+//       switch (collection.reward){
+
+//       }
+//     }
+//   })
+// })
 
 
 app.get('/SpecLogs/:topic', function (req, res){

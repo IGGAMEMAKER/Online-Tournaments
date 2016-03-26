@@ -118,6 +118,8 @@ function get_random_card() {
 	// card.colour = colour;
 
 	var crd = {
+		giftID: card._id,
+
 		description: card.description,
 		name: card.name,
 		photoURL: card.photoURL,
@@ -126,7 +128,7 @@ function get_random_card() {
 
 		colour: colour
 	}
-	console.log(card, crd);
+	// console.log(card, crd);
 	stats[colour]++;
 	stats.counter++;
 

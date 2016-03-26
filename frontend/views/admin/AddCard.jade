@@ -17,11 +17,11 @@ mixin inpRarity()
 	tr
 		td Rarity
 		td
-			select
-				option(name="rarity" value=0) RARE
-				option(name="rarity" value=1) LOW
-				option(name="rarity" value=2) MID
-				option(name="rarity" selected value=3) HIGH
+			select(name="rarity")
+				option(value=0) RARE
+				option(value=1) LOW
+				option(value=2) MID
+				option(selected value=3) HIGH
 html
 	head
 		title AddGift

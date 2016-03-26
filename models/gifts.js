@@ -64,7 +64,16 @@ function add(name, photoURL, description, URL, price, sended, date, properties){
 
 function cards(rarity){
 	var obj = {	'properties.isCard': true	}
-	if (rarity || rarity==0) obj['properties.rarity'] = rarity;
+	if (rarity || rarity==0) obj['properties.rarity'] = parseInt(rarity);
+
+	// var obj = {	
+	// 	properties: { 
+	// 		isCard: true
+	// 	}
+	// }
+	// if (rarity || rarity==0){
+	// 	obj.properties.rarity = parseInt(rarity);
+	// } //obj['properties.rarity'] = rarity;
 
 	return Gifts.list(obj)
 }
@@ -74,16 +83,26 @@ function remove(id){
 }
 
 var usergifts = {
-	saveGift: function (login, giftID, isCard){
+	saveGift: function (login, giftID, isCard, colour){
 		var usergift = {
 			userID: login,
 			giftID: giftID
 		}
 		if (isCard) usergift.isCard = true;
+		if (colour) usergift.colour = colour;
+		// console.log(arguments, usergift);
+
 		return UserGifts.save(usergift)
 	},
 	cards: function (login){
 		return UserGifts.list({ userID: login, isCard:true})
+	},
+	remove: function (id){
+		return UserGifts.remove({_id:id})
+	},
+	clearAllByUsername: function(login){
+		console.log(login);
+		return UserGifts.remove({ userID: login})
 	}
 }
 // addCard()

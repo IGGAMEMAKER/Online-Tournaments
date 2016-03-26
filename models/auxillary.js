@@ -23,6 +23,8 @@ var mailsender = require('../helpers/mailchimp');
 
 // 
 
+var c = require('../constants');
+
 var Actions = require('./actions');// models.Action;
 var Errors = require('./errors');//models.Error;
 var Stats = require('./statistics');//models.Statistic;
@@ -39,6 +41,16 @@ var Message = require('./message');
 
 function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
 function isNumeric(num) { return !isNaN(num); }
+
+function errorJSON (err, req, res, next){
+	res.json({err: err})
+}
+
+function sendJSON (req, res){
+	res.json({msg: req.data})
+}
+
+
 var io;
 module.exports = {
 	debug : debug
@@ -91,15 +103,18 @@ module.exports = {
 			return result;
 		}
 	}
-	,json : function (req, res){
-		res.json({msg: req.data})
-	}
+	// ,err : function (err, req, res, next){
+	// 	res.json({err: err})
+	// }
+	// ,json : function (req, res){
+	// 	res.json({msg: req.data})
+	// }
+	,err:errorJSON
+	,json:sendJSON
 	,raw : function (req, res){
 		res.end(req.data);
 	}
-	,err : function (err, req, res, next){
-		res.json({err: err})
-	}
+	,std: [sendJSON, errorJSON]
 	,getLogin: function (req){
 	  if (isAuthenticated(req)){
 	    return req.session.login;
@@ -132,7 +147,7 @@ module.exports = {
 		}
 	}
 	,catcher : console.error
-
+	,c:c
 
 	// mail
 	,mailLists: function(){
