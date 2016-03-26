@@ -61,6 +61,7 @@ module.exports = {
 	}
 
 	,isAuthenticated : middlewares.authenticated
+	,authenticated : middlewares.authenticated
 	,isAdmin : middlewares.isAdmin
 
 	// ,attempt : Stats.attempt

@@ -48,6 +48,17 @@ function save(modelName, item){
 	})
 }
 
+function aggregate(modelName, array){
+	return new Promise(function (resolve, reject){
+		// console.log(modelName, find, updateObj, options);
+		models[modelName].aggregate(array, function (err, data){
+			if (err) return reject(err);
+
+			return resolve(data);
+		})
+	})
+}
+
 function update(modelName, find, updateObj, options){
 	return new Promise(function (resolve, reject){
 		// console.log(modelName, find, updateObj, options);
@@ -105,6 +116,9 @@ var wrap = function(modelName){
 		},
 		remove: function(find, parameters, options){
 			return remove(modelName, find, parameters, options)
+		},
+		aggregate: function(array){
+			return aggregate(modelName, array)
 		}
 	}
 }
@@ -116,6 +130,7 @@ module.exports = {
 	save: save,
 	update: update,
 	remove: remove,
+	aggregate: aggregate,
 
 	wrap: wrap
 }

@@ -97,6 +97,17 @@ var usergifts = {
 	cards: function (login){
 		return UserGifts.list({ userID: login, isCard:true})
 	},
+	cardsGroup: function (login){
+		var obj = [{
+			$group: {
+				// _id: "$giftID",
+				_id: { giftID: "$giftID", colour: "$colour" },
+				// colour: "$colour",
+				count: { $sum: 1 }
+			}
+		}]
+		return UserGifts.aggregate(obj)
+	},
 	remove: function (id){
 		return UserGifts.remove({_id:id})
 	},
@@ -105,6 +116,7 @@ var usergifts = {
 		return UserGifts.remove({ userID: login})
 	}
 }
+
 // addCard()
 // add({})
 
@@ -132,6 +144,7 @@ var usergifts = {
 // all({})
 // // getByID('5622b320ecdf83f91ef09036')
 // Gifts.update()
+// usergifts.cardsGroup('23i03g')
 // .then(console.log)
 // .catch(console.error)
 

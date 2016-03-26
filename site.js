@@ -573,13 +573,27 @@ app.get('/main', function (req, res){
   res.render('main2');
 })
 
-app.get('/Packs', function (req, res){
-  res.render('Packs', { 
-    msg:{
-      cards: realtime().cards
+app.get('/Packs', aux.authenticated, function (req, res, next){
+
+  var login = aux.getLogin(req);
+  Gifts.user.cardsGroup(login)
+  .then(function (cards){
+    // console.log(cards);
+    req.data = {
+      cards: realtime().cards,
+      usercards: cards||[]
     }
-  });
-})
+    next();
+  })
+  .catch(next)
+  
+  // res.render('Packs', { 
+  //   msg:{
+  //     cards: realtime().cards
+  //   }
+  // });
+// })
+}, aux.render('Packs'), aux.err)
 
 // app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
 //   var login = getLogin(req);

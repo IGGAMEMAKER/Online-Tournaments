@@ -11,12 +11,18 @@ block content
 		h1(class="white text-center") Паки
 		center
 			button(class="btn btn-primary" onclick="openPack()") Открыть за 10 руб
+		p!= JSON.stringify(msg.usercards)
 		br
 	div(class="col-sm-12" id="cards")
 		script.
 			//var msg = "#{msg}";
-			var msg = !{JSON.stringify(msg)}; 
+			var msg = !{JSON.stringify(msg)};
+			var usercards = msg.usercards;
+
+			//console.log(
 			var Cards = msg.cards;
 			//console.log(Cards);
+			//console.log(usercards);
 			drawCards(Cards);
+			drawMyCards(Cards, usercards)
 			
