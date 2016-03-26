@@ -76,7 +76,7 @@ function drawMyCards(cardInfo, myCards){
 		}
 		// card.colour = colour
 
-		text += '<div class="col-sm-4 col-md-4 col-xs-12">' + drawCard(crd);
+		text += '<div class="col-sm-2 col-md-2 col-xs-6">' + drawCard(crd);
 		// text += '<p class="card-name white">' + crd.description + '</p>';
 		var cnt = '';
 		if (count>1) cnt = ' ('+count+'x) '

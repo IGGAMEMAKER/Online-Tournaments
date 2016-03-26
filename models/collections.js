@@ -23,6 +23,20 @@ function add(list, name, reward){
 	})
 }
 
+function setColour(id, colour){
+	return update(id, { colour: colour })
+}
+
+function copy(from, to){
+	return getByID(from)
+	.then(function (collection){
+		var obj = {
+			list:collection.list||[]
+		}
+		return update(to, obj)
+	})
+}
+
 function update(id, upd) {
 	return Collection.update({ "_id":id }, { $set: upd })
 }
@@ -32,7 +46,7 @@ function remove(id){
 }
 
 function clear(id){
-	return update(id, {list:[]})
+	return update(id, { list:[] })
 }
 
 function attachGift(id, giftID){
@@ -77,6 +91,9 @@ module.exports = {
 	getByName:getByName,
 	add:add,
 	remove:remove,
+	copy:copy,
+	setColour:setColour,
+	clear:clear,
 
 	attachGift:attachGift
 }

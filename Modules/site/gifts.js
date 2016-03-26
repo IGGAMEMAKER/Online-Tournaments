@@ -5,24 +5,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   var middlewares = require('../../middlewares')
 
-  app.get('/AddGift', function (req, res){
-    res.render('AddGift');
-  });
-
-  app.post('/AddGift', function (req, res){
-    var data = req.body;
-    Log('AddGift ' + JSON.stringify(data), 'Manual');
-    if (data){
-      sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
-        res.render('AddGift', {msg:body});
-      });
-    }
-    else{
-      Answer(res, Fail);
-    }
-    //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
-          
-  });
+  // packs
 
   app.post('/openPack/:value', middlewares.authenticated, function (req, res){
     var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
@@ -39,6 +22,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     // })
     // .then(function (card){
       var giftID = card.giftID;
+      card.value = value
 
       Gifts.user.saveGift(login, giftID, true, card.colour)
       aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
@@ -50,28 +34,10 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   })
   // console.log(middlewares);
 
-
-
-  app.get('/api/gifts/cards/:rarity', middlewares.isAdmin, function (req, res, next){
-    var rarity = req.params.rarity;
-    Gifts.cards(rarity||null)
-    .then(aux.setData(req, next))
-    .catch(next)
-  }, aux.std);
-
   app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
     // console.log('all player cards')
     var login = aux.getLogin(req);
     Gifts.user.cards(login)
-
-    .then(aux.setData(req, next))
-    .catch(next)
-  }, aux.std);
-
-  app.get('/api/gifts/remove/:id', aux.isAdmin, function (req, res, next){
-    var id = req.params.id;
-
-    Gifts.remove(id)
 
     .then(aux.setData(req, next))
     .catch(next)
@@ -86,31 +52,42 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     .catch(next)
   }, aux.std);
 
-  app.get('/api/collections/get/:collectionID', aux.isAdmin, function (req, res, next){
-    var collectionID = req.params.collectionID;
+  // gifts
 
-    Collections.getByID(collectionID)
+  app.get('/AddGift', aux.isAdmin, aux.render('AddGift'))
 
-    .then(aux.result(req, next))
-    .catch(next);
-  }, aux.std)
+  app.post('/AddGift', aux.isAdmin, function (req, res){
+    var data = req.body;
+    Log('AddGift ' + JSON.stringify(data), 'Manual');
+    if (data){
+      sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
+        res.render('AddGift', {msg:body});
+      });
+    }
+    else{
+      Answer(res, Fail);
+    }
+    //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+          
+  });
 
-  app.get('/api/collections/all', aux.isAdmin, function (req, res, next){
-    Collections.all({})
+  app.get('/api/gifts/cards/:rarity', middlewares.isAdmin, function (req, res, next){
+    var rarity = req.params.rarity;
 
-    .then(aux.result(req, next))
-    .catch(next);
-  }, aux.std)
+    Gifts.cards(rarity||null)
 
-  app.get('/api/collections/attach/:collectionID/:giftID', aux.isAdmin, function (req, res, next){
-    var collectionID = req.params.collectionID;
-    var giftID = req.params.giftID;
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
 
-    Collections.attachGift(collectionID, giftID)
+  app.get('/api/gifts/remove/:id', aux.isAdmin, function (req, res, next){
+    var id = req.params.id;
 
-    .then(aux.result(req, next))
-    .catch(next);
-  }, aux.std)
+    Gifts.remove(id)
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
 
   app.get('/AddCard', aux.isAdmin, aux.render('AddCard'))
 
@@ -130,12 +107,14 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     .catch(next);
   }, aux.std) // aux.render('AddCard')
 
-  app.get('/ShowGifts', function (req, res){
-    /*var data = req.body;
-    if (!data){ data={}; }
-    siteAnswer(res, 'ShowGifts', data, 'ShowGifts');*/
-    AsyncRender('DBServer', 'ShowGifts', res, {renderPage:'ShowGifts'});
-  });
+
+
+  app.get('/ShowGifts', aux.isAdmin, function (req, res, next){
+    Gifts.all()
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.render('ShowGifts'));
 
   app.get('/GetGift', function (req, res){
     var data = req.body;

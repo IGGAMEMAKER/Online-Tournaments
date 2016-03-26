@@ -634,7 +634,8 @@ function drawNewsModal(data){
           body += drawCard(card);
           body += '</div>';
           // footer = news.buttons.skip('Спасибо!', messageID)
-          var open_more = '<button class="btn btn-primary" onclick="openPack()"> Открыть ещё! </button>'
+          var value = info.value || c.CARD_COLOUR_GRAY;
+          var open_more = '<button class="btn btn-primary" onclick="openPack('+value+')"> Открыть ещё! </button>'
           var close = '<button class="btn btn-default" onclick="news.hide()"> Закрыть </button>'
 
           if (card.isFree) {

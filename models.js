@@ -9,7 +9,7 @@ module.exports = function(dbAddress){
 	
 
 	return {
-		Collection: db.model('Collection', { list: Array, name: String, reward: Object }),
+		Collection: db.model('Collection', { list: Array, name: String, reward: Object, colour:Number }),
 
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 
