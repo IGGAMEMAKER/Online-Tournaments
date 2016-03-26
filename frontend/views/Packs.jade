@@ -34,14 +34,22 @@ block content
 		//a(href="/Cards") Мои карточки
 			//drawMyCards(Cards, usercards)
 mixin drawCollections()
+	//script.
+		var collections = [{ have:1, need:10 },{ have:1, need:10 },{ have:1, need:10 },{ have:1, need:10 }]
 	div(class="white")
 		div(class="col-sm-12")
-			h1(class="mg-md text-center") Собери "красную" команду и получи 1000 рублей на счёт!
-			p
-			script.				
-				showCollection(Cards, 1)
+			h1(class="mg-md text-center") Собери "серую" команду и получи ускоритель 4!
+			script.
+				showCollection(Cards, 4)
+		div(class="col-sm-12")
+			h1(class="mg-md text-center") Собери "красную" команду и получи 10 зелёных паков
+			script.
+				showCollection(Cards, 3)
 		div(class="col-sm-12")
 			h1(class="mg-md text-center") Собери "синюю" команду и получи 10 синих паков
-			p
-			script.				
+			script.
 				showCollection(Cards, 2)
+		div(class="col-sm-12")
+			h1(class="mg-md text-center") Собери "красную" команду и получи 1000 рублей на счёт!
+			script.
+				showCollection(Cards, 1)

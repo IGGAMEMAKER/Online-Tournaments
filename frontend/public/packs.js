@@ -20,12 +20,18 @@ function drawCards(cards){
 	}
 	$(cardField).append(text);
 }
+var collections = {}
+collections[1] = { have:1, need:10 }
+collections[2] = { have:5, need:10 }
+collections[3] = { have:7, need:10 }
+collections[4] = { have:9, need:10 }
 
 function showCollection(cards, colour){
 	var text = '';
 	var colour;
 	// for (var j=1;j<5; j++){
 		// colour = j;
+		text += '<a href="/Cards"><h3> Собрано: ' + collections[colour].have + '/' + collections[colour].need + '</h3></a>'
 		for (var i=0;i<cards.length; i++){
 			var card = getCardFromDefault(cards[i]._id, colour);
 
