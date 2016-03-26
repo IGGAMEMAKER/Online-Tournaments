@@ -293,6 +293,10 @@
 .containerdiv { float: left; position: relative; } 
 .cornerimage { position: absolute; top: 0; left: 0; } 
 
+.full{
+  width: 100%;
+}
+
 .card{
   background-size:     cover;                      /* <------ */
   background-repeat:   no-repeat;

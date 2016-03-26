@@ -114,8 +114,11 @@ function fillCardHandler(){
 var packGenerator = {
 	standard: { multiplier:100, red:5, blue:15, green: 30 }
 	,equal: { multiplier:100, red:25, blue:25, green: 25 }
-	,lucky: { multiplier:100, red:50, blue:25, green: 20 }
 	,afterTournament: { multiplier:10000, red:10, blue:100, green: 2000	}
+
+	,lucky: { multiplier:100, red:50, blue:25, green: 20 }
+	,blue:  { multiplier:100, red:5, blue:50, green: 20 }
+	,green: { multiplier:100, red:5, blue:25, green: 60 }
 }
 
 function TestRandomizer(){
@@ -187,9 +190,36 @@ function get_after_game_card(){
 	return get_random_card(packGenerator.afterTournament)
 }
 
+// coloured
+
+function get_red_pack(){
+	return get_random_card(packGenerator.lucky)
+}
+
+function get_gray_pack(){
+	return get_random_card(packGenerator.standard)
+}
+
+function get_blue_pack(){
+	return get_random_card(packGenerator.blue)
+}
+
+function get_green_pack(){
+	return get_random_card(packGenerator.green)
+}
+
 
 
 module.exports = {
+	get: function (value){
+		switch(value){
+			case c.CARD_COLOUR_GRAY: return get_gray_pack(); break;
+			case c.CARD_COLOUR_GREEN: return get_green_pack(); break;
+			case c.CARD_COLOUR_BLUE: return get_blue_pack(); break;
+			case c.CARD_COLOUR_RED: return get_red_pack(); break;
+			default: return get_gray_pack(); break;
+		}
+	},
 	get_random_card: get_random_card,
 	get_lucky_card: get_lucky_card,
 	get_after_game_card: get_after_game_card,

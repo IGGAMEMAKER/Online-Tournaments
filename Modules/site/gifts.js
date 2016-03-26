@@ -24,14 +24,16 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
           
   });
 
-  app.post('/openPack', middlewares.authenticated, function (req, res){
+  app.post('/openPack/:value', middlewares.authenticated, function (req, res){
+    var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
+
     var login = aux.getLogin(req);
-    var price = 10*0;
+    var price = (10 + (4 - value)* 20) *0;
     res.end('')
-    // return Money.pay(login, price, c.SOURCE_TYPE_OPEN_PACK)
+    // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
     // .then(function (result){
     //   console.log(login, price, result);
-      var card = Packs.get_standard_pack_card();
+      var card = Packs.get(value);//_standard_pack_card
       console.log(card);
     //   return card;
     // })

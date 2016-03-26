@@ -1,8 +1,8 @@
 var cardField= "#cards";
 
 
-function openPack(){
-	mark('openPack')
+function openPack(value){
+	mark('openPack/'+value)
 	news.hide();
 }
 
@@ -23,22 +23,27 @@ function drawCards(cards){
 
 function drawPackButton(){
 	var crd = {
-		// description: card.description,
-		// name: card.name,
 		photoURL: 'pack.png',
-		// properties: card.properties,
-
 		colour: 0
 	}
-	var text = '';
-	text += '<center>'
-	// text += '<div style="width:100%;" >'
-	text += '<div class="col-sm-4 col-md-4 col-xs-12">' // style="margin: auto;"
-	text += drawCard(crd);
-	text += '<button class="btn btn-primary btn-lg" onclick="openPack()"> Открыть пак за 10 руб </button>'
+	
+	var text = '<div style="margin:20px">';
+
+	var pack_prices = { 1:70, 2:50, 3:30, 4:10 }
+	for (var i=1; i<=4; i++) {
+		crd.colour = i
+
+		// text += '<center>'
+		// text += '<div style="width:100%;" >'
+		text += '<div class="col-sm-3 col-md-3 col-xs-12">' // style="margin: auto;"
+		text += drawCard(crd);
+		text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+')"> Открыть ('+pack_prices[i]+'р) </button>'
+		text += '</div>'
+		// text += '</div>'
+		// text += '</center>'
+	}
 	text += '</div>'
-	// text += '</div>'
-	text += '</center>'
+	
 	document.write(text)
 }
 
@@ -72,8 +77,11 @@ function drawMyCards(cardInfo, myCards){
 		// card.colour = colour
 
 		text += '<div class="col-sm-4 col-md-4 col-xs-12">' + drawCard(crd);
-		text += '<p class="card-name white">' + crd.description + '</p>';
-		text += '<p class="card-name white">' + 'Количество: ' + count + '</p>';
+		// text += '<p class="card-name white">' + crd.description + '</p>';
+		var cnt = '';
+		if (count>1) cnt = ' ('+count+'x) '
+		text += '<p class="card-name white">' + crd.description + cnt + '</p>';
+		// text += '<p class="card-name white">' + 'Количество: ' + count + '</p>';
 		text += '</div>';
 	}
 	$(cardField).append(text);
