@@ -17,7 +17,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     // .then(function (result){
     //   console.log(login, price, result);
       var card = Packs.get(value);//_standard_pack_card
-      console.log(card);
+      // console.log(card);
     //   return card;
     // })
     // .then(function (card){

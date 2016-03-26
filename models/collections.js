@@ -52,7 +52,7 @@ function clear(id){
 function attachGift(id, giftID){
 	return getByID(id)
 	.then(function (collection){
-		console.log(collection);
+		// console.log(collection);
 
 		var list = collection.list;
 		list.push(giftID);
