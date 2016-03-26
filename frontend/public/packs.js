@@ -28,8 +28,10 @@ function drawMyCards(cardInfo, myCards){
 	// console.log(myCards[0]._id.colour);
 
 	for (var i = myCards.length - 1; i >= 0; i--) {//myCards.length - 1
+		// var myCard = 
 		var id = myCards[i]._id.giftID
 		var colour = myCards[i]._id.colour
+		var count = myCards[i].count;
 
 		console.log(myCards[i]._id, myCards[i]._id.colour)
 
@@ -49,7 +51,8 @@ function drawMyCards(cardInfo, myCards){
 		// card.colour = colour
 
 		text += '<div class="col-sm-4 col-md-4 col-xs-12">' + drawCard(crd);
-		text += '<p class="card-name white">' + card.description + '</p>';
+		text += '<p class="card-name white">' + crd.description + '</p>';
+		text += '<p class="card-name white">' + 'Количество: ' + count + '</p>';
 		text += '</div>';
 	}
 	$(cardField).append(text);

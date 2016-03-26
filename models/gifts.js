@@ -105,6 +105,9 @@ var usergifts = {
 				// colour: "$colour",
 				count: { $sum: 1 }
 			}
+		},
+		{
+			$sort: { '_id.colour' :-1}
 		}]
 		return UserGifts.aggregate(obj)
 	},
