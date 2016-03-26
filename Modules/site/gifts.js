@@ -31,7 +31,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     // return Money.pay(login, price, c.SOURCE_TYPE_OPEN_PACK)
     // .then(function (result){
     //   console.log(login, price, result);
-      var card = Packs.get_random_card();
+      var card = Packs.get_standard_pack_card();
       console.log(card);
     //   return card;
     // })

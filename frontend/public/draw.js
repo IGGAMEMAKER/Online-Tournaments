@@ -636,7 +636,12 @@ function drawNewsModal(data){
           // footer = news.buttons.skip('Спасибо!', messageID)
           var open_more = '<button class="btn btn-primary" onclick="openPack()"> Открыть ещё! </button>'
           var close = '<button class="btn btn-default" onclick="news.hide()"> Закрыть </button>'
-          footer = open_more + close;
+
+          if (card.isFree) {
+            footer = close;
+          } else {
+            footer = open_more + close;
+          }
         break;
         default:
           // header = message.text;
@@ -681,10 +686,14 @@ function drawCard(card){
   // var backgroundImage = '\'https://i.ytimg.com/vi/nKbQqN8sazg/maxresdefault.jpg\''
 
   var backgroundImage = '\'';
-  var image_card_red = 'http://www.ujut.hu/img/back.jpg';
-  var image_card_gray = 'img/cardLayers/6895569-silver-abstract-wallpaper.jpg';
-  var image_card_green = 'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg';
-  var image_card_blue = 'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg';
+  // var image_card_red = 'http://www.ujut.hu/img/back.jpg';
+  var image_card_red = '/img/cardLayers/0.jpg';
+  // var image_card_gray = 'img/cardLayers/6895569-silver-abstract-wallpaper.jpg';
+  var image_card_gray = 'img/cardLayers/3.jpg';
+  // var image_card_green = 'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg';
+  var image_card_green = 'img/cardLayers/2.jpg';
+  // var image_card_blue = 'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg';
+  var image_card_blue = 'img/cardLayers/1.jpg';
   // console.log('before switch', card.colour)
   switch(card.colour){
     case c.CARD_COLOUR_GRAY: backgroundImage += image_card_gray; break;

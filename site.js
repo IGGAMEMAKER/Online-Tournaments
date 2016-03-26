@@ -503,7 +503,7 @@ function sendAfterGameNotification(login, mainPrize){
         // //analyze, what he knows about us
 
         // show hello message
-        aux.alert(login, c.NOTIFICATION_FIRST_MESSAGE, {mainPrize: mainPrize})
+        aux.alert(login, c.NOTIFICATION_FIRST_MESSAGE, { mainPrize: mainPrize })
 
         console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
 
@@ -519,7 +519,18 @@ function sendAfterGameNotification(login, mainPrize){
         var marathonUser = getMarathonUser(login);
         marathonUser.mainPrize = mainPrize;
 
-        aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
+        var card = Packs.get_after_game_card()
+        var giftID = card.giftID;
+        card.isFree = true;
+        console.log('grant card', card)
+
+        Gifts.user.saveGift(login, giftID, true, card.colour)
+        .then(function (result){
+          return aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
+        })
+        .catch(console.error)
+
+        // aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
 
 
         // send advices

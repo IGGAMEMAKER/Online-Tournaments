@@ -14,11 +14,32 @@ function drawCards(cards){
 		var card = cards[i];
 
 		cardsDefault[card._id] = card;
-		text += '<div class="col-sm-4 col-md-4 col-xs-12">' + drawCard(card);
-		text += '<p class="card-name white">' + card.description + '</p>';
-		text += '</div>';
+		// text += '<div class="col-sm-4 col-md-4 col-xs-12">' + drawCard(card);
+		// text += '<p class="card-name white">' + card.description + '</p>';
+		// text += '</div>';
 	}
 	$(cardField).append(text);
+}
+
+function drawPackButton(){
+	var crd = {
+		// description: card.description,
+		// name: card.name,
+		photoURL: 'pack.png',
+		// properties: card.properties,
+
+		colour: 0
+	}
+	var text = '';
+	text += '<center>'
+	// text += '<div style="width:100%;" >'
+	text += '<div class="col-sm-4 col-md-4 col-xs-12">' // style="margin: auto;"
+	text += drawCard(crd);
+	text += '<button class="btn btn-primary btn-lg" onclick="openPack()"> Открыть пак за 10 руб </button>'
+	text += '</div>'
+	// text += '</div>'
+	text += '</center>'
+	document.write(text)
 }
 
 function drawMyCards(cardInfo, myCards){
