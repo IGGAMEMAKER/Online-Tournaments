@@ -62,5 +62,7 @@ module.exports = {
 	,REWARD_MONEY_FEW:7
 	,REWARD_MONEY_LOT:8
 
+	// ,COLLECTION_PRIZE_
+
 	// ,MESSAGE_TYPE_
 }

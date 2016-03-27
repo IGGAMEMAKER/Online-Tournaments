@@ -93,11 +93,14 @@ var usergifts = {
 		// console.log(arguments, usergift);
 
 		return UserGifts.save(usergift)
-	},
-	cards: function (login){
+	}
+	,cards: function (login){
 		return UserGifts.list({ userID: login, isCard:true})
-	},
-	cardsGroup: function (login){
+	}
+	,usergiftsWhichFitCollection: function(login, colour, giftIDs){
+		return UserGifts.list({ userID: login, colour:colour, giftID : {$in: giftIDs } })
+	}
+	,cardsGroup: function (login){
 		var obj = [{
 			$group: {
 				// _id: "$giftID",
@@ -110,11 +113,11 @@ var usergifts = {
 			$sort: { '_id.colour' :-1}
 		}]
 		return UserGifts.aggregate(obj)
-	},
-	remove: function (id){
+	}
+	,remove: function (id){
 		return UserGifts.remove({_id:id})
-	},
-	clearAllByUsername: function(login){
+	}
+	,clearAllByUsername: function(login){
 		console.log(login);
 		return UserGifts.remove({ userID: login})
 	}

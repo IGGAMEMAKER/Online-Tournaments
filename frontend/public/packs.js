@@ -109,7 +109,7 @@ function showCollection(collection, sameColourCardsList){
 			var card = getCardFromDefault(collectionGiftID, colour);
 
 			// cardsDefault[card._id] = card;
-			text += '<div class="col-sm-2 col-md-2 col-xs-12">' + drawCard(card);
+			text += '<div class="col-sm-3 col-md-3 col-xs-12">' + drawCard(card);
 			text += '<p class="card-name white">' + card.description + '</p>';
 			text += '</div>';
 		}
@@ -122,11 +122,15 @@ function showCollection(collection, sameColourCardsList){
 		// make GIVE ME REWARD active
 		buttonStatus = 'enabled'
 	}
-	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="">Получить награду</button>'
+	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="rewardme('+collectionID+')">Получить награду</button>'
 	text += '</div>'
 	// }
 	document.write(text);
 	// $(cardField).append(text);
+}
+
+function rewardme(collectionID){
+	mark('rewardme/'+collectionID)
 }
 
 // function showCollection(cards, colour){

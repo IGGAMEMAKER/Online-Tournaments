@@ -18,9 +18,9 @@ block content
 		//center
 			button(class="btn btn-primary" onclick="openPack()") Открыть за 10 руб
 		//p!= JSON.stringify(msg.usercards)
-		p!= JSON.stringify(msg.collections)
+		//p!= JSON.stringify(msg.collections)
 		br
-	div(class="col-sm-12" id="cards")
+	div(class="col-sm-12 col-xs-12" id="cards")
 		script.
 			//var msg = "#{msg}";
 			var msg = !{JSON.stringify(msg)};
