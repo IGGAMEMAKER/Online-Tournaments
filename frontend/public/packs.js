@@ -116,7 +116,13 @@ function showCollection(collection, sameColourCardsList){
 
 	var have = findEqualities(sameColourCardsList, CollectionList[collectionID]);// 1; // have = function(sameColourCardsList, collection)
 	text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
+	var buttonStatus = 'disabled';
 
+	if (need>0 && have==need){
+		// make GIVE ME REWARD active
+		buttonStatus = 'enabled'
+	}
+	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="">Получить награду</button>'
 	text += '</div>'
 	// }
 	document.write(text);
