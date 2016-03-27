@@ -190,6 +190,7 @@ var updatables = {};
 var realtime = require('./helpers/realtime')(app, io)
 
 var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy, aux);
+var collections = require('./Modules/site/collections')(app, AsyncRender, Answer, sender, Log, proxy, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money = require('./Modules/site/money')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
 
@@ -591,6 +592,7 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
   .then(function (cards){
     // console.log(cards);
     req.data = {
+      collections: realtime().collections,
       cards: realtime().cards,
       usercards: cards||[]
     }
@@ -613,6 +615,7 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
   .then(function (cards){
     // console.log(cards);
     req.data = {
+      collections: realtime().collections,
       cards: realtime().cards,
       usercards: cards||[]
     }

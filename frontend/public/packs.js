@@ -21,29 +21,95 @@ function drawCards(cards){
 	$(cardField).append(text);
 }
 var collections = {}
-collections[1] = { have:1, need:10 }
-collections[2] = { have:5, need:10 }
-collections[3] = { have:7, need:10 }
-collections[4] = { have:9, need:10 }
+// collections[1] = { have:1, need:10 }
+// collections[2] = { have:5, need:10 }
+// collections[3] = { have:7, need:10 }
+// collections[4] = { have:9, need:10 }
 
-function showCollection(cards, colour){
+function pickPhraseByColour(colour){
+	switch(colour){
+		case c.gray:
+			return 'Собери "серую" команду и получи ускоритель 4!';
+		break
+		case c.green:
+			return 'Собери "зелёную" команду и получи 10 зелёных паков!';
+		break;
+		case c.red:
+			return 'Собери "красную" команду и получи 1000 рублей на счёт!';
+		break;
+		case c.blue:
+			return 'Собери "синюю" команду и получи 10 синих паков!'
+		break;
+	}
+}
+
+function pickSameColourCards(myCards, colour){
+	var list =[];
+	for (var i = myCards.length - 1; i >= 0; i--) {
+		if (myCards[i]._id.colour==colour){
+			list.push(myCards[i])
+		}
+	};
+	return list;
+}
+
+function showCollections(collections, myCards){
+	console.log(myCards, collections);
+
+	for (var i=0; i < 1+collections.length*0; i++) {
+		var list = pickSameColourCards(myCards, collections[i].colour);
+		console.log(list);
+		showCollection(collections[i], list)
+	}
+}
+
+function showCollection(collection, sameColourCardsList){
 	var text = '';
-	var colour;
-	// for (var j=1;j<5; j++){
-		// colour = j;
-		text += '<a href="/Cards"><h3> Собрано: ' + collections[colour].have + '/' + collections[colour].need + '</h3></a>'
-		for (var i=0;i<cards.length; i++){
-			var card = getCardFromDefault(cards[i]._id, colour);
+	var colour = collection.colour;
+	var list = collection.list;
+	var need = list.length;
+	
+	var have = 1; // have = function(sameColourCardsList, collection)
+	var phrase = pickPhraseByColour(colour);
+
+	text += '<div class="col-sm-12">';
+	text += '<h1 class="mg-md text-center">' + phrase + '</h1>';
+	text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
+
+		for (var i=0;i<list.length; i++){
+			console.log('list[i]', list[i])
+			var card = getCardFromDefault(list[i], colour);
 
 			// cardsDefault[card._id] = card;
-			text += '<div class="col-sm-2 col-md-2 col-xs-6">' + drawCard(card);
+			text += '<div class="col-sm-2 col-md-2 col-xs-12">' + drawCard(card);
 			text += '<p class="card-name white">' + card.description + '</p>';
 			text += '</div>';
 		}
+
+	text += '</div>'
 	// }
 	document.write(text);
 	// $(cardField).append(text);
 }
+
+// function showCollection(cards, colour){
+// 	var text = '';
+// 	var colour;
+// 	// for (var j=1;j<5; j++){
+// 		// colour = j;
+// 		text += '<a href="/Cards"><h3> Собрано: ' + collections[colour].have + '/' + collections[colour].need + '</h3></a>'
+// 		for (var i=0;i<cards.length; i++){
+// 			var card = getCardFromDefault(cards[i]._id, colour);
+
+// 			// cardsDefault[card._id] = card;
+// 			text += '<div class="col-sm-2 col-md-2 col-xs-12">' + drawCard(card);
+// 			text += '<p class="card-name white">' + card.description + '</p>';
+// 			text += '</div>';
+// 		}
+// 	// }
+// 	document.write(text);
+// 	// $(cardField).append(text);
+// }
 
 function drawPackButton(){
 	var crd = {

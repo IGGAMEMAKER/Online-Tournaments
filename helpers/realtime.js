@@ -31,6 +31,10 @@ Gifts.cards().then(save('cards'));//.then(console.log)
 
 update_tournaments(1000);
 
+function update_collections(){
+	Collection.all({}).then(save('collections'));
+}
+
 
 function update_tournaments(period){
 	Tournaments.get()
