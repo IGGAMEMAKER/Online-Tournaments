@@ -28,16 +28,16 @@ var collections = {}
 
 function pickPhraseByColour(colour){
 	switch(colour){
-		case c.gray:
+		case c.CARD_COLOUR_GRAY:
 			return 'Собери "серую" команду и получи ускоритель 4!';
 		break
-		case c.green:
+		case c.CARD_COLOUR_GREEN:
 			return 'Собери "зелёную" команду и получи 10 зелёных паков!';
 		break;
-		case c.red:
+		case c.CARD_COLOUR_RED:
 			return 'Собери "красную" команду и получи 1000 рублей на счёт!';
 		break;
-		case c.blue:
+		case c.CARD_COLOUR_BLUE:
 			return 'Собери "синюю" команду и получи 10 синих паков!'
 		break;
 	}
@@ -53,38 +53,69 @@ function pickSameColourCards(myCards, colour){
 	return list;
 }
 
+var CollectionList = {}
+
+// collectionID=>{
+// 	id=>1 'exists'
+// }
+
+// CollectionList[c.CARD_COLOUR_BLUE] = {}
+// CollectionList[c.CARD_COLOUR_GREEN] = {}
+// CollectionList[c.CARD_COLOUR_RED] = {}
+// CollectionList[c.CARD_COLOUR_GRAY] = {}
+
 function showCollections(collections, myCards){
 	console.log(myCards, collections);
 
-	for (var i=0; i < 1+collections.length*0; i++) {
+	for (var i=0; i < collections.length; i++) {
 		var list = pickSameColourCards(myCards, collections[i].colour);
 		console.log(list);
 		showCollection(collections[i], list)
 	}
 }
 
+function findEqualities(sameColourCardsList, collection_list){
+	// two variants:
+	// 	collection.length is bigger than sameColourCardsList
+	// 	or is less
+	var have = 0;
+	for (var i = sameColourCardsList.length - 1; i >= 0; i--) {
+		var giftID = sameColourCardsList[i]._id.giftID;
+		if (collection_list[giftID] == 1) have++;
+	};
+	return have;
+}
+
 function showCollection(collection, sameColourCardsList){
 	var text = '';
 	var colour = collection.colour;
+	var collectionID = collection.name;// must be _id!!!
 	var list = collection.list;
 	var need = list.length;
 	
-	var have = 1; // have = function(sameColourCardsList, collection)
 	var phrase = pickPhraseByColour(colour);
+
 
 	text += '<div class="col-sm-12">';
 	text += '<h1 class="mg-md text-center">' + phrase + '</h1>';
-	text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
-
+	CollectionList[collectionID] = {}
+	
 		for (var i=0;i<list.length; i++){
-			console.log('list[i]', list[i])
-			var card = getCardFromDefault(list[i], colour);
+			//fillCollectionList
+			var collectionGiftID = list[i];
+			CollectionList[collectionID][collectionGiftID] = 1;
+
+			// console.log('list[i]', collectionGiftID)
+			var card = getCardFromDefault(collectionGiftID, colour);
 
 			// cardsDefault[card._id] = card;
 			text += '<div class="col-sm-2 col-md-2 col-xs-12">' + drawCard(card);
 			text += '<p class="card-name white">' + card.description + '</p>';
 			text += '</div>';
 		}
+
+	var have = findEqualities(sameColourCardsList, CollectionList[collectionID]);// 1; // have = function(sameColourCardsList, collection)
+	text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
 
 	text += '</div>'
 	// }
