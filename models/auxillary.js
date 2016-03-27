@@ -104,6 +104,9 @@ module.exports = {
 			return result;
 		}
 	}
+	,drop: function (err){
+		throw err;
+	}
 	// ,err : function (err, req, res, next){
 	// 	res.json({err: err})
 	// }

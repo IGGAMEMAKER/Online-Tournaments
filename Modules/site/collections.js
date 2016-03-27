@@ -2,6 +2,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	var Gifts = require('../../models/gifts')
 	var Collections = require('../../models/collections')
 	var Packs = require('../../models/packs')
+	var Marathon = require('../../models/marathon')
+	var Money = require('../../models/money')
 
 	var middlewares = require('../../middlewares')
 
@@ -49,17 +51,31 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	function GiveCollectionPrize(colour, login){
 		console.log(colour, login);
 
+		var defaultMoneyPrize=1000;
+
 		var action;
 		switch(colour){
 			case aux.c.CARD_COLOUR_RED:
+				return Money.increase(login, defaultMoneyPrize, aux.c.SOURCE_TYPE_GRANT)
+				.then(function (result){
 
-				return 1;
+					aux.alert(login, aux.c.NOTIFICATION_GIVE_MONEY, { ammount:defaultMoneyPrize })
+					return result;
+				})
+				.catch(aux.drop)
+				// return 1;
 			break;
 			case aux.c.CARD_COLOUR_BLUE:
 				return 1;
 			break;
 			case aux.c.CARD_COLOUR_GRAY:
-				return 1;
+				return Marathon.grant_accelerator(login, 0)
+				.then(function (result){
+					aux.alert(login, aux.c.NOTIFICATION_GIVE_ACCELERATOR, { index:0 })
+					return result
+				})
+				.catch(aux.drop)
+				// return 1;
 			break;
 			case aux.c.CARD_COLOUR_GREEN:
 				return 1;
