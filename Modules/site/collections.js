@@ -52,6 +52,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		var action;
 		switch(colour){
 			case aux.c.CARD_COLOUR_RED:
+
 				return 1;
 			break;
 			case aux.c.CARD_COLOUR_BLUE:
@@ -121,6 +122,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 			}
 		})
 		.then(function (result){
+			Gifts.user.removeGroup(deletableUserGifts)
 			//deletableUserGifts
 			//delete usergifts
 

@@ -117,6 +117,9 @@ var usergifts = {
 	,remove: function (id){
 		return UserGifts.remove({_id:id})
 	}
+	,removeGroup: function (list){
+		return UserGifts.remove({_id: {$in: list} })
+	}
 	,clearAllByUsername: function(login){
 		console.log(login);
 		return UserGifts.remove({ userID: login})
