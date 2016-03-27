@@ -11,18 +11,25 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		// two variants:
 		// 	collection.length is bigger than sameColourCardsList
 		// 	or is less
-		console.log('sameColourCardsList', sameColourCardsList, 'collection_list', collection_list);
+
+		// console.log('sameColourCardsList', sameColourCardsList, 'collection_list', collection_list);
+		
 		var havings = {};
+		var deletableUserGifts = [];
 		var have = 0;
 		for (var i = sameColourCardsList.length - 1; i >= 0; i--) {
 			var giftID = sameColourCardsList[i].giftID;
-			console.log('check ', giftID)
+			var usergiftID= sameColourCardsList[i]._id;
+
+			console.log('check ', sameColourCardsList[i])
 			if (collection_list[giftID] == 1) {
-				havings[giftID] = 1;
-				// have++;
+				if (!havings[giftID]){
+					havings[giftID] = 1;
+					deletableUserGifts.push(usergiftID);
+				}
 			}
 		};
-		console.log(Object.keys(havings));
+		// console.log(Object.keys(havings));
 		have = Object.keys(havings).length;
 		
 		// var need = Object.keys(collection_list)
@@ -30,7 +37,10 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 			// return collection_list.length;
 		// }
 		// return 0;
-		return have;
+		return {
+			have:have,
+			deletableUserGifts:deletableUserGifts
+		}
 	}
 	// ,CARD_COLOUR_RED:1
 	// ,CARD_COLOUR_BLUE:2
@@ -72,6 +82,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		var uGifts;
 
 		var CollectionList = {};
+		var deletableUserGifts;
 		
 		Collections.getByID(collectionID) // list, name, reward
 		.then(function (col){ //collection
@@ -97,16 +108,22 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 			var need = collection.list.length;
 
 
-			var have = findEqualities(usergifts, CollectionList[collectionID]);
+			var obj = findEqualities(usergifts, CollectionList[collectionID]);
+			var have = obj.have;
+			deletableUserGifts = obj.deletableUserGifts;
+			console.log(deletableUserGifts)
 
 			console.log('have='+have, 'need='+need);
 			if (have>0 && have==need){
 				return GiveCollectionPrize(collection.colour, login)
 			} else {
-				return null
+				throw 'collection was not filled ' + have + '  /' + need;
 			}
 		})
 		.then(function (result){
+			//deletableUserGifts
+			//delete usergifts
+
 			var obj = {
 				collection: collection,
 				usergifts: uGifts,
@@ -117,7 +134,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		.then(aux.setData(req, next))
 		.catch(function (error){
 			console.error(error)
-			next()
+			next(error)
 		})
 		// .catch(next)
 	}, aux.std);

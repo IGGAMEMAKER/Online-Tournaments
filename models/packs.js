@@ -116,9 +116,9 @@ var packGenerator = {
 	,equal: { multiplier:100, red:25, blue:25, green: 25 }
 	,afterTournament: { multiplier:10000, red:10, blue:100, green: 2000	}
 
-	,lucky: { multiplier:100, red:50, blue:25, green: 20 }
-	,blue:  { multiplier:100, red:5, blue:50, green: 20 }
-	,green: { multiplier:100, red:5, blue:25, green: 60 }
+	,lucky: { multiplier:100, red:70, blue:22, green: 5 }
+	,blue:  { multiplier:100, red:20, blue:75, green: 4 }
+	,green: { multiplier:100, red:7, blue:15, green: 75 }
 }
 
 function TestRandomizer(){

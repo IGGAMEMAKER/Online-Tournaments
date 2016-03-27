@@ -89,7 +89,8 @@ function findEqualities(sameColourCardsList, collection_list){
 function showCollection(collection, sameColourCardsList){
 	var text = '';
 	var colour = collection.colour;
-	var collectionID = collection.name;// must be _id!!!
+	var collectionID = collection._id;// must be _id!!!
+	console.log('showCollection', collectionID);
 	var list = collection.list;
 	var need = list.length;
 	
@@ -122,7 +123,7 @@ function showCollection(collection, sameColourCardsList){
 		// make GIVE ME REWARD active
 		buttonStatus = 'enabled'
 	}
-	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="rewardme('+collectionID+')">Получить награду</button>'
+	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="rewardme(\''+collectionID+'\')">Получить награду</button>'
 	text += '</div>'
 	// }
 	document.write(text);
@@ -130,7 +131,7 @@ function showCollection(collection, sameColourCardsList){
 }
 
 function rewardme(collectionID){
-	mark('rewardme/'+collectionID)
+	mark('rewardme/'+collectionID, null, 'GET')
 }
 
 // function showCollection(cards, colour){
