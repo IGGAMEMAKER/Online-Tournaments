@@ -10,7 +10,8 @@ var frontendVersion;
 objects = {
 	counter:0,
 	updater:{},
-	cards:[]
+	cards:[],
+	UPDATE_ALL: UPDATE_ALL
 };
 
 function save(name){
@@ -26,14 +27,22 @@ function send(name){
 	}
 }
 
-Collection.all({}).then(save('collections'));//.then(console.log)
-Gifts.cards().then(save('cards'));//.then(console.log)
+function UPDATE_ALL() {
+	update_collections();
+	update_cards();
+}
+UPDATE_ALL();
+// update_collections();
+
+// Collection.all({}).then(save('collections'));//.then(console.log)
+// Gifts.cards().then(save('cards'));//.then(console.log)
 
 update_tournaments(1000);
 
-function update_collections(){
-	Collection.all({}).then(save('collections'));
+function update_collections(){ 
+	Collection.all({}).then(save('collections')); 
 }
+function update_cards(){ Gifts.cards().then(save('cards')); }
 
 
 function update_tournaments(period){

@@ -70,8 +70,16 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
           
   });
+  app.get('/api/gifts/cards', aux.isAdmin, function (req, res, next){
+    // var rarity = null;
 
-  app.get('/api/gifts/cards/:rarity', middlewares.isAdmin, function (req, res, next){
+    Gifts.cards(null)
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
+  app.get('/api/gifts/cards/:rarity', aux.isAdmin, function (req, res, next){
     var rarity = req.params.rarity;
 
     Gifts.cards(rarity||null)

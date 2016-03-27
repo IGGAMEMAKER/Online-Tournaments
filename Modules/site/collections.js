@@ -7,6 +7,15 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   // collections
 
+	app.get('/api/collections/remove/:id', aux.isAdmin, function (req, res, next){
+		var id = req.params.id;
+
+		Collections.remove(id) // list, name, reward
+
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.std);
+
 	app.get('/api/collections/clear/:id', aux.isAdmin, function (req, res, next){
 		var id = req.params.id;
 

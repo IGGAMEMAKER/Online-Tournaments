@@ -362,8 +362,13 @@ app.post('/FinishGame', FinishGame);
 app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
 app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
 
-app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
+// app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
   
+// })
+
+app.get('/realtime/update', aux.isAdmin, function(req, res){
+  realtime().UPDATE_ALL();
+  res.end('OK');
 })
 
 // app.get('/Gifts', function (req, res, next){
