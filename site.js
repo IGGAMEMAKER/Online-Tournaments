@@ -1111,6 +1111,25 @@ app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next)
 
 }, aux.json, aux.err)
 
+app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
+  var login = req.params.login;
+  var count = req.params.count;
+  var colour = req.params.colour;
+
+  grantPacksTo(login, colour, count)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std);
+
+function grantPacksTo(login, colour, count){
+  return Users.pack.add(login, colour, count)
+  .then(function (result){
+    aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour:colour })
+    return result
+  })
+  .catch(aux.drop)
+}
+
 app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   var login = req.params.login;
   var accelerator = req.params.accelerator;
