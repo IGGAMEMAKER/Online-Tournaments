@@ -9,6 +9,13 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   // packs
 
+  app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
+    Gifts.user.all()
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
   app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
     var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
     var paid = parseInt(req.params.paid) || 0;
@@ -21,7 +28,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
     var obj = {value:value, paid:paid};
     if (paid) obj.price = price;
-    
+
     aux.done(login, 'openPack', obj)
 
     var paymentFunction = function(){

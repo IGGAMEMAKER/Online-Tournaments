@@ -94,6 +94,9 @@ var usergifts = {
 
 		return UserGifts.save(usergift)
 	}
+	,all: function (){
+		return UserGifts.list({})
+	}
 	,cards: function (login){
 		return UserGifts.list({ userID: login, isCard:true})
 	}
