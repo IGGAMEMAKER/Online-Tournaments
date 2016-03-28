@@ -83,6 +83,7 @@ function update_user(find, update, parameters){
 	})
 }
 
+///////////////////////////////
 function initializeInfo(login){
 	var upd = {
 		$set : { 
@@ -99,13 +100,6 @@ function initializeInfo(login){
 }
 
 function update_user_status(login, status){
-	// return find_or_reject(login)
-	// .then(function (profile){
-	// 	if (!profile.info){
-	// 		return initializeInfo(login)
-	// 	}
-	// 	return 1;
-	// })
 	return getByLogin(login)
 	.then(function (profile){
 		var upd = {
@@ -118,19 +112,70 @@ function update_user_status(login, status){
 }
 
 function getByLogin(login){
-	var profile;
-	return User2.find({login:login})
+	return User2.find({login: login})
 	.then(function (user){
-		profile = user;
+		if (!user.info) return noInfoFix(login)
+		if (!user.info.packs) return noPacksFix(login)
+	})
+	.then(function (result){
+		return User2.find({login: login})
+	})
+	// return fixUser(login)
+	// var profile;
+	// return User2.find({login:login})
+	// .then(function (user){
+	// 	profile = user;
 
-		// console.log('getByLogin', user)
-		if (!user.info){
-			return initializeInfo(login)
-		} else {
-			return user
+	// 	console.log('getByLogin', user)
+	// 	if (!user.info){
+	// 		return initializeInfo(login)
+	// 	} else {
+	// 		if (!user.info.packs){
+	// 			return pack.initialize(login)
+	// 		} else {
+	// 			return user
+	// 		}
+	// 	}
+	// })
+}
+
+function noInfoFix(login){
+	console.log('noInfoFix', login)
+	var upd = {
+		$set : {
+			info : {
+				status: c.USER_STATUS_NEWBIE,
+				packs: pack.newbiePackSet
+			}
 		}
+	};
+	return update_user({login:login}, upd, {})
+}
+
+function noPacksFix(login){
+	console.log('noPacksFix', login)
+	var upd = {
+		$set : {
+			info : {
+				packs: pack.newbiePackSet
+			}
+		}
+	};
+	return update_user({login:login}, upd, {})
+}
+
+function fixUser(login){
+	return User2.find({login: login})
+	.then(function (user){
+		if (!user.info) return noInfoFix(login)
+		if (!user.info.packs) return noPacksFix(login)
+	})
+	.then(function (result){
+		return User2.find({login: login})
 	})
 }
+
+// profile('MorganFreeman223')
 
 	// ,CARD_COLOUR_RED:1
 	// ,CARD_COLOUR_BLUE:2
@@ -144,16 +189,17 @@ var pack = {
 		return User2.update({login:login}, {$set: {'info.packs': pack.newbiePackSet }})
 	}
 	,getUser: function (login){
+		// return fixUser(login)
 		return getByLogin(login)
-		.then(function (user){
-			if (!user.info.packs) {
-				return pack.initialize(login)
-				.then(function (result){
-					return getByLogin(login)
-				})
-			}
-			return user
-		})
+		// .then(function (user){
+		// 	if (!user.info.packs) {
+		// 		return pack.initialize(login)
+		// 		.then(function (result){
+		// 			return getByLogin(login)
+		// 		})
+		// 	}
+		// 	return user
+		// })
 	}
 	,pickFrom: function (from){
 		return {

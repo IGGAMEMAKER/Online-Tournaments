@@ -593,6 +593,10 @@ app.get('/main', function (req, res){
 app.get('/Packs', aux.authenticated, function (req, res, next){
 
   var login = aux.getLogin(req);
+  // Users.getByLogin(login)
+  // .then(function (user){
+  //   return Gifts.user.cardsGroup(login)
+  // })
   Gifts.user.cardsGroup(login)
   .then(function (cards){
     // console.log(cards);
