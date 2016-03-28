@@ -64,11 +64,15 @@ function redrawFreePacks(packs){
 		console.log(id)
 		var count = packs[index];
 		var disabled = true;
-		if (count >= 1) disabled = false; // there are free packs
-
-		$(id).prop("disabled", disabled);
+		if (count >= 1) {
+			disabled = false; // there are free packs
+			$(id).html('Бесплатно (' + count + 'x)')
+		} else {
+			$(id).html('Бесплатно')
+		}
 		
-		$(id).html('Бесплатно (' + count + 'x)')
+		
+		$(id).prop("disabled", disabled);
 		console.log(index, packs)
 	}
 }

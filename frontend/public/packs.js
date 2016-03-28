@@ -3,7 +3,7 @@ var cardField= "#cards";
 
 function openPack(value, pay){
 
-	mark('openPack/'+value)
+	mark('openPack/'+value+'/'+pay)
 	news.hide();
 }
 
@@ -183,8 +183,8 @@ function drawPackButtons(){
 	text += '</div>'
 	
 	document.write(text)
-	redrawFreePacks(packs)
-	// getProfile()
+	// redrawFreePacks(packs)
+	getProfile()
 }
 
 

@@ -93,12 +93,21 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		// clear cards
 	}
 
-	// grantPacksTo('23i03g', aux.c.CARD_COLOUR_RED, 3)
+	function revokePackFrom(login, colour, count){
+		return Users.pack.decrease(login, colour, count)
+		// .then(function (result){
+		// 	aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour:colour })
+		// 	return result
+		// })
+		.catch(aux.drop)
+	}
+
+	// revokePackFrom('23i03g', aux.c.CARD_COLOUR_RED, 3)
 	// .then(console.log)
 	// .catch(console.error)
 
 	function grantPacksTo(login, colour, count){
-		return Users.pack.add(login, aux.c.CARD_COLOUR_GREEN, count)
+		return Users.pack.add(login, colour, count)
 		.then(function (result){
 			aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour:colour })
 			return result

@@ -2,35 +2,66 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   var Gifts = require('../../models/gifts')
   var Collections = require('../../models/collections')
   var Packs = require('../../models/packs')
+  var Users = require('../../models/users')
 
   var middlewares = require('../../middlewares')
 
   // packs
 
-  app.post('/openPack/:value', middlewares.authenticated, function (req, res){
+  app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
     var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
+    var paid = parseInt(req.params.paid) || 0;
+
 
     var login = aux.getLogin(req);
     var price = (10 + (4 - value)* 20) *0;
     res.end('')
+
+    aux.done(login, 'openPack', {value:value, paid:paid})
+
+    var paymentFunction = function(){
+      return Users.pack.decrease(login, value, 1)
+    }
+
     // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-    // .then(function (result){
-    //   console.log(login, price, result);
+    paymentFunction()
+    .then(function (result){
+      console.log(login, price, result);
       var card = Packs.get(value);//_standard_pack_card
-      // console.log(card);
-    //   return card;
-    // })
-    // .then(function (card){
+      console.log(card);
+      return card;
+    })
+    .then(function (card){
       var giftID = card.giftID;
       card.value = value
+      card.isFree = !paid;
 
       Gifts.user.saveGift(login, giftID, true, card.colour)
       aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-    // })
-    // .catch(function (err){
-    //   Errors.add(login, { err: err })
-    // })
-    // .catch(next)
+    })
+    .catch(function (err){
+      aux.fail(login, 'openPack', { err: err })
+    })
+
+
+    // // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
+    // // .then(function (result){
+    // //   console.log(login, price, result);
+    //   var card = Packs.get(value);//_standard_pack_card
+    //   // console.log(card);
+    // //   return card;
+    // // })
+    // // .then(function (card){
+    //   var giftID = card.giftID;
+    //   card.value = value
+
+    //   Gifts.user.saveGift(login, giftID, true, card.colour)
+    //   aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
+    // // })
+    // // .catch(function (err){
+    // //   Errors.add(login, { err: err })
+    // // })
+    // // .catch(next)
   })
   // console.log(middlewares);
 

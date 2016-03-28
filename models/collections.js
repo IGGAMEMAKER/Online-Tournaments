@@ -65,11 +65,11 @@ function attachGift(id, giftID){
 		return update(id, obj);
 	})
 }
-
 // Tests
 // console.log(Collection)
-var giftID = '5609a7da4d4145c718549ab3';
-var colID = '56f438b27c7ccf0914389f1d';
+
+// var giftID = '5609a7da4d4145c718549ab3';
+// var colID = '56f438b27c7ccf0914389f1d';
 
 // all({})
 // add([], 'col1', {})

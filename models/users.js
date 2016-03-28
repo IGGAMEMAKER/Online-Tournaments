@@ -123,7 +123,7 @@ function getByLogin(login){
 	.then(function (user){
 		profile = user;
 
-		console.log('getByLogin', user)
+		// console.log('getByLogin', user)
 		if (!user.info){
 			return initializeInfo(login)
 		} else {
@@ -143,6 +143,18 @@ var pack = {
 		// return User2.find({login:})
 		return User2.update({login:login}, {$set: {'info.packs': pack.newbiePackSet }})
 	}
+	,getUser: function (login){
+		return getByLogin(login)
+		.then(function (user){
+			if (!user.info.packs) {
+				return pack.initialize(login)
+				.then(function (result){
+					return getByLogin(login)
+				})
+			}
+			return user
+		})
+	}
 	,pickFrom: function (from){
 		return {
 			1: from[1],
@@ -159,16 +171,7 @@ var pack = {
 	}
 	,add: function(login, colour, count){
 		// return User2.update({login:login})
-		return getByLogin(login)
-		.then(function (user){
-			if (!user.info.packs) {
-				return pack.initialize(login)
-				.then(function (result){
-					return getByLogin(login)
-				})
-			}
-			return user
-		})
+		return pack.getUser(login)
 		.then(function (user){
 			// console.log('second user', user)
 			var packs = pack.pickFrom(user.info.packs);
@@ -178,6 +181,22 @@ var pack = {
 			// console.log('modified packs', packs);
 
 			return User2.update({login:login}, {$set: {'info.packs': packs} })
+		})
+	}
+	,decrease: function (login, colour, count){
+		return pack.getUser(login)
+		.then(function (user){
+			// console.log(user);
+
+			var packs = pack.pickFrom(user.info.packs);
+			console.log(packs, login, colour, count);
+
+			if (packs[colour] >= count){
+				packs[colour] -= count;
+				return User2.update({login:login}, {$set: {'info.packs': packs} })
+			} else {
+				throw 'no necessary pack ' + login + colour
+			}
 		})
 	}
 }
@@ -681,7 +700,8 @@ function get_new_user(login, password, email){
 		activate:0, 
 		bonus:{},
 		info:{
-			status: c.USER_STATUS_NEWBIE
+			status: c.USER_STATUS_NEWBIE,
+			packs: pack.newbiePackSet
 		},
 
 		cryptVersion:CURRENT_CRYPT_VERSION,
