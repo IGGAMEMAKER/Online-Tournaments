@@ -3,6 +3,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   var Collections = require('../../models/collections')
   var Packs = require('../../models/packs')
   var Users = require('../../models/users')
+  var Money = require('../../models/money')
 
   var middlewares = require('../../middlewares')
 
@@ -14,13 +15,21 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
 
     var login = aux.getLogin(req);
-    var price = (10 + (4 - value)* 20) *0;
+    var price = (10 + (4 - value)* 20);
     res.end('')
 
-    aux.done(login, 'openPack', {value:value, paid:paid})
+
+    var obj = {value:value, paid:paid};
+    if (paid) obj.price = price;
+    
+    aux.done(login, 'openPack', obj)
 
     var paymentFunction = function(){
-      return Users.pack.decrease(login, value, 1)
+      if (paid) {
+        return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
+      } else {
+        return Users.pack.decrease(login, value, 1)
+      }
     }
 
     // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
