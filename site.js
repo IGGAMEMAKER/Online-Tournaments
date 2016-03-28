@@ -1113,10 +1113,22 @@ app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next)
 
 app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
   var login = req.params.login;
-  var count = req.params.count;
-  var colour = req.params.colour;
-
+  var count = parseInt(req.params.count);
+  var colour = parseInt(req.params.colour);
+  if (!isNumeric(count) || !isNumeric(colour) ) {
+    return next('notnum')
+  }
   grantPacksTo(login, colour, count)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std);
+
+app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
+  var login = req.params.login;
+  // console.log('login', login);
+
+  Users.pack.setDefault(login)
+  // .then(console.log)
   .then(aux.setData(req, next))
   .catch(next)
 }, aux.std);

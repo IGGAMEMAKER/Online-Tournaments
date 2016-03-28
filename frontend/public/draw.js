@@ -646,7 +646,7 @@ function drawNewsModal(data){
           }
         break;
         case c.NOTIFICATION_GIVE_PACK:
-          header = 'Вы получаете ' + info.count + ' паков!'
+          header = 'Вы получаете паки: ' + info.count + 'x'
 
           // draw green packs in body
           body = drawPackButton(info.colour);
@@ -716,7 +716,7 @@ function drawCard(card){
   backgroundImage += '\'';
 
   // console.log(backgroundImage);
-  
+
   // var backgroundImage = '\'http://img15.nnm.me/3/3/c/6/f/ab1fb05250ab9dde13490a37bed.jpg\'' red bad
   // var backgroundImage = '\'http://m-static.flikie.com/ImageData/WallPapers/d1b8dc2a2b424a6fbb5b55cdaee405cf.jpg\'' //red
   // var backgroundImage = '\'http://www.ujut.hu/img/back.jpg\'' // good one RED

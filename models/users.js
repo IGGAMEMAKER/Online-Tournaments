@@ -215,6 +215,10 @@ var pack = {
 		3: 7,
 		4: 7
 	}
+	,setDefault: function (login){
+		// console.log('setDefault', login)
+		return noPacksFix(login)
+	}
 	,add: function(login, colour, count){
 		// return User2.update({login:login})
 		return pack.getUser(login)
@@ -222,7 +226,8 @@ var pack = {
 			// console.log('second user', user)
 			var packs = pack.pickFrom(user.info.packs);
 			// console.log('second user', packs);
-			packs[colour] += count;
+			var now = parseInt(packs[colour]) + parseInt(count);
+			packs[colour] = now;
 
 			// console.log('modified packs', packs);
 
@@ -235,10 +240,12 @@ var pack = {
 			// console.log(user);
 
 			var packs = pack.pickFrom(user.info.packs);
-			console.log(packs, login, colour, count);
+			// console.log(packs, login, colour, count);
 
 			if (packs[colour] >= count){
-				packs[colour] -= count;
+				// packs[colour] -= count;
+				var now = parseInt(packs[colour]) - parseInt(count);
+				packs[colour] = now;
 				return User2.update({login:login}, {$set: {'info.packs': packs} })
 			} else {
 				throw 'no necessary pack ' + login + colour
