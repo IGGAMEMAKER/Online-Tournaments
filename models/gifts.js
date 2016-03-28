@@ -101,7 +101,11 @@ var usergifts = {
 		return UserGifts.list({ userID: login, colour:colour, giftID : {$in: giftIDs } })
 	}
 	,cardsGroup: function (login){
-		var obj = [{
+		var obj = [
+		{
+			$match: { userID: login}
+		}
+		,{
 			$group: {
 				// _id: "$giftID",
 				_id: { giftID: "$giftID", colour: "$colour" },
