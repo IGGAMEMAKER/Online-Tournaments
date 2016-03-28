@@ -714,7 +714,9 @@ function drawCard(card){
     default: backgroundImage += image_card_red; break;
   }
   backgroundImage += '\'';
-  console.log(backgroundImage);
+
+  // console.log(backgroundImage);
+  
   // var backgroundImage = '\'http://img15.nnm.me/3/3/c/6/f/ab1fb05250ab9dde13490a37bed.jpg\'' red bad
   // var backgroundImage = '\'http://m-static.flikie.com/ImageData/WallPapers/d1b8dc2a2b424a6fbb5b55cdaee405cf.jpg\'' //red
   // var backgroundImage = '\'http://www.ujut.hu/img/back.jpg\'' // good one RED

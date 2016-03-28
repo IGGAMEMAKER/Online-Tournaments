@@ -57,6 +57,22 @@ sendInviter();
 stayOnline();
 checkNews();
 
+function redrawFreePacks(packs){
+	console.log('redrawFreePacks')
+	for (index in packs){
+		var id = "#free-pack"+index;
+		console.log(id)
+		var count = packs[index];
+		var disabled = true;
+		if (count >= 1) disabled = false; // there are free packs
+
+		$(id).prop("disabled", disabled);
+		
+		$(id).html('Бесплатно (' + count + 'x)')
+		console.log(index, packs)
+	}
+}
+
 function exists(element){ return document.getElementById(element); }
 
 function saveProfile(drawFunction){
@@ -68,13 +84,18 @@ function saveProfile(drawFunction){
 			var tournaments = profile.tournaments||{}; // tregs
 			var money = profile.money;
 
+			var packs = profile.packs || null
+			// console.log(profile, 'profile.info')
 			// var marathon = profile.marathon;
 			// console.log('marathon info', marathon);
 
+			saveInStorage('packs', packs)
 			saveInStorage('money', money);
 			saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 
 			resetRunningTournaments();
+
+			redrawFreePacks(packs);
 
 			//var tournaments = getTournaments();
 			//console.log('tournaments',tournaments);

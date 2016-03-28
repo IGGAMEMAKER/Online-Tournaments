@@ -66,11 +66,11 @@ var CollectionList = {}
 // CollectionList[c.CARD_COLOUR_GRAY] = {}
 
 function showCollections(collections, myCards){
-	console.log(myCards, collections);
+	// console.log(myCards, collections);
 
 	for (var i=0; i < collections.length; i++) {
 		var list = pickSameColourCards(myCards, collections[i].colour);
-		console.log(list);
+		// console.log(list);
 		showCollection(collections[i], list)
 	}
 }
@@ -91,7 +91,7 @@ function showCollection(collection, sameColourCardsList){
 	var text = '';
 	var colour = collection.colour;
 	var collectionID = collection._id;// must be _id!!!
-	console.log('showCollection', collectionID);
+	// console.log('showCollection', collectionID);
 	var list = collection.list;
 	var need = list.length;
 	
@@ -159,7 +159,11 @@ function drawPackButtons(){
 		photoURL: 'pack.png',
 		colour: 0
 	}
-	
+
+	console.log('packs', 'drawPackButtons');
+	var packs = getObject('packs');
+	console.log('packs', 'drawPackButtons', packs);
+
 	var text = '<div style="margin:20px">';
 
 	var pack_prices = { 1:70, 2:50, 3:30, 4:10 }
@@ -168,8 +172,9 @@ function drawPackButtons(){
 
 		// text += '<center>'
 		// text += '<div style="width:100%;" >'
-		text += '<div class="col-sm-3 col-md-3 col-xs-6">' // style="margin: auto;"
+		text += '<div class="col-sm-3 col-md-3 col-xs-6" >' // style="margin: auto;"
 		text += drawCard(crd);
+		text += '<button id="free-pack'+i+'" disabled class="btn btn-success btn-lg full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
 		text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
 		text += '</div>'
 		// text += '</div>'
@@ -178,6 +183,8 @@ function drawPackButtons(){
 	text += '</div>'
 	
 	document.write(text)
+	redrawFreePacks(packs)
+	// getProfile()
 }
 
 
@@ -201,7 +208,9 @@ function getCardFromDefault(id, colour){
 function drawMyCards(cardInfo, myCards){
 	var text = '';
 	// console.log(myCards);
-	console.log(cardsDefault);
+
+	// console.log(cardsDefault);
+
 	// console.log(myCards[0]._id.colour);
 
 	for (var i = myCards.length - 1; i >= 0; i--) {//myCards.length - 1
@@ -210,7 +219,7 @@ function drawMyCards(cardInfo, myCards){
 		var colour = myCards[i]._id.colour
 		var count = myCards[i].count;
 
-		console.log(myCards[i]._id, myCards[i]._id.colour)
+		// console.log(myCards[i]._id, myCards[i]._id.colour)
 
 		var card = cardsDefault[id];
 		if (!card) continue;

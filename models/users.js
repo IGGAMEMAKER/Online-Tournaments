@@ -38,14 +38,16 @@ function all(){
 }
 
 function profile(login){
-	return new Promise(function(resolve, reject){
-		User.findOne({login:login}, 'login money email social info', function (err, user) {
-			if (err) return reject(err);
+	return getByLogin(login)
+	// return User2.find({login:login}, 'login money email social info')
+	// return new Promise(function(resolve, reject){
+	// 	User.findOne({login:login}, 'login money email social info', function (err, user) {
+	// 		if (err) return reject(err);
 			
-			if (!user) return resolve(null);
-			return resolve(user);
-		});
-	})
+	// 		if (!user) return resolve(null);
+	// 		return resolve(user);
+	// 	});
+	// })
 }
 
 function profileByMail(email){
@@ -81,20 +83,31 @@ function update_user(find, update, parameters){
 	})
 }
 
-function update_user_status(login, status){
-	return find_or_reject(login)
-	.then(function (profile){
-		if (!profile.info){
-			var upd = {
-				$set : { 
-					info: { status: c.USER_STATUS_NEWBIE } 
-				} 
-			};
-			return update_user({login:login}, upd, {})
-		}
-		return 1;
+function initializeInfo(login){
+	var upd = {
+		$set : { 
+			info: { status: c.USER_STATUS_NEWBIE } 
+		} 
+	};
+	return update_user({login:login}, upd, {})
+	.then(function (result){
+		return pack.initialize(login)
 	})
 	.then(function (result){
+		return getByLogin(login)
+	})
+}
+
+function update_user_status(login, status){
+	// return find_or_reject(login)
+	// .then(function (profile){
+	// 	if (!profile.info){
+	// 		return initializeInfo(login)
+	// 	}
+	// 	return 1;
+	// })
+	return getByLogin(login)
+	.then(function (profile){
 		var upd = {
 			$set : {
 				'info.status' : status
@@ -105,7 +118,18 @@ function update_user_status(login, status){
 }
 
 function getByLogin(login){
+	var profile;
 	return User2.find({login:login})
+	.then(function (user){
+		profile = user;
+
+		console.log('getByLogin', user)
+		if (!user.info){
+			return initializeInfo(login)
+		} else {
+			return user
+		}
+	})
 }
 
 	// ,CARD_COLOUR_RED:1

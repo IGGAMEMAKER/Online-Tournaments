@@ -366,8 +366,13 @@ function (req, res){
 		}
 		Users.profile(login)
 		.then(function (user){
+
 			profile.money = user.money;
 			profile.email = user.email;
+			
+			profile.packs = user.info.packs
+		})
+		.then(function (user){
 			return TournamentReg.get(login)
 		})
 		.then(function (tournaments){
@@ -376,7 +381,7 @@ function (req, res){
 			next()
 		})
 		.catch(function (err){
-			console.error('get_profile error', err);
+			console.error('get_profile error', login, err);
 			req.profile = null;
 			next(err);
 			//next(err);

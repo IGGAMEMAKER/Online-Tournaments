@@ -93,9 +93,9 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		// clear cards
 	}
 
-	grantPacksTo('23i03g', aux.c.CARD_COLOUR_RED, 3)
-	.then(console.log)
-	.catch(console.error)
+	// grantPacksTo('23i03g', aux.c.CARD_COLOUR_RED, 3)
+	// .then(console.log)
+	// .catch(console.error)
 
 	function grantPacksTo(login, colour, count){
 		return Users.pack.add(login, aux.c.CARD_COLOUR_GREEN, count)
