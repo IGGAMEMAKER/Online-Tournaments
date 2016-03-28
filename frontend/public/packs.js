@@ -172,10 +172,10 @@ function drawPackButtons(){
 
 		// text += '<center>'
 		// text += '<div style="width:100%;" >'
-		text += '<div class="col-sm-3 col-md-3 col-xs-6" >' // style="margin: auto;"
+		text += '<div class="col-sm-3 col-md-3 col-xs-6 killPaddings" >' // style="margin: auto;"
 		text += drawCard(crd);
-		text += '<button id="free-pack'+i+'" disabled class="btn btn-success btn-lg full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
-		text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
+		text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
+		text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
 		text += '</div>'
 		// text += '</div>'
 		// text += '</center>'
