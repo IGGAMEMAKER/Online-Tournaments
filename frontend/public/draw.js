@@ -462,6 +462,7 @@ var c = {
 
   ,NOTIFICATION_ADVICE:14
   ,NOTIFICATION_CARD_GIVEN:15
+  ,NOTIFICATION_GIVE_PACK:16
 
   ,RARITY_RARE: 0
   ,RARITY_LOW: 1
@@ -635,7 +636,7 @@ function drawNewsModal(data){
           body += '</div>';
           // footer = news.buttons.skip('Спасибо!', messageID)
           var value = info.value || c.CARD_COLOUR_GRAY;
-          var open_more = '<button class="btn btn-primary" onclick="openPack('+value+')"> Открыть ещё! </button>'
+          var open_more = '<button class="btn btn-primary" onclick="openPack('+value+', 1)"> Открыть ещё! </button>'
           var close = '<button class="btn btn-default" onclick="news.hide()"> Закрыть </button>'
 
           if (card.isFree) {
@@ -643,6 +644,14 @@ function drawNewsModal(data){
           } else {
             footer = open_more + close;
           }
+        break;
+        case c.NOTIFICATION_GIVE_PACK:
+          header = 'Вы получаете ' + info.count + ' паков!'
+
+          // draw green packs in body
+          body = drawPackButton(info.colour);
+
+          footer = news.buttons.skip('Урра!', messageID)
         break;
         default:
           // header = message.text;
@@ -742,6 +751,30 @@ function drawCard(card){
   // $(cardField).append('<img class="cornerimage" border="0" src="http://www.gravatar.com/avatar/" />')
 
   return text;
+}
+
+function drawPackButton(colour){
+  var crd = {
+    photoURL: 'pack.png',
+    colour: colour
+  }
+  
+  var text = '<div style="margin:20px">';
+
+  var pack_prices = { 1:70, 2:50, 3:30, 4:10 }
+  var i = colour
+  
+    // text += '<center>'
+    // text += '<div style="width:100%;" >'
+    text += '<div class="col-sm-3 col-md-3 col-xs-6">' // style="margin: auto;"
+    text += drawCard(crd);
+    text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+', 0)"> Открыть </button>'
+    text += '</div>'
+    // text += '</div>'
+    // text += '</center>'
+  text += '</div>'
+  return text;
+  // document.write(text)
 }
 
 var news = {

@@ -146,12 +146,12 @@ var pack = {
 			return user
 		})
 		.then(function (user){
-			console.log('second user', user)
+			// console.log('second user', user)
 			var packs = pack.pickFrom(user.info.packs);
-			console.log('second user', packs);
+			// console.log('second user', packs);
 			packs[colour] += count;
 
-			console.log('modified packs', packs);
+			// console.log('modified packs', packs);
 
 			return User2.update({login:login}, {$set: {'info.packs': packs} })
 		})

@@ -1,7 +1,8 @@
 var cardField= "#cards";
 
 
-function openPack(value){
+function openPack(value, pay){
+
 	mark('openPack/'+value)
 	news.hide();
 }
@@ -153,7 +154,7 @@ function rewardme(collectionID){
 // 	// $(cardField).append(text);
 // }
 
-function drawPackButton(){
+function drawPackButtons(){
 	var crd = {
 		photoURL: 'pack.png',
 		colour: 0
@@ -169,7 +170,7 @@ function drawPackButton(){
 		// text += '<div style="width:100%;" >'
 		text += '<div class="col-sm-3 col-md-3 col-xs-6">' // style="margin: auto;"
 		text += drawCard(crd);
-		text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+')"> Открыть ('+pack_prices[i]+'р) </button>'
+		text += '<button class="btn btn-primary btn-lg full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
 		text += '</div>'
 		// text += '</div>'
 		// text += '</center>'
@@ -178,6 +179,8 @@ function drawPackButton(){
 	
 	document.write(text)
 }
+
+
 
 function getCardFromDefault(id, colour){
 	var card = cardsDefault[id];
