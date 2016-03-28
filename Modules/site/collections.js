@@ -4,6 +4,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	var Packs = require('../../models/packs')
 	var Marathon = require('../../models/marathon')
 	var Money = require('../../models/money')
+	var Users = require('../../models/users')
 
 	var middlewares = require('../../middlewares')
 
@@ -65,9 +66,6 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 				.catch(aux.drop)
 				// return 1;
 			break;
-			case aux.c.CARD_COLOUR_BLUE:
-				return 1;
-			break;
 			case aux.c.CARD_COLOUR_GRAY:
 				return Marathon.grant_accelerator(login, 0)
 				.then(function (result){
@@ -78,9 +76,15 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 				// return 1;
 			break;
 			case aux.c.CARD_COLOUR_GREEN:
-				return 1;
+				return grantPacksTo(login, aux.c.CARD_COLOUR_GREEN, 10)
+				// return 1;
+			break;
+			case aux.c.CARD_COLOUR_BLUE:
+				return grantPacksTo(login, aux.c.CARD_COLOUR_BLUE, 10)
+				// return 1;
 			break;
 			default:
+				return grantPacksTo(login, aux.c.CARD_COLOUR_GRAY, 50)
 				console.error(colour)
 			break;
 		}
@@ -89,6 +93,18 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		// clear cards
 	}
 
+	grantPacksTo('23i03g', aux.c.CARD_COLOUR_GRAY, 30)
+	.then(console.log)
+	.catch(console.error)
+
+	function grantPacksTo(login, colour, count){
+		return Users.pack.add(login, aux.c.CARD_COLOUR_GREEN, count)
+		.then(function (result){
+			aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour:colour })
+			return result
+		})
+		.catch(aux.drop)
+	}
 
 	app.get('/rewardme/:collectionID', aux.authenticated, function (req, res, next){
 		console.log('rewardme');

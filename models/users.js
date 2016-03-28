@@ -1,9 +1,13 @@
 var Promise = require('bluebird');
 
+var db = require('../db');
+var User2 = db.wrap('User');
+
 var configs = require('../configs');
 var models = require('../models')(configs.db);
 var User = models.User;
 var c = require('../constants');
+
 
 var helper = require('../helpers/helper');
 
@@ -98,6 +102,60 @@ function update_user_status(login, status){
 		}
 		return update_user({login:login}, upd, {})
 	})
+}
+
+function getByLogin(login){
+	return User2.find({login:login})
+}
+
+	// ,CARD_COLOUR_RED:1
+	// ,CARD_COLOUR_BLUE:2
+	// ,CARD_COLOUR_GREEN:3
+	// ,CARD_COLOUR_GRAY:4
+
+
+var pack = {
+	initialize: function(login){
+		// return User2.find({login:})
+		return User2.update({login:login}, {$set: {'info.packs': pack.newbiePackSet }})
+	}
+	,pickFrom: function (from){
+		return {
+			1: from[1],
+			2: from[2],
+			3: from[3],
+			4: from[4]
+		}
+	}
+	,newbiePackSet: {
+		1: 4,
+		2: 4,
+		3: 7,
+		4: 7
+	}
+	,add: function(login, colour, count){
+		// return User2.update({login:login})
+		return getByLogin(login)
+		.then(function (user){
+			if (!user.info.packs) {
+				return pack.initialize(login)
+				.then(function (result){
+					return getByLogin(login)
+				})
+			}
+			return user
+		})
+		.then(function (user){
+			console.log('second user', user)
+			var packs = pack.pickFrom(user.info.packs);
+			console.log('second user', packs);
+			packs[colour] += count;
+
+			console.log('modified packs', packs);
+
+			return User2.update({login:login}, {$set: {'info.packs': packs} })
+		})
+	}
 }
 
 function update_password_by_email (email, password) {
@@ -663,3 +721,4 @@ module.exports.update_auth_links = update_auth_links;
 
 module.exports.grantMoney = grantMoney
 module.exports.update_user_status = update_user_status
+module.exports.pack = pack
