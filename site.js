@@ -905,12 +905,13 @@ app.get('/getLogFile', isAdmin, sender.getLogFile, function (req, res){
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
+ console.log('tellToFinishTournament', data);
  var tournamentID = data.tournamentID;
  
- console.log(data);
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
 
-  Actions.add('stopTournament', {tournamentID:tournamentID});
+  aux.system('tellToFinishTournament', {tournamentID: tournamentID })
+  // Actions.add('SYSTEM' ,'stopTournament', { tournamentID:tournamentID });
 
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
 })

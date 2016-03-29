@@ -658,6 +658,7 @@ function ReturnBuyInsToPlayers(tournamentID){
 }
 
 function StopTournament(data, res){
+	KillFinishedTournaments();
 	Log('DB.StopTournament needs promises!!!', STREAM_SHIT);
 	Log('RETURN MONEY TO USERS, WHO TOOK PART IN STOPPED TOURNAMENT', STREAM_SHIT);
 
@@ -666,6 +667,7 @@ function StopTournament(data, res){
 		setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
 		ClearRegistersInTournament([data.tournamentID]);
 		ReturnBuyInsToPlayers(data.tournamentID);
+
 
 		if (res) Answer(res, OK);
 		

@@ -9,6 +9,8 @@ var Tournaments = require('../models/tournaments')
 
 var increaseMoney;
 
+var sender = require('../requestSender');
+
 
 var helper = require('../helpers/helper')
 
@@ -157,22 +159,14 @@ function dataBaseChanges(data){
 	.then(give_marathon_points) // parallel. returns undefined
 	.then(function (result){
 		info.marathonPointsGiven = result;
-		// console.log('marathonPoints given', result)
-
-		// return Tournaments.running(tournamentID)
 		return Tournaments.finish(tournamentID)
 	})
 	.then(function (result){
 		info.finish = result;
-
-		// console.log('status finish is set', result)
-		// console.log('Tournaments.finish', result)
 		return TournamentReg.clearParticipants(tournamentID)
 	})
 	.then(function (result){
 		info.clearParticipants = result;
-
-		// console.log('TournamentReg.clearParticipants', result)
 		return Tournaments.find(tournamentID)
 	})
 	.then(function (t){
@@ -187,7 +181,7 @@ function dataBaseChanges(data){
 			
 			Tournaments.addNewTournament(youngerizedTournament)
 			.then(function (result) {
-				aux.system('autoAdd', { result: youngerizedTournament })
+				serveTournament(youngerizedTournament)
 			})
 			.catch(aux.report('autoAdd', { info:info } ))
 
@@ -204,6 +198,16 @@ function dataBaseChanges(data){
 	})
 	.catch(aux.report('WinPrize', { info:info } ))
 	
+}
+
+function serveTournament(tournament){
+	if (!isSpecialTournament(tournament)) {
+		Tournaments.setStatus(tournament.tournamentID, aux.c.TOURN_STATUS_REGISTER)
+	}
+
+	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');
+
+	aux.system('autoAdd', { result: tournament })
 }
 
 function givePrizes(winners, tournament){

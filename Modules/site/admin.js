@@ -101,6 +101,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
 
 
   function stopTournament(res, tournamentID){
+    console.log('stopTournament', 'Admin.js', tournamentID)
     sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy);
 
     strLog('FrontendServer StopTournament :::'+tournamentID, 'Manual');
