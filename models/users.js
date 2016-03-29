@@ -7,7 +7,7 @@ var configs = require('../configs');
 var models = require('../models')(configs.db);
 var User = models.User;
 
-// var c = require('../constants');
+var c = require('../constants');
 
 
 var helper = require('../helpers/helper');
