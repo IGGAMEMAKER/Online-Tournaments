@@ -4,10 +4,10 @@ extends List
 block head
 	th #
 	th Игрок
-	th Название
+	th Тип
 	th Сумма
 	th Время
-	th Статус
+	th Источник
 block raw
 
 block content
@@ -15,13 +15,22 @@ block content
 	td
 		p!= item.userID
 	td
-		p!= JSON.stringify(item.source)
+		if item.source
+			if item.source.type
+				p!= item.source.type
+			else
+				p!= JSON.stringify(item.source)
+		else
+			p Source is not set
+			//p!= JSON.stringify(item)
 	td
 		p!= item.ammount
 		//a(href="get_message?id="+item.id target="_blank") #{item}
 	td
 		p!= item.date
 	td
+		p!= JSON.stringify(item.source)
+	//td
 		+drawStatus(item)
 		//p #{item.status}
 

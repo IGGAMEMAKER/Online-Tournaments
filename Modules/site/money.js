@@ -41,6 +41,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			return sender.Answer(res, Fail);
 		}
 	});
+
 	function MoneyTransferOperation(req, res, operation, page){
 	  if (isAuthenticated(req)){
 	    var data = req.body;
@@ -66,6 +67,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	app.get('/api_transfers_all', aux.isAdmin, function (req, res, next){
 		Money.all()
+
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.render('Transfers'), aux.err)
+
+	app.get('/api_transfers_recent', aux.isAdmin, function (req, res, next){
+		// var since = req.query.since||null;
+		// var till = req.query.till|| new Date()
+
+		Money.recent()
 
 		.then(aux.setData(req, next))
 		.catch(next)

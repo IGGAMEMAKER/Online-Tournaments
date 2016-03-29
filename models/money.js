@@ -5,6 +5,8 @@ var models = require('../models')(configs.db);
 
 
 var helper = require('../helpers/helper');
+var time = require('../helpers/time');
+
 var log = console.log;
 
 var Fail = { result: 'fail' };
@@ -98,6 +100,7 @@ module.exports = {
 		return money_worker2(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay', true);
 	},
 	all: function (){
+
 		return MoneyTransfers.list({})
 		// return new Promise(function (resolve, reject){
 		// 	MoneyTransfer.find({}, function (err, transfers){
@@ -108,8 +111,9 @@ module.exports = {
 		// })
 	},
 	recent: function (){
-		return new Promise(function (resolve, reject){
-			MoneyTransfer.find({})
-		})
+		return MoneyTransfers.list({ date: time.happened_this_week() })
+		// return new Promise(function (resolve, reject){
+		// 	MoneyTransfer.find({ date: time.happened_this_week() })
+		// })
 	}
 }
