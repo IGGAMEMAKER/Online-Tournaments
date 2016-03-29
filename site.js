@@ -417,7 +417,7 @@ function FinishGame(req, res){
   Log(data, 'Tournaments');
   
   console.log('FinishGame', data);
-  
+
   tournament_finisher.finish(data)
   // var winners = data.scores//sort.winners(data.scores);
   // var winnerCount = data.places[1] || null;
@@ -905,6 +905,9 @@ app.get('/getLogFile', isAdmin, sender.getLogFile, function (req, res){
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
+ var tournamentID = data.tournamentID;
+ 
+ console.log(data);
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
 
   Actions.add('stopTournament', {tournamentID:tournamentID});

@@ -91,15 +91,26 @@ module.exports = {
 
 	,updated: helper.updated
 	,removed: helper.removed
-	,report: function (data){
+	,report: function (place, data){  //about errors
 		return function (err){
 			console.error('report', data, err)
 			var obj = {
+				place:place,
 				data:data||{},
 				err:err
 			}
 			return Errors.add('SYSTEM', 'REPORT', obj)
 		}
+	}
+	,system: function (place, data){
+		// return function (err){
+		// 	console.error('report', data, err)
+		// 	var obj = {
+		// 		data:data||{},
+		// 		err:err
+		// 	}
+		// }
+		return Actions.add('SYSTEM', 'system', { data:data, place:place })
 	}
 
 	,setData: function(req, next){

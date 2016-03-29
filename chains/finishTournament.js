@@ -157,30 +157,43 @@ function dataBaseChanges(data){
 	.then(give_marathon_points) // parallel. returns undefined
 	.then(function (result){
 		info.marathonPointsGiven = result;
-		console.log('marathonPoints given', result)
+		// console.log('marathonPoints given', result)
+
 		// return Tournaments.running(tournamentID)
 		return Tournaments.finish(tournamentID)
 	})
 	.then(function (result){
 		info.finish = result;
 
-		console.log('status finish is set', result)
-		console.log('Tournaments.finish', result)
+		// console.log('status finish is set', result)
+		// console.log('Tournaments.finish', result)
 		return TournamentReg.clearParticipants(tournamentID)
 	})
 	.then(function (result){
 		info.clearParticipants = result;
 
-		console.log('TournamentReg.clearParticipants', result)
+		// console.log('TournamentReg.clearParticipants', result)
 		return Tournaments.find(tournamentID)
 	})
 	.then(function (t){
+		// console.log('get tournament info', t)
 		info.tournament = t;
-
-		console.log('get tournament info', t)
 		tournament = t;
 
-		****
+		// goes in parallel
+		if (needsAutoAdd(tournament)){
+			Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
+			var youngerizedTournament = YoungerizeTournament(tournament);
+			
+			Tournaments.addNewTournament(youngerizedTournament)
+			.then(function (result) {
+				aux.system('autoAdd', { result: youngerizedTournament })
+			})
+			.catch(aux.report('autoAdd', { info:info } ))
+
+			// return AutoAddTournament()
+		}
+
 		return givePrizes(winners, tournament)
 
 		// WinPrize({winners:obj, tournamentID:tournamentID});
@@ -189,11 +202,9 @@ function dataBaseChanges(data){
 	.then(function (result){
 		console.log('done ALL', result, info)
 	})
-	.catch(aux.report({ place: 'WinPrize', info:info } ))
+	.catch(aux.report('WinPrize', { info:info } ))
 	
 }
-
-
 
 function givePrizes(winners, tournament){
 	var tournamentID = tournament.tournamentID;
@@ -201,7 +212,6 @@ function givePrizes(winners, tournament){
 	for (i=0; i < winners.length; i++){// && i <Prizes.Prizes.length
 		var player = winners[i];
 		var Prize = getPrize(tournament.Prizes, tournament.goNext, i+1);
-		// console.log('givePrizeToPlayer', player, Prize, tournamentID)
 
 		givePrizeToPlayer(player, Prize, tournamentID );
 	}
@@ -235,7 +245,7 @@ function WinPrize(data){
 		return TournamentReg.clearParticipants(tournamentID)
 		// return KillFinishedTournaments()
 	})
-	.catch(aux.report({ place: 'WinPrize', tournament:tournament||null } ))
+	.catch(aux.report('WinPrize', { tournament : tournament||null } ))
 
 	//Tournament.remove({tournamentID:})
 	// UpdatePromos(tournamentID);
@@ -354,7 +364,7 @@ function YoungerizeTournament(tournament){
 		obj.goNext[0] = 1;
 	}
 
-	obj.status = TOURN_STATUS_REGISTER;
+	obj.status = aux.c.TOURN_STATUS_REGISTER;
 	obj.players = 0;
 
 	return obj;
@@ -380,20 +390,20 @@ function AutoAddTournament (tournament1){
 	});
 }
 
-function needsRestart(tournament){
-	
+function needsAutoAdd(tournament){
+	return isStreamTournament(tournament) || isRegularTournament(tournament)
 }
 
 function isStreamTournament(tournament){
-	return tournament.settings && tournament.settings.regularity==REGULARITY_STREAM;
+	return tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM;
 }
 
 function isRegularTournament(tournament){
-	return tournament.settings && tournament.settings.regularity==REGULARITY_REGULAR;
+	return tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_REGULAR;
 }
 
 function isSpecialTournament(tournament){
-	return tournament.settings && tournament.settings.special==SPECIALITY_SPECIAL;
+	return tournament.settings && tournament.settings.special==aux.c.SPECIALITY_SPECIAL;
 }
 
 
@@ -408,7 +418,7 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		.then(function (result){
 			console.log('saveGift', result)
 		})
-		.catch(aux.report({ place:'Prize is gift:', Prize:Prize, login:login }) )
+		.catch(aux.report('Prize is gift:', { Prize:Prize, login:login } ))
 
 		// var userGift = new UserGift( {userID:login, giftID: Prize.giftID} );
 		// userGift.save(function (err){
@@ -421,13 +431,13 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		//money
 		Log('mmmMoney!! ' + Prize);
 		if (Prize>0){
-			var src = { type:SOURCE_TYPE_WIN, tournamentID:tournamentID };
+			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID:tournamentID };
 
 			increaseMoney.increase(login, Prize, src)
 			.then(function (result){
 				console.log('mmmMoney', login, Prize, src)
 			})
-			.catch(aux.report({ place:'mmmMoney', src:src, login:login }) )
+			.catch(aux.report('mmmMoney', { src:src, login:login } ))
 
 			// User.update( {login:login}, {$inc: { money: Prize }} , function (err,count) {
 			// 	if (err){ Error(err); return; }

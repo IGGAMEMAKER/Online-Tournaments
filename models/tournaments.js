@@ -165,6 +165,34 @@ function add(tournament){
 	});
 }
 
+function addNewTournament(tournament){
+	return new Promise(function (resolve, reject){
+		Tournament
+			.findOne({})
+			.sort('-tournamentID')
+			.exec(function searchTournamentWithMaxID (err, maxTournament){
+
+			if (err) return reject({err:err, stage:'tournament.add find err'});
+
+			var newID=0;
+			if (maxTournament) newID = maxTournament.tournamentID || 0;
+			var tournamentID = newID + 1;
+			// tournament.tournamentID = newID+1;
+			tournament.tournamentID = tournamentID;
+
+			Tournament2.save(tournament)
+			.then(function (result){
+				enable(tournamentID)
+				return resolve(tournament)
+			})
+			.catch(function (err){
+				return reject({err: err, message: 'cannot add tournament', tournament: tournament })
+			})
+
+		});
+	});
+}
+
 function find(tournamentID){
 	return Tournament2.find({ tournamentID: tournamentID })
 }
@@ -308,6 +336,8 @@ this.specials = specials;
 this.running = running;
 this.setStatus = setTournStatus
 this.find = find
+
+this.addNewTournament = addNewTournament;
 
 // specials()
 // .then(console.log)
