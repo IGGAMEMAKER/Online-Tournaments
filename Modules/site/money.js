@@ -75,8 +75,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	app.get('/api_transfers_recent', aux.isAdmin, function (req, res, next){
 		// var since = req.query.since||null;
 		// var till = req.query.till|| new Date()
+		// console.log(req.query);
 
-		Money.recent()
+		var period = parseInt(req.query.period) || 0;
+		//0 - daily
+		//1 - yesterday
+		//2 - monthly
+		Money.standardPeriod(period)
 
 		.then(aux.setData(req, next))
 		.catch(next)

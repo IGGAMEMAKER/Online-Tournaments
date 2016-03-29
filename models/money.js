@@ -115,5 +115,33 @@ module.exports = {
 		// return new Promise(function (resolve, reject){
 		// 	MoneyTransfer.find({ date: time.happened_this_week() })
 		// })
+	},
+	standardPeriod: function(period){
+		//0 - daily
+		//1 - yesterday
+		//2 - monthly
+
+		switch(period){
+			case 0:
+				return MoneyTransfers.list({ date: time.happened_today() })
+			break;
+			case 1:
+				return MoneyTransfers.list({ date: time.happened_yesterday() })
+			break;
+			case 2:
+				return MoneyTransfers.list({ date: time.happened_this_month() })
+			break;
+			default:
+				// console.log('default')
+				return MoneyTransfers.list({ date: time.happened_today() })
+			break;
+		}
+		// if (period==0){
+		// }
+
+		// return MoneyTransfers.list({ date: time.happened_this_month() })
 	}
+	// period: function (timeFunction){
+	// 	return MoneyTransfers({date: timeFunction() })
+	// }
 }
