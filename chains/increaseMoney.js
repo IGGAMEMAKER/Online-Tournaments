@@ -4,9 +4,11 @@ var Money = require('../models/money')
 
 
 function increase(login, ammount, sourceObject){
+	console.log('moneyIncrease', 'increase', arguments)
 	return Users.moneyIncrease(login, ammount)
 	.then(function (result){
-		Money.saveTransfer(login, ammount, sourceObject)
+		console.log('moneyIncrease done', result)
+		return Money.saveTransfer(login, ammount, sourceObject)
 	})
 }
 

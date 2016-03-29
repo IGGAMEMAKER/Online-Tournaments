@@ -7,6 +7,9 @@ var Users = require('../models/users')
 var TournamentReg = require('../models/tregs')
 var Tournaments = require('../models/tournaments')
 
+
+var Money = require('../models/money')
+
 var increaseMoney;
 
 var sender = require('../requestSender');
@@ -413,7 +416,7 @@ function isSpecialTournament(tournament){
 
 function givePrizeToPlayer(player, Prize, tournamentID){
 	Log('WinPrize: ' + JSON.stringify(player));
-	var login = player.login;
+	var login = player.value.login;
 	
 	if (isNaN(Prize) ){
 		//gift
@@ -423,7 +426,6 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 			console.log('saveGift', result)
 		})
 		.catch(aux.report('Prize is gift:', { Prize:Prize, login:login } ))
-
 		// var userGift = new UserGift( {userID:login, giftID: Prize.giftID} );
 		// userGift.save(function (err){
 		// 	if (err){Error(err);}
@@ -431,15 +433,17 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 		// 		Stats('GivePrize', {tournamentID: tournamentID});
 		// 	}
 		// });
+
 	}	else {
 		//money
 		Log('mmmMoney!! ' + Prize);
 		if (Prize>0){
 			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID:tournamentID };
-
-			increaseMoney.increase(login, Prize, src)
+			
+			// increaseMoney.increase(login, Prize, src)
+			Money.increase(login, Prize, src)
 			.then(function (result){
-				console.log('mmmMoney', login, Prize, src)
+				console.log('money increased, transfer saved', login, Prize, src)
 			})
 			.catch(aux.report('mmmMoney', { src:src, login:login } ))
 

@@ -1,4 +1,6 @@
 module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux){
+	var Money = require('../../models/money')
+
 	var Fail = { result:'fail' };
 	var OK = { result: 'OK' };
 
@@ -61,6 +63,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  }
 	  res.send(400);
 	}
+
+	app.get('/api_transfers_all', aux.isAdmin, function (req, res, next){
+		Money.all()
+
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.render('Transfers'), aux.err)
 
 	app.post('/Deposit', function (req, res){
 	  MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');

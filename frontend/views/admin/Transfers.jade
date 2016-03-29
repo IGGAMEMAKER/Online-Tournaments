@@ -1,0 +1,33 @@
+//
+extends List
+
+block head
+	th #
+	th Игрок
+	th Название
+	th Сумма
+	th Время
+	th Статус
+block raw
+
+block content
+	td!= ind
+	td
+		p!= item.userID
+	td
+		p!= JSON.stringify(item.source)
+	td
+		p!= item.ammount
+		//a(href="get_message?id="+item.id target="_blank") #{item}
+	td
+		p!= item.date
+	td
+		+drawStatus(item)
+		//p #{item.status}
+
+mixin drawStatus(item)
+	case item.status
+		when '1'
+			p Прочитано
+		default
+			p Не прочитано

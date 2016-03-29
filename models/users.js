@@ -820,3 +820,5 @@ module.exports.update_auth_links = update_auth_links;
 module.exports.grantMoney = grantMoney
 module.exports.update_user_status = update_user_status
 module.exports.pack = pack
+
+module.exports.moneyIncrease = moneyIncrease

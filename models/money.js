@@ -15,6 +15,9 @@ var Errors = require('./errors');
 var User = models.User;
 var MoneyTransfer = models.MoneyTransfer;
 
+var db = require('../db')
+var MoneyTransfers = db.wrap('MoneyTransfer')
+
 
 var time = require('../helpers/time');
 
@@ -95,13 +98,14 @@ module.exports = {
 		return money_worker2(login, ammount, source, {login:login, money: {$not : {$lt: ammount }} }, {$inc: { money: -ammount }}, 'pay', true);
 	},
 	all: function (){
-		return new Promise(function (resolve, reject){
-			MoneyTransfer.find({}, function (err, transfers){
-				if (err) return reject(err);
+		return MoneyTransfers.list({})
+		// return new Promise(function (resolve, reject){
+		// 	MoneyTransfer.find({}, function (err, transfers){
+		// 		if (err) return reject(err);
 
-				resolve(transfers);
-			})
-		})
+		// 		resolve(transfers);
+		// 	})
+		// })
 	},
 	recent: function (){
 		return new Promise(function (resolve, reject){
