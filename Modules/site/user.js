@@ -381,7 +381,7 @@ function (req, res){
 			next()
 		})
 		.catch(function (err){
-			aux.fail(login, 'get_profile error', {err: err})
+			aux.fail(login, 'get_profile error', {err: err, profile:profile })
 			console.error('get_profile error', login, err);
 			req.profile = null;
 			next(err);

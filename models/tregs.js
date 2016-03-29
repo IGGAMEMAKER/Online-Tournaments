@@ -62,7 +62,7 @@ function getParticipants(tournamentID){
 }
 
 function clearParticipants(tournamentID){
-	return TournamentReg2.update({ tournamentID : tournamentID,}, { $set: { status : c.TOURN_STATUS_FINISHED } }, {multi: true})
+	return TournamentReg2.update({ tournamentID : tournamentID,}, { $set: { status : TOURN_STATUS_FINISHED } }, {multi: true})
 }
 
 function participants(tournamentID){
