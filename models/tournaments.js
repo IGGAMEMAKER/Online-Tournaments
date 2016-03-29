@@ -2,6 +2,8 @@ var Promise = require('bluebird');
 
 var configs = require('../configs');
 
+var db = require('../db')
+var Tournament2 = db.wrap('Tournament')
 
 
 var helper = require('../helpers/helper');
@@ -9,6 +11,8 @@ var log = helper.log;
 
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
+
+var c = require('../constants')
 
 // var mongoose = require('mongoose');
 // //mongoose.connect('mongodb://localhost/test');
@@ -58,6 +62,9 @@ var Tournament = models.Tournament;
 // 	//tournamentServerID: String
 // });
 
+function running(tournamentID){
+	return Tournament2.find({tournamentID:tournamentID, status: TOURN_STATUS_RUNNING})
+}
 
 function all(){
 	//null - инициализирован
@@ -68,13 +75,14 @@ function all(){
 }
 
 function getByID(tournamentID){
-	return new Promise(function(resolve, reject){
-		Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
-			if (err) return reject(err);
+	return Tournament2.search(tournamentID)
+	// return new Promise(function(resolve, reject){
+	// 	Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
+	// 		if (err) return reject(err);
 
-			return resolve(tournament||null);
-		})
-	})
+	// 		return resolve(tournament||null);
+	// 	})
+	// })
 }
 
 function getStreamID(login){
@@ -124,7 +132,10 @@ function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED)
 
 function enable(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_REGISTER); }
 
-function finish(tournamentID){ stop(tournamentID); }
+function finish(tournamentID){ 
+	return setTournStatus(tournamentID, TOURN_STATUS_FINISHED)
+	// stop(tournamentID); 
+}
 
 function add(tournament){
 	return new Promise(function(resolve, reject){
@@ -154,12 +165,43 @@ function add(tournament){
 	});
 }
 
+function find(tournamentID){
+	return Tournament2.find({ tournamentID: tournamentID })
+}
+
 function setTournStatus(tournamentID, status){
 	log('Set tourn status of ' + tournamentID + ' to ' + status);
-	Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
-		if(err) { log('Tournament status update Error: ' + JSON.stringify(err)); }
-	});//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
+	var updateObj = {
+		status:status
+	}
+
+	switch(status){
+		case TOURN_STATUS_RUNNING:
+			updateObj.playTime = new Date();
+		break;
+		case TOURN_STATUS_FINISHED:
+			updateObj.finishTime = new Date();
+		break;
+		default:
+			updateObj.startedTime = new Date();
+			// Errors.add('', 'invalid setTournStatus', {err:status});
+		break;
+	}
+	return Tournament2.update({tournamentID: tournamentID}, {$set: updateObj})
+	// Tournament.update({tournamentID:tournamentID}, {$set: updateObj}, function (err,count){
+	// 	if(err) return Log('Tournament status update Error: ' + JSON.stringify(err));
+	// });
 }
+
+// function setTournStatus(tournamentID, status){
+// 	// log('Set tourn status of ' + tournamentID + ' to ' + status);
+// 	// Tournament.update({tournamentID:tournamentID}, {$set: {status:status}}, function (err,count){
+// 	// 	if(err) { log('Tournament status update Error: ' + JSON.stringify(err)); }
+// 	// });//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
+
+	
+
+// }
 
 var COUNT_FIXED = 1;
 
@@ -262,6 +304,10 @@ this.add = add;
 this.finish = finish;
 this.getStreamID = getStreamID;
 this.specials = specials;
+
+this.running = running;
+this.setStatus = setTournStatus
+this.find = find
 
 // specials()
 // .then(console.log)

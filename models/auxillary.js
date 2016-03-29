@@ -91,6 +91,16 @@ module.exports = {
 
 	,updated: helper.updated
 	,removed: helper.removed
+	,report: function (data){
+		return function (err){
+			console.error('report', data, err)
+			var obj = {
+				data:data||{},
+				err:err
+			}
+			return Errors.add('SYSTEM', 'REPORT', obj)
+		}
+	}
 
 	,setData: function(req, next){
 		return function (data){

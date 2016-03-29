@@ -3,6 +3,9 @@ var Promise = require('bluebird');
 var configs = require('../configs');
 var models = require('../models')(configs.db);
 
+var db = require('../db')
+var Marathon2 = db.wrap('Marathon')
+
 
 var helper = require('../helpers/helper');
 // var log = console.log;
@@ -57,6 +60,21 @@ function add(marathon){
 
 	});
 }
+
+function current(){
+	return new Promise(function (resolve, reject){
+		Marathon
+		.findOne({})
+		.sort('-MarathonID')
+		.exec(function (err, lastMarathon){
+			if (err) return reject(err);
+			if (!lastMarathon) return reject(null)
+
+			resolve(lastMarathon.MarathonID);
+		})
+	})
+}
+
 
 function getDefaultMarathon(){
 	return	{
@@ -675,4 +693,5 @@ module.exports = {
 		})
 	}
 	, get_or_reject: 					get_current_marathon_or_reject
+	, current: current
 }

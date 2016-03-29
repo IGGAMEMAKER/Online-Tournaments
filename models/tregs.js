@@ -12,6 +12,11 @@ var log = helper.log;
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
 
+var db = require('../db')
+var TournamentReg2 = db.wrap('TournamentReg')
+
+var c = require('../constants');
+
 //var TournamentReg = db.model('TournamentRegs', {	tournamentID: Number, userID: String, promo:String, status:Number, date:Date });
 
 const TOURN_STATUS_REGISTER = 1;
@@ -55,6 +60,15 @@ function getParticipants(tournamentID){
 		});
 	});
 }
+
+function clearParticipants(tournamentID){
+	return TournamentReg2.update({ tournamentID : tournamentID,}, { $set: { status : c.TOURN_STATUS_FINISHED } }, {multi: true})
+}
+
+function participants(tournamentID){
+	return TournamentReg2.list({tournamentID:tournamentID})
+}
+
 
 function playedCount(login){
 	return new Promise(function (resolve, reject){
@@ -266,3 +280,5 @@ this.userRegistered = userRegistered;
 this.playedCount = playedCount;
 this.leaderboard = leaderboard;
 this.playedTop = playedTop;
+this.participants = participants
+this.clearParticipants = clearParticipants
