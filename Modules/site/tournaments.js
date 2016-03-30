@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, proxy){
+module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux){
 var Fail = { result:'fail'};
 
 var Tournaments = require('../../models/tournaments');
@@ -166,6 +166,57 @@ var upload = multer({ storage: storage }).single('image');
       sender.Answer(res, Fail);
     }
 	}
+
+  app.get('/api/tournaments/all', aux.isAdmin, function (req, res, next){
+    Tournaments.todos()
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.render('Lists/Tournaments'), aux.err)
+
+  app.get('/api/tournaments/current', aux.isAdmin, function (req, res, next){
+    Tournaments.get_available()
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.render('Lists/Tournaments'), aux.err)
+
+  app.get('/api/tournaments/get/:tournamentID', aux.isAdmin, function (req, res, next){
+    var tournamentID = parseInt(req.params.tournamentID)
+
+    Tournaments.getByID(tournamentID)
+    .then(function (tournament){
+      console.log(tournament)
+      return tournament;
+    })
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std)
+
+  app.get('/api/tournaments/edit/:id/:parameter/:type/:value/', aux.isAdmin, function (req, res, next){
+    var tournamentID = parseInt(req.params.id);
+    var parameter = req.params.parameter;
+    var value = req.params.value;
+    var type = req.params.type;
+
+    var obj = {}
+
+    switch(type){
+      case 'obj':
+        obj[parameter] = JSON.parse(value);
+      break;
+      case 'num':
+        obj[parameter] = parseInt(value);
+      break;
+      default:
+        obj[parameter] = value;
+      break;
+    }
+
+    Tournaments.edit(tournamentID, obj)
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std)
 
   function getTopic(topic){
     Log("getTopic : " + topic, "Tournaments");

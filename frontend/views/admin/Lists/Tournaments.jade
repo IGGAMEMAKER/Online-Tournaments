@@ -1,0 +1,48 @@
+//
+extends ../List
+
+block head
+	th #
+	th Название
+	th Время
+	th Статус
+	th Действие
+block raw
+
+mixin param(item, name)
+	p!= name + ': ' + JSON.stringify(item[name])
+
+block content
+	td
+		p!= ind
+		p #{item._id}
+		a(href="/api/tournaments/get/"+item.tournamentID target="_blank") #{item.tournamentID}
+		//p #{item.tournamentID}
+		p buyin #{item.buyIn}
+		p gameNameID #{item.gameNameID}
+	td
+		p #{JSON.stringify(item.settings)}
+		+param(item, "Prizes")
+		+param(item, "goNext")
+		+param(item, "players")
+
+		//a(href="/api/tournaments/get/"+item.tournamentID target="_blank") ALL
+
+		//p(href="get_message?id="+item._id target="_blank") #{item}
+	td
+		+param(item, "startDate")
+		//p!= time
+	td
+		p!= item.status
+		//+drawStatus(item)
+		//p #{item.status}
+	td
+		p!= "/api/tournaments/edit/"+item.tournamentID+"/settings.sanity/num/153"
+		a(href="/api/tournaments/edit/"+item.tournamentID+"/settings.topic/str/topic" target="_blank") set topic topic
+
+mixin drawStatus(item)
+	case item.status
+		when '1'
+			p Прочитано
+		default
+			p Не прочитано

@@ -67,6 +67,7 @@ function running(tournamentID){
 }
 
 function all(){
+	return Tournament2.list({})
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
 	//2 - running - турнир начат
@@ -75,7 +76,7 @@ function all(){
 }
 
 function getByID(tournamentID){
-	return Tournament2.search(tournamentID)
+	return Tournament2.findOne({tournamentID:tournamentID})
 	// return new Promise(function(resolve, reject){
 	// 	Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
 	// 		if (err) return reject(err);
@@ -203,6 +204,10 @@ function addNewTournament(tournament){
 	});
 }
 
+function edit(tournamentID, changes){
+	return Tournament2.update({tournamentID:tournamentID}, {$set: changes})
+}
+
 function find(tournamentID){
 	return Tournament2.find({ tournamentID: tournamentID })
 }
@@ -272,6 +277,12 @@ function get_tournaments_update(){
 	var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
 	var query = { $and : [{"settings.hidden": {$ne : true} }, run_or_reg] };
 
+	return get_tournaments(query, '', null, null);
+}
+
+//active or available
+function get_available(){ //get_not_finished_tournaments
+	var query = {$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
 	return get_tournaments(query, '', null, null);
 }
 
@@ -347,9 +358,12 @@ this.running = running;
 this.setStatus = setTournStatus
 this.find = find
 this.findByQuery = findByQuery
+this.get_available = get_available
 
 this.updateByID = updateByID
+this.edit = edit
 this.addNewTournament = addNewTournament;
+this.todos = all
 
 
 // specials()
