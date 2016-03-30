@@ -37,6 +37,13 @@ block content
 		//+drawStatus(item)
 		//p #{item.status}
 	td
+		form(method="POST" action="/api/tournaments/edit/"+item.tournamentID)
+			p name
+			input(name="name" type="text")
+			p value
+			input(name="value" type="text")
+			br
+			input(type="submit" value="edit")
 		p!= "/api/tournaments/edit/"+item.tournamentID+"/settings.sanity/num/153"
 		a(href="/api/tournaments/edit/"+item.tournamentID+"/settings.topic/str/topic" target="_blank") set topic topic
 

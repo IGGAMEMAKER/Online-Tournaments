@@ -193,25 +193,72 @@ var upload = multer({ storage: storage }).single('image');
     .catch(next)
   }, aux.std)
 
-  app.get('/api/tournaments/edit/:id/:parameter/:type/:value/', aux.isAdmin, function (req, res, next){
-    var tournamentID = parseInt(req.params.id);
-    var parameter = req.params.parameter;
-    var value = req.params.value;
-    var type = req.params.type;
+  // app.post('/api/tournaments/edit/:tournamentID', isAdmin, function (req, res){
+  //   var tournamentID = req.params.tournamentID;
+  //   var data = req.body||null;
+
+  //   var obj = {}
+  //   if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){
+  //     obj[data.name] = JSON.parse(data.value)
+  //   }
+
+  //       return res.json({result: 'no changes'});
+  //     }
+  //     Marathon.edit(data, MarathonID)
+  //     .then(function (result){
+  //       if (result){
+  //         res.redirect('/api/tournaments/current');
+  //       } else {
+  //         res.json({result:result});
+  //         //res.end('fail. <a href="MarathonInfo"> go back');
+  //       }
+  //     })
+  //     .catch(function (err){
+  //       res.json({result:'fail', error: err });
+  //     })
+  //   } else {
+  //     res.json({result:'INVALID MarathonID' });
+  //   }
+
+  // })
+
+  // app.get('/api/tournaments/edit/:id/:parameter/:type/:value/', aux.isAdmin, function (req, res, next){
+  //   var tournamentID = parseInt(req.params.id);
+  //   var parameter = req.params.parameter;
+  //   var value = req.params.value;
+  //   var type = req.params.type;
+  app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next){
+    var tournamentID = req.params.tournamentID;
+    var data = req.body||null;
 
     var obj = {}
-
-    switch(type){
-      case 'obj':
-        obj[parameter] = JSON.parse(value);
-      break;
-      case 'num':
-        obj[parameter] = parseInt(value);
-      break;
-      default:
-        obj[parameter] = value;
-      break;
+    if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){
+      obj[data.name] = JSON.parse(data.value)
     }
+
+    // switch(type){
+    //   case 'obj':
+    //     obj[parameter] = JSON.parse(value);
+    //   break;
+    //   case 'num':
+    //     obj[parameter] = parseInt(value);
+    //   break;
+    //   case 'arr':
+    //     console.log('arrrrrrrrrr')
+    //     var a = JSON.parse(value)
+    //     // console.log(a);
+    //     // a[0]*= 999;
+
+    //     // var arr = [];//Array.from(value);
+    //     // var arr = Array.from(a);
+    //     // console.log(arr);
+    //     obj[parameter] = a;
+    //   break;
+    //   default:
+    //     console.log('default')
+    //     obj[parameter] = value;
+    //   break;
+    // }
 
     Tournaments.edit(tournamentID, obj)
     .then(aux.setData(req, next))
