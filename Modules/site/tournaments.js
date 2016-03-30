@@ -261,9 +261,17 @@ var upload = multer({ storage: storage }).single('image');
     // }
 
     Tournaments.edit(tournamentID, obj)
+    .then(function (result){
+      if (result){
+        res.redirect('/api/tournaments/current');
+      } else {
+        res.json({result:result});
+        //res.end('fail. <a href="MarathonInfo"> go back');
+      }
+    })
     .then(aux.setData(req, next))
     .catch(next)
-  }, aux.std)
+  }, aux.render('Lists/Tournaments'), aux.err)
 
   function getTopic(topic){
     Log("getTopic : " + topic, "Tournaments");
