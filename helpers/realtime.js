@@ -11,7 +11,8 @@ objects = {
 	counter:0,
 	updater:{},
 	cards:[],
-	UPDATE_ALL: UPDATE_ALL
+	UPDATE_ALL: UPDATE_ALL,
+	tournaments:null
 };
 
 function save(name){
@@ -48,7 +49,10 @@ function update_cards(){ Gifts.cards().then(save('cards')); }
 function update_tournaments(period){
 	Tournaments.get()
   .then(function (tournaments){
-    if (tournaments) objects.updater.tournaments = tournaments;
+    if (tournaments) { 
+    	objects.updater.tournaments = tournaments;
+    	objects.tournaments = tournaments;
+    }
     if (frontendVersion) objects.updater.frontendVersion = frontendVersion;
 
     return objects.updater; // io.emit('update', updater);

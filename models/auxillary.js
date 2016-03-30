@@ -89,6 +89,12 @@ module.exports = {
 		})
 	}
 
+	// ,standard: function (place, data){
+	// 	return function(x){
+			
+	// 	}
+	// }
+
 	,updated: helper.updated
 	,removed: helper.removed
 	,report: function (place, data){  //about errors

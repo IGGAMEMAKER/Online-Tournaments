@@ -134,12 +134,18 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			}
 		})
 	}
-
+	var register_manager = require('../../chains/registerInTournament')(aux)
+	
 	app.post('/CancelRegister', function (req, res){
 	  regManager('CancelRegister',req, res);
 	})
-	app.post('/RegisterInTournament', function (req, res){
-	  regManager('RegisterUserInTournament',req, res);
+	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
+		var tournamentID = parseInt(req.body.tournamentID);
+		var login = aux.getLogin(req)
+
+		register_manager.register(tournamentID, login, res)
+	  // regManager('RegisterUserInTournament',req, res);
+	  // ****
 	  //console.log('WRITE Socket emitter!!!')
 	})
 
@@ -180,7 +186,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				return user;
 			})
 			.catch(function (err) { 
-				// console.error(err);
+				console.error(err);
 				return user;
 			})
 		}
@@ -366,7 +372,6 @@ function (req, res){
 		}
 		Users.profile(login)
 		.then(function (user){
-
 			profile.money = user.money;
 			profile.email = user.email;
 

@@ -65,19 +65,15 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  res.send(400);
 	}
 
-	app.get('/api_transfers_all', aux.isAdmin, function (req, res, next){
+	app.get('/api/transfers/all', aux.isAdmin, function (req, res, next){
 		Money.all()
 
 		.then(aux.setData(req, next))
 		.catch(next)
 	}, aux.render('Transfers'), aux.err)
 
-	app.get('/api_transfers_recent', aux.isAdmin, function (req, res, next){
-		// var since = req.query.since||null;
-		// var till = req.query.till|| new Date()
-		// console.log(req.query);
-
-		var period = parseInt(req.query.period) || 0;
+	app.get('/api/transfers/recent/:period', aux.isAdmin, function (req, res, next){
+		var period = parseInt(req.params.period) || 0;
 		//0 - daily
 		//1 - yesterday
 		//2 - monthly
@@ -87,12 +83,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.catch(next)
 	}, aux.render('Transfers'), aux.err)
 
-	app.post('/Deposit', function (req, res){
+	app.post('/Deposit', aux.isAdmin, function (req, res){
 	  MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
 	})
 
-	app.get('/Cashout', function (req, res){
-		//if (isAuthenticated(req))
+	app.get('/Cashout', aux.isAdmin, function (req, res){
 		res.render('Cashout');
 	})
 	app.get('/Deposit', function (req, res){

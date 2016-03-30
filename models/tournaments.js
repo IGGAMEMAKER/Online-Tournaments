@@ -85,6 +85,14 @@ function getByID(tournamentID){
 	// })
 }
 
+function findByQuery(query){
+	return Tournament2.find(query)
+}
+
+function updateByID(tournamentID, updateObj){
+	return Tournament2.update({tournamentID:tournamentID}, { $set: updateObj })
+}
+
 function getStreamID(login){
 	return new Promise(function (resolve, reject){
 		Tournament.findOne({
@@ -126,11 +134,13 @@ function specials(){
 	})
 }
 
-function start(tournamentID){	setTournStatus(tournamentID, TOURN_STATUS_RUNNING); }
-
 function stop(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_FINISHED); }
-
 function enable(tournamentID){ setTournStatus(tournamentID, TOURN_STATUS_REGISTER); }
+
+
+function start(tournamentID){	
+	return setTournStatus(tournamentID, TOURN_STATUS_RUNNING); 
+}
 
 function finish(tournamentID){ 
 	return setTournStatus(tournamentID, TOURN_STATUS_FINISHED)
@@ -336,8 +346,11 @@ this.specials = specials;
 this.running = running;
 this.setStatus = setTournStatus
 this.find = find
+this.findByQuery = findByQuery
 
+this.updateByID = updateByID
 this.addNewTournament = addNewTournament;
+
 
 // specials()
 // .then(console.log)

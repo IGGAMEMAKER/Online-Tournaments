@@ -25,28 +25,31 @@ const TOURN_STATUS_FINISHED = 3;
 const TOURN_STATUS_PAUSED = 4;
 
 function add(tournamentID, login, promo){
-	return new Promise(function (resolve, reject){
-		var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
-		reg.save(function (err) {
-			if (err) return reject(err);
+	return TournamentReg2.save({userID:login, tournamentID:parseInt(tournamentID), promo:promo })
+	// return new Promise(function (resolve, reject){
+	// 	var reg = new TournamentReg({userID:login, tournamentID: parseInt(tournamentID), promo:promo});
+	// 	reg.save(function (err) {
+	// 		if (err) return reject(err);
 			
-			log('added ' + login + ' to tournament ' + tournamentID);
-			return resolve(true);
-		});
-	})
+	// 		log('added ' + login + ' to tournament ' + tournamentID);
+	// 		return resolve(true);
+	// 	});
+	// })
 }
 
 function remove(tournamentID, login){
-	return new Promise(function (resolve, reject){
-		TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
-			if (err) return reject(err);
+	return TournamentReg2.remove({userID:login, tournamentID:tournamentID})
+
+	// return new Promise(function (resolve, reject){
+	// 	TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
+	// 		if (err) return reject(err);
 			
-			if (!helper.removed(count)) return resolve(Fail);
+	// 		if (!helper.removed(count)) return resolve(Fail);
 			
-			log('removed '+login+' from '+tournamentID);
-			return resolve(OK);
-		});
-	});
+	// 		log('removed '+login+' from '+tournamentID);
+	// 		return resolve(OK);
+	// 	});
+	// });
 }
 
 function getParticipants(tournamentID){
@@ -100,6 +103,24 @@ function get(login){
 	});
 }
 
+function registerUser(login, tournamentID, promo){
+	return TournamentReg2.find({login:login, tournamentID:tournamentID})
+	.then(function (treg){
+		if (treg) throw c.TREG_ALREADY;
+		console.log('registerUser', arguments)
+
+		return add(tournamentID, login, promo)
+	})
+}
+
+function unregisterUser(login, tournamentID){
+	return TournamentReg2.find({login:login, tournamentID:tournamentID})
+	.then(function (treg){
+		if (!treg) throw 'No register';
+
+		return remove(tournamentID, login)
+	})
+}
 
 function userRegistered(login, tournamentID){
 	return new Promise(function (resolve, reject){
@@ -282,3 +303,6 @@ this.leaderboard = leaderboard;
 this.playedTop = playedTop;
 this.participants = participants
 this.clearParticipants = clearParticipants
+
+this.registerUser = registerUser;
+this.unregisterUser = unregisterUser;
