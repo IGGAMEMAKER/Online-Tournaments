@@ -24,6 +24,8 @@ mongoose.connect('mongodb://'+configs.db+'/test');
 
 var random = require('mongoose-simple-random');
 
+var middlewares = require('../middlewares')
+
 
 const MODERATION_NONE = 0;
 const MODERATION_REJECTED = 1;
@@ -63,6 +65,25 @@ app.get('/questions', function (req, res){
 	})
 })
 
+app.get('/questions/all', function (req, res){
+	Question.find({}, function (err, questions){
+		if (err) return res.json(err);
+
+		//res.end(JSON.stringify(questions));
+		res.render('newQuestions', {msg:questions});
+	})
+})
+
+app.get('/questions/topic/:topic', function (req, res){
+	var	topic = req.params.topic;
+	Question.find({ topic: topic }, function (err, questions){
+		if (err) return res.json(err);
+
+		//res.end(JSON.stringify(questions));
+		res.render('newQuestions', {msg:questions});
+	})
+})
+
 app.get('/editQuestion', function (req, res){
 	var id = req.query.id;
 	var question = req.query.question;
@@ -81,6 +102,24 @@ app.get('/editQuestion', function (req, res){
 		id:id
 	}
 	res.render('add_question', {msg:msg});
+})
+
+app.get('/setTopic/:id/:topic', function (req, res){
+	var id = req.params.id;
+	var topic = req.params.topic;
+	var obj;
+
+	if (topic == 0) {
+		obj = { $unset: { topic:"" } }
+	} else {
+		obj = { $set: { topic:topic } }
+	}
+
+	Question.update({'_id':id}, obj, function (err, count){
+		if (err) return res.json(err);
+
+		return res.json(count);
+	})
 })
 
 app.post('/editQuestion', function (req, res){

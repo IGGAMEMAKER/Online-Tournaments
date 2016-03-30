@@ -7,7 +7,7 @@
 
 mixin question(q,i)
 	tr
-		td #{i}
+		td #{i} #{q._id}
 		td #{q.createdBy}
 		td #{q.question}
 		td #{q.answers}
@@ -17,6 +17,8 @@ mixin question(q,i)
 			| #{q.answers[q.correct-1]}
 		td #{q.date}
 		td
+			a(href="/setTopic/"+q._id+"/0" target="_blank") Delete or change topic
+			br
 			a(href="moderate/"+q._id+"/"+MODERATION_REJECTED target="_blank") MODERATION_REJECTED
 			br
 			a(href="moderate/"+q._id+"/"+MODERATION_OK target="_blank") ACCEPT
