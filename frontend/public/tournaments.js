@@ -395,7 +395,7 @@ function parseAndDrawTournament(tournament){
 
 
 function drawImage(img, tournament){
-	console.log('drawImage', tournament.settings)
+	// console.log('drawImage', tournament.settings)
 	if (tournamentType(tournament) == TOURNAMENT_TYPE_TOPIC){
 		return '<img src="/img/topics/' + tournament.settings.topic + '.jpg" >';
 	}
