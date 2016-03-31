@@ -65,7 +65,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		if (isValid(user)){
 			req.user= user;
 		} else {
-			return res.redirect('/');
+			return res.redirect('/Tournaments');
 		}
 
 
@@ -130,7 +130,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 				Errors.add(login, 'saveSession', { page:page, code:err })
 			} else {
 				req.session.login = req.user.login;
-				res.redirect('/');
+				res.redirect('/Tournaments');
 			}
 		})
 	}

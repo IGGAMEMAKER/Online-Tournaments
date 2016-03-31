@@ -965,6 +965,29 @@ app.get('/Leaderboard', function (req, res){
 
 });
 
+app.get('/api/marathon/:MarathonID', aux.isAdmin, function (req, res, next){
+  var MarathonID = req.params.MarathonID;
+  Marathon.get(MarathonID)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std)
+
+app.get('/Marathon/setFinishDate/:MarathonID/:date', aux.isAdmin, function (req, res){
+  var MarathonID = req.params.MarathonID;
+  var date = req.params.date;
+
+  var data = {
+    finishDate: new Date(date)
+  }
+  Marathon.edit(data||null, MarathonID)
+  .then(function (result){
+    // console.log('edit done');
+    res.json({result:result});
+  })
+  .catch(function (error){
+    res.json({error:error});
+  })
+})
 
 app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
   var MarathonID = req.params.MarathonID;

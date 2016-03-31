@@ -61,6 +61,10 @@ function add(marathon){
 	});
 }
 
+function get(MarathonID){
+	return Marathon2.find({MarathonID:MarathonID})
+}
+
 function current(){
 	return new Promise(function (resolve, reject){
 		Marathon
@@ -133,7 +137,7 @@ function edit(data, MarathonID){
 
 		if (start && isDate(start)) updObject.start= start;
 		if (finish && isDate(finish)) updObject.finish= finish;
-		// console.error('edit', updObject);
+		console.error('edit', updObject, MarathonID);
 
 		Marathon.update({MarathonID: MarathonID}, {$set: updObject }, function (err, count){
 			if (err) return reject(err);
@@ -695,6 +699,7 @@ module.exports = {
 			return null;
 		})
 	}
+	, get: get
 	, get_or_reject: 					get_current_marathon_or_reject
 	, current: current
 }
