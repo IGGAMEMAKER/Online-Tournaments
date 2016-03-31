@@ -1741,9 +1741,12 @@ function get_Leaderboard(period){
     leaderboard_min = leaderboard;
 
     io.emit('leaderboard', {
-      leaderboard: activity_board, 
+      id: leaderboard.id,
+      start: leaderboard.start,
+      finish: leaderboard.finish,
       counts: leaderboard.counts, 
-      prizes: leaderboard.prizes 
+      prizes: leaderboard.prizes,
+      leaderboard: activity_board
     });
 
     // { leaderboard: activity_board } , counts: [1, 3], prizes:[150, 50]

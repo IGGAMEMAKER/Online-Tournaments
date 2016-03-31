@@ -309,8 +309,34 @@ var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
 var REGULARITY_STREAM=2;
 
-function isStream(t){ return t.settings && t.settings.regularity==REGULARITY_STREAM ; }
-function isSpecial(t){ return t.settings && t.settings.special; }
+
+var TOURNAMENT_TYPE_NORMAL = 0;
+
+var TOURNAMENT_TYPE_REGULAR = 1;
+var TOURNAMENT_TYPE_SPECIAL = 2;
+var TOURNAMENT_TYPE_STREAM = 3;
+var TOURNAMENT_TYPE_TOPIC = 4;
+var TOURNAMENT_TYPE_TOPIC_STREAM = 5;
+
+
+function isStream(t) { return t.settings && t.settings.regularity==REGULARITY_STREAM ; }
+function isSpecial(t) { return t.settings && t.settings.special; }
+
+function isTopic(t) { return t.settings && t.settings.topic }
+
+function tournamentType(t){
+	if (isStream(t)) {
+		if (isTopic(t)) return TOURNAMENT_TYPE_TOPIC_STREAM;
+
+		return TOURNAMENT_TYPE_STREAM;
+	}
+	
+	if (isSpecial(t)) return TOURNAMENT_TYPE_SPECIAL;
+
+	if (isTopic(t)) return TOURNAMENT_TYPE_TOPIC;
+
+	return TOURNAMENT_TYPE_NORMAL;
+}
 
 function getPrize(t){
 	var prize = t.Prizes[0];
@@ -368,7 +394,11 @@ function parseAndDrawTournament(tournament){
 }
 
 
-function drawImage(img){
+function drawImage(img, tournament){
+	console.log('drawImage', tournament.settings)
+	if (tournamentType(tournament) == TOURNAMENT_TYPE_TOPIC){
+		return '<img src="/img/topics/' + tournament.settings.topic + '.jpg" >';
+	}
 	return '<img src="'+img+'" >';//width="210" height="150" // width="280" height="220"
 }
 
@@ -587,7 +617,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
 
 	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card" id="bgd'+id+'" >';
-	text += '<div class="cover">' + drawImage(img) + '</div>';
+	text += '<div class="cover">' + drawImage(img, t) + '</div>';
 	
 	/*text += '<div class="info">'
 		text += '<div class="going" id="plrs-' + id + '"'+' ><i class="fa fa-group fa-lg"></i>' + getPlayerCount(players, Max) + '</div>';//<i class="fa fa-ticket"></i>

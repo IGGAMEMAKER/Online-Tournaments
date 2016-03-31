@@ -263,7 +263,7 @@ function sendError(err, func_name){
 function drawRating(msg){
   if (msg && msg.leaderboard){
     var leaders = msg.leaderboard;
-    // console.log('drawRating', msg);
+    console.log('drawRating', msg);
     var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
     var rating = "#ratingTab";
 

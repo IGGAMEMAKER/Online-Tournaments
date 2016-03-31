@@ -343,6 +343,9 @@ function leaderboard(MarathonID){
 	})
 	.then(function (marathon){
 		if (marathon){
+			marathonInfo.id = marathon.MarathonID;
+			marathonInfo.start = marathon.start
+			marathonInfo.finish = marathon.finish
 			marathonInfo.prizes = marathon.prizes || [];
 			marathonInfo.counts = marathon.counts || [];
 		}

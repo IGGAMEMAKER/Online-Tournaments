@@ -181,13 +181,51 @@ var upload = multer({ storage: storage }).single('image');
     .catch(next)
   }, aux.render('Lists/Tournaments'), aux.err)
 
+  app.get('/TournamentInfo/:tournamentID', middlewares.authenticated, function (req, res){
+    var tournamentID = req.params.tournamentID;
+
+    var TournamentInfo= {
+      tournament:null,
+      players:null
+    }
+
+    Tournaments.getByID(tournamentID)
+    .then(function (tournament){
+      TournamentInfo.tournament = tournament;
+      return TournamentRegs.getParticipants(tournamentID)
+    })
+    .then(function (players){
+      TournamentInfo.players = players;
+      res.json({msg: TournamentInfo});
+    })
+    .catch(function (error){
+      res.json({error:error});
+    })
+    // var data = req.body;
+    // data.query = {tournamentID:req.query.tID};
+    // data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
+    // data.purpose = GET_TOURNAMENTS_INFO;  
+
+    // AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
+
+  });
+
   app.get('/api/tournaments/get/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = parseInt(req.params.tournamentID)
 
     Tournaments.getByID(tournamentID)
     .then(function (tournament){
-      console.log(tournament)
-      return tournament;
+      return TournamentRegs.getParticipants(tournamentID)
+      .then(function (players){
+        return {
+          tournament:tournament,
+          players:players
+        }
+        // tournament.list = players;
+        // return tournament
+      })
+      // console.log(tournament)
+      // return tournament;
     })
     .then(aux.setData(req, next))
     .catch(next)
@@ -322,32 +360,5 @@ var upload = multer({ storage: storage }).single('image');
 	const GET_TOURNAMENTS_INFO = 4;
   const GET_TOURNAMENTS_USER = 1;
 
-	app.get('/TournamentInfo/:tournamentID', middlewares.authenticated, function (req, res){
-    var tournamentID = req.params.tournamentID;
 
-    var TournamentInfo= {
-      tournament:null,
-      players:null
-    }
-
-    Tournaments.getByID(tournamentID)
-    .then(function (tournament){
-      TournamentInfo.tournament = tournament;
-      return TournamentRegs.getParticipants(tournamentID)
-    })
-    .then(function (players){
-      TournamentInfo.players = players;
-      res.json({msg: TournamentInfo});
-    })
-    .catch(function (error){
-      res.json({error:error});
-    })
-	  // var data = req.body;
-	  // data.query = {tournamentID:req.query.tID};
-	  // data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
-	  // data.purpose = GET_TOURNAMENTS_INFO;  
-
-	  // AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'TournamentInfo'}, data);
-
-	});
 }

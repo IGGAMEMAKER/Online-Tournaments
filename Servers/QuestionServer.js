@@ -23,6 +23,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://'+configs.db+'/test');
 
 var random = require('mongoose-simple-random');
+var Promise = require('bluebird');
 
 var middlewares = require('../middlewares')
 
@@ -186,6 +187,21 @@ app.post('/AddQuestion', function (req, res){
 	AddQuestion(obj, res);
 })
 
+function loadQuestions(query, params, hard){
+	return new Promise(function (resolve, reject){
+		Question.find(query||{}, params||'', function (err, questions){
+			if (err) return reject(err);
+
+			if (hard && questions.length < 3) return reject('no questions')
+			resolve(questions)
+		})
+	})
+}
+
+function getGeneralQuestions(){
+	return loadQuestions({}, '', true)
+}
+
 function AddQuestion(data, res){
 	var question = new Question(data);
 
@@ -290,7 +306,6 @@ function loadRandomQuestions(gameID){
 	})
 }
 
-
 function load_questions_fromDB(gameID){
 	Question.find({tournamentID:gameID}, '', function (err, questions){
 		lg('load_questions_fromDB ' + gameID);
@@ -309,9 +324,14 @@ function isNewbieTournament(gameID){
 	return games[gameID].settings && games[gameID].settings.hidden;
 }
 
+function isTopicTournament(gameID){
+	return games[gameID].settings && games[gameID].settings.topic;
+}
+
 function load_newbie_questions(gameID){
 	var topic = games[gameID].settings.topic;
 	strLog("searching questions for newbies... Topic:"+ topic, "Games");
+
 	Question.find({topic:topic}, '', function (err, questions){
 		lg('load_newbie_questions ' + gameID);
 		if (err) {
@@ -325,6 +345,32 @@ function load_newbie_questions(gameID){
 	})
 }
 
+function load_topic_questions(gameID){
+	var topic = games[gameID].settings.topic;
+	// strLog("searching questions for newbies... Topic:"+ topic, "Games");
+
+	loadQuestions({topic:topic},'', true)
+	.then(function (questions){
+		add_questions(questions, gameID)
+	})
+	.catch(function (err){
+		strLog('err in load_topic_questions for ' + gameID, 'Games');
+
+		loadRandomQuestions(gameID);
+	})
+
+	// Question.find({topic:topic}, '', function (err, questions){
+	// 	if (err) {
+	// 		strLog('err in load_newbie_questions for ' + gameID, 'Err');
+	// 	}
+
+	// 	if (questions && questions.length > 0) return add_questions(questions, gameID);
+
+	// 	strLog('no special questions for ' + gameID, 'Games');
+	// 	loadRandomQuestions(gameID);
+	// })
+}
+
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 
@@ -332,8 +378,9 @@ function Init(gameID, playerID){
 		games[gameID].questIndex = -1;
 		console.log(games[gameID].settings);
 
-		if (isNewbieTournament(gameID)) { 
-			load_newbie_questions(gameID);
+		// if (isNewbieTournament(gameID)) { 
+		if (isTopicTournament(gameID)) { 
+			load_topic_questions(gameID);
 		} else {
 			load_questions_fromDB(gameID);
 		}
