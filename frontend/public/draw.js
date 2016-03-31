@@ -290,8 +290,9 @@ function drawRating(msg){
 
       var finishTime = get_time(msg.finish)
       if (finishTime) $("#MarathonFinishTime").html("Дата окончания: " + finishTime);
-      var startTime = get_time(msg.start);
-      if (startTime) $("#MarathonStartTime").html("Дата начала: " + startTime);
+      
+      // var startTime = get_time(msg.start);
+      // if (startTime) $("#MarathonStartTime").html("Дата начала: " + startTime);
 
       var marathonID = msg.id;
       if (!isNaN(marathonID)) $("#marathonID").html(" №"+marathonID);
