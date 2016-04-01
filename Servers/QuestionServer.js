@@ -33,7 +33,6 @@ const MODERATION_REJECTED = 1;
 const MODERATION_OK = 2;
 const MODERATION_MODIFIED = 3;
 
-
 var s = new mongoose.Schema({ 
 	question: String, answers: Array, correct:Number,
 	tournamentID: Number, topic:String,
@@ -72,6 +71,14 @@ app.get('/questions/all', function (req, res){
 
 		//res.end(JSON.stringify(questions));
 		res.render('newQuestions', {msg:questions});
+	})
+})
+app.get('/questions/raw', function (req, res){
+	Question.find({}, function (err, questions){
+		if (err) return res.json(err);
+
+		//res.end(JSON.stringify(questions));
+		res.json({msg:questions});
 	})
 })
 
@@ -187,6 +194,27 @@ app.post('/AddQuestion', function (req, res){
 	AddQuestion(obj, res);
 })
 
+// app.get('/updateQuestions', function (req, res){
+// 	/// iterate by topics (keys of questionBase) and fill questionBase
+// })
+
+var questionBase = {};
+function initializeQuestions(){
+	loadByTopic(null)
+	.then(console.log)
+	.catch(console.error)
+
+	loadByTopic('realmadrid')
+	.then(console.log)
+	.catch(console.error)
+}
+
+initializeQuestions();
+
+app.get('/topic/:topic', function (req, res){
+	res.json({ msg: questionBase[req.params.topic] })
+})
+
 function loadQuestions(query, params, hard){
 	return new Promise(function (resolve, reject){
 		Question.find(query||{}, params||'', function (err, questions){
@@ -243,7 +271,6 @@ function add_questions(questions, gameID){
 	};
 }
 
-//loadRandomQuestions(100);
 function add_question_to_list(gameID, qst){
 	var question = qst.question;
 	var answers = qst.answers;
@@ -320,13 +347,6 @@ function load_questions_fromDB(gameID){
 	})
 }
 
-function isNewbieTournament(gameID){
-	return games[gameID].settings && games[gameID].settings.hidden;
-}
-
-function isTopicTournament(gameID){
-	return games[gameID].settings && games[gameID].settings.topic;
-}
 
 function load_newbie_questions(gameID){
 	var topic = games[gameID].settings.topic;
@@ -371,6 +391,61 @@ function load_topic_questions(gameID){
 	// })
 }
 
+function isNewbieTournament(gameID){
+	return games[gameID].settings && games[gameID].settings.hidden;
+}
+
+function isTopicTournament(gameID){
+	return games[gameID].settings && games[gameID].settings.topic;
+}
+
+function getTopic(gameID){
+	if (!games[gameID] || !games[gameID].settings || !games[gameID].settings.topic) return '';
+
+	return games[gameID].settings.topic
+}
+
+var NEED_FOR_CATEGORY = 6;
+function setQuestions(gameID, topic){
+	if (questionBase[topic].length < NEED_FOR_CATEGORY) return add_questions(questionBase[topic], gameID)
+	
+	var already = {} // questionIndex=> 1
+	var count = questionBase[topic].length;
+
+	games[gameID].questions=[];
+	while (games[gameID].questions.length < NUMBER_OF_QUESTIONS){
+		var index = parseInt(Math.random() * count);
+		if (!already[index]){
+			add_question_to_list(gameID, questionBase[topic][index])
+			already[index] = 1;
+		}
+	}
+
+	// add_question_to_list
+	// add_questions
+}
+
+function loadByTopic(topic){
+	var query = {
+		moderation : { $in: [MODERATION_MODIFIED, MODERATION_OK, null] } 
+	}
+	if (topic) {
+		query.topic = topic
+	} else {
+		query.topic = { $exists: false }
+	}
+
+	return loadQuestions(query)
+	.then(function (questions){
+		if (topic) {
+			questionBase[topic] = questions;
+		} else {
+			questionBase['default'] = questions;
+		}
+		return questionBase[topic||'default'];
+	})
+}
+
 function Init(gameID, playerID){
 	strLog('custom init works! gameID:'+gameID + ' playerID:'+playerID);
 
@@ -379,11 +454,32 @@ function Init(gameID, playerID){
 		console.log(games[gameID].settings);
 
 		// if (isNewbieTournament(gameID)) { 
-		if (isTopicTournament(gameID)) { 
-			load_topic_questions(gameID);
-		} else {
-			load_questions_fromDB(gameID);
-		}
+		var topic = getTopic(gameID) || 'default';
+		//{$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
+		/*var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
+		query = { $and : [query, run_or_reg] };*/
+
+		// CHECK IF YOU HAVE QUESTIONS ALREADY!!
+		// var moderated = {
+		// 	$or: [ 
+		// 	{ moderation : MODERATION_MODIFIED } , 
+		// 	{ moderation : MODERATION_OK }, 
+		// 	{ moderation : null	}]
+		// };
+		// var same_topic = {}
+		// if (topic){
+
+		// }
+		// var query = { $and: [same_topic, moderated] };
+
+		console.log('Init', gameID, topic)
+		setQuestions(gameID, topic)
+
+		// if (isTopicTournament(gameID)) { 
+		// 	load_topic_questions(gameID);
+		// } else {
+		// 	load_questions_fromDB(gameID);
+		// }
 		
 		games[gameID].userAnswers = [];
 	}

@@ -442,6 +442,7 @@ app.post('/Join', function (req, res){
 	sender.Answer(res, OK);
 })
 function JoinPlayer(ID, login){
+	
 	console.log('JoinPlayer', login, ID);
 
 	var count = games[ID].players.count;
@@ -453,7 +454,7 @@ function JoinPlayer(ID, login){
 	console.log('players', games[ID].players.UIDtoGID, 'scores', games[ID].scores);
 	customInit(ID, count);
 	console.log('customInit done...', games[ID]);
-
+	//
 	games[ID].userIDs.push(login);
 	games[ID].players.count++;
 }
