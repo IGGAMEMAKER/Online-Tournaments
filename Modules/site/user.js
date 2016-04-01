@@ -146,7 +146,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		register_manager.register(tournamentID, login, res)
 		// register_manager.register(tournamentID, login, res)
-		
+
 		// register_manager.register(tournamentID, login, res)
 		// register_manager.register(tournamentID, login, res)
 
@@ -185,19 +185,21 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	function autoregNewbieOrLongPassed(login){
 		return function (user){
-			// Users.grantMoney(login); //increase money if has no money
-			return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
-			.then(function (result) { 
-				// console.log(result);
-				return user;
-			})
-			.catch(function (err) { 
-				console.error(err);
-				return user;
-			})
+			return user;
+			// // Users.grantMoney(login); //increase money if has no money
+			// return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
+			// .then(function (result) { 
+			// 	// console.log(result);
+			// 	return user;
+			// })
+			// .catch(function (err) { 
+			// 	console.error(err);
+			// 	return user;
+			// })
 		}
 	}
 
+	// aux.alert('23i03g', c.NOTIFICATION_AUTOREG, { })
 	
 	// app.get('/userStatus/update', middlewares.isAdmin, aux.answer('updateUserStatus'))
 

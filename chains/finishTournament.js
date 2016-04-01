@@ -82,11 +82,6 @@ function sendAfterGameNotification(login, mainPrize){
   .then(function (profile){
     if (!profile) return null;
     var profileInfo = profile.info;
-    
-    var notificationCode='';
-    // if (!profileInfo) {
-    //   // notificationCode 
-    // } else {
       // what we can send?
       // win
       // lose
@@ -98,22 +93,23 @@ function sendAfterGameNotification(login, mainPrize){
       // was it money tournament?
       // did he win money?
       // is
-      var is_newbie = (!profileInfo || !profileInfo.status || profileInfo.status==aux.c.USER_STATUS_NEWBIE) ;
-      if (is_newbie){
-        // //show newbie messages
-        // //analyze, what he knows about us
 
-        // show hello message
-        aux.alert(login, aux.c.NOTIFICATION_FIRST_MESSAGE, { mainPrize: mainPrize })
+      // var is_newbie = (!profileInfo || !profileInfo.status || profileInfo.status==aux.c.USER_STATUS_NEWBIE) ;
+      // if (is_newbie){
+      //   // //show newbie messages
+      //   // //analyze, what he knows about us
 
-        console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
+      //   // show hello message
+      //   aux.alert(login, aux.c.NOTIFICATION_FIRST_MESSAGE, { mainPrize: mainPrize })
 
-        Users.update_user_status(login, aux.c.USER_STATUS_READ_FIRST_MESSAGE)
-        .catch(function (err){
-          console.error('update_user_status failed', err);
-        })
+      //   console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
 
-      } else {
+      //   Users.update_user_status(login, aux.c.USER_STATUS_READ_FIRST_MESSAGE)
+      //   .catch(function (err){
+      //     console.error('update_user_status failed', err);
+      //   })
+
+      // } else {
         // send rating
         // console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
 
@@ -134,7 +130,7 @@ function sendAfterGameNotification(login, mainPrize){
 
         // send advices
         // send bonuses
-      }
+      // }
   })
   .catch(function (err){
     console.error('sendAfterGameNotification', err);

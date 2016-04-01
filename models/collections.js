@@ -27,6 +27,10 @@ function setColour(id, colour){
 	return update(id, { colour: colour })
 }
 
+function setDescription(id, description){
+	return update(id, { description: description })
+}
+
 function copy(from, to){
 	return getByID(from)
 	.then(function (collection){
@@ -95,5 +99,6 @@ module.exports = {
 	setColour:setColour,
 	clear:clear,
 
-	attachGift:attachGift
+	attachGift:attachGift,
+	setDescription:setDescription
 }

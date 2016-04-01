@@ -648,7 +648,8 @@ function drawNewsModal(data){
           header = 'Вы получаете карточку!';
           var card = info;
           console.log(card);
-          body = '<div >' //class="col-sm-10 col-md-10 col-xs-12"
+          body = '<div>' //class="col-sm-10 col-md-10 col-xs-12"
+          body += '<p class="card-name">Собирайте <a href="/Packs">карточки</a> и получайте денежные призы!</p>';
           body += '<p class="card-name">'+card.description+'</p>';
           body += drawCard(card);
           body += '</div>';
@@ -656,9 +657,9 @@ function drawNewsModal(data){
           var value = info.value || c.CARD_COLOUR_GRAY;
           var open_more = '<button class="btn btn-primary" onclick="openPack('+value+', 1)"> Открыть ещё! </button>'
           var close = '<button class="btn btn-default" onclick="news.hide()"> Закрыть </button>'
-
+          var my_collection = '<a class="btn btn-primary" href="/Packs"> Подробнее </a>';
           if (card.isFree) {
-            footer = close;
+            footer = my_collection + close;
           } else {
             footer = open_more + close;
           }

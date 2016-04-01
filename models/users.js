@@ -145,7 +145,8 @@ function noInfoFix(login){
 	var upd = {
 		$set : {
 			info : {
-				status: c.USER_STATUS_NEWBIE,
+				// status: c.USER_STATUS_NEWBIE,
+				status: c.USER_STATUS_READ_FIRST_MESSAGE,
 				packs: pack.newbiePackSet
 			}
 		}
