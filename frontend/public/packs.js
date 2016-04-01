@@ -28,20 +28,22 @@ var collections = {}
 // collections[4] = { have:9, need:10 }
 
 function pickPhraseByColour(colour, collection){
-	switch(colour){
-		case c.CARD_COLOUR_GRAY:
-			return 'Собери "серую" команду и получи ускоритель 4!';
-		break
-		case c.CARD_COLOUR_GREEN:
-			return 'Собери "зелёную" команду и получи 10 зелёных паков!';
-		break;
-		case c.CARD_COLOUR_RED:
-			return 'Собери "красную" команду и получи 1000 рублей на счёт!';
-		break;
-		case c.CARD_COLOUR_BLUE:
-			return 'Собери "синюю" команду и получи 10 синих паков!'
-		break;
-	}
+	console.log('pickPhraseByColour', collection)
+	return collection.description || 'No description';
+	// switch(colour){
+	// 	case c.CARD_COLOUR_GRAY:
+	// 		return 'Собери "серую" команду и получи ускоритель 4!';
+	// 	break
+	// 	case c.CARD_COLOUR_GREEN:
+	// 		return 'Собери "зелёную" команду и получи 10 зелёных паков!';
+	// 	break;
+	// 	case c.CARD_COLOUR_RED:
+	// 		return 'Собери "красную" команду и получи 1000 рублей на счёт!';
+	// 	break;
+	// 	case c.CARD_COLOUR_BLUE:
+	// 		return 'Собери "синюю" команду и получи 10 синих паков!'
+	// 	break;
+	// }
 }
 
 function pickSameColourCards(myCards, colour){
@@ -95,7 +97,7 @@ function showCollection(collection, sameColourCardsList){
 	var list = collection.list;
 	var need = list.length;
 	
-	var phrase = pickPhraseByColour(colour);
+	var phrase = pickPhraseByColour(colour, collection);
 
 
 	text += '<div class="col-sm-12">';

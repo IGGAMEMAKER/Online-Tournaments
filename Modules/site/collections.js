@@ -49,6 +49,43 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	// ,CARD_COLOUR_BLUE:2
 	// ,CARD_COLOUR_GREEN:3
 	// ,CARD_COLOUR_GRAY:4
+
+	// ,REWARD_ACCELERATOR:1
+	// ,REWARD_PACKS:2
+	// ,REWARD_MONEY:3
+	function GiveCollectionPrize(collection, login){
+		switch(collection.rewardType){
+			case aux.c.REWARD_ACCELERATOR:
+				var index = parseInt(collection.reward.index) || 0;
+
+				return Marathon.grant_accelerator(login, index)
+				.then(function (result){
+					aux.alert(login, aux.c.NOTIFICATION_GIVE_ACCELERATOR, { index:index })
+					return result;
+				})
+				.catch(aux.drop)
+			break;
+
+			case aux.c.REWARD_MONEY:
+				var ammount = parseInt(collection.reward.ammount) || 200;
+
+				return Money.increase(login, ammount, aux.c.SOURCE_TYPE_GRANT)
+				.then(function (result){
+
+					aux.alert(login, aux.c.NOTIFICATION_GIVE_MONEY, { ammount:ammount })
+					return result;
+				})
+				.catch(aux.drop)
+			break;
+
+			case aux.c.REWARD_PACKS:
+				var colour = parseInt(collection.reward.colour) || aux.c.CARD_COLOUR_GRAY;
+				var count = parseInt(collection.reward.count) || 1;
+				return grantPacksTo(login, colour, count)
+			break;
+		}
+	}
+/*
 	function GiveCollectionPrize(colour, login){
 		console.log(colour, login);
 
@@ -92,7 +129,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
 		// clear cards
 	}
-
+*/
 	function revokePackFrom(login, colour, count){
 		return Users.pack.decrease(login, colour, count)
 		// .then(function (result){
@@ -157,7 +194,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
 			console.log('have='+have, 'need='+need);
 			if (have>0 && have==need){
-				return GiveCollectionPrize(collection.colour, login)
+				return GiveCollectionPrize(collection, login)
 			} else {
 				throw 'collection was not filled ' + have + '  /' + need;
 			}
@@ -219,15 +256,59 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		.catch(next)
 	}, aux.std);
 
-	app.get('/api/collections/setColour/:id/:colour', aux.isAdmin, function (req, res, next){
-		var colour = parseInt(req.params.colour);
+	app.get('/api/collections/setParameter/:parameter/:value/:id', aux.isAdmin, function (req, res, next){
+		var parameter = req.params.parameter;
 		var id = req.params.id;
+		var value = parseInt(req.params.value);
 
-			Collections.setColour(id, colour)
+		Collections.setParameter(id, parameter, value)
 
 		.then(aux.setData(req, next))
 		.catch(next)
 	}, aux.std);
+
+	// app.get('/api/collections/setColour/:id/:colour', aux.isAdmin, function (req, res, next){
+	// 	var colour = parseInt(req.params.colour);
+	// 	var id = req.params.id;
+
+	// 	Collections.setColour(id, colour)
+
+	// 	.then(aux.setData(req, next))
+	// 	.catch(next)
+	// }, aux.std);
+
+	// app.get('/api/collections/setRewardType/:id/:rewardType', aux.isAdmin, function (req, res, next){
+	// 	var rewardType = parseInt(req.params.rewardType);
+	// 	var id = req.params.id;
+
+	// 	Collections.setRewardType(id, rewardType)
+
+	// 	.then(aux.setData(req, next))
+	// 	.catch(next)
+	// }, aux.std);
+
+	app.get('/api/collections/setDescription/:id/:description', aux.isAdmin, function (req, res, next){
+		var description = req.params.description;
+		var id = req.params.id;
+
+		Collections.setParameter(id, 'description', description)
+
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.std);
+
+	// app.get('/api/collections/setRewardParameter/:id/:parameter/:value', aux.isAdmin, function (req, res, next){
+	// 	// var colour = parseInt(req.params.colour);
+	// 	var parameter = req.params.parameter;
+	// 	var value = req.params.value;
+	// 	var id = req.params.id;
+
+	// 	Collections.setReward(id, parameter, value)
+
+	// 	.then(aux.setData(req, next))
+	// 	.catch(next)
+	// }, aux.std);
+
 
 	app.get('/api/collections/get/:collectionID', aux.isAdmin, function (req, res, next){
 		var collectionID = req.params.collectionID;

@@ -23,6 +23,17 @@ function add(list, name, reward){
 	})
 }
 
+// setParameter('56f7dd80a6d68f463e022c0e', 'rewardType', 1)
+// .then(console.log)
+// .catch(console.error)
+
+function setParameter(id, parameter, value){
+	var obj = {};
+	obj[parameter] = value;
+	console.log(id, obj);
+	return update(id, obj)
+}
+
 function setColour(id, colour){
 	return update(id, { colour: colour })
 }
@@ -30,6 +41,18 @@ function setColour(id, colour){
 function setDescription(id, description){
 	return update(id, { description: description })
 }
+
+function setReward(id, parameter, value){
+	var obj = {};
+	obj['reward.' + parameter] = value;
+	return update(id, rewardObj)
+}
+
+function setRewardType(id, type){
+	return update(id, { rewardType: parseInt(type)||0 })
+}
+
+
 
 function copy(from, to){
 	return getByID(from)
@@ -96,9 +119,13 @@ module.exports = {
 	add:add,
 	remove:remove,
 	copy:copy,
-	setColour:setColour,
 	clear:clear,
 
 	attachGift:attachGift,
-	setDescription:setDescription
+
+	setColour:setColour,
+	setDescription:setDescription,
+	setReward:setReward,
+	setParameter:setParameter,
+	setRewardType:setRewardType
 }
