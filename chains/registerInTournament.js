@@ -121,7 +121,13 @@ function StartTournament(tournamentID, force, res){
 }
 
 function register(tournamentID, login, res){
-	if (!queue[tournamentID]) queue[tournamentID] = { count:0, places:0 }
+	console.log('register', tournamentID, login, queue)
+
+	if (!queue[tournamentID]) queue[tournamentID] = { };
+	console.log(queue)
+	if (queue[tournamentID][login]) return Answer(res, Fail);
+
+	queue[tournamentID][login] = 1;
 
 	console.log('register', login, 'to', tournamentID)
 
@@ -195,6 +201,7 @@ function register(tournamentID, login, res){
 	})
 	.then(function (saved){
 		info['changePlayersCount'] = saved;
+		queue[tournamentID][login] = null;
 
 		if (res) Answer(res, OK);
 
@@ -228,6 +235,7 @@ function register(tournamentID, login, res){
 		}
 	})
 	.catch(function (err){
+		queue[tournamentID][login]=null;
 		console.log('CATCHED error while player registering!', err);
 		if (res) { 
 			switch (err){

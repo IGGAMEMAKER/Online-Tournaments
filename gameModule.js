@@ -430,10 +430,13 @@ function setRoom(ID){
 	});
 }
 
+
+
 app.post('/Join', function (req, res){
 	console.log('JoinPlayer Request');
 	var gameID = req.body.gameID;
 	var login = req.body.login;
+	console.log(login , gameID , isRunning(gameID) );
 
 	if (login && gameID && isRunning(gameID)){
 		JoinPlayer(gameID, login);
@@ -441,6 +444,21 @@ app.post('/Join', function (req, res){
 
 	sender.Answer(res, OK);
 })
+
+// app.get('/JoinPlayer/:login/:count/:id', function (req, res){
+// 	var id = parseInt(req.params.id);
+// 	var login = req.params.login;
+// 	var count = parseInt(req.params.count) || 1;
+// 	manualJoin(id, login, count);
+// 	res.end('OK');
+// })
+
+function manualJoin(ID, login, count){
+	for (var i=0; i<count; i++){
+		JoinPlayer(ID, login)
+	}
+}
+
 function JoinPlayer(ID, login){
 	
 	console.log('JoinPlayer', login, ID);
@@ -448,8 +466,10 @@ function JoinPlayer(ID, login){
 	var count = games[ID].players.count;
 	console.log('players.count', count);
 
-	games[ID].players.UIDtoGID[login] = count;
+	if (games[ID].scores[login]) return;
+
 	games[ID].scores[login] = 0;
+	games[ID].players.UIDtoGID[login] = count;
 
 	console.log('players', games[ID].players.UIDtoGID, 'scores', games[ID].scores);
 	customInit(ID, count);

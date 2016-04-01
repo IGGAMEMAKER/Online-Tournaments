@@ -201,12 +201,12 @@ app.post('/AddQuestion', function (req, res){
 var questionBase = {};
 function initializeQuestions(){
 	loadByTopic(null)
-	.then(console.log)
-	.catch(console.error)
+	// .then(console.log)
+	// .catch(console.error)
 
 	loadByTopic('realmadrid')
-	.then(console.log)
-	.catch(console.error)
+	// .then(console.log)
+	// .catch(console.error)
 }
 
 initializeQuestions();

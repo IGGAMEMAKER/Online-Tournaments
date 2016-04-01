@@ -27,7 +27,7 @@ var collections = {}
 // collections[3] = { have:7, need:10 }
 // collections[4] = { have:9, need:10 }
 
-function pickPhraseByColour(colour){
+function pickPhraseByColour(colour, collection){
 	switch(colour){
 		case c.CARD_COLOUR_GRAY:
 			return 'Собери "серую" команду и получи ускоритель 4!';
