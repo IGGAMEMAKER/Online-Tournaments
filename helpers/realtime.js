@@ -13,6 +13,7 @@ objects = {
 	updater:{},
 	cards:[],
 	packs:[],
+	userpacks:userpacks,
 	UPDATE_ALL: UPDATE_ALL,
 	tournaments:null
 };
@@ -49,10 +50,25 @@ function update_collections(){
 function update_cards(){ 
 	Gifts.cards().then(save('cards')); 
 }
+
 function update_packs(){ 
-	Packs.available().then(save('packs')); 
+	Packs.available().then(save('packs'));
+	Packs.update();
 }
 
+function userpacks(){
+	var arr=[];
+	for (var i = 0; i < objects.packs.length; i++) {
+		var pack = objects.packs[i]
+		if (!pack.visible || !pack.available) continue;
+		arr.push({
+			packID: pack.packID,
+			price: pack.price,
+			image: pack.image
+		})
+	};
+	return arr
+}
 
 function update_tournaments(period){
 	Tournaments.get()

@@ -594,6 +594,8 @@ app.get('/main', function (req, res){
   res.render('main2');
 })
 
+
+
 app.get('/Packs', aux.authenticated, function (req, res, next){
 
   var login = aux.getLogin(req);
@@ -607,6 +609,7 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
     req.data = {
       collections: realtime().collections,
       cards: realtime().cards,
+      packs: realtime().userpacks(),
       usercards: cards||[]
     }
     next();

@@ -9,13 +9,14 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   // packs
 
-  app.post('/api/packs/all', aux.isAdmin, function (req, res, next){
+  app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
     Packs.all()
     .then(aux.setData(req, next))
     .catch(next)
-  }, aux.std);
+  }, aux.render('CollectionInfo'), aux.err);
+  // }, aux.std);
 
-  app.post('/api/packs/available', aux.isAdmin, function (req, res, next){
+  app.get('/api/packs/available', aux.isAdmin, function (req, res, next){
     Packs.available()
     .then(aux.setData(req, next))
     .catch(next)

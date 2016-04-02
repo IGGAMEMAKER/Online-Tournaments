@@ -4,23 +4,25 @@ mixin parameters(item, name)
 
 mixin drawpack(pack)
 	tr
-		td #{pack._id}
 		td
-			p accelerators #{JSON.stringify(pack.colours)}
+			p #{pack._id}
+			p #{pack.packID}
+		td
+			p colours #{JSON.stringify(pack.colours)}
 			//p upgrades #{JSON.stringify(pack.upgrades)}
 		td
 			//p!=JSON.stringify(pack)
-			+parameters(pack, "freeAccelerators")
-			+parameters(pack, "soldAccelerators")
+			+parameters(pack, "price")
+			+parameters(pack, "image")
 		td
-			p #{pack.start}
-			p #{pack.finish}
+			//p #{pack.start}
+			//p #{pack.finish}
 		td 
-			p #{pack.prizes}
-			p #{pack.counts}
+			//p #{pack.prizes}
+			//p #{pack.counts}
 
 		td
-			form(action="/api/packs/edit/"+msg._id method="POST")
+			form(action="/api/packs/edit/"+pack.packID method="POST")
 				label price
 				input(type="number" value=pack.price name="price" class="black")
 				label colours

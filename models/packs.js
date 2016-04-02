@@ -10,7 +10,7 @@ var multiplier = 100;//0000;
 var packs= [];
 
 var afterGamePack = {
-	packID: 0, price:0, image:'4.png',
+	packID: 0, price:0, image:'3.png',
 	colours: [0, 1, 3, 96],
 	available: true, visible: false
 
@@ -19,7 +19,7 @@ var afterGamePack = {
 }
 
 var poorPack = {
-	packID:1, price:1, image:'4.png',
+	packID:1, price:1, image:'3.png',
 	colours: [1, 199, 300, 600],
 	available:true, visible: true
 
@@ -69,11 +69,11 @@ function add(new_pack){
 	})
 }
 
-
+// function userpacks(){ return Packs.list({ available:true, visible:true })}
 function all(){ return Packs.list({ }) }
 function availablePacks(){ return Packs.list({ available: true }) }
 function remove(packID){ return Packs.remove({ packID: packID }) }
-
+function update(){ initialize(); }
 
 var initialized = false;
 function initialize(){
@@ -99,11 +99,11 @@ function initialize(){
 		initialized = true;
 
 		cardHandler = cards;
-		console.log('initialize', cardHandler);
-		console.log('', colourHandler[0].length, colourHandler[1].length, colourHandler[2].length);
+		// console.log('initialize', cardHandler);
+		// console.log('', colourHandler[0].length, colourHandler[1].length, colourHandler[2].length);
 
 
-		runTests();
+		// runTests();
 	})
 }
 
@@ -183,13 +183,16 @@ module.exports = {
 	},
 	get_after_game_card: get_after_game_card,
 	available: availablePacks,
-	all: all
+	all: all,
+	update: update,
+	// userpacks:userpacks
 }
 
 function runTests(){
 	// get_random_card(0)
-	TestRandomizer()
-	showStats();
+
+	// TestRandomizer()
+	// showStats();
 }
 var stats = {
 	cards:{},
@@ -201,6 +204,7 @@ function showStats(){
 		console.log(stats);
 	}, 1000)
 }
+
 function TestRandomizer(){
 	setTimeout(function(){
 		setInterval(function(){
@@ -219,7 +223,8 @@ function TestRandomizer(){
 }
 
 var objects = [];
-var mln = { giftID: 'a0192ej0iqjsd', colour:2 }
+var mln = { giftID: 'a0192ej0iqjsd', colour: 2 }
+
 function Test2(){
 	console.time('start');
 	for(var i=0;i< 1000000; i++){
