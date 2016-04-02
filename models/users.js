@@ -212,6 +212,7 @@ var pack = {
 		}
 	}
 	,newbiePackSet: {
+		0: 0,
 		1: 4,
 		2: 4,
 		3: 7,

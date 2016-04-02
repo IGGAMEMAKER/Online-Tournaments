@@ -7,6 +7,18 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   var middlewares = require('../../middlewares')
 
+
+  var packs = [];
+  var packsObj = {};
+
+  Packs.available()
+  .then(function (list){
+    packs = list;
+    // for (var i = list.length - 1; i >= 0; i--) {
+    //   // packsObj[list[i].packID] = list[i];
+    // };
+  })
+
   // packs
   app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
     Packs.remove(req.params.packID)
@@ -41,13 +53,16 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     .catch(next)
   }, aux.std);
 
+
+
   app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
     var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
     var paid = parseInt(req.params.paid) || 0;
 
 
     var login = aux.getLogin(req);
-    var price = (10 + (4 - value)* 20);
+    // var price = (10 + (4 - value)* 20);
+    var price = packs[value].price || 1;
     res.end('')
 
 
