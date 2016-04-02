@@ -1,59 +1,38 @@
 //
-mixin parameters(item, name)
-	p #{name} #{JSON.stringify(parameter[name])}
+extends List
 
-mixin drawpack(pack)
-	tr
-		td
-			p #{pack._id}
-			p #{pack.packID}
-		td
-			p colours #{JSON.stringify(pack.colours)}
-			//p upgrades #{JSON.stringify(pack.upgrades)}
-		td
-			//p!=JSON.stringify(pack)
-			+parameters(pack, "price")
-			+parameters(pack, "image")
-		td
-			//p #{pack.start}
-			//p #{pack.finish}
-		td 
-			//p #{pack.prizes}
-			//p #{pack.counts}
+block head
+	th #
+	th Название
+	th Время
+	th Статус
+block raw
 
-		td
-			form(action="/api/packs/edit/"+pack.packID method="POST")
-				label price
-				input(type="number" value=pack.price name="price" class="black")
-				label colours
-				input(type="text" value=JSON.stringify(pack.colours) name="colours" class="black")
-				br
-				label items
-				input(type="text" value=JSON.stringify(pack.items) name="items" class="black")
-				br
-				label image
-				input(type="text" value=JSON.stringify(pack.image) name="image" class="black")
-				br
-				input(type="submit" value="edit pack" + pack._id)
-
-mixin packHead()
-	thead
-		th #
-		th all
-		th KPI
-		th start-finish
-		th prizes
-		th Actions
-
-mixin drawpacks(packs)
-	each pack in packs
-		+drawpack(pack)
-extends ../layout
 block content
-		//p!=JSON.stringify(msg)
-		//+drawpacks(msg)
-		table(class="table white" style="font-size:20px;")
-			+packHead()
-			tbody
-				if msg && msg.packs
-					+drawpacks(packs)
+	td!= ind
+
+	td
+		a(href="get_message?id="+item.id target="_blank") #{item}
+	td
+		form(action="/api/packs/edit/"+item.packID method="POST")
+			label price
+			input(type="number" value=item.price name="price" class="black")
+			label colours
+			input(type="text" value=JSON.stringify(item.colours) name="colours" class="black")
+			br
+			label items
+			input(type="text" value=JSON.stringify(item.items) name="items" class="black")
+			br
+			label image
+			input(type="text" value=JSON.stringify(item.image) name="image" class="black")
+			br
+			input(type="submit" value="edit pack" + item.packID)
+	td
+		+drawStatus(item)
+
+mixin drawStatus(item)
+	case item.available
+		when true
+			p Включен
+		default
+			p Выключен

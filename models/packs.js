@@ -10,7 +10,7 @@ var multiplier = 100;//0000;
 var packs= [];
 
 var afterGamePack = {
-	packID: 0, price:0, image:'3.png',
+	packID: 0, price:0, image:'3.jpg',
 	colours: [0, 1, 3, 96],
 	available: true, visible: false
 
@@ -19,7 +19,7 @@ var afterGamePack = {
 }
 
 var poorPack = {
-	packID:1, price:1, image:'3.png',
+	packID:1, price:1, image:'3.jpg',
 	colours: [1, 199, 300, 600],
 	available:true, visible: true
 
@@ -28,7 +28,7 @@ var poorPack = {
 }
 
 var goodPack = {
-	packID:2, price:10, image:'0.png',
+	packID:2, price:10, image:'0.jpg',
 	colours: [1, 29, 70, 0],
 	available:true, visible: true
 
@@ -73,6 +73,7 @@ function add(new_pack){
 function all(){ return Packs.list({ }) }
 function availablePacks(){ return Packs.list({ available: true }) }
 function remove(packID){ return Packs.remove({ packID: packID }) }
+function removeAll(){ return Packs.remove({ }) }
 function update(){ initialize(); }
 
 var initialized = false;
@@ -111,7 +112,7 @@ var colourHandler = {}
 var cardHandler = [];
 
 
-initialize();
+// initialize();
 
 function fillColourHandler(pack){
 	var packID = pack.packID;
@@ -185,6 +186,8 @@ module.exports = {
 	available: availablePacks,
 	all: all,
 	update: update,
+	remove: remove,
+	removeAll: removeAll
 	// userpacks:userpacks
 }
 

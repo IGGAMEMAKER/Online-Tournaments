@@ -14,7 +14,13 @@ block content
 			| Паки
 			//a(href="/Cards") Мои карточки
 		script.
-			drawPackButtons()
+			var msg = !{JSON.stringify(msg)};
+			var usercards = msg.usercards;
+			var collections = msg.collections;
+			//console.log(
+			var Cards = msg.cards;
+			var Packs = msg.packs
+			drawPackButtons(Packs)
 		//center
 			button(class="btn btn-primary" onclick="openPack()") Открыть за 10 руб
 		//p!= JSON.stringify(msg.usercards)
@@ -24,11 +30,6 @@ block content
 	div(class="col-sm-12 col-xs-12" id="cards")
 		script.
 			//var msg = "#{msg}";
-			var msg = !{JSON.stringify(msg)};
-			var usercards = msg.usercards;
-			var collections = msg.collections;
-			//console.log(
-			var Cards = msg.cards;
 			//console.log(Cards);
 			//console.log(usercards);
 			drawCards(Cards);

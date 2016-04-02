@@ -156,33 +156,59 @@ function rewardme(collectionID){
 // 	// $(cardField).append(text);
 // }
 
-function drawPackButtons(){
+function drawPack(pack){
+  var backgroundImage = '\'';
+  backgroundImage += pack.image;
+  backgroundImage = '/img/cardLayers/'+pack.image;
+  // backgroundImage += '\'';
+
+  var text = ''
+  var style = 'background-image:url('+backgroundImage+')'
+  text+= '<img border="0" class="card img-wrapper" style="'+style+'" src="/img/topics/realmadrid/pack.png">'
+  return text;
+}
+
+function drawPackButton(pack){
+	var text = '';
+	text += '<div class="col-sm-4 col-md-4 col-xs-6 killPaddings" >' // style="margin: auto;"
+	text += drawPack(pack);
+	var i = pack.packID;
+	text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
+	text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack.price+'р) </button>'
+	text += '</div>'
+	return text;
+}
+
+function drawPackButtons(packs){
 	var crd = {
 		photoURL: 'pack.png',
 		colour: 0
 	}
 
-	console.log('packs', 'drawPackButtons');
-	var packs = getObject('packs');
+	// console.log('packs', 'drawPackButtons');
+	// var packs = getObject('packs');
 	console.log('packs', 'drawPackButtons', packs);
 
 	var text = '<div style="margin:20px">';
 
-	var pack_prices = { 1:10, 2:50, 3:30, 4:1 }
-	for (var i=1; i<=4; i++) {
-		if (i==2 || i == 3) continue;
-		crd.colour = i
+	// var pack_prices = { 1:10, 2:50, 3:30, 4:1 }
+	for (var i = packs.length - 1; i >= 0; i--) {
+		text += drawPackButton(packs[i])
+	};
+	// for (var i=1; i<=4; i++) {
+	// 	if (i==2 || i == 3) continue;
+	// 	crd.colour = i
 
-		// text += '<center>'
-		// text += '<div style="width:100%;" >'
-		text += '<div class="col-sm-4 col-md-4 col-xs-6 killPaddings" >' // style="margin: auto;"
-		text += drawCard(crd);
-		text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
-		text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
-		text += '</div>'
-		// text += '</div>'
-		// text += '</center>'
-	}
+	// 	// text += '<center>'
+	// 	// text += '<div style="width:100%;" >'
+	// 	text += '<div class="col-sm-4 col-md-4 col-xs-6 killPaddings" >' // style="margin: auto;"
+	// 	text += drawCard(crd);
+	// 	text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
+	// 	text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'
+	// 	text += '</div>'
+	// 	// text += '</div>'
+	// 	// text += '</center>'
+	// }
 	text += '</div>'
 	
 	document.write(text)

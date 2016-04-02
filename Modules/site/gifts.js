@@ -8,6 +8,18 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   var middlewares = require('../../middlewares')
 
   // packs
+  app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
+    Packs.remove(req.params.packID)
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
+  app.get('/api/packs/removeAll', aux.isAdmin, function (req, res, next){
+    Packs.remove(req.params.packID)
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
 
   app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
     Packs.all()
