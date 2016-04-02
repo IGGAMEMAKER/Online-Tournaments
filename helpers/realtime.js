@@ -1,5 +1,6 @@
 var Collection = require('../models/collections')
 var Gifts = require('../models/gifts')
+var Packs = require('../models/packs')
 var Tournaments = require('../models/tournaments')
 
 
@@ -11,6 +12,7 @@ objects = {
 	counter:0,
 	updater:{},
 	cards:[],
+	packs:[],
 	UPDATE_ALL: UPDATE_ALL,
 	tournaments:null
 };
@@ -31,6 +33,7 @@ function send(name){
 function UPDATE_ALL() {
 	update_collections();
 	update_cards();
+	update_packs();
 }
 UPDATE_ALL();
 // update_collections();
@@ -43,7 +46,12 @@ update_tournaments(1000);
 function update_collections(){ 
 	Collection.all({}).then(save('collections')); 
 }
-function update_cards(){ Gifts.cards().then(save('cards')); }
+function update_cards(){ 
+	Gifts.cards().then(save('cards')); 
+}
+function update_packs(){ 
+	Packs.available().then(save('packs')); 
+}
 
 
 function update_tournaments(period){

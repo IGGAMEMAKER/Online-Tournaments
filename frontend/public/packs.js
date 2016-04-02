@@ -168,13 +168,14 @@ function drawPackButtons(){
 
 	var text = '<div style="margin:20px">';
 
-	var pack_prices = { 1:70, 2:50, 3:30, 4:10 }
+	var pack_prices = { 1:10, 2:50, 3:30, 4:1 }
 	for (var i=1; i<=4; i++) {
+		if (i==2 || i == 3) continue;
 		crd.colour = i
 
 		// text += '<center>'
 		// text += '<div style="width:100%;" >'
-		text += '<div class="col-sm-3 col-md-3 col-xs-6 killPaddings" >' // style="margin: auto;"
+		text += '<div class="col-sm-4 col-md-4 col-xs-6 killPaddings" >' // style="margin: auto;"
 		text += drawCard(crd);
 		text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
 		text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack_prices[i]+'р) </button>'

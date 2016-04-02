@@ -1,0 +1,57 @@
+//
+mixin parameters(item, name)
+	p #{name} #{JSON.stringify(parameter[name])}
+
+mixin drawpack(pack)
+	tr
+		td #{pack._id}
+		td
+			p accelerators #{JSON.stringify(pack.colours)}
+			//p upgrades #{JSON.stringify(pack.upgrades)}
+		td
+			//p!=JSON.stringify(pack)
+			+parameters(pack, "freeAccelerators")
+			+parameters(pack, "soldAccelerators")
+		td
+			p #{pack.start}
+			p #{pack.finish}
+		td 
+			p #{pack.prizes}
+			p #{pack.counts}
+
+		td
+			form(action="/api/packs/edit/"+msg._id method="POST")
+				label price
+				input(type="number" value=pack.price name="price" class="black")
+				label colours
+				input(type="text" value=JSON.stringify(pack.colours) name="colours" class="black")
+				br
+				label items
+				input(type="text" value=JSON.stringify(pack.items) name="items" class="black")
+				br
+				label image
+				input(type="text" value=JSON.stringify(pack.image) name="image" class="black")
+				br
+				input(type="submit" value="edit pack" + pack._id)
+
+mixin packHead()
+	thead
+		th #
+		th all
+		th KPI
+		th start-finish
+		th prizes
+		th Actions
+
+mixin drawpacks(packs)
+	each pack in packs
+		+drawpack(pack)
+extends ../layout
+block content
+		//p!=JSON.stringify(msg)
+		//+drawpacks(msg)
+		table(class="table white" style="font-size:20px;")
+			+packHead()
+			tbody
+				if msg && msg.packs
+					+drawpacks(packs)

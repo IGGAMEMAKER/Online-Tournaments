@@ -10,6 +10,12 @@ module.exports = function(dbAddress){
 
 	return {
 		Collection: db.model('Collection', { list: Array, name: String, description: String, rewardType:Number, reward: Object, colour:Number }),
+		Pack: db.model('Packs', { price:Number, image:String,
+			multiplier:Number,
+			colours:Array, items:Array,
+			packID:Number, available:Boolean,
+			visible:Boolean
+		}),
 
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 

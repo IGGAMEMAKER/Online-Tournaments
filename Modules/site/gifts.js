@@ -9,9 +9,21 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   // packs
 
-  app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
-    Gifts.user.all()
+  app.post('/api/packs/all', aux.isAdmin, function (req, res, next){
+    Packs.all()
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
 
+  app.post('/api/packs/available', aux.isAdmin, function (req, res, next){
+    Packs.available()
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
+  app.post('/api/packs/edit/:id', aux.isAdmin, function (req, res, next){
+    var data = req.body;
+    Packs.edit(data)
     .then(aux.setData(req, next))
     .catch(next)
   }, aux.std);
@@ -80,6 +92,13 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     // // .catch(next)
   })
   // console.log(middlewares);
+
+  app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
+    Gifts.user.all()
+
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
 
   app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
     // console.log('all player cards')
