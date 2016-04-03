@@ -9,30 +9,27 @@ block head
 block raw
 
 block content
-	td!= ind
+	td
+		p #{ind}
+		p!= item.name
+		p!= item._id
 
 	td
-		a(href="get_message?id="+item.id target="_blank") #{item}
+		p(href="get_message?id="+item.id target="_blank") #{item}
 	td
-		form(action="/api/packs/edit/"+item.packID method="POST")
-			label price
-			input(type="number" value=item.price name="price" class="black")
-			label colours
-			input(type="text" value=JSON.stringify(item.colours) name="colours" class="black")
+		form(action="/api/collections/edit/"+item._id method="POST" target="_blank")
+			label rewardType
+			input(type="number" value=item.rewardType name="rewardType" class="black")
+			label list
+			input(type="text" value=JSON.stringify(item.list) name="list" class="black")
 			br
-			label items
-			input(type="text" value=JSON.stringify(item.items) name="items" class="black")
+			label description
+			input(type="text" value=item.description name="description" class="black")
 			br
-			label image
-			input(type="text" value=item.image name="image" class="black")
+			label reward
+			input(type="text" value=JSON.stringify(item.reward) name="reward" class="black")
 			br
-			label available
-			input(type="text" value=JSON.stringify(item.available) name="available" class="black")
-			br
-			label visible
-			input(type="text" value=JSON.stringify(item.visible) name="visible" class="black")
-			br
-			input(type="submit" value="edit pack" + item.packID)
+			input(type="submit" value="edit pack" + item._id)
 	td
 		+drawStatus(item)
 

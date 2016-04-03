@@ -309,6 +309,24 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	// 	.catch(next)
 	// }, aux.std);
 
+  app.post('/api/collections/edit/:id', aux.isAdmin, function (req, res, next){
+    var collectionID = req.params.id;
+
+    var data = req.body;
+    console.log(collectionID, data);
+
+    var obj = {
+      rewardType: parseInt(data.rewardType),
+      list: JSON.parse(data.list),
+      reward: JSON.parse(data.reward),
+
+      description: data.description
+    }
+    Collections.edit(collectionID, obj)
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std);
+
 
 	app.get('/api/collections/get/:collectionID', aux.isAdmin, function (req, res, next){
 		var collectionID = req.params.collectionID;
@@ -324,7 +342,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
 		.then(aux.result(req, next))
 		.catch(next);
-	}, aux.std)
+	// }, aux.std)
+	}, aux.render('CollectionInfo'), aux.err)
 
 	app.get('/api/collections/attach/:collectionID/:giftID', aux.isAdmin, function (req, res, next){
 		var collectionID = req.params.collectionID;

@@ -1,0 +1,44 @@
+//
+extends List
+
+block head
+	th #
+	th Название
+	th Время
+	th Статус
+block raw
+
+block content
+	td!= ind
+
+	td
+		a(href="get_message?id="+item.id target="_blank") #{item}
+	td
+		form(action="/api/packs/edit/"+item.packID method="POST")
+			label price
+			input(type="number" value=item.price name="price" class="black")
+			label colours
+			input(type="text" value=JSON.stringify(item.colours) name="colours" class="black")
+			br
+			label items
+			input(type="text" value=JSON.stringify(item.items) name="items" class="black")
+			br
+			label image
+			input(type="text" value=item.image name="image" class="black")
+			br
+			label available
+			input(type="text" value=JSON.stringify(item.available) name="available" class="black")
+			br
+			label visible
+			input(type="text" value=JSON.stringify(item.visible) name="visible" class="black")
+			br
+			input(type="submit" value="edit pack" + item.packID)
+	td
+		+drawStatus(item)
+
+mixin drawStatus(item)
+	case item.available
+		when true
+			p Включен
+		default
+			p Выключен

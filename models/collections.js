@@ -23,6 +23,10 @@ function add(list, name, reward){
 	})
 }
 
+function edit(collectionID, data){
+	return update(collectionID, data);
+}
+
 // setParameter('56f7dd80a6d68f463e022c0e', 'rewardType', 1)
 // .then(console.log)
 // .catch(console.error)
@@ -127,5 +131,7 @@ module.exports = {
 	setDescription:setDescription,
 	setReward:setReward,
 	setParameter:setParameter,
-	setRewardType:setRewardType
+	setRewardType:setRewardType,
+
+	edit:edit
 }

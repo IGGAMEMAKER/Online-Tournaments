@@ -27,7 +27,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     Packs.all()
     .then(aux.setData(req, next))
     .catch(next)
-  }, aux.render('CollectionInfo'), aux.err);
+  }, aux.render('PackInfo'), aux.err);
   // }, aux.std);
 
   app.get('/api/packs/available', aux.isAdmin, function (req, res, next){
