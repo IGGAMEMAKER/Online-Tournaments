@@ -609,7 +609,7 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   var login = aux.getLogin(req);
   // var price = (10 + (4 - value)* 20);
   var price = realtime().packs[value].price || 1;
-  res.end('')
+  
 
 
   var obj = {value:value, paid:paid};
@@ -626,8 +626,11 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   }
 
   // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
+  var info = {};
+
   paymentFunction()
   .then(function (result){
+    info['paid'] = true;
     console.log(login, price, result);
     var card = Packs.get(value);//_standard_pack_card
     console.log(card);
@@ -640,9 +643,19 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
 
     Gifts.user.saveGift(login, giftID, true, card.colour)
     aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
+    res.end('')
   })
   .catch(function (err){
-    aux.fail(login, 'openPack', { err: err })
+    if (!info.paid) {
+      res.json({
+        result: 'pay',
+        ammount: price
+      })
+    } else {
+      res.end('');
+    }
+
+    aux.fail(login, 'openPack', { err: err , info: info })
   })
 })
 

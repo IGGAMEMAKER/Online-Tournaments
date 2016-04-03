@@ -3,8 +3,17 @@ var cardField= "#cards";
 
 function openPack(value, pay){
 
-	mark('openPack/'+value+'/'+pay)
+	// mark('openPack/'+value+'/'+pay)
+	setAsync('openPack/'+value+'/'+pay, {}, openPackFail, 'POST')
 	news.hide();
+}
+
+function openPackFail(msg){
+	// alert(JSON.stringify(msg));
+	if (msg && msg.result=='pay' && msg.ammount){
+		var ammount = parseInt(msg.ammount)
+		NotEnoughMoney(ammount, 'Пополните счёт, чтобы открыть пак' , 'Стоимость пака - ' + ammount + ' руб ')
+	}
 }
 
 var cardsDefault = {}

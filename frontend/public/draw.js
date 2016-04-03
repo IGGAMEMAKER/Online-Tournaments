@@ -455,9 +455,7 @@ function getAcceleratorColour(index){
 
 var USD_TO_RUR=1;
 
-var PAYMENT_TOURNAMENT = 0;
-var PAYMENT_ACCELERATOR = 1;
-var PAYMENT_FULLFILL = 2;
+
 
 var c = {
   NOTIFICATION_GIVE_ACCELERATOR:1 // give to user an accelerator
@@ -491,6 +489,11 @@ var c = {
   ,CARD_COLOUR_BLUE:2
   ,CARD_COLOUR_GREEN:3
   ,CARD_COLOUR_GRAY:4
+
+  ,PAYMENT_TOURNAMENT : 0
+  ,PAYMENT_ACCELERATOR : 1
+  ,PAYMENT_FULLFILL : 2
+  ,PAYMENT_PACK: 3
 }
 
 // console.log(c.NOTIFICATION_AUTOREG, 'AUTOREEEG')
@@ -852,6 +855,41 @@ var news = {
   // next: draw next message here
 }
 
+function NotEnoughMoney(ammount, header, body, payment_type){
+  console.log('NotEnoughMoney', ammount, header, body);
+
+  if (!header) header = 'Вам не хватает совсем чуть чуть';
+  if (!payment_type) payment_type = c.PAYMENT_PACK;
+
+  var have = parseInt(getFromStorage('money'));
+  var needToPay = ammount - have; // in USD
+
+  var tournamentPrice = needToPay + 'p';
+  /*var moneyRu = price * USD_TO_RUR;*/
+
+  $("#userLogin").attr("value", login);
+  $("#targets").attr("value", login);
+  $("#sumAttribute").attr("value", needToPay);
+
+  $("#depositLink1").html('Оплатить ' + needToPay + 'р');
+  $("#depositLink1").attr("onclick", "mark('mark/payment/"+login+"/"+needToPay+"')")
+
+  $("#depositLink1").attr("href", '/Payment?ammount='+ needToPay+'&buyType='+payment_type)
+
+  $("#moneyNow").html('Денег на счету: <b>' + have + ' p</b>');
+
+  // $("#tournamentPrice").html('Стоимость участия в турнире: <b>' + ammount + 'p</b>');
+  $("#tournamentPrice").html(body);
+
+  
+  $("#needToPay").html('К оплате: <b>'+needToPay+'p</b>');
+
+  if (needToPay>0) { 
+    stat_noMoney(0, needToPay);
+    $(payModal).modal('show');
+  }
+}
+
 function drawPayingModal(data){
   console.log('drawPayingModal', data);
 
@@ -876,7 +914,7 @@ function drawPayingModal(data){
   // $("#depositLink1").attr("value", 'Оплатить ' + needToPayRU + 'р');
   $("#depositLink1").html('Оплатить ' + needToPayRU + 'р');
   $("#depositLink1").attr("onclick", "mark('mark/payment/"+login+"/"+needToPay+"')")
-  $("#depositLink1").attr("href", '/Payment?ammount='+ needToPayRU+'&buyType='+PAYMENT_TOURNAMENT)
+  $("#depositLink1").attr("href", '/Payment?ammount='+ needToPayRU+'&buyType='+c.PAYMENT_TOURNAMENT)
   // return '<a href="Payment?ammount='+ ammount + '" class="btn btn-primary" onclick="'+onclick+'"> Оплатить </a>';
   
   // $("#depositLink1").attr("onclick", "mark('mark/payment/"+needToPay+"')" )
@@ -973,7 +1011,7 @@ function drawPayingModalAccelerator(data){
   modal.body(body);
 
   // footer
-  modal.footer(modal.pay_btn(needToPayRU, PAYMENT_ACCELERATOR));
+  modal.footer(modal.pay_btn(needToPayRU, c.PAYMENT_ACCELERATOR));
 
   if (needToPayRU>0) { 
     stat_noMoney(0, needToPayRU);

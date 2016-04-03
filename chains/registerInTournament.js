@@ -167,14 +167,16 @@ function register(tournamentID, login, res){
 
 		var has_player_count_limitation = is_stream;
 
-		console.log('has_player_count_limitation', has_player_count_limitation)
-		console.log('playerCount', playerCount, 'maxPlayers', maxPlayers, buyIn)
+		// console.log('has_player_count_limitation', has_player_count_limitation)
+		// console.log('playerCount', playerCount, 'maxPlayers', maxPlayers, buyIn)
 
 		if (is_stream) return 1; 		// no check, go to next step
 
 		// check max players count
 		if (playerCount < maxPlayers) { // pay money
-			if (buyIn>0) return Money.pay(login, buyIn, { type:aux.c.SOURCE_TYPE_BUY_IN, tournamentID:tournamentID })
+			if (buyIn>0) { 
+				return Money.pay(login, buyIn, { type:aux.c.SOURCE_TYPE_BUY_IN, tournamentID:tournamentID })
+			}
 			return 1;
 		}
 		
@@ -237,12 +239,16 @@ function register(tournamentID, login, res){
 	.catch(function (err){
 		queue[tournamentID][login]=null;
 		console.log('CATCHED error while player registering!', err);
+
 		if (res) { 
 			switch (err){
 				case aux.c.TREG_FULL: Answer(res, { result: aux.c.TREG_FULL } ); break;
 				case aux.c.TREG_ALREADY: Answer(res, { result: aux.c.TREG_ALREADY }); break;
 				case aux.c.TREG_NO_MONEY: Answer(res, { result: buyIn }); break;
-				default: Answer(res, Fail); break;
+				default:
+					Answer(res, { result: buyIn });
+					// Answer(res, Fail);
+				break;
 			}
 		}
 		// Error(err);
