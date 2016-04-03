@@ -24,7 +24,13 @@ block content
 			input(type="text" value=JSON.stringify(item.items) name="items" class="black")
 			br
 			label image
-			input(type="text" value=JSON.stringify(item.image) name="image" class="black")
+			input(type="text" value=item.image name="image" class="black")
+			br
+			label available
+			input(type="text" value=JSON.stringify(item.available) name="available" class="black")
+			br
+			label visible
+			input(type="text" value=JSON.stringify(item.visible) name="visible" class="black")
 			br
 			input(type="submit" value="edit pack" + item.packID)
 	td

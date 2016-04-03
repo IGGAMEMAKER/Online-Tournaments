@@ -8,16 +8,6 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   var middlewares = require('../../middlewares')
 
 
-  var packs = [];
-  var packsObj = {};
-
-  Packs.available()
-  .then(function (list){
-    packs = list;
-    // for (var i = list.length - 1; i >= 0; i--) {
-    //   // packsObj[list[i].packID] = list[i];
-    // };
-  })
 
   // packs
   app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
@@ -47,78 +37,28 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   }, aux.std);
 
   app.post('/api/packs/edit/:id', aux.isAdmin, function (req, res, next){
+    var packID = parseInt(req.params.id);
+
     var data = req.body;
-    Packs.edit(data)
+    console.log(packID, data);
+    var obj = {
+      price: parseInt(data.price),
+      colours: JSON.parse(data.colours),
+      items: JSON.parse(data.items),
+      image: data.image,
+      available: data.available,
+      visible: data.visible
+    }
+    Packs.edit(packID, obj)
     .then(aux.setData(req, next))
     .catch(next)
   }, aux.std);
 
-
-
-  app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
-    var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
-    var paid = parseInt(req.params.paid) || 0;
-
-
-    var login = aux.getLogin(req);
-    // var price = (10 + (4 - value)* 20);
-    var price = packs[value].price || 1;
-    res.end('')
-
-
-    var obj = {value:value, paid:paid};
-    if (paid) obj.price = price;
-
-    aux.done(login, 'openPack', obj)
-
-    var paymentFunction = function(){
-      if (paid) {
-        return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-      } else {
-        return Users.pack.decrease(login, value, 1)
-      }
-    }
-
-    // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-    paymentFunction()
-    .then(function (result){
-      console.log(login, price, result);
-      var card = Packs.get(value);//_standard_pack_card
-      console.log(card);
-      return card;
-    })
-    .then(function (card){
-      var giftID = card.giftID;
-      card.value = value
-      card.isFree = !paid;
-
-      Gifts.user.saveGift(login, giftID, true, card.colour)
-      aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-    })
-    .catch(function (err){
-      aux.fail(login, 'openPack', { err: err })
-    })
-
-
-    // // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-    // // .then(function (result){
-    // //   console.log(login, price, result);
-    //   var card = Packs.get(value);//_standard_pack_card
-    //   // console.log(card);
-    // //   return card;
-    // // })
-    // // .then(function (card){
-    //   var giftID = card.giftID;
-    //   card.value = value
-
-    //   Gifts.user.saveGift(login, giftID, true, card.colour)
-    //   aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-    // // })
-    // // .catch(function (err){
-    // //   Errors.add(login, { err: err })
-    // // })
-    // // .catch(next)
+  app.get('/packInfo', aux.isAdmin, function (req, res){
+    var info = Packs.info();
+    res.json({info: info})
   })
+
   // console.log(middlewares);
 
   app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){

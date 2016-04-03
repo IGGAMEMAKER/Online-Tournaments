@@ -594,7 +594,57 @@ app.get('/main', function (req, res){
   res.render('main2');
 })
 
+  // var packs = [];
 
+  // Packs.available()
+  // .then(function (list){
+  //   packs = list;
+  // })
+  
+app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
+  var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
+  var paid = parseInt(req.params.paid) || 0;
+
+
+  var login = aux.getLogin(req);
+  // var price = (10 + (4 - value)* 20);
+  var price = realtime().packs[value].price || 1;
+  res.end('')
+
+
+  var obj = {value:value, paid:paid};
+  if (paid) obj.price = price;
+
+  aux.done(login, 'openPack', obj)
+
+  var paymentFunction = function(){
+    if (paid) {
+      return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
+    } else {
+      return Users.pack.decrease(login, value, 1)
+    }
+  }
+
+  // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
+  paymentFunction()
+  .then(function (result){
+    console.log(login, price, result);
+    var card = Packs.get(value);//_standard_pack_card
+    console.log(card);
+    return card;
+  })
+  .then(function (card){
+    var giftID = card.giftID;
+    card.value = value
+    card.isFree = !paid;
+
+    Gifts.user.saveGift(login, giftID, true, card.colour)
+    aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
+  })
+  .catch(function (err){
+    aux.fail(login, 'openPack', { err: err })
+  })
+})
 
 app.get('/Packs', aux.authenticated, function (req, res, next){
 

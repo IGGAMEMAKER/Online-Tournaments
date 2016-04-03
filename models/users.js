@@ -213,10 +213,10 @@ var pack = {
 	}
 	,newbiePackSet: {
 		0: 0,
-		1: 4,
-		2: 4,
-		3: 7,
-		4: 7
+		1: 20,
+		2: 0,
+		3: 0,
+		4: 0
 	}
 	,setDefault: function (login){
 		// console.log('setDefault', login)

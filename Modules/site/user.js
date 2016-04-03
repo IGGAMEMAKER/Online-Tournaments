@@ -134,11 +134,20 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			}
 		})
 	}
+
+	app.get('/api/users/:login/setDefault', aux.isAdmin, function (req, res, next){
+		var login = req.params.login;
+		Users.pack.setDefault(login)
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.std)
+	
 	var register_manager = require('../../chains/registerInTournament')(aux)
 	
 	app.post('/CancelRegister', function (req, res){
 	  regManager('CancelRegister',req, res);
 	})
+
 
 	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
 		var tournamentID = parseInt(req.body.tournamentID);

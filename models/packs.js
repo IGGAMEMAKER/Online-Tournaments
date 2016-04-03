@@ -11,7 +11,7 @@ var packs= [];
 
 var afterGamePack = {
 	packID: 0, price:0, image:'3.jpg',
-	colours: [0, 1, 3, 96],
+	colours: [0, 0, 1, 3, 96],
 	available: true, visible: false
 
 	// multiplier:100,
@@ -20,7 +20,7 @@ var afterGamePack = {
 
 var poorPack = {
 	packID:1, price:1, image:'3.jpg',
-	colours: [1, 199, 300, 600],
+	colours: [0, 1, 199, 300, 600],
 	available:true, visible: true
 
 	// multiplier: 100,
@@ -29,14 +29,21 @@ var poorPack = {
 
 var goodPack = {
 	packID:2, price:10, image:'0.jpg',
-	colours: [1, 29, 70, 0],
-	available:true, visible: true
+	colours: [0, 1, 29, 70, 0],
+	available: true, visible: true
 
 	// multiplier:Number,
 	// items:Array,
 }
 
-var stdPacks = [afterGamePack, poorPack, goodPack];
+var excellentPack = {
+	packID:3, price:25, image:'0.jpg',
+	colours: [0, 5, 30, 65, 0],
+	available: true, visible: true
+}
+
+
+var stdPacks = [afterGamePack, poorPack, goodPack, excellentPack];
 
 // ,CARD_COLOUR_GRAY:4
 
@@ -55,6 +62,9 @@ function addStd(){
 	})
 	.then(function (result){
 		return add(goodPack)
+	})
+	.then(function (result){
+		return add(excellentPack)
 	})
 }
 
@@ -75,6 +85,10 @@ function availablePacks(){ return Packs.list({ available: true }) }
 function remove(packID){ return Packs.remove({ packID: packID }) }
 function removeAll(){ return Packs.remove({ }) }
 function update(){ initialize(); }
+
+function edit(packID, data){
+	return Packs.update({packID: packID}, {$set: data})
+}
 
 var initialized = false;
 function initialize(){
@@ -111,6 +125,13 @@ function initialize(){
 var colourHandler = {}
 var cardHandler = [];
 
+function info(){
+	return {
+		colourHandler:colourHandler,
+		cardHandler:cardHandler,
+		packs:packs
+	}
+}
 
 // initialize();
 
@@ -187,7 +208,9 @@ module.exports = {
 	all: all,
 	update: update,
 	remove: remove,
-	removeAll: removeAll
+	removeAll: removeAll,
+	info:info,
+	edit:edit
 	// userpacks:userpacks
 }
 

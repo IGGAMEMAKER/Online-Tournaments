@@ -29,7 +29,7 @@ var collections = {}
 
 function pickPhraseByColour(colour, collection){
 	console.log('pickPhraseByColour', collection)
-	return collection.description || 'No description';
+	return collection.description || null;//'No description';
 	// switch(colour){
 	// 	case c.CARD_COLOUR_GRAY:
 	// 		return 'Собери "серую" команду и получи ускоритель 4!';
@@ -98,7 +98,7 @@ function showCollection(collection, sameColourCardsList){
 	var need = list.length;
 	
 	var phrase = pickPhraseByColour(colour, collection);
-
+	if (!phrase) return '';
 
 	text += '<div class="col-sm-12">';
 	text += '<h1 class="mg-md text-center">' + phrase + '</h1>';
