@@ -541,7 +541,9 @@ function drawNewsModal(data){
           // function modal_pic(name){
           body += '<div class="col-md-6 col-sm-6 col-xs-12 killPaddings accelerator" id="accelerator"'+id+'>';
           body +=   '<center>';
-          body += 'Вы будете набирать очки в ' + value + ' раза быстрее!';//Набирайте очки быстрее с помощью ускорителя
+          var word = 'раз'
+          if (value == 4) word = 'раза';
+          body += 'Вы будете набирать очки в ' + value + ' ' + word + ' быстрее!';//Набирайте очки быстрее с помощью ускорителя
           body += '<br>';
           // body +=     '<h2 class="white text-center"> Ускоритель '+value+' </h2>';
           body +=   '<img class="acceleratorImage" width="100%" src="/img/accelerator'+value+'.png" style="background-color:'+colour+'">';

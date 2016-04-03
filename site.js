@@ -742,18 +742,23 @@ const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_USER = 1;
 
 
+app.get('/', function (req, res, next){
+  var tournaments = realtime().updater.tournaments || [];
+  req.data = tournaments;
+  next()
+}, aux.render('Tournaments'), aux.error)
 
-app.get('/', function (req,res){
-  res.render('main2');//{ msg:specials }
-  /*if (isAuthenticated(req)){
-    var data = req.body;
-    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
-    data.purpose = GET_TOURNAMENTS_USER;
-    //res.render()
-    AsyncRender('DBServer', 'GetTournaments', res, { renderPage:'main2' }, data);
-  } else {
-    res.render('main');
-  }*/
+// app.get('/', function (req, res){
+//   // res.render('main2');//{ msg:specials }
+//   // res.render('Tournaments',);
+// })
+
+app.get('/Tournaments', function (req, res){
+  res.render('Tournaments');//, {msg: updater.tournaments||[] }
+})
+
+app.post('/Tournaments', function (req, res){
+  res.json({msg: updater.tournaments || [] });
 })
 
 app.get('/addQuestion', middlewares.authenticated, function (req, res){
@@ -1461,14 +1466,6 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
   res.render('Payment', { ammount:ammount, type:type });
 })
 
-app.get('/Tournaments', function (req, res){
-  res.render('Tournaments');//, {msg: updater.tournaments||[] }
-})
-
-app.post('/Tournaments', function (req, res){
-  res.json({msg: updater.tournaments || [] });
-})
-
 var json2csv = require('json2csv');
 
 //app.get('/getCSV', middlewares.isAdmin, function())
@@ -1741,50 +1738,12 @@ function updateLeaderboard(){
 
 }
 
-// RealtimeProvider(1000);
-
-// RealtimeProvider2(1000);
-
 UpdateFrontendVersion(20000);
 get_Leaderboard(4000);
-
-function RealtimeProvider(period){
-  sender.sendRequest("GetTournaments", { purpose:GET_TOURNAMENTS_UPDATE }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
-    if (!error){
-      var tournaments = body;
-
-      var message = { tournaments:tournaments }
-      if (frontendVersion) message.frontendVersion = frontendVersion;
-
-      io.emit('update', message);
-      //compare(body, previousTournaments);
-    }
-  })
-  setTimeout(function(){
-    RealtimeProvider(period)
-  }, period);
-}
 
 var updater = {
   tournaments: []
 };
-
-function RealtimeProvider2(period){
-  Tournaments.get()
-  .then(function (tournaments){
-    if (tournaments) updater.tournaments = tournaments;
-    if (frontendVersion) updater.frontendVersion = frontendVersion;
-
-    io.emit('update', updater);
-  })
-  .catch(function (err){
-    Errors.add('CANNOT GET Tournaments', {err:err});
-  })
-
-  setTimeout(function(){
-    RealtimeProvider2(period)
-  }, period);
-}
 
 function UpdateFrontendVersion(period){
   sender.sendRequest("GetFrontendVersion", { }, "127.0.0.1", "DBServer", null, function (error, response, body, res){

@@ -56,6 +56,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	function GiveCollectionPrize(collection, login){
 		switch(collection.rewardType){
 			case aux.c.REWARD_ACCELERATOR:
+				// needs accelerator index
 				var index = parseInt(collection.reward.index) || 0;
 
 				return Marathon.grant_accelerator(login, index)
@@ -67,6 +68,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 			break;
 
 			case aux.c.REWARD_MONEY:
+				// needs ammount of money
 				var ammount = parseInt(collection.reward.ammount) || 200;
 
 				return Money.increase(login, ammount, aux.c.SOURCE_TYPE_GRANT)
@@ -79,6 +81,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 			break;
 
 			case aux.c.REWARD_PACKS:
+				// needs colour and count
 				var colour = parseInt(collection.reward.colour) || aux.c.CARD_COLOUR_GRAY;
 				var count = parseInt(collection.reward.count) || 1;
 				return grantPacksTo(login, colour, count)

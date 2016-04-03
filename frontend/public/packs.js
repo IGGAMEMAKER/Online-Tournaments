@@ -137,25 +137,6 @@ function rewardme(collectionID){
 	mark('rewardme/'+collectionID, null, 'GET')
 }
 
-// function showCollection(cards, colour){
-// 	var text = '';
-// 	var colour;
-// 	// for (var j=1;j<5; j++){
-// 		// colour = j;
-// 		text += '<a href="/Cards"><h3> Собрано: ' + collections[colour].have + '/' + collections[colour].need + '</h3></a>'
-// 		for (var i=0;i<cards.length; i++){
-// 			var card = getCardFromDefault(cards[i]._id, colour);
-
-// 			// cardsDefault[card._id] = card;
-// 			text += '<div class="col-sm-2 col-md-2 col-xs-12">' + drawCard(card);
-// 			text += '<p class="card-name white">' + card.description + '</p>';
-// 			text += '</div>';
-// 		}
-// 	// }
-// 	document.write(text);
-// 	// $(cardField).append(text);
-// }
-
 function drawPack(pack){
   var backgroundImage = '\'';
   backgroundImage += pack.image;
@@ -170,7 +151,7 @@ function drawPack(pack){
 
 function drawPackButton(pack){
 	var text = '';
-	text += '<div class="col-sm-4 col-md-4 col-xs-6 killPaddings" >' // style="margin: auto;"
+	text += '<div class="col-sm-3 col-md-3 col-xs-6 killPaddings" >' // style="margin: auto;"
 	text += drawPack(pack);
 	var i = pack.packID;
 	text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
