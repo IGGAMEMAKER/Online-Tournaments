@@ -4,6 +4,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var Fail = { result:'fail' };
 	var OK = { result: 'OK' };
 
+	var rp = require('request-promise');
+	var configs = require('../../configs')
+
 	/*app.post('/Cashout', function (req, res){
 	  MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
 	})*/
@@ -104,9 +107,71 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		/*var money = parseInt(data.amount)/76;
 
 		money= money*100;*/
+		console.log('yandexPayment', data)
 		Log("Money yandexPayment " + JSON.stringify(data), "Money");
 		Log("payment from " + login + ": " + money + "p", "Money");
-		sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
+
+		Money.savePayment(data)
+		.then(function (result){
+			var obj	= {
+				result:result,
+				data:data
+			}
+			aux.done(login, 'DEPOSIT', obj)
+			return Money.increase(login, money, aux.c.SOURCE_TYPE_DEPOSIT)
+			.then(function (result){
+				console.log('Money.increase yandexPayment', login, money, result)
+			})
+		})
+		.catch(aux.report('yandexPayment', data))
+
+		// sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
+	})
+
+	app.get('/api/payments/all', aux.isAdmin, function (req, res, next){
+		Money.payments()
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.std)//render('List'), aux.err
+
+	app.post('/PAY', aux.authenticated, function (req, res, next){
+		var login = aux.getLogin(req);
+		var ammount = req.body.ammount || 100;
+		var phone = req.body.phone;//"79261000000"
+
+		var mixplat = configs.mixplat;
+		var isTest = mixplat.isTest || 0
+		// var signature = 
+		var options = {
+			method: 'POST',
+			uri: 'https://api.mixplat.com/mc/create_payment',
+			body: {
+				"service_id"        : mixplat.id,
+				"phone"             : phone,
+				"amount"            : ammount,
+				"currency"          : "RUB",
+				"signature"         : signature,
+				"description"       : "Пополнение счёта на сайте online-tournaments.org",
+				"external_id"       : "ORDER142555",
+				"success_message"   : "Спасибо за оплату! Для доступа используйте пароль x4md59",
+				"custom_data"       : "userid="+login+",trxid=144288534233",
+				"test"              : isTest
+			},
+			json: true // Automatically stringifies the body to JSON
+		};
+
+		rp(options)
+		.then(function (parsedBody) {
+			// POST succeeded...
+		})
+		.catch(function (err) {
+			// POST failed...
+		});
+		// request('https://api.mixplat.com/mc/create_payment')
+	})
+
+	app.post('/payment/mixplat', function (req, res){
+		
 	})
 
 	app.get('/payOK', function (req, res){

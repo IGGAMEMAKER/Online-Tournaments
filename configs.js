@@ -22,6 +22,7 @@ config.vk = configs.vk;
 
 config.mailchimp = configs.mailchimp;
 
+config.mixplat = configs.mixplat;
 
 //game configs
 config.quizQuestionPeriod = configs.quizQuestionPeriod || 4000;

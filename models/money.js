@@ -19,6 +19,7 @@ var MoneyTransfer = models.MoneyTransfer;
 
 var db = require('../db')
 var MoneyTransfers = db.wrap('MoneyTransfer')
+var Payments = db.wrap('Payment')
 
 
 var time = require('../helpers/time');
@@ -115,6 +116,17 @@ module.exports = {
 		// return new Promise(function (resolve, reject){
 		// 	MoneyTransfer.find({ date: time.happened_this_week() })
 		// })
+	},
+	savePayment: function (data){
+		var obj = {
+			message:JSON.stringify(data),
+			data: data,
+			date: new Date()
+		}
+		return Payments.save(obj)
+	},
+	payments: function (){
+		return Payments.list()
 	},
 	standardPeriod: function(period){
 		//0 - daily

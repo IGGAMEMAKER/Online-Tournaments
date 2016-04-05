@@ -62,6 +62,7 @@ module.exports = function(dbAddress){
 		}),
 
 		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
+		Payment: db.model('Payments', { message: String, data:Object, date: Date }),
 
 		Message : db.model('Message', {
 			text:String, // title
