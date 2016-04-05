@@ -103,7 +103,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.end('OK');
 
 		var login = data.label;
-		var money = Math.round(parseInt(data.amount));
+		var money = Math.round(parseInt(data.withdraw_amount));
 		/*var money = parseInt(data.amount)/76;
 
 		money= money*100;*/
@@ -133,6 +133,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.then(aux.setData(req, next))
 		.catch(next)
 	}, aux.std)//render('List'), aux.err
+
+	app.get('/api/payments/all/list', aux.isAdmin, function (req, res, next){
+		Money.payments()
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.render('List'), aux.err)
 
 	app.post('/PAY', aux.authenticated, function (req, res, next){
 		var login = aux.getLogin(req);
