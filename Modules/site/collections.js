@@ -323,7 +323,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
       list: JSON.parse(data.list),
       reward: JSON.parse(data.reward),
 
-      description: data.description
+      description: data.description,
+      colour: parseInt(data.colour)
     }
     Collections.edit(collectionID, obj)
     .then(aux.setData(req, next))

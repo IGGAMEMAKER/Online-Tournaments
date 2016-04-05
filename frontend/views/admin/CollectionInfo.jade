@@ -20,6 +20,8 @@ block content
 		form(action="/api/collections/edit/"+item._id method="POST" target="_blank")
 			label rewardType
 			input(type="number" value=item.rewardType name="rewardType" class="black")
+			label colour
+			input(type="number" value=item.colour name="colour" class="black")
 			label list
 			input(type="text" value=JSON.stringify(item.list) name="list" class="black")
 			br
