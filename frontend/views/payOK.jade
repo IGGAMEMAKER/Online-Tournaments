@@ -1,7 +1,7 @@
 //
 //p payOK!!!!
-doctype html
-html
+//doctype html
+//html
 	head
 		title Login
 		include templates/head
@@ -19,3 +19,15 @@ html
 							h3(class="mg-md text-center ")
 								Вы пополнили свой счет
 		include templates/footer
+
+extends layout
+
+block content
+	h1(class="text-center white" ) Вы пополнили свой счет!
+	center
+		a(href="/" class="btn btn-primary btn-lg") Обновите страничку
+
+block ftr
+
+block title
+	title Неудачный платёж

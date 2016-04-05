@@ -1,7 +1,7 @@
 //
 //pay Fail(
-doctype html
-html
+//doctype html
+//html
 	head
 		title Login
 		include templates/head
@@ -21,3 +21,15 @@ html
 								br
 								Повторите попытку
 		include templates/footer
+//
+extends layout
+
+block content
+	h1(class="text-center white" ) Упс ... что то пошло не так
+	center
+		a(href="/profile#dep" class="btn btn-primary btn-lg") Повторите попытку
+
+block ftr
+
+block title
+	title Неудачный платёж
