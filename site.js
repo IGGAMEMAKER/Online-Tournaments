@@ -666,6 +666,42 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
   // .then(function (user){
   //   return Gifts.user.cardsGroup(login)
   // })
+
+  // Gifts.user.cardsGroup(login)
+  // .then(function (cards){
+  //   // console.log(cards);
+  //   req.data = {
+  //     collections: realtime().collections,
+  //     cards: realtime().cards,
+  //     packs: realtime().userpacks(),
+  //     usercards: cards||[]
+  //   }
+  //   next();
+  // })
+  // .catch(next)
+  
+  req.data = {
+    collections: realtime().collections,
+    cards: realtime().cards,
+    packs: realtime().userpacks()
+  }
+  next();
+
+  // res.render('Packs', { 
+  //   msg:{
+  //     cards: realtime().cards
+  //   }
+  // });
+// })
+}, aux.render('Packs'), aux.err)
+
+app.get('/MyCollections', aux.authenticated, function (req, res, next){
+
+  var login = aux.getLogin(req);
+  // Users.getByLogin(login)
+  // .then(function (user){
+  //   return Gifts.user.cardsGroup(login)
+  // })
   Gifts.user.cardsGroup(login)
   .then(function (cards){
     // console.log(cards);
@@ -678,14 +714,7 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
     next();
   })
   .catch(next)
-  
-  // res.render('Packs', { 
-  //   msg:{
-  //     cards: realtime().cards
-  //   }
-  // });
-// })
-}, aux.render('Packs'), aux.err)
+}, aux.render('MyCollections'), aux.err)
 
 app.get('/Cards', aux.authenticated, function (req, res, next){
 

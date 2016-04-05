@@ -10,17 +10,17 @@ block ftr
 
 block content
 	div(class="col-sm-12")
-		h1(class="white text-center")
-			| Паки
+		//h1(class="white text-center")
+		center
+			a(class="btn btn-primary btn-lg" href="/Packs") Вернуться к открытию паков
 			//a(href="/Cards") Мои карточки
 		script.
 			var msg = !{JSON.stringify(msg)};
-			//var usercards = msg.usercards;
+			var usercards = msg.usercards;
 			var collections = msg.collections;
 			//console.log(
 			var Cards = msg.cards;
 			var Packs = msg.packs
-			drawPackButtons(Packs)
 	br
 	div(class="col-sm-12 col-xs-12" id="cards")
 		br
@@ -35,4 +35,4 @@ block content
 			//drawMyCards(Cards, usercards)
 mixin drawCollections()
 	div(class="white")
-		script showCollections(collections, [], false)
+		script showCollections(collections, usercards, true)

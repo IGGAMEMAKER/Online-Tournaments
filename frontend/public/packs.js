@@ -76,13 +76,13 @@ var CollectionList = {}
 // CollectionList[c.CARD_COLOUR_RED] = {}
 // CollectionList[c.CARD_COLOUR_GRAY] = {}
 
-function showCollections(collections, myCards){
+function showCollections(collections, myCards, show_rewardme){
 	// console.log(myCards, collections);
 
 	for (var i=0; i < collections.length; i++) {
 		var list = pickSameColourCards(myCards, collections[i].colour);
 		// console.log(list);
-		showCollection(collections[i], list)
+		showCollection(collections[i], list, show_rewardme)
 	}
 }
 
@@ -98,7 +98,7 @@ function findEqualities(sameColourCardsList, collection_list){
 	return have;
 }
 
-function showCollection(collection, sameColourCardsList){
+function showCollection(collection, sameColourCardsList, show_rewardme){
 	var text = '';
 	var colour = collection.colour;
 	var collectionID = collection._id;// must be _id!!!
@@ -126,17 +126,22 @@ function showCollection(collection, sameColourCardsList){
 			text += '<p class="card-name white">' + card.description + '</p>';
 			text += '</div>';
 		}
+	if (show_rewardme){
+		var have = findEqualities(sameColourCardsList, CollectionList[collectionID]);// 1; // have = function(sameColourCardsList, collection)
+		text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
+		var buttonStatus = 'disabled';
 
-	var have = findEqualities(sameColourCardsList, CollectionList[collectionID]);// 1; // have = function(sameColourCardsList, collection)
-	text += '<a href="/Cards"><h3> Собрано: ' + have + '/' + need + '</h3></a>'
-	var buttonStatus = 'disabled';
-
-	if (need>0 && have==need){
-		// make GIVE ME REWARD active
-		buttonStatus = 'enabled'
+		if (need>0 && have==need){
+			// make GIVE ME REWARD active
+			buttonStatus = 'enabled'
+		}
+		text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="rewardme(\''+collectionID+'\')">Получить награду</button>'
+		text += '</div>'
+	} else {
+		text += '<a href="/MyCollections"><h3> Мои награды </h3></a>'
+		
+		text += '</div>'
 	}
-	text += '<button '+buttonStatus+ ' class="btn btn-success" onclick="rewardme(\''+collectionID+'\')">Получить награду</button>'
-	text += '</div>'
 	// }
 	document.write(text);
 	// $(cardField).append(text);
