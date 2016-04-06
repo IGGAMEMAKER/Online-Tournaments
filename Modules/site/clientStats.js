@@ -135,7 +135,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 		if (options){
 			obj.options = options;
 		}
-		aux.clientside(login, obj)
+		// aux.clientside(login, obj)
 		// console.log(id, login,'read')
 		Messages.notifications.read(id, login);
 	})

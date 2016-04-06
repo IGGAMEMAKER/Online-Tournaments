@@ -697,7 +697,7 @@ function drawNewsModal(data){
       news.show();
       // news.isActive = 1;
 
-      // mark('message/shown', { id : messageID })
+      mark('message/shown', { id : messageID })
       getProfile();
     }
   } catch(err){
