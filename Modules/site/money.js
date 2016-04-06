@@ -101,6 +101,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			return res.redirect('/payFail');
 		})
 		.catch(function (err){
+			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount, error:err })
 			console.log(err)
 			res.redirect('/payFail')
 		})
