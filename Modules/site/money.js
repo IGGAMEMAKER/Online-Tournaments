@@ -81,6 +81,33 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.catch(next)
 	}, aux.std)
 
+	app.post('/api/transfers/mobile/mark/form', aux.authenticated, function (req, res, next){
+
+		var login = aux.getLogin(req);
+		var payID = req.body.payID
+		var ammount = req.body.ammount;
+		
+		aux.done(login, 'mobile/mark', { payID:payID, ammount:ammount })
+
+		Money.mobile.mark(payID, ammount, login)
+		// .then(aux.setData(req, next))
+		.then(function (result){
+			// aux.notify(login, )
+			console.log('marked,', result)
+			if (result) {
+				Money.increase(login, parseInt(ammount), aux.c.SOURCE_TYPE_DEPOSIT)
+				return res.redirect('/payOK');
+			}
+			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount })
+			return res.redirect('/payFail');
+		})
+		.catch(function (err){
+			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount, error:err })
+			console.log(err)
+			res.redirect('/payFail')
+		})
+	}, aux.render('Transfers'), aux.error)
+
 	app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next){
 		var login = aux.getLogin(req);
 		var payID = req.params.payID
