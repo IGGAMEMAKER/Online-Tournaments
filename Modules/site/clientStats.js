@@ -105,11 +105,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 		// console.log('mark/game/', name)//, tournamentID, login);
 
-		Stats.attempt('game-'+ name)
+		// Stats.attempt('game-'+ name)
 
 
 		var obj	= { type: 'game-'+ name }
-		aux.clientside(login, obj)
+		// aux.clientside(login, obj)
+
 
 		// aux.done(login, 'game-'+ name)
 		// .then(function (result){

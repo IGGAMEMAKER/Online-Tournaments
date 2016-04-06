@@ -165,6 +165,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
 		var CollectionList = {};
 		var deletableUserGifts;
+
+		aux.done(login, 'rewardme', { collectionID:collectionID||null })
 		
 		Collections.getByID(collectionID) // list, name, reward
 		.then(function (col){ //collection
@@ -216,6 +218,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		})
 		.then(aux.setData(req, next))
 		.catch(function (error){
+			aux.fail(login, 'rewardme', { error: error, collectionID:collectionID||null })
 			console.error(error)
 			next(error)
 		})

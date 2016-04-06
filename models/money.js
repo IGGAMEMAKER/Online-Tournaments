@@ -131,11 +131,11 @@ module.exports = {
 	},
 	mobile: {
 		add: function(payID, ammount){
-			return MobilePayment.find({payID:payID, ammount:ammount})
+			return MobilePayments.find({payID:payID, ammount:ammount})
 			.then(function (payment){
 				if (payment) return null;
 
-				return MobilePayment.save({
+				return MobilePayments.save({
 					payID:payID,
 					ammount:ammount,
 					date: new Date(),
@@ -144,7 +144,7 @@ module.exports = {
 			})
 		},
 		mark: function (payID, ammount, login){
-			return MobilePayment.update({ payID: payID, ammount:ammount, active: true },
+			return MobilePayments.update({ payID: payID, ammount:ammount, active: true },
 			{
 				$set : {
 					active: false,
@@ -152,6 +152,9 @@ module.exports = {
 					dateActivated: new Date()
 				}
 			})
+		},
+		all: function(){
+			return MobilePayments.list({})
 		}
 	},
 	standardPeriod: function(period){

@@ -68,6 +68,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  res.send(400);
 	}
 
+	app.get('/api/transfers/mobile/all', aux.isAdmin, function (req, res, next){
+		// console.log('', Money.mobile)
+		Money.mobile.all()
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.list)
+
 	app.get('/api/transfers/mobile/add/:payID/:ammount', aux.isAdmin, function (req, res, next){
 		Money.mobile.add(req.params.payID, req.params.ammount)
 		.then(aux.setData(req, next))
@@ -75,9 +82,28 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}, aux.std)
 
 	app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next){
-		Money.mobile.mark(req.params.payID, req.params.ammount, aux.getLogin(req) )
-		.then(aux.setData(req, next))
-		.catch(next)
+		var login = aux.getLogin(req);
+		var payID = req.params.payID
+		var ammount = req.params.ammount;
+		
+		aux.done(login, 'mobile/mark', { payID:payID, ammount:ammount })
+
+		Money.mobile.mark(payID, ammount, login)
+		// .then(aux.setData(req, next))
+		.then(function (result){
+			// aux.notify(login, )
+			console.log('marked,', result)
+			if (result) {
+				Money.increase(login, parseInt(ammount), aux.c.SOURCE_TYPE_DEPOSIT)
+				return res.redirect('/payOK');
+			}
+			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount })
+			return res.redirect('/payFail');
+		})
+		.catch(function (err){
+			console.log(err)
+			res.redirect('/payFail')
+		})
 	}, aux.render('Transfers'), aux.error)
 
 	app.get('/api/transfers/all', aux.isAdmin, function (req, res, next){
@@ -86,6 +112,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.then(aux.setData(req, next))
 		.catch(next)
 	}, aux.render('Transfers'), aux.err)
+
+
 
 	app.get('/api/transfers/recent/:period', aux.isAdmin, function (req, res, next){
 		var period = parseInt(req.params.period) || 0;
