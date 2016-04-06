@@ -4,10 +4,11 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   var Packs = require('../../models/packs')
   var Users = require('../../models/users')
   var Money = require('../../models/money')
+  var Actions = require('../../models/actions')
 
   var middlewares = require('../../middlewares')
 
-
+  var time = require('../../helpers/time')
 
   // packs
   app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
@@ -59,11 +60,57 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
     res.json({info: info})
   })
 
+  app.get('/packOpenings/:type', aux.isAdmin, function (req, res, next){
+    // var info = Packs.info();
+    // res.json({info: info})
+
+  // income: function (time_function){ return spentMostOnPacks(0, time_function) }
+  // // ,incomeGT: function (ammount, time_function){ return spentMostOnPacks(ammount||0, time_function) }
+  // ,all : function (time_function){ return packOpenings(time_function, 0) }
+  // ,allPaid : function (time_function){ return packOpenings(time_function, 1) }
+
+    var func;
+    switch (req.params.type){
+      case 'incomeToday': // доход за сегодня
+        func = function() { return Actions.openings.income(0, time.happened_today) }
+      break;
+      case 'incomeAll': //доход за всё время
+        func = function() { return Actions.openings.income(0, null) }
+      break;
+      case 'openedToday': // открыто за сегодня
+        func = function() { return Actions.openings.all(time.happened_today) }
+      break;
+      case 'openedAll': //открыто за всё время
+        func = function() { return Actions.openings.all(null) }
+      break;
+      case 'totalToday': // открыто за сегодня
+        func = function() { return Actions.openings.total(time.happened_today) }
+      break;
+      case 'totalAll': //открыто за всё время
+        func = function() { return Actions.openings.total(null) }
+      break;
+      // default:
+      //   func = function() { return Actions.openings.income(0, null) }
+      // break;
+    }
+    // Actions.packOpenings(req.params.date || null, parseInt(req.params.paid || 0) )
+    // Actions.openings()
+    func()
+    // Actions.openings.income(null)
+    // .then(function (openings){
+    //   console.log('paidOpenings', openings)
+    //   // return openings
+    //   req.data = openings;
+    //   next();
+    // })
+    .then(aux.setData(req, next))
+    .catch(console.error)
+  }, aux.list);
+
   // console.log(middlewares);
 
   app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
     Gifts.user.all()
-
     .then(aux.setData(req, next))
     .catch(next)
   }, aux.std);

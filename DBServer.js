@@ -26,7 +26,7 @@ app.use(function(req,res,next){
 });
 
 var configs = require('./configs');
-console.log(configs);
+// console.log(configs);
 
 
 var mailer = require('./sendMail');

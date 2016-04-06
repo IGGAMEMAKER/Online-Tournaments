@@ -153,6 +153,9 @@ module.exports = {
 	    return 0;
 	  }
 	}
+	,list: [ function(req, res, next){
+		res.render('Array', { msg: req.data||[] });
+	}, errorJSON]
 	,result: function (req, next){
 		return function (value){
 			req.data = value;

@@ -63,6 +63,7 @@ module.exports = function(dbAddress){
 
 		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
 		Payment: db.model('Payments', { message: String, data:Object, date: Date }),
+		MobilePayment: db.model('MobilePayments', { payID: String, ammount: String, date: Date, dateActivated: Date, login:String, active:Boolean }),
 
 		Message : db.model('Message', {
 			text:String, // title

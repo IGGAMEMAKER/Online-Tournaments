@@ -19,6 +19,7 @@ var MoneyTransfer = models.MoneyTransfer;
 
 var db = require('../db')
 var MoneyTransfers = db.wrap('MoneyTransfer')
+var MobilePayments = db.wrap('MobilePayment')
 var Payments = db.wrap('Payment')
 
 
@@ -127,6 +128,31 @@ module.exports = {
 	},
 	payments: function (){
 		return Payments.list()
+	},
+	mobile: {
+		add: function(payID, ammount){
+			return MobilePayment.find({payID:payID, ammount:ammount})
+			.then(function (payment){
+				if (payment) return null;
+
+				return MobilePayment.save({
+					payID:payID,
+					ammount:ammount,
+					date: new Date(),
+					active: true
+				})
+			})
+		},
+		mark: function (payID, ammount, login){
+			return MobilePayment.update({ payID: payID, ammount:ammount, active: true },
+			{
+				$set : {
+					active: false,
+					login: login,
+					dateActivated: new Date()
+				}
+			})
+		}
 	},
 	standardPeriod: function(period){
 		//0 - daily

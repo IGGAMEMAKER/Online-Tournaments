@@ -1,5 +1,9 @@
 //
 
+mixin link(href, text)
+	a(href=href) #{text}
+	span    
+
 mixin createPortLink(link, name)
 	script.
 		var link = "#{link}";
@@ -45,6 +49,18 @@ mixin Tournaments()
 mixin title(text)
 	h2 #{text}
 	br
+
+mixin packOpenings()
+	+title("PACKS")
+	br
+	+link("/packOpenings/incomeToday", "incomeToday")
+	+link("/packOpenings/incomeAll", "incomeAll")
+	br
+	+link("/packOpenings/openedToday", "openedToday")
+	+link("/packOpenings/openedAll", "opened alltime")
+	br
+	+link("/packOpenings/totalToday", "total openedToday")
+	+link("/packOpenings/totalAll", "total opened alltime")
 html
 	script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
 	script.
@@ -57,7 +73,9 @@ html
 	+createPortLink(":5010/questions", "MODERATE Questions")
 	+createPortLink(":5010/questions/all", "All Questions")
 	+createPortLink(":5010/questions/topic/realmadrid", "Real Madrid questions")
-
+	br
+	
+	+packOpenings()
 	//script.
 		document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':5010/questions' +  '" target="_blank"> MODERATION SCRIPT:</a> ' );
 	br

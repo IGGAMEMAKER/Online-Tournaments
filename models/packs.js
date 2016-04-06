@@ -102,7 +102,7 @@ function initialize(){
 	})
 	.then(function (listOfPacks){
 		packs = listOfPacks;
-		console.log(packs);
+		// console.log(packs);
 
 		for (var i = packs.length - 1; i >= 0; i--) {
 			fillColourHandler(packs[i])

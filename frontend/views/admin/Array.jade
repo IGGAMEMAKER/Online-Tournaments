@@ -1,0 +1,27 @@
+//
+extends List
+
+block head
+	th #
+	th Название
+	th Время
+	th Статус
+block raw
+
+block content
+	td!= ind
+
+	td
+		a(href="get_message?id="+item.id target="_blank") #{JSON.stringify(item)}
+	td
+		p!= time
+	td
+		+drawStatus(item)
+		//p #{item.status}
+
+mixin drawStatus(item)
+	case item.status
+		when '1'
+			p Прочитано
+		default
+			p Не прочитано

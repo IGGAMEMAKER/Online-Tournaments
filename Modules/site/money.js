@@ -68,6 +68,18 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  res.send(400);
 	}
 
+	app.get('/api/transfers/mobile/add/:payID/:ammount', aux.isAdmin, function (req, res, next){
+		Money.mobile.add(req.params.payID, req.params.ammount)
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.std)
+
+	app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next){
+		Money.mobile.mark(req.params.payID, req.params.ammount, aux.getLogin(req) )
+		.then(aux.setData(req, next))
+		.catch(next)
+	}, aux.render('Transfers'), aux.error)
+
 	app.get('/api/transfers/all', aux.isAdmin, function (req, res, next){
 		Money.all()
 
