@@ -48,6 +48,11 @@ var Question = mongoose.model('Question', s);
 
 var lg = console.log;
 
+app.get('/updateQuestions', function (req, res){
+	initializeQuestions()
+	res.end('OK');
+})
+
 app.post('/offerQuestion', function (req, res){
 	var obj = req.body;
 	obj.moderation = MODERATION_NONE;
