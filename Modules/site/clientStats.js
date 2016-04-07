@@ -109,7 +109,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 
 		var obj	= { type: 'game-'+ name }
-		// aux.clientside(login, obj)
+		if (name=='movement') aux.clientside(login, obj)
 
 
 		// aux.done(login, 'game-'+ name)

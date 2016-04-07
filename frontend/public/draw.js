@@ -406,7 +406,9 @@ function drawPopup(){
   //prt('OPEN POPUUUUUUP!!!!');
   //document.getElementById('tournaments').style.display='block';
   // console.log('StartTournament mark');
-  mark('mark/game/drawPopup', { login:login }); // , 'GET'
+
+  // mark('mark/game/drawPopup', { login:login }); // , 'GET'
+
   // console.log('StartTournament mark ended');
 
   $(myModal).modal('show');

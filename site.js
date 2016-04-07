@@ -634,9 +634,9 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   paymentFunction()
   .then(function (result){
     info['paid'] = true;
-    console.log(login, price, result);
+    // console.log(login, price, result);
     var card = Packs.get(value);//_standard_pack_card
-    console.log(card);
+    // console.log(card);
     return card;
   })
   .then(function (card){
