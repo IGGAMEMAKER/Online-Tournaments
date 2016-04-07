@@ -121,10 +121,10 @@ function StartTournament(tournamentID, force, res){
 }
 
 function register(tournamentID, login, res){
-	console.log('register', tournamentID, login, queue)
+	// console.log('register', tournamentID, login, queue)
 
 	if (!queue[tournamentID]) queue[tournamentID] = { };
-	console.log(queue)
+	// console.log(queue)
 	if (queue[tournamentID][login]) return Answer(res, Fail);
 
 	queue[tournamentID][login] = 1;
