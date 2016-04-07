@@ -15,7 +15,12 @@ mixin question(q,i)
 			| №#{q.correct}
 			br
 			| #{q.answers[q.correct-1]}
-		td #{q.date}
+		td 
+			p #{q.date}
+			if q.topic
+				p!= q.topic
+			else
+				p No topic!
 		td
 			a(href="/setTopic/"+q._id+"/0" target="_blank") Delete or change topic
 			br
@@ -33,6 +38,7 @@ html
 		title newQuestion
 		link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet")
 	body
+		//p!= JSON.stringify(msg)
 		table(class="table table-bordered table-striped" style="width:70%;")
 			thead
 				th id
