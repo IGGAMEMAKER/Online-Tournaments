@@ -74,8 +74,14 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
       case 'incomeToday': // доход за сегодня
         func = function() { return Actions.openings.income(0, time.happened_today) }
       break;
+      case 'incomeYesterday': // доход за сегодня
+        func = function() { return Actions.openings.income(0, time.happened_yesterday) }
+      break;
       case 'incomeAll': //доход за всё время
         func = function() { return Actions.openings.income(0, null) }
+      break;
+      case 'openedYesterday': // открыто за сегодня
+        func = function() { return Actions.openings.all(time.happened_yesterday) }
       break;
       case 'openedToday': // открыто за сегодня
         func = function() { return Actions.openings.all(time.happened_today) }
@@ -85,6 +91,9 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
       break;
       case 'totalToday': // открыто за сегодня
         func = function() { return Actions.openings.total(time.happened_today) }
+      break;
+      case 'totalYesterday': // открыто за сегодня
+        func = function() { return Actions.openings.total(time.happened_yesterday) }
       break;
       case 'totalAll': //открыто за всё время
         func = function() { return Actions.openings.total(null) }

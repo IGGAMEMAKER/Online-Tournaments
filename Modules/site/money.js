@@ -81,11 +81,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.catch(next)
 	}, aux.std)
 
-	app.post('/api/transfers/mobile/mark/form', aux.authenticated, function (req, res, next){
+	function mobilePayment(req, res, next){
+		console.log('mobilePayment middleware')
+		console.log('mobilePayment middleware', req.payment)
+		// var login = aux.getLogin(req);
+		// var payID = req.body.payID
+		// var ammount = req.body.ammount;
 
-		var login = aux.getLogin(req);
-		var payID = req.body.payID
-		var ammount = req.body.ammount;
+		var login = req.payment.login;
+		var payID = req.payment.payID
+		var ammount = req.payment.ammount;
 		
 		aux.done(login, 'mobile/mark', { payID:payID, ammount:ammount })
 
@@ -106,33 +111,46 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			console.log(err)
 			res.redirect('/payFail')
 		})
-	}, aux.render('Transfers'), aux.error)
+	}
+
+	app.post('/api/transfers/mobile/mark/form', aux.authenticated, function (req, res, next){
+		var login = aux.getLogin(req);
+		var payID = req.body.payID
+		var ammount = req.body.ammount;
+
+		req.payment = {
+			login:login,
+			payID:payID,
+			ammount:ammount
+		}
+		next();
+	}, mobilePayment, aux.render('Transfers'), aux.error)
+
+	app.get('/api/transfers/mobile/markAdmin/:payID/:ammount/:login', aux.isAdmin, function (req, res, next){
+		var login = req.params.login;
+		var payID = req.params.payID
+		var ammount = req.params.ammount;
+		console.log(login, payID, ammount, 'markAdmin')
+		req.payment = {
+			login:login,
+			payID:payID,
+			ammount:ammount
+		}
+		next();
+	}, mobilePayment, aux.render('Transfers'), aux.error)
 
 	app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next){
 		var login = aux.getLogin(req);
 		var payID = req.params.payID
 		var ammount = req.params.ammount;
 		
-		aux.done(login, 'mobile/mark', { payID:payID, ammount:ammount })
-
-		Money.mobile.mark(payID, ammount, login)
-		// .then(aux.setData(req, next))
-		.then(function (result){
-			// aux.notify(login, )
-			console.log('marked,', result)
-			if (result) {
-				Money.increase(login, parseInt(ammount), aux.c.SOURCE_TYPE_DEPOSIT)
-				return res.redirect('/payOK');
-			}
-			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount })
-			return res.redirect('/payFail');
-		})
-		.catch(function (err){
-			aux.fail(login, 'mobile/mark', { payID:payID, ammount:ammount, error:err })
-			console.log(err)
-			res.redirect('/payFail')
-		})
-	}, aux.render('Transfers'), aux.error)
+		req.payment = {
+			login:login,
+			payID:payID,
+			ammount:ammount
+		}
+		next()
+	}, mobilePayment, aux.render('Transfers'), aux.error)
 
 	app.get('/api/transfers/all', aux.isAdmin, function (req, res, next){
 		Money.all()
