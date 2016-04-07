@@ -397,6 +397,9 @@ function Landing(name, picture){
     var obj = { landing:name }
     if (picture) obj.picture = picture;
 
+    if (isAuthenticated(req)){
+      return res.redirect('/')
+    }
     res.render('landing/'+name, obj);
   }
 }
