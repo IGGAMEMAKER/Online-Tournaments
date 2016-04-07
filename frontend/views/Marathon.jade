@@ -60,12 +60,13 @@ block content
 		h1(class="mg-md text-center") Марафон
 		p Участвуйте в турнирах, накапливайте очки и выиграйте главный приз в еженедельном марафоне!
 		p Участие в марафоне абсолютно бесплатно и у вас всегда будут шансы на победу!
-		p За каждый сыгранный турнир вы получаете 1 балл в 
-			a(href="#leaders") таблице лидеров
+		p За каждый сыгранный турнир вы получаете как минимум 1 балл в 
+			a(href="/Leaderboard") таблице лидеров
 
 		p Набирать больше баллов вам помогут 
 			a(href="#accelerator") ускорители 
-			| , которые вы можете купить или получить бесплатно
+			| , которые вы можете купить или получить в 
+			a(href="/Packs") паках
 
 		p Марафон длится 6 дней (с понедельника по субботу). По мере роста призового фонда, количество призов и их размер также растёт. 
 	div(class="col-sm-12" id="accelerator")
@@ -85,7 +86,7 @@ block content
 	//div(class="container-fluid" id="free")
 		+freeAccelerators()
 	center
-		a(class="btn btn-primary btn-lg" href="Leaderboard") Список участников
+		a(class="btn btn-primary" href="Leaderboard") Полный список участников марафона
 	//div(class="col-sm-12 dataRule2 offset" id="leaders")
 		h2(class="mg-md text-center") ТОП10 игроков
 			| (
