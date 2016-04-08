@@ -1274,6 +1274,14 @@ function grantPacksTo(login, colour, count){
   })
   .catch(aux.drop)
 }
+app.get('/givePointsTo/:login/:points', isAdmin, function (req, res, next){
+  var login = req.params.login;
+  var points = parseInt(points);
+
+  Marathon.giveNpoints(login, points)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std);
 
 app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
   var login = req.params.login;

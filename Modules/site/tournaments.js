@@ -265,6 +265,29 @@ var upload = multer({ storage: storage }).single('image');
   //   var parameter = req.params.parameter;
   //   var value = req.params.value;
   //   var type = req.params.type;
+  app.get('/mp/:id/:mp/', aux.isAdmin, function (req, res, next){
+    var tournamentID = parseInt(req.params.id);
+    var mp = parseInt(req.params.mp);
+
+    var obj = {}
+    if (tournamentID && !isNaN(tournamentID)){
+      obj.Prizes = [{ MP: mp || 1000 }];
+      obj['settings.hold'] = true;
+    }
+
+    Tournaments.edit(tournamentID, obj)
+    .then(function (result){
+      if (result){
+        res.redirect('/api/tournaments/current');
+      } else {
+        res.json({result:result});
+        //res.end('fail. <a href="MarathonInfo"> go back');
+      }
+    })
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.render('Lists/Tournaments'), aux.err)
+
   app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = req.params.tournamentID;
     var data = req.body||null;

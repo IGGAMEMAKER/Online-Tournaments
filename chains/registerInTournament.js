@@ -214,7 +214,9 @@ function register(tournamentID, login, res){
 		} 
 		
 		if (playerCount==maxPlayers-1) {
-			StartTournament(tournamentID);
+			var no_hold = !TT.settings || !TT.settings.hold;
+			console.log('no_hold', no_hold, tournamentID)
+			if (no_hold) StartTournament(tournamentID);
 		} else {
 			// if (playerCount>maxPlayers-1){
 			// 	// stream tournaments addition
@@ -265,6 +267,7 @@ module.exports = function(_aux, _realtime){
 	// realtime = _realtime;
 
 	return {
-		register: register
+		register: register,
+		StartTournament: StartTournament
 	}
 }

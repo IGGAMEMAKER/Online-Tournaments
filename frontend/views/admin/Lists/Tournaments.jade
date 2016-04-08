@@ -46,6 +46,12 @@ block content
 			input(type="submit" value="edit")
 		p!= "/api/tournaments/edit/"+item.tournamentID+"/settings.sanity/num/153"
 		a(href="/api/tournaments/edit/"+item.tournamentID+"/settings.topic/str/topic" target="_blank") set topic topic
+		br
+		a(href="/mp/"+item.tournamentID+"/1000") MARATHONIZE
+		br
+		a(href="/api/tournaments/start/"+item.tournamentID+"/SOFT" target="_blank") START IT
+		br
+		a(href="/api/tournaments/start/"+item.tournamentID+"/force" target="_blank") START IT FORCEEE
 
 mixin drawStatus(item)
 	case item.status

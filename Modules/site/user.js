@@ -143,11 +143,36 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}, aux.std)
 	
 	var register_manager = require('../../chains/registerInTournament')(aux)
+
+
 	
 	app.post('/CancelRegister', function (req, res){
 	  regManager('CancelRegister',req, res);
 	})
 
+	app.get('/api/tournaments/start/:id/:force', aux.isAdmin, function (req, res){
+		var force = req.params.force
+		var id = req.params.id;
+		if (isNaN(id)) return res.end('fail');
+
+		var tournamentID = parseInt(id);
+		Tournaments.getByID(tournamentID)
+		.then(function (tournament){
+			var players = tournament.players || 1;
+			newGonext = [players, 1]
+			
+			return Tournaments.edit(tournamentID, { goNext: newGonext })
+		})
+		.then(function (result){
+			res.json({ msg:result })
+			console.log('START MP Tournaments!', tournamentID, result);
+			if (result || force== 'force') register_manager.StartTournament(tournamentID);//, null, res);
+		})
+		.catch(function (err){
+			res.json({err: err})
+			console.log(err);
+		})
+	})
 
 	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
 		var tournamentID = parseInt(req.body.tournamentID);
