@@ -118,7 +118,7 @@ var news = {
 	},
 	edit: function (id, obj){
 		return News.update({_id: id}, obj)
-	}
+	},
 	get: function(id){
 		return News.find({ _id : id })
 	},
