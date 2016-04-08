@@ -341,12 +341,15 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 	var login = player.value.login;
 	
 	if (isNaN(Prize) ){ //gift
-
-		Gifts.user.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
-		.then(function (result){
-			console.log('saveGift', result)
-		})
-		.catch(aux.report('Prize is gift:', { Prize:Prize, login:login } ))
+		if (Prize.MP && !isNaN(Prize.MP)){
+			Marathon.giveNpoints(login, parseInt(Prize.MP) || 10)
+		} else {
+			Gifts.user.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
+			.then(function (result){
+				console.log('saveGift', result)
+			})
+			.catch(aux.report('Prize is gift:', { Prize:Prize, login:login } ))
+		}
 
 	}	else { //money
 		if (Prize>0){

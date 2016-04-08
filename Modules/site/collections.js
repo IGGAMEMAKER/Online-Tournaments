@@ -218,7 +218,7 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 		})
 		.then(aux.setData(req, next))
 		.catch(function (error){
-			aux.fail(login, 'rewardme', { error: error, collectionID:collectionID||null })
+			aux.fail(login, 'rewardme', { error: error, collectionID:collectionID || null })
 			console.error(error)
 			next(error)
 		})

@@ -599,11 +599,19 @@ function giveAccelerator(login, acceleratorIndex, errorMessageTag, acceleratorCo
 	})
 }
 
+function giveNpoints(login, N){
+	return getCurrentMarathonID()
+	.then(function (MarathonID){
+		return increase_points(login, MarathonID, N)
+	})
+}
+
 module.exports = {
 	add:addDefault
 	, edit: 									edit
 	, get_user: 							getMarathonUser
 
+	, giveNpoints:            giveNpoints
 	, increase_points: 				try_to_increase_points
 	, find_or_create_user: 		find_or_create_user
 	, get_current_marathon: 	get_current_marathon

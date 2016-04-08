@@ -2,6 +2,7 @@ var Collection = require('../models/collections')
 var Gifts = require('../models/gifts')
 var Packs = require('../models/packs')
 var Tournaments = require('../models/tournaments')
+var Message = require('../models/message')
 
 
 var app, io;
@@ -14,8 +15,9 @@ objects = {
 	cards:[],
 	packs:[],
 	userpacks:userpacks,
+	news: null,
 	UPDATE_ALL: UPDATE_ALL,
-	tournaments:null
+	tournaments: null
 };
 
 function save(name){
@@ -35,7 +37,10 @@ function UPDATE_ALL() {
 	update_collections();
 	update_cards();
 	update_packs();
+	
+	update_news();
 }
+
 UPDATE_ALL();
 // update_collections();
 
@@ -49,6 +54,11 @@ function update_collections(){
 }
 function update_cards(){ 
 	Gifts.cards().then(save('cards')); 
+}
+
+function update_news(){
+	// Message.news.active().then(save('news'))
+	Message.news.all().then(save('news'))
 }
 
 function update_packs(){ 

@@ -13,6 +13,7 @@ block title
 	title Турниры
 
 block content
+	include templates/news
 	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 	script.
 		var tournaments = !{JSON.stringify(msg)};
@@ -22,10 +23,10 @@ block content
 			+rating()
 		div(class="col-sm-4 subscribe")
 			+subscribe()
-	div(class="col-sm-12 offset-bg")
+	//div(class="col-sm-12 offset-bg")
 		+chat()
 
 block JSlibs
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-	script(src="tournaments.js")
+	script(src="tournaments.js?1")
 	//include templates/googleAd

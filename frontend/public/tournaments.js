@@ -349,22 +349,25 @@ function getPrize(t){
 		if (isStream(t)) {
 			return '+<a href="#ratingField">Повышение в таблице</a>';//Приз:  aria-expanded="true"  data-toggle="tab"
 		} else {
-			return showPrize(prize, "", ID);
+
+			return showPrize(prize, "", ID, t);
 		}
 	}
 }
 
-function ruble(){ return 'P'; }
+function ruble(){ return 'руб'; }
 
-function showPrize(prize, specPrize, ID){
+function showPrize(prize, specPrize, ID, t){
 	if (specPrize && specPrize.length>0) {
 		return specPrize;
 	} else {
 		if (prize){
-			if (isNaN(prize)){
+			if (isNaN(prize)) {
+				var mp = prize.MP; /// marathon points
+				if (mp && !isNaN(mp))	return '<br><a href="#ratingField">'+mp+' баллов</a>'
 				return "" + prize;//Приз: 
 			}	else {
-				return "" + prize +" "+ruble();//Приз: 
+				return "<br>" + prize +" "+ruble();//Приз: 
 			}
 		}
 	}
@@ -669,7 +672,7 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 		for (var i = 0; i < winPlaces; i++){
 			var ii = i+1;
 			text += '<div class="value">';
-			text += ii + "-е место : " + getMainPrize(prize); //5000 <b>₽</b>
+			text += ii + "-е место " + getMainPrize(prize); //5000 <b>₽</b>
 			text += '</div>';
 		}
 	}

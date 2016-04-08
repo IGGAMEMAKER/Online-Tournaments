@@ -260,6 +260,29 @@ function sendError(err, func_name){
   })
 }
 
+
+function getNews() {
+  setAsync('/api/news/get', null, drawNews, 'GET')
+}
+function drawNews(msg){
+  // if (!news || news.length==0) return;
+  if (!msg || !msg.news || msg.news.length==0) return;
+  var news = msg.news;
+  console.log(news);
+
+  var i = 0;
+  var text = news[i].text,
+  url = news[i].url || null,
+  image = news[i].image || null,
+  title = news[i].title;
+
+  var result = '<h1 class="white text-center">'+title+'</h1>';
+  if (text) result += '<p class="white text-center">'+text+'</p>';
+  if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
+  $("#news").html(result);
+  $("#news").html(JSON.stringify(news));
+}
+
 function get_time(string){
   var date = new Date(string);
 
@@ -271,7 +294,7 @@ function get_time(string){
 function drawRating(msg){
   if (msg && msg.leaderboard){
     var leaders = msg.leaderboard;
-    console.log('drawRating', msg);
+    // console.log('drawRating', msg);
     var prizeList = getPrizeList(msg.prizes||[], msg.counts||[]);
     var rating = "#ratingTab";
 

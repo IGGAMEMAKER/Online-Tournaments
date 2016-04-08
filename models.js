@@ -60,6 +60,7 @@ module.exports = function(dbAddress){
 			source: Object, date: Date,
 			isCard:Boolean, colour:Number, actual:Boolean 
 		}),
+		News: db.model('News', { title: String, active: Boolean, finishTime: Date, startTime : Date, text: String, image: String, url: String }),
 
 		MoneyTransfer : db.model('MoneyTransfer', { userID: String, ammount:Number, source: Object, date: Date }),
 		Payment: db.model('Payments', { message: String, data:Object, date: Date }),

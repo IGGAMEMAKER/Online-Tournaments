@@ -11,6 +11,10 @@ var c = require('../constants');
 
 var helpers = require('../helpers/helper')
 
+
+var db = require('../db');
+var News = db.wrap('News');
+
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
 
 function search(modelName, find, parameters){
@@ -98,6 +102,39 @@ var notifications = {
 }
 
 
+
+var news = {
+	//{ active: Boolean, finishTime: Date, startTime : Date, text: String, image: String, url: String }
+	// text image url
+	add: function(text, image, url, title, finishTime, startTime){
+		var obj = { active: false, title:title, finishTime: finishTime, startTime : startTime, text: text, image: image, url: url }
+		return News.save(obj);
+	},
+	activation: function(id, status){
+		var obj = { active: false }
+		if (status=='show') obj.active = true;
+
+		return News.update({_id: id}, obj)
+	},
+	edit: function (id, obj){
+		return News.update({_id: id}, obj)
+	}
+	get: function(id){
+		return News.find({ _id : id })
+	},
+	all: function(){ return News.list({}); },
+	active: function() { return News.list({ active: true }) },
+	remove: function(id) { return News.remove({ _id: id }) },
+	clear: function() { return News.remove({}) }
+
+}
+// news.clear();
+// news.activation('')
+
+// news.add('NEWS1', '/img/cardLayers/0.jpg', "/Packs", 'TITLE')
+// .then(console.log)
+// .catch(console.error)
+
 //----------------------Tests-----------------------------
 // all()
 // notifications.all('Raja')
@@ -157,3 +194,4 @@ function catcher(err){
 
 
 module.exports.notifications = notifications;
+module.exports.news = news;

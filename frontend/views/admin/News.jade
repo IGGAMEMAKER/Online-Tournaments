@@ -1,0 +1,45 @@
+//
+extends List
+
+block head
+	th #
+	th Строка
+	th status
+	th Actions
+block raw
+
+block content
+	td!= ind
+
+	td
+		p #{item}
+	td
+		+showStatus(item)
+	td
+		+link("/api/news/activation/"+item._id+"/hide", "HIDE")
+		+link("/api/news/activation/"+item._id+"/show", "show")
+
+		form(action="/api/news/edit/"+item._id method="POST" target="_blank")
+			label title
+			input(type="text" name="title" value=item.title)
+			br
+			label text
+			input(type="text" name="text" value=item.text)
+			br
+			label image
+			input(type="text" name="image" value=item.image)
+			br
+			label url
+			input(type="text" name="url" value=item.url)
+			br
+			input(type="submit" value="Edit")
+
+mixin showStatus(item)
+	if item.active
+		p Enabled
+	else
+		p disabled
+
+mixin link(url, text)
+	br
+	a(href=url target="_blank") #{text}

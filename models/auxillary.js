@@ -79,7 +79,9 @@ module.exports = {
 		return Errors.add(login, type, auxillaries)
 	}
 
-	,notify : Message.notifications.personal
+	,notify : function(login, type, data){
+		return Message.notifications.personal(login, type, data)
+	}
 	
 	,alert: function(login, type, data){
 		return Message.notifications.personal(login, type, data)

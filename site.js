@@ -6,6 +6,7 @@ var parseurl = require('parseurl');
 var jade = require('jade');
 
 var app = express();
+var schedule = require('node-schedule');
 
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -302,6 +303,10 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
 
 
 
+// var CRON_TASK = schedule.scheduleJob('33 * * * * *', function(){
+//   console.log('The answer to life, the universe, and everything!');
+// });
+
 
 function Log(data, topic){
   JSLog({msg:data}, topic);
@@ -481,12 +486,6 @@ function getMarathonUser(login){
   //   pretends: 34
   // }
 }
-
-
-// Users.update_user_status('Raja', c.USER_STATUS_READ_FIRST_MESSAGE)
-// .catch(function (err){
-//   console.error('update_user_status failed', err);
-// })
 
 function sendAfterGameNotification(login, mainPrize){
   Users.profile(login)
@@ -1568,6 +1567,46 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
   .catch(next);
 
 }, aux.json, aux.err)
+
+app.get('/api/news/get', function (req, res) {
+  res.json({ news: realtime().news || null })
+})
+
+app.get('/api/news/all', aux.isAdmin, function (req, res, next){
+  Message.news.all()
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.render('News'), aux.error);
+
+app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
+  var id = req.params.id || null;
+  var obj = {};
+
+  var text = req.params.text;
+  if (text) obj.text = text;
+
+  var image = req.params.image;
+  if (text) obj.image = image;
+
+  if (req.params.url) obj.url = req.params.url;
+  if (req.params.title) obj.title = req.params.title;
+
+  Message.news.edit(id, obj)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std);
+
+app.get('/api/news/activation/:id/:status', aux.isAdmin, function (req, res, next){
+  Message.news.activation(req.params.id||null, req.params.status || null)
+  .then(function (result){
+    if (result) realtime().UPDATE_ALL();
+    return result;
+  })
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.json, aux.err)
+
+
 
 app.get('/get_message', middlewares.isAdmin, function (req, res, next){
   var id = req.query.id;
