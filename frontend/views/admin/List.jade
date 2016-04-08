@@ -1,5 +1,8 @@
 //
-
+mixin upd()
+	br
+	a(href="/realtime/update" target="_blank")
+		b UPDATE SERVER
 mixin drawAux(action)
 	if action.auxillaries
 		case action.type
@@ -13,6 +16,7 @@ mixin drawAux(action)
 
 
 mixin drawActions(items)
+	block before
 	table(class="table table-bordered table-striped" style="width:70%;")
 		thead
 			tr

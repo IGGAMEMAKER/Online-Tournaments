@@ -8,6 +8,9 @@ block head
 	th Actions
 block raw
 
+block before
+	+formNews("/api/news/add")
+
 block content
 	td!= ind
 
@@ -16,8 +19,10 @@ block content
 	td
 		+showStatus(item)
 	td
-		+link("/api/news/activation/"+item._id+"/hide", "HIDE")
-		+link("/api/news/activation/"+item._id+"/show", "show")
+		+tlink("/api/news/activation/"+item._id+"/hide", "HIDE")
+		+tlink("/api/news/activation/"+item._id+"/show", "show")
+
+		+upd()
 
 		form(action="/api/news/edit/"+item._id method="POST" target="_blank")
 			label title
@@ -34,12 +39,30 @@ block content
 			br
 			input(type="submit" value="Edit")
 
+mixin formNews(action, item, btn)
+	form(action=action method="POST")
+		//target="_blank"
+		label title
+		input(type="text" name="title")
+		br
+		label text
+		input(type="text" name="text")
+		br
+		label image
+		input(type="text" name="image")
+		br
+		label url
+		input(type="text" name="url")
+		br
+		input(type="submit" value="Add")
+
+
 mixin showStatus(item)
 	if item.active
 		p Enabled
 	else
 		p disabled
 
-mixin link(url, text)
+mixin tlink(url, text)
 	br
 	a(href=url target="_blank") #{text}

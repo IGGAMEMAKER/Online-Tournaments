@@ -57,8 +57,8 @@ function update_cards(){
 }
 
 function update_news(){
-	// Message.news.active().then(save('news'))
-	Message.news.all().then(save('news'))
+	Message.news.active().then(save('news'))
+	// Message.news.all().then(save('news'))
 }
 
 function update_packs(){ 

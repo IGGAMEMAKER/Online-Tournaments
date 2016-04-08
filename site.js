@@ -1578,18 +1578,37 @@ app.get('/api/news/all', aux.isAdmin, function (req, res, next){
   .catch(next)
 }, aux.render('News'), aux.error);
 
+app.post('/api/news/add', aux.isAdmin, function (req, res, next){
+  var id = req.params.id || null;
+  var obj = {};
+  var data = req.body;
+
+  var text = data.text || "";
+  var image = data.image || "";
+  var url = data.url || "";
+  var title = data.title || "";
+
+  Message.news.add(text, image, url, title)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std);
+
 app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
   var id = req.params.id || null;
   var obj = {};
+  var data = req.body;
 
-  var text = req.params.text;
-  if (text) obj.text = text;
+  var text = data.text || "";
+  var image = data.image || "";
+  var url = data.url || "";
+  var title = data.title || "";
 
-  var image = req.params.image;
-  if (text) obj.image = image;
-
-  if (req.params.url) obj.url = req.params.url;
-  if (req.params.title) obj.title = req.params.title;
+  obj = {
+    text:text,
+    image:image,
+    url:url,
+    title:title
+  }
 
   Message.news.edit(id, obj)
   .then(aux.setData(req, next))

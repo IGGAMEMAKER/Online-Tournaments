@@ -280,7 +280,7 @@ function drawNews(msg){
   if (text) result += '<p class="white text-center">'+text+'</p>';
   if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
   $("#news").html(result);
-  $("#news").html(JSON.stringify(news));
+  // $("#news").html(JSON.stringify(news));
 }
 
 function get_time(string){
