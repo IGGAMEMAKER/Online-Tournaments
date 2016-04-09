@@ -16,6 +16,7 @@ module.exports = function(dbAddress){
 			packID:Number, available:Boolean,
 			visible:Boolean
 		}),
+		// Category: db.model('Category', )
 
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 

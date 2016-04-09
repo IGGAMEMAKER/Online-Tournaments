@@ -1277,7 +1277,7 @@ function grantPacksTo(login, colour, count){
 }
 app.get('/givePointsTo/:login/:points', isAdmin, function (req, res, next){
   var login = req.params.login;
-  var points = parseInt(points);
+  var points = parseInt(req.params.points);
 
   Marathon.giveNpoints(login, points)
   .then(aux.setData(req, next))
