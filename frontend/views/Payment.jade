@@ -32,7 +32,7 @@ mixin paymentForm(value, login)
 			//input(class="form-control" name="sum" id="deposit" value=10 required autocomplete="off")
 			//label(id="depResult") Сумма в рублях: 700p
 		input(type="submit" id="depositLink1" class="btn btn-lg btn-primary" value="Оплатить " + value+ " руб")
-	h2(class="white") Укажите в комментарии ваш логин: #{login}
+	//h2(class="white") Укажите в комментарии ваш логин: #{login}
 	if value
 		iframe(frameborder="0" allowtransparency="true" scrolling="no" src="https://money.yandex.ru/embed/shop.xml?account=410013860652119&quickpay=shop&payment-type-choice=on&mobile-payment-type-choice=on&writer=seller&targets=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D1%87%D1%91%D1%82%D0%B0+%D0%BD%D0%B0+%D1%81%D0%B0%D0%B9%D1%82%D0%B5+online-tournaments.org&targets-hint=&default-sum="+value+"&label="+login+"&button-text=01&comment=on&hint=%D0%B2%D0%B0%D1%88+%D0%BB%D0%BE%D0%B3%D0%B8%D0%BD&successURL=http%3A%2F%2Fonline-tournaments.org%2FpayOK" width="450" height="283")
 	else
@@ -41,13 +41,6 @@ mixin paymentForm(value, login)
 		iframe(frameborder="0" allowtransparency="true" scrolling="no" src="https://money.yandex.ru/embed/shop.xml?account=410013860652119&quickpay=shop&payment-type-choice=on&mobile-payment-type-choice=on&writer=seller&targets=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D1%87%D1%91%D1%82%D0%B0+%D0%BD%D0%B0+%D1%81%D0%B0%D0%B9%D1%82%D0%B5+online-tournaments.org&targets-hint=&default-sum="+value+"&comment="+login+"&label="+login+"&button-text=01&successURL=http%3A%2F%2Fonline-tournaments.org%2FpayOK" width="450" height="313")
 	//else
 		iframe(frameborder="0" allowtransparency="true" scrolling="no" src="https://money.yandex.ru/embed/shop.xml?account=410013860652119&quickpay=shop&payment-type-choice=on&mobile-payment-type-choice=on&writer=seller&targets=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D1%87%D1%91%D1%82%D0%B0+%D0%BD%D0%B0+%D1%81%D0%B0%D0%B9%D1%82%D0%B5+online-tournaments.org&targets-hint=&default-sum=100&label="+login+"&comment="+login+"&button-text=01&successURL=http%3A%2F%2Fonline-tournaments.org%2FpayOK" width="450" height="313")
-
-	br
-	br
-	p(class="white") Если вы пополнили счёт с мобильного, НЕ УДАЛЯЙТЕ СМС до поступления средств! Деньги будут зачислены в течение часа
-		br
-		| Если этого не произошло, напишите в техподдержку сайта
-	a(href="https://new.vk.com/topic-111187123_33419618" class="btn btn-primary" target="_blank") Написать в техподдержку
 	//include templates/PayCode
 	
 	//iframe(frameborder="0" allowtransparency="true" scrolling="no" src="https://money.yandex.ru/embed/shop.xml?account=410013860652119&quickpay=shop&payment-type-choice=on&mobile-payment-type-choice=on&writer=seller&targets=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D1%87%D1%91%D1%82%D0%B0+%D0%BD%D0%B0+%D1%81%D0%B0%D0%B9%D1%82%D0%B5+online-tournaments.org&targets-hint=&default-sum=100&button-text=01&successURL=http%3A%2F%2Fonline-tournaments.org%2FpayOK" width="450" height="213")
@@ -85,7 +78,25 @@ block content
 			//console.log(src);
 			document.write(src);
 		center
+			h2(class="white") QIWI: +79648847260 (обязательно укажите ваш логин "#{session.login}")
+			//h3(class="white") При отправке средств укажите ваш логин в комментарии к платежу (#{session.login})
 			+paymentForm(ammount, session.login)
+
+			br
+			br
+			p(class="white") Если вы пополнили счёт с мобильного, НЕ УДАЛЯЙТЕ СМС до поступления средств! Деньги будут зачислены в течение получаса
+				br
+				| Если этого не произошло, напишите в 
+				a(href="https://vk.com/topic-111187123_33419618" class="btn btn-primary" target="_blank") техподдержку
+				//техподдержку
+			//a(href="https://vk.com/topic-111187123_33419618" class="btn btn-primary" target="_blank") Написать в техподдержку
+			br
+			//br
+			//h2(class="white") QIWI-кошелёк: +79648847260 
+			//p(class="white") При переводе ОБЯЗАТЕЛЬНО укажите ваш логин
+
+
+
 		//form(id="payment" name="payment" method="post" action="https://sci.interkassa.com/" enctype="utf-8")
 			input(type="hidden" name="ik_co_id" value="5696a6513d1eaf964f8b456e" )
 			input(type="hidden" name="ik_pm_no" value="ID_4233" )

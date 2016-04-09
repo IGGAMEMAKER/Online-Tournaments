@@ -74,7 +74,9 @@ function drawPlayButtons(){
 
   if (runningCount==0) { 
     // console.log('no tournaments. runningCount=0');
-    $(BUTTON_FIELD).append('Нет запущенных турниров'); //closePopup('tournaments');
+    var refresh = '<a href="/" class="btn btn-primary"> Обновите страничку </a>'
+    $(BUTTON_FIELD).append(refresh); //closePopup('tournaments');
+    // $(BUTTON_FIELD).append('<a href="/" class=Нет запущенных турниров'); //closePopup('tournaments');
     //drawPopup();
   } else {
     drawPopup();
@@ -199,18 +201,6 @@ function prizeByPlace(place, prizeList){
   if (place>=prizeList.length) return 0;
 
   return prizeList[place];
-  /*switch(place){
-    case 0:
-      return 100;
-    break;
-    case 1:
-      if (length>30) return 50;
-      return 0;
-    break;
-    default:
-      return 0;
-    break;
-  }*/
 }
 
 const DEFAULT_MARATHON_PRIZE = 100;
@@ -264,6 +254,7 @@ function sendError(err, func_name){
 function getNews() {
   setAsync('/api/news/get', null, drawNews, 'GET')
 }
+
 function drawNews(msg){
   // if (!news || news.length==0) return;
   if (!msg || !msg.news || msg.news.length==0) return;

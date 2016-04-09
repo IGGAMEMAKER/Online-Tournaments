@@ -1047,24 +1047,7 @@ app.get('/MarathonInfo', isAdmin, function (req, res){
 })
 
 app.get('/Leaderboard', function (req, res){
-/*
-  Marathon.leaderboard()
-  .then(function (leaderboard){
-    var ldbd = {
-      leaderboard:leaderboard,
-      counts: leaderboard.counts,
-      prizes: leaderboard.prizes
-    }
-    res.render('Leaderboard', { msg: ldbd });
-  })
-  .catch(function (err){
-    Errors.add('Leaderboard', {err:err})
-    
-    res.render('Leaderboard', { msg: Leaderboard });
-  })
-*/
   res.render('Leaderboard', { msg: Leaderboard });
-
 });
 
 app.get('/api/marathon/:MarathonID', aux.isAdmin, function (req, res, next){
@@ -1229,6 +1212,24 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
   .catch(next)
 
 }, aux.json, aux.err)
+
+app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
+  var leaders = Leaderboard.leaderboard;
+  var prizes = Leaderboard.prizes || [];
+  var counts = Leaderboard.counts || [];
+
+  var prizeList = getPrizeList(prizes, counts);
+  for (var i=0; i<prizeList.length;i++) {
+    var lgn = leaders[i].login;
+    var count = leaders[i].played;
+    var points = leaders[i].points;
+    var prize = prizeByPlace(i, prizeList);
+
+    increase_money_and_notify(lgn, parseInt(prize))
+  }
+  res.json({msg: Leaderboard })
+})
+
 
 app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next){
   var login = req.params.login;
@@ -1400,6 +1401,20 @@ app.post('/autoreg', function (req, res){
 //   })
 
 // })
+
+function increase_money_and_notify(login, ammount){
+  if (login && ammount && isNumeric(ammount) ) {
+    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
+    .then(function (result){
+      if (ammount>0){
+        aux.alert(login, c.NOTIFICATION_GIVE_MONEY, { ammount:ammount })
+        .catch(aux.catcher)
+      }
+
+    })
+    .catch(aux.report('increase_money_and_notify', {login: login, ammount:ammount }))
+  }
+}
 
 app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
