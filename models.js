@@ -16,7 +16,11 @@ module.exports = function(dbAddress){
 			packID:Number, available:Boolean,
 			visible:Boolean
 		}),
-		// Category: db.model('Category', )
+
+		Category: db.model('Category', name: String, draw: Object, level: Number, settings: Object, Packs: Array, Cards: Array, Collections: Array),
+		// settings
+		// usergenerated
+		// private
 
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 

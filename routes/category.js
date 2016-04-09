@@ -12,6 +12,7 @@ module.exports = function(app, aux, realtime){
     if (!categories[name]) name = 'general'
 
     res.render('Category', { category:name })
+
     
   })
 }

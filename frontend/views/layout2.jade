@@ -43,7 +43,7 @@ mixin loadHead()
 	script(src="/sockets.js")
 
 	if session && session.login
-		script(src="loadProfile.js")
+		script(src="/loadProfile.js")
 		script.
 			getProfile();
 
@@ -67,7 +67,7 @@ mixin loadHead()
 
 	block JSlibs
 
-	script(src="YandexMetrica.js")
+	script(src="/YandexMetrica.js")
 	noscript
 		div
 			img(src="https://mc.yandex.ru/watch/34298935" style="position:absolute; left:-9999px;" alt="")
