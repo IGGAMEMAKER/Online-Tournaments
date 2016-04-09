@@ -1,0 +1,111 @@
+//
+
+mixin loadHead()
+	meta(charset="utf-8")
+	meta(http-equiv="X-UA-Compatible" content="IE=edge")
+	meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+	meta(name="keywords" content="онлайн, турниры, викторина, online-tournaments, турниры Реал Мадрид, конкурсы Реал Мадрид")
+	meta(name="description" content="")
+	meta(name="author" content="")
+	meta(name="w1-verification" content="179817005946")
+	meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
+
+	title Турниры
+	script(src="http://code.jquery.com/jquery-2.1.0.min.js")
+	script(src="/js/bootstrap.js")
+
+	// Custom styles for this template
+	script(src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js")
+	script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
+
+	link(href="/css/new/bootstrap.css" rel="stylesheet")
+	link(href="/css/new/style.css" rel="stylesheet")
+	link(href="/css/new/style1.css" rel="stylesheet" type="text/css")
+	link(href="/css/new/my.css" rel="stylesheet")
+
+	link(href="/css/font-awesome.min.css" rel="stylesheet")
+
+	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
+	script.
+		if (document.location.hostname == "localhost") {
+			VK.init({	apiId: 5205914, onlyWidgets: true });
+		} else {
+			VK.init({	apiId: 5205759, onlyWidgets: true });
+		}
+
+	link(rel="stylesheet" href="/css/new/vkComment.css")
+
+	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+
+	script(src="/storage.js")
+	script(src="/draw.js?1")
+
+	script(src="/sockets.js")
+
+	if session && session.login
+		script(src="loadProfile.js")
+		script.
+			getProfile();
+
+	script var login = "#{session.login}";
+
+	include templates/modals
+
+	#modals
+		#tournaments()
+			+modal()
+		#tournamentClose
+			+closeTournamentModal()
+		+serverMessage()
+		+winnerModal()
+		+customModal()
+
+	block modals
+		+notEnoughMoney()
+
+	block CSSlibs
+
+	block JSlibs
+
+	script(src="YandexMetrica.js")
+	noscript
+		div
+			img(src="https://mc.yandex.ru/watch/34298935" style="position:absolute; left:-9999px;" alt="")
+
+mixin drawBalance()
+	if session.login && session.login.length>0
+		div(class="balance")
+			span(id="balance") #{session.login}     
+			a(href="profile#dep") Пополнить   
+			span /   
+			a(href="profile#cashoutMoney") Снять деньги
+
+mixin subscribe()
+	div(id="vk_groups")
+	script(type="text/javascript").
+		VK.Widgets.Group("vk_groups", {mode: 2, width: "auto", height: "360", color1: 'FFFFFF', color2: '2B587A', color3: '5B7FA6'}, 111187123);
+
+html
+	head
+		block title
+			title Онлайн Турниры
+		script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
+		// charset="windows-1251"
+		include templates/basic
+		+loadHead()
+		//include templates/header
+		//include templates/googleAd
+	body(class="background")
+		//div(class="container")
+
+		div(class="container containetWithTourn killPaddings")
+			+navigation()
+			+drawBalance()
+			block content
+
+		block JSasync
+
+		block ftr
+			div(class="wrapper2")
+				//+googleAdvert()
+				+footer()

@@ -199,6 +199,7 @@ var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log,
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux);
 
+var category = require('./routes/category')(app, aux, realtime)
 
 var TournamentReg = require('./models/tregs');
 var Marathon = require('./models/marathon');
