@@ -6,5 +6,13 @@ block title
 block content
 	div(class="white")
 		div(class="col-sm-12")
-			h1(class="mg-md text-center") #{category}
+			h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
+			//h1(class="mg-md text-center") Эта страница посвящена #{JSON.stringify(draw)}
+			p #{category}
 			p Мы проводим онлайн–турниры, в которых разыгрываем деньги и футбольную атрибутику. Ваша цель - ответить на наибольшее количество вопросов. Вы можете играть в любое время. Турниры начинаются тогда, когда в них регистрируется необходимое количество игроков.
+
+		div(class="col-sm-12")
+			//h1(class="mg-md text-center") Добавьте свой вопрос!
+			//include AddQuestion
+			div(class="col-sm-4 col-xs-12 col-md-6")
+				include templates/addQ

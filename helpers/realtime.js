@@ -3,6 +3,7 @@ var Gifts = require('../models/gifts')
 var Packs = require('../models/packs')
 var Tournaments = require('../models/tournaments')
 var Message = require('../models/message')
+var Category = require('../models/category')
 
 
 var app, io;
@@ -16,6 +17,7 @@ objects = {
 	packs:[],
 	userpacks:userpacks,
 	news: null,
+	category: [],
 	UPDATE_ALL: UPDATE_ALL,
 	tournaments: null
 };

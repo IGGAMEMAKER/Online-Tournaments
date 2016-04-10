@@ -1,0 +1,42 @@
+//
+mixin answer(num)
+	div(class="form-group")
+	label(class="white") Ответ №#{num}
+	input(type="text" class="form-control" name="answer"+num required)
+mixin correct(num)
+	input(type="radio" name="correct" value=num)
+	| #{num}
+	span  
+center
+	
+	h1(class="white") Добавьте свой вопрос про
+		br
+		| #{draw.name}
+	//h2(class="white") и мы покажем его другим игрокам!
+	h2(class="white") и получите вплоть до 40 баллов за вопрос!
+	p(class="white") Пожалейте модератора, пишите коротко и без ошибок :)
+	p(class="white") Добавляя вопросы, думайте прежде всего о тех, кто на них будет отвечать :)
+
+	div(class="col-sm-12")
+		div(class="white")
+			if msg
+				p!= msg
+		form(id="form-5" action="/addQuestion" method="post" novalidate)
+			div(class="form-group")
+				label(class="white") Вопрос
+				input(type="text" class="form-control" name="question" required)
+				
+				input(type="hidden" class="form-control" name="topic" value=name)
+			+answer(1)
+			+answer(2)
+			+answer(3)
+			+answer(4)
+			div(class="form-group" class="white")
+				br
+				label(class="white") Правильный ответ : 
+				+correct(1)
+				+correct(2)
+				+correct(3)
+				+correct(4)
+			br
+			button(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " type="submit") Добавить!

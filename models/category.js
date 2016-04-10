@@ -40,7 +40,40 @@ function add(name, draw, level){
 }
 
 function all(){ return Category.list({}) }
+
 function available(){ return Category.list({ "draw.visible" : true }) }
+function activate(name){ return Category.update({ name: name }, { "draw.visible" : true }) }
+function deactivate(name){ return Category.update({ name: name }, { "draw.visible" : false }) }
+
+var attach = {
+	pack: function (name, packID){ return 1 },
+	collection: function (name, packID){ return 1 },
+	card: function (name, packID){ return 1 }
+}
+
+function editDraw(id, parameter, value){ 
+	var obj={};
+	obj["draw." + parameter] = value
+	return edit(id, obj)
+}
+function editSettings(id, parameter, value){
+	var obj={};
+	obj["settings." + parameter] = value
+	return edit(id, obj)
+}
 
 function remove(id){ return Category.remove({_id: id }) }
 function edit(id, obj){ return Category.update({_id: id }, { $set: obj }) }
+
+module.exports = {
+	add:add,
+	all:all,
+	available:available,
+	activate:activate,
+	deactivate:deactivate,
+
+	attach:attach,
+	editDraw:editDraw,
+	remove:remove,
+	edit:edit
+}

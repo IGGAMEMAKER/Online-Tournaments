@@ -20,36 +20,30 @@ mixin navigation()
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
 				ul(class="nav navbar-nav navbar-right")
 					li
-						a(href="Marathon") МАРАФОН
-					//li
-						a(href="Tournaments") Турниры
+						a(href="/Marathon") МАРАФОН
 					if session && session.login
 						li
-							a(href="Packs") Паки
+							a(href="/Packs") Паки
 						li
-							a(href="profile") Профиль
+							a(href="/profile") Профиль
 						li
-							a(href="https://new.vk.com/topic-111187123_33419618" target="_blank") Техподдержка
+							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
 						//li(class="dropdown")
 							a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
 								b(class="caret")
 							ul(class="dropdown-menu")
-								li
-									a(href="profile") Профиль
 								//li(class="divider")
-								li
-									a(href="addQuestion") Добавить вопрос
 						li
-							a(href="about") О нас
+							a(href="/about") О нас
 						li
-							a(href="Logout") Выход
+							a(href="/Logout") Выход
 					else
 						li
-							a(href="https://new.vk.com/topic-111187123_33419618" target="_blank") Техподдержка
+							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
 						li
-							a(href="about") О нас
+							a(href="/about") О нас
 						li
-							a(href="Login") Вход
+							a(href="/Login") Вход
 mixin chat()
 	//div(class="col-md-12 chatColumn chatRule")
 		h3 Column title

@@ -17,7 +17,9 @@ module.exports = function(dbAddress){
 			visible:Boolean
 		}),
 
-		Category: db.model('Category', name: String, draw: Object, level: Number, settings: Object, Packs: Array, Cards: Array, Collections: Array),
+		Category: db.model('Category', { name: String, draw: Object, level: Number, settings: Object, 
+			Packs: Array, Cards: Array, Collections: Array
+		}),
 		// settings
 		// usergenerated
 		// private

@@ -806,9 +806,9 @@ app.post('/Tournaments', function (req, res){
   res.json({msg: updater.tournaments || [] });
 })
 
-app.get('/addQuestion', middlewares.authenticated, function (req, res){
-  res.render('AddQuestion');  
-})
+// app.get('/addQuestion', middlewares.authenticated, function (req, res){
+//   res.render('AddQuestion', { 'draw.name': "general" });  
+// })
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var login = getLogin(req);
@@ -819,6 +819,8 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var answer2 = req.body.answer2;
   var answer3 = req.body.answer3;
   var answer4 = req.body.answer4;
+
+  var topic = req.body.topic;
 
   var answers = [];
   answers.push(answer1);
@@ -834,22 +836,40 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
     correct:correct
   }
   console.log(obj);
-  if (login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct)){
-    sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
-      if (error) return res.render('AddQuestion', { code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
-      if (body){
-        var code=0;
-        var message = 'Ошибка';
-        if (body.result=='ok') {
-          code = 1;
-          message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
-        }
-        res.render('AddQuestion', { code:code , msg:message });
+
+  var question_is_valid = login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct);
+  if (!question_is_valid) return res.json({ code:0, msg: 'Произошла ошибка' })
+
+  sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
+    if (error) return res.json({ code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
+    if (body){
+      var code=0;
+      var message = 'Ошибка';
+
+      if (body.result=='ok') {
+        code = 1;
+        message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
       }
-    });
-  } else {
-    res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
-  }
+      res.json({ code:code , msg:message });
+    }
+  });
+
+  // if (login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct)){
+  //   sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
+  //     if (error) return res.render('AddQuestion', { code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
+  //     if (body){
+  //       var code=0;
+  //       var message = 'Ошибка';
+  //       if (body.result=='ok') {
+  //         code = 1;
+  //         message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
+  //       }
+  //       res.render('AddQuestion', { code:code , msg:message });
+  //     }
+  //   });
+  // } else {
+  //   res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
+  // }
 })
 
 
