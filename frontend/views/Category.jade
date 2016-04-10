@@ -1,7 +1,7 @@
 //
 extends layout2
 block title
-	title О нас
+	title #{draw.name}
 
 block content
 	div(class="white")
@@ -9,10 +9,86 @@ block content
 			h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
 			//h1(class="mg-md text-center") Эта страница посвящена #{JSON.stringify(draw)}
 			p #{category}
-			p Мы проводим онлайн–турниры, в которых разыгрываем деньги и футбольную атрибутику. Ваша цель - ответить на наибольшее количество вопросов. Вы можете играть в любое время. Турниры начинаются тогда, когда в них регистрируется необходимое количество игроков.
+			p Мы проводим онлайн–турниры,
 
 		div(class="col-sm-12")
 			//h1(class="mg-md text-center") Добавьте свой вопрос!
 			//include AddQuestion
-			div(class="col-sm-4 col-xs-12 col-md-6")
+			//div(class="col-sm-12 col-xs-12 col-md-12")
 				include templates/addQ
+		div(class="col-sm-12")
+			+tabArea()
+
+
+mixin tabs()
+	ul(class="nav nav-tabs")
+		li(class="active")
+			a(href="#tab1" onclick="loadRating()" data-toggle="tab" aria-expanded="true") Марафон
+		li
+			a(href="#tab2" data-toggle="tab" aria-expanded="false") Вопросы
+		li
+			a(href="#tab3" data-toggle="tab" aria-expanded="false") Игроки
+		li
+			a(href="#tab4" data-toggle="tab" aria-expanded="false") Карточки
+mixin tabArea()
+	//include templates/addQ
+
+	div(class="row")
+		+tabs()
+		div(class="tab-content")
+			div(class="tab-pane active" id="tab1")
+				a(href="#" onclick="loadRating()") Обновить
+				//div(class="white")
+				div(class="col-sm-12 bgc-white" id="ratingField")
+					div(class="dataRule2")
+						//+rating()
+						br
+						center
+							h3
+								a(href="/Leaderboard") Все участники
+						include templates/rating
+			div(class="tab-pane" id="tab2")
+				+questions()
+			div(class="tab-pane" id="tab3")
+				p Tab3
+			div(class="tab-pane" id="tab4")
+				p tab4
+
+mixin questions()
+	include templates/addQ
+
+mixin mychat()
+	div(class="col-md-12 chatColumn chatRule")
+		h3 chat
+		div(class="form-group")
+			label(class="control-label" for="formInput54") Field label
+			textarea(class="form-control" rows="3" id="formInput54")
+		div(class="form-group") 
+			label(class="control-label" for="formInput74") Field label
+			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+	p Tab 2 content goes here...
+
+
+
+//div(class="row")
+	+tabs()
+	div(class="tab-content")
+		div(class="tab-pane active" id="tab1")
+			div(class="container")
+				div(class="row")
+					div(class="col-md-12 dataRule")
+						p!= ololo
+		div(class="tab-pane" id="tab2")
+			div(class="col-md-12 chatColumn chatRule")
+				h3 chat
+				div(class="form-group")
+					label(class="control-label" for="formInput54") Field label
+					textarea(class="form-control" rows="3" id="formInput54")
+				div(class="form-group") 
+					label(class="control-label" for="formInput74") Field label
+					input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+			p Tab 2 content goes here...
+		div(class="tab-pane" id="tab3")
+			p Tab3
+		div(class="tab-pane" id="tab4")
+			p tab4

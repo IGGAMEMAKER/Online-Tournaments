@@ -17,7 +17,7 @@ objects = {
 	packs:[],
 	userpacks:userpacks,
 	news: null,
-	category: [],
+	categories: [],
 	UPDATE_ALL: UPDATE_ALL,
 	tournaments: null
 };
@@ -39,6 +39,8 @@ function UPDATE_ALL() {
 	update_collections();
 	update_cards();
 	update_packs();
+
+	update_category();
 	
 	update_news();
 }
@@ -61,6 +63,10 @@ function update_cards(){
 function update_news(){
 	Message.news.active().then(save('news'))
 	// Message.news.all().then(save('news'))
+}
+
+function update_category(){
+	Category.available().then(save('categories'))
 }
 
 function update_packs(){ 

@@ -6,8 +6,13 @@ module.exports = function(app, aux, realtime){
 		'general' : createCategory('general', 'Всё обо всём', "Всему подряд"),
 		'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
 	}
+	var onliners = {
+		'general' : {},
+		'realmadrid' : {}
+	}
 
-	//setTimeout(getCategories, 4000);
+
+	// setTimeout(getCategories, 4000);
 
 
 	function createCategory(name, ru_name, name_dat){
@@ -33,6 +38,17 @@ module.exports = function(app, aux, realtime){
 		};
 	}
 
+	//setInterval()
+
+	app.get('/answer/:topic/:number', aux.isAuthenticated, function (req, res, next){
+		var login = aux.getLogin(req);
+
+		var topic = req.params.topic;
+		var number = parseInt(req.params.number);
+
+		onliners[topic][login] = 1;
+
+	})
 	app.get('/Category/:name', function (req, res, next){
 		var name = req.params.name;
 		if (!categories[name]) name = 'general'; // { category: name }

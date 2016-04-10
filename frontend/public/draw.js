@@ -225,7 +225,7 @@ function getPrizeList(prizes, counts){
 function loadRating(){
   setTimeout(function (){
     console.log("loadRating");
-    setAsync("api/mini-rating", {}, drawRating, "GET");
+    setAsync("/api/mini-rating", {}, drawRating, "GET");
   }, 500);
 }
 

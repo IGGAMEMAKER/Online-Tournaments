@@ -7,7 +7,7 @@ var myModal = '#myModal';
 function getProfile(drawFunction){
 	console.log("getProfile");
 	clearStorage();
-	getAsync('Profile', {}, saveProfile(drawFunction||null) );	
+	getAsync('/Profile', {}, saveProfile(drawFunction||null) );	
 }
 
 var loadedAddrs=0;
@@ -40,14 +40,14 @@ socket.on('newsUpdate', function (msg){
 function stayOnline(){
 	setInterval(function (){
 	  console.log('here');
-	  mark('mark/Here/'+login, {});
+	  mark('/mark/Here/'+login, {});
 	}, 45000)
 }
 
 function checkNews(){
 	setTimeout(function (){
 		console.log('checkNews');
-		setAsync('notifications/news', null, drawNewsModal, 'GET')
+		setAsync('/notifications/news', null, drawNewsModal, 'GET')
 	}, 1500);
 }
 
