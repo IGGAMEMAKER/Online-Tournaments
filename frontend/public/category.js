@@ -1,6 +1,6 @@
 var room;
 
-var wanna_play = !true;
+var wanna_play = true;
 
 function reg(topic){
 	if (wanna_play)	setAsync('/Category/tournament/'+topic, null, function (msg){})
