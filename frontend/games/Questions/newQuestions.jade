@@ -24,13 +24,13 @@ mixin question(q,i)
 		td
 			a(href="/setTopic/"+q._id+"/0" target="_blank") Delete or change topic
 			br
-			a(href="moderate/"+q._id+"/"+MODERATION_REJECTED target="_blank") MODERATION_REJECTED
+			a(href="/moderate/"+q._id+"/"+MODERATION_REJECTED target="_blank") MODERATION_REJECTED
 			br
-			a(href="moderate/"+q._id+"/"+MODERATION_OK target="_blank") ACCEPT
+			a(href="/moderate/"+q._id+"/"+MODERATION_OK target="_blank") ACCEPT
 			br
-			a(href="moderate/"+q._id+"/"+MODERATION_MODIFIED target="_blank") MODERATION_MODIFIED
+			a(href="/moderate/"+q._id+"/"+MODERATION_MODIFIED target="_blank") MODERATION_MODIFIED
 			br
-			a(href="editQuestion/?question="+q.question +"&answer1="+q.answers[0] +"&answer2="+q.answers[1] +"&answer3="+q.answers[2] +"&answer4="+q.answers[3]+"&correct="+q.correct +"&id="+q._id target="_blank") modify
+			a(href="/editQuestion/?question="+q.question +"&answer1="+q.answers[0] +"&answer2="+q.answers[1] +"&answer3="+q.answers[2] +"&answer4="+q.answers[3]+"&correct="+q.correct +"&id="+q._id target="_blank") modify
 	//p!= q
 
 html

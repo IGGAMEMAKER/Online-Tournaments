@@ -78,6 +78,18 @@ app.get('/questions/all', function (req, res){
 		res.render('newQuestions', {msg:questions});
 	})
 })
+
+app.get('/questions/raw/:topic', function (req, res){
+	var	topic = req.params.topic;
+	var find = { moderation : { $in : [MODERATION_MODIFIED, MODERATION_OK] } };
+	if (topic!='default') find.topic = topic
+	Question.find(find, function (err, questions){
+		if (err) return res.json(err);
+
+		res.json({msg:questions});
+	})
+})
+
 app.get('/questions/raw', function (req, res){
 	Question.find({}, function (err, questions){
 		if (err) return res.json(err);
@@ -220,6 +232,10 @@ app.get('/topic/:topic', function (req, res){
 	res.json({ msg: questionBase[req.params.topic] })
 })
 
+app.get('/questionBase', function (req, res){
+	res.json({ msg: questionBase })
+})
+
 function loadQuestions(query, params, hard){
 	return new Promise(function (resolve, reject){
 		Question.find(query||{}, params||'', function (err, questions){
@@ -229,10 +245,6 @@ function loadQuestions(query, params, hard){
 			resolve(questions)
 		})
 	})
-}
-
-function getGeneralQuestions(){
-	return loadQuestions({}, '', true)
 }
 
 function AddQuestion(data, res){
@@ -249,11 +261,13 @@ function AddQuestion(data, res){
 	})
 }
 
+
 app.post('/Points', function (req, res){
 	var data = req.body;
 	var login = data.login;
 	var gameID= data.gameID;
 	var tournamentID = tournamentID;
+
 	if (games[gameID] && login && games[gameID].scores[login]){
 		res.json({points: games[gameID].scores[login]});
 	}
@@ -352,24 +366,6 @@ function load_questions_fromDB(gameID){
 	})
 }
 
-
-function load_newbie_questions(gameID){
-	var topic = games[gameID].settings.topic;
-	strLog("searching questions for newbies... Topic:"+ topic, "Games");
-
-	Question.find({topic:topic}, '', function (err, questions){
-		lg('load_newbie_questions ' + gameID);
-		if (err) {
-			strLog('err in load_newbie_questions for ' + gameID, 'Err');
-		}
-
-		if (questions && questions.length > 0) return add_questions(questions, gameID);
-
-		strLog('no special questions for ' + gameID, 'Games');
-		loadRandomQuestions(gameID);
-	})
-}
-
 function load_topic_questions(gameID){
 	var topic = games[gameID].settings.topic;
 	// strLog("searching questions for newbies... Topic:"+ topic, "Games");
@@ -383,17 +379,6 @@ function load_topic_questions(gameID){
 
 		loadRandomQuestions(gameID);
 	})
-
-	// Question.find({topic:topic}, '', function (err, questions){
-	// 	if (err) {
-	// 		strLog('err in load_newbie_questions for ' + gameID, 'Err');
-	// 	}
-
-	// 	if (questions && questions.length > 0) return add_questions(questions, gameID);
-
-	// 	strLog('no special questions for ' + gameID, 'Games');
-	// 	loadRandomQuestions(gameID);
-	// })
 }
 
 function isNewbieTournament(gameID){
@@ -411,6 +396,7 @@ function getTopic(gameID){
 }
 
 var NEED_FOR_CATEGORY = 6;
+
 function setQuestions(gameID, topic){
 	if (questionBase[topic].length < NEED_FOR_CATEGORY) return add_questions(questionBase[topic], gameID)
 	
@@ -447,7 +433,7 @@ function loadByTopic(topic){
 		} else {
 			questionBase['default'] = questions;
 		}
-		return questionBase[topic||'default'];
+		return questionBase[topic || 'default'];
 	})
 }
 
@@ -458,58 +444,36 @@ function Init(gameID, playerID){
 		games[gameID].questIndex = -1;
 		console.log(games[gameID].settings);
 
-		// if (isNewbieTournament(gameID)) { 
 		var topic = getTopic(gameID) || 'default';
-		//{$or: [{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}] };
-		/*var run_or_reg = {$or: [ {status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER} ] };
-		query = { $and : [query, run_or_reg] };*/
-
-		// CHECK IF YOU HAVE QUESTIONS ALREADY!!
-		// var moderated = {
-		// 	$or: [ 
-		// 	{ moderation : MODERATION_MODIFIED } , 
-		// 	{ moderation : MODERATION_OK }, 
-		// 	{ moderation : null	}]
-		// };
-		// var same_topic = {}
-		// if (topic){
-
-		// }
-		// var query = { $and: [same_topic, moderated] };
 
 		console.log('Init', gameID, topic)
 		setQuestions(gameID, topic)
-
-		// if (isTopicTournament(gameID)) { 
-		// 	load_topic_questions(gameID);
-		// } else {
-		// 	load_questions_fromDB(gameID);
-		// }
 		
 		games[gameID].userAnswers = [];
 	}
+
 	strLog('FULL GAME INFO');
 	strLog(JSON.stringify(games[gameID] ));
+	
 	games[gameID].userAnswers.push({});//[playerID] = {};
 }
 
 function AsyncUpdate(gameID){
-	strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
+	// strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
+
 	if (games[gameID].questIndex < games[gameID].questions.length - 1){ // NUMBER_OF_QUESTIONS - 1){
-		if (games[gameID].questIndex>=0){
-			checkAnswers(gameID);
-		}
+		if (games[gameID].questIndex>=0){	checkAnswers(gameID); }
+
 		games[gameID].questIndex++;
 		send(gameID, 'update', getQuestions(gameID));
-	}
-	else{
+	} else {
 		checkAnswers(gameID);
 		FinishGame(gameID, FindWinner(gameID) );
 	}
+
 }
 
 function Action(gameID, playerID, movement, userName){
-	strLog('FIX Action AnswerIsCorrect!!! IF PLAYER WILL PRESS ALL ANSWERS FASTLY, HE WILL INCREASE HIS POINTS');
 	var currQuestionIndex = games[gameID].questIndex;
 	var time = new Date();
 
@@ -525,16 +489,15 @@ function checkAnswers(gameID){
 
 	for (var i=0; i< game.userAnswers.length; ++i){
 		var AnswerData = game.userAnswers[i][currQuestionIndex];
-		//console.log(AnswerData);
 
 		if (!AnswerData) continue;
 
 		var answer = AnswerData.answer;
 		if (AnswerIsCorrect(gameID, answer)){
 			var userName = getUID(gameID, i);
-			//games[gameID].scores[userName]++;
 			var now = new Date();
 			var diff = now - AnswerData.time;
+
 			games[gameID].scores[userName]+= 1000 + diff*PointsPerSecond/1000;
 		}
 	}
@@ -571,10 +534,6 @@ function FindWinner(gameID){
 	return userName;
 }
 
-function noQuestions(game){
-	return !game.questions;
-}
-
 function getCurrentQuestion(gameID){
 	strLog('getCurrentQuestion : ' + gameID);
 	//get number of questions of this topic
@@ -582,7 +541,7 @@ function getCurrentQuestion(gameID){
 	if (game){
 
 		if (games[gameID].questions){
-			strLog(JSON.stringify(games[gameID].questions ));
+			// strLog(JSON.stringify(games[gameID].questions ));
 			var currQuestionIndex = games[gameID].questIndex;
 			var a = games[gameID].questions[currQuestionIndex];
 			
@@ -591,7 +550,7 @@ function getCurrentQuestion(gameID){
 			return a;
 		}
 	}	else {
-		return { question:'GAME DOES NOT EXIST', answers:[0,1,2,3], correct:1 };
+		return { question:'GAME DOES NOT EXIST', answers:[0,1,2,3], correct: 1 };
 	}
 }
 

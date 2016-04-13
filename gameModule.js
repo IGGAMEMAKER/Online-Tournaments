@@ -389,7 +389,7 @@ function playerExists(gameID, userName){
 	//	strLog('playerExists function: ' + gameID +' ' + userName);
 	//}
 	var playerExistsVal = getGID(gameID, userName);// games[gameID].players.UIDtoGID[userName]; //userIDs[playerID];// games[gameID].players.UIDtoGID[playerID]
-	return playerExistsVal ;
+	return playerExistsVal;
 }
 
 function getGameStatus(ID){ return games[ID].status; }

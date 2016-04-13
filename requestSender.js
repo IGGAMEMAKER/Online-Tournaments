@@ -230,12 +230,14 @@ function expressSendRequest(urlPath, curData, host, targetServer, res, responseC
 
 }
 
-function customSend(urlPath, curData, host, port, res, responseCallBack){
+function customSend(urlPath, curData, host, port, res, responseCallBack, method){
 	//port = getPort(targetServer);
+	// var url = "http://" + host+':'+port+'/'+urlPath;
+	// console.log(url);
 	request({
 		url: "http://" + host+':'+port+'/'+urlPath,
-	    //url: "http://127.0.0.1:5009/ServeGames",
-	    method: "POST",
+		// url: url,
+	    method: method || "POST",
 	    json: true,   // <--Very important!!!
 	    body: curData
 	}, Magic(res,responseCallBack));

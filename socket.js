@@ -6,14 +6,14 @@ module.exports = function(app, server){
 	io = require('socket.io')(server);
 
 	console.log('socket loaded')
-  io.on('connection', function(socket){
+  io.on('connection', function (socket){
   	// 
     socket.on('chat message', function (msg){
       console.log(msg);
       io.emit('chat message', msg);
       var message = { text : msg , sender:'common' }
       console.log(message, 'message');
-      sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
+      // sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
     });
   });
   // return io;

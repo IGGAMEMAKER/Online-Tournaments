@@ -19,19 +19,11 @@ block content
 				a(href="/Marathon#accelerator") ускоритель
 				|  для марафона или деньги на счёт!
 			h3(class="mg-md text-center") Открой больше всех паков за день и получи 40 бесплатных паков в подарок!
-	//div(class="white")
-		div(class="col-sm-12")
-			h1(class="mg-md text-center") Акция
-			h2(class="mg-md text-center") Открой больше всех паков за день и получи 40 бесплатных паков в подарок!
 	div(class="col-sm-12")
-		//h1(class="white text-center")
-			| Паки
-			//a(href="/Cards") Мои карточки
 		script.
 			var msg = !{JSON.stringify(msg)};
 			//var usercards = msg.usercards;
 			var collections = msg.collections;
-			//console.log(
 			var Cards = msg.cards;
 			var Packs = msg.packs
 			drawPackButtons(Packs)
@@ -42,7 +34,5 @@ block content
 		script.
 			//var msg = "#{msg}";
 			drawCards(Cards);
-		+drawCollections()
-mixin drawCollections()
-	div(class="white")
-		script showCollections(collections, [], false)
+		div(class="white")
+			script showCollections(collections, [], false)

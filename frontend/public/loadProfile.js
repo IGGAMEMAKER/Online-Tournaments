@@ -13,7 +13,7 @@ function getProfile(drawFunction){
 var loadedAddrs=0;
 
 function GetTournamentAddress(tID){
-	getAsync('GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
+	getAsync('/GetTournamentAddress', {tournamentID:tID}, saveTournamentAddress(tID) );
 }
 
 function sendInviter(){
@@ -58,10 +58,10 @@ stayOnline();
 checkNews();
 
 function redrawFreePacks(packs){
-	console.log('redrawFreePacks')
+	// console.log('redrawFreePacks')
 	for (index in packs){
 		var id = "#free-pack"+index;
-		console.log(id)
+		// console.log(id)
 		var count = packs[index];
 		var disabled = true;
 		if (count >= 1) {

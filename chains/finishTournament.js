@@ -209,7 +209,15 @@ function serveTournament(tournament){
 
 	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');
 
-	aux.system('autoAdd', { result: tournament })
+	if (isStreamTournament(tournament)){
+		// console.log('serveTournament', 'finishTournament', 'stream', tournament.settings||null)
+
+		var topic = tournament.settings.topic || 'default';
+		// console.log('serveTournament', 'finishTournament', 'topic:'+topic, tournament.settings||null)
+		sender.sendRequest("FinishCategoryTournament/" + topic, tournament, '127.0.0.1', 'site');
+	}
+
+	// aux.system('autoAdd', { result: tournament })
 }
 
 function givePrizes(winners, tournament){

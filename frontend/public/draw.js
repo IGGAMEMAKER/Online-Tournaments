@@ -700,7 +700,7 @@ function drawNewsModal(data){
         break;
       }
       if (!header && !body && !footer){
-        mark('message/shown', { id : messageID , option:'default'})
+        mark('/message/shown', { id : messageID , option:'default'})
         return
       }
       var title = header;
@@ -713,7 +713,7 @@ function drawNewsModal(data){
       news.show();
       // news.isActive = 1;
 
-      mark('message/shown', { id : messageID })
+      mark('/message/shown', { id : messageID })
       getProfile();
     }
   } catch(err){
@@ -739,11 +739,11 @@ function drawCard(card){
   // var image_card_red = 'http://www.ujut.hu/img/back.jpg';
   var image_card_red = '/img/cardLayers/0.jpg';
   // var image_card_gray = 'img/cardLayers/6895569-silver-abstract-wallpaper.jpg';
-  var image_card_gray = 'img/cardLayers/3.jpg';
+  var image_card_gray = '/img/cardLayers/3.jpg';
   // var image_card_green = 'http://hdoboi.net/uploads/819424_zelenyiy_fon_thumb.jpg';
-  var image_card_green = 'img/cardLayers/2.jpg';
+  var image_card_green = '/img/cardLayers/2.jpg';
   // var image_card_blue = 'http://sisadmin.justclick.ru/media/content/sisadmin/picture-10426.jpg';
-  var image_card_blue = 'img/cardLayers/1.jpg';
+  var image_card_blue = '/img/cardLayers/1.jpg';
   // console.log('before switch', card.colour)
   switch(card.colour){
     case c.CARD_COLOUR_GRAY: backgroundImage += image_card_gray; break;

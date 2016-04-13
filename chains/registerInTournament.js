@@ -82,93 +82,107 @@ var str = JSON.stringify;
 
 function StartTournament(tournamentID, force, res){
 	var gameNameID;
-	// var players;
 	Log("Tournament " + tournamentID + " starts", aux.c.STREAM_TOURNAMENTS);
 
 	Tournaments.find(tournamentID)
 	.then(function (tournament){
 		gameNameID = tournament.gameNameID;
-		// return gameNameID;
 		return TournamentReg.participants(tournamentID)
 	})
 	.then(function (regs){
 		var players = [];
-		//var obj = [];
-		for (var a in regs){ players.push( regs[a].userID);	}
+		for (var a in regs){ 
+			players.push(regs[a].userID);
+		}
 
 		var obj = getPortAndHostOfGame(gameNameID);
 		obj.tournamentID = tournamentID;
 		obj.logins = players;
 		if (force) obj.force = true;
 
-		//Log('StartTournament: ' + str(obj), STREAM_TOURNAMENTS);
-		TournamentLog(tournamentID, 'Tournament starts... ' + str(players));
 		TournamentLog(tournamentID, 'start Object:' + str(obj));
-
 
 		sender.sendRequest("StartTournament", obj, '127.0.0.1', 'FrontendServer');
 		if (res) Answer(res, OK);
 	})
 	.then(function (result){
-		return Tournaments.start(tournamentID)
-		// setTournStatus(tournamentID, TOURN_STATUS_RUNNING);
-	})
-	.then(function (result){
-		aux.system('RegisterUserInTournament.StartTournament', {result:result, tournamentID:tournamentID})
-		// console.log('tournament', tournamentID, 'start', result)
+		return Tournaments.start(tournamentID) // setTournStatus(tournamentID, TOURN_STATUS_RUNNING);
 	})
 	.catch(aux.report('RegisterUserInTournament.StartTournament', {tournamentID:tournamentID}))
 }
 
-function register(tournamentID, login, res){
-	// console.log('register', tournamentID, login, queue)
+function joinStream(tournamentID, login){
+	return getRegistrableTournament(tournamentID)
+	.then(function (tournament){
+		return TournamentReg.registerUser(login, tournamentID, 'gaginho')
+	})
+	.then(function (result){
+		return TournamentReg.participants(tournamentID)
+	})
+	.then(function (participants){
+		console.log('participants', participants);
+		if (participants.length==0){
+			StartTournament(tournamentID)
+		}
+		return Tournaments.updateByID(tournamentID, { players: participants.length || 0 })
+	})
+	.then(function (result){
+		return new Promise(function (resolve, reject){
+			var data = { login:login, gameID:tournamentID };
+			var gameNameID = 2; //TT.gameNameID
+			sender.sendRequest("Join", data ,'127.0.0.1', gameNameID, null, function (err, response, body, res){
+				if (err) return reject(err);
 
-	if (!queue[tournamentID]) queue[tournamentID] = { };
-	// console.log(queue)
-	if (queue[tournamentID][login]) return Answer(res, Fail);
+				resolve(body)
+			});
+		})
+	})
+}
 
-	queue[tournamentID][login] = 1;
+function add_participant(tournamentID, login){
 
-	console.log('register', login, 'to', tournamentID)
+	return TournamentReg.registerUser(login, tournamentID, 'gaginho')
+	.then(function (result){
+		return TournamentReg.participants(tournamentID)
+	})
+	.then(function (participants){
+		return Tournaments.updateByID(tournamentID, { players:participants.length || 0 })
+	})
+}
 
+function reg(tournamentID, login){
 	var buyIn;
 	var playerCount;
 	var maxPlayers;
 	var TT;
 
-	var info = {}
+	return new Promise(function (resolve, reject){
 
+		if (!queue[tournamentID]) queue[tournamentID] = { };
 
-	return getRegistrableTournament(tournamentID)
+		if (queue[tournamentID][login]) return reject('many requests ' + login);
+
+		// queue[tournamentID][login] = 1;
+		setQueue(tournamentID, login);
+
+		console.log('register', login, 'to', tournamentID)
+
+		return resolve(1)
+	})
+	.then(function (result){
+		return getRegistrableTournament(tournamentID)
+	})
 	.then(function (tournament) {
-		// console.log('getRegistrableTournament')
-		// info.tournament = tournament;
-
-		// console.log(tournament);
-
-		var TOURNAMENT_TYPE_STREAM = 2;
-		var TOURNAMENT_TYPE_PAID = 3;
-
 
 		TT = tournament;
 		buyIn = tournament.buyIn;
 		playerCount = tournament.players;
 		maxPlayers = tournament.goNext[0];
 
-		// var typeOfTournament=TOURNAMENT_TYPE_PAID;
-
-		// if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
-		// 	typeOfTournament = TOURNAMENT_TYPE_STREAM;
-		// }
-
-		// queue[tournamentID].places = maxPlayers;
 		var is_stream = false;
 		if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM) is_stream = true;
 
 		var has_player_count_limitation = is_stream;
-
-		// console.log('has_player_count_limitation', has_player_count_limitation)
-		// console.log('playerCount', playerCount, 'maxPlayers', maxPlayers, buyIn)
 
 		if (is_stream) return 1; 		// no check, go to next step
 
@@ -181,65 +195,116 @@ function register(tournamentID, login, res){
 		}
 		
 		throw aux.c.TREG_FULL
-
-		// if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
-		// 	sender.sendRequest("Join", {login:login, gameID:tournamentID} ,'127.0.0.1', tournament.gameNameID);
-		// } 
-		// return findTournamentReg(tournamentID, login);
 	})
 	.then(function (result){
-		// console.log('passed payment')
-		info['waitsForReg'] = result;
-		return TournamentReg.registerUser(login, tournamentID, 'gaginho')
-	})
-	.then(function (result){
-		info['TournamentReg.registerUser'] = result;
-
-		return TournamentReg.participants(tournamentID)
-		.then(function (participants){
-			return Tournaments.updateByID(tournamentID, { players:participants.length || 0 })
-		})
-		// return changePlayersCount(tournamentID); 
+		// return TournamentReg.registerUser(login, tournamentID, 'gaginho')
+		return add_participant(tournamentID, login)
 	})
 	.then(function (saved){
-		info['changePlayersCount'] = saved;
-		queue[tournamentID][login] = null;
-
-		if (res) Answer(res, OK);
+		// queue[tournamentID][login] = null;
+		clearQueue(tournamentID, login)
 
 		aux.done(login, 'tournament.join', {tournamentID:tournamentID});
+		return TT;
+	})
+}
+
+function register(tournamentID, login, res){
+	// // console.log('register', tournamentID, login, queue)
+
+	// if (!queue[tournamentID]) queue[tournamentID] = { };
+	// // console.log(queue)
+	// if (queue[tournamentID][login]) return Answer(res, Fail);
+
+	// queue[tournamentID][login] = 1;
+
+	// console.log('register', login, 'to', tournamentID)
+
+	// var buyIn;
+	// var playerCount;
+	// var maxPlayers;
+	// var TT;
+
+	// var info = {}
+
+
+	// return getRegistrableTournament(tournamentID)
+	// .then(function (tournament) {
+	// 	// console.log('getRegistrableTournament')
+	// 	// info.tournament = tournament;
+
+	// 	// console.log(tournament);
+
+	// 	var TOURNAMENT_TYPE_STREAM = 2;
+	// 	var TOURNAMENT_TYPE_PAID = 3;
+
+
+	// 	TT = tournament;
+	// 	buyIn = tournament.buyIn;
+	// 	playerCount = tournament.players;
+	// 	maxPlayers = tournament.goNext[0];
+
+	// 	// var typeOfTournament=TOURNAMENT_TYPE_PAID;
+
+	// 	// if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
+	// 	// 	typeOfTournament = TOURNAMENT_TYPE_STREAM;
+	// 	// }
+
+	// 	// queue[tournamentID].places = maxPlayers;
+	// 	var is_stream = false;
+	// 	if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM) is_stream = true;
+
+	// 	var has_player_count_limitation = is_stream;
+
+	// 	// console.log('has_player_count_limitation', has_player_count_limitation)
+	// 	// console.log('playerCount', playerCount, 'maxPlayers', maxPlayers, buyIn)
+
+	// 	if (is_stream) return 1; 		// no check, go to next step
+
+	// 	// check max players count
+	// 	if (playerCount < maxPlayers) { // pay money
+	// 		if (buyIn>0) { 
+	// 			return Money.pay(login, buyIn, { type:aux.c.SOURCE_TYPE_BUY_IN, tournamentID:tournamentID })
+	// 		}
+	// 		return 1;
+	// 	}
 		
-		if (TT.settings && TT.settings.regularity==aux.c.REGULARITY_STREAM){
-			sender.sendRequest("Join", {login:login, gameID:tournamentID} ,'127.0.0.1', TT.gameNameID);
-		} 
+	// 	throw aux.c.TREG_FULL
+
+	// 	// if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
+	// 	// 	sender.sendRequest("Join", {login:login, gameID:tournamentID} ,'127.0.0.1', tournament.gameNameID);
+	// 	// } 
+	// 	// return findTournamentReg(tournamentID, login);
+	// })
+	// .then(function (result){
+	// 	// console.log('passed payment')
+	// 	info['waitsForReg'] = result;
+	// 	return TournamentReg.registerUser(login, tournamentID, 'gaginho')
+	// })
+	// .then(function (result){
+	// 	info['TournamentReg.registerUser'] = result;
+
+	// 	return TournamentReg.participants(tournamentID)
+	// 	.then(function (participants){
+	// 		return Tournaments.updateByID(tournamentID, { players:participants.length || 0 })
+	// 	})
+	// 	// return changePlayersCount(tournamentID); 
+	// })
+	return reg(tournamentID, login)
+	.then(function (tournament){
+		// info['changePlayersCount'] = saved;
+		// queue[tournamentID][login] = null;
+
+		// aux.done(login, 'tournament.join', {tournamentID:tournamentID});
+		if (res) Answer(res, OK);
 		
-		if (playerCount==maxPlayers-1) {
-			var no_hold = !TT.settings || !TT.settings.hold;
-			console.log('no_hold', no_hold, tournamentID)
-			if (no_hold) StartTournament(tournamentID);
-		} else {
-			// if (playerCount>maxPlayers-1){
-			// 	// stream tournaments addition
-			// 	var newGoNext = TT.goNext;
-
-			// 	// newGoNext[0]++;
-			// 	// Log('goNext now ' + JSON.stringify(newGoNext), STREAM_TOURNAMENTS);
-
-			// 	// Tournament.update({tournamentID:tournamentID}, {$set :{goNext: newGoNext} }, function (err, count){
-			// 	// 	if (err) return 0;
-
-			// 	// 	if (updated(count)) { 
-			// 	// 		Log('goNext updated', STREAM_TOURNAMENTS);
-
-			// 	// 	} else {
-			// 	// 		Log('goNext update FAILED', STREAM_TOURNAMENTS);
-			// 	// 	}
-			// 	// });
-			// }
-		}
+		join_if_stream(tournament, login);
+		
+		needsStart(tournament);
 	})
 	.catch(function (err){
-		queue[tournamentID][login]=null;
+		// queue[tournamentID][login]=null;
+		clearQueue(tournamentID, login)
 		console.log('CATCHED error while player registering!', err);
 
 		if (res) { 
@@ -254,11 +319,36 @@ function register(tournamentID, login, res){
 			}
 		}
 		// Error(err);
-		aux.fail(login, 'RegisterUserInTournament', { tournamentID:tournamentID, info:info, code:err })
+		aux.fail(login, 'RegisterUserInTournament', { tournamentID:tournamentID, code:err })
 	})
 }
 
+function join(tournament, login){
+	var tournamentID = tournament.tournamentID;
+	sender.sendRequest("Join", { login:login, gameID:tournamentID } ,'127.0.0.1', tournament.gameNameID);
+}
 
+function join_if_stream(tournament, login){
+	var tournamentID = tournament.tournamentID;
+	if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
+
+		join(tournament, login)
+	}
+}
+
+function needsStart(tournament){
+	var playerCount = tournament.players;
+	var maxPlayers = tournament.goNext[0];
+	var tournamentID = tournament.tournamentID;
+
+	if (playerCount == maxPlayers - 1) {
+		var start_imediately = !tournament.settings || !tournament.settings.hold;
+		if (start_imediately) StartTournament(tournamentID);
+	}
+}
+
+function clearQueue(tournamentID, login){ queue[tournamentID][login] = null; }
+function setQueue(tournamentID, login){ queue[tournamentID][login] = 1; }
 
 var aux;
 // , realtime
@@ -268,6 +358,16 @@ module.exports = function(_aux, _realtime){
 
 	return {
 		register: register,
-		StartTournament: StartTournament
+		reg: reg,
+		joinStream: joinStream,
+		join: join,
+		StartTournament: StartTournament,
+		needsStart: needsStart,
+		setQueue: function(tournamentID, login){
+			setQueue(tournamentID, login);
+		},
+		clearQueue: function(tournamentID, login){
+			clearQueue(tournamentID, login);
+		}
 	}
 }

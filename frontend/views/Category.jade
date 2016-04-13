@@ -3,19 +3,31 @@ extends layout2
 block title
 	title #{draw.name}
 
+block JSlibs
+	script(src="/packs.js")
+	if session && session.login
+		script(src="/category.js")
+	else
+		h2(class="white") Для участия в турнирах про #{category} необходимо
+			a(href="/Login") авторизоваться 
+
 block content
+	// iframe(id="play" src=)
 	div(class="white")
 		div(class="col-sm-12")
 			h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
-			//h1(class="mg-md text-center") Эта страница посвящена #{JSON.stringify(draw)}
-			p #{category}
-			p Мы проводим онлайн–турниры,
-
-		div(class="col-sm-12")
-			//h1(class="mg-md text-center") Добавьте свой вопрос!
-			//include AddQuestion
-			//div(class="col-sm-12 col-xs-12 col-md-12")
-				include templates/addQ
+			
+			//h1(class="mg-md text-center") Эта страница посвящена #{JSON.stringify(draw)} //p #{category}
+			// p Мы проводим онлайн–турниры
+			div(id="play")
+			// include mini-games/questions
+			script.
+				var topic = "#{name}";
+				// getTournamentID(topic);
+				reg(topic);
+				connect(topic)
+			br
+			br
 		div(class="col-sm-12")
 			+tabArea()
 
@@ -30,16 +42,14 @@ mixin tabs()
 			a(href="#tab3" data-toggle="tab" aria-expanded="false") Игроки
 		li
 			a(href="#tab4" data-toggle="tab" aria-expanded="false") Карточки
-mixin tabArea()
-	//include templates/addQ
 
+mixin tabArea()
 	div(class="row")
 		+tabs()
 		div(class="tab-content")
 			div(class="tab-pane active" id="tab1")
-				a(href="#" onclick="loadRating()") Обновить
-				//div(class="white")
-				div(class="col-sm-12 bgc-white" id="ratingField")
+				//a(href="#" onclick="loadRating()") Обновить
+				div(class="bgc-white" id="ratingField")
 					div(class="dataRule2")
 						//+rating()
 						br
@@ -48,7 +58,11 @@ mixin tabArea()
 								a(href="/Leaderboard") Все участники
 						include templates/rating
 			div(class="tab-pane" id="tab2")
-				+questions()
+				if session && session.login
+					+questions()
+				else
+					p Авторизуйтесь, чтобы добавить вопрос
+					a(href="/Login" class="btn btn-primary") Авторизоваться
 			div(class="tab-pane" id="tab3")
 				p Tab3
 			div(class="tab-pane" id="tab4")

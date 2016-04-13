@@ -37,8 +37,12 @@ function add(tournamentID, login, promo){
 	// })
 }
 
+function freeTournament(tournamentID){
+	return TournamentReg2.remove({ tournamentID: tournamentID })
+}
+
 function remove(tournamentID, login){
-	return TournamentReg2.remove({userID:login, tournamentID:tournamentID})
+	return TournamentReg2.remove({ userID:login, tournamentID:tournamentID})
 
 	// return new Promise(function (resolve, reject){
 	// 	TournamentReg.remove({userID:login, tournamentID:tournamentID}, function (err, count){
@@ -65,7 +69,7 @@ function getParticipants(tournamentID){
 }
 
 function clearParticipants(tournamentID){
-	return TournamentReg2.update({ tournamentID : tournamentID,}, { $set: { status : TOURN_STATUS_FINISHED } }, {multi: true})
+	return TournamentReg2.update({ tournamentID : tournamentID }, { $set: { status : TOURN_STATUS_FINISHED } }, {multi: true})
 }
 
 function participants(tournamentID){
@@ -104,9 +108,10 @@ function get(login){
 }
 
 function registerUser(login, tournamentID, promo){
-	return TournamentReg2.find({login:login, tournamentID:tournamentID})
+	return TournamentReg2.find({ userID:login, tournamentID:tournamentID})
 	.then(function (treg){
 		if (treg) throw c.TREG_ALREADY;
+
 		console.log('registerUser', arguments)
 
 		return add(tournamentID, login, promo)
@@ -114,7 +119,7 @@ function registerUser(login, tournamentID, promo){
 }
 
 function unregisterUser(login, tournamentID){
-	return TournamentReg2.find({login:login, tournamentID:tournamentID})
+	return TournamentReg2.find({userID:login, tournamentID:tournamentID})
 	.then(function (treg){
 		if (!treg) throw 'No register';
 

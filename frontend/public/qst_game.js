@@ -44,9 +44,17 @@ function setTicker(ticks){
 
 /*var gameHost = 'localhost';
 var gamePort = 5009;*/
+
 var con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
-//alert(con);
+
+// if (topic) {
+// 	con = 'http://localhost/topic/'+topic;
+// }
+
+// alert(con);
+console.log(con)
 var room = io.connect(con);
+
 
 
 var starter=0;
@@ -56,17 +64,6 @@ function countDown(seconds){
 	if (seconds>0){
 		setTimeout(function() { countDown(seconds-1); }, 1000);
 	}
-
-		/*setTimeout(function(){ setTicker(10); },0);
-		setTimeout(function(){ setTicker(9); },1000);
-		setTimeout(function(){ setTicker(8); },2000);
-		setTimeout(function(){ setTicker(7); },3000);
-		setTimeout(function(){ setTicker(6); },4000);
-		setTimeout(function(){ setTicker(5); },5000);
-		setTimeout(function(){ setTicker(4); },6000);
-		setTimeout(function(){ setTicker(3); },7000);
-		setTimeout(function(){ setTicker(2); },8000);
-		setTimeout(function(){ setTicker(1); },9000);*/
 }
 
 room.on('startGame', function(msg){
@@ -86,10 +83,6 @@ room.on('startGame', function(msg){
 	recievedData = 1;
 	//$('#messages').append($('<li>').text(JSON.stringify(msg)));
 });
-
-/*setInterval(function(){
-	document.getElementById(1).style.color = 'blue';
-}, 1000);*/
 
 room.on('finish', function(msg){
 	hideRB(1);
@@ -239,15 +232,17 @@ function sendGameData(data1, url){
 		gameID: tournamentID, 
 		login: login
 	};
+
 	blockAllButtons();
 	colorize(data1);
 	//alert(JSON.stringify(sendData));
+	// sendToRoom(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
 	sendToRoom(sendData, 'http://' + gameHost+':' + gamePort + '/Move');
 	//alert('Sended :' + JSON.stringify(sendData));
 }
 
 function sendToRoom(dat, url){
-	room.emit('movement', dat );
+	room.emit('movement', dat);
 }
 
 function drawPoints(data){
@@ -259,7 +254,7 @@ function drawPoints(data){
 }
 
 function getMyPoints(){
-	setTimeout( function(){
+	setTimeout(function(){
 		aj('http://' + gameHost+':' + gamePort + '/Points', drawPoints);
 	}, getRandomArbitrary(0, 50) );
 }

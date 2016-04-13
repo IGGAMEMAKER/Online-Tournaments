@@ -64,6 +64,10 @@ module.exports = {
 	,authenticated : middlewares.authenticated
 	,isAdmin : middlewares.isAdmin
 
+	,emit: function (room, event, msg){
+		io.of(room).emit(event, msg);
+	}
+
 	// ,attempt : Stats.attempt
 	,clientside: function(login, auxillaries){
 		// console.error('clientside', arguments)
