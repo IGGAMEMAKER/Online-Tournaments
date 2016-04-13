@@ -1,0 +1,45 @@
+//
+style(src="/css/chat.css")
+ul(id="messages" style="max-height:500px; overflow:auto;")
+if session && session.login
+	//iframe(src="/chat" width="100%" frameborder="0")
+	form(action="")
+		input(id="m" autocomplete="off")
+		button Отправить
+	script.
+		function appendMessage(login, text){
+			$("#messages").append($("<p>").text(login+" : " + text));
+		}
+		function drawMessages(msg){
+			console.log("drawMSGGGGGG")
+			console.log(msg)
+			var messages = msg.msg
+			for (var i= messages.length-1; i>= 0; i--){
+				var m = messages[i]
+				appendMessage(m.senderName, m.text)
+			}
+		}
+		function loadMessages(){
+			setAsync("/messages/chat/recent", {}, drawMessages)
+		}
+		function scrollToMessageEnd(){
+			var elem = document.getElementById("messages");
+			elem.scrollTop = elem.scrollHeight;
+		}
+		loadMessages()
+		var socket = io();
+		$("form").submit(function(){
+			var text = $("#m").val();
+			scrollToMessageEnd();
+			if (text=="") return false;
+			socket.emit("chat message", {text:text, login:login} );
+			$("#m").val("");
+			return false;
+		});
+		socket.on("chat message", function(msg){
+			//$("#messages").append($("<p>").text(JSON.stringify(msg)));
+			var login = msg.sender;
+			var txt = msg.text;
+			appendMessage(login, txt)
+		});
+		window.setInterval(scrollToMessageEnd, 1000);
