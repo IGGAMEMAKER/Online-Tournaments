@@ -2,9 +2,10 @@
 mixin answer(num)
 	div(class="form-group")
 	label(class="white") Ответ №#{num}
-	input(type="text" class="form-control" name="answer"+num required)
+	input(type="text" id="answer"+num class="form-control" name="answer"+num required)
 mixin correct(num)
-	input(type="radio" name="correct" value=num)
+	//input(type="radio" id="correct" name="correct" value=num)
+	option(class="black" value=num) #{num}
 	| #{num}
 	span  
 center
@@ -23,9 +24,9 @@ center
 		form(id="form-5" action="/addQuestion" method="post" novalidate)
 			div(class="form-group")
 				label(class="white") Вопрос
-				input(type="text" class="form-control" name="question" required)
+				input(type="text" class="form-control" id="question" name="question" required)
 				
-				input(type="hidden" class="form-control" name="topic" value=name)
+				input(type="hidden" class="form-control" id="topic" name="topic" value=name)
 			+answer(1)
 			+answer(2)
 			+answer(3)
@@ -33,10 +34,11 @@ center
 			div(class="form-group" class="white")
 				br
 				label(class="white") Правильный ответ : 
-				+correct(1)
-				+correct(2)
-				+correct(3)
-				+correct(4)
+				select(class="black" id="correct" name="correct" value=1)
+					+correct(1)
+					+correct(2)
+					+correct(3)
+					+correct(4)
 			br
 			//button(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " type="submit") Добавить!
 			a(class="btn btn-lg btn-primary" style="border-radius:6px; width:100%; " onclick="addQuestion()" type="submit") Добавить!

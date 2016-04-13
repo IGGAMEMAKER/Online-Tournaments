@@ -36,6 +36,36 @@ function drawFrame(msg){
 	document.playForm.submit();
 }
 
+function addQuestion(){
+	var question = $("#question").val();
+  var correct = $("#correct").val();//data.correct;
+
+  //
+  //data.answer1;
+  var answer1 = $("#answer1").val();
+  var answer2 = $("#answer2").val();
+  var answer3 = $("#answer3").val();
+  var answer4 = $("#answer4").val();
+
+  var topic = $("#topic").val();//data.topic;
+
+  var obj = {
+  	question:question,
+  	correct:correct,
+
+  	answer1:answer1,
+  	answer2:answer2,
+  	answer3:answer3,
+  	answer4:answer4,
+
+  	topic: topic
+  }
+  // console.log(obj);
+  setAsync("/addQuestion", obj, function (answer){
+  	alert(JSON.stringify(answer.msg));
+  })
+}
+
 function connect(topic){
 	room = io('/topic/'+topic)
 	

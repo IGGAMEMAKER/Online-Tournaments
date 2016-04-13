@@ -812,15 +812,16 @@ app.post('/Tournaments', function (req, res){
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var login = getLogin(req);
-  var question = req.body.question;
+  var data = req.body;
+  var question = data.question;
 
   //
-  var answer1 = req.body.answer1;
-  var answer2 = req.body.answer2;
-  var answer3 = req.body.answer3;
-  var answer4 = req.body.answer4;
+  var answer1 = data.answer1;
+  var answer2 = data.answer2;
+  var answer3 = data.answer3;
+  var answer4 = data.answer4;
 
-  var topic = req.body.topic;
+  var topic = data.topic;
 
   var answers = [];
   answers.push(answer1);
@@ -828,7 +829,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
   answers.push(answer3);
   answers.push(answer4);
 
-  var correct = req.body.correct;
+  var correct = data.correct;
   var obj = {
     createdBy: login,
     question: question,
