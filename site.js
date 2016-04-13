@@ -1234,6 +1234,15 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err)
 
+app.post('/messages/chat/recent', function (req, res, next){
+  // console.log('messages/chat/recent')
+  var room = 'default';
+
+  Message.chat.load(room)
+  .then(aux.setData(req, next))
+  .catch(next)
+}, aux.std)
+
 app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
   var leaders = Leaderboard.leaderboard;
   var prizes = Leaderboard.prizes || [];

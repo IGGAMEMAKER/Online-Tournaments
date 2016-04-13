@@ -119,6 +119,10 @@ var wrap = function(modelName){
 		},
 		aggregate: function(array){
 			return aggregate(modelName, array)
+		},
+
+		model: function(modelName){
+			return models[modelName]
 		}
 	}
 }

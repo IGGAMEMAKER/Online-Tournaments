@@ -1,6 +1,16 @@
+var Message = require('./models/message')
 
 var io;
 var socket_enabled = true;
+
+function defendText(text){
+  return text
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;");
+}
 
 module.exports = function(app, server){
 	io = require('socket.io')(server);
@@ -10,9 +20,21 @@ module.exports = function(app, server){
   	// 
     socket.on('chat message', function (msg){
       console.log(msg);
-      io.emit('chat message', msg);
-      var message = { text : msg , sender:'common' }
-      console.log(message, 'message');
+      var login = msg.login;
+      var text = msg.text;
+
+      var def_login = defendText(login);
+      var def_text = defendText(text);
+
+      var message = { text : def_text , sender: def_login }
+      io.emit('chat message', message);
+
+      // message.room = 'default';
+      var room = 'default';
+      Message.chat.add(room, def_login, def_text)
+
+      // console.log(message, 'message');
+
       // sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
     });
   });

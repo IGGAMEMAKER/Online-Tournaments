@@ -27,6 +27,7 @@ block content
 				connect(topic)
 			br
 			br
+			// +mychat()
 		div(class="col-sm-12")
 			+tabArea()
 
@@ -41,6 +42,8 @@ mixin tabs()
 			a(href="#tab3" data-toggle="tab" aria-expanded="false") Игроки
 		li
 			a(href="#tab4" data-toggle="tab" aria-expanded="false") Карточки
+		li
+			a(href="#tab5" data-toggle="tab" aria-expanded="false") Чат
 
 mixin tabArea()
 	div(class="row")
@@ -67,20 +70,25 @@ mixin tabArea()
 				#onliners
 			div(class="tab-pane" id="tab4")
 				p tab4
+			div(class="tab-pane" id="tab5")
+				+mychat()
 
 mixin questions()
 	include templates/addQ
 
 mixin mychat()
-	div(class="col-md-12 chatColumn chatRule")
-		h3 chat
-		div(class="form-group")
-			label(class="control-label" for="formInput54") Field label
-			textarea(class="form-control" rows="3" id="formInput54")
-		div(class="form-group") 
-			label(class="control-label" for="formInput74") Field label
-			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
-	p Tab 2 content goes here...
+	// div(class="col-md-12 black chatColumn chatRule")
+	div(class="col-md-12 black chatColumn chatRule")
+		include templates/chat
+		//div(class="col-md-12 chatColumn chatRule")
+			h3 chat
+			div(class="form-group")
+				label(class="control-label" for="formInput54") Field label
+				textarea(class="form-control" rows="3" id="formInput54")
+			div(class="form-group") 
+				label(class="control-label" for="formInput74") Field label
+				input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
+	// p Tab 2 content goes here...
 
 
 
@@ -106,3 +114,5 @@ mixin mychat()
 			p Tab3
 		div(class="tab-pane" id="tab4")
 			p tab4
+		div(class="tab-pane" id="tab5")
+			+mychat()

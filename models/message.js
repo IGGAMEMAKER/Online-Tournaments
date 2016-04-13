@@ -14,6 +14,7 @@ var helpers = require('../helpers/helper')
 
 var db = require('../db');
 var News = db.wrap('News');
+var Message2 = db.wrap('Message');
 
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
 
@@ -101,7 +102,25 @@ var notifications = {
 
 }
 
+var chat = {
+	load: function (room){
+		return Message2.aggregate([ 
+			{ $match : { room:room } }, 
+			// { $sort : { "$natural": -1 } },
+			{ $sort : { "_id": -1 } },
+			{ $limit : 3 }
+		])
+	},
+	add: function (room, login, text){
+		return Message2.save({ room:room, senderName:login, text: text, date: new Date() })
+	}
+}
+// chat.add('default', '23i03g', 'QUATTRO')
 
+// chat.load('default')
+// .then(function (messages){
+// 	console.log(messages);
+// })
 
 var news = {
 	//{ active: Boolean, finishTime: Date, startTime : Date, text: String, image: String, url: String }
@@ -195,3 +214,4 @@ function catcher(err){
 
 module.exports.notifications = notifications;
 module.exports.news = news;
+module.exports.chat = chat;

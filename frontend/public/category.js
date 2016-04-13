@@ -1,7 +1,9 @@
 var room;
 
+var wanna_play = !true;
+
 function reg(topic){
-	setAsync('/Category/tournament/'+topic, null, function (msg){})
+	if (wanna_play)	setAsync('/Category/tournament/'+topic, null, function (msg){})
 }
 
 function drawFrame(msg){

@@ -239,7 +239,7 @@ function mark(url, data, method){
 }
 
 function sendError(err, func_name){
-  mark('mark/clientError', { 
+  mark('/mark/clientError', { 
     err: err,
     where: {
       func_name: func_name,
