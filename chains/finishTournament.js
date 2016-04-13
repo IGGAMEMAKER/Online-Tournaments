@@ -120,7 +120,7 @@ function sendAfterGameNotification(login, mainPrize){
 
         Gifts.user.saveGift(login, giftID, true, card.colour)
         .then(function (result){
-          return aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
+          // return aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
         })
         .catch(console.error)
 

@@ -476,6 +476,7 @@ function AsyncUpdate(gameID){
 function Action(gameID, playerID, movement, userName){
 	var currQuestionIndex = games[gameID].questIndex;
 	var time = new Date();
+	console.log('gameID', playerID, movement);
 
 	games[gameID].userAnswers[playerID][currQuestionIndex] = { answer:movement.answer, time:time };
 }

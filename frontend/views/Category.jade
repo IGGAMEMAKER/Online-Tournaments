@@ -23,7 +23,6 @@ block content
 			// include mini-games/questions
 			script.
 				var topic = "#{name}";
-				// getTournamentID(topic);
 				reg(topic);
 				connect(topic)
 			br
@@ -64,7 +63,8 @@ mixin tabArea()
 					p Авторизуйтесь, чтобы добавить вопрос
 					a(href="/Login" class="btn btn-primary") Авторизоваться
 			div(class="tab-pane" id="tab3")
-				p Tab3
+				//p Tab3
+				#onliners
 			div(class="tab-pane" id="tab4")
 				p tab4
 

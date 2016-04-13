@@ -86,9 +86,11 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 		rooms[topic].socketRoom.on('connection', function (socket){
 			logger('Room <' + topic + '> got new player');
-			// socket.on('movement', function (data){
-			// 	logger('movement', data)
-			// });
+			sendOnliners(topic);
+
+			socket.on('movement', function (data){
+				logger('movement', data)
+			});
 		});
 
 		// roomWorker(topic, 5000)
@@ -196,7 +198,10 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		}
 	})
 
-
+	function sendOnliners(topic){
+		var players = Object.keys(onliners[topic]);
+		emit(topic, 'onliners', players)
+	}
 
 	app.post('/FinishCategoryTournament/:topic', function (req, res, next){
 		res.end('');
@@ -215,7 +220,13 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 		onliners[topic] = {};
 		emit(topic, 'online', {})
-		
+
+		setTimeout(function (){
+			sendOnliners(topic)
+			// var players = Object.keys(onliners[topic]);
+			// emit(topic, 'onliners', players)
+		}, 3000)
+
 		// setTimeout(function (){
 		// 	var players = Object.keys(onliners[topic]);
 		// 	console.log(players);
