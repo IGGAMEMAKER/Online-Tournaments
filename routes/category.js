@@ -80,7 +80,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	}
 
 	function setRoom(topic) {
-
 		rooms[topic] = {};
 		rooms[topic].socketRoom = io.of('/topic/'+topic);
 
@@ -92,10 +91,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 				logger('movement', data)
 			});
 		});
-
-		// roomWorker(topic, 5000)
-		// rooms[topic].socketRoom.emit('startGame', { ticks : 10 });
 	}
+
 	function emit(topic, tag, message){
 		rooms[topic].socketRoom.emit(tag, message)
 	}
@@ -103,79 +100,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	function wakeUp(topic, login, tournamentID, gameHost, gamePort){
 		var obj = { login:login, tournamentID:tournamentID, gameHost:gameHost, gamePort:gamePort };
 		emit(topic, 'wakeUp', obj)
-	}
-
-	function roomWorker(topic, period){
-		var tournamentID = tournaments[topic].tournamentID;
-		console.log('roomWorker', topic, period, onliners)
-		// var login = '23i03g';
-		// wakeUp(topic, login, tournamentID, gameHost, 5010)
-
-		if (tournamentID > 0) {
-			var players = Object.keys(onliners[topic]);
-			for (var i = 0; i < players.length; i++) {
-				var login = players[i];
-				console.log(login, players)
-
-				// register_manager.joinStream(tournamentID, login)
-				register_manager.reg(tournamentID, login)
-				.catch(function (err){
-					logger('roomWorker err', err)
-					register_manager.clearQueue(tournamentID, login)
-				})
-				.then(function (tournament){
-					logger(tournament, login);
-					register_manager.join(tournamentID, login)
-
-					register_manager.needsStart(tournamentID)
-					
-					setTimeout(function (){
-						wakeUp(topic, login, tournamentID, gameHost, 5010)
-					}, 3000)
-				})
-			}
-		}
-		
-		// setTimeout(function () { roomWorker(topic, period) }, period)
-	}
-
-	function registerAndWakeUp(topic, login, tournamentID){
-
-	}
-
-
-
-	function worker(topic, period){
-		var tournamentID = tournaments[topic].tournamentID;
-		console.log('roomWorker', topic, period, onliners)
-
-		if (tournamentID > 0) {
-			var players = Object.keys(onliners[topic]);
-			for (var i = 0; i < players.length; i++) {
-				var login = players[i];
-				console.log(login, players)
-
-				// register_manager.joinStream(tournamentID, login)
-				register_manager.register(tournamentID, login)
-				.catch(function (err){
-					logger('roomWorker err', err)
-					register_manager.clearQueue(tournamentID, login)
-				})
-				.then(function (tournament){
-					logger(tournament, login);
-					register_manager.join(tournamentID, login)
-
-					register_manager.needsStart(tournamentID)
-					
-					setTimeout(function (){
-						wakeUp(topic, login, tournamentID, gameHost, 5010)
-					}, 3000)
-				})
-			}
-		}
-		
-		// setTimeout(function () { roomWorker(topic, period) }, period)
-
 	}
 
 	app.post('/Category/tournament/:topic', aux.isAuthenticated, function (req, res, next){
@@ -213,29 +137,13 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var tournamentID = t.tournamentID;
 
 		tournaments[topic].tournamentID = tournamentID;
-		// var tournament = req.body;
-
-		// var isStream = !tournament || !tournament.settings || !tournament.settings.regularity)
-		// var topic = req.params.topic;
 
 		onliners[topic] = {};
 		emit(topic, 'online', {})
 
 		setTimeout(function (){
 			sendOnliners(topic)
-			// var players = Object.keys(onliners[topic]);
-			// emit(topic, 'onliners', players)
 		}, 3000)
-
-		// setTimeout(function (){
-		// 	var players = Object.keys(onliners[topic]);
-		// 	console.log(players);
-		// 	for (var i=0; i < players.length; i++){
-		// 		var login = players[i];
-
-		// 		register_manager.register(tournamentID, login);
-		// 	}
-		// }, 3000)
 	})
 
 	app.get('/Category/:topic', function (req, res, next){
@@ -247,8 +155,4 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 		res.render('Category', categories[topic])
 	})
-
-	// app.get('/wakeUp/topic/:topic', function (req, res){
-
-	// })
 }
