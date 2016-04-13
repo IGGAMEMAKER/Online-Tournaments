@@ -1225,7 +1225,7 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
   };
   // console.log(obj, target);
 
-  aux.alert(target, notificationType||6, obj)
+  aux.alert(target, notificationType || 6, obj)
   .then(function (result){
     req.data = result;
     next();

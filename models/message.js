@@ -108,7 +108,7 @@ var chat = {
 			{ $match : { room:room } }, 
 			// { $sort : { "$natural": -1 } },
 			{ $sort : { "_id": -1 } },
-			{ $limit : 3 }
+			{ $limit : 20 }
 		])
 	},
 	add: function (room, login, text){
