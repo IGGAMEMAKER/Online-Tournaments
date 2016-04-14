@@ -1825,7 +1825,7 @@ function KillFinishedTournaments(){
 
 
 function ClearRegistersInTournament(TRegIDs){
-	Log('TRegIDs : '+JSON.stringify(TRegIDs), 'TREGS');
+	// Log('TRegIDs : '+JSON.stringify(TRegIDs), 'TREGS');
 
 	var finishedTS = 3; //TOURN_STATUS_FINISHED
 
@@ -1852,7 +1852,7 @@ function killID(arr, field){
 	for (var i = arr.length - 1; i >= 0; i--) {
 		list.push(arr[i][field]);
 	};
-	Log('killID result: ' + JSON.stringify(list) );
+	// Log('killID result: ' + JSON.stringify(list) );
 	return list;
 }
 

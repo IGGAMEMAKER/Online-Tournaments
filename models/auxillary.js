@@ -186,6 +186,18 @@ module.exports = {
 			// write errors here
 		}
 	}
+	// ,process: function (req, next, place, info){
+	// 	return function (data){
+	// 		req.data = data;
+	// 		next();
+	// 	}
+	// }
+	,errored : function (next){
+		return function (err){
+			console.error(err);
+			next(err);
+		}
+	}
 	,catcher : console.error
 	,c:c
 

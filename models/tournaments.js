@@ -97,7 +97,7 @@ function updateByID(tournamentID, updateObj){
 function getStreamID(login){
 	return new Promise(function (resolve, reject){
 		Tournament.findOne({
-			'settings.regularity':REGULARITY_STREAM
+			'settings.regularity': REGULARITY_STREAM
 			,	'settings.hidden': {$ne: true}
 			,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
 			,	buyIn: 0 
@@ -111,6 +111,25 @@ function getStreamID(login){
 			}
 		})
 	})
+}
+
+function getByTopic(topic){
+	var obj = {
+		'settings.hidden': { $ne: true }
+		, 'settings.regularity' : REGULARITY_STREAM
+		,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+	}
+
+	if (topic != 'default') {
+		obj['settings.topic'] = topic
+	}
+	return Tournament2.find(obj)
+	// 	Tournament.findOne({
+	// 	// 'settings.regularity':REGULARITY_STREAM
+	// 	,	'settings.hidden': {$ne: true}
+	// 	,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+	// 	// ,	buyIn: 0 
+	// },
 }
 
 /*
@@ -322,24 +341,7 @@ function get_available(){ //get_not_finished_tournaments
 	}
 }*/
 
-function getByTopic(topic){
-	var obj = {
-		'settings.hidden': { $ne: true }
-		, 'settings.regularity' : REGULARITY_STREAM
-		,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
-	}
 
-	if (topic != 'default') {
-		obj['settings.topic'] = topic
-	}
-	return Tournament2.find(obj)
-	// 	Tournament.findOne({
-	// 	// 'settings.regularity':REGULARITY_STREAM
-	// 	,	'settings.hidden': {$ne: true}
-	// 	,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
-	// 	// ,	buyIn: 0 
-	// },
-}
 
 
 //--------------AUXILLARY FUNCTIONS----------

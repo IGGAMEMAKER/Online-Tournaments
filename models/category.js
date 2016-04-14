@@ -6,10 +6,15 @@ function isArray(arr){
 	return true
 }
 
-function add(name, draw, level){
+function add(name, draw_name, level){
 	if (!name) throw 'Category no name';
-	if (!draw || !draw.name) throw 'Category draw error'
-	draw.visible = false;
+	if (!draw_name) throw 'Category draw error'
+	// if (!draw || !draw.name) throw 'Category draw error'
+
+	var draw = {
+		visible : false,
+		name : draw_name
+	}
 
 	if (!level || isNaN(level)) level = 0;
 
@@ -42,8 +47,12 @@ function add(name, draw, level){
 function all(){ return Category.list({}) }
 
 function available(){ return Category.list({ "draw.visible" : true }) }
-function activate(name){ return Category.update({ name: name }, { "draw.visible" : true }) }
-function deactivate(name){ return Category.update({ name: name }, { "draw.visible" : false }) }
+
+// function activate(name){ return Category.update({ name: name }, { "draw.visible" : true }) }
+// function deactivate(name){ return Category.update({ name: name }, { "draw.visible" : false }) }
+
+function activate(id){ return Category.update({ _id: id }, { "draw.visible" : true }) }
+function deactivate(id){ return Category.update({ _id: id }, { "draw.visible" : false }) }
 
 var attach = {
 	pack: function (name, packID){ return 1 },
@@ -74,6 +83,8 @@ module.exports = {
 
 	attach:attach,
 	editDraw:editDraw,
+	editSettings:editSettings,
+
 	remove:remove,
 	edit:edit
 }

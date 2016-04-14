@@ -3,6 +3,9 @@ mixin link(url, word)
 	li
 		a(href=url)
 			h2 !{word}
+mixin tlink(name, href)
+	a(href=href target="_blank") #{name}
+	br
 
 mixin LinkHeader()
 	ul(class="list-inline")

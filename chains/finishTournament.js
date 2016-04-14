@@ -143,7 +143,7 @@ function dataBaseChanges(data){
 	var gameID = data['gameID'];
 	var tournamentID = data['tournamentID'];
 	var scores = data['scores'];
-	winners = sort.winners(scores);
+	var winners = sort.winners(scores);
 
 	TournamentLog(tournamentID, 'Winners:' + str(winners));
 
@@ -154,7 +154,7 @@ function dataBaseChanges(data){
 	var info = {}
 
 	var tournament;
-	var winners;
+	// var winners;
 
 	TournamentReg.participants(tournamentID)
 	.then(give_marathon_points) // parallel. returns undefined
@@ -210,10 +210,7 @@ function serveTournament(tournament){
 	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');
 
 	if (isStreamTournament(tournament)){
-		// console.log('serveTournament', 'finishTournament', 'stream', tournament.settings||null)
-
 		var topic = tournament.settings.topic || 'default';
-		// console.log('serveTournament', 'finishTournament', 'topic:'+topic, tournament.settings||null)
 		sender.sendRequest("FinishCategoryTournament/" + topic, tournament, '127.0.0.1', 'site');
 	}
 
@@ -240,9 +237,6 @@ function give_marathon_points_to_user(login, MarathonID){
 	.then(function (user){
 		// console.error('user found or created', user);
 		return Marathon.increase_points(login, MarathonID);
-	})
-	.then(function (result){
-		Log('increased marathon points to ' + login + '  ' + str(result), aux.c.STREAM_GAMES);
 	})
 	.catch(helper.catcher);
 }

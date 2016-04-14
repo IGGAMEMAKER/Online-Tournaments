@@ -1,0 +1,19 @@
+//
+extends List
+
+block head
+	th #
+	th Строка
+	th Actions
+block raw
+
+block content
+	td!= ind
+
+	td
+		p #{item}
+
+	td
+		+tlink("activate", "/api/categories/activate/"+item._id)
+		+tlink("deactivate", "/api/categories/deactivate/"+item._id)
+		+upd()

@@ -1,6 +1,7 @@
 module.exports = function(app, aux, realtime, SOCKET, io){
 	var Tournaments = require('../models/tournaments');
 	var TournamentRegs = require('../models/tregs');
+	var Category = require('../models/category');
 
 	var request = require('request')
 	var requestSender = require('../requestSender')
@@ -105,12 +106,9 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	app.post('/Category/tournament/:topic', aux.isAuthenticated, function (req, res, next){
 		var topic = req.params.topic;
 		var login = aux.getLogin(req);
-
-		var tournamentID = tournaments[topic].tournamentID;
-		// register_manager.register(tournamentID, login)
-
 		onliners[topic][login] = login;
 
+		var tournamentID = tournaments[topic].tournamentID;
 		// res.json({ gameHost:gameHost, gamePort: 5010, tournamentID: tournamentID })
 
 		register_manager.register(tournamentID, login, res)
@@ -120,6 +118,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 				wakeUp(topic, login, tournamentID, gameHost, 5010)
 			}, 3000)
 		}
+
 	})
 
 	function sendOnliners(topic){
@@ -141,9 +140,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		onliners[topic] = {};
 		emit(topic, 'online', {})
 
-		setTimeout(function (){
-			sendOnliners(topic)
-		}, 3000)
+		setTimeout(function (){ sendOnliners(topic) }, 3000)
 	})
 
 	app.get('/Category/:topic', function (req, res, next){
@@ -155,4 +152,40 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 		res.render('Category', categories[topic])
 	})
+
+	// api calls
+
+	app.get('/api/categories/available', function (req, res, next){
+		Category.available()
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	app.get('/api/categories/activate/:id', aux.isAdmin, function (req, res, next){
+		Category.activate(req.params.id)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	app.get('/api/categories/deactivate/:id', aux.isAdmin, function (req, res, next){
+		Category.deactivate(req.params.id)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	app.get('/api/categories/all/raw', aux.isAdmin, function (req, res, next){
+		Category.all()
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.render('Categories'), aux.err)
+
+	app.get('/api/categories/add/:name/:draw_name/:level', aux.isAdmin, function (req, res, next){
+		var name = req.params.name;
+		var draw_name = req.params.draw_name;
+		var level = parseInt(req.params.level);
+
+		Category.add(name, draw_name, level)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
 }
