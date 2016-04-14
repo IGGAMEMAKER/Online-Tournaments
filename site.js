@@ -836,6 +836,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
     answers: answers,
     correct:correct
   }
+  if (topic) obj.topic = topic;
   console.log(obj);
 
   var question_is_valid = login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct);

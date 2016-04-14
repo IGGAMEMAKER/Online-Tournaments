@@ -259,6 +259,13 @@ var upload = multer({ storage: storage }).single('image');
   //   }
 
   // })
+  app.get('/clearRegs/:tournamentID', aux.isAdmin, function (req, res, next){
+    var tournamentID = parseInt(req.params.tournamentID);
+
+    TournamentRegs.freeTournament(tournamentID)
+    .then(aux.setData(req, next))
+    .catch(next)
+  }, aux.std)
 
   // app.get('/api/tournaments/edit/:id/:parameter/:type/:value/', aux.isAdmin, function (req, res, next){
   //   var tournamentID = parseInt(req.params.id);

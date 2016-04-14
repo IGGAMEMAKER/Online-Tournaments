@@ -58,9 +58,10 @@ function addQuestion(){
   	answer3:answer3,
   	answer4:answer4,
 
-  	topic: topic
+  	// topic: topic
   }
-  // console.log(obj);
+  if (topic!="default") obj.topic = topic;
+  console.log(obj);
   setAsync("/addQuestion", obj, function (answer){
   	alert(JSON.stringify(answer.msg));
   })

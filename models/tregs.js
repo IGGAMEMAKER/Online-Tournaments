@@ -311,3 +311,4 @@ this.clearParticipants = clearParticipants
 
 this.registerUser = registerUser;
 this.unregisterUser = unregisterUser;
+this.freeTournament = freeTournament;

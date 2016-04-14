@@ -35,7 +35,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		for (var i = 0; i < list.length; i++) {
 			updateTopic(list[i])
 		};
-	}, 10000)
+	}, 5000)
 
 	function updateTopic(topic){
 		Tournaments.getByTopic(topic)
