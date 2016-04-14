@@ -173,6 +173,29 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		.catch(aux.errored)
 	}, aux.std)
 
+	app.get('/api/categories/editDraw/:id/:parameter/:value', aux.isAdmin, function (req, res, next){
+		var id = req.params.id;
+		var parameter = req.params.parameter;
+		var value = req.params.value;
+
+		Category.editDraw(id, parameter, value)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	app.get('/api/categories/editSettings/:id/:parameter/:value', aux.isAdmin, function (req, res, next){
+		var id = req.params.id;
+		var parameter = req.params.parameter;
+		var value = req.params.value;
+
+		Category.editSettings(id, parameter, value)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	// editDraw:editDraw,
+	// editSettings:editSettings,
+
 	app.get('/api/categories/all/raw', aux.isAdmin, function (req, res, next){
 		Category.all()
 		.then(aux.setData(req, next))

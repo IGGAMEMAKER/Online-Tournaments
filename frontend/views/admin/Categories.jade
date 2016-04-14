@@ -16,4 +16,9 @@ block content
 	td
 		+tlink("activate", "/api/categories/activate/"+item._id)
 		+tlink("deactivate", "/api/categories/deactivate/"+item._id)
+		+tlink("edit settings", "/api/categories/editSettings/"+item._id+"/parameter/value")
+		+tlink("edit draw", "/api/categories/editDraw/"+item._id+"/parameter/value")
+
+		+tlink("Эта страница 'про' ...", "/api/categories/editDraw/"+item._id+"/name_dat/value")
+		+tlink("Ссыль на картинку ...", "/api/categories/editDraw/"+item._id+"/imgSmall/value")
 		+upd()
