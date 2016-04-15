@@ -12,6 +12,7 @@ block content
 
 	td
 		p #{item}
+		//a(class="btn")
 
 	td
 		+tlink("activate", "/api/categories/activate/"+item._id)
@@ -21,4 +22,13 @@ block content
 
 		+tlink("Эта страница 'про' ...", "/api/categories/editDraw/"+item._id+"/name_dat/value")
 		+tlink("Ссыль на картинку ...", "/api/categories/editDraw/"+item._id+"/imgSmall/value")
+		
+		form(id=item._id action="/api/categories/edit/"+item._id target="_blank" method="POST")
+			label Parameter (draw.imgSmall)
+			input(name="name" type="text")
+			br
+			label Value
+			input(name="value" type="text")
+			br
+			input(value="edit" type="submit")
 		+upd()

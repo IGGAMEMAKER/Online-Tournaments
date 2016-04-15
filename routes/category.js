@@ -11,8 +11,22 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	var register_manager = require('../chains/registerInTournament')(aux)
 
 	var categories = {
-		'default' : createCategory('default', 'Всё обо всём', "Всему подряд"),
-		'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
+		// 'default' : createCategory('default', 'Всё обо всём', "Всему подряд"),
+		// 'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
+		'default' : {
+			name: 'default',
+			draw: {
+				name: "Всё обо всём", addQuesion: "на любую тему", name_dat: "Всему подряд"
+			}
+		},
+		'realmadrid' : {
+			name: 'realmadrid',
+			draw: {
+				name: "Реал Мадрид", addQuesion: "про Реал", name_dat: "Мадридскому Реалу"
+			}
+		}
+		// createCategory('default', 'Всё обо всём', "Всему подряд"),
+		// 'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
 	}
 
 	var onliners = {}
@@ -53,13 +67,14 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		})
 	}
 
-	// setTimeout(getCategories, 4000);
+	getCategories();
+	setInterval(getCategories, 3000);
 
 
 	function createCategory(name, ru_name, name_dat){
 		return {
 			name: name,
-			draw: createDrawObject(ru_name,name_dat)
+			draw: createDrawObject(ru_name, name_dat)
 		}
 	}
 	function createDrawObject(name, name_dat){
@@ -143,6 +158,13 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		setTimeout(function (){ sendOnliners(topic) }, 3000)
 	})
 
+	function cat(topic){
+		return categories[topic]
+		// var category = realtime().categories[topic]
+		// logger('cat', category)
+		// return category;
+	}
+
 	app.get('/Category/:topic', function (req, res, next){
 		var topic = req.params.topic;
 		if (!categories[topic]) topic = 'default'; // { category: topic }
@@ -150,7 +172,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var login = aux.getLogin(req);
 		if (login) onliners[topic][login] = login;
 
-		res.render('Category', categories[topic])
+		res.render('Category', cat(topic))
 	})
 
 	// api calls
@@ -169,6 +191,20 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	app.get('/api/categories/deactivate/:id', aux.isAdmin, function (req, res, next){
 		Category.deactivate(req.params.id)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+	app.post('/api/categories/edit/:id', aux.isAdmin, function (req, res, next){
+		var id = req.params.id;
+
+		var name = req.body.name;
+		var value = req.body.value;
+
+		var obj = {};
+		obj[name] = value;
+
+		Category.edit(id, obj)
 		.then(aux.setData(req, next))
 		.catch(aux.errored)
 	}, aux.std)
