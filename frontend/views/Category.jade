@@ -57,22 +57,23 @@ mixin drawImage(src)
 
 mixin categoryHead()
 	br
-	table(class="white")
-		tr
-			td(style="min-width:100px; padding-right:10px;")
-				// h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
-				if draw.imgSmall
-					+drawImage(draw.imgSmall)
-				else
-					+drawImage("/img/topics/default.jpg")
-			td
-				h1(class="mg-md text-center") #{draw.name}
-				// p!= JSON.stringify(draw)
-				// h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
-				// p
-					a(href="/Categories") другие турниры
-	// div(style="width:30%;")
-	// div(style="width:68%;")
+	center
+		table(class="white")
+			tr
+				td(style="min-width:100px; padding-right:10px;")
+					// h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
+					if draw.imgSmall
+						+drawImage(draw.imgSmall)
+					else
+						+drawImage("/img/topics/default.jpg")
+				td
+					h1(class="mg-md text-center") #{draw.name}
+					// p!= JSON.stringify(draw)
+					// h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
+					// p
+						a(href="/Categories") другие турниры
+		// div(style="width:30%;")
+		// div(style="width:68%;")
 
 block content
 	div(class="white")

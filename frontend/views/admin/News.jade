@@ -19,8 +19,8 @@ block content
 	td
 		+showStatus(item)
 	td
-		+tlink("/api/news/activation/"+item._id+"/hide", "HIDE")
-		+tlink("/api/news/activation/"+item._id+"/show", "show")
+		+tlink("HIDE", "/api/news/activation/"+item._id+"/hide")
+		+tlink("show", "/api/news/activation/"+item._id+"/show")
 
 		+upd()
 
@@ -63,6 +63,6 @@ mixin showStatus(item)
 	else
 		p disabled
 
-mixin tlink(url, text)
+//mixin tlink(url, text)
 	br
 	a(href=url target="_blank") #{text}

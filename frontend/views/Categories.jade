@@ -1,0 +1,47 @@
+//
+
+mixin rating()
+	h3(class="text-center ratingHead") Марафон
+		br
+		a(href="Leaderboard") все участники
+	include templates/rating
+
+mixin drawCategory(category)
+	div(class="col-sm-3 white img-wrapper")
+		h2(class="text-center") #{category.draw.name}
+		center
+			a(href="/Category/"+category.name)
+				img(width="150" class="img-responsive circle-md" src=category.draw.imgSmall)
+	
+extends layout
+
+block title
+	title Темы
+
+block content
+	include templates/news
+	h1(class="white text-center") Темы
+	div(class="col-sm-12 killPaddings" id="tournamentBlock")
+	//p!= JSON.stringify(msg)
+	each cat in msg
+		+drawCategory(cat)
+		+drawCategory(cat)
+		+drawCategory(cat)
+		+drawCategory(cat)
+		+drawCategory(cat)
+		+drawCategory(cat)
+	//script.
+		var tournaments = !{JSON.stringify(msg)};
+		drawTournaments(tournaments)
+	div(class="col-sm-12 bgc-white" id="ratingField")
+		div(class="col-sm-8 dataRule2")
+			+rating()
+		div(class="col-sm-4 subscribe")
+			+subscribe()
+	//div(class="col-sm-12 offset-bg")
+		+chat()
+
+block JSlibs
+	//script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
+	//script(src="tournaments.js?1")
+	//include templates/googleAd

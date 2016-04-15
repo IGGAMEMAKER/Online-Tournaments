@@ -165,6 +165,10 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		// return category;
 	}
 
+	app.get('/Categories', function (req, res){
+		res.render('Categories', {msg: realtime().categories})
+	})
+
 	app.get('/Category/:topic', function (req, res, next){
 		var topic = req.params.topic;
 		if (!categories[topic]) topic = 'default'; // { category: topic }
