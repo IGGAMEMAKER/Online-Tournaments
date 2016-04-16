@@ -13,6 +13,7 @@ block title
 
 block content
 	include templates/news
+	include templates/topics
 	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 	script.
 		var tournaments = !{JSON.stringify(msg)};
@@ -27,5 +28,6 @@ block content
 
 block JSlibs
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-	script(src="tournaments.js?1")
+	script(src="/tournaments.js?1")
+	script(src="/category.js")
 	//include templates/googleAd

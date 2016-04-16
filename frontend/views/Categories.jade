@@ -8,10 +8,11 @@ mixin rating()
 
 mixin drawCategory(category)
 	div(class="col-sm-3 white img-wrapper")
-		h2(class="text-center") #{category.draw.name}
+		//h2(class="text-center") #{category.draw.name}
 		center
 			a(href="/Category/"+category.name)
 				img(width="150" class="img-responsive circle-md" src=category.draw.imgSmall)
+				p #{category.draw.name}
 	
 extends layout
 
@@ -25,20 +26,12 @@ block content
 	//p!= JSON.stringify(msg)
 	each cat in msg
 		+drawCategory(cat)
-		+drawCategory(cat)
-		+drawCategory(cat)
-		+drawCategory(cat)
-		+drawCategory(cat)
-		+drawCategory(cat)
-	//script.
-		var tournaments = !{JSON.stringify(msg)};
-		drawTournaments(tournaments)
-	div(class="col-sm-12 bgc-white" id="ratingField")
+	//div(class="col-sm-12 bgc-white" id="ratingField")
 		div(class="col-sm-8 dataRule2")
 			+rating()
 		div(class="col-sm-4 subscribe")
 			+subscribe()
-	//div(class="col-sm-12 offset-bg")
+	div(class="col-sm-12 offset-bg")
 		+chat()
 
 block JSlibs

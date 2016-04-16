@@ -53,6 +53,8 @@ mixin chat()
 		//div(class="form-group")
 			label(class="control-label" for="formInput74") Field label
 			input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
-	div(id="vk_comments")
+	//include chat
+	+mychat()
+	//div(id="vk_comments")
 		script(type="text/javascript").
 			VK.Widgets.Comments("vk_comments", {limit: 10, width: "auto", height: "501", attach: "*"});

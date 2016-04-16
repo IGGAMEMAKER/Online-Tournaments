@@ -98,6 +98,37 @@ function join(topic){
 
 }
 
+function drawCategory(name, href, image){
+	var text = '';
+			text += '<div class="col-sm-3 white img-wrapper">';
+			text += '<center>'
+				text += '<a href="'+ href + '">'; ///Category/'+category.name+'
+					text += '<img class="img-responsive circle-md" src="'+image+'" />'
+					text += '<p>' + name + '</p>'
+				text+= '</a>'
+			text+= '</center>'
+		text+= '</div>'
+		return text;
+}
+
+function getCategories(){
+	setAsync("/api/categories/available", {}, function (msg){
+		var categories = msg.msg;
+		var text = '<h1 class="white text-center"> Темы </h1>'
+		// console.log(categories)
+		for (var i=0; i < categories.length && i < 3; i++){
+				var category = categories[i];
+				// console.log('category', category)
+				text += drawCategory(category.draw.name, '/Category/'+ category.name ,category.draw.imgSmall)
+		}
+		text += drawCategory('Все темы', '/Categories', '/img/topics/default.jpg')
+		console.log(text)
+		// text = JSON.stringify(categories);
+		// $("#categories").html(JSON.stringify(categories))
+		$("#categories").html(text)
+	}, 'GET')
+}
+
 function reconnect(tournamentID, gameHost, gamePort){
 	con = 'http://' + gameHost+':' + gamePort + '/'+tournamentID;
 

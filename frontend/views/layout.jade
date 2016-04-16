@@ -88,6 +88,10 @@ mixin subscribe()
 	script(type="text/javascript").
 		VK.Widgets.Group("vk_groups", {mode: 2, width: "auto", height: "360", color1: 'FFFFFF', color2: '2B587A', color3: '5B7FA6'}, 111187123);
 
+mixin mychat()
+	div(class="col-md-12 black chatColumn chatRule")
+		include templates/chat
+
 html
 	head
 		block title

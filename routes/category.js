@@ -240,7 +240,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		Category.all()
 		.then(aux.setData(req, next))
 		.catch(aux.errored)
-	}, aux.render('Categories'), aux.err)
+	}, aux.render('admin/Categories'), aux.err)
 
 	app.get('/api/categories/add/:name/:draw_name/:level', aux.isAdmin, function (req, res, next){
 		var name = req.params.name;
