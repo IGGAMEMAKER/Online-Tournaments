@@ -59,13 +59,13 @@ function GameServerStarts(req, res){
 function SendTournamentToGameServer(tournament, res){
 	if (res) sender.Answer(res, OK);
 
-	var numberOfRounds = tournament['rounds'];
+	// var numberOfRounds = tournament['rounds'];
 	var gameNameID = tournament.gameNameID;
 
 	var tournamentID = tournament.tournamentID;
 	strLog(JSON.stringify(tournament));
 
-	if (tournament && numberOfRounds){
+	if (tournament){ //&& numberOfRounds
 		tourns[tournamentID] = gameNameID;
 		sendToGameServer("ServeGames", tournament, null, gameNameID, null, sender.printer);
 	}

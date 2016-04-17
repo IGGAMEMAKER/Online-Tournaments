@@ -17,44 +17,6 @@ mixin drawImage(src)
 	a(href="/Categories")
 		img(class="img-responsive circle" src=src)
 
-//block content
-	// iframe(id="play" src=)
-	div(class="white")
-		div(class="col-sm-12")
-					div(class="container-fluid")
-						div(class="row-fluid")
-					  	div(class="span2")
-					    
-					    div(class="span10")
-					//div(class="row")
-					div(class="span4")
-						// script var image = "/img/topics/realmadrid.jpg"
-						if draw.imgSmall
-							// img(class="img-rounded" src=draw.imgSmall width=320 height=180)
-							+drawImage(draw.imgSmall)
-						else
-							+drawImage("/img/topics/default.jpg")
-							// img(class="img-rounded" src="/img/topics/default.jpg" width=320 height=180)
-					div(class="span8")
-						h1(class="mg-md text-center") Эта страница посвящена #{draw.name_dat}
-
-				// h1(class="mg-md text-center") #{draw.name}
-			//#{draw.img}
-			br
-			//h1(class="mg-md text-center") Эта страница посвящена #{JSON.stringify(draw)} //p #{category}
-			// p Мы проводим онлайн–турниры
-			div(id="play")
-			// include mini-games/questions
-			script.
-				var topic = "#{name}";
-				reg(topic);
-				connect(topic)
-			br
-			br
-			// +mychat()
-		div(class="col-sm-12")
-			+tabArea()
-
 mixin categoryHead()
 	br
 	center
@@ -81,7 +43,7 @@ block content
 		div(id="play")
 		script.
 			var topic = "#{name}";
-			reg(topic);
+			joinStream(topic);
 			connect(topic)
 		br
 		br

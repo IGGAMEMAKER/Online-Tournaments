@@ -74,6 +74,7 @@ var upload = multer({ storage: storage }).single('image');
 	    res.render('Alive');
 	  }*/
 	});
+
 	app.post('/AddTournament', AddTournament);
 	function AddTournament(req, res){
 	  var data = req.body;

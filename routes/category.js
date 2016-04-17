@@ -40,35 +40,15 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	for (var i = list.length - 1; i >= 0; i--) {
 		var topic = list[i];
 		onliners[topic] = {};
-		tournaments[topic] = 0;
+		resetTopic(topic)
+		// tournaments[topic] = 0;
 
-		updateTopic(topic);
+		// runTournaments(topic)
 		setRoom(topic);
 	};
 
-	setInterval(function (){
-		for (var i = 0; i < list.length; i++) {
-			updateTopic(list[i])
-		};
-	}, 5000)
-
-	function updateTopic(topic){
-		Tournaments.getByTopic(topic)
-		.then(function (tournament){
-			// logger(topic, tournament)
-			if (!tournament) {
-				tournaments[topic] = 0;
-				return;
-			}
-			tournaments[topic] = tournament;
-		})
-		.catch(function (error){
-			tournaments[topic] = 0;
-		})
-	}
-
 	getCategories();
-	setInterval(getCategories, 3000);
+	// setInterval(getCategories, 3000);
 
 
 	function createCategory(name, ru_name, name_dat){
@@ -84,7 +64,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	function getCategories(){
 		var cats = realtime().categories;
-		console.log(cats);
+		// console.log('getCategories', cats);
 		for (var i = cats.length - 1; i >= 0; i--) {
 			var category = cats[i];
 			var name = category.name,
@@ -92,7 +72,77 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			level = category.level;
 
 			categories[name] = category;
+
+			runTournaments(name)
 		};
+
+		setTimeout(getCategories, 3000)
+	}
+
+	function get_tournament(topic){
+		return tournaments[topic].tournamentID || 0;
+	}
+
+	function tournament_needs_to_be_created(topic){
+		return tournaments[topic] == 0;
+	}
+
+	function tournament_is_in_queue(topic){
+		return tournaments[topic].queue == 1;
+	}
+
+	function users_are_online(topic) {
+		return get_players(topic).length>0;
+	}
+
+	function resetTopic(topic, tournamentID){
+		if (tournamentID) {
+			tournaments[topic] = {tournamentID: tournamentID}
+		} else {
+			tournaments[topic] = 0;
+		}
+	}
+
+	function keepAlive(topic, tournamentID){
+		setTimeout(function (){
+			// console.log('keepAlive', topic, tournamentID)
+			// if tournament will not finish, this will add new tournament it
+			// Если пользователи есть, а турнир не обновился, то создаём новый турнир
+			var id = get_tournament(topic);
+			var are_online = users_are_online(topic);
+			// console.log('id, are_online', id, are_online)
+			if (id == tournamentID && are_online){
+				// console.log('runTournaments')
+				resetTopic(topic);
+				runTournaments(topic)
+			} else {
+				// console.log('keepAlive continue')
+				keepAlive(topic, tournamentID)
+			}
+		}, 120*1000)
+		// }, 40*1000)
+	}
+
+	function runTournaments(topic){
+		var needToCreate = tournament_needs_to_be_created(topic);
+		var is_not_in_que = !tournament_is_in_queue(topic);
+		// logger('runTournaments', topic, 'needToCreate', needToCreate, is_not_in_que)
+		
+		if (needToCreate && is_not_in_que){
+			tournaments[topic] = { queue: 1 };
+			return Tournaments.addTopicStreamTournament(topic)
+			.then(function (tournament){
+				console.log(tournament);
+
+				var tournamentID = tournament.tournamentID;
+				tournaments[topic] = tournament;
+
+				// wakeForReg(topic)
+				emit(topic, 'online', {}) // force players to start registering
+
+				keepAlive(topic, tournamentID);
+			})
+		}
 	}
 
 	function setRoom(topic) {
@@ -118,57 +168,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		emit(topic, 'wakeUp', obj)
 	}
 
-	app.post('/Category/tournament/:topic', aux.isAuthenticated, function (req, res, next){
-		var topic = req.params.topic;
-		var login = aux.getLogin(req);
-		onliners[topic][login] = login;
-
-		var tournamentID = tournaments[topic].tournamentID;
-		// res.json({ gameHost:gameHost, gamePort: 5010, tournamentID: tournamentID })
-
-		register_manager.register(tournamentID, login, res)
-		
-		if (tournamentID>0){
-			setTimeout(function (){
-				wakeUp(topic, login, tournamentID, gameHost, 5010)
-			}, 3000)
-		}
-
-	})
-
-	function sendOnliners(topic){
-		var players = Object.keys(onliners[topic]);
-		emit(topic, 'onliners', players)
-	}
-
-	app.post('/FinishCategoryTournament/:topic', function (req, res, next){
-		res.end('');
-		var topic = req.params.topic;
-		// logger('FinishCategoryTournament', topic, tournamentID)
-
-		// var tournamentID = tournaments[topic].tournamentID;
-		var t = req.body;
-		var tournamentID = t.tournamentID;
-
-		tournaments[topic].tournamentID = tournamentID;
-
-		onliners[topic] = {};
-		emit(topic, 'online', {})
-
-		setTimeout(function (){ sendOnliners(topic) }, 3000)
-	})
-
-	function cat(topic){
-		return categories[topic]
-		// var category = realtime().categories[topic]
-		// logger('cat', category)
-		// return category;
-	}
-
-	app.get('/Categories', function (req, res){
-		res.render('Categories', {msg: realtime().categories})
-	})
-
 	app.get('/Category/:topic', function (req, res, next){
 		var topic = req.params.topic;
 		if (!categories[topic]) topic = 'default'; // { category: topic }
@@ -176,7 +175,88 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var login = aux.getLogin(req);
 		if (login) onliners[topic][login] = login;
 
-		res.render('Category', cat(topic))
+		runTournaments(topic)
+
+		res.render('Category', categories[topic])
+	})
+
+	app.get('/regTo/:login/:tournamentID', aux.isAdmin, function (req, res){
+		var login = req.params.login;
+		var tournamentID = parseInt(req.params.tournamentID);
+
+		logger('regTo', login, tournamentID);
+
+		register_manager.reg(tournamentID, login)
+		.then(function (result){
+			logger('regTo', login, tournamentID);
+			res.end(result);
+		})
+		.catch(function (err){
+			res.json({err: err})
+		})
+	})
+
+	app.post('/Category/register/:topic', aux.isAuthenticated, function (req, res, next){
+		var topic = req.params.topic;
+		var login = aux.getLogin(req);
+
+		onliners[topic][login] = login;
+
+		var tournamentID = get_tournament(topic);
+
+		// res.json({ gameHost:gameHost, gamePort: 5010, tournamentID: tournamentID })
+
+		register_manager.register(tournamentID, login, res)
+		
+		// if (tournamentID>0){
+			setTimeout(function (){
+				wakeUp(topic, login, tournamentID, gameHost, 5010)
+			}, 3000)
+		// }
+
+	})
+
+	// app.get('/Category/set/:topic/:tournamentID', aux.isAdmin, function (req, res, next){
+	// 	var topic = req.params.topic;
+	// 	var tournamentID = parseInt(req.params.tournamentID);
+
+	// 	// Tournaments.
+	// })
+
+	function get_players(topic){
+		return Object.keys(onliners[topic]);
+	}
+
+	function sendOnliners(topic){
+		var players = get_players(topic);
+		emit(topic, 'onliners', players)
+	}
+
+	app.post('/FinishCategoryTournament/:topic', function (req, res, next){
+		res.end('');
+		var topic = req.params.topic;
+		// // logger('FinishCategoryTournament', topic, tournamentID)
+
+		// // var tournamentID = tournaments[topic].tournamentID;
+		// var t = req.body;
+		// var tournamentID = t.tournamentID;
+
+		// tournaments[topic].tournamentID = tournamentID;
+		console.log('FinishCategoryTournament', topic)
+		onliners[topic] = {};
+		
+		resetTopic(topic);
+		runTournaments(topic)
+
+		// emit(topic, 'online', {})
+
+		// setTimeout(function (){ sendOnliners(topic) }, 3000)
+
+
+	})
+
+	app.get('/Categories', function (req, res){
+		res.render('Categories', {msg: realtime().categories})
 	})
 
 	// api calls

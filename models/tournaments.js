@@ -14,6 +14,8 @@ var OK = { result: 'OK' };
 
 var c = require('../constants')
 
+var sender = require('../requestSender')
+
 // var mongoose = require('mongoose');
 // //mongoose.connect('mongodb://localhost/test');
 log(configs.db);
@@ -132,11 +134,11 @@ function getByTopic(topic){
 	// },
 }
 
-/*
+
 function isSpecialTournament(tournament){
 	return tournament.settings && tournament.settings.special==SPECIALITY_SPECIAL;
 }
-*/
+
 var REGULARITY_NONE=0;
 var REGULARITY_REGULAR=1;
 var REGULARITY_STREAM=2;
@@ -195,6 +197,42 @@ function add(tournament){
 	});
 }
 
+function addTopicStreamTournament(topic) {
+	var buyIn = 0
+	var gameNameID = 2;
+	var Prizes = [0]
+	var goNext = [1, 1];
+
+	var obj = {
+		buyIn:				buyIn,
+		gameNameID:		gameNameID,
+
+		goNext:				goNext,
+		Prizes: 			Prizes,
+
+		startDate:		null,
+		status:				null,
+		players:			0
+	}
+
+	obj.settings = { topic: topic, regularity: REGULARITY_STREAM };
+
+	// AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
+	return addNewTournament(obj)
+	.then(function (tournament){
+		console.log('addNewTournament', topic, tournament)
+		
+			if (!isSpecialTournament(tournament)) {
+				setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
+			}
+
+			sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
+
+		// sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');
+		return tournament;
+	})
+}
+
 function addNewTournament(tournament){
 	return new Promise(function (resolve, reject){
 		Tournament
@@ -212,10 +250,12 @@ function addNewTournament(tournament){
 
 			Tournament2.save(tournament)
 			.then(function (result){
+				// console.log('tournament save', tournament, result)
 				enable(tournamentID)
 				return resolve(tournament)
 			})
 			.catch(function (err){
+				console.log(err)
 				return reject({err: err, message: 'cannot add tournament', tournament: tournament })
 			})
 
@@ -385,6 +425,7 @@ this.addNewTournament = addNewTournament;
 this.todos = all
 
 this.getByTopic = getByTopic;
+this.addTopicStreamTournament = addTopicStreamTournament;
 
 
 // specials()

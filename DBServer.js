@@ -1831,16 +1831,16 @@ function ClearRegistersInTournament(TRegIDs){
 
 	for (var i = TRegIDs.length - 1; i >= 0; i--) {
 		var tournamentID = TRegIDs[i];
-		Log('treg: ' + tournamentID, 'TREGS');
+		// Log('treg: ' + tournamentID, 'TREGS');
 		TournamentReg.update( { tournamentID : tournamentID}, { $set: { status : finishedTS } }, {multi: true}, function (err, count){
 			if (err) {Error(err);}
 			else{
 				var cnt = updated(count);
 				if (cnt){
-					Log('Killed TournamentRegs: ' + tournamentID + ' count: '+cnt, 'TREGS' );
+					// Log('Killed TournamentRegs: ' + tournamentID + ' count: '+cnt, 'TREGS' );
 				}
 				else{
-					Log('No changes ' + tournamentID + ' ' + JSON.stringify(cnt), 'TREGS')
+					// Log('No changes ' + tournamentID + ' ' + JSON.stringify(cnt), 'TREGS')
 				}
 			}
 		})
@@ -2260,6 +2260,7 @@ function addTournament(maxID, tournament, res){
 		}	else {
 			if (res) Answer(res, tournament);
 			Log('added Tournament ' + JSON.stringify(tournament), STREAM_TOURNAMENTS);
+
 			if (!isSpecialTournament(tournament)) {
 				setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);
 			}

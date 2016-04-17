@@ -19,10 +19,11 @@ extends layout
 block title
 	title Темы
 
+block ftr
+
 block content
 	include templates/news
 	h1(class="white text-center") Темы
-	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 	//p!= JSON.stringify(msg)
 	each cat in msg
 		+drawCategory(cat)
@@ -32,6 +33,8 @@ block content
 		div(class="col-sm-4 subscribe")
 			+subscribe()
 	div(class="col-sm-12 offset-bg")
+		h2(class="white text-center") Нет интересной темы?
+		h3(class="white text-center") Предложи свою тему в комментариях!
 		+chat()
 
 block JSlibs

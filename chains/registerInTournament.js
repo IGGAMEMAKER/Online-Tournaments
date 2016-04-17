@@ -111,34 +111,6 @@ function StartTournament(tournamentID, force, res){
 	.catch(aux.report('RegisterUserInTournament.StartTournament', {tournamentID:tournamentID}))
 }
 
-function joinStream(tournamentID, login){
-	return getRegistrableTournament(tournamentID)
-	.then(function (tournament){
-		return TournamentReg.registerUser(login, tournamentID, 'gaginho')
-	})
-	.then(function (result){
-		return TournamentReg.participants(tournamentID)
-	})
-	.then(function (participants){
-		console.log('participants', participants);
-		if (participants.length==0){
-			StartTournament(tournamentID)
-		}
-		return Tournaments.updateByID(tournamentID, { players: participants.length || 0 })
-	})
-	.then(function (result){
-		return new Promise(function (resolve, reject){
-			var data = { login:login, gameID:tournamentID };
-			var gameNameID = 2; //TT.gameNameID
-			sender.sendRequest("Join", data ,'127.0.0.1', gameNameID, null, function (err, response, body, res){
-				if (err) return reject(err);
-
-				resolve(body)
-			});
-		})
-	})
-}
-
 function add_participant(tournamentID, login){
 
 	return TournamentReg.registerUser(login, tournamentID, 'gaginho')
@@ -290,6 +262,7 @@ function register(tournamentID, login, res){
 	// 	})
 	// 	// return changePlayersCount(tournamentID); 
 	// })
+
 	return reg(tournamentID, login)
 	.then(function (tournament){
 		// info['changePlayersCount'] = saved;
@@ -297,6 +270,7 @@ function register(tournamentID, login, res){
 
 		// aux.done(login, 'tournament.join', {tournamentID:tournamentID});
 		if (res) Answer(res, OK);
+		
 		
 		join_if_stream(tournament, login);
 		
@@ -359,10 +333,8 @@ module.exports = function(_aux, _realtime){
 	return {
 		register: register,
 		reg: reg,
-		joinStream: joinStream,
 		join: join,
 		StartTournament: StartTournament,
-		needsStart: needsStart,
 		setQueue: function(tournamentID, login){
 			setQueue(tournamentID, login);
 		},

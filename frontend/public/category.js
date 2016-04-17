@@ -2,8 +2,10 @@ var room;
 
 var wanna_play = true;
 
-function reg(topic){
-	if (wanna_play)	setAsync('/Category/tournament/'+topic, null, function (msg){})
+function joinStream(topic){
+	if (wanna_play)	setAsync('/Category/register/'+topic, null, function (msg){
+		// alert(JSON.stringify(msg))
+	})
 }
 
 function drawFrame(msg){
@@ -77,7 +79,7 @@ function connect(topic){
 
 	room.on('online', function (msg){
 		console.log('online', msg)
-		reg(topic);
+		joinStream(topic);
 	})
 
 	room.on('onliners', drawOnliners)
