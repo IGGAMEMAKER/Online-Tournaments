@@ -1,0 +1,43 @@
+//
+
+mixin drawPointTab(points, prize, index)
+	tr
+		td
+			p Наберите #{points} баллов
+		td
+			p #{prize} рублей
+		//td
+			a(class="btn btn-primary" onclick="getMoney("+index+")") Получить #{prize} рублей
+	
+p(class="text-center" id="MarathonStartTime")
+p(class="text-center" id="MarathonFinishTime")
+table(class="table rating" id="rating")
+	thead 
+		tr 
+			//th #
+			//th Игрок
+			th Очки
+			//th(class="rating-games") Игры
+			//th(class="rating-acceleratorValue") Ускоритель
+			th Приз
+			//th Действие
+	tbody(id="ratingTab")
+		+drawPointTab(600, 5, 1)
+		+drawPointTab(1000, 10, 2)
+		+drawPointTab(5000, 50, 3)
+		+drawPointTab(15000, 150, 4)
+		+drawPointTab(50000, 500, 5)
+		+drawPointTab(100000, 1000, 6)
+	br
+	#MARATHONPOINTS
+	a(class="btn btn-primary" onclick="getMoney(1)") Обменять баллы на деньги
+div(class="col-md-12")
+	a(href="/Marathon#accelerator" class="btn btn-danger center-block offset-md") Заработайте очки быстрее!
+
+script.
+	//console.log("getPoints")
+	getPoints();
+
+//script.
+	loadRating();
+
