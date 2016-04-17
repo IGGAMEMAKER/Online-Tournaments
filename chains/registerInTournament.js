@@ -130,7 +130,13 @@ function reg(tournamentID, login){
 
 	return new Promise(function (resolve, reject){
 
-		if (!queue[tournamentID]) queue[tournamentID] = { };
+		if (!queue[tournamentID]) {
+			console.log(tournamentID, 'is empty')
+			queue[tournamentID] = { };
+		} else {
+			console.log(tournamentID, login, queue[tournamentID])
+			
+		}
 
 		if (queue[tournamentID][login]) return reject('many requests ' + login);
 
@@ -271,7 +277,7 @@ function register(tournamentID, login, res){
 		// aux.done(login, 'tournament.join', {tournamentID:tournamentID});
 		if (res) Answer(res, OK);
 		
-		
+
 		join_if_stream(tournament, login);
 		
 		needsStart(tournament);

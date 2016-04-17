@@ -23,7 +23,7 @@ function drawButton(host, port, tournamentID){
     
   var txt = '<p>AAAAAAAA</p>';
 
-  var onclick = "mark('mark/game/push')";//, { login:login }
+  var onclick = "mark('/mark/game/push')";//, { login:login }
   // console.log(onclick);
 
   txt='<form id="form1" method="post" onclick="'+ onclick + '" action="'+addr+'"  > '//target="_blank"

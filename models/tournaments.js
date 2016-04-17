@@ -115,17 +115,40 @@ function getStreamID(login){
 	})
 }
 
+// getByTopic('realmadrid')
+// .then(function (tournaments){
+// 	console.log('getByTopic', tournaments)
+// })
+
 function getByTopic(topic){
-	var obj = {
+	var match = {
 		'settings.hidden': { $ne: true }
 		, 'settings.regularity' : REGULARITY_STREAM
-		,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+		,	'status' : { $in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
 	}
 
-	if (topic != 'default') {
-		obj['settings.topic'] = topic
+	var sort = {
+		"_id" : -1
 	}
-	return Tournament2.find(obj)
+
+	var tpc = topic;
+	// if (topic == 'default') {
+	// 	tpc = { $or : [{ $exists: false }, 'default'] }
+	// }
+	
+	match['settings.topic'] = tpc;
+
+	var obj = [{ $match : match }, { $sort : sort	}]
+
+	// var obj = {
+	// 	'settings.hidden': { $ne: true }
+	// 	, 'settings.regularity' : REGULARITY_STREAM
+	// 	,	status: {$in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
+	// }
+
+	// return Tournament2.find(obj)
+	return Tournament2.aggregate(obj)
+
 	// 	Tournament.findOne({
 	// 	// 'settings.regularity':REGULARITY_STREAM
 	// 	,	'settings.hidden': {$ne: true}

@@ -16,7 +16,9 @@ function drawFrame(msg){
 	var gamePort = msg.gamePort;
 	var gameHost = msg.gameHost;
 	var tournamentID = msg.tournamentID;
+	var lgn = msg.login;
 
+	if (login != lgn) return
 	// reconnect(tournamentID, gameHost, gamePort)
 	var src = 'http://'+gameHost+':'+gamePort+'/Game?tournamentID='+tournamentID;
 	// if (tournamentID) {
