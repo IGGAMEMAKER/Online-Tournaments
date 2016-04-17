@@ -229,6 +229,18 @@ function loadRating(){
   }, 500);
 }
 
+function getMoney(index){
+  setAsync("/getMoney/"+index)
+}
+
+function getPoints(){
+  setAsync("/getMyPoints", {}, drawPoints, "GET")
+}
+
+function drawPoints(msg){
+  $("#MARATHONPOINTS").html('Набрано баллов : ' + msg.points)
+}
+
 function mark(url, data, method){
   // console.log('mark', url, data, method);
   $.ajax({
@@ -281,6 +293,11 @@ function get_time(string){
   // return date.getDay();
   return date.toLocaleDateString() + " " + date.toLocaleTimeString()//.getUTCDate()+;
 }
+
+// function drawSoloRating(){
+//   var rating = "#ratingTab";
+
+// }
 
 function drawRating(msg){
   if (msg && msg.leaderboard){

@@ -74,6 +74,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			categories[name] = category;
 
 			runTournaments(name)
+
+			// emit(name, 'whoisonline')
 		};
 
 		setTimeout(getCategories, 3000)
@@ -103,6 +105,12 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		}
 	}
 
+	function clearOnliners(topic){
+		onliners[topic] = {};
+	}
+
+
+
 	function keepAlive(topic, tournamentID){
 		setTimeout(function (){
 			// console.log('keepAlive', topic, tournamentID)
@@ -128,21 +136,21 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var is_not_in_que = !tournament_is_in_queue(topic);
 		// logger('runTournaments', topic, 'needToCreate', needToCreate, is_not_in_que)
 		
-		if (needToCreate && is_not_in_que){
-			tournaments[topic] = { queue: 1 };
-			return Tournaments.addTopicStreamTournament(topic)
-			.then(function (tournament){
-				console.log(tournament);
+		// if (needToCreate && is_not_in_que){
+		// 	tournaments[topic] = { queue: 1 };
+		// 	return Tournaments.addTopicStreamTournament(topic)
+		// 	.then(function (tournament){
+		// 		console.log(tournament);
 
-				var tournamentID = tournament.tournamentID;
-				tournaments[topic] = tournament;
+		// 		var tournamentID = tournament.tournamentID;
+		// 		tournaments[topic] = tournament;
 
-				// wakeForReg(topic)
-				emit(topic, 'online', {}) // force players to start registering
+		// 		// wakeForReg(topic)
+		// 		emit(topic, 'online', {}) // force players to start registering
 
-				keepAlive(topic, tournamentID);
-			})
-		}
+		// 		keepAlive(topic, tournamentID);
+		// 	})
+		// }
 	}
 
 	function setRoom(topic) {
@@ -180,6 +188,15 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		res.render('Category', categories[topic])
 	})
 
+	app.post('/Category/whoisonline/:topic', aux.isAuthenticated, function (req, res){
+		var topic = req.params.topic;
+		if (!categories[topic]) topic = 'default'; // { category: topic }
+		
+		var login = aux.getLogin(req);
+		if (login) onliners[topic][login] = login;
+		res.end('')
+	})
+
 	app.get('/regTo/:login/:tournamentID', aux.isAdmin, function (req, res){
 		var login = req.params.login;
 		var tournamentID = parseInt(req.params.tournamentID);
@@ -195,6 +212,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			res.json({err: err})
 		})
 	})
+
 
 	app.post('/Category/register/:topic', aux.isAuthenticated, function (req, res, next){
 		var topic = req.params.topic;
@@ -243,10 +261,10 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 		// tournaments[topic].tournamentID = tournamentID;
 		console.log('FinishCategoryTournament', topic)
-		onliners[topic] = {};
+		// clearOnliners(topic);
 		
 		resetTopic(topic);
-		runTournaments(topic)
+		// runTournaments(topic)
 
 		// emit(topic, 'online', {})
 

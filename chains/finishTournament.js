@@ -176,16 +176,16 @@ function dataBaseChanges(data){
 		tournament = t;
 
 		// goes in parallel
-		// if (needsAutoAdd(tournament)){
-		// 	Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
-		// 	var youngerizedTournament = YoungerizeTournament(tournament);
+		if (needsAutoAdd(tournament)){
+			Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
+			var youngerizedTournament = YoungerizeTournament(tournament);
 			
-		// 	Tournaments.addNewTournament(youngerizedTournament)
-		// 	.then(function (result) {
-		// 		serveTournament(youngerizedTournament)
-		// 	})
-		// 	.catch(aux.report('autoAdd', { info:info } ))
-		// }
+			Tournaments.addNewTournament(youngerizedTournament)
+			.then(function (result) {
+				serveTournament(youngerizedTournament)
+			})
+			.catch(aux.report('autoAdd', { info:info } ))
+		}
 
 		// if (isStreamTournament(tournament)){
 		// 	var topic = tournament.settings.topic || 'default';

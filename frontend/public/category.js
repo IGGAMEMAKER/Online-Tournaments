@@ -8,6 +8,10 @@ function joinStream(topic){
 	})
 }
 
+function whoisonline(topic){
+	setAsync('/Category/whoisonline/'+topic)
+}
+
 function drawFrame(msg){
 	var gamePort = msg.gamePort;
 	var gameHost = msg.gameHost;
@@ -80,6 +84,10 @@ function connect(topic){
 	room.on('online', function (msg){
 		console.log('online', msg)
 		joinStream(topic);
+	})
+
+	room.on('whoisonline', function (msg){
+		whoisonline(topic);
 	})
 
 	room.on('onliners', drawOnliners)

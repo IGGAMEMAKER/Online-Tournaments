@@ -4,7 +4,7 @@ mixin rating()
 	h3(class="text-center ratingHead") Марафон
 		br
 		a(href="Leaderboard") все участники
-	include templates/rating
+	include templates/rating-solo
 
 extends layout
 
@@ -13,7 +13,7 @@ block title
 
 block content
 	include templates/news
-	include templates/topics
+	//include templates/topics
 	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 	script.
 		var tournaments = !{JSON.stringify(msg)};

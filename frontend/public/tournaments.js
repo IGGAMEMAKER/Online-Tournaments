@@ -141,7 +141,7 @@ socket.on('update', function (msg){
 	// }
 
 socket.on('leaderboard', function (msg){
-	drawRating(msg);
+	// drawRating(msg);
 })
 
 

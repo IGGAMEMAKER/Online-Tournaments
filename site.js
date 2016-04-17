@@ -1773,6 +1773,55 @@ app.post('/mark/Here/:login', function (req, res){
 //   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
 // });
 
+function has_enough_points(index, points){
+  if (points < 600) return { money:0, discount:0 };
+
+  if (points < 1000) return { money:5, discount:600 };
+  if (points < 5000) return { money:10, discount:1000 };
+  if (points < 15000) return { money:50, discount:5000 };
+  if (points < 50000) return { money:150, discount:15000 };
+  if (points < 100000) return { money:500, discount:50000 };
+  
+  return { money:1000, discount:points };
+}
+
+app.get('/getMyPoints', function (req, res){
+  console.log('/getMyPoints')
+  var login = aux.getLogin(req);
+  var points = 0;
+
+  if (login) {
+    var marathonUser = getMarathonUser(login);
+    points = marathonUser.points;
+  }
+  res.json({points: points});
+})
+
+app.post('/getMoney/:index', aux.authenticated, function (req, res){
+  var login = aux.getLogin(req)
+  var index = parseInt(req.params.index);
+  res.end('');
+
+  // Marathon.getMarathonUser(login)
+  var marathonUser = getMarathonUser(login);
+  // .then(function (marathonUser){
+    var points = marathonUser.points;
+
+    var has = has_enough_points(index, points);
+    var money = has.money;
+    var discount = has.discount;
+    if (money>0){
+      Marathon.giveNpoints(login, -discount)
+      .then(function (result){
+        if (result){
+          // Marathon.increase_money_and_notify(login, money)
+          increase_money_and_notify(login, money)
+        }
+      })
+    }
+  // })
+})
+
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
@@ -1925,6 +1974,8 @@ function getShortActivityBoard(leaderboard){
 }
 
 var leaderboard_min={};
+
+
 
 function get_Leaderboard(period){
   // console.log('get_Leaderboard');
