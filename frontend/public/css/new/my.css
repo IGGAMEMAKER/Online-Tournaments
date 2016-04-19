@@ -422,3 +422,8 @@ button{
     width: 200px;
     height: 200px;
 }
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}

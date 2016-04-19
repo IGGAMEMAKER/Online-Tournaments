@@ -6,7 +6,7 @@ block title
 block JSlibs
 	script(src="/packs.js")
 	if session && session.login
-		script(src="/category.js")
+		script(src="/category.js?1")
 	else
 		h2(class="white") Для участия в турнирах про #{category} необходимо
 			a(href="/Login") авторизоваться 

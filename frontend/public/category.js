@@ -126,7 +126,7 @@ function drawCategory(name, href, image, NAME){
 			if (!NAME) NAME="default"
 			image = "/img/topics/"+NAME+".jpg";
 
-			text += '<div class="col-sm-4 white img-wrapper">';
+			text += '<div class="col-sm-4 white img-wrapper nopadding">';
 			text += '<center>'
 				text += '<a href="'+ href + '">'; ///Category/'+category.name+'
 					text += '<img class="img-responsive" src="'+image+'" />'
@@ -143,11 +143,13 @@ function getCategories(){
 		// var text = '<h1 class="white text-center"> Темы </h1>'
 		var text = '<div class="white text-center"><h1> Темы </h1> <p><a href="/Categories" class=""> Все темы </a></p> </div>'
 		// console.log(categories)
+		// text+= '<div class="row">'
 		for (var i=0; i < categories.length && i < 4; i++){
 				var category = categories[i];
 				// console.log('category', category)
 				text += drawCategory(category.draw.name, '/Category/'+ category.name ,category.draw.imgSmall, category.name)
 		}
+		// text+= '</div>'
 		// text += '<div class="col-sm-12" align="center"><center>'
 		// text += '<a href="/Categories" class="btn btn-primary btn-lg">Все темы</a>'
 		// // text += drawCategory('Все темы', '/Categories', '/img/topics/default.jpg')
