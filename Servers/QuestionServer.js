@@ -215,16 +215,52 @@ app.post('/AddQuestion', function (req, res){
 // 	/// iterate by topics (keys of questionBase) and fill questionBase
 // })
 
-var questionBase = {};
-function initializeQuestions(){
-	loadByTopic(null)
-	// .then(console.log)
-	// .catch(console.error)
 
-	loadByTopic('realmadrid')
-	// .then(console.log)
-	// .catch(console.error)
+
+var questionBase = {};
+
+var topics = ['realmadrid', 'default']
+
+function loadTopics(){
+	var obj = { 
+		$group: {
+			_id : "$topic"
+		} 
+	}
+	Question.aggregate([obj], function (err, list){
+		if (err) return console.log('cannot load topics', err);
+
+		if (list.length) {
+			console.log(topics, list);
+			topics = [];
+			
+			for (var i = list.length - 1; i >= 0; i--) {
+				var topic = list[i]._id;
+				topics.push(topic);
+			};
+			// topics = list;
+			console.log(topics, list);
+		}
+	})
 }
+
+function initializeQuestions(){
+	// var ts = Object.keys(questionBase);
+	// console.log('initializeQuestions', ts)
+	loadTopics();
+	setTimeout(function (){
+		for (var i = topics.length - 1; i >= 0; i--) {
+			loadByTopic(topics[i]);
+		};
+	}, 3000);
+	// loadByTopic('default')
+	// // .then(console.log)
+	// // .catch(console.error)
+
+	// loadByTopic('realmadrid')
+}
+
+
 
 initializeQuestions();
 
@@ -234,6 +270,21 @@ app.get('/topic/:topic', function (req, res){
 
 app.get('/questionBase', function (req, res){
 	res.json({ msg: questionBase })
+})
+
+app.get('/switchToDefault', function (req, res){
+	// return new Promise(function (resolve, reject){
+		Question.update({ topic: { $exists: false } }, {$set: { topic: 'default'} }, { multi: true }, function (err, count){
+			if (err) return res.json({ err: err});
+
+			return res.json({ count: count })
+		})
+		// Question.find({ topic: { $exists: false } }, function (err, count){
+		// 	if (err) return res.json({ err: err});
+
+		// 	return res.json({ count: count })
+		// })
+	// })
 })
 
 function loadQuestions(query, params, hard){
@@ -415,6 +466,8 @@ function setQuestions(gameID, topic){
 	// add_question_to_list
 	// add_questions
 }
+
+
 
 function loadByTopic(topic){
 	var query = {

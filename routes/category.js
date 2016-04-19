@@ -6,6 +6,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	var request = require('request')
 	var requestSender = require('../requestSender')
 	var logger = console.log;
+
 	var list = ['default', 'realmadrid'];
 
 	var register_manager = require('../chains/registerInTournament')(aux)
@@ -92,6 +93,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	function getCategories(){
 		var cats = realtime().categories;
 		// console.log('getCategories', cats);
+		list = []
 		for (var i = cats.length - 1; i >= 0; i--) {
 			var category = cats[i];
 			var name = category.name,
@@ -99,7 +101,9 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			level = category.level;
 
 			categories[name] = category;
-
+			list.push(name);
+			if (!rooms[name]) setRoom(name);
+			if (!onliners[name]) onliners[name] = {}
 			// runTournaments(name)
 			getTournaments(name);
 
@@ -245,7 +249,9 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	app.post('/Category/register/:topic', aux.isAuthenticated, function (req, res, next){
 		var topic = req.params.topic;
 		var login = aux.getLogin(req);
+
 		console.log('category/register', topic, login)
+
 		var tournamentID = get_tournament(topic);
 
 		if (tournamentID > 0){ // && !onliners[topic][login]
