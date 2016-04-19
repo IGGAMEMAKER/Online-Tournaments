@@ -83,10 +83,6 @@ app.post('/RestartTournament', function (req, res) {StartTournament(req.body.tou
 app.post('/StopTournament',  function (req, res) {StopTournament (req.body, res);});
 app.post('/EnableTournament', function (req, res) {EnableTournament(req.body, res);});
 
-
-
-
-
 app.post('/IncreaseMoney', IncreaseMoney);
 app.post('/DecreaseMoney', DecreaseMoney);
 

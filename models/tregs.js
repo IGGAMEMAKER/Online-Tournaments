@@ -61,8 +61,8 @@ function getParticipants(tournamentID){
 		TournamentReg.find({tournamentID:tournamentID},'', function (err, players){
 			if (err) return reject(err);
 
-			log('players : ');
-			log(players);
+			// log('players : ');
+			// log(players);
 			return resolve(players||null);
 		});
 	});

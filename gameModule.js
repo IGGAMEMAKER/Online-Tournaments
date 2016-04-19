@@ -47,6 +47,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     next();
 });*/
 
+var starters = {};
+
 var handler = require('./errHandler')(app, strLog, serverName);
 /*app.use(function(err, req, res, next){
   console.error('ERROR STARTS!!');
@@ -256,7 +258,7 @@ var timers = { };
 
 
 var configs = require('./configs');
-console.log(JSON.stringify(configs));
+// console.log(JSON.stringify(configs));
 
 const STANDARD_PREPARE_TICK_COUNT = 5;
 var gameHost = configs.gameHost || '127.0.0.1';
@@ -400,7 +402,7 @@ function Answer(res, code) { res.end(code); }
 
 function isRunning(gameID){
 	var isr = games[gameID] && games[gameID].isRunning;
-	if (!isr) strLog('game ' + gameID + ' isRunning= ' + isr, 'chk');
+	if (!isr) strLog('game ' + gameID + ' isRunning= ' + isr, 'Games');
 	return isr;
 }
 
@@ -480,7 +482,7 @@ function JoinPlayer(ID, login){
 }
 
 function PrepareAndStart(ID, userIDs, res){
-	strLog('PrepareAndStart tournament ' + ID, 'Tournaments');
+	strLog('PrepareAndStart tournament ' + ID, 'Games');
 	games[ID].status=PREPARED;
 	//games[ID].players = {};
 	games[ID].players.UIDtoGID = {};
@@ -490,7 +492,7 @@ function PrepareAndStart(ID, userIDs, res){
 	//***********
 	games[ID].gameDatas = {};
 	//***********
-
+	starters[ID] = 1;
 	// Fill users
 	var i=0; //var userIDs = data['logins']; //strLog(userIDs);
 	for (var playerID in userIDs){
@@ -525,23 +527,25 @@ function GameIsSet(ID){
 	return games[ID] && (games[ID].status==INIT || games[ID].status==PREPARED);
 }
 
+
 function StartGame (req, res){
 	var data = req.body;
 	strLog("start game: " + JSON.stringify(data), 'Games');
 	var ID = data['tournamentID'];
 	var force = data.force;
+
 	if (GameIsSet(ID)){
 		if (force || !isRunning(ID)){
 			if (force) { 
 				strLog('I am forced to start tournament ' + ID + ' ((( force=' + force, 'Tournaments');
 				stopGame(ID);
-			}
-			else { 
+			}	else {
 				strLog('It was not running ' + ID, 'Tournaments'); 
 			}
 			strLog('WRITE: You need to check if the game was finished. Maybe it was finished, but you start it again!', 'shitCode');
-
-			PrepareAndStart(ID, data.logins, res);
+			var was_started = starters[ID]==1;
+			console.log('game ', ID, 'was_started', was_started);
+			if (!was_started) PrepareAndStart(ID, data.logins, res);
 
 			/*fs.readFile('Logs/Games/' + ID, function (err, fileData){
 				if (err){
@@ -556,13 +560,11 @@ function StartGame (req, res){
 					ManualFinishGame(ID, gameResult);
 				}
 			});	*/
-		}
-		else{
+		} else {
 			strLog('Game ' + ID + ' is running normally and there is no reason to restart it', 'Tournaments');
 			sender.Answer(res, Fail);
 		}
-	}
-	else{
+	} else {
 		strLog('Game ' + ID + ' was not set, nothing to do with it :)', 'Tournaments');
 		sender.Answer(res, Fail);
 	}

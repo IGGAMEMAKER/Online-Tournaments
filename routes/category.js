@@ -256,7 +256,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		}
 		
 		onliners[topic][login] = login;
-
+		sendOnliners(topic);
 
 		// res.json({ gameHost:gameHost, gamePort: 5010, tournamentID: tournamentID })
 

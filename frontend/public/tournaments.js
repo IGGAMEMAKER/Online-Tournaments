@@ -152,7 +152,7 @@ const TOURN_STATUS_PAUSED = 4;
 
 function redraw_tournament_actions(tID){
 	//redrawRegButtons(tournaments);
-	return function(profile){
+	return function (profile){
 		redraw_reg_button({ tournamentID:tID });
 	}
 }
