@@ -111,12 +111,25 @@ function join(topic){
 
 }
 
-function drawCategory(name, href, image){
+function drawCategory(name, href, image, NAME){
+	// var text = '';
+	// 		text += '<div class="col-sm-3 white img-wrapper">';
+	// 		text += '<center>'
+	// 			text += '<a href="'+ href + '">'; ///Category/'+category.name+'
+	// 				text += '<img class="img-responsive circle-md" src="'+image+'" />'
+	// 				text += '<p>' + name + '</p>'
+	// 			text+= '</a>'
+	// 		text+= '</center>'
+	// 	text+= '</div>'
+	// 	return text;
 	var text = '';
+			if (!NAME) NAME="default"
+			image = "/img/topics/"+NAME+".jpg";
+
 			text += '<div class="col-sm-3 white img-wrapper">';
 			text += '<center>'
 				text += '<a href="'+ href + '">'; ///Category/'+category.name+'
-					text += '<img class="img-responsive circle-md" src="'+image+'" />'
+					text += '<img class="img-responsive" src="'+image+'" />'
 					text += '<p>' + name + '</p>'
 				text+= '</a>'
 			text+= '</center>'
@@ -127,15 +140,21 @@ function drawCategory(name, href, image){
 function getCategories(){
 	setAsync("/api/categories/available", {}, function (msg){
 		var categories = msg.msg;
-		var text = '<h1 class="white text-center"> Темы </h1>'
+		// var text = '<h1 class="white text-center"> Темы </h1>'
+		var text = '<div class="white text-center"><h1> Темы </h1> <p><a href="/Categories" class=""> Все темы </a></p> </div>'
 		// console.log(categories)
-		for (var i=0; i < categories.length && i < 3; i++){
+		for (var i=0; i < categories.length && i < 4; i++){
 				var category = categories[i];
 				// console.log('category', category)
-				text += drawCategory(category.draw.name, '/Category/'+ category.name ,category.draw.imgSmall)
+				text += drawCategory(category.draw.name, '/Category/'+ category.name ,category.draw.imgSmall, category.name)
 		}
-		text += drawCategory('Все темы', '/Categories', '/img/topics/default.jpg')
-		console.log(text)
+		// text += '<div class="col-sm-12" align="center"><center>'
+		// text += '<a href="/Categories" class="btn btn-primary btn-lg">Все темы</a>'
+		// // text += drawCategory('Все темы', '/Categories', '/img/topics/default.jpg')
+		// text += '</center></div>'
+		// text += '<br><br></center>'
+		// console.log(text)
+
 		// text = JSON.stringify(categories);
 		// $("#categories").html(JSON.stringify(categories))
 		$("#categories").html(text)

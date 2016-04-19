@@ -1,21 +1,3 @@
-/*var text = '<div style="" class="col-sm-3 thumbnailMax tournament sm-offset">';
-text += '<center>';
-
-
-			<h4 id="gname-668" class="mg-md text-center">Викторина #668</h4><!-- image-->
-			<img src="/img/quiz.png" width="210" height="150">
-			<h3 id="wnrs-undefined" style="height:55px; width:220px">Приз: Случайный</h3>
-			<h4 class="mg-md">
-				<p>Призовых мест: 1</p>
-				<div id="plrs-668">Участников : 0 из 1</div>
-			</h4>
-			<a id="reg668" onclick="reg('g.iosebashvili',668)" style="border-radius:6px; " class="btn btn-lg btn-primary"> Играть БЕСПЛАТНО</a>
-			<div id="unregister668" style="display:none;">
-				<a id="unReg668" onclick="unReg('g.iosebashvili',668)" style="border-radius:6px;" class="btn btn-lg btn-danger">Сняться с турнира</a>
-			</div>
-		</center>
-	</div>*/
-
 const UN_REG_FIELD= '#unregister';// '#UN_REG_FIELD';
 const REG_FIELD = '#register';
 const AUTH_FIELD = '#auth';
@@ -619,7 +601,7 @@ function miniBlink(element, period){
 
 function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 	//var text = '<div id="tournamentWrapper'+id+'" class="col-sm-6 col-md-4">';
-
+	if (isStream(t)) return;
 	var text = '<div class="col-sm-6 col-md-4" id="tournamentWrapper'+id+'"><div class="ticket-card" id="bgd'+id+'" >';
 	text += '<div class="cover">' + drawImage(img, t) + '</div>';
 	
@@ -702,21 +684,4 @@ function drawTournament(id, img, prize, winPlaces, players, Max, buyIn, t){
 	redraw_reg_button({tournamentID:id});
 
 	$("#tournamentWrapper"+id).show(ANIM_SPEED);
-	// set_toggle_collapse_listener(id);
-}
-
-function set_toggle_collapse_listener(tournamentID){
-	$('#toggle'+tournamentID).click(function() {
-	  $tickets = $(this).parent().siblings('.collapse');
-	 
-	  if ($tickets.hasClass('in')) {
-	    $tickets.collapse('hide');
-	    //$(this).html('Подробнее');
-	    $(this).closest('.ticket-card').removeClass('active');
-	  } else {
-	    $tickets.collapse('show');
-	    $(this).html('Свернуть');
-	    $(this).closest('.ticket-card').addClass('active');
-	  }
-	});
 }

@@ -53,7 +53,7 @@ block content
 
 mixin tabs()
 	ul(class="nav nav-tabs")
-		li(class="active")
+		//li(class="active")
 			a(href="#tab1" data-toggle="tab" aria-expanded="true") Марафон
 			//onclick="loadRating()"
 		li
@@ -62,14 +62,14 @@ mixin tabs()
 			a(href="#tab3" data-toggle="tab" aria-expanded="false") Игроки
 		// li
 			a(href="#tab4" data-toggle="tab" aria-expanded="false") Карточки
-		li
+		li(class="active")
 			a(href="#tab5" data-toggle="tab" aria-expanded="false") Чат
 
 mixin tabArea()
 	div(class="row")
 		+tabs()
 		div(class="tab-content")
-			div(class="tab-pane active" id="tab1")
+			div(class="tab-pane" id="tab1")
 				//a(href="#" onclick="loadRating()") Обновить
 				div(class="bgc-white" id="ratingField")
 					div(class="dataRule2")
@@ -90,7 +90,7 @@ mixin tabArea()
 				#onliners
 			div(class="tab-pane" id="tab4")
 				p tab4
-			div(class="tab-pane" id="tab5")
+			div(class="tab-pane active" id="tab5")
 				+mychat()
 
 mixin questions()

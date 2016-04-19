@@ -14,6 +14,9 @@ block title
 block content
 	include templates/news
 	include templates/topics
+	div(class="col-sm-12")
+		hr(colour="white" width="60%" align="center")
+		h2(class="white text-center") Турниры
 	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 	script.
 		var tournaments = !{JSON.stringify(msg)};
