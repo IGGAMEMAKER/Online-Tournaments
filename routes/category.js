@@ -54,14 +54,14 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	function getTournaments(topic){
 
 		Tournaments.getByTopic(topic)
-		.then(function (list){
+		.then(function (lst){
 
 			var tournamentID = 0;
 			if (tournaments[topic]) {
 				tournamentID = tournaments[topic].tournamentID;
 			}
 
-			var current = list[0];
+			var current = lst[0];
 			if (current.tournamentID > tournamentID){
 				// it means that we have newer tournament
 				clearOnliners(topic);

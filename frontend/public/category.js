@@ -126,11 +126,11 @@ function drawCategory(name, href, image, NAME){
 			if (!NAME) NAME="default"
 			image = "/img/topics/"+NAME+".jpg";
 
-			text += '<div class="col-sm-3 white img-wrapper">';
+			text += '<div class="col-sm-4 white img-wrapper">';
 			text += '<center>'
 				text += '<a href="'+ href + '">'; ///Category/'+category.name+'
 					text += '<img class="img-responsive" src="'+image+'" />'
-					text += '<p>' + name + '</p>'
+					// text += '<p>' + name + '</p>'
 				text+= '</a>'
 			text+= '</center>'
 		text+= '</div>'
