@@ -283,6 +283,7 @@ function drawNews(msg){
   var result = '<h1 class="white text-center">'+title+'</h1>';
   if (text) result += '<p class="white text-center">'+text+'</p>';
   if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
+  result += '<hr colour="white" width="60%" align="center" />'
   $("#news").html(result);
   // $("#news").html(JSON.stringify(news));
 }
