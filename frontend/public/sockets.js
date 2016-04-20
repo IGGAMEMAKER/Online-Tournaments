@@ -7,8 +7,7 @@ var curLogins=[];
 
 //var buttons = setInterval(drawPlayButtons, 1000);
 
-$(document).mouseup(function (e)
-{
+$(document).mouseup(function (e) {
     var container = $("#playButtons");
 
     if (!container.is(e.target) // if the target of the click isn't the container...

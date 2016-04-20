@@ -145,6 +145,7 @@ function dataBaseChanges(data){
 	var scores = data['scores'];
 	var winners = sort.winners(scores);
 
+	// console.log(scores, winners);
 	TournamentLog(tournamentID, 'Winners:' + str(winners));
 
 	// EndTournament(scores, gameID, tournamentID);
@@ -156,12 +157,15 @@ function dataBaseChanges(data){
 	var tournament;
 	// var winners;
 
-	TournamentReg.participants(tournamentID)
-	.then(give_marathon_points) // parallel. returns undefined
-	.then(function (result){
-		info.marathonPointsGiven = result;
-		return Tournaments.finish(tournamentID)
-	})
+	// TournamentReg.participants(tournamentID)
+	// .then(give_marathon_points) // parallel. returns undefined
+	// .then(function (result){
+	// 	info.marathonPointsGiven = result;
+	// 	return Tournaments.finish(tournamentID)
+	// })
+	give_marathon_points(scores);
+
+	Tournaments.finish(tournamentID)
 	.then(function (result){
 		info.finish = result;
 		return TournamentReg.clearParticipants(tournamentID)
@@ -177,7 +181,7 @@ function dataBaseChanges(data){
 
 		// goes in parallel
 		if (needsAutoAdd(tournament)){
-			Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
+			// Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
 			var youngerizedTournament = YoungerizeTournament(tournament);
 			
 			Tournaments.addNewTournament(youngerizedTournament)
@@ -250,10 +254,15 @@ function give_marathon_points(tregs){
 	Marathon.get_current_marathon()
 	.then(function (marathon){
 		if (marathon){
+			// console.log(tregs);
 			var MarathonID = marathon.MarathonID;
 			// console.error('got marathon', marathon, tregs.length - 1);
 			for (var i = tregs.length - 1; i >= 0; i--) {
-				var login = tregs[i].userID;
+				// var login = tregs[i].userID;
+				var login = tregs[i].login;
+
+				if (tregs[i].value==0) return;
+
 				// console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
 				Log('trying to increase marathon points to ' + login + '  ', aux.c.STREAM_GAMES);
 				give_marathon_points_to_user(login, MarathonID);

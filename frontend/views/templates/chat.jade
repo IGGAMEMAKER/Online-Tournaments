@@ -9,6 +9,7 @@ if session && session.login
 	script.
 		function appendMessage(login, text){
 			$("#messages").append($("<p>").text(login+" : " + text));
+			scrollToMessageEnd();
 		}
 		function drawMessages(msg){
 			console.log("drawMSGGGGGG")
@@ -18,6 +19,7 @@ if session && session.login
 				var m = messages[i]
 				appendMessage(m.senderName, m.text)
 			}
+			scrollToMessageEnd()
 		}
 		function loadMessages(){
 			setAsync("/messages/chat/recent", {}, drawMessages)
