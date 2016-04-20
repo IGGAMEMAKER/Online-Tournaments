@@ -204,9 +204,9 @@ function dataBaseChanges(data){
 			givePrizeToPlayer(player, Prize, tournamentID );
 		}
 	})
-	.then(function (result){
-		console.log('done ALL', result, info)
-	})
+	// .then(function (result){
+	// 	// console.log('done ALL', result, info)
+	// })
 	.catch(aux.report('dataBaseChanges', { info:info } ))
 	
 }
@@ -261,7 +261,7 @@ function give_marathon_points(tregs){
 				// var login = tregs[i].userID;
 				var login = tregs[i].login;
 
-				if (tregs[i].value==0) return;
+				if (tregs[i].value==0) continue;
 
 				// console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
 				Log('trying to increase marathon points to ' + login + '  ', aux.c.STREAM_GAMES);
