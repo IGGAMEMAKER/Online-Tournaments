@@ -1,14 +1,40 @@
 //
+
+mixin auth()
+	if session && session.login
+		a(href="/Logout") Выход
+	else
+		a(href="/Login") Вход
 mixin footer()
-	footer
+	//footer
 		h3 Наши контакты:
 		a(target="_blank" class="social-icon" href="https://vk.com/o_tournaments")
 			i(class="fa fa-vk")
 		a(target="_blank" class="social-icon" href="mailto:mail@online-tournaments.org")
 			i(class="fa fa-envelope-o")
+	nav(class="navbar navbar-inverse navbar-fixed-bottom" role="navigation")
+		div(class="container-fluid")
+			div(class="navbar-header")
+				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2")
+					span(class="sr-only") Toggle navigation
+					span(class="icon-bar")
+					span(class="icon-bar")
+					span(class="icon-bar")
+				//a(class="navbar-brand" href="/") Онлайн Турниры
+			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-2")
+				ul(class="nav navbar-nav navbar-right")
+					li
+						a(class="fa fa-vk fa-lg" href="https://vk.com/o_tournaments") Группа ВК
+					li
+						a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
+					li
+						a(href="/about") О нас
+					li
+						+auth()
 
 mixin navigation()
-	nav(class="navbar navbar-default navbar-my" role="navigation")
+	//nav(class="navbar navbar-default navbar-my" role="navigation")
+	nav(class="navbar navbar-inverse navbar-fixed-top navbar-my" role="navigation")
 		div(class="container-fluid")
 			div(class="navbar-header")
 				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
@@ -26,24 +52,21 @@ mixin navigation()
 							a(href="/Packs") Паки
 						li
 							a(href="/profile") Профиль
-						li
+						//li
 							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
-						//li(class="dropdown")
-							a(href="#" class="dropdown-toggle" data-toggle="dropdown") Настройки 
-								b(class="caret")
-							ul(class="dropdown-menu")
-								//li(class="divider")
-						li
+						//li
 							a(href="/about") О нас
-						li
+						//li
 							a(href="/Logout") Выход
-					else
-						li
+					//else
+						//li
 							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
-						li
+						//li
 							a(href="/about") О нас
-						li
+						//li
 							a(href="/Login") Вход
+		div(class="container-fluid")
+			+drawBalance()
 mixin chat()
 	//div(class="col-md-12 chatColumn chatRule")
 		h3 Column title

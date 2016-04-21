@@ -77,11 +77,12 @@ mixin loadHead()
 
 mixin drawBalance()
 	if session.login && session.login.length>0
-		div(class="balance")
-			span(id="balance") #{session.login}     
-			a(href="profile#dep") Пополнить   
-			span /   
-			a(href="profile#cashoutMoney") Снять деньги
+		center
+			div(class="balance" style="width:100%; background-color:#222;")
+				span(id="balance") #{session.login}     
+				a(href="profile#dep") Пополнить   
+				span /   
+				a(href="profile#cashoutMoney") Снять деньги
 
 mixin subscribe()
 	div(id="vk_groups")
@@ -104,15 +105,19 @@ html
 		//include templates/googleAd
 	body(class="background")
 		//div(class="container")
-
+		+navigation()
+		br
+		br
 		div(class="container containetWithTourn killPaddings")
-			+navigation()
-			+drawBalance()
+			br
+			br
+			br
 			block content
 
 		block JSasync
 
 		block ftr
+			//div(class="navbar-fixed-bottom row-fluid")
+				+footer()
 			div(class="wrapper2")
-				//+googleAdvert()
 				+footer()

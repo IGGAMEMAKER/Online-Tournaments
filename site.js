@@ -1786,7 +1786,7 @@ function has_enough_points(index, points){
 }
 
 app.get('/getMyPoints', function (req, res){
-  console.log('/getMyPoints')
+  // console.log('/getMyPoints')
   var login = aux.getLogin(req);
   var points = 0;
 

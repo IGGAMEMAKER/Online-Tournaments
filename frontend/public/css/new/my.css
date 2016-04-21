@@ -187,6 +187,10 @@ button{
   /*background-size: cover;*/
 }
 
+.expandable{
+  cursor: pointer;
+}
+
 .promo2{
   display: block;
   max-width:520px;
