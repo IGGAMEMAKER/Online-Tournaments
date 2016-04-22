@@ -21,7 +21,7 @@ mixin loadHead()
 	link(href="/css/new/bootstrap.css" rel="stylesheet")
 	link(href="/css/new/style.css" rel="stylesheet")
 	link(href="/css/new/style1.css" rel="stylesheet" type="text/css")
-	link(href="/css/new/my.css?2" rel="stylesheet")
+	link(href="/css/new/my.css?3" rel="stylesheet")
 
 	link(href="/css/font-awesome.min.css" rel="stylesheet")
 
@@ -41,12 +41,12 @@ mixin loadHead()
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
 
 	script(src="/storage.js")
-	script(src="/draw.js?3")
+	script(src="/draw.js?4")
 
 	script(src="/sockets.js")
 
 	if session && session.login
-		script(src="/loadProfile.js")
+		script(src="/loadProfile.js?5")
 		script.
 			getProfile();
 
@@ -82,7 +82,20 @@ mixin drawBalance()
 				span(id="balance") #{session.login}     
 				a(href="profile#dep") Пополнить   
 				span /   
-				a(href="profile#cashoutMoney") Снять деньги
+				a(href="profile#cashoutMoney") Снять
+mixin drawMyPoints()
+	if session.login && session.login.length>0
+		center
+			div(class="balance" style="width:100%; background-color:#222;")
+				span(id="mypoints") Баллы     
+				//a(href="/Marathon#points") что это
+				+getMyPoints()
+
+mixin getMyPoints()
+	if session.login && session.login.length>0
+		script.
+			getPoints();
+			//setInterval(function(){ getPoints(); }, 30*1000);
 
 mixin subscribe()
 	div(id="vk_groups")

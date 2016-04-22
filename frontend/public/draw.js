@@ -237,8 +237,12 @@ function getPoints(){
   setAsync("/getMyPoints", {}, drawPoints, "GET")
 }
 
+
+
 function drawPoints(msg){
   $("#MARATHONPOINTS").html('Набрано баллов : ' + msg.points)
+
+  $("#mypoints").html("Баллы: " + msg.points + '   ')
   // $("#exchange/")
 }
 

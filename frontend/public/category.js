@@ -3,6 +3,7 @@ var room;
 var wanna_play = true;
 
 function joinStream(topic){
+	// console.log('joinStream');
 	if (wanna_play)	setAsync('/Category/register/'+topic, null, function (msg){
 		// alert(JSON.stringify(msg))
 	})
@@ -81,6 +82,7 @@ function connect(topic){
 	
 	room.on('wakeUp', function (msg){
 		console.log('wakeUp', msg)
+		getPoints();
 		drawFrame(msg)
 	})
 

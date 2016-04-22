@@ -237,6 +237,10 @@ button{
   overflow-X: hidden;
 }
 
+.navbar-inverse{
+  border-color: transparent;
+}
+
 .accelerator
 {
   /*height: 400px;*/

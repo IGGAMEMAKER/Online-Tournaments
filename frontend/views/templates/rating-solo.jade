@@ -28,11 +28,12 @@ table(class="table rating" id="rating")
 		+drawPointTab(15000, 150, 4)
 		+drawPointTab(50000, 500, 5)
 		+drawPointTab(100000, 1000, 6)
-	br
-	#MARATHONPOINTS
-	a(class="btn btn-primary" onclick="getMoney(1)") Обменять баллы на деньги
+	center
+		#MARATHONPOINTS
+		
 div(class="col-md-12")
 	a(href="/Marathon#accelerator" class="btn btn-danger center-block offset-md") Заработайте очки быстрее!
+	a(class="btn btn-primary center-block offset-md" onclick="getMoney(1)") Обменять баллы на деньги
 
 script.
 	//console.log("getPoints")
