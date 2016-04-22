@@ -505,23 +505,32 @@ a:focus {
 }
 
 .hero-unit {
-padding: 60px;/* CHANGE PADDING HERE*/
-margin-bottom: 30px; 
-font-size: 18px;
-font-weight: 200;
-line-height: 30px;
-color: inherit;
-/*background-color: #eeeeee;  CHANGE BACKGROUND HERE*/
-/*background-image: url('/img/topics/bale.jpg');*/
+  padding: 60px;/* CHANGE PADDING HERE*/
+  margin-bottom: 30px; 
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 30px;
+  color: inherit;
+  /*background-color: #eeeeee;  CHANGE BACKGROUND HERE*/
+  /*background-image: url('/img/topics/bale.jpg');*/
 
-background-size: cover;
-background-position: center center;
+  background-size: cover;
+  /*background-position: center center;*/
+  background-repeat:   no-repeat;
+  /*background: center center cover no-repeat fixed;*/
+  /*background-repeat: no-repeat;*/
 
--webkit-border-radius: 6px;
--moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
 
-border-radius: 6px;
-border-color: white;
-border-width: 1px;
-border-style: solid;
+  border-radius: 6px;
+  border-color: white;
+  border-width: 1px;
+  /*border-style: solid;*/
 }
+
+
+/*.carousel-inner > .item > a > img {
+    width: 100% !important;
+    margin: auto;
+}*/

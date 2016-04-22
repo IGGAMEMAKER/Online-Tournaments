@@ -297,7 +297,7 @@ function drawNews(msg){
 
   var backgroundImage = '';
   var textColour = ' class="white" ';
-  if (image) backgroundImage = 'style="background: url(\''+image+'\');"';
+  if (image) backgroundImage = 'style="background-image: url(\''+image+'\');"';
   var result = '<div class="hero-unit" '+ backgroundImage + ' >'
   
   result += '<div ' + textColour + ' >';

@@ -44,7 +44,8 @@ mixin navigation()
 					span(class="icon-bar")
 				a(class="navbar-brand" href="/") Онлайн Турниры
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
-				ul(class="nav navbar-nav navbar-right")
+				//ul(class="nav navbar-nav navbar-right")
+				ul(class="nav navbar-nav navbar-left")
 					li
 						a(href="/Marathon") МАРАФОН
 					li
@@ -62,12 +63,12 @@ mixin navigation()
 							a(href="/about") О нас
 						//li
 							a(href="/Logout") Выход
-					//else
+					else
 						//li
 							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
 						//li
 							a(href="/about") О нас
-						//li
+						li
 							a(href="/Login") Вход
 		div(class="container-fluid")
 			+drawBalance()
