@@ -141,7 +141,8 @@ function getCategories(){
 	setAsync("/api/categories/available", {}, function (msg){
 		var categories = msg.msg;
 		// var text = '<h1 class="white text-center"> Темы </h1>'
-		var text = '<div class="white text-center"><h1> Темы </h1> <p><a href="/Categories" class=""> Все темы </a></p> </div>'
+		// <p><a href="/Categories" class=""> Все темы </a></p>
+		var text = '<div class="white text-center"><h1> Темы </h1></div>'
 		// console.log(categories)
 		// text+= '<div class="row">'
 		for (var i=0; i < categories.length && i < 4; i++){

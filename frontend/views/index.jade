@@ -9,7 +9,7 @@ mixin rating()
 extends layout
 
 block title
-	title Турниры
+	title Главная
 
 mixin thumb()
 	li(class="span4")
@@ -27,7 +27,9 @@ block content
 	//script.
 		var tournaments = !{JSON.stringify(msg)};
 		drawTournaments(tournaments)
-	div(class="col-sm-12 bgc-white" id="ratingField")
+	br
+	br
+	//div(class="col-sm-12 bgc-white" id="ratingField")
 		div(class="col-sm-8 dataRule2")
 			+rating()
 		div(class="col-sm-4 subscribe")

@@ -470,6 +470,35 @@ a.glance:hover {
   background-position: -200% 0, 0 0;
 }
 
+.btn{
+  border: 0;
+  border-radius: 300px;
+  /*text-transform: uppercase;*/
+  font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+  font-weight: 700;
+}
+
+/*.btn >a {
+  color: #f05f40;
+}
+
+.*/
+/*a {
+    color: #f05f40;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+a:hover,
+a:focus {
+    color: #eb3812;
+}
+*/
+
+.space {
+  margin: 50px, 0, 50px, 0;
+}
 
 .hero-unit {
 padding: 60px;/* CHANGE PADDING HERE*/
