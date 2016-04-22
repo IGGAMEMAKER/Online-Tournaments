@@ -280,10 +280,31 @@ function drawNews(msg){
   image = news[i].image || null,
   title = news[i].title;
 
-  var result = '<h1 class="white text-center">'+title+'</h1>';
-  if (text) result += '<p class="white text-center">'+text+'</p>';
-  if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
-  result += '<hr colour="white" width="60%" align="center" />'
+
+  // div(class="hero-unit")
+  //   h1(class="white") Заголовок
+  //   p(class="white") Tagline
+  //   p
+  //     a(class="btn btn-primary btn-large") Узнать больше
+
+  // var result = '<h1 class="white text-center">'+title+'</h1>';
+  // if (text) result += '<p class="white text-center">'+text+'</p>';
+  // if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
+
+  var backgroundImage = '';
+  var textColour = ' class="white" ';
+  if (image) backgroundImage = 'style="background: url(\''+image+'\');"';
+  var result = '<div class="hero-unit" '+ backgroundImage + ' >'
+  
+  result += '<div ' + textColour + ' >';
+    result += '<h1 class="">'+title+'</h1>';
+    if (text) result += '<p class="">'+text+'</p>';
+    if (url) result += '<p><a class="btn btn-primary btn-large" href="'+url+'">Подробнее</a></p>';
+  result += '</div>'
+  
+  result += '</div>';
+  // result += '<hr colour="white" width="60%" align="center" />'
+  
   $("#news").html(result);
   // $("#news").html(JSON.stringify(news));
 }

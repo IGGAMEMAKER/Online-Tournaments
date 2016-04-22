@@ -1,13 +1,13 @@
 //
-extends layout2
+extends layout
 block title
 	title #{draw.name}
 
 block JSlibs
 	script(src="/packs.js")
-	if session && session.login
-		script(src="/category.js?1")
-	else
+	//if session && session.login
+	script(src="/category.js?1")
+	//else
 		h2(class="white") Для участия в турнирах про #{category} необходимо
 			a(href="/Login") авторизоваться 
 
@@ -39,10 +39,11 @@ block content
 		//#{draw.img}
 		br
 		div(id="play")
-		script.
-			var topic = "#{name}";
-			joinStream(topic);
-			connect(topic)
+		if session && session.login
+			script.
+				var topic = "#{name}";
+				joinStream(topic);
+				connect(topic)
 		br
 		br
 		// +mychat()
@@ -98,39 +99,4 @@ mixin mychat()
 	// div(class="col-md-12 black chatColumn chatRule")
 	div(class="col-md-12 black chatColumn chatRule")
 		include templates/chat
-		//div(class="col-md-12 chatColumn chatRule")
-			h3 chat
-			div(class="form-group")
-				label(class="control-label" for="formInput54") Field label
-				textarea(class="form-control" rows="3" id="formInput54")
-			div(class="form-group") 
-				label(class="control-label" for="formInput74") Field label
-				input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
 	// p Tab 2 content goes here...
-
-
-
-//div(class="row")
-	+tabs()
-	div(class="tab-content")
-		div(class="tab-pane active" id="tab1")
-			div(class="container")
-				div(class="row")
-					div(class="col-md-12 dataRule")
-						p!= ololo
-		div(class="tab-pane" id="tab2")
-			div(class="col-md-12 chatColumn chatRule")
-				h3 chat
-				div(class="form-group")
-					label(class="control-label" for="formInput54") Field label
-					textarea(class="form-control" rows="3" id="formInput54")
-				div(class="form-group") 
-					label(class="control-label" for="formInput74") Field label
-					input(type="text" class="form-control" id="formInput74" placeholder="Placeholder text")
-			p Tab 2 content goes here...
-		div(class="tab-pane" id="tab3")
-			p Tab3
-		div(class="tab-pane" id="tab4")
-			p tab4
-		div(class="tab-pane" id="tab5")
-			+mychat()

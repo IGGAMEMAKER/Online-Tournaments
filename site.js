@@ -788,19 +788,24 @@ const GET_TOURNAMENTS_USER = 1;
 
 
 app.get('/', function (req, res, next){
-  var tournaments = realtime().updater.tournaments || [];
-  req.data = tournaments;
+  // var tournaments = realtime().updater.tournaments || [];
+  // req.data = tournaments;
   next()
-}, aux.render('Tournaments'), aux.error)
+}, aux.render('index'), aux.error)
 
 // app.get('/', function (req, res){
 //   // res.render('main2');//{ msg:specials }
 //   // res.render('Tournaments',);
 // })
 
-app.get('/Tournaments', function (req, res){
-  res.render('Tournaments');//, {msg: updater.tournaments||[] }
-})
+// app.get('/Tournaments', function (req, res){
+//   res.render('Tournaments');//, {msg: updater.tournaments||[] }
+// })
+app.get('/Tournaments', function (req, res, next){
+  var tournaments = realtime().updater.tournaments || [];
+  req.data = tournaments;
+  next()
+}, aux.render('Tournaments'), aux.error)
 
 app.post('/Tournaments', function (req, res){
   res.json({msg: updater.tournaments || [] });

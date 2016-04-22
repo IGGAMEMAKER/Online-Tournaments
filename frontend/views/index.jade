@@ -19,23 +19,12 @@ mixin thumb()
 			| <p>Заголовок миниатюры...</p>
 block content
 	include templates/news
-	//div(class="hero-unit")
-		h1(class="white") Заголовок
-		p(class="white") Tagline
-		p
-			a(class="btn btn-primary btn-large") Узнать больше
+	include templates/topics
+
 	//div(class="col-sm-12")
-		ul(class="thumbnails")
-			+thumb()
-			+thumb()
-			+thumb()
-	//include templates/topics
-	//a(class="glance" style="width:100px;") sss
-	div(class="col-sm-12")
 		hr(colour="white" width="60%" align="center")
 		h2(class="white text-center") Турниры
-	div(class="col-sm-12 killPaddings" id="tournamentBlock")
-	script.
+	//script.
 		var tournaments = !{JSON.stringify(msg)};
 		drawTournaments(tournaments)
 	div(class="col-sm-12 bgc-white" id="ratingField")
@@ -48,6 +37,6 @@ block content
 
 block JSlibs
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-	script(src="/tournaments.js?2")
-	//script(src="/category.js?1")
+	//script(src="/tournaments.js?2")
+	script(src="/category.js?1")
 	//include templates/googleAd
