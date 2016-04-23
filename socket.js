@@ -28,6 +28,8 @@ module.exports = function(app, server){
 
       var message = { text : def_text , sender: def_login }
       io.emit('chat message', message);
+      message.type = 'chat';
+      io.emit('activity', message);
 
       // message.room = 'default';
       var room = 'default';

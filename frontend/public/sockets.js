@@ -50,10 +50,24 @@ function StartTournament_socket (msg){
   // drawButton(host, port, tournamentID);
 }
 
+var chatSeconds=0;
 
 socket.on('Tell', Tell);
 socket.on('StartTournament', StartTournament_socket);
 socket.on('FinishTournament', FinishTournament);
+socket.on('activity', function (msg){
+  //chatSeconds += 
+  var text = '';
+  if (msg && msg.type){
+    switch (msg.type){
+      case 'chat':
+        text = '<a href="/Categories#m">'+msg.sender + ': ' + msg.text + '</a>';
+      break;
+    }
+    $("#activity").html(text);
+  }
+  // console.log(msg);
+})
 
 function FinishTournament(msg){
   var tournamentID = msg.tournamentID;
