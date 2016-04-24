@@ -5,6 +5,7 @@ var models = require('../models')(configs.db);
 
 var db = require('../db')
 var Marathon2 = db.wrap('Marathon')
+var Team = db.wrap('Team')
 
 
 var helper = require('../helpers/helper');
@@ -324,6 +325,8 @@ function setFreePlayer(login, MarathonID){
 		})
 	})
 }
+
+
 
 function leaderboard(MarathonID){
 	// console.log('search leaderboard', MarathonID);

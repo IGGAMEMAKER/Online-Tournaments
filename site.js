@@ -856,6 +856,8 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
       if (body.result=='ok') {
         code = 1;
         message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
+
+        Send('activity', { type:'addQuestion', sender: login, about: topic||' всё обо всём' })
       }
       res.json({ code:code , msg:message });
     }

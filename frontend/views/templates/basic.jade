@@ -12,6 +12,12 @@ mixin footer()
 			i(class="fa fa-vk")
 		a(target="_blank" class="social-icon" href="mailto:mail@online-tournaments.org")
 			i(class="fa fa-envelope-o")
+	//div(class="row offset-bg")
+		center
+			a(class="btn btn-success") Рассказать друзьям
+			br
+			br
+
 	nav(class="navbar navbar-inverse navbar-fixed-bottom" role="navigation")
 		div(class="container-fluid")
 			div(class="navbar-header")
@@ -21,11 +27,12 @@ mixin footer()
 					span(class="icon-bar")
 					span(class="icon-bar")
 				p(class="navbar-brand" id="activity")
+					a(href="/Categories#m" class="btn btn-primary") Чат
 				//a(class="navbar-brand" href="/") Онлайн Турниры
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-2")
 				ul(class="nav navbar-nav navbar-right")
 					li
-						a(class="fa fa-vk fa-lg" href="https://vk.com/o_tournaments") Группа ВК
+						a(class="fa fa-vk fa-lg" href="https://vk.com/o_tournaments" target="_blank") Группа ВК
 					li
 						a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
 					li

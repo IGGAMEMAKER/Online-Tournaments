@@ -21,7 +21,7 @@ mixin loadHead()
 	link(href="/css/new/bootstrap.css" rel="stylesheet")
 	link(href="/css/new/style.css" rel="stylesheet")
 	link(href="/css/new/style1.css" rel="stylesheet" type="text/css")
-	link(href="/css/new/my.css?3" rel="stylesheet")
+	link(href="/css/new/my.css?4" rel="stylesheet")
 
 	link(href="/css/font-awesome.min.css" rel="stylesheet")
 
@@ -41,12 +41,18 @@ mixin loadHead()
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
 
 	script(src="/storage.js")
-	script(src="/draw.js?4")
+	script(src="/draw.js?5")
 
-	script(src="/sockets.js")
+	script(src="/sockets.js?1")
+
+	//script(src="https://fb.me/react-15.0.1.js")
+	//script(src="https://fb.me/react-dom-15.0.1.js")
+
+	//script(src="https://fb.me/react-15.0.1.min.js")
+	//script(src="https://fb.me/react-dom-15.0.1.min.js")
 
 	if session && session.login
-		script(src="/loadProfile.js?5")
+		script(src="/loadProfile.js?6")
 		script.
 			getProfile();
 

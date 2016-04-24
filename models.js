@@ -158,6 +158,13 @@ module.exports = function(dbAddress){
 			isSigned: Number
 		})
 
+		,Team: db.model('Team', { 
+			name: String,
+			players: Object, // { login, isActive, points}
+			enabled: Boolean,
+			points: Number
+		})
+
 		,Action : db.model('Action', {
 			login: String,
 			date: Date,

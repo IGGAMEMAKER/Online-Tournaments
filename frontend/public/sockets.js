@@ -63,6 +63,9 @@ socket.on('activity', function (msg){
       case 'chat':
         text = '<a href="/Categories#m">'+msg.sender + ': ' + msg.text + '</a>';
       break;
+      case 'addQuestion':
+        text = msg.sender + ' добавляет вопрос про ' + msg.about;
+      break;
     }
     $("#activity").html(text);
   }
