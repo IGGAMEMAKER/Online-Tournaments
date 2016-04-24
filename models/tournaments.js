@@ -220,7 +220,7 @@ function add(tournament){
 	});
 }
 
-function addTopicStreamTournament(topic) {
+function addTopicStreamTournament(topic, isNew) {
 	var buyIn = 0
 	var gameNameID = 2;
 	var Prizes = [0]
@@ -239,11 +239,12 @@ function addTopicStreamTournament(topic) {
 	}
 
 	obj.settings = { topic: topic, regularity: REGULARITY_STREAM };
+	if (isNew) obj.settings.hidden = true;
 
 	// AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
 	return addNewTournament(obj)
 	.then(function (tournament){
-		console.log('addNewTournament', topic, tournament)
+		// console.log('addNewTournament', topic, tournament)
 		
 			if (!isSpecialTournament(tournament)) {
 				setTournStatus(tournament.tournamentID, TOURN_STATUS_REGISTER);

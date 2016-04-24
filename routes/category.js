@@ -11,6 +11,50 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	var register_manager = require('../chains/registerInTournament')(aux)
 
+/*
+	var multer  = require('multer')
+
+	var storage = multer.diskStorage({
+		destination: function (req, file, cb) {
+			var filename = req.body.filename;
+			logger('needs regexp here!!')
+
+			cb(null, './frontend/public/img/topics/' + filename);
+		},
+		filename: function (req, file, cb) {
+			// var tournamentID = req.body.tournamentID;
+			// console.log('in storage tournamentID', tournamentID);
+			console.log(file);
+			if (tournamentID) { 
+			  cb(null, tournamentID + '.txt');// + file.extension) 
+			} else {
+			  cb(null, 'qst-'+ Date.now() + '.txt');
+			}
+		}
+	})
+  
+  var upload = multer({ storage: storage }).single('questions');
+
+	app.post('/api/categories/addImage/:filename', function (req, res){
+		var data = req.body;
+		var tournamentID = req.body.tournamentID;
+
+		// trying to add image
+		console.log('adding questions', tournamentID);
+		upload(req, res, function (err){
+		  if (err) { console.log(err); res.render('AddQuestions'); return; }
+		  
+		  console.log('added questions', tournamentID);
+		  if (tournamentID && !isNaN(tournamentID)) {
+		    res.redirect('StartSpecial/'+tournamentID);
+		  } else {
+		    res.end('added questions');
+		  }
+		})
+	})
+*/
+
+
 	var categories = {
 		// 'default' : createCategory('default', 'Всё обо всём', "Всему подряд"),
 		// 'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
@@ -44,7 +88,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		resetTopic(topic)
 		// tournaments[topic] = 0;
 
-		// runTournaments(topic)
 		setRoom(topic);
 	};
 
@@ -53,22 +96,26 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	function getTournaments(topic){
 
-		Tournaments.getByTopic(topic)
+		return Tournaments.getByTopic(topic)
 		.then(function (lst){
-
 			var tournamentID = 0;
+			var current = {};
+
 			if (tournaments[topic]) {
 				tournamentID = tournaments[topic].tournamentID;
 			}
 
-			var current = lst[0];
-			if (current.tournamentID > tournamentID){
-				// it means that we have newer tournament
-				clearOnliners(topic);
-				tournaments[topic] = current;
-				emit(topic, 'online', {})
-
+			if (lst.length>0){
+				current = lst[0]; // take newest stream tournament
+				if (current.tournamentID > tournamentID){
+					// it means that we have newer tournament
+					clearOnliners(topic);
+					tournaments[topic] = current;
+					emit(topic, 'online', {})
+				}
 			}
+
+			return lst;
 			// console.log('was', tournamentID, 'now', current.tournamentID)
 		})
 
@@ -104,7 +151,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			list.push(name);
 			if (!rooms[name]) setRoom(name);
 			if (!onliners[name]) onliners[name] = {}
-			// runTournaments(name)
+
 			getTournaments(name);
 
 			// emit(name, 'whoisonline')
@@ -115,14 +162,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	function get_tournament(topic){
 		return tournaments[topic].tournamentID || 0;
-	}
-
-	function tournament_needs_to_be_created(topic){
-		return tournaments[topic] == 0;
-	}
-
-	function tournament_is_in_queue(topic){
-		return tournaments[topic].queue == 1;
 	}
 
 	function users_are_online(topic) {
@@ -139,50 +178,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	function clearOnliners(topic){
 		onliners[topic] = {};
-	}
-
-
-
-	function keepAlive(topic, tournamentID){
-		setTimeout(function (){
-			// console.log('keepAlive', topic, tournamentID)
-			// if tournament will not finish, this will add new tournament it
-			// Если пользователи есть, а турнир не обновился, то создаём новый турнир
-			var id = get_tournament(topic);
-			var are_online = users_are_online(topic);
-			// console.log('id, are_online', id, are_online)
-			if (id == tournamentID && are_online){
-				// console.log('runTournaments')
-				resetTopic(topic);
-				runTournaments(topic)
-			} else {
-				// console.log('keepAlive continue')
-				keepAlive(topic, tournamentID)
-			}
-		}, 120*1000)
-		// }, 40*1000)
-	}
-
-	function runTournaments(topic){
-		var needToCreate = tournament_needs_to_be_created(topic);
-		var is_not_in_que = !tournament_is_in_queue(topic);
-		// logger('runTournaments', topic, 'needToCreate', needToCreate, is_not_in_que)
-		
-		// if (needToCreate && is_not_in_que){
-		// 	tournaments[topic] = { queue: 1 };
-		// 	return Tournaments.addTopicStreamTournament(topic)
-		// 	.then(function (tournament){
-		// 		console.log(tournament);
-
-		// 		var tournamentID = tournament.tournamentID;
-		// 		tournaments[topic] = tournament;
-
-		// 		// wakeForReg(topic)
-		// 		emit(topic, 'online', {}) // force players to start registering
-
-		// 		keepAlive(topic, tournamentID);
-		// 	})
-		// }
 	}
 
 	function setRoom(topic) {
@@ -215,8 +210,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var login = aux.getLogin(req);
 		if (login) onliners[topic][login] = login;
 
-		// runTournaments(topic)
-
 		res.render('Category', categories[topic])
 	})
 
@@ -228,23 +221,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		if (login) onliners[topic][login] = login;
 		res.end('')
 	})
-
-	// app.get('/regTo/:login/:tournamentID', aux.isAdmin, function (req, res){
-	// 	var login = req.params.login;
-	// 	var tournamentID = parseInt(req.params.tournamentID);
-
-	// 	logger('regTo', login, tournamentID);
-
-	// 	register_manager.reg(tournamentID, login)
-	// 	.then(function (result){
-	// 		logger('regTo', login, tournamentID);
-	// 		res.end(result);
-	// 	})
-	// 	.catch(function (err){
-	// 		res.json({err: err})
-	// 	})
-	// })
-
 
 	app.post('/Category/register/:topic', aux.isAuthenticated, function (req, res, next){
 		var topic = req.params.topic;
@@ -305,8 +281,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		clearOnliners(topic);
 		
 		resetTopic(topic);
-		// runTournaments(topic)
-
 		// emit(topic, 'online', {})
 
 		// setTimeout(function (){ sendOnliners(topic) }, 3000)
@@ -385,6 +359,29 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var name = req.params.name;
 		var draw_name = req.params.draw_name;
 		var level = parseInt(req.params.level);
+
+		Category.add(name, draw_name, level)
+		.then(aux.setData(req, next))
+		.catch(aux.errored)
+	}, aux.std)
+
+
+	// app.get('/api/categories/enable/:name', aux.isAdmin, function (req, res, next){
+	// 	Tournaments.getByTopic
+	// })
+
+	app.get('/api/categories/new/:name/:draw_name/:level', aux.isAdmin, function (req, res, next){
+		var name = req.params.name;
+		var draw_name = req.params.draw_name;
+		var level = parseInt(req.params.level);
+
+		// var tournament = {
+		// 	'settings.topic': name
+		// }
+
+		// topic, isNew
+		// requestSender.sendRequest('/addQuestion', )
+		Tournaments.addTopicStreamTournament(name, true)
 
 		Category.add(name, draw_name, level)
 		.then(aux.setData(req, next))

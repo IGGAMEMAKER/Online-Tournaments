@@ -52,6 +52,10 @@ block content
 		a(href="/api/tournaments/start/"+item.tournamentID+"/SOFT" target="_blank") START IT
 		br
 		a(href="/api/tournaments/start/"+item.tournamentID+"/force" target="_blank") START IT FORCEEE
+		br
+		a(href="/api/tournaments/show/"+item.tournamentID target="_blank") SHOW HIDDEN
+		br
+		a(href="/api/tournaments/hide/"+item.tournamentID target="_blank") HIDE IT
 
 mixin drawStatus(item)
 	case item.status
