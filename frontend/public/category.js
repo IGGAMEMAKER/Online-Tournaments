@@ -147,7 +147,7 @@ function getCategories(){
 		var text = '<div class="white text-center"><h1> Темы </h1></div>'
 		// console.log(categories)
 		// text+= '<div class="row">'
-		for (var i=0; i < categories.length && i < 4; i++){
+		for (var i=0; i < categories.length && i < 6; i++){
 				var category = categories[i];
 				// console.log('category', category)
 				text += drawCategory(category.draw.name, '/Category/'+ category.name ,category.draw.imgSmall, category.name)
