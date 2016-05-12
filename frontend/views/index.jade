@@ -77,18 +77,23 @@ block content
 		//div(class="row")
 			+marathonCarousel()
 		//a(href="#" style="text-decoration:none;")
-		div(style="cursor:pointer")
-			#Freeroll.row.img-wrapper
-				.hero-unit(style="background:#e74c3c;")
+		div
+			//(style="cursor:pointer")
+			#Freeroll.row
+				.hero-unit.noborder(style="background:#e67e22;")
 					.white
 						h1 Выиграй 50 рублей в бесплатной викторине!
 						p
 							| Время начала - 20:00 по МСК (каждый день)
 							br
 							| Присоединяйся!
-						center
-							p
-								a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Подробнее
+						//center
+						p
+							a(class="btn btn-success btn-large btn-lg" href="http://google.com") Участвовать
+						p
+							a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
+						//p(style="margin-top:30px;")
+							a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Поделиться
 			//#Freeroll.row.img-wrapper.border-if-you-can
 				//figure
 					#Freeroll
@@ -111,9 +116,10 @@ block content
 						}]
 					}, "#Freeroll");
 		//a(href="#" style="text-decoration:none;")
-		div(style="cursor:pointer")
-			#WeeklyFreeroll.row.img-wrapper
-				.hero-unit(style="background:#e67e22;")
+		div
+			//(style="cursor:pointer")
+			#WeeklyFreeroll.row
+				.hero-unit.noborder(style="background:#e74c3c;")
 					.white
 						h1 Выиграй вплоть до 1000 рублей
 						p
@@ -121,9 +127,11 @@ block content
 							| Турнир стартует в 20:00 по МСК каждое воскресенье
 							br
 							| Присоединяйся!
-						center
-							p
-								a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Подробнее
+						//center
+						p
+							a(class="btn btn-success btn-large btn-lg" href="http://google.com") Подробнее
+						p
+							a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
 
 		//div(class="row blue")
 			p asdasd

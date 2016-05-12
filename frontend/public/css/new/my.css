@@ -422,14 +422,14 @@ button{
   }
 }
 
-/*.border-if-you-can{*/
-  /*border-radius: 0;*/
-/*}*/
-@media (min-width: 600px) {
-  .border-if-you-can{
-    border-radius: 1000px;
-  }
+.noborder{
+  border-radius: 0 !important;
 }
+/*@media (min-width: 600px) {*/
+  /*.border-if-you-can{*/
+    /*border-radius: 1000px;*/
+  /*}*/
+/*}*/
 
 .circle{
   border-radius: 50%;
