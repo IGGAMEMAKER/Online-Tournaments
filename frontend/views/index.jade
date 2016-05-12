@@ -76,39 +76,55 @@ block content
 	div(class="col-sm-12 bgc-white" id="ratingField")
 		//div(class="row")
 			+marathonCarousel()
-		#Freeroll.row
-			script.
-				drawNews({
-					news: [{
-						//image: 'http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg',
-						//image: '',
-						title: 'Выиграй 50 рублей в бесплатной викторине!',
-						text: ' ' +
-						'Время начала - 20:00 по МСК (каждый день). Присоединяйся!',
-						url:'http://google.com',
-						//colour: '#FF0000',
-						//colour: '#4A148C',
-						colour: '#e74c3c',
-						//borderRadius: '0',
-						borderRadius: '1000px',
-						centerButton: true,
+		//a(href="#" style="text-decoration:none;")
+		div(style="cursor:pointer")
+			#Freeroll.row.img-wrapper
+				.hero-unit(style="background:#e74c3c;")
+					.white
+						h1 Выиграй 50 рублей в бесплатной викторине!
+						p
+							| Время начала - 20:00 по МСК (каждый день)
+							br
+							| Присоединяйся!
+						center
+							p
+								a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Подробнее
+			//#Freeroll.row.img-wrapper.border-if-you-can
+				//figure
+					#Freeroll
+				script.
+					drawNews({
+						news: [{
+							//image: 'http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg',
+							//image: '',
+							title: 'Выиграй 50 рублей в бесплатной викторине!',
+							text: ' ' +
+							'Время начала - 20:00 по МСК (каждый день) <br> Присоединяйся!',
+							url:'http://google.com',
+							//colour: '#FF0000',
+							//colour: '#4A148C',
+							colour: '#e74c3c',
+							//borderRadius: '0',
+							//borderRadius: '1000px',
+							centerButton: true,
 
-					}]
-				}, "#Freeroll");
-		#WeeklyFreeroll.row
-			script.
-				drawNews({
-					news: [{
-						image: '',
-						title: 'Выиграй вплоть до 1000 рублей',
-						text: 'в еженедельной викторине. Участие абсолютно бесплатно. ' +
-						'Турнир стартует в 20:00 по МСК каждое воскресенье. Присоединяйся!',
-						url: 'http://google.com',
-						colour: '#d50000',
-						borderRadius: '1000px',
-						centerButton: true,
-					}]
-				}, "#WeeklyFreeroll");
+						}]
+					}, "#Freeroll");
+		//a(href="#" style="text-decoration:none;")
+		div(style="cursor:pointer")
+			#WeeklyFreeroll.row.img-wrapper
+				.hero-unit(style="background:#e67e22;")
+					.white
+						h1 Выиграй вплоть до 1000 рублей
+						p
+							| в еженедельной викторине. Участие абсолютно бесплатно.
+							| Турнир стартует в 20:00 по МСК каждое воскресенье
+							br
+							| Присоединяйся!
+						center
+							p
+								a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Подробнее
+
 		//div(class="row blue")
 			p asdasd
 		//div(class="col-sm-8 dataRule2")

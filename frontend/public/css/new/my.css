@@ -422,6 +422,15 @@ button{
   }
 }
 
+/*.border-if-you-can{*/
+  /*border-radius: 0;*/
+/*}*/
+@media (min-width: 600px) {
+  .border-if-you-can{
+    border-radius: 1000px;
+  }
+}
+
 .circle{
   border-radius: 50%;
   width: 100px;
@@ -538,3 +547,68 @@ a:focus {
     width: 100% !important;
     margin: auto;
 }*/
+
+
+
+figure {
+  border-radius: 700px;
+  /*width: 140px;*/
+  /*height: 140px;*/
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
+  margin: 0 0.8em 5em;
+  top: -220%;
+  transition: top 0.25s cubic-bezier(0, 0.3, 1, 0.7);
+  box-shadow: 0px 5px 4px -4px rgba(0, 0, 0, 0.4), 10px 4px 10px -8px rgba(0, 0, 0, 0.2), -10px 4px 10px -8px rgba(0, 0, 0, 0.2);
+  background-size: cover;
+
+}
+figure img {
+  vertical-align: bottom;
+  z-index: -5;
+  max-width: 100%;
+  max-height: 100%;
+}
+figure:hover {
+  top: 320%;
+}
+figure:before, figure:after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 100%;
+}
+figure:before {
+  width: 140%;
+  top: inherit;
+  left: -20%;
+  opacity: 0.6;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0), #ffffff 40%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 0));
+  transform: rotate(-20deg);
+}
+figure:after {
+  width: 100%;
+  top: 0;
+  /*border-radius: 50%;*/
+  box-shadow: inset -5px -15px 40px rgba(0, 0, 0, 0.1);
+  background-image: radial-gradient(35% 25%, closest-corner, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+}
+figure:nth-child(1) {
+  /*background-image: url("1.png");*/
+  background: '#';
+}
+figure:nth-child(2) {
+  /*background-image: url("2.png");*/
+}
+
+section {
+  position: absolute;
+  width: 100%;
+  top: 32%;
+  margin: -70px 0;
+  box-shadow: inset -5px -15px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
