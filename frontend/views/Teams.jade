@@ -1,0 +1,28 @@
+//
+
+mixin rating()
+	h3(class="text-center ratingHead") Марафон
+		br
+		a(href="Leaderboard") все участники
+	include templates/rating
+	
+extends layout
+
+block title
+	title Темы
+
+//block ftr
+
+block content
+	include templates/news
+	h1(class="white text-center") Темы
+	
+	//div(class="col-sm-12 offset-bg")
+		h2(class="white text-center") Нет интересной темы?
+		h3(class="white text-center") Предложи свою тему в комментариях!
+		+chat()
+
+block JSlibs
+	//script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
+	//script(src="tournaments.js?1")
+	//include templates/googleAd

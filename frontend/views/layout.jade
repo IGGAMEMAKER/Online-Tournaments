@@ -1,16 +1,6 @@
 //
 
-mixin loadHead()
-	meta(charset="utf-8")
-	meta(http-equiv="X-UA-Compatible" content="IE=edge")
-	meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
-	meta(name="keywords" content="онлайн, турниры, викторина, online-tournaments, турниры Реал Мадрид, конкурсы Реал Мадрид")
-	meta(name="description" content="")
-	meta(name="author" content="")
-	meta(name="w1-verification" content="179817005946")
-	meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
-
-	title Турниры
+mixin libsAndStyles()
 	script(src="//code.jquery.com/jquery-2.1.0.min.js")
 	script(src="/js/bootstrap.js")
 
@@ -75,6 +65,18 @@ mixin loadHead()
 	block CSSlibs
 
 	block JSlibs
+mixin loadHead()
+	meta(charset="utf-8")
+	meta(http-equiv="X-UA-Compatible" content="IE=edge")
+	meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+	meta(name="keywords" content="онлайн, турниры, викторина, online-tournaments, турниры Реал Мадрид, конкурсы Реал Мадрид")
+	meta(name="description" content="")
+	meta(name="author" content="")
+	meta(name="w1-verification" content="179817005946")
+	meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
+
+	title Турниры
+	+libsAndStyles()
 
 mixin drawBalance()
 	if session.login && session.login.length>0

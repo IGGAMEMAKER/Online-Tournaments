@@ -5,6 +5,10 @@ mixin auth()
 		a(href="/Logout") Выход
 	else
 		a(href="/Login") Вход
+
+mixin subscribeRow()
+	.row
+		//p subscribe
 mixin footer()
 	//footer
 		h3 Наши контакты:
@@ -17,8 +21,8 @@ mixin footer()
 			a(class="btn btn-success") Рассказать друзьям
 			br
 			br
-
-	nav(class="navbar navbar-inverse navbar-fixed-bottom" role="navigation")
+	//+subscribeRow()
+	//nav(class="navbar navbar-inverse navbar-fixed-bottom" role="navigation")
 		div(class="container-fluid")
 			div(class="navbar-header")
 				button(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2")
@@ -54,7 +58,7 @@ mixin navigation()
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
 				//ul(class="nav navbar-nav navbar-right")
 				ul(class="nav navbar-nav navbar-left")
-					li
+					//li
 						a(href="/Marathon") МАРАФОН
 					li
 						a(href="/Tournaments") Турниры

@@ -113,6 +113,7 @@ function start (argument) {
 
 	// comment('start', teams.one)
 	// comment('start', teams.two)
+	update({owner:'one', situation:0, variants: [] })
 }
 
 var logger = console.log;
@@ -120,5 +121,25 @@ var logger = console.log;
 function comment(type, player, teamname){
 	logger(type, player, teamname)
 }
+
+function update(data){
+	// who has the ball
+	var ballOwner = data.owner; 
+	
+	// number, which tells us, which phase it was before
+	// use it in some cases
+	var situation = data.situation;
+
+	// array with possible next situations
+	var variants = data.variants;
+	// variant is an object
+	// value: number, that characterizes situation on the field
+	// chance: float, that characterizes Probability of next situation
+	//	// each time we compute the chance of some situation, based on team scheme, sum of player conditions and other factors...
+
+	var newSituation = getSituation(variants)
+
+}
+
 
 start(null);

@@ -1006,11 +1006,14 @@ app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, functio
   var inviter = req.params.inviter;
   var inviter_type = req.params.inviter_type;
 
+  var givepoints = function (){ return Marathon.giveNpoints(inviter, 500); };
+
   Log("SetInviter " + inviter + " for " + login, "Users");
 
-  if (inviter && inviter_type) { 
-    Users.setInviter(login, inviter, inviter_type);
-    Actions.add(login, 'setInviter', { inviter:inviter, inviter_type:inviter_type });
+  if (inviter && inviter_type) {
+    Users.setInviter(login, inviter, inviter_type)
+        .then(givepoints());
+    Actions.add(login, 'setInviter', { inviter: inviter, inviter_type:inviter_type });
   }
 
   res.end('');

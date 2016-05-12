@@ -272,44 +272,100 @@ function getNews() {
   setAsync('/api/news/get', null, drawNews, 'GET')
 }
 
-function drawNews(msg){
+/*
+ function drawNews(msg, attachTo){
+ // console.log('news incoming!!', msg);
+ // if (!news || news.length==0) return;
+ if (!msg || !msg.news || msg.news.length==0) return;
+ var news = msg.news;
+ console.log('drawNews', news);
+
+ var i = 0;
+ var text = news[i].text,
+ url = news[i].url || null,
+ image = news[i].image || null,
+ title = news[i].title;
+
+ var backgroundImage = '';
+ var textColour = ' class="white" ';
+ if (image) backgroundImage = 'style="-webkit-filter: blur(1px); background-image: url(\''+image+'\');"';
+ var result = '<div class="hero-unit" '+ backgroundImage + ' >';
+
+ result += '<div ' + textColour + ' >';
+ result += '<h1 class="">'+title+'</h1>';
+ if (text) result += '<p class="">'+text+'</p>';
+ if (url) result += '<p><a class="btn btn-primary btn-large" href="'+url+'">Подробнее</a></p>';
+ result += '</div>';
+
+ result += '</div>';
+
+ if (!attachTo) attachTo = "#news";
+ $(attachTo).html(result);
+ // $("#news").html(JSON.stringify(news));
+ }
+
+ */
+
+function getStyleFromObject(object) {
+  var style='';
+  // var keys = Object.keys(object);
+  // for (var i=0; i< keys.length; i++){
+  //
+  // }
+
+  for (var field in object){
+    console.log(field);
+    style+= field+':'+ object[field]+';';
+  }
+  console.log(style);
+  return style;
+  return "background: #FF00FF";
+}
+
+function drawNews(msg, attachTo){
+  // console.log('news incoming!!', msg);
   // if (!news || news.length==0) return;
   if (!msg || !msg.news || msg.news.length==0) return;
   var news = msg.news;
-  console.log(news);
+  console.log('drawNews', news);
 
   var i = 0;
   var text = news[i].text,
-  url = news[i].url || null,
-  image = news[i].image || null,
-  title = news[i].title;
-
-
-  // div(class="hero-unit")
-  //   h1(class="white") Заголовок
-  //   p(class="white") Tagline
-  //   p
-  //     a(class="btn btn-primary btn-large") Узнать больше
-
-  // var result = '<h1 class="white text-center">'+title+'</h1>';
-  // if (text) result += '<p class="white text-center">'+text+'</p>';
-  // if (url) result += '<center><a class="btn btn-primary btn-lg" href="'+url+'">Подробнее</a></center>';
+      url = news[i].url || null,
+      image = news[i].image || null,
+      title = news[i].title,
+      borderRadius = news[i].borderRadius,
+      centerButton = news[i].centerButton,
+      colour = news[i].colour || null;
 
   var backgroundImage = '';
   var textColour = ' class="white" ';
-  if (image) backgroundImage = 'style="background-image: url(\''+image+'\');"';
-  var result = '<div class="hero-unit" '+ backgroundImage + ' >'
+  var style = {};
+  if (colour) style.background = colour;
+  if (image) style['background-image'] = 'url(' + image + ')';
+  if (borderRadius) style['border-radius'] = borderRadius;
+
+  backgroundImage = 'style="'+getStyleFromObject(style)+'"';
+  //if (Object.keys(style).length) backgroundImage = 'style=' + JSON.stringify(style);
+  // if (image) backgroundImage = 'style="background: `{colour}`; background-image: url(\''+image+'\');"'; //-webkit-filter: blur(1px);
+  var result = '<div class="hero-unit" '+ backgroundImage + ' >';
   
   result += '<div ' + textColour + ' >';
     result += '<h1 class="">'+title+'</h1>';
     if (text) result += '<p class="">'+text+'</p>';
-    if (url) result += '<p><a class="btn btn-primary btn-large" href="'+url+'">Подробнее</a></p>';
-  result += '</div>'
+    if (url) {
+      if (centerButton) result += '<center>';
+      result += '<p><a class="btn btn-primary btn-large btn-lg" href="'+url+'">Подробнее</a></p>';
+      if (centerButton) result += '</center>';
+    }
+  result += '</div>';
   
   result += '</div>';
-  // result += '<hr colour="white" width="60%" align="center" />'
-  
-  $("#news").html(result);
+
+
+
+  if (!attachTo) attachTo = "#news";
+  $(attachTo).html(result);
   // $("#news").html(JSON.stringify(news));
 }
 
@@ -563,7 +619,7 @@ function drawNewsModal(data){
   try{
     // if (news.isActive) return;
     if ($('#newsModal').hasClass('in')){
-      console.log('news are still showing... hold a little')
+      console.log('news are still showing... hold a little');
       return;
     }
 
@@ -591,7 +647,7 @@ function drawNewsModal(data){
         case c.NOTIFICATION_GIVE_MONEY:
           header = 'Деньги, деньги, деньги!';
           body = 'Вы получаете ' + info.ammount + 'руб на счёт!';
-          footer = news.buttons.skip('Спасибо!', messageID)
+          footer = news.buttons.skip('Спасибо!', messageID);
         break;
         case c.NOTIFICATION_GIVE_ACCELERATOR:
           // header = 'Вы будете набирать очки быстрее!';
@@ -632,7 +688,7 @@ function drawNewsModal(data){
           // body = '<script>alert("Поиграй со мной")</script>'
 
           // header = 'Настало время играть!'
-          body = 'Настало время играть!'
+          body = 'Настало время играть!';
 
 
           footer = fast_register_button();
