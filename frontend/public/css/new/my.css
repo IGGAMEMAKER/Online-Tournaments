@@ -149,6 +149,15 @@ button{
   /*margin: 0 auto;*/
 }
 
+.ctr{
+  margin: 0 auto 0;
+  text-align: center;
+}
+
+.btn-fixed{
+  width: 200px;
+}
+
 .offset-bg{
   margin-top: 25px;
   margin-bottom: 25px;
@@ -258,7 +267,7 @@ button{
 
 .balance
 {
-  padding-left: 35px;
+  /*padding-left: 35px;*/
   color:#FFFFFF;
 }
 
@@ -542,6 +551,42 @@ a:focus {
   /*border-style: solid;*/
 }
 
+.freeroll {
+  /*background-color: #042E54;*/
+  /*background-image: url(/images/20-banner.jpg) no-repeat center;*/
+  /*background-image: url("/images/20-banner.jpg");*/
+  padding: 30px;
+  background-position-x: 50%;
+  background-position-y: 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /*background-repeat-y: no-repeat;*/
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  /*background-color: rgb(4, 46, 84);*/
+  /*background-image: url("http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg");*/
+
+  position: relative;
+  overflow: hidden;
+  /*box-shadow: inset rgba(0, 0, 0, .33) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.25) 0 22rem;*/
+}
+
+.shadow{
+  box-shadow: inset rgba(0, 0, 0, .13) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.65) 0 44rem;
+  /*box-shadow: inset rgba(0, 0, 0, .33) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.25) 0 44rem;*/
+}
+
+.fadeText{
+  text-shadow: 3px 4px 5px #000;
+}
+
+/* and (max-width: 650px)*/
+@media (min-width: 700px){
+  .freeroll{
+    border-radius: 1000px;
+  }
+}
 
 /*.carousel-inner > .item > a > img {
     width: 100% !important;

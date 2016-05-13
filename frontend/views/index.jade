@@ -80,17 +80,21 @@ block content
 		div
 			//(style="cursor:pointer")
 			#Freeroll.row
-				.hero-unit.noborder(style="background:#e67e22;")
+				//.hero-unit.noborder(style="background:#e67e22;")
+				//.freeroll.noborder(style="background-color:#e67e22;")
+				//.noborder
+				//
+				.freeroll.shadow.ctr(style="background-image: url('http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg');")
 					.white
 						h1 Выиграй 50 рублей в бесплатной викторине!
 						p
-							| Время начала - 20:00 по МСК (каждый день)
+							| Время начала - 20:00 (каждый день)
 							br
 							| Присоединяйся!
-						//center
-						p
-							a(class="btn btn-success btn-large btn-lg" href="http://google.com") Участвовать
-						p
+						center
+							p
+								a(class="btn btn-primary btn-large btn-lg btn-fixed" href="http://google.com") Участвовать
+						//p
 							a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
 						//p(style="margin-top:30px;")
 							a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Поделиться
@@ -116,22 +120,34 @@ block content
 						}]
 					}, "#Freeroll");
 		//a(href="#" style="text-decoration:none;")
-		div
+		div(style="margin-top:50px;margin-bottom:50px;")
 			//(style="cursor:pointer")
 			#WeeklyFreeroll.row
-				.hero-unit.noborder(style="background:#e74c3c;")
+				//.hero-unit.noborder(style="background:#e74c3c;")
+				//.freeroll.noborder(style="background-color:#e74c3c;")
+				.freeroll.ctr(style="background-color:#e74c3c;")
 					.white
-						h1 Выиграй вплоть до 1000 рублей
+						h1.fadeText Сорви куш в еженедельной викторине!
 						p
-							| в еженедельной викторине. Участие абсолютно бесплатно.
-							| Турнир стартует в 20:00 по МСК каждое воскресенье
+							//| Турнир стартует в 20:00 по МСК каждое воскресенье
+							| Время начала - 20:00 (воскресенье)
+							br
+							| Размер приза зависит от количества баллов, которое вы набрали в течение недели
 							br
 							| Присоединяйся!
-						//center
-						p
-							a(class="btn btn-success btn-large btn-lg" href="http://google.com") Подробнее
-						p
-							a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
+						p.ctr
+							a(id="toggleWeeklyFreeRoll" class="btn btn-success btn-large btn-lg btn-fixed") Подробнее
+						p.ctr(id="WeeklyFreeRollFullInfo" style="display:none;")
+							| Размер приза зависит от набранного количества баллов
+						p.ctr
+							a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" href="http://google.com" style="margin-left: 0px;") Участвовать
+			script.
+				$("#toggleWeeklyFreeRoll").click(function () {
+					$("#WeeklyFreeRollFullInfo").toggle();
+					/*"slow", function () {
+						// Animation complete.
+					});*/
+				});
 
 		//div(class="row blue")
 			p asdasd

@@ -134,7 +134,7 @@ function saveProfile(drawFunction){
 			// console.log(err.message);
 			// console.log(err.name);
 			// console.log(err.stack);
-			sendError(err, 'saveProfile')
+			sendError(err, 'saveProfile');
 			// mark('mark/clientError', { err: err,
 			// 	where: {
 			// 		func_name: 'saveProfile',
