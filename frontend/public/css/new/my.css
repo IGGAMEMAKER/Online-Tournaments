@@ -119,6 +119,34 @@ button{
   margin-bottom: 15px;
 }
 
+.offset-bg{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.offset-lg{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.purple {
+  background-color:#8e44ad;
+}
+
+.red {
+  background-color:#e74c3c;
+  /*background-color:#e51400;*/
+}
+
+.yellow {
+  background-color: #e3c800;
+}
+
+
+.green {
+  background-color: #2ecc71;
+}
+
 .navbar-my{
   /*margin-top: 25px;*/
 }
@@ -127,7 +155,7 @@ button{
   display: inline-block;
   position:absolute;
   /*right:50%;*/
-  top:80%;
+  top: 80%;
   width: 120px;
 /*  width: 50%;
   margin: 0 auto; */
@@ -156,11 +184,6 @@ button{
 
 .btn-fixed{
   width: 200px;
-}
-
-.offset-bg{
-  margin-top: 25px;
-  margin-bottom: 25px;
 }
 
 .ratingHead{
@@ -572,6 +595,15 @@ a:focus {
   /*box-shadow: inset rgba(0, 0, 0, .33) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.25) 0 22rem;*/
 }
 
+.freeroll p{
+  font-size: 20px;
+}
+@media (min-width: 700px){
+  .freeroll{
+    border-radius: 1000px;
+  }
+}
+
 .shadow{
   box-shadow: inset rgba(0, 0, 0, .13) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.65) 0 44rem;
   /*box-shadow: inset rgba(0, 0, 0, .33) 0 20rem 9rem -9rem, inset rgba(0, 0, 0,.25) 0 44rem;*/
@@ -582,11 +614,7 @@ a:focus {
 }
 
 /* and (max-width: 650px)*/
-@media (min-width: 700px){
-  .freeroll{
-    border-radius: 1000px;
-  }
-}
+
 
 /*.carousel-inner > .item > a > img {
     width: 100% !important;

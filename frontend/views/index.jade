@@ -60,6 +60,117 @@ mixin marathonCarousel()
 		|  </a>
 		|</div>
 
+mixin freerollDaily()
+	div
+		//(style="cursor:pointer")
+		#Freeroll.row
+			//.hero-unit.noborder(style="background:#e67e22;")
+			//.freeroll.noborder(style="background-color:#e67e22;")
+			//.noborder
+			//.freeroll.shadow.ctr(style="background-image: url('http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg');")
+			//.freeroll.shadow.ctr(style="background-color: #2ecc71;")
+			.freeroll.ctr.green
+				.white
+					h1.fadeText Выиграй 50 рублей в бесплатной викторине!
+					p
+						| Время начала - 20:00 (каждый день)
+						br
+						| Присоединяйся!
+					center
+						p
+							a(class="btn btn-primary btn-large btn-lg btn-fixed" href="http://google.com") Участвовать
+					//p
+						a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
+					//p(style="margin-top:30px;")
+						a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Поделиться
+		//#Freeroll.row.img-wrapper.border-if-you-can
+			//figure
+				#Freeroll
+			script.
+				drawNews({
+					news: [{
+						//image: 'http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg',
+						//image: '',
+						title: 'Выиграй 50 рублей в бесплатной викторине!',
+						text: ' ' +
+						'Время начала - 20:00 по МСК (каждый день) <br> Присоединяйся!',
+						url:'http://google.com',
+						//colour: '#FF0000',
+						//colour: '#4A148C',
+						colour: '#e74c3c',
+						//borderRadius: '0',
+						//borderRadius: '1000px',
+						centerButton: true,
+
+					}]
+				}, "#Freeroll");
+	//a(href="#" style="text-decoration:none;")
+
+mixin freerollWeekly()
+	.offset-lg
+		//(style="cursor:pointer")
+		#WeeklyFreeroll.row
+			//.hero-unit.noborder(style="background:#e74c3c;")
+			//.freeroll.noborder(style="background-color:#e74c3c;")
+			.freeroll.ctr.red
+				.white
+					h1.fadeText Сорви куш в еженедельной викторине!
+					p
+						//| Турнир стартует в 20:00 по МСК каждое воскресенье
+						| Время начала - 20:00 (воскресенье)
+						br
+						| Призовой фонд турнира - 500 рублей
+						br
+						| Призовых мест: 18
+						br
+						| Присоединяйся!
+					p.ctr
+						a(id="toggleWeeklyFreeRoll" class="btn btn-success btn-large btn-lg btn-fixed") Подробнее
+					p.ctr(id="WeeklyFreeRollFullInfo" style="display:none;")
+						| Размер приза зависит от набранного количества баллов
+					p.ctr
+						a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" href="http://google.com" style="margin-left: 0px;") Участвовать
+		script.
+			$("#toggleWeeklyFreeRoll").click(function () {
+				$("#WeeklyFreeRollFullInfo").toggle();
+				/*"slow", function () {});*/
+			});
+
+
+mixin createTeam()
+	.offset-lg
+		//(style="margin-top:50px;margin-bottom:50px;")
+		.row
+			.freeroll.ctr.purple
+				.white
+					//h1.fadeText Создай свою команду и раздели радость побед с друзьями!
+					h1.fadeText Раздели радость побед с друзьями!
+					p
+						| 1) Создай свою команду
+						br
+						| 2) Побеждай с друзьями в турнирах
+						br
+						| 3) Получи бонус в 400% призовых
+					p.ctr
+						//a(onclick="CopyShareLink('shareLink');" class="btn btn-primary btn-fixed") Рассказать друзьям
+						p.ctr(id="TeamFullInfo" style="display:none;")
+							| Бонус даётся за участие в бесплатных турнирах
+							br
+							| Если вы или ваш друг, выиграете 100 рублей, то вся команда получит ещё 300 рублей на общий счёт
+							br
+							| Вы сможете поделить их поровну в меню команды
+							br
+							| Все выигрыши суммируются
+							br
+							| Удачи!
+						a.offset(id="toggleTeamInfo" class="btn btn-primary btn-fixed") Подробнее
+						a.offset(id="" class="btn btn-success btn-fixed" href="/Teams/new") Создать команду
+			script.
+				$("#toggleTeamInfo").click(function () {
+					$("#TeamFullInfo").toggle();
+				});
+
+
 block content
 	include templates/news
 	include templates/topics
@@ -70,84 +181,39 @@ block content
 	//script.
 		var tournaments = !{JSON.stringify(msg)};
 		drawTournaments(tournaments)
-	
+
 	br
 	br
 	div(class="col-sm-12 bgc-white" id="ratingField")
 		//div(class="row")
 			+marathonCarousel()
 		//a(href="#" style="text-decoration:none;")
-		div
-			//(style="cursor:pointer")
-			#Freeroll.row
-				//.hero-unit.noborder(style="background:#e67e22;")
-				//.freeroll.noborder(style="background-color:#e67e22;")
-				//.noborder
-				//
-				.freeroll.shadow.ctr(style="background-image: url('http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg');")
-					.white
-						h1 Выиграй 50 рублей в бесплатной викторине!
-						p
-							| Время начала - 20:00 (каждый день)
-							br
-							| Присоединяйся!
-						center
-							p
-								a(class="btn btn-primary btn-large btn-lg btn-fixed" href="http://google.com") Участвовать
-						//p
-							a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
-						//p(style="margin-top:30px;")
-							a(class="btn btn-primary btn-large btn-lg" href="http://google.com") Поделиться
-			//#Freeroll.row.img-wrapper.border-if-you-can
-				//figure
-					#Freeroll
-				script.
-					drawNews({
-						news: [{
-							//image: 'http://kloppex.ru/kart/23/gamma_abstrakcii_tekstury_krugi_cveta_bokeh_abstraction_1920x1080.jpg',
-							//image: '',
-							title: 'Выиграй 50 рублей в бесплатной викторине!',
-							text: ' ' +
-							'Время начала - 20:00 по МСК (каждый день) <br> Присоединяйся!',
-							url:'http://google.com',
-							//colour: '#FF0000',
-							//colour: '#4A148C',
-							colour: '#e74c3c',
-							//borderRadius: '0',
-							//borderRadius: '1000px',
-							centerButton: true,
+		+freerollDaily()
+		+freerollWeekly()
+		+createTeam()
 
-						}]
-					}, "#Freeroll");
-		//a(href="#" style="text-decoration:none;")
-		div(style="margin-top:50px;margin-bottom:50px;")
-			//(style="cursor:pointer")
-			#WeeklyFreeroll.row
-				//.hero-unit.noborder(style="background:#e74c3c;")
-				//.freeroll.noborder(style="background-color:#e74c3c;")
-				.freeroll.ctr(style="background-color:#e74c3c;")
-					.white
-						h1.fadeText Сорви куш в еженедельной викторине!
-						p
-							//| Турнир стартует в 20:00 по МСК каждое воскресенье
-							| Время начала - 20:00 (воскресенье)
-							br
-							| Размер приза зависит от количества баллов, которое вы набрали в течение недели
-							br
-							| Присоединяйся!
-						p.ctr
-							a(id="toggleWeeklyFreeRoll" class="btn btn-success btn-large btn-lg btn-fixed") Подробнее
-						p.ctr(id="WeeklyFreeRollFullInfo" style="display:none;")
-							| Размер приза зависит от набранного количества баллов
-						p.ctr
-							a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" href="http://google.com" style="margin-left: 0px;") Участвовать
-			script.
-				$("#toggleWeeklyFreeRoll").click(function () {
-					$("#WeeklyFreeRollFullInfo").toggle();
-					/*"slow", function () {
-						// Animation complete.
-					});*/
-				});
+		//ul(class="list-group")
+			li(class="list-group-item")
+				//a(href="invite" target="_blank")
+				| Играй с друзьями и получи солидный бонус в случае победы в турнире!
+				if session && session.login
+					br
+					script.
+						function SelectAll(id) {
+							document.getElementById(id).focus();
+							document.getElementById(id).select();
+						}
+						function CopyShareLink(id){
+							var node = document.getElementById(id)
+							//node.focus();
+							node.select();
+							document.execCommand('copy');
+							node.blur();
+						}
+					input(id="shareLink" onclick="SelectAll('shareLink');" style="width:100%; box-sizing : border-box;" type="text" value="http://online-tournaments.org/register?inviter=" + session.login class="fit")
+		//div.ctr
+			a(onclick="CopyShareLink('shareLink');" class="btn btn-primary btn-fixed") Рассказать друзьям
+
 
 		//div(class="row blue")
 			p asdasd

@@ -1775,6 +1775,10 @@ app.post('/mark/Here/:login', function (req, res){
   res.end('');
 })
 
+app.get('/Teams/new', aux.authenticated, function(req, res){
+  res.render('TeamCreate');
+})
+
 // app.all('/Tournaments', function (req, res){
 //   var data = req.body;
 //   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';

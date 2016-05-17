@@ -3,13 +3,21 @@
 const webpack = require('webpack');
 const MINIFY = process.argv.indexOf('--minify') !== -1;
 
-module.exports = {
+const currentDir = __dirname;
+
+const JS_DIST_DIR = `${currentDir}/public/`;
+
+module.exports = [{
+  name: 'react',
   entry: {
-    app: './app.src.js'
+    app: './app.src.js',
+    "Teams": './app/Team/create.js'
   },
   output: {
-    filename: 'app.js',
-    path: __dirname
+    // filename: 'app.js',
+    // path: __dirname
+    filename: '[name].js',
+    path: `${JS_DIST_DIR}/output`
   },
   module: {
     loaders: [
@@ -50,6 +58,9 @@ module.exports = {
       compress: {
         warnings: false
       }
+    }),
+    new LiveReloadPlugin({
+      port: 35729
     })
   ] : []
-};
+}];
