@@ -1779,6 +1779,23 @@ app.get('/Team', aux.authenticated, function(req, res){
   res.render('Team');
 })
 
+app.get('/api/teams/', aux.authenticated, function(req, res){
+  var team = {
+    name: 'КрутыеКексы',
+    players: [
+      { name: 'Гага' },
+      { name: 'Гага1' },
+      { name: 'Гага2' },
+    ],
+    captain: 'Гага',
+    money: 100,
+    settings: {},
+  }
+  res.json({ joined: true, team: team });
+})
+
+
+
 // app.all('/Tournaments', function (req, res){
 //   var data = req.body;
 //   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
