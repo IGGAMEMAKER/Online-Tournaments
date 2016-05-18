@@ -1,11 +1,16 @@
 import { h, render } from 'preact';
-import Fish from '../../components/fish';
+// import Fish from '../../components/fish';
+import TeamTab from '../../components/TeamTab';
+
 
 const appElement: HTMLElement = document.getElementById('app');
-console.log("ololo create works");
+console.log('ololo create works');
 
+// const elements = (
+//   <Fish text="txt" />
+// );
 const elements = (
-  <Fish text="txt" />
+  <TeamTab joined={false} team={{}} />
 );
 
 render(

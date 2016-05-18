@@ -48,16 +48,21 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _fish = __webpack_require__(4);
+	var _TeamTab = __webpack_require__(4);
 
-	var _fish2 = _interopRequireDefault(_fish);
+	var _TeamTab2 = _interopRequireDefault(_TeamTab);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var appElement = document.getElementById('app');
-	console.log("ololo create works");
+	// import Fish from '../../components/fish';
 
-	var elements = (0, _preact.h)(_fish2.default, { text: 'txt' });
+	console.log('ololo create works');
+
+	// const elements = (
+	//   <Fish text="txt" />
+	// );
+	var elements = (0, _preact.h)(_TeamTab2.default, { joined: false, team: {} });
 
 	(0, _preact.render)(elements, appElement.parentNode, appElement);
 
@@ -859,31 +864,53 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = Fish;
+	exports.default = f;
 
 	var _preact = __webpack_require__(1);
 
-	// export default (props: PropsType): Component => (
-	//   <button className={`btn-rounded ${props.className}`}>
-	//     {props.text}
-	//   </button>
-	// );
-	function Fish(props) {
+	// import request from 'superagent';
+
+	function f(props) {
+	  console.log('Team Tab');
+	  if (props.joined) {
+	    return (0, _preact.h)(
+	      'div',
+	      null,
+	      ' Вы состоите в команде ',
+	      props.team.name,
+	      ' '
+	    );
+	  }
+	  // const a = <div> </div>;
+	  var button = 'btn btn-primary btn-lg offset-lg';
 	  return (0, _preact.h)(
 	    'div',
 	    null,
-	    'I am fish component',
-	    props.text
+	    (0, _preact.h)(
+	      'h1',
+	      { className: 'white text-center' },
+	      'Создай команду мечты и пригласи своих друзей!'
+	    ),
+	    (0, _preact.h)(
+	      'center',
+	      null,
+	      (0, _preact.h)(
+	        'form',
+	        { action: '/Team', method: 'post' },
+	        (0, _preact.h)(
+	          'h2',
+	          { className: 'white' },
+	          'Название новой команды '
+	        ),
+	        (0, _preact.h)('input', { type: 'text', className: 'circle-input ', autofocus: true }),
+	        (0, _preact.h)('br', null),
+	        (0, _preact.h)('input', { type: 'submit', value: 'Создать команду', className: button })
+	      )
+	    )
 	  );
-	} // import { h, Component } from 'preact';
-
-	// export default class fish extends Component {
-	//   render() {
-	//     return (
-	//       <div> I am fish component</div>
-	//     );
-	//   }
-	// }
+	} /**
+	   * Created by gaginho on 18.05.16.
+	   */
 
 /***/ }
 /******/ ]);

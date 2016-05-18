@@ -1,15 +1,7 @@
-//
-
-mixin rating()
-	h3(class="text-center ratingHead") Марафон
-		br
-		a(href="Leaderboard") все участники
-	include templates/rating
-	
 extends layout
 
 block title
-	title Темы
+	title Команда
 
 //block ftr
 
@@ -17,7 +9,7 @@ block content
 	include templates/news
 	#app
 	script(src="/output/Teams.js")
-	h1(class="white text-center") Темы
+	//h1(class="white text-center") Темы
 	
 	//div(class="col-sm-12 offset-bg")
 		h2(class="white text-center") Нет интересной темы?

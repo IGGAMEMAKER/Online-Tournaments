@@ -1775,8 +1775,8 @@ app.post('/mark/Here/:login', function (req, res){
   res.end('');
 })
 
-app.get('/Teams/new', aux.authenticated, function(req, res){
-  res.render('TeamCreate');
+app.get('/Team', aux.authenticated, function(req, res){
+  res.render('Team');
 })
 
 // app.all('/Tournaments', function (req, res){
