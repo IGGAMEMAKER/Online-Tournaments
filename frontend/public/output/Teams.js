@@ -954,11 +954,6 @@
 	          player.name
 	        );
 	      });
-	      var teamIsFull = (0, _preact.h)(
-	        'p',
-	        null,
-	        'Состав полностью укомплектован!'
-	      );
 	      var length = props.team.players.length;
 	      var placesLeft = maxPlayers - length;
 
@@ -986,6 +981,12 @@
 	        )
 	      );
 	      var copied = _this.state.copied ? copipasted : noCopipaste;
+
+	      var teamIsFull = (0, _preact.h)(
+	        'p',
+	        null,
+	        'Состав полностью укомплектован!'
+	      );
 	      var shareButton = (0, _preact.h)(
 	        'div',
 	        null,

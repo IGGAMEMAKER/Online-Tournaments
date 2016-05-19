@@ -46,7 +46,6 @@ export default class TeamTab extends Component {
     const maxPlayers = 5;
     // console.log('drawTeam', props);
     const players = props.team.players.map((player) => (<p>{player.name}</p>));
-    const teamIsFull = <p>Состав полностью укомплектован!</p>;
     const length = props.team.players.length;
     const placesLeft = maxPlayers - length;
 
@@ -62,6 +61,8 @@ export default class TeamTab extends Component {
       </div>
     );
     const copied = this.state.copied ? copipasted : noCopipaste;
+
+    const teamIsFull = <p>Состав полностью укомплектован!</p>;
     const shareButton = (
       <div>
         <p>Осталось мест в команде: {placesLeft}</p>

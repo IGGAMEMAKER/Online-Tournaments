@@ -39,6 +39,7 @@ var Gifts = require('./models/gifts');
 var Packs = require('./models/packs')
 
 var Money = require('./models/money');
+var Teams = require('./models/teams');
 
 var c = require('./constants');
 
@@ -106,7 +107,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   secret: '1234567890QWERTY'
 }));*/
 
-var SESSION_EXPIRATION_HOURS = 24*30;
+var SESSION_EXPIRATION_HOURS = 24 * 30;
 var maxAge = SESSION_EXPIRATION_HOURS * 60 * 60 * 1000;
 
 console.log('maxAge', maxAge);
@@ -200,6 +201,7 @@ var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answe
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux);
 
 var category = require('./routes/category')(app, aux, realtime, SOCKET, io)
+var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io)
 
 var TournamentReg = require('./models/tregs');
 var Marathon = require('./models/marathon');
@@ -1774,28 +1776,6 @@ app.post('/mark/Here/:login', function (req, res){
 
   res.end('');
 })
-
-app.get('/Team', aux.authenticated, function(req, res){
-  res.render('Team');
-})
-
-app.get('/api/teams/', aux.authenticated, function(req, res){
-  var team = {
-    name: 'КрутыеКексы',
-    players: [
-      { name: 'Гага' },
-      { name: 'Гага1' },
-      { name: 'Гага2' },
-    ],
-    captain: 'Гага',
-    money: 100,
-    settings: {},
-  }
-  res.json({ joined: true, team: team });
-})
-
-
-
 // app.all('/Tournaments', function (req, res){
 //   var data = req.body;
 //   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';

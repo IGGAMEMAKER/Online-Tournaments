@@ -27,7 +27,7 @@ module.exports = function(dbAddress){
 		User : db.model('User', { login: String, password: String, money: Number, 
 			email: String, activated:String, date: Date, link: String, bonus: Object, 
 			salt:String, cryptVersion:Number, social:Object, inviter:Object,
-			info: Object
+			info: Object, team: String
 		}),
 		Inviter : db.model('Inviter', {
 			type: Number,
@@ -161,6 +161,8 @@ module.exports = function(dbAddress){
 		,Team: db.model('Team', { 
 			name: String,
 			players: Object, // { login, isActive, points}
+			captain: String,
+			settings: Object,
 			enabled: Boolean,
 			points: Number
 		})

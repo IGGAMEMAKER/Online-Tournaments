@@ -140,6 +140,14 @@ function getByLogin(login){
 	// })
 }
 
+function joinTeam(login, team){ // teamname
+	return User2.update({ login: login }, {$set: { team: team } })
+}
+
+function quitTeam(login){
+	return User2.update({ login: login }, {$set: { team: null } })
+}
+
 function noInfoFix(login){
 	console.log('noInfoFix', login)
 	var upd = {
@@ -824,3 +832,6 @@ module.exports.update_user_status = update_user_status
 module.exports.pack = pack
 
 module.exports.moneyIncrease = moneyIncrease
+
+module.exports.quitTeam = quitTeam;
+module.exports.joinTeam = joinTeam;
