@@ -934,13 +934,15 @@
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamTab)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
 	      joined: TEAM_JOINED_ERR,
-	      team: null
+	      team: null,
+	      copied: false
 	    }, _this.CopyShareLink = function () {
 	      var id = 'team-link';
 	      var node = document.getElementById(id);
 	      node.select();
 	      document.execCommand('copy');
 	      node.blur();
+	      _this.setState({ copied: true });
 	    }, _this.drawTeam = function () {
 	      var props = _this.state;
 	      var maxPlayers = 5;
@@ -960,6 +962,30 @@
 	      var length = props.team.players.length;
 	      var placesLeft = maxPlayers - length;
 
+	      var copipasted = (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'p',
+	          null,
+	          'Ссылка скопирована'
+	        ),
+	        (0, _preact.h)(
+	          'input',
+	          { id: 'team-link', type: 'text', value: 'valllll', className: 'fit black circle-input ' },
+	          'blah blah'
+	        )
+	      );
+	      var noCopipaste = (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'input',
+	          { id: 'team-link', style: { display: 'none' }, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
+	          'blah blah'
+	        )
+	      );
+	      var copied = _this.state.copied ? copipasted : noCopipaste;
 	      var shareButton = (0, _preact.h)(
 	        'div',
 	        null,
@@ -972,18 +998,14 @@
 	        (0, _preact.h)(
 	          'p',
 	          null,
-	          'Отправьте эту ссылку своим друзьям и получайте бонусы в бесплатных турнирах!'
-	        ),
-	        (0, _preact.h)(
-	          'input',
-	          { id: 'team-link', type: 'text', value: 'valllll', className: 'fit black circle-input' },
-	          'blah blah'
+	          'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
 	        ),
 	        (0, _preact.h)(
 	          'button',
-	          { onClick: _this.CopyShareLink, className: 'btn btn-primary circle-input' },
-	          'Скопировать ссылку'
-	        )
+	          { onClick: _this.CopyShareLink, className: 'btn btn-primary btn-lg' },
+	          'Пригласить друзей'
+	        ),
+	        copied
 	      );
 
 	      var shareLink = length < maxPlayers ? shareButton : teamIsFull;
@@ -997,7 +1019,7 @@
 	          props.team.name
 	        ),
 	        (0, _preact.h)(
-	          'h4',
+	          'h3',
 	          null,
 	          'На счету ',
 	          props.team.money,
@@ -1006,7 +1028,11 @@
 	        (0, _preact.h)(
 	          'h2',
 	          null,
-	          'Капитан команды: ',
+	          'Капитан команды'
+	        ),
+	        (0, _preact.h)(
+	          'h3',
+	          null,
 	          props.team.captain
 	        ),
 	        (0, _preact.h)(
@@ -1015,11 +1041,10 @@
 	          'Состав команды'
 	        ),
 	        (0, _preact.h)(
-	          'h4',
+	          'h3',
 	          null,
 	          players
 	        ),
-	        length,
 	        shareLink
 	      );
 	    }, _this.drawCreateTeamForm = function () {

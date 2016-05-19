@@ -15,7 +15,8 @@ type PropsType = {
 export default class TeamTab extends Component {
   state = {
     joined: TEAM_JOINED_ERR,
-    team: null
+    team: null,
+    copied: false
   };
 
   componentWillMount() {
@@ -37,6 +38,7 @@ export default class TeamTab extends Component {
     node.select();
     document.execCommand('copy');
     node.blur();
+    this.setState({ copied: true });
   };
 
   drawTeam = () => {
@@ -48,12 +50,24 @@ export default class TeamTab extends Component {
     const length = props.team.players.length;
     const placesLeft = maxPlayers - length;
 
+    const copipasted = (
+      <div>
+        <p>Ссылка скопирована</p>
+        <input id="team-link" type="text" value="valllll" className="fit black circle-input ">blah blah</input>
+      </div>
+    );
+    const noCopipaste = (
+      <div>
+        <input id="team-link" style={{ display: 'none' }} type="text" value="valllll" className="fit black circle-input ">blah blah</input>
+      </div>
+    );
+    const copied = this.state.copied ? copipasted : noCopipaste;
     const shareButton = (
       <div>
         <p>Осталось мест в команде: {placesLeft}</p>
-        <p>Отправьте эту ссылку своим друзьям и получайте бонусы в бесплатных турнирах!</p>
-        <input id="team-link" type="text" value="valllll" className="fit black circle-input">blah blah</input>
-        <button onClick={this.CopyShareLink} className="btn btn-primary circle-input">Скопировать ссылку</button>
+        <p>Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!</p>
+        <button onClick={this.CopyShareLink} className="btn btn-primary btn-lg">Пригласить друзей</button>
+        {copied}
       </div>
     );
 
@@ -61,11 +75,11 @@ export default class TeamTab extends Component {
     return (
       <div className="white text-center">
         <h1>Команда {props.team.name}</h1>
-        <h4>На счету {props.team.money} РУБ</h4>
-        <h2>Капитан команды: {props.team.captain}</h2>
+        <h3>На счету {props.team.money} РУБ</h3>
+        <h2>Капитан команды</h2>
+        <h3>{props.team.captain}</h3>
         <h2>Состав команды</h2>
-        <h4>{players}</h4>
-        {length}
+        <h3>{players}</h3>
         {shareLink}
       </div>
     );
