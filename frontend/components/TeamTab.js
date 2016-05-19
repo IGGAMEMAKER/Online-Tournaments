@@ -19,29 +19,54 @@ export default class TeamTab extends Component {
   };
 
   componentWillMount() {
-    setInterval(() => {
-      request
-        .get('/api/teams/')
-        .end((err: String, res) => {
-          const message: PropsType = res.body;
-          console.log('got request', err, message);
+    // setInterval(() => {
+    request
+      .get('/api/teams/')
+      .end((err: String, res) => {
+        const message: PropsType = res.body;
+        console.log('got request', err, message);
 
-          this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
-        });
-    }, 2000);
+        this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
+      });
+    // }, 2000);
   }
+
+  CopyShareLink = () => {
+    const id = 'team-link';
+    const node = document.getElementById(id);
+    node.select();
+    document.execCommand('copy');
+    node.blur();
+  };
 
   drawTeam = () => {
     const props: PropsType = this.state;
-    console.log('drawTeam', props);
+    const maxPlayers = 5;
+    // console.log('drawTeam', props);
     const players = props.team.players.map((player) => (<p>{player.name}</p>));
+    const teamIsFull = <p>Состав полностью укомплектован!</p>;
+    const length = props.team.players.length;
+    const placesLeft = maxPlayers - length;
+
+    const shareButton = (
+      <div>
+        <p>Осталось мест в команде: {placesLeft}</p>
+        <p>Отправьте эту ссылку своим друзьям и получайте бонусы в бесплатных турнирах!</p>
+        <input id="team-link" type="text" value="valllll" className="fit black circle-input">blah blah</input>
+        <button onClick={this.CopyShareLink} className="btn btn-primary circle-input">Скопировать ссылку</button>
+      </div>
+    );
+
+    const shareLink = length < maxPlayers ? shareButton : teamIsFull;
     return (
       <div className="white text-center">
         <h1>Команда {props.team.name}</h1>
-        <h3>На счету {props.team.money} РУБ</h3>
+        <h4>На счету {props.team.money} РУБ</h4>
         <h2>Капитан команды: {props.team.captain}</h2>
         <h2>Состав команды</h2>
         <h4>{players}</h4>
+        {length}
+        {shareLink}
       </div>
     );
   };
@@ -54,6 +79,7 @@ export default class TeamTab extends Component {
         <center>
           <form action="/Team" method="post">
             <input type="text" className="circle-input clear-focus-border" autoFocus />
+            <br />
             <br />
             <input type="submit" value="Создать команду" className={button} />
           </form>

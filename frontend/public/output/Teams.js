@@ -935,9 +935,16 @@
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamTab)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
 	      joined: TEAM_JOINED_ERR,
 	      team: null
+	    }, _this.CopyShareLink = function () {
+	      var id = 'team-link';
+	      var node = document.getElementById(id);
+	      node.select();
+	      document.execCommand('copy');
+	      node.blur();
 	    }, _this.drawTeam = function () {
 	      var props = _this.state;
-	      console.log('drawTeam', props);
+	      var maxPlayers = 5;
+	      // console.log('drawTeam', props);
 	      var players = props.team.players.map(function (player) {
 	        return (0, _preact.h)(
 	          'p',
@@ -945,6 +952,41 @@
 	          player.name
 	        );
 	      });
+	      var teamIsFull = (0, _preact.h)(
+	        'p',
+	        null,
+	        'Состав полностью укомплектован!'
+	      );
+	      var length = props.team.players.length;
+	      var placesLeft = maxPlayers - length;
+
+	      var shareButton = (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'p',
+	          null,
+	          'Осталось мест в команде: ',
+	          placesLeft
+	        ),
+	        (0, _preact.h)(
+	          'p',
+	          null,
+	          'Отправьте эту ссылку своим друзьям и получайте бонусы в бесплатных турнирах!'
+	        ),
+	        (0, _preact.h)(
+	          'input',
+	          { id: 'team-link', type: 'text', value: 'valllll', className: 'fit black circle-input' },
+	          'blah blah'
+	        ),
+	        (0, _preact.h)(
+	          'button',
+	          { onClick: _this.CopyShareLink, className: 'btn btn-primary circle-input' },
+	          'Скопировать ссылку'
+	        )
+	      );
+
+	      var shareLink = length < maxPlayers ? shareButton : teamIsFull;
 	      return (0, _preact.h)(
 	        'div',
 	        { className: 'white text-center' },
@@ -955,7 +997,7 @@
 	          props.team.name
 	        ),
 	        (0, _preact.h)(
-	          'h3',
+	          'h4',
 	          null,
 	          'На счету ',
 	          props.team.money,
@@ -976,7 +1018,9 @@
 	          'h4',
 	          null,
 	          players
-	        )
+	        ),
+	        length,
+	        shareLink
 	      );
 	    }, _this.drawCreateTeamForm = function () {
 	      var button = 'btn btn-primary btn-lg offset-lg';
@@ -996,6 +1040,7 @@
 	            { action: '/Team', method: 'post' },
 	            (0, _preact.h)('input', { type: 'text', className: 'circle-input clear-focus-border', autoFocus: true }),
 	            (0, _preact.h)('br', null),
+	            (0, _preact.h)('br', null),
 	            (0, _preact.h)('input', { type: 'submit', value: 'Создать команду', className: button })
 	          )
 	        )
@@ -1008,14 +1053,14 @@
 	    value: function componentWillMount() {
 	      var _this2 = this;
 
-	      setInterval(function () {
-	        _superagent2.default.get('/api/teams/').end(function (err, res) {
-	          var message = res.body;
-	          console.log('got request', err, message);
+	      // setInterval(() => {
+	      _superagent2.default.get('/api/teams/').end(function (err, res) {
+	        var message = res.body;
+	        console.log('got request', err, message);
 
-	          _this2.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
-	        });
-	      }, 2000);
+	        _this2.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
+	      });
+	      // }, 2000);
 	    }
 	  }, {
 	    key: 'render',
