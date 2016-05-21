@@ -55,13 +55,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var appElement = document.getElementById('app');
-	// import Fish from '../../components/fish';
 
-	console.log('ololo create works');
-
-	// const elements = (
-	//   <Fish text="txt" />
-	// );
 	var brdr = '-----------------------------------------------';
 	var team = {
 	  name: 'КрутыеКексы',
@@ -70,12 +64,7 @@
 	  money: 100,
 	  settings: {}
 	};
-	/*
-	 <TeamTab joined={1} team={team} />
-	 <p>{brdr}{brdr}</p>
-	 <TeamTab joined={2} team={{}} />
 
-	 */
 	var elements = (0, _preact.h)(
 	  'center',
 	  null,
@@ -909,6 +898,18 @@
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
+	var _TeamCreateForm = __webpack_require__(97);
+
+	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
+
+	var _TeamDraw = __webpack_require__(98);
+
+	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
+
+	var _TeamShareButton = __webpack_require__(99);
+
+	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var TEAM_JOINED_TRUE = 1; /**
@@ -917,6 +918,15 @@
 
 	var TEAM_JOINED_FALSE = 2;
 	var TEAM_JOINED_ERR = 3;
+
+
+	var stdTeam = {
+	  name: 'КрутыеКексы',
+	  players: [{ name: 'Гага' }, { name: 'Гага1' }, { name: 'Гага3' }],
+	  captain: 'Гага',
+	  money: 100,
+	  settings: {}
+	};
 
 	var TeamTab = function (_Component) {
 	  (0, _inherits3.default)(TeamTab, _Component);
@@ -933,8 +943,8 @@
 	    }
 
 	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamTab)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
-	      joined: TEAM_JOINED_ERR,
-	      team: null,
+	      joined: TEAM_JOINED_TRUE,
+	      team: stdTeam,
 	      copied: false
 	    }, _this.CopyShareLink = function () {
 	      var id = 'team-link';
@@ -943,173 +953,55 @@
 	      document.execCommand('copy');
 	      node.blur();
 	      _this.setState({ copied: true });
-	    }, _this.drawTeam = function () {
-	      var props = _this.state;
-	      var maxPlayers = 5;
-	      // console.log('drawTeam', props);
-	      var players = props.team.players.map(function (player) {
-	        return (0, _preact.h)(
-	          'p',
-	          null,
-	          player.name
-	        );
-	      });
-	      var length = props.team.players.length;
-	      var placesLeft = maxPlayers - length;
-
-	      var copipasted = (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'p',
-	          null,
-	          'Ссылка скопирована'
-	        ),
-	        (0, _preact.h)(
-	          'input',
-	          { id: 'team-link', type: 'text', value: 'valllll', className: 'fit black circle-input ' },
-	          'blah blah'
-	        )
-	      );
-	      var noCopipaste = (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'input',
-	          { id: 'team-link', style: { display: 'none' }, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
-	          'blah blah'
-	        )
-	      );
-	      var copied = _this.state.copied ? copipasted : noCopipaste;
-
-	      var teamIsFull = (0, _preact.h)(
-	        'p',
-	        null,
-	        'Состав полностью укомплектован!'
-	      );
-	      var shareButton = (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'p',
-	          null,
-	          'Осталось мест в команде: ',
-	          placesLeft
-	        ),
-	        (0, _preact.h)(
-	          'p',
-	          null,
-	          'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
-	        ),
-	        (0, _preact.h)(
-	          'button',
-	          { onClick: _this.CopyShareLink, className: 'btn btn-primary btn-lg' },
-	          'Пригласить друзей'
-	        ),
-	        copied
-	      );
-
-	      var shareLink = length < maxPlayers ? shareButton : teamIsFull;
-	      return (0, _preact.h)(
-	        'div',
-	        { className: 'white text-center' },
-	        (0, _preact.h)(
-	          'h1',
-	          null,
-	          'Команда ',
-	          props.team.name
-	        ),
-	        (0, _preact.h)(
-	          'h3',
-	          null,
-	          'На счету ',
-	          props.team.money,
-	          ' РУБ'
-	        ),
-	        (0, _preact.h)(
-	          'h2',
-	          null,
-	          'Капитан команды'
-	        ),
-	        (0, _preact.h)(
-	          'h3',
-	          null,
-	          props.team.captain
-	        ),
-	        (0, _preact.h)(
-	          'h2',
-	          null,
-	          'Состав команды'
-	        ),
-	        (0, _preact.h)(
-	          'h3',
-	          null,
-	          players
-	        ),
-	        shareLink
-	      );
-	    }, _this.drawCreateTeamForm = function () {
-	      var button = 'btn btn-primary btn-lg offset-lg';
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        (0, _preact.h)(
-	          'h2',
-	          { className: 'white text-center' },
-	          'Название новой команды'
-	        ),
-	        (0, _preact.h)(
-	          'center',
-	          null,
-	          (0, _preact.h)(
-	            'form',
-	            { action: '/Team', method: 'post' },
-	            (0, _preact.h)('input', { type: 'text', className: 'circle-input clear-focus-border', autoFocus: true }),
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)('br', null),
-	            (0, _preact.h)('input', { type: 'submit', value: 'Создать команду', className: button })
-	          )
-	        )
-	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
+	  // state = {
+	  //   joined: TEAM_JOINED_ERR,
+	  //   team: null,
+	  //   copied: false
+	  // };
+
 
 	  (0, _createClass3.default)(TeamTab, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      var _this2 = this;
 
-	      // setInterval(() => {
+	      // // setInterval(() => {
 	      _superagent2.default.get('/api/teams/').end(function (err, res) {
 	        var message = res.body;
 	        console.log('got request', err, message);
 
-	        _this2.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
+	        _this2.setState({ joined: message.joined, team: message.team });
+	        // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
 	      });
-	      // }, 2000);
+	      // // }, 2000);
 	    }
 	  }, {
 	    key: 'render',
-
-	    // console.log('Team Tab');
-
 	    value: function render() {
-	      var error = (0, _preact.h)(
-	        'h3',
-	        { className: 'white text-center' },
-	        'Что-то пошло не так((('
-	      );
-	      var result = '';
-	      // console.log('render', this.state);
-	      if (this.state.joined === TEAM_JOINED_TRUE) result = this.drawTeam();
-	      if (this.state.joined === TEAM_JOINED_FALSE) result = this.drawCreateTeamForm(); // .bind(this);
-	      if (this.state.joined === TEAM_JOINED_ERR) result = error;
-	      // console.log(result);
-	      return (0, _preact.h)(
-	        'div',
-	        null,
-	        result
-	      );
+	      if (this.state.joined === TEAM_JOINED_TRUE) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(_TeamDraw2.default, { team: this.state.team }),
+	          (0, _preact.h)(_TeamShareButton2.default, { team: this.state.team, onClick: this.CopyShareLink, copipasted: this.state.copied })
+	        );
+	      }
+
+	      if (this.state.joined === TEAM_JOINED_FALSE) {
+	        return (0, _preact.h)(_TeamCreateForm2.default, null);
+	      }
+
+	      if (this.state.joined === TEAM_JOINED_ERR) {
+	        return (0, _preact.h)(
+	          'h3',
+	          { className: 'white text-center' },
+	          'Что-то пошло не так((('
+	        );
+	      }
+
+	      return '';
 	    }
 	  }]);
 	  return TeamTab;
@@ -4243,6 +4135,252 @@
 
 	module.exports = request;
 
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _preact = __webpack_require__(1);
+
+	exports.default = function () {
+	  return (0, _preact.h)(
+	    "div",
+	    null,
+	    (0, _preact.h)(
+	      "h2",
+	      { className: "white text-center" },
+	      "Название новой команды"
+	    ),
+	    (0, _preact.h)(
+	      "center",
+	      null,
+	      (0, _preact.h)(
+	        "form",
+	        { action: "/Team", method: "post" },
+	        (0, _preact.h)("input", { type: "text", name: "name", className: "circle-input clear-focus-border", autoFocus: true }),
+	        (0, _preact.h)("br", null),
+	        (0, _preact.h)("br", null),
+	        (0, _preact.h)("input", { type: "submit", value: "Создать команду", className: "btn btn-primary btn-lg offset-lg" })
+	      )
+	    )
+	  );
+	}; /**
+	    * Created by gaginho on 20.05.16.
+	    */
+
+/***/ },
+/* 98 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = drawTeam;
+
+	var _preact = __webpack_require__(1);
+
+	var _TeamDivideMoney = __webpack_require__(100);
+
+	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Created by gaginho on 20.05.16.
+	 */
+	function drawTeam(props) {
+	  console.log('drawTeam', 'TeamDraw', props);
+	  var team = props.team;
+	  var players = team.players.map(function (player) {
+	    return (0, _preact.h)(
+	      'p',
+	      null,
+	      player.name
+	    );
+	  });
+	  return (0, _preact.h)(
+	    'div',
+	    null,
+	    (0, _preact.h)(
+	      'div',
+	      { className: 'white text-center' },
+	      (0, _preact.h)(
+	        'h1',
+	        null,
+	        'Команда ',
+	        team.name
+	      ),
+	      (0, _preact.h)(
+	        'h3',
+	        null,
+	        'На счету ',
+	        team.money,
+	        ' РУБ'
+	      ),
+	      (0, _preact.h)(_TeamDivideMoney2.default, { money: team.money, players: team.players }),
+	      (0, _preact.h)(
+	        'h2',
+	        null,
+	        'Капитан команды'
+	      ),
+	      (0, _preact.h)(
+	        'h3',
+	        null,
+	        team.captain
+	      ),
+	      (0, _preact.h)(
+	        'h2',
+	        null,
+	        'Состав команды'
+	      ),
+	      (0, _preact.h)(
+	        'h3',
+	        null,
+	        players
+	      )
+	    )
+	  );
+	}
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (props) {
+	  var MAX_PLAYERS = 5;
+
+	  var length = props.team.players.length;
+	  var placesLeft = MAX_PLAYERS - length;
+
+	  var style = { display: 'none' };
+	  var copipasted = '';
+
+	  if (props.copipasted) {
+	    copipasted = 'Ссылка скопирована';
+	    style = {};
+	  }
+
+	  if (length < MAX_PLAYERS) {
+	    return (0, _preact.h)(
+	      'div',
+	      { className: 'white text-center' },
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Осталось мест в команде: ',
+	        placesLeft
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
+	      ),
+	      (0, _preact.h)(
+	        'button',
+	        { onClick: props.onClick, className: 'btn btn-primary btn-lg' },
+	        'Пригласить друзей'
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        copipasted
+	      ),
+	      (0, _preact.h)(
+	        'input',
+	        { id: 'team-link', style: style, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
+	        'blah blah'
+	      )
+	    );
+	  }
+	  return (0, _preact.h)(
+	    'p',
+	    null,
+	    'Состав полностью укомплектован!'
+	  );
+	};
+
+	var _preact = __webpack_require__(1);
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (props) {
+	  var count = props.players.length;
+	  var money = props.money + 100;
+
+	  if (money <= 0) {
+	    return '';
+	  }
+	  var willReceive = Math.floor(money / count);
+	  var modulo = money % count;
+	  var balanceNext = '';
+	  if (modulo) {
+	    balanceNext = (0, _preact.h)(
+	      'p',
+	      null,
+	      'на счету останется ',
+	      modulo,
+	      ' РУБ'
+	    );
+	  }
+
+	  var divide = function divide() {
+	    _superagent2.default.post('/api/teams/divide');
+	    //box-shadow: 0 0 50px #ffc800;
+	  };
+
+	  return (0, _preact.h)(
+	    'div',
+	    { className: 'white text-center' },
+	    (0, _preact.h)(
+	      'p',
+	      null,
+	      'Вы можете поделить деньги поровну'
+	    ),
+	    (0, _preact.h)(
+	      'p',
+	      null,
+	      'каждый член команды получит ',
+	      willReceive,
+	      ' РУБ'
+	    ),
+	    balanceNext,
+	    (0, _preact.h)(
+	      'button',
+	      { onClick: divide, className: 'btn btn-success btn-lg' },
+	      'Поделить деньги'
+	    )
+	  );
+	};
+
+	var _preact = __webpack_require__(1);
+
+	var _superagent = __webpack_require__(91);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }
 /******/ ]);

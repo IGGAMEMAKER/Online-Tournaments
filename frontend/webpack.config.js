@@ -11,7 +11,7 @@ module.exports = [{
   name: 'react',
   entry: {
     app: './app.src.js',
-    "Teams": './app/Team/create.js'
+    Teams: './app/Team/Team.js'
   },
   output: {
     // filename: 'app.js',

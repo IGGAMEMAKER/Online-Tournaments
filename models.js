@@ -164,7 +164,8 @@ module.exports = function(dbAddress){
 			captain: String,
 			settings: Object,
 			enabled: Boolean,
-			points: Number
+			points: Number,
+			money: Number,
 		})
 
 		,Action : db.model('Action', {

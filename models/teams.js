@@ -20,18 +20,32 @@ function get(name) {
 	return Team.findOne({ name: name });
 }
 
+function all() {
+	return Team.list({});
+}
+
+function removeById(id){
+	return remove({ _id: id })
+}
+
+function removeByName(name){
+	return remove({ name: name });
+}
+
 function add(name, captain) {
 	if (!name || !captain) throw 'invalidData';
+
 	var team = {
 		name: name,
     players: [{ name: captain }],
     captain: captain,
     money: 0,
     settings: {}
-	}
+	};
+
 	return Team.find({ name: name })
-	.then(function (team){
-		if (team) throw 'team_exists';
+	.then(function (t){
+		if (t) throw 'team_exists';
 
 		return Team.save(team);
 	})
@@ -77,12 +91,20 @@ function resetCaptain(name, login){
 	return Team.update({ name:name }, {$set: {captain: login} });
 }
 
-function remove(name){
+function setMoney(name, money) {
+	return Team.update({ name: name }, {$set: {money: money} });
+}
+
+function changeMoney(name, ammount) {
+	return Team.update({ name: name }, {$inc: {money: ammount} });
+}
+
+function remove(query){
 	var players;
-	return Team.findOne({ name: name })
+	return Team.findOne(query)
 	.then(function (team){
 		players = team.players || null;
-		return returnTeam.remove({ name: name })
+		return Team.remove(query)
 		.then(function (result){
 			return {
 				result: result,
@@ -92,10 +114,16 @@ function remove(name){
 	})
 }
 
-this.get = get;
-this.add = add;
-this.join = join;
-this.clearPlayers = clearPlayers;
-this.removePlayer = removePlayer;
-this.resetCaptain = resetCaptain;
-this.remove = remove;
+module.exports = {
+	get : get,
+	add : add,
+	all : all,
+	join : join,
+	clearPlayers : clearPlayers,
+	removePlayer : removePlayer,
+	resetCaptain : resetCaptain,
+	removeByName : removeByName,
+	removeById: removeById,
+	setMoney: setMoney,
+	changeMoney: changeMoney
+};

@@ -36,7 +36,7 @@ var Tournaments = require('./models/tournaments');
 var Message = require('./models/message');
 var Gifts = require('./models/gifts');
 
-var Packs = require('./models/packs')
+var Packs = require('./models/packs');
 
 var Money = require('./models/money');
 var Teams = require('./models/teams');
