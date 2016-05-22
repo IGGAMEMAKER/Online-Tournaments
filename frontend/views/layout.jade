@@ -90,9 +90,9 @@ mixin drawMyPoints()
 	if session.login && session.login.length>0
 		center
 			div(class="balance" style="width:100%; background-color:#222;")
-				span(id="mypoints") Баллы     
+				//span(id="mypoints") Баллы
 				//a(href="/Marathon#points") что это
-				+getMyPoints()
+				//+getMyPoints()
 
 mixin getMyPoints()
 	if session.login && session.login.length>0

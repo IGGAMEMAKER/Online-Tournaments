@@ -242,7 +242,8 @@ function getPoints(){
 function drawPoints(msg){
   $("#MARATHONPOINTS").html('Набрано баллов : ' + msg.points)
 
-  $("#mypoints").html("Баллы: " + msg.points + '   ')
+  // $("#mypoints").html("Баллы: " + msg.points + '   ')
+  // $("#mypoints").html("Баллы: " + msg.points + '   ')
   // $("#exchange/")
 }
 

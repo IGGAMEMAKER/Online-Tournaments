@@ -48,7 +48,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamTab = __webpack_require__(4);
+	var _TeamTab = __webpack_require__(100);
 
 	var _TeamTab2 = _interopRequireDefault(_TeamTab);
 
@@ -863,242 +863,7 @@
 
 
 /***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _getPrototypeOf = __webpack_require__(5);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(31);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(32);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(36);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(83);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _preact = __webpack_require__(1);
-
-	var _superagent = __webpack_require__(91);
-
-	var _superagent2 = _interopRequireDefault(_superagent);
-
-	var _TeamCreateForm = __webpack_require__(97);
-
-	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
-
-	var _TeamDraw = __webpack_require__(98);
-
-	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
-
-	var _TeamShareButton = __webpack_require__(100);
-
-	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var TEAM_JOINED_TRUE = 1; /**
-	                           * Created by gaginho on 18.05.16.
-	                           */
-
-	var TEAM_JOINED_FALSE = 2;
-	var TEAM_JOINED_ERR = 3;
-
-
-	var stdTeam = {
-	  name: 'КрутыеКексы',
-	  players: [{ name: 'Гага' }, { name: 'Гага1' }, { name: 'Гага3' }],
-	  captain: 'Гага',
-	  money: 100,
-	  settings: {}
-	};
-
-	var TeamTab = function (_Component) {
-	  (0, _inherits3.default)(TeamTab, _Component);
-
-	  function TeamTab() {
-	    var _Object$getPrototypeO;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, TeamTab);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamTab)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
-	      joined: TEAM_JOINED_TRUE,
-	      team: stdTeam,
-	      copied: false
-	    }, _this.CopyShareLink = function () {
-	      var id = 'team-link';
-	      var node = document.getElementById(id);
-	      node.select();
-	      document.execCommand('copy');
-	      node.blur();
-	      _this.setState({ copied: true });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-	  // state = {
-	  //   joined: TEAM_JOINED_ERR,
-	  //   team: null,
-	  //   copied: false
-	  // };
-
-
-	  (0, _createClass3.default)(TeamTab, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var _this2 = this;
-
-	      // // setInterval(() => {
-	      _superagent2.default.get('/api/teams/').end(function (err, res) {
-	        var message = res.body;
-	        console.log('got request', err, message);
-
-	        _this2.setState({ joined: message.joined, team: message.team });
-	        // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
-	      });
-	      // // }, 2000);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      if (this.state.joined === TEAM_JOINED_TRUE) {
-	        return (0, _preact.h)(
-	          'div',
-	          null,
-	          (0, _preact.h)(_TeamDraw2.default, { team: this.state.team }),
-	          (0, _preact.h)(_TeamShareButton2.default, { team: this.state.team, onClick: this.CopyShareLink, copipasted: this.state.copied })
-	        );
-	      }
-
-	      if (this.state.joined === TEAM_JOINED_FALSE) {
-	        return (0, _preact.h)(_TeamCreateForm2.default, null);
-	      }
-
-	      if (this.state.joined === TEAM_JOINED_ERR) {
-	        return (0, _preact.h)(
-	          'h3',
-	          { className: 'white text-center' },
-	          'Что-то пошло не так((('
-	        );
-	      }
-
-	      return '';
-	    }
-	  }]);
-	  return TeamTab;
-	}(_preact.Component);
-	/*
-	 export default function f(props: PropsType): Component {
-	 console.log('Team Tab');
-	 if (props.joined === TEAM_JOINED_TRUE) return drawTeam(props);
-	 if (props.joined === TEAM_JOINED_FALSE) return drawCreateTeamForm();
-
-	 return <h3 className="white text-center">Что-то пошло не так(((</h3>;
-	 }
-
-	 */
-	/*
-	export default class TodoList extends Component {
-	  state = {};
-
-	  componentWillMount() {
-	    store.redraw(() => {
-	      this.setState({
-	        markedIDs: store.getMarkedIDs(),
-	        items: store.getItems(),
-	      });
-	    });
-	  }
-
-	  deleteList = () => {
-	    actions.removeList();
-	  };
-
-	  addItem = () => {
-	    let text = document.getElementById('textField').value;
-	    if (!text) return;
-	    document.getElementById('textField').value = '';
-	    actions.addItem(text);
-	  };
-
-	  addWannaDelete = (index) => {
-	    return (event) => {
-	      let status = document.getElementById('wannaDelete' + index).checked;
-	      actions.markForDeleting(index, status);
-	    };
-	  };
-
-	  deleteItem(index) {
-	    return () => {
-	      actions.removeItem(index);
-	    };
-	  };
-
-	  getItemList = () => {
-	    let items = store.getItems();
-	    let itemList = <li> No todos, sorry </li>;
-
-	    if (items.length) {
-	      itemList = items.map((item, index) => {
-	        let id = 'wannaDelete' + index;
-	        let key = item.key;
-	        return (
-	          <li key={key}>
-	            <input type="checkbox" id={id} name="wannaDelete" onChange={this.addWannaDelete(index)} />
-	            <TodoItem item={item} />
-	            <a href="#" onClick={this.deleteItem(index)}> X </a>
-	          </li>
-	        );
-	      });
-	    }
-	    return itemList;
-	  };
-
-	  render() {
-	    let itemList = this.getItemList();
-
-	    //let deleteListButton = this.getDeleteListButton();
-	    let deleteListButton = store.markedItemsExist() ?
-	      <input type="button" value="Delete all" onClick={this.deleteList} /> :
-	      '';
-
-	    return (
-	      <div>
-	        <ul>{itemList}</ul>
-	        <div>
-	          <input id="textField" type="text" />
-	          <input type="submit" value="Add" onClick={this.addItem} />
-	        </div>
-	        <div>{deleteListButton}</div>
-	      </div>
-	    );
-	  }
-	}
-	*/
-
-
-	exports.default = TeamTab;
-
-/***/ },
+/* 4 */,
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -4137,7 +3902,246 @@
 
 
 /***/ },
-/* 97 */
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(5);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(31);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(32);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(36);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(83);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _superagent = __webpack_require__(91);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
+	var _TeamCreateForm = __webpack_require__(101);
+
+	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
+
+	var _TeamDraw = __webpack_require__(102);
+
+	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
+
+	var _TeamShareButton = __webpack_require__(104);
+
+	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var TEAM_JOINED_TRUE = 1; /**
+	                           * Created by gaginho on 18.05.16.
+	                           */
+
+	var TEAM_JOINED_FALSE = 2;
+	var TEAM_JOINED_ERR = 3;
+
+
+	var stdTeam = {
+	  name: 'КрутыеКексы',
+	  players: [{ name: 'Гага' }, { name: 'Гага1' }, { name: 'Гага3' }],
+	  captain: 'Гага',
+	  money: 100,
+	  settings: {}
+	};
+
+	var TeamTab = function (_Component) {
+	  (0, _inherits3.default)(TeamTab, _Component);
+
+	  function TeamTab() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, TeamTab);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamTab)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	      joined: TEAM_JOINED_TRUE,
+	      team: stdTeam,
+	      copied: false
+	    }, _this.CopyShareLink = function () {
+	      var id = 'team-link';
+	      var node = document.getElementById(id);
+	      node.select();
+	      document.execCommand('copy');
+	      node.blur();
+	      _this.setState({ copied: true });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+	  // state = {
+	  //   joined: TEAM_JOINED_ERR,
+	  //   team: null,
+	  //   copied: false
+	  // };
+
+
+	  (0, _createClass3.default)(TeamTab, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      // // setInterval(() => {
+	      _superagent2.default.get('/api/teams/').end(function (err, res) {
+	        var message = res.body;
+	        console.log('got request', err, message);
+
+	        _this2.setState({ joined: message.joined, team: message.team });
+	        // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
+	      });
+	      // // }, 2000);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (this.state.joined === TEAM_JOINED_TRUE) {
+	        return (0, _preact.h)(
+	          'div',
+	          null,
+	          (0, _preact.h)(_TeamDraw2.default, { team: this.state.team }),
+	          (0, _preact.h)(_TeamShareButton2.default, { team: this.state.team, onClick: this.CopyShareLink, copipasted: this.state.copied })
+	        );
+	      }
+
+	      if (this.state.joined === TEAM_JOINED_FALSE) {
+	        return (0, _preact.h)(_TeamCreateForm2.default, null);
+	      }
+
+	      if (this.state.joined === TEAM_JOINED_ERR) {
+	        return (0, _preact.h)(
+	          'h3',
+	          { className: 'white text-center' },
+	          'Что-то пошло не так((('
+	        );
+	      }
+
+	      return '';
+	    }
+	  }]);
+	  return TeamTab;
+	}(_preact.Component);
+	/*
+	 export default function f(props: PropsType): Component {
+	 console.log('Team Tab');
+	 if (props.joined === TEAM_JOINED_TRUE) return drawTeam(props);
+	 if (props.joined === TEAM_JOINED_FALSE) return drawCreateTeamForm();
+
+	 return <h3 className="white text-center">Что-то пошло не так(((</h3>;
+	 }
+
+	 */
+	/*
+	export default class TodoList extends Component {
+	  state = {};
+
+	  componentWillMount() {
+	    store.redraw(() => {
+	      this.setState({
+	        markedIDs: store.getMarkedIDs(),
+	        items: store.getItems(),
+	      });
+	    });
+	  }
+
+	  deleteList = () => {
+	    actions.removeList();
+	  };
+
+	  addItem = () => {
+	    let text = document.getElementById('textField').value;
+	    if (!text) return;
+	    document.getElementById('textField').value = '';
+	    actions.addItem(text);
+	  };
+
+	  addWannaDelete = (index) => {
+	    return (event) => {
+	      let status = document.getElementById('wannaDelete' + index).checked;
+	      actions.markForDeleting(index, status);
+	    };
+	  };
+
+	  deleteItem(index) {
+	    return () => {
+	      actions.removeItem(index);
+	    };
+	  };
+
+	  getItemList = () => {
+	    let items = store.getItems();
+	    let itemList = <li> No todos, sorry </li>;
+
+	    if (items.length) {
+	      itemList = items.map((item, index) => {
+	        let id = 'wannaDelete' + index;
+	        let key = item.key;
+	        return (
+	          <li key={key}>
+	            <input type="checkbox" id={id} name="wannaDelete" onChange={this.addWannaDelete(index)} />
+	            <TodoItem item={item} />
+	            <a href="#" onClick={this.deleteItem(index)}> X </a>
+	          </li>
+	        );
+	      });
+	    }
+	    return itemList;
+	  };
+
+	  render() {
+	    let itemList = this.getItemList();
+
+	    //let deleteListButton = this.getDeleteListButton();
+	    let deleteListButton = store.markedItemsExist() ?
+	      <input type="button" value="Delete all" onClick={this.deleteList} /> :
+	      '';
+
+	    return (
+	      <div>
+	        <ul>{itemList}</ul>
+	        <div>
+	          <input id="textField" type="text" />
+	          <input type="submit" value="Add" onClick={this.addItem} />
+	        </div>
+	        <div>{deleteListButton}</div>
+	      </div>
+	    );
+	  }
+	}
+	*/
+
+
+	exports.default = TeamTab;
+
+/***/ },
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4175,7 +4179,7 @@
 	    */
 
 /***/ },
-/* 98 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4187,7 +4191,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamDivideMoney = __webpack_require__(99);
+	var _TeamDivideMoney = __webpack_require__(103);
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
@@ -4251,7 +4255,7 @@
 	}
 
 /***/ },
-/* 99 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4318,7 +4322,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 100 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4340,7 +4344,7 @@
 	    copipasted = 'Ссылка скопирована';
 	    style = {};
 	  }
-
+	  var link = 'http://online-tournaments.org/register?inviter=' + login;
 	  if (length < MAX_PLAYERS) {
 	    return (0, _preact.h)(
 	      'div',
@@ -4366,11 +4370,7 @@
 	        null,
 	        copipasted
 	      ),
-	      (0, _preact.h)(
-	        'input',
-	        { id: 'team-link', style: style, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
-	        'blah blah'
-	      )
+	      (0, _preact.h)('input', { id: 'team-link', style: style, type: 'text', value: link, className: 'fit black circle-input ' })
 	    );
 	  }
 	  return (0, _preact.h)(

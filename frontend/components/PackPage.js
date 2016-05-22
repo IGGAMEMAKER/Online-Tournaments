@@ -4,25 +4,83 @@ import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
 console.log('pack page opened');
 
+const FREES = 0;
 export default class PackPage extends Component {
   state = {
-    cards: [{
-      name: 'name',
-      description: 'descr',
-      src: '19.png',
-      color: 1
-    }],
+    cards: [
+      {
+        name: '2000 рублей',
+        description: '2000 рублей на счёт',
+        // src: '../../gifts/1000.png',
+        src: '../../gifts/gold1.png',
+        color: 0
+      },
+      {
+        name: '500 рублей',
+        description: '500 рублей на счёт',
+        src: '../../gifts/gold1.png',
+        color: 1
+      },
+      {
+        name: '100 рублей',
+        description: '100 рублей на счёт',
+        src: '../../gifts/gold1.png',
+        color: 2
+      },
+      {
+        name: 'Футболка',
+        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
+        src: '../../gifts/shirt.jpg',
+        color: 1
+      },
+      {
+        name: 'Футболка',
+        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
+        src: '../../gifts/shirt2.jpg',
+        color: 1
+      },
+      {
+        name: 'Футболка',
+        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
+        src: '../../gifts/shirt3.jpg',
+        color: 1
+      },
+      {
+        name: 'Карточка Модрича',
+        description: 'Карточка Модрича для игры в Funny Football',
+        src: '19.png',
+        color: 1
+      },
+      {
+        name: 'Карточка Модрича',
+        description: 'Карточка Модрича для игры в Funny Football',
+        src: '19.png',
+        color: 1
+      },
+      {
+        name: 'Карточка Модрича',
+        description: 'Карточка Модрича для игры в Funny Football',
+        src: '19.png',
+        color: 1
+      },
+    ],
 
     packs: [
       {
         price: 100,
-        color: 1,
+        color: 0,
+        frees: FREES,
       },
       {
-        price: 150,
-        color: 2,
-        frees: 14
+        price: 25,
+        color: 1,
+        frees: FREES,
       },
+      // {
+      //   price: 10,
+      //   color: 2,
+      //   frees: FREES,
+      // },
     ]
   };
 
@@ -39,45 +97,6 @@ export default class PackPage extends Component {
     //   });
     // // }, 2000);
   }
-
-  // function drawPack(pack){
-  //   var backgroundImage = '\'';
-  //   backgroundImage += pack.image;
-  //   backgroundImage = '/img/cardLayers/'+pack.image;
-  //   // backgroundImage += '\'';
-  //
-  //   var text = ''
-  //   var style = 'background-image:url('+backgroundImage+')'
-  //   text+= '<img border="0" class="card img-wrapper" style="'+style+'" src="/img/topics/realmadrid/pack.png">'
-  //   return text;
-  // }
-  //
-  // function drawPackButton(pack){
-  //   var text = '';
-  //   text += '<div class="col-sm-3 col-md-3 col-xs-6 killPaddings" >' // style="margin: auto;"
-  //   text += drawPack(pack);
-  //   var i = pack.packID;
-  //   text += '<button id="free-pack'+i+'" disabled class="btn btn-success full" onclick="openPack('+i+', 0)"> Открыть <br> бесплатно  </button><br><br>'
-  //   text += '<button class="btn btn-primary full" onclick="openPack('+i+', 1)"> Открыть ('+pack.price+'р) </button>'
-  //   text += '</div>'
-  //   return text;
-  // }
-  //
-  // function drawPackButtons(packs){
-  //   var crd = {
-  //     photoURL: 'pack.png',
-  //     colour: 0
-  //   }
-  //
-  //   console.log('packs', 'drawPackButtons', packs);
-  //
-  //   var text = '<div style="margin:20px">';
-  //
-  //   for (var i = packs.length - 1; i >= 0; i--) {
-  //     text += drawPackButton(packs[i])
-  //   };
-  //   text += '</div>'
-  // }
 
   openPack(packID, pay) {
     request
@@ -100,40 +119,35 @@ export default class PackPage extends Component {
   render() {
     console.log('pack page render');
 
+    // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
-      <div className="col-sm-3 col-md-3 col-xs-12">
+      <div className="col-sm-4 col-md-4 col-xs-12">
         <Card name={card.name} description={card.description} src={`/img/topics/realmadrid/${card.src}`} color={card.color} />
       </div>
     ));
 
     const PackList = this.state.packs.map((pack, index) => {
-
+      // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
       return (
-        <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
+        <div className="pack">
           <Pack pack={pack} onClick={this.openPaid(index)} onClickFree={this.openFree(index)} />
         </div>
       );
     });
-
+    // style="margin: 0 auto; display: block;"
     return (
-      <div className="white">
-        {PackList}
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        {CardList}
+      <div className="white text-center">
+        <h1 className=""> Испытай удачу в паках </h1>
+        <h1 className=""> Открывай паки - выигрывай призы! </h1>
+        <div className="row center">
+          <center>
+            {PackList}
+          </center>
+        </div>
+        <h1 className="text-center"> Что может выпасть в паках? </h1>
+        <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">
+          {CardList}
+        </div>
       </div>
     );
   }

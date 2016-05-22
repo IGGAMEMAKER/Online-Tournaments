@@ -22,7 +22,7 @@ export default function (props:PropsType):Component {
     copipasted = 'Ссылка скопирована';
     style = {};
   }
-
+  const link = `http://online-tournaments.org/register?inviter=${login}`;
   if (length < MAX_PLAYERS) {
     return (
       <div className="white text-center">
@@ -30,7 +30,7 @@ export default function (props:PropsType):Component {
         <p>Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!</p>
         <button onClick={props.onClick} className="btn btn-primary btn-lg">Пригласить друзей</button>
         <p>{copipasted}</p>
-        <input id="team-link" style={style} type="text" value="valllll" className="fit black circle-input ">blah blah</input>
+        <input id="team-link" style={style} type="text" value={link} className="fit black circle-input " />
       </div>
     );
   }

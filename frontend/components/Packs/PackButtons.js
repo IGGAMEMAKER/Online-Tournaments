@@ -13,7 +13,8 @@ type PropsType = {
 export default function (props: PropsType): Component {
   let frees = '';
   if (props.frees) {
-    frees = (
+    // frees = (
+    return (
       <div>
         <button className="btn btn-success full" onClick={props.onClickFree}>
           Открыть
@@ -28,8 +29,9 @@ export default function (props: PropsType): Component {
 
   return (
     <div>
-      {frees}
-      <button className="btn btn-primary full" onClick={props.onClick}> Открыть за ({props.price} РУБ) </button>
+      <button className="btn btn-primary full btn-lg" onClick={props.onClick}>
+        Открыть за {props.price} РУБ
+      </button>
     </div>
   );
 }
