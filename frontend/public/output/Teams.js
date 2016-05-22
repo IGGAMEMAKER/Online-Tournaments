@@ -906,7 +906,7 @@
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(99);
+	var _TeamShareButton = __webpack_require__(100);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -4187,7 +4187,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamDivideMoney = __webpack_require__(100);
+	var _TeamDivideMoney = __webpack_require__(99);
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
@@ -4261,71 +4261,6 @@
 	});
 
 	exports.default = function (props) {
-	  var MAX_PLAYERS = 5;
-
-	  var length = props.team.players.length;
-	  var placesLeft = MAX_PLAYERS - length;
-
-	  var style = { display: 'none' };
-	  var copipasted = '';
-
-	  if (props.copipasted) {
-	    copipasted = 'Ссылка скопирована';
-	    style = {};
-	  }
-
-	  if (length < MAX_PLAYERS) {
-	    return (0, _preact.h)(
-	      'div',
-	      { className: 'white text-center' },
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        'Осталось мест в команде: ',
-	        placesLeft
-	      ),
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
-	      ),
-	      (0, _preact.h)(
-	        'button',
-	        { onClick: props.onClick, className: 'btn btn-primary btn-lg' },
-	        'Пригласить друзей'
-	      ),
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        copipasted
-	      ),
-	      (0, _preact.h)(
-	        'input',
-	        { id: 'team-link', style: style, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
-	        'blah blah'
-	      )
-	    );
-	  }
-	  return (0, _preact.h)(
-	    'p',
-	    null,
-	    'Состав полностью укомплектован!'
-	  );
-	};
-
-	var _preact = __webpack_require__(1);
-
-/***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (props) {
 	  var count = props.players.length;
 	  var money = props.money + 100;
 
@@ -4381,6 +4316,71 @@
 	var _superagent2 = _interopRequireDefault(_superagent);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 100 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (props) {
+	  var MAX_PLAYERS = 5;
+
+	  var length = props.team.players.length;
+	  var placesLeft = MAX_PLAYERS - length;
+
+	  var style = { display: 'none' };
+	  var copipasted = '';
+
+	  if (props.copipasted) {
+	    copipasted = 'Ссылка скопирована';
+	    style = {};
+	  }
+
+	  if (length < MAX_PLAYERS) {
+	    return (0, _preact.h)(
+	      'div',
+	      { className: 'white text-center' },
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Осталось мест в команде: ',
+	        placesLeft
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
+	      ),
+	      (0, _preact.h)(
+	        'button',
+	        { onClick: props.onClick, className: 'btn btn-primary btn-lg' },
+	        'Пригласить друзей'
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        copipasted
+	      ),
+	      (0, _preact.h)(
+	        'input',
+	        { id: 'team-link', style: style, type: 'text', value: 'valllll', className: 'fit black circle-input ' },
+	        'blah blah'
+	      )
+	    );
+	  }
+	  return (0, _preact.h)(
+	    'p',
+	    null,
+	    'Состав полностью укомплектован!'
+	  );
+	};
+
+	var _preact = __webpack_require__(1);
 
 /***/ }
 /******/ ]);

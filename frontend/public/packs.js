@@ -37,7 +37,7 @@ var collections = {}
 // collections[4] = { have:9, need:10 }
 
 function pickPhraseByColour(colour, collection){
-	console.log('pickPhraseByColour', collection)
+	// console.log('pickPhraseByColour', collection)
 	return collection.description || null;//'No description';
 	// switch(colour){
 	// 	case c.CARD_COLOUR_GRAY:
