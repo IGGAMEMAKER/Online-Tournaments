@@ -143,9 +143,19 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			.catch(aux.errored)
 	}, aux.std);
 
-	app.get('/api/teams/accept/:player', aux.authenticated, function (req, res) {
+	app.get('/api/teams/accept/:player/:teamname', aux.authenticated, function (req, res) {
 		var player = req.params.player;
-		res.json({ accepting: player });
+		var teamname = req.params.teamname;
+		Teams.join(teamname, player)
+			.then(function (result) {
+				return Users.joinTeam(player, teamname)
+			})
+			.then(function (result) {
+				res.json({ accepting: player, result: result });
+			})
+			.catch(function (err) {
+				res.json({ accepting: player, err: err });
+			})
 	});
 
 	app.get('/api/teams/', aux.authenticated, function(req, res) {

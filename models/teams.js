@@ -63,7 +63,15 @@ function join(name, login){
 		if (alreadyJoined) throw 'joined';
 
 		players.push({ name: login });
-		return Team.update({ name: name }, {$set: { players: players } })
+
+		var requests = []
+		team.requests.forEach(function (player) {
+			if (player !== login) {
+				requests.push(player);
+			}
+		});
+
+		return Team.update({ name: name }, {$set: { players: players, requests: requests } })
 	})
 }
 

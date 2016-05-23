@@ -3990,7 +3990,7 @@
 	      copied: false
 	    }, _this.acceptRequest = function (player) {
 	      return function () {
-	        _superagent2.default.get('/api/teams/accept/' + player).end(function (err, res) {
+	        _superagent2.default.get('/api/teams/accept/' + player + '/' + _this.state.team.name).end(function (err, res) {
 	          var message = res.body;
 	          console.log('got request', err, message);
 
@@ -4034,7 +4034,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log('team tab render()', this.state.team);
+	      // console.log('team tab render()', this.state.team);
 	      if (this.state.joined === TEAM_JOINED_TRUE) {
 	        return (0, _preact.h)(
 	          'div',

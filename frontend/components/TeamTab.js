@@ -58,7 +58,7 @@ export default class TeamTab extends Component {
   acceptRequest= (player) => {
     return () => {
       request
-        .get(`/api/teams/accept/${player}`)
+        .get(`/api/teams/accept/${player}/${this.state.team.name}`)
         .end((err: String, res) => {
           const message: PropsType = res.body;
           console.log('got request', err, message);
@@ -79,7 +79,7 @@ export default class TeamTab extends Component {
   };
 
   render() {
-    console.log('team tab render()', this.state.team);
+    // console.log('team tab render()', this.state.team);
     if (this.state.joined === TEAM_JOINED_TRUE) {
       return (
         <div>
