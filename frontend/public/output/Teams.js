@@ -3948,7 +3948,7 @@
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(104);
+	var _TeamShareButton = __webpack_require__(105);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -3988,6 +3988,16 @@
 	      joined: TEAM_JOINED_TRUE,
 	      team: stdTeam,
 	      copied: false
+	    }, _this.acceptRequest = function (player) {
+	      return function () {
+	        _superagent2.default.get('/api/teams/accept/' + player).end(function (err, res) {
+	          var message = res.body;
+	          console.log('got request', err, message);
+
+	          _this.loadData();
+	        });
+	        console.log('accept ', player);
+	      };
 	    }, _this.CopyShareLink = function () {
 	      var id = 'team-link';
 	      var node = document.getElementById(id);
@@ -4007,26 +4017,29 @@
 	  (0, _createClass3.default)(TeamTab, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
+	      this.loadData();
+	    }
+	  }, {
+	    key: 'loadData',
+	    value: function loadData() {
 	      var _this2 = this;
 
-	      // // setInterval(() => {
 	      _superagent2.default.get('/api/teams/').end(function (err, res) {
 	        var message = res.body;
 	        console.log('got request', err, message);
 
 	        _this2.setState({ joined: message.joined, team: message.team });
-	        // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
 	      });
-	      // // }, 2000);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      console.log('team tab render()', this.state.team);
 	      if (this.state.joined === TEAM_JOINED_TRUE) {
 	        return (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(_TeamDraw2.default, { team: this.state.team }),
+	          (0, _preact.h)(_TeamDraw2.default, { accept: this.acceptRequest, team: this.state.team }),
 	          (0, _preact.h)(_TeamShareButton2.default, { team: this.state.team, onClick: this.CopyShareLink, copipasted: this.state.copied })
 	        );
 	      }
@@ -4195,13 +4208,17 @@
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
+	var _TeamRequests = __webpack_require__(104);
+
+	var _TeamRequests2 = _interopRequireDefault(_TeamRequests);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/**
-	 * Created by gaginho on 20.05.16.
-	 */
 	function drawTeam(props) {
 	  console.log('drawTeam', 'TeamDraw', props);
+	  // const requests = ['AlexKing', 'golozhopik'];
+	  var requests = props.team.requests || [];
+
 	  var team = props.team;
 	  var players = team.players.map(function (player) {
 	    return (0, _preact.h)(
@@ -4249,10 +4266,13 @@
 	        'h3',
 	        null,
 	        players
-	      )
+	      ),
+	      (0, _preact.h)(_TeamRequests2.default, { onClick: props.accept, captain: team.captain, requests: requests })
 	    )
 	  );
-	}
+	} /**
+	   * Created by gaginho on 20.05.16.
+	   */
 
 /***/ },
 /* 103 */
@@ -4266,7 +4286,7 @@
 
 	exports.default = function (props) {
 	  var count = props.players.length;
-	  var money = props.money + 100;
+	  var money = props.money;
 
 	  if (money <= 0) {
 	    return '';
@@ -4307,7 +4327,7 @@
 	    balanceNext,
 	    (0, _preact.h)(
 	      'button',
-	      { onClick: divide, className: 'btn btn-success btn-lg' },
+	      { onClick: divide, className: 'btn btn-primary btn-lg' },
 	      'Поделить деньги'
 	    )
 	  );
@@ -4323,6 +4343,52 @@
 
 /***/ },
 /* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (props) {
+	  var requests = props.requests.map(function (r) {
+	    var acceptPlayer = props.captain;
+	    var style = 'margin-left:20px;';
+	    if (login === props.captain) {
+	      acceptPlayer = (0, _preact.h)(
+	        'button',
+	        { onClick: props.onClick(r), className: 'btn btn-success', style: style },
+	        'Принять в команду'
+	      );
+	    }
+	    return (0, _preact.h)(
+	      'p',
+	      null,
+	      r,
+	      (0, _preact.h)(
+	        'span',
+	        null,
+	        acceptPlayer
+	      )
+	    );
+	  });
+	  return (0, _preact.h)(
+	    'div',
+	    null,
+	    (0, _preact.h)(
+	      'h1',
+	      { className: 'white text-center' },
+	      ' Заявки на вступление в команду '
+	    ),
+	    requests
+	  );
+	};
+
+	var _preact = __webpack_require__(1);
+
+/***/ },
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

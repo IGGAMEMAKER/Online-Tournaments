@@ -166,6 +166,7 @@ module.exports = function(dbAddress){
 			enabled: Boolean,
 			points: Number,
 			money: Number,
+			requests: Array,
 		})
 
 		,Action : db.model('Action', {

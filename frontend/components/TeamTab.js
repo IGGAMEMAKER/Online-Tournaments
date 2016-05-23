@@ -41,7 +41,10 @@ export default class TeamTab extends Component {
   };
 
   componentWillMount() {
-    // // setInterval(() => {
+    this.loadData();
+  }
+
+  loadData() {
     request
       .get('/api/teams/')
       .end((err: String, res) => {
@@ -49,10 +52,22 @@ export default class TeamTab extends Component {
         console.log('got request', err, message);
 
         this.setState({ joined: message.joined, team: message.team });
-        // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
       });
-    // // }, 2000);
   }
+
+  acceptRequest= (player) => {
+    return () => {
+      request
+        .get(`/api/teams/accept/${player}`)
+        .end((err: String, res) => {
+          const message: PropsType = res.body;
+          console.log('got request', err, message);
+
+          this.loadData();
+        });
+      console.log('accept ', player);
+    };
+  };
 
   CopyShareLink = () => {
     const id = 'team-link';
@@ -64,10 +79,11 @@ export default class TeamTab extends Component {
   };
 
   render() {
+    console.log('team tab render()', this.state.team);
     if (this.state.joined === TEAM_JOINED_TRUE) {
       return (
         <div>
-          <TeamDraw team={this.state.team} />
+          <TeamDraw accept={this.acceptRequest} team={this.state.team} />
           <TeamShareButton team={this.state.team} onClick={this.CopyShareLink} copipasted={this.state.copied} />
         </div>
       );

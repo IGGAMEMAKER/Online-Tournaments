@@ -3,6 +3,7 @@
  */
 import { h, Component } from 'preact';
 import TeamDivideMoney from './TeamDivideMoney';
+import TeamRequests from './TeamRequests';
 
 type Player = {
   name: string
@@ -14,12 +15,17 @@ type PropsType = {
     captain: string,
     players: Array<Player>,
     money: number,
-    settings: Object
-  }
+    settings: Object,
+    requests: Array
+  },
+  accept : Function
 };
 
 export default function drawTeam(props: PropsType): Component {
   console.log('drawTeam', 'TeamDraw', props);
+  // const requests = ['AlexKing', 'golozhopik'];
+  const requests = props.team.requests || [];
+
   const team = props.team;
   const players = team.players.map((player) => (<p>{player.name}</p>));
   return (
@@ -32,6 +38,7 @@ export default function drawTeam(props: PropsType): Component {
         <h3>{team.captain}</h3>
         <h2>Состав команды</h2>
         <h3>{players}</h3>
+        <TeamRequests onClick={props.accept} captain={team.captain} requests={requests} />
       </div>
     </div>
   );

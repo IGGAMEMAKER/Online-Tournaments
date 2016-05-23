@@ -1009,12 +1009,25 @@ app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, functio
   var inviter_type = req.params.inviter_type;
 
   var givepoints = function (){ return Marathon.giveNpoints(inviter, 500); };
+  
+  var getRefererTeam = function (result) {
+    Users.profile(inviter)
+      .then(function (profile) {
+        if (profile.team) {
+          return Teams.sendRequest(profile.team, login)
+        }
+      })
+  };
 
   Log("SetInviter " + inviter + " for " + login, "Users");
 
   if (inviter && inviter_type) {
     Users.setInviter(login, inviter, inviter_type)
-        .then(givepoints());
+      .then(getRefererTeam)
+      .catch(function (err) {
+        console.error(err, 'setInviter Error in setInviter', login, inviter);
+      });
+        // .then(givepoints());
     Actions.add(login, 'setInviter', { inviter: inviter, inviter_type:inviter_type });
   }
 

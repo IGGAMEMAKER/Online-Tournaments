@@ -9,6 +9,11 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	// api calls
 	var getLogin = aux.getLogin;
+
+	// var join_team = function (login, teamname) {
+	//
+	// };
+
 	app.get('/Team', aux.authenticated, function(req, res) {
 		res.render('Team');
 	});
@@ -61,6 +66,12 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		return object.result;
 	};
 
+	app.get('/api/teams/request/:teamname/:player', aux.authenticated, function (req, res, next) {
+		Teams.sendRequest(req.params.teamname, req.params.player)
+			.then(aux.setData(req, next))
+			.catch(aux.errored)
+	}, aux.std);
+
 	app.get('/api/teams/removeById/:id', aux.isAdmin, function (req, res, next) {
 		var id = req.params.id;
 
@@ -74,6 +85,15 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var login = getLogin(req);
 
 		Users.quitTeam(login)
+			.then(aux.setData(req, next))
+			.catch(aux.errored)
+	}, aux.std);
+
+	app.get('/api/teams/join/:teamname/:player', aux.isAdmin, function (req, res, next) {
+		var login = req.params.player;
+		var teamname = req.params.teamname;
+
+		Users.joinTeam(login, teamname)
 			.then(aux.setData(req, next))
 			.catch(aux.errored)
 	}, aux.std);
@@ -95,6 +115,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 				var isInTeam = false;
 				var players = team.players;
 				var teamname = team.name;
+
 				players.forEach(function (player) {
 					if (player.name === login) isInTeam = true;
 				});
@@ -121,6 +142,11 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			.then(aux.setData(req, next))
 			.catch(aux.errored)
 	}, aux.std);
+
+	app.get('/api/teams/accept/:player', aux.authenticated, function (req, res) {
+		var player = req.params.player;
+		res.json({ accepting: player });
+	});
 
 	app.get('/api/teams/', aux.authenticated, function(req, res) {
 		var login = getLogin(req);

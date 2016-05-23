@@ -102,7 +102,7 @@ export default class PackPage extends Component {
     request
       .post(`openPack/${packID}/${pay}`)
       .end(console.log);
-  };
+  }
 
   openFree(packId) {
     return function () {

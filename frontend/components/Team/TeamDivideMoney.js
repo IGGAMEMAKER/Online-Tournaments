@@ -15,7 +15,7 @@ type PropsType = {
 
 export default function (props:PropsType):Component {
   const count = props.players.length;
-  const money = props.money + 100;
+  const money = props.money;
 
   if (money <= 0) {
     return '';
@@ -37,7 +37,7 @@ export default function (props:PropsType):Component {
       <p>Вы можете поделить деньги поровну</p>
       <p>каждый член команды получит {willReceive} РУБ</p>
       {balanceNext}
-      <button onClick={divide} className="btn btn-success btn-lg">Поделить деньги</button>
+      <button onClick={divide} className="btn btn-primary btn-lg">Поделить деньги</button>
     </div>
   );
 }

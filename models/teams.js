@@ -99,6 +99,26 @@ function changeMoney(name, ammount) {
 	return Team.update({ name: name }, {$inc: {money: ammount} });
 }
 
+function sendRequest(name, player) {
+	return Team.findOne({ name: name })
+		.then(function (team) {
+			console.log('sendRequest Team was found', team, name, player);
+			var createRequest;
+			var alreadyRequested = false;
+			team.requests.forEach(function (r) {
+				if (r === player) alreadyRequested = true;
+			});
+
+			if (alreadyRequested) {
+				return null;
+			}
+			team.requests.push(player);
+			createRequest = team.requests;
+
+			return Team.update({ name: name }, {$set: { requests: createRequest } })
+		})
+}
+
 function remove(query){
 	var players;
 	return Team.findOne(query)
@@ -125,5 +145,7 @@ module.exports = {
 	removeByName : removeByName,
 	removeById: removeById,
 	setMoney: setMoney,
-	changeMoney: changeMoney
+	changeMoney: changeMoney,
+
+	sendRequest: sendRequest
 };

@@ -51,6 +51,11 @@ function profile(login){
 	// })
 }
 
+// function unsetInviter(login) {
+//
+// }
+
+
 function profileByMail(email){
 	return new Promise(function(resolve,reject){
 		User.findOne({email:email}, 'login money email social', function (err, user) {
@@ -139,6 +144,8 @@ function getByLogin(login){
 	// 	}
 	// })
 }
+
+// joinTeam('g.iosebashvili', 'Adidas Team Pro');
 
 function joinTeam(login, team){ // teamname
 	return User2.update({ login: login }, {$set: { team: team } })
@@ -588,6 +595,7 @@ function resetPassword(user){
 
 	})
 }
+
 
 
 function moneyIncrease(login, ammount){
