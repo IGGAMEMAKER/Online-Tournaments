@@ -64,7 +64,7 @@ function join(name, login){
 
 		players.push({ name: login });
 
-		var requests = []
+		var requests = [];
 		team.requests.forEach(function (player) {
 			if (player !== login) {
 				requests.push(player);

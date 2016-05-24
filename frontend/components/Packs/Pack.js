@@ -8,8 +8,9 @@ type PropsType = {
   pack: {
     src: string,
     color: string,
-    frees: number,
+    frees: Array,
     price: number,
+    buttons: Array,
   },
 
   onClickFree: Function,
@@ -25,7 +26,7 @@ export default function (props:PropsType): Component {
   return (
     <div>
       <img border="0" alt="" className="card img-wrapper" style={style} src="/img/topics/realmadrid/pack.png" />
-      <PackButtons onClick={props.onClick} onClickFree={props.onClickFree} frees={props.pack.frees} price={props.pack.price} />
+      <PackButtons onClick={props.onClick} onClickFree={props.onClickFree} pack={props.pack} />
     </div>
   );
 }

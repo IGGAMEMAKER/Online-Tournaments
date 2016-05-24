@@ -24,13 +24,14 @@ export default function (props:PropsType):Component {
    <button className="btn btn-success full">Открыть</button>
    <button className="btn btn-danger full">Открыть</button>
    <button className="btn btn-primary full">Открыть</button>
+
+   <button className="btn btn-danger full">Открыть 100 RUB</button>
+   <button className="btn btn-primary full">Открыть 20 RUB</button>
    */
   return (
     <div className="pack-cover">
       <img border="0" alt="" className="pack-card pack-wrapper" style={style} src={props.src} />
       <p className="card-description">{props.description}</p>
-      <button className="btn btn-danger full">Открыть 100 RUB</button>
-      <button className="btn btn-primary full">Открыть 20 RUB</button>
     </div>
   );
 }

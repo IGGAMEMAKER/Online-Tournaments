@@ -181,6 +181,13 @@ button{
   width: 100%;
 }
 
+.pack-container {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  max-width: 280px;
+}
+
 .ctr{
   margin: 0 auto 0;
   text-align: center;
@@ -384,7 +391,7 @@ button{
 }
 
 .pack{
-  width: 300px;
+  width: 280px;
   float: left;
 }
 

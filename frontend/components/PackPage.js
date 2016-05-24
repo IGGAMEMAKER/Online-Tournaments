@@ -4,7 +4,6 @@ import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
 console.log('pack page opened');
 
-const FREES = 0;
 export default class PackPage extends Component {
   state = {
     cards: [
@@ -68,14 +67,15 @@ export default class PackPage extends Component {
     packs: [
       {
         price: 100,
+        buttons: [100, 25],
         color: 0,
-        frees: FREES,
+        frees: [0, 0],
       },
-      {
-        price: 25,
-        color: 1,
-        frees: FREES,
-      },
+      // {
+      //   price: 25,
+      //   color: 1,
+      //   frees: FREES,
+      // },
       // {
       //   price: 10,
       //   color: 2,
@@ -118,11 +118,16 @@ export default class PackPage extends Component {
 
   render() {
     console.log('pack page render');
-
+    //
     // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
-      <div className="col-sm-4 col-md-4 col-xs-12">
-        <Card name={card.name} description={card.description} src={`/img/topics/realmadrid/${card.src}`} color={card.color} />
+      <div className="col-sm-4 col-md-4 col-xs-6">
+        <Card
+          name={card.name}
+          description={card.description}
+          src={`/img/topics/realmadrid/${card.src}`}
+          color={card.color}
+        />
       </div>
     ));
 
@@ -139,10 +144,8 @@ export default class PackPage extends Component {
       <div className="white text-center">
         <h1 className=""> Испытай удачу в паках </h1>
         <h1 className=""> Открывай паки - выигрывай призы! </h1>
-        <div className="row center">
-          <center>
-            {PackList}
-          </center>
+        <div className="row pack-container">
+          {PackList}
         </div>
         <h1 className="text-center"> Что может выпасть в паках? </h1>
         <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">
