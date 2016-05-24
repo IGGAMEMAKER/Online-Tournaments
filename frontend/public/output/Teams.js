@@ -4039,8 +4039,12 @@
 	        return (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(_TeamDraw2.default, { accept: this.acceptRequest, team: this.state.team }),
-	          (0, _preact.h)(_TeamShareButton2.default, { team: this.state.team, onClick: this.CopyShareLink, copipasted: this.state.copied })
+	          (0, _preact.h)(_TeamDraw2.default, { update: this.loadData, accept: this.acceptRequest, team: this.state.team }),
+	          (0, _preact.h)(_TeamShareButton2.default, {
+	            team: this.state.team,
+	            onClick: this.CopyShareLink,
+	            copipasted: this.state.copied
+	          })
 	        );
 	      }
 
@@ -4212,8 +4216,15 @@
 
 	var _TeamRequests2 = _interopRequireDefault(_TeamRequests);
 
+	var _superagent = __webpack_require__(91);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/**
+	 * Created by gaginho on 20.05.16.
+	 */
 	function drawTeam(props) {
 	  console.log('drawTeam', 'TeamDraw', props);
 	  // const requests = ['AlexKing', 'golozhopik'];
@@ -4221,12 +4232,43 @@
 
 	  var team = props.team;
 	  var players = team.players.map(function (player) {
+	    var user = player.name;
+	    var teamname = team.name;
+	    var kickPlayer = function kickPlayer() {
+	      _superagent2.default.post('/api/teams/kick/' + user + '/' + teamname).end(function () {
+	        props.update();
+	      });
+	    };
+
+	    var kick = '';
+	    if (login === team.captain && player.name !== team.captain) {
+	      kick = (0, _preact.h)(
+	        'span',
+	        { className: 'btn btn-danger', onClick: kickPlayer, style: 'margin-left:20px;' },
+	        'Выгнать'
+	      );
+	    }
+
+	    var cap = '';
+
+	    if (player.name === team.captain) {
+	      cap = (0, _preact.h)(
+	        'span',
+	        null,
+	        ' CAPTAIN'
+	      );
+	    }
+
 	    return (0, _preact.h)(
 	      'p',
 	      null,
-	      player.name
+	      player.name,
+	      cap,
+	      kick
 	    );
 	  });
+	  //         <h2>Капитан команды</h2>
+	  // <h3>{team.captain}</h3>
 	  return (0, _preact.h)(
 	    'div',
 	    null,
@@ -4250,16 +4292,6 @@
 	      (0, _preact.h)(
 	        'h2',
 	        null,
-	        'Капитан команды'
-	      ),
-	      (0, _preact.h)(
-	        'h3',
-	        null,
-	        team.captain
-	      ),
-	      (0, _preact.h)(
-	        'h2',
-	        null,
 	        'Состав команды'
 	      ),
 	      (0, _preact.h)(
@@ -4270,9 +4302,7 @@
 	      (0, _preact.h)(_TeamRequests2.default, { onClick: props.accept, captain: team.captain, requests: requests })
 	    )
 	  );
-	} /**
-	   * Created by gaginho on 20.05.16.
-	   */
+	}
 
 /***/ },
 /* 103 */

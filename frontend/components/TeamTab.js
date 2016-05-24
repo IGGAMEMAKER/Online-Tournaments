@@ -83,8 +83,12 @@ export default class TeamTab extends Component {
     if (this.state.joined === TEAM_JOINED_TRUE) {
       return (
         <div>
-          <TeamDraw accept={this.acceptRequest} team={this.state.team} />
-          <TeamShareButton team={this.state.team} onClick={this.CopyShareLink} copipasted={this.state.copied} />
+          <TeamDraw update={this.loadData} accept={this.acceptRequest} team={this.state.team} />
+          <TeamShareButton
+            team={this.state.team}
+            onClick={this.CopyShareLink}
+            copipasted={this.state.copied}
+          />
         </div>
       );
     }

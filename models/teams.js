@@ -59,7 +59,7 @@ function join(name, login){
 
 		for (var i = players.length - 1; i >= 0; i--) {
 			if (players[i].name == login) alreadyJoined = true;
-		};
+		}
 		if (alreadyJoined) throw 'joined';
 
 		players.push({ name: login });
