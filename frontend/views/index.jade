@@ -78,7 +78,8 @@ mixin freerollDaily()
 						| Присоединяйся!
 					center
 						p
-							a(class="btn btn-primary btn-large btn-lg btn-fixed" href="http://google.com") Участвовать
+							a(class="btn btn-primary btn-large btn-lg btn-fixed") Участвовать
+							// href="http://google.com"
 					//p
 						a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
 					//p(style="margin-top:30px;")
@@ -129,7 +130,8 @@ mixin freerollWeekly()
 					p.ctr(id="WeeklyFreeRollFullInfo" style="display:none;")
 						| Размер приза зависит от набранного количества баллов
 					p.ctr
-						a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" href="http://google.com" style="margin-left: 0px;") Участвовать
+						//a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" href="http://google.com" style="margin-left: 0px;") Участвовать
+						a(class="btn btn-primary btn-large btn-lg btn-fixed offset-md" style="margin-left: 0px;") Участвовать
 		script.
 			$("#toggleWeeklyFreeRoll").click(function () {
 				$("#WeeklyFreeRollFullInfo").toggle();

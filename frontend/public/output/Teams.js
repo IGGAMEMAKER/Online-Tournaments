@@ -3948,7 +3948,7 @@
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(105);
+	var _TeamShareButton = __webpack_require__(106);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -4279,7 +4279,7 @@
 
 	var _TeamInviteFriend2 = _interopRequireDefault(_TeamInviteFriend);
 
-	var _TeamDestroy = __webpack_require__(106);
+	var _TeamDestroy = __webpack_require__(105);
 
 	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
@@ -4303,15 +4303,23 @@
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(drawTeam)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
-	      wannaDeleteTeam: false
-	    }, _this.kickPlayer = function (user, teamname) {
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(drawTeam)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.kickPlayer = function (user, teamname) {
 	      var props = _this.props;
 	      return function () {
 	        _superagent2.default.post('/api/teams/kick/' + user + '/' + teamname).end(function () {
 	          props.update();
 	        });
 	      };
+	    }, _this.kickButton = function (user, teamname) {
+	      return (0, _preact.h)(
+	        'span',
+	        {
+	          className: 'btn btn-danger',
+	          onClick: _this.kickPlayer(user, teamname).bind(_this),
+	          style: 'margin-left:20px;'
+	        },
+	        'Выгнать'
+	      );
 	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
 	  }
 
@@ -4331,15 +4339,7 @@
 	        var kick = '';
 
 	        if (login === captain && user !== captain) {
-	          kick = (0, _preact.h)(
-	            'span',
-	            {
-	              className: 'btn btn-danger',
-	              onClick: _this2.kickPlayer(user, team.name).bind(_this2),
-	              style: 'margin-left:20px;'
-	            },
-	            'Выгнать'
-	          );
+	          kick = _this2.kickButton(user, team.name);
 	        }
 
 	        var captainImg = '';
@@ -4539,76 +4539,6 @@
 /* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (props) {
-	  var MAX_PLAYERS = 5;
-
-	  var length = props.team.players.length;
-	  var placesLeft = MAX_PLAYERS - length;
-
-	  var copipasted = '';
-
-	  if (props.copipasted) {
-	    copipasted = 'Ссылка скопирована';
-	  }
-	  var link = 'http://online-tournaments.org/register?inviter=' + login;
-	  if (length < MAX_PLAYERS) {
-	    return (0, _preact.h)(
-	      'div',
-	      { className: 'white text-center' },
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        'Осталось мест в команде: ',
-	        placesLeft
-	      ),
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        'Друзья не зарегистрированы на данном сайте? Отправьте им ссылку'
-	      ),
-	      (0, _preact.h)('input', {
-	        id: 'team-link',
-	        type: 'text',
-	        value: link,
-	        style: 'width: 250px;',
-	        className: 'black circle-input '
-	      }),
-	      (0, _preact.h)('br', null),
-	      (0, _preact.h)('br', null),
-	      (0, _preact.h)(
-	        'button',
-	        {
-	          onClick: props.onClick,
-	          className: 'btn btn-primary btn-lg'
-	        },
-	        'Пригласить друзей'
-	      ),
-	      (0, _preact.h)(
-	        'p',
-	        null,
-	        copipasted
-	      )
-	    );
-	  }
-	  return (0, _preact.h)(
-	    'p',
-	    null,
-	    'Состав полностью укомплектован!'
-	  );
-	};
-
-	var _preact = __webpack_require__(1);
-
-/***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -4726,6 +4656,76 @@
 
 
 	exports.default = TeamDestroy;
+
+/***/ },
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (props) {
+	  var MAX_PLAYERS = 5;
+
+	  var length = props.team.players.length;
+	  var placesLeft = MAX_PLAYERS - length;
+
+	  var copipasted = '';
+
+	  if (props.copipasted) {
+	    copipasted = 'Ссылка скопирована';
+	  }
+	  var link = 'http://online-tournaments.org/register?inviter=' + login;
+	  if (length < MAX_PLAYERS) {
+	    return (0, _preact.h)(
+	      'div',
+	      { className: 'white text-center' },
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Осталось мест в команде: ',
+	        placesLeft
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        'Друзья не зарегистрированы на данном сайте? Отправьте им ссылку'
+	      ),
+	      (0, _preact.h)('input', {
+	        id: 'team-link',
+	        type: 'text',
+	        value: link,
+	        style: 'width: 250px;',
+	        className: 'black circle-input '
+	      }),
+	      (0, _preact.h)('br', null),
+	      (0, _preact.h)('br', null),
+	      (0, _preact.h)(
+	        'button',
+	        {
+	          onClick: props.onClick,
+	          className: 'btn btn-primary btn-lg'
+	        },
+	        'Пригласить друзей'
+	      ),
+	      (0, _preact.h)(
+	        'p',
+	        null,
+	        copipasted
+	      )
+	    );
+	  }
+	  return (0, _preact.h)(
+	    'p',
+	    null,
+	    'Состав полностью укомплектован!'
+	  );
+	};
+
+	var _preact = __webpack_require__(1);
 
 /***/ }
 /******/ ]);

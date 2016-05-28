@@ -32,10 +32,6 @@ type PropsType = {
 };
 
 export default class drawTeam extends Component {
-  state = {
-    wannaDeleteTeam: false,
-  };
-
   kickPlayer = (user, teamname) => {
     const props: PropsType = this.props;
     return () => {
@@ -45,6 +41,16 @@ export default class drawTeam extends Component {
           props.update();
         });
     };
+  };
+
+  kickButton = (user, teamname) => {
+    return (
+      <span
+        className="btn btn-danger"
+        onClick={this.kickPlayer(user, teamname).bind(this)}
+        style="margin-left:20px;"
+      >Выгнать</span>
+    );
   };
 
   render() {
@@ -59,13 +65,7 @@ export default class drawTeam extends Component {
       let kick = '';
 
       if (login === captain && user !== captain) {
-        kick = (
-          <span
-            className="btn btn-danger"
-            onClick={this.kickPlayer(user, team.name).bind(this)}
-            style="margin-left:20px;"
-          >Выгнать</span>
-        );
+        kick = this.kickButton(user, team.name);
       }
 
       let captainImg = '';
