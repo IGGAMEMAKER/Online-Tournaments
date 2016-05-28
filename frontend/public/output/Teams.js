@@ -4039,7 +4039,7 @@
 	        return (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(_TeamDraw2.default, { update: this.loadData, accept: this.acceptRequest, team: this.state.team }),
+	          (0, _preact.h)(_TeamDraw2.default, { update: this.loadData.bind(this), accept: this.acceptRequest, team: this.state.team }),
 	          (0, _preact.h)(_TeamShareButton2.default, {
 	            team: this.state.team,
 	            onClick: this.CopyShareLink,

@@ -66,6 +66,13 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		return object.result;
 	};
 
+	app.post('/api/teams/kick/:user/:teamname', aux.authenticated, function (req, res, next) {
+		
+		Teams.removePlayer(req.params.teamname, req.params.user, getLogin(req))
+			.then(aux.setData(req, next))
+			.catch(aux.errored)
+	}, aux.std);
+	
 	app.get('/api/teams/request/:teamname/:player', aux.authenticated, function (req, res, next) {
 		Teams.sendRequest(req.params.teamname, req.params.player)
 			.then(aux.setData(req, next))

@@ -64,29 +64,30 @@ function join(name, login){
 
 		players.push({ name: login });
 
-		var requests = [];
-		team.requests.forEach(function (player) {
-			if (player !== login) {
-				requests.push(player);
-			}
+		var requests = team.requests.filter(function (player) {
+			 return player !== login;
 		});
 
 		return Team.update({ name: name }, {$set: { players: players, requests: requests } })
 	})
 }
 
-function removePlayer(name, login){
+function removePlayer(name, login, deleter){
 	return Team.findOne({ name: name })
 	.then(function (team){
-		var players = team.players;
-		var index = -1;
+		if (deleter != team.captain) throw 'is_not_captain';
 
-		for (var i = players.length - 1; i >= 0; i--) {
-			if (players[i].name == login) { index = i; }
-		};
-		if (index < 0) throw 'no_such_player';
-
-		players.splice(index, 1);
+		var players = team.players.filter(function (player) {
+			return player.name !== login;
+		});
+		// var index = -1;
+    //
+		// for (var i = players.length - 1; i >= 0; i--) {
+		// 	if (players[i].name == login) { index = i; }
+		// };
+		// if (index < 0) throw 'no_such_player';
+    //
+		// players.splice(index, 1);
 		return Team.update({ name: name }, {$set: { players: players } });
 	})
 }
