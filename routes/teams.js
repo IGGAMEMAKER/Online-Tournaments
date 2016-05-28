@@ -2,6 +2,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	var Teams = require('../models/teams');
 	var Users = require('../models/users');
 
+	var api = require('../helpers/api');
+
 	var requestSender = require('../requestSender');
 	var logger = console.log;
 
@@ -58,7 +60,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	const TEAM_JOINED_ERR = 3;
 
 	function unjoinTeam(player) {
-		Users.quitTeam(player);
+		logger('unjoinTeam', player);
+		Users.quitTeam(player.name);
 	}
 
 	function updateProfiles (object) {
@@ -67,17 +70,20 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	};
 
 	app.post('/api/teams/kick/:user/:teamname', aux.authenticated, function (req, res, next) {
-		
 		Teams.removePlayer(req.params.teamname, req.params.user, getLogin(req))
+			.then(function (result) {
+				// return result;
+				return Users.quitTeam(req.params.user);
+			})
 			.then(aux.setData(req, next))
 			.catch(aux.errored)
 	}, aux.std);
-	
-	app.get('/api/teams/request/:teamname/:player', aux.authenticated, function (req, res, next) {
-		Teams.sendRequest(req.params.teamname, req.params.player)
-			.then(aux.setData(req, next))
-			.catch(aux.errored)
-	}, aux.std);
+
+	// app.get('/api/teams/request/:teamname/:player', aux.authenticated, function (req, res, next) {
+	// 	Teams.sendRequest(req.params.teamname, req.params.player)
+	// 		.then(aux.setData(req, next))
+	// 		.catch(aux.errored)
+	// }, aux.std);
 
 	app.get('/api/teams/removeById/:id', aux.isAdmin, function (req, res, next) {
 		var id = req.params.id;
@@ -150,10 +156,25 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			.catch(aux.errored)
 	}, aux.std);
 
+	app.post('/api/teams/remove/:teamname', aux.authenticated, api('Teams', 'removeByName'));
+
+	// app.post('/api/teams/remove/:teamname', aux.authenticated, function (req, res, next) {
+	// 	var teamname = req.params.teamname;
+  //
+	// 	Teams.removeByName(teamname)
+	// 		.then(updateProfiles)
+	// 		.then()
+	// }, aux.std);
+
 	app.get('/api/teams/accept/:player/:teamname', aux.authenticated, function (req, res) {
 		var player = req.params.player;
 		var teamname = req.params.teamname;
-		Teams.join(teamname, player)
+		Users.profile(player)
+			.then((profile) => {
+				if (profile.team) throw 'joined';
+
+				return Teams.join(teamname, player)
+			})
 			.then(function (result) {
 				return Users.joinTeam(player, teamname)
 			})
@@ -200,21 +221,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		// res.json({ joined: true, team: team });
 	});
 
-	app.get('/api/teams/all', aux.isAdmin, function (req, res, next){
-		logger('/api/teams/all', 'got request');
-		
-		Teams.all()
-		.then(function (teams){
-			logger('/api/teams/all', teams);
-			return teams;
-		})
-		.then(aux.setData(req, next))
-		.catch(aux.errored)
-	}, aux.std);
-
-	// app.get('/api/categories/all/raw', aux.isAdmin, function (req, res, next){
-	// 	Category.all()
-	// 	.then(aux.setData(req, next))
-	// 	.catch(aux.errored)
-	// }, aux.render('admin/Categories'), aux.err)
-}
+	app.get('/api/teams/all', aux.isAdmin, api('Teams', 'all'));
+	app.get('/Teams', api('Teams', 'all', 'Teams'));
+};

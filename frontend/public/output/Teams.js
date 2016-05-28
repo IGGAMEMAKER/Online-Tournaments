@@ -4032,6 +4032,42 @@
 	      });
 	    }
 	  }, {
+	    key: 'findUser',
+	    value: function findUser(login) {
+	      // request
+	      //   .get('/api/users/')
+	      //   .end((err: String, res) => {
+	      //     const message: PropsType = res.body;
+	      //     console.log('got request', err, message);
+	      //
+	      //     this.setState({ joined: message.joined, team: message.team });
+	      //   });
+	    }
+	  }, {
+	    key: 'inviteFriend',
+	    value: function inviteFriend(login) {
+	      var _this3 = this;
+
+	      _superagent2.default.get('/api/teams/accept/' + login + '/' + this.state.team.name).end(function (err, res) {
+	        var message = res.body;
+	        // console.log('got request', err, message);
+
+	        _this3.loadData();
+	      });
+	    }
+	  }, {
+	    key: 'deleteTeam',
+	    value: function deleteTeam(teamname) {
+	      var _this4 = this;
+
+	      _superagent2.default.get('/api/teams/remove/' + this.state.team.name).end(function (err, res) {
+	        var message = res.body;
+	        // console.log('got request', err, message);
+
+	        _this4.loadData();
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      // console.log('team tab render()', this.state.team);
@@ -4039,7 +4075,15 @@
 	        return (0, _preact.h)(
 	          'div',
 	          null,
-	          (0, _preact.h)(_TeamDraw2.default, { update: this.loadData.bind(this), accept: this.acceptRequest, team: this.state.team }),
+	          (0, _preact.h)(_TeamDraw2.default, {
+	            update: this.loadData.bind(this),
+	            accept: this.acceptRequest,
+	            team: this.state.team,
+
+	            findUser: this.findUser,
+	            inviteFriend: this.inviteFriend.bind(this),
+	            deleteTeam: this.deleteTeam.bind(this)
+	          }),
 	          (0, _preact.h)(_TeamShareButton2.default, {
 	            team: this.state.team,
 	            onClick: this.CopyShareLink,
@@ -4204,7 +4248,26 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = drawTeam;
+
+	var _getPrototypeOf = __webpack_require__(5);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(31);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(32);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(36);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(83);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
 
 	var _preact = __webpack_require__(1);
 
@@ -4212,9 +4275,13 @@
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
-	var _TeamRequests = __webpack_require__(104);
+	var _TeamInviteFriend = __webpack_require__(104);
 
-	var _TeamRequests2 = _interopRequireDefault(_TeamRequests);
+	var _TeamInviteFriend2 = _interopRequireDefault(_TeamInviteFriend);
+
+	var _TeamDestroy = __webpack_require__(106);
+
+	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
 	var _superagent = __webpack_require__(91);
 
@@ -4222,87 +4289,141 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var drawTeam = function (_Component) {
+	  (0, _inherits3.default)(drawTeam, _Component);
+
+	  function drawTeam() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, drawTeam);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(drawTeam)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	      wannaDeleteTeam: false
+	    }, _this.kickPlayer = function (user, teamname) {
+	      var props = _this.props;
+	      return function () {
+	        _superagent2.default.post('/api/teams/kick/' + user + '/' + teamname).end(function () {
+	          props.update();
+	        });
+	      };
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(drawTeam, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var props = this.props;
+	      console.log('drawTeam', 'TeamDraw', props);
+
+	      var team = props.team;
+	      var captain = team.captain;
+
+	      var players = team.players.map(function (player) {
+	        var user = player.name;
+	        var kick = '';
+
+	        if (login === captain && user !== captain) {
+	          kick = (0, _preact.h)(
+	            'span',
+	            {
+	              className: 'btn btn-danger',
+	              onClick: _this2.kickPlayer(user, team.name).bind(_this2),
+	              style: 'margin-left:20px;'
+	            },
+	            'Выгнать'
+	          );
+	        }
+
+	        var captainImg = '';
+	        if (user === captain) {
+	          captainImg = (0, _preact.h)(
+	            'span',
+	            null,
+	            ' КАПИТАН '
+	          );
+	        }
+
+	        return (0, _preact.h)(
+	          'p',
+	          null,
+	          user,
+	          ' ',
+	          captainImg,
+	          ' ',
+	          kick
+	        );
+	      });
+
+	      var deleteTeam = void 0;
+
+	      var invitationTab = '';
+	      if (login === captain) {
+	        if (props.team.players.length < 5) {
+	          invitationTab = (0, _preact.h)(_TeamInviteFriend2.default, { findUser: props.findUser, inviteFriend: props.inviteFriend });
+	        }
+
+	        deleteTeam = (0, _preact.h)(_TeamDestroy2.default, {
+	          captain: captain,
+	          deleteTeam: props.deleteTeam
+	        });
+	      }
+
+	      return (0, _preact.h)(
+	        'div',
+	        null,
+	        (0, _preact.h)(
+	          'div',
+	          { className: 'white text-center' },
+	          (0, _preact.h)(
+	            'h1',
+	            null,
+	            team.name
+	          ),
+	          (0, _preact.h)(
+	            'p',
+	            null,
+	            'На счету ',
+	            team.money,
+	            ' РУБ'
+	          ),
+	          (0, _preact.h)(_TeamDivideMoney2.default, { money: team.money, players: team.players }),
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)(
+	            'h2',
+	            null,
+	            'Состав команды'
+	          ),
+	          (0, _preact.h)(
+	            'p',
+	            null,
+	            players
+	          ),
+	          (0, _preact.h)('br', null),
+	          invitationTab,
+	          (0, _preact.h)('br', null),
+	          (0, _preact.h)('br', null),
+	          deleteTeam
+	        )
+	      );
+	    }
+	  }]);
+	  return drawTeam;
+	}(_preact.Component);
+	// import TeamRequests from './TeamRequests';
 	/**
 	 * Created by gaginho on 20.05.16.
 	 */
-	function drawTeam(props) {
-	  console.log('drawTeam', 'TeamDraw', props);
-	  // const requests = ['AlexKing', 'golozhopik'];
-	  var requests = props.team.requests || [];
 
-	  var team = props.team;
-	  var players = team.players.map(function (player) {
-	    var user = player.name;
-	    var teamname = team.name;
-	    var kickPlayer = function kickPlayer() {
-	      _superagent2.default.post('/api/teams/kick/' + user + '/' + teamname).end(function () {
-	        props.update();
-	      });
-	    };
 
-	    var kick = '';
-	    if (login === team.captain && player.name !== team.captain) {
-	      kick = (0, _preact.h)(
-	        'span',
-	        { className: 'btn btn-danger', onClick: kickPlayer, style: 'margin-left:20px;' },
-	        'Выгнать'
-	      );
-	    }
-
-	    var cap = '';
-
-	    if (player.name === team.captain) {
-	      cap = (0, _preact.h)(
-	        'span',
-	        null,
-	        ' CAPTAIN'
-	      );
-	    }
-
-	    return (0, _preact.h)(
-	      'p',
-	      null,
-	      player.name,
-	      cap,
-	      kick
-	    );
-	  });
-	  //         <h2>Капитан команды</h2>
-	  // <h3>{team.captain}</h3>
-	  return (0, _preact.h)(
-	    'div',
-	    null,
-	    (0, _preact.h)(
-	      'div',
-	      { className: 'white text-center' },
-	      (0, _preact.h)(
-	        'h1',
-	        null,
-	        'Команда ',
-	        team.name
-	      ),
-	      (0, _preact.h)(
-	        'h3',
-	        null,
-	        'На счету ',
-	        team.money,
-	        ' РУБ'
-	      ),
-	      (0, _preact.h)(_TeamDivideMoney2.default, { money: team.money, players: team.players }),
-	      (0, _preact.h)(
-	        'h2',
-	        null,
-	        'Состав команды'
-	      ),
-	      (0, _preact.h)(
-	        'h3',
-	        null,
-	        players
-	      ),
-	      (0, _preact.h)(_TeamRequests2.default, { onClick: props.accept, captain: team.captain, requests: requests })
-	    )
-	  );
-	}
+	exports.default = drawTeam;
 
 /***/ },
 /* 103 */
@@ -4382,36 +4503,33 @@
 	});
 
 	exports.default = function (props) {
-	  var requests = props.requests.map(function (r) {
-	    var acceptPlayer = props.captain;
-	    var style = 'margin-left:20px;';
-	    if (login === props.captain) {
-	      acceptPlayer = (0, _preact.h)(
-	        'button',
-	        { onClick: props.onClick(r), className: 'btn btn-success', style: style },
-	        'Принять в команду'
-	      );
-	    }
-	    return (0, _preact.h)(
-	      'p',
-	      null,
-	      r,
-	      (0, _preact.h)(
-	        'span',
-	        null,
-	        acceptPlayer
-	      )
-	    );
-	  });
+	  var inviteFriend = function inviteFriend() {
+	    var player = document.getElementById('invite-friend').value;
+	    props.inviteFriend(player);
+	  };
+
 	  return (0, _preact.h)(
 	    'div',
 	    null,
 	    (0, _preact.h)(
 	      'h1',
-	      { className: 'white text-center' },
-	      ' Заявки на вступление в команду '
+	      null,
+	      'Пригласи друга в команду'
 	    ),
-	    requests
+	    (0, _preact.h)('input', {
+	      placeholder: 'Логин друга',
+	      className: 'black circle-input',
+	      id: 'invite-friend',
+	      onChange: props.findUser
+	    }),
+	    (0, _preact.h)(
+	      'button',
+	      {
+	        onClick: inviteFriend,
+	        className: 'btn btn-success btn-mid'
+	      },
+	      'Пригласить'
+	    )
 	  );
 	};
 
@@ -4433,12 +4551,10 @@
 	  var length = props.team.players.length;
 	  var placesLeft = MAX_PLAYERS - length;
 
-	  var style = { display: 'none' };
 	  var copipasted = '';
 
 	  if (props.copipasted) {
 	    copipasted = 'Ссылка скопирована';
-	    style = {};
 	  }
 	  var link = 'http://online-tournaments.org/register?inviter=' + login;
 	  if (length < MAX_PLAYERS) {
@@ -4454,19 +4570,30 @@
 	      (0, _preact.h)(
 	        'p',
 	        null,
-	        'Побеждайте в турнирах вместе с друзьями получайте бонусы на общий счёт!'
+	        'Друзья не зарегистрированы на данном сайте? Отправьте им ссылку'
 	      ),
+	      (0, _preact.h)('input', {
+	        id: 'team-link',
+	        type: 'text',
+	        value: link,
+	        style: 'width: 250px;',
+	        className: 'black circle-input '
+	      }),
+	      (0, _preact.h)('br', null),
+	      (0, _preact.h)('br', null),
 	      (0, _preact.h)(
 	        'button',
-	        { onClick: props.onClick, className: 'btn btn-primary btn-lg' },
+	        {
+	          onClick: props.onClick,
+	          className: 'btn btn-primary btn-lg'
+	        },
 	        'Пригласить друзей'
 	      ),
 	      (0, _preact.h)(
 	        'p',
 	        null,
 	        copipasted
-	      ),
-	      (0, _preact.h)('input', { id: 'team-link', style: style, type: 'text', value: link, className: 'fit black circle-input ' })
+	      )
 	    );
 	  }
 	  return (0, _preact.h)(
@@ -4477,6 +4604,128 @@
 	};
 
 	var _preact = __webpack_require__(1);
+
+/***/ },
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(5);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(31);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(32);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(36);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(83);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var TeamDestroy = function (_Component) {
+	  (0, _inherits3.default)(TeamDestroy, _Component);
+
+	  function TeamDestroy() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, TeamDestroy);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(TeamDestroy)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+	      wannaDeleteTeam: false
+	    }, _this.showDelButton = function () {
+	      _this.setState({ wannaDeleteTeam: true });
+	    }, _this.cancelDelete = function () {
+	      _this.setState({ wannaDeleteTeam: false });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(TeamDestroy, [{
+	    key: "render",
+	    value: function render() {
+	      var props = this.props;
+	      var deleteTeam = void 0;
+	      var deleteTeamButtons = (0, _preact.h)(
+	        "div",
+	        null,
+	        (0, _preact.h)(
+	          "h2",
+	          null,
+	          "Вы действительно хотите распустить команду?"
+	        ),
+	        (0, _preact.h)(
+	          "button",
+	          {
+	            onClick: this.cancelDelete,
+	            className: "btn btn-danger btn-bg btn-lg"
+	          },
+	          "НЕТ"
+	        ),
+	        (0, _preact.h)(
+	          "button",
+	          {
+	            onClick: props.deleteTeam,
+	            className: "btn btn-success"
+	          },
+	          "да"
+	        )
+	      );
+
+	      if (login === props.captain) {
+	        deleteTeam = (0, _preact.h)(
+	          "div",
+	          null,
+	          (0, _preact.h)(
+	            "button",
+	            {
+	              className: "btn btn-danger",
+	              onClick: this.showDelButton
+	            },
+	            "Удалить команду"
+	          ),
+	          this.state.wannaDeleteTeam ? deleteTeamButtons : ''
+	        );
+	      }
+
+	      return deleteTeam;
+	      // return (
+	      //   <div>
+	      //     <div className="white text-center">
+	      //       {deleteTeam}
+	      //     </div>
+	      //   </div>
+	      // );
+	    }
+	  }]);
+	  return TeamDestroy;
+	}(_preact.Component); /**
+	                       * Created by gaginho on 28.05.16.
+	                       */
+
+
+	exports.default = TeamDestroy;
 
 /***/ }
 /******/ ]);

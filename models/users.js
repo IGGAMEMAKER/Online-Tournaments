@@ -156,7 +156,7 @@ function quitTeam(login){
 }
 
 function noInfoFix(login){
-	console.log('noInfoFix', login)
+	console.log('noInfoFix', login);
 	var upd = {
 		$set : {
 			info : {

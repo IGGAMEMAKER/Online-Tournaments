@@ -3,7 +3,10 @@
  */
 import { h, Component } from 'preact';
 import TeamDivideMoney from './TeamDivideMoney';
-import TeamRequests from './TeamRequests';
+// import TeamRequests from './TeamRequests';
+import TeamInviteFriend from './TeamInviteFriend';
+import TeamDestroy from './TeamDestroy';
+
 import request from 'superagent';
 
 type Player = {
@@ -21,62 +24,90 @@ type PropsType = {
   },
   accept: Function,
   update: Function,
+
+  findUser: Function,
+  inviteFriend: Function,
+
+  deleteTeam: Function,
 };
 
-export default function drawTeam(props: PropsType): Component {
-  console.log('drawTeam', 'TeamDraw', props);
-  // const requests = ['AlexKing', 'golozhopik'];
-  const requests = props.team.requests || [];
+export default class drawTeam extends Component {
+  state = {
+    wannaDeleteTeam: false,
+  };
 
-  const team = props.team;
-  const players = team.players.map((player) => {
-    const user = player.name;
-    const teamname = team.name;
-    let kickPlayer = () => {
+  kickPlayer = (user, teamname) => {
+    const props: PropsType = this.props;
+    return () => {
       request
         .post(`/api/teams/kick/${user}/${teamname}`)
         .end(() => {
           props.update();
         });
     };
+  };
 
-    let kick = '';
-    if (login === team.captain && player.name !== team.captain) {
-      kick = (
-        <span className="btn btn-danger" onClick={kickPlayer} style="margin-left:20px;">
-          Выгнать
-        </span>
-      );
-    }
+  render() {
+    const props: PropsType = this.props;
+    console.log('drawTeam', 'TeamDraw', props);
 
-    let cap = '';
+    const team = props.team;
+    const captain = team.captain;
 
-    if (player.name === team.captain) {
-      cap = (
-        <span> CAPTAIN</span>
+    const players = team.players.map((player) => {
+      const user = player.name;
+      let kick = '';
+
+      if (login === captain && user !== captain) {
+        kick = (
+          <span
+            className="btn btn-danger"
+            onClick={this.kickPlayer(user, team.name).bind(this)}
+            style="margin-left:20px;"
+          >Выгнать</span>
+        );
+      }
+
+      let captainImg = '';
+      if (user === captain) {
+        captainImg = <span> КАПИТАН </span>;
+      }
+
+      return <p>{user} {captainImg} {kick}</p>;
+    });
+
+    let deleteTeam;
+
+    let invitationTab = '';
+    if (login === captain) {
+      if (props.team.players.length < 5) {
+        invitationTab = <TeamInviteFriend findUser={props.findUser} inviteFriend={props.inviteFriend} />;
+      }
+
+      deleteTeam = (
+        <TeamDestroy
+          captain={captain}
+          deleteTeam={props.deleteTeam}
+        />
       );
     }
 
     return (
-      <p>
-        {player.name}
-        {cap}
-        {kick}
-      </p>
-    );
-  });
-  //         <h2>Капитан команды</h2>
-  // <h3>{team.captain}</h3>
-  return (
-    <div>
-      <div className="white text-center">
-        <h1>Команда {team.name}</h1>
-        <h3>На счету {team.money} РУБ</h3>
-        <TeamDivideMoney money={team.money} players={team.players} />
-        <h2>Состав команды</h2>
-        <h3>{players}</h3>
-        <TeamRequests onClick={props.accept} captain={team.captain} requests={requests} />
+      <div>
+        <div className="white text-center">
+          <h1>{team.name}</h1>
+          <p>На счету {team.money} РУБ</p>
+          <TeamDivideMoney money={team.money} players={team.players} />
+          <br />
+          <h2>Состав команды</h2>
+          <p>{players}</p>
+          <br />
+          {invitationTab}
+          <br />
+          <br />
+          {deleteTeam}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

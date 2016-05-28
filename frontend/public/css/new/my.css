@@ -687,6 +687,12 @@ a:focus {
   height: 40px;
 }
 
+.btn-mid {
+  border-radius: 1000px;
+  border: 0;
+  height: 40px;
+}
+
 .clear-focus-border:focus{
   border: none;
 }

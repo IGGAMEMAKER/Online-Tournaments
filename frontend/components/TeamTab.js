@@ -55,6 +55,39 @@ export default class TeamTab extends Component {
       });
   }
 
+  findUser(login) {
+    // request
+    //   .get('/api/users/')
+    //   .end((err: String, res) => {
+    //     const message: PropsType = res.body;
+    //     console.log('got request', err, message);
+    //
+    //     this.setState({ joined: message.joined, team: message.team });
+    //   });
+  }
+
+  inviteFriend(login) {
+    request
+      .get(`/api/teams/accept/${login}/${this.state.team.name}`)
+      .end((err: String, res) => {
+        const message: PropsType = res.body;
+        // console.log('got request', err, message);
+
+        this.loadData();
+      });
+  }
+
+  deleteTeam(teamname) {
+    request
+      .get(`/api/teams/remove/${this.state.team.name}`)
+      .end((err: String, res) => {
+        const message: PropsType = res.body;
+        // console.log('got request', err, message);
+
+        this.loadData();
+      });
+  }
+
   acceptRequest= (player) => {
     return () => {
       request
@@ -83,7 +116,15 @@ export default class TeamTab extends Component {
     if (this.state.joined === TEAM_JOINED_TRUE) {
       return (
         <div>
-          <TeamDraw update={this.loadData.bind(this)} accept={this.acceptRequest} team={this.state.team} />
+          <TeamDraw
+            update={this.loadData.bind(this)}
+            accept={this.acceptRequest}
+            team={this.state.team}
+
+            findUser={this.findUser}
+            inviteFriend={this.inviteFriend.bind(this)}
+            deleteTeam={this.deleteTeam.bind(this)}
+          />
           <TeamShareButton
             team={this.state.team}
             onClick={this.CopyShareLink}

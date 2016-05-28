@@ -20,6 +20,16 @@ function get(name) {
 	return Team.findOne({ name: name });
 }
 
+// type TeamName = {
+// 	name: string
+// };
+
+//: TeamName
+function getTest(obj) {
+	if (!obj.name) throw 'type';
+	return Team.findOne(obj);
+}
+
 function all() {
 	return Team.list({});
 }
@@ -64,7 +74,9 @@ function join(name, login){
 
 		players.push({ name: login });
 
+		// console.log()
 		var requests = team.requests.filter(function (player) {
+			console.log('join team' , player);
 			 return player !== login;
 		});
 
@@ -75,19 +87,12 @@ function join(name, login){
 function removePlayer(name, login, deleter){
 	return Team.findOne({ name: name })
 	.then(function (team){
+
 		if (deleter != team.captain) throw 'is_not_captain';
 
 		var players = team.players.filter(function (player) {
 			return player.name !== login;
 		});
-		// var index = -1;
-    //
-		// for (var i = players.length - 1; i >= 0; i--) {
-		// 	if (players[i].name == login) { index = i; }
-		// };
-		// if (index < 0) throw 'no_such_player';
-    //
-		// players.splice(index, 1);
 		return Team.update({ name: name }, {$set: { players: players } });
 	})
 }
@@ -145,6 +150,7 @@ function remove(query){
 
 module.exports = {
 	get : get,
+	getTest: getTest,
 	add : add,
 	all : all,
 	join : join,

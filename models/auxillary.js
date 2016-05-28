@@ -14,10 +14,12 @@ var OK = { result: 'OK' };
 // //mongoose.connect('mongodb://localhost/test');
 log(configs.db);
 
-var models = require('../models')(configs.db);
+// var models = require('../models')(configs.db);
 // var Tournament = models.Tournament;
 
-// 
+//
+
+
 
 var mailsender = require('../helpers/mailchimp');
 
