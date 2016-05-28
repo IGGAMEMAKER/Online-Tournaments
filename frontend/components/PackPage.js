@@ -67,9 +67,9 @@ export default class PackPage extends Component {
     packs: [
       {
         price: 100,
-        buttons: [100, 25],
+        buttons: [],
         color: 0,
-        frees: [0, 0],
+        frees: [],
       },
       // {
       //   price: 25,

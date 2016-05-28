@@ -6,12 +6,12 @@ block title
 block JSlibs
 	script(src="packs.js")
 
-block ftr
+//block ftr
 
 block content
 	#app
 	script(src="/output/Packs.js")
-	div(class="white")
+	//div(class="white")
 		div(class="col-sm-12")
 			h1(class="mg-md text-center") Открывай паки
 			h2(class="mg-md text-center") получай призы!
@@ -21,7 +21,7 @@ block content
 				a(href="/Marathon#accelerator") ускоритель
 				|  для марафона или деньги на счёт!
 			//h3(class="mg-md text-center") Открой больше всех паков за день и получи 40 бесплатных паков в подарок!
-	div(class="col-sm-12")
+	//div(class="col-sm-12")
 		script.
 			var msg = !{JSON.stringify(msg)};
 			//var usercards = msg.usercards;
@@ -30,7 +30,7 @@ block content
 			var Packs = msg.packs
 			drawPackButtons(Packs)
 	br
-	div(class="col-sm-12 col-xs-12" id="cards")
+	//div(class="col-sm-12 col-xs-12" id="cards")
 		br
 		br
 		script.
