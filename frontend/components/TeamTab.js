@@ -16,17 +16,17 @@ type PropsType = {
   team: Object
 };
 
-const stdTeam = {
-  name: 'КрутыеКексы',
-  players: [
-    { name: 'Гага' },
-    { name: 'Гага1' },
-    { name: 'Гага3' },
-  ],
-  captain: 'Гага',
-  money: 100,
-  settings: {},
-};
+// const stdTeam = {
+//   name: 'КрутыеКексы',
+//   players: [
+//     { name: 'Гага' },
+//     { name: 'Гага1' },
+//     { name: 'Гага3' },
+//   ],
+//   captain: 'Гага',
+//   money: 100,
+//   settings: {},
+// };
 
 export default class TeamTab extends Component {
   // state = {
@@ -35,8 +35,8 @@ export default class TeamTab extends Component {
   //   copied: false
   // };
   state = {
-    joined: TEAM_JOINED_TRUE,
-    team: stdTeam,
+    joined: TEAM_JOINED_FALSE,
+    team: null,
     copied: false
   };
 

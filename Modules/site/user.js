@@ -237,6 +237,28 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	
 	// app.get('/userStatus/update', middlewares.isAdmin, aux.answer('updateUserStatus'))
 
+	app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, function (req, res){
+		// when new user is redirected to main page I need to know, where he came from.
+		// user sends ajax request and i understand, who invited him/her
+		// even if this request fails, nothing breaks!
+
+		var login = getLogin(req);
+		var inviter = req.params.inviter;
+		var inviter_type = req.params.inviter_type;
+
+		// Log("SetInviter " + inviter + " for " + login, "Users");
+
+		if (inviter && inviter_type) {
+			Users.setInviter(login, inviter, inviter_type)
+				.catch(function (err) {
+					console.error(err, 'setInviter Error in setInviter', login, inviter);
+				});
+			Actions.add(login, 'setInviter', { inviter: inviter, inviter_type:inviter_type });
+		}
+
+		res.end('');
+	});
+	
 	app.get('/linker/:login/:link', function (req, res){
 		var login = req.params.login;
 		var link = req.params.link;

@@ -136,7 +136,7 @@ app.use(function(req,res,next){
   next();
 });
 
-
+app.use('/leagues', require('./routes/leagues'));
 
 //var handler = require('./errHandler')(app, Log, serverName);
 /*app.use(function(err, req, res, next){
@@ -203,6 +203,8 @@ var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer
 var category = require('./routes/category')(app, aux, realtime, SOCKET, io)
 var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io)
 
+// var leagues = require('./routes/leagues')(app)
+
 var TournamentReg = require('./models/tregs');
 var Marathon = require('./models/marathon');
 
@@ -259,18 +261,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
     });
 
   }
-}
-
-// setInterval(function(){
-//   console.log(realtime().counter);
-// }, 3000)
-
-function handleError(err, targetServer, reqUrl, res, options, parameters){
-  Log('Error in AsyncRender: ' + renderInfo(targetServer, reqUrl, res || null, options || null, parameters||null) + ':::'+ JSON.stringify(err), 'Err');
-  if (res){
-    res.send(500); 
-  }
-  return err;
 }
 
 function renderInfo(targetServer, reqUrl, res, options, parameters){
@@ -402,7 +392,7 @@ app.get('/realtime/update', aux.isAdmin, function(req, res){
 
 function Landing(name, picture){
   return function (req, res){
-    var obj = { landing:name }
+    var obj = { landing: name };
     if (picture) obj.picture = picture;
 
     if (isAuthenticated(req)){
@@ -429,7 +419,7 @@ function FinishGame(req, res){
   
   console.log('FinishGame', data);
 
-  tournament_finisher.finish(data)
+  tournament_finisher.finish(data);
   // var winners = data.scores//sort.winners(data.scores);
   // var winnerCount = data.places[1] || null;
   // var prizes = data.prizes || null;
@@ -490,73 +480,6 @@ function getMarathonUser(login){
   // }
 }
 
-function sendAfterGameNotification(login, mainPrize){
-  Users.profile(login)
-  .then(function (profile){
-    if (!profile) return null;
-    var profileInfo = profile.info;
-    
-    var notificationCode='';
-
-    // if (!profileInfo) {
-    //   // notificationCode 
-    // } else {
-      // what we can send?
-      // win
-      // lose
-
-      // advise (if newbie)
-      // rating +
-
-      // check
-      // was it money tournament?
-      // did he win money?
-      // is
-      var is_newbie = (!profileInfo || !profileInfo.status || profileInfo.status==c.USER_STATUS_NEWBIE) ;
-      if (is_newbie){
-        // //show newbie messages
-        // //analyze, what he knows about us
-
-        // show hello message
-        aux.alert(login, c.NOTIFICATION_FIRST_MESSAGE, { mainPrize: mainPrize })
-
-        console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
-
-        Users.update_user_status(login, c.USER_STATUS_READ_FIRST_MESSAGE)
-        .catch(function (err){
-          console.error('update_user_status failed', err);
-        })
-
-      } else {
-        // send rating
-        // console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
-
-        var marathonUser = getMarathonUser(login);
-        marathonUser.mainPrize = mainPrize;
-
-        var card = Packs.get_after_game_card()
-        var giftID = card.giftID;
-        card.isFree = true;
-        // console.log('grant card', card)
-
-        Gifts.user.saveGift(login, giftID, true, card.colour)
-        .then(function (result){
-          return aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-        })
-        .catch(console.error)
-
-        // aux.alert(login, c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
-
-
-        // send advices
-        // send bonuses
-      }
-  })
-  .catch(function (err){
-    console.error('sendAfterGameNotification', err);
-  })
-}
-
 app.all('/StartTournament', function (req, res){
   console.log('Site starts tournament');
   var data = req.body;
@@ -566,9 +489,6 @@ app.all('/StartTournament', function (req, res){
   if (socket_enabled) io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
   res.end();
 });
-
-
-
 
 function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
 
@@ -628,7 +548,7 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
     } else {
       return Users.pack.decrease(login, value, 1)
     }
-  }
+  };
 
   // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
   var info = {};
@@ -662,60 +582,28 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
 
     aux.fail(login, 'openPack', { err: err , info: info })
   })
-})
+});
 
 app.get('/Packs', aux.authenticated, function (req, res, next){
-
-  var login = aux.getLogin(req);
-  // Users.getByLogin(login)
-  // .then(function (user){
-  //   return Gifts.user.cardsGroup(login)
-  // })
-
-  // Gifts.user.cardsGroup(login)
-  // .then(function (cards){
-  //   // console.log(cards);
-  //   req.data = {
-  //     collections: realtime().collections,
-  //     cards: realtime().cards,
-  //     packs: realtime().userpacks(),
-  //     usercards: cards||[]
-  //   }
-  //   next();
-  // })
-  // .catch(next)
-  
   req.data = {
     collections: realtime().collections,
     cards: realtime().cards,
     packs: realtime().userpacks()
-  }
+  };
   next();
 
-  // res.render('Packs', { 
-  //   msg:{
-  //     cards: realtime().cards
-  //   }
-  // });
-// })
-}, aux.render('Packs'), aux.err)
+}, aux.render('Packs'), aux.err);
 
-app.get('/MyCollections', aux.authenticated, function (req, res, next){
-
+app.get('/MyCollections', aux.authenticated, function (req, res, next) {
   var login = aux.getLogin(req);
-  // Users.getByLogin(login)
-  // .then(function (user){
-  //   return Gifts.user.cardsGroup(login)
-  // })
   Gifts.user.cardsGroup(login)
   .then(function (cards){
-    // console.log(cards);
     req.data = {
       collections: realtime().collections,
       cards: realtime().cards,
       packs: realtime().userpacks(),
       usercards: cards||[]
-    }
+    };
     next();
   })
   .catch(next)
@@ -744,33 +632,6 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
 // })
 }, aux.render('Cards'), aux.err)
 
-// app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
-//   var login = getLogin(req);
-//   Gifts.user.cards(login)
-//   .then(aux.setData(req, next))
-//   .catch(next)
-// }, aux.json, aux.error);
-
-// app.get('/api/usergifts/removeAll/', middlewares.authenticated, function (req, res, next){
-//   var login = getLogin(req);
-//   Gifts.user.removeAll(login)
-//   .then(aux.setData(req, next))
-//   .catch(next)
-// }, aux.json, aux.error);
-
-// app.get('/api/collections/rewardme/:collectionID', aux.authenticated, function (req, res, next){
-//   var login = getLogin(req);
-//   var collectionID = req.params.collectionID;
-//   Collection.getByID(collectionID)
-//   .then(function (collection){
-//     if (collection.reward){
-//       switch (collection.reward){
-
-//       }
-//     }
-//   })
-// })
-
 
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
@@ -788,12 +649,15 @@ app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); })
 const GET_TOURNAMENTS_INFO = 4;
 const GET_TOURNAMENTS_USER = 1;
 
+app.get('/', function (req, res) {
+  res.render('index');
+})
 
-app.get('/', function (req, res, next){
-  // var tournaments = realtime().updater.tournaments || [];
-  // req.data = tournaments;
-  next()
-}, aux.render('index'), aux.error)
+// app.get('/', function (req, res, next){
+//   // var tournaments = realtime().updater.tournaments || [];
+//   // req.data = tournaments;
+//   next()
+// }, aux.render('index'), aux.error)
 
 // app.get('/', function (req, res){
 //   // res.render('main2');//{ msg:specials }
@@ -803,6 +667,7 @@ app.get('/', function (req, res, next){
 // app.get('/Tournaments', function (req, res){
 //   res.render('Tournaments');//, {msg: updater.tournaments||[] }
 // })
+
 app.get('/Tournaments', function (req, res, next){
   var tournaments = realtime().updater.tournaments || [];
   req.data = tournaments;
@@ -901,69 +766,6 @@ app.post('/', function (req, res){
   res.end('uid ' + uid + ' OK!');
 })*/
 
-/*
-  function saveSession(req, res, inviterUrl, login){
-    if (!inviterUrl) inviterUrl = "Login";
-
-    setTimeout(function(){
-      req.session.save(function (err) {
-        // session saved
-        if (err) {
-          console.error('SESSION SAVING ERROR', 'Err'); 
-          res.render(inviterUrl,{msg:err});
-        } else {
-          req.session.inviter = null;
-          req.session.login = login;
-          res.redirect('Tournaments');
-        }
-      })
-    }, 1000);
-  }
-
-  function vkAuthSuccess(){
-    return function (req, res) {
-      var login = req.user.login;
-      var user = req.user;
-
-      //var inviter = req.inviter;
-      var inviter = req.session.inviter;
-      //console.log("inviter", inviter);
-
-      Log("SetInviter " + inviter + " for " + login, "Users");
-
-      if (inviter) { 
-        Users.setInviter(login, inviter);
-        Actions.add(login, 'login', { auth:'vk', inviter:inviter });
-      } else {
-        Actions.add(login, 'login', { auth:'vk' });
-      }
-      saveSession(req, res, inviter, login);
-    }
-  }
-
-  function setInviter(inviter){
-    return function (req, res, next){
-      req.session.save(function (err){
-        if (err){
-        } else {
-          req.session.inviter = inviter;
-        }
-        console.log("setInviter middleware :", err, inviter);
-        next();
-      })
-    }
-  }
-
-  var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
-
-  function redirectToAuth(req, res){ res.redirect('/vk-auth'); }
-
-
-  app.get('/vk-auth/realmadrid', setInviter("realmadrid"), redirectToAuth);//vkAuth
-
-  app.get('/vk-auth', vkAuth, vkAuthSuccess());
-*/
-
 function vkAuthSuccess(req, res, next) {
   var login = req.user.login;
   req.login = login;
@@ -999,45 +801,7 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
-app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, function (req, res){
-  // when new user is redirected to main page I need to know, where he came from.
-  // user sends ajax request and i understand, who invited him/her
-  // even if this request fails, nothing breaks!
-
-  var login = getLogin(req);
-  var inviter = req.params.inviter;
-  var inviter_type = req.params.inviter_type;
-
-  var givepoints = function (){ return Marathon.giveNpoints(inviter, 500); };
-  
-  var getRefererTeam = function (result) {
-    Users.profile(inviter)
-      .then(function (profile) {
-        if (profile.team) {
-          return Teams.sendRequest(profile.team, login)
-        }
-      })
-  };
-
-  Log("SetInviter " + inviter + " for " + login, "Users");
-
-  if (inviter && inviter_type) {
-    Users.setInviter(login, inviter, inviter_type)
-      .then(getRefererTeam)
-      .catch(function (err) {
-        console.error(err, 'setInviter Error in setInviter', login, inviter);
-      });
-        // .then(givepoints());
-    Actions.add(login, 'setInviter', { inviter: inviter, inviter_type:inviter_type });
-  }
-
-  res.end('');
-  // saveSession(req, res, inviter, login);
-})
-
 var fs = require('fs');
-
-//app.get('/invite', )
 
 app.get('/getLogs', isAdmin, sender.getLogs, function (req, res){
   // res.json({msg:'OK'})
@@ -1101,7 +865,8 @@ app.get('/Leaderboard', function (req, res){
 app.get('/api/marathon/:MarathonID', aux.isAdmin, function (req, res, next){
   var MarathonID = req.params.MarathonID;
   Marathon.get(MarathonID)
-  .then(aux.setData(req, next))
+  // .then(aux.setData(req, next))
+  .then((d) => { req.data = d; next(); })
   .catch(next)
 }, aux.std)
 
@@ -1291,9 +1056,7 @@ app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
 app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next){
   var login = req.params.login;
   console.log('requestPlaying', login);
-  aux.alert(login, c.NOTIFICATION_FORCE_PLAYING, {
-
-  })
+  aux.alert(login, c.NOTIFICATION_FORCE_PLAYING, { })
   .then(function (result){
     req.data = result;
     next();
@@ -1327,7 +1090,7 @@ app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
 function grantPacksTo(login, colour, count){
   return Users.pack.add(login, colour, count)
   .then(function (result){
-    aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour:colour })
+    aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour })
     return result
   })
   .catch(aux.drop)

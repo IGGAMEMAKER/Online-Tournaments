@@ -13,6 +13,7 @@ module.exports = [{
     app: './app.src.js',
     Teams: './app/Team/Team.js',
     Packs: './app/Pack.js',
+    Leagues: './app/Leagues.js',
   },
   output: {
     // filename: 'app.js',
