@@ -24,6 +24,8 @@ export default class League extends Component {
   componentWillMount() {
     // this.loadData();
   }
+  
+  
 
   loadData() {
     request
@@ -46,30 +48,38 @@ export default class League extends Component {
         includes: [],
         prices: [0, 0],
         available: true,
+        color: 'purple',
+        img: '#9b59b6',
       }, {
         name: 'Junior',
         description: '',
         id: 1,
         prizePool: 2000,
         includes: [0],
-        prices: [150, 1300],
+        prices: [150, 1500],
         available: true,
+        color: 'red',
+        img: '#2c3e50',
       }, {
         name: 'Elite',
         description: '',
         id: 2,
         prizePool: 8000,
         includes: [0, 1],
-        prices: [350, 3000],
+        prices: [350, 3500],
         available: true,
+        color: 'green',
+        img: '#3498db',
       }, {
         name: 'Super Elite',
         description: '',
         id: 3,
-        prizePool: 30000,
+        prizePool: 20000,
         includes: [0, 1, 2],
-        prices: [1000, 10000],
+        prices: [500, 5000],
         available: false,
+        color: 'carrot',
+        img: '#e74c3c',
       }
     ];
     const LeagueList = leagues.map((league: LeagueType, i) => {
@@ -95,34 +105,41 @@ export default class League extends Component {
         return phrase;
       });
 
+      let color = league.color;
+      let className = `white league-tab ${color}`;
+
+      const style = {
+        'background-color': league.img || league.color
+      };
+
       return (
         <div>
-          <div className="white league-tab">
+          <div
+            className={className}
+            style={style}
+          >
             <h2>{league.name}</h2>
             <p>30 дней доступа</p>
-            <h3>
-              Призовой фонд
+            <h3>Призовой фонд
               <br />
               {league.prizePool} рублей
             </h3>
-            <div>
-              <h3>Включая турниры лиги {includeList}</h3>
-            </div>
+            <div><h3>Включая турниры лиги {includeList}</h3></div>
             <div>
               <LeaguePayButton price={league.prices[0]} text='' />
             </div>
           </div>
-          <div className="white league-tab">
+          <div
+            className={className}
+            style={style}
+          >
             <h2>{league.name}+</h2>
             <p>Годовой доступ (17% скидка)</p>
-            <h3>
-              Призовой фонд
+            <h3>Призовой фонд
               <br />
               {league.prizePool * 12} рублей
             </h3>
-            <div>
-              <h3>Включая турниры лиги {includeList}</h3>
-            </div>
+            <div><h3>Включая турниры лиги {includeList}</h3></div>
             <div>
               <LeaguePayButton price={league.prices[1]} text='' />
             </div>
@@ -132,7 +149,9 @@ export default class League extends Component {
     });
 
     const freeLeague = (
-      <div className="white league-tab">
+      <div
+        className="white league-tab purple"
+      >
         <h2>{leagues[0].name}</h2>
         <p>30 дней доступа</p>
         <h3>
