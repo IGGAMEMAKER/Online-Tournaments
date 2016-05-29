@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
 
-// import TeamCreateForm from './Team/TeamCreateForm';
+import LeaguePayButton from './Leagues/LeaguePayButton';
 
 type PropsType = {
   joined: Boolean,
@@ -40,6 +40,7 @@ export default class League extends Component {
     const leagues = [
       {
         name: 'Micro',
+        description: '',
         id: 0,
         prizePool: 500,
         includes: [],
@@ -47,6 +48,7 @@ export default class League extends Component {
         available: true,
       }, {
         name: 'Junior',
+        description: '',
         id: 1,
         prizePool: 2000,
         includes: [0],
@@ -54,13 +56,15 @@ export default class League extends Component {
         available: true,
       }, {
         name: 'Elite',
+        description: '',
         id: 2,
         prizePool: 8000,
         includes: [0, 1],
         prices: [350, 3000],
         available: true,
       }, {
-        name: 'SuperElite',
+        name: 'Super Elite',
+        description: '',
         id: 3,
         prizePool: 30000,
         includes: [0, 1, 2],
@@ -69,18 +73,18 @@ export default class League extends Component {
       }
     ];
     const LeagueList = leagues.map((league: LeagueType, i) => {
-      let includes = '';
+      if (i === 0) return '';
       const includeList = league.includes.map((leagueID, index, arr) => {
         const count = arr.length;
         let phrase = '';
         const leagueName = leagues[leagueID].name;
 
         if (index === count - 1) {
-          if (count > 1) {
-            phrase = ` и ${leagueName}`;
-          } else {
-            phrase = leagueName;
-          }
+          phrase = ` и ${leagueName}`;
+          // if (count > 1) {
+          // } else {
+          //   phrase = leagueName;
+          // }
         } else {
           let comma = ',';
           if (index === count - 2) {
@@ -91,27 +95,61 @@ export default class League extends Component {
         return phrase;
       });
 
-      if (league.includes.length) {
-        includes = (
-          <div>
-            <h3>Включая турниры лиги {includeList}</h3>
-          </div>
-        );
-      }
       return (
-        <div className="white">
-          <h2>{league.name}</h2>
-          <h3>Суммарный призовой фонд: {league.prizePool}</h3>
-          {includes}
+        <div>
+          <div className="white league-tab">
+            <h2>{league.name}</h2>
+            <p>30 дней доступа</p>
+            <h3>
+              Призовой фонд
+              <br />
+              {league.prizePool} рублей
+            </h3>
+            <div>
+              <h3>Включая турниры лиги {includeList}</h3>
+            </div>
+            <div>
+              <LeaguePayButton price={league.prices[0]} text='' />
+            </div>
+          </div>
+          <div className="white league-tab">
+            <h2>{league.name}+</h2>
+            <p>Годовой доступ (17% скидка)</p>
+            <h3>
+              Призовой фонд
+              <br />
+              {league.prizePool * 12} рублей
+            </h3>
+            <div>
+              <h3>Включая турниры лиги {includeList}</h3>
+            </div>
+            <div>
+              <LeaguePayButton price={league.prices[1]} text='' />
+            </div>
+          </div>
         </div>
       );
     });
 
-    console.log('Leagues');
+    const freeLeague = (
+      <div className="white league-tab">
+        <h2>{leagues[0].name}</h2>
+        <p>30 дней доступа</p>
+        <h3>
+          Призовой фонд
+          <br />
+          {leagues[0].prizePool} рублей
+        </h3>
+        <b>Вы участвуете</b>
+      </div>
+    );
+
     return (
       <div>
-        <h1 className="white">Leagues</h1>
+        <h1 className="white">Лиги</h1>
         <div>
+          {freeLeague}
+
           {LeagueList}
         </div>
       </div>

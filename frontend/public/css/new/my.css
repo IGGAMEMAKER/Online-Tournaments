@@ -680,6 +680,29 @@ a:focus {
   }
 }
 
+.league-container {
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 100%;
+}
+
+.league-tab {
+  margin-right: 20px;
+  width: 310px;
+  height: 350px;
+  display: inline-block;
+  /*float: left;*/
+
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 15px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+
+  margin-bottom: 10px;
+}
+
 .circle-input {
   border-radius: 1000px;
   border: 0;
