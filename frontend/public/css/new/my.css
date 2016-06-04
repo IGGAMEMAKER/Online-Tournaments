@@ -1,3 +1,8 @@
+* {
+  /*font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;*/
+  /*font-weight: lighter;*/
+}
+
 .wrapper2 {
   width: 100%;
   /*min-height: 930px;*/
@@ -37,6 +42,17 @@
 /* Prevent ugly blue glow on chrome and safari */
 button{
   outline: none!important;
+}
+
+.page {
+  font-family: 'Courier New', 'Arial';
+  font-style: italic;
+  color: white;
+  text-align: center;
+}
+
+.page.text-left {
+  text-align: left;
 }
 
 .modal-body {
@@ -85,17 +101,20 @@ button{
   /*background: url('http://firmusasia.com/img/slide-03.jpg'); */
   /*background: url('slide-03.jpg');*/
   /*background: url('http://wallpaperlayer.com/img/2015/9/dark-wallpaper-2161-2322-hd-wallpapers.jpg');*/
-  background: url('dark-wallpaper.jpg');
+  /*background: url('dark-wallpaper.jpg');*/
   
   /* good one! */
 
   /*background: url('https://images4.alphacoders.com/485/48578.jpg'); */
 
   /*background-color: #263238;*/
+  background-color: #111111;
 
   /*background-image: url('dark_brown.png');*/
 }
-
+.navbar {
+  background-color: #111111;
+}
 .acceleratorImage{
   opacity: 0.9;
   border-radius: 3px;

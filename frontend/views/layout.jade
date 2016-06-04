@@ -82,11 +82,12 @@ mixin loadHead()
 mixin drawBalance()
 	if session.login && session.login.length>0
 		center
-			div(class="balance" style="width:100%; background-color:#222;")
+			div(class="balance" style="width:100%; background-color:#111111;")
 				span(id="balance") #{session.login}     
 				a(href="profile#dep") Пополнить   
 				span /   
 				a(href="profile#cashoutMoney") Снять
+
 mixin drawMyPoints()
 	if session.login && session.login.length>0
 		center
@@ -126,7 +127,6 @@ html
 		br
 		br
 		div(class="container containetWithTourn killPaddings")
-			br
 			br
 			br
 			block content

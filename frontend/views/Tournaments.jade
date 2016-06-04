@@ -1,59 +1,28 @@
 //
-
-mixin rating()
-	h3(class="text-center ratingHead") Марафон
-		br
-		//a(href="Leaderboard") все участники
-	include templates/rating-solo
-
 extends layout
 
 block title
 	title Турниры
 
-mixin thumb()
-	li(class="span4")
-		div(class="thumbnail")
-			| <img src="http://placehold.it/300x200" alt="">
-			| <h3>Ярлык миниатюры</h3>
-			| <p>Заголовок миниатюры...</p>
-
 block content
 	include templates/news
-	//div(class="hero-unit")
-		h1(class="white") Заголовок
-		p(class="white") Tagline
-		p
-			a(class="btn btn-primary btn-large") Узнать больше
-	//div(class="col-sm-12")
-		ul(class="thumbnails")
-			+thumb()
-			+thumb()
-			+thumb()
-	//include templates/topics
-	//a(class="glance" style="width:100px;") sss
 	div(class="col-sm-12")
-		//hr(colour="white" width="60%" align="center")
-		h2(class="white text-center") Турниры
-	div(class="col-sm-12 killPaddings" id="tournamentBlock")
+		h1(class="page") Турниры
+		hr(colour="white" width="60%" align="center")
 	script.
-		var tournaments = !{JSON.stringify(msg)};
+		var TOURNAMENTS = !{JSON.stringify(msg)};
 		//drawTournaments(tournaments)
-	#app
+	div(class="col-sm-12 killPaddings" id="tournamentBlock")
+		#app
 	script(src="/output/Tournaments.js")
 	script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-	div(class="col-sm-12 bgc-white" id="ratingField")
-		//div(class="col-sm-8 dataRule2")
-			+rating()
+	//div(class="col-sm-12 bgc-white" id="ratingField")
 		//div(class="col-sm-4 subscribe")
 		//+subscribe()
 	//div(class="col-sm-12 offset-bg")
 		+chat()
 
 block JSlibs
-	//script(src="https://fb.me/react-15.0.1.min.js")
-	//script(src="https://fb.me/react-dom-15.0.1.min.js")
-	//script(src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js")
 
 	//script(src="/tournaments.js?2")
 

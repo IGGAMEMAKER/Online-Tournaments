@@ -23,6 +23,12 @@ type ResponseType = {
   }
 }
 
+type ProfileData = {
+  body: {
+    tournaments: Object,
+  }
+}
+
 export default class Tournaments extends Component {
   state = {
     tournaments: {},
@@ -31,6 +37,15 @@ export default class Tournaments extends Component {
   };
 
   componentWillMount() {
+    request
+      .post('/Profile')
+      .end((err, res) => {
+        if (err) throw err;
+
+        const response: ProfileData = res;
+        console.log('load profile data', response.body.tournaments);
+        this.setState({ registeredIn: response.body.tournaments || {} });
+      });
     // request
     //   .get('/api/tournaments')
     //   .end((err, res) => {
@@ -74,17 +89,46 @@ export default class Tournaments extends Component {
       });
   };
 
-  render() {
-    const state: StateType = this.state;
+  filter = (tournaments, filterFunction) => {
+    return tournaments
+      .filter(filterFunction)
+      .map(t => <Tournament
+        data={t}
+        register={this.register}
+        unregister={this.unregister}
+        authenticated
+        registeredInTournament
+      />);
+  };
 
-    const TournamentList = state.tournaments.map((t: TournamentType) => <Tournament
+  render() {
+    // const state: StateType = this.state;
+    const tourns: Array<TournamentType> = TOURNAMENTS;
+
+      // .filter((t: TournamentType) => t.settings.tag === 'Daily')
+    const TodayTournaments = this.filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
+
+    const TomorrowTournaments = this.filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
+
+    const TournamentList = tourns.map((t: TournamentType, index) => <Tournament
       data={t}
       register={this.register}
       unregister={this.unregister}
       authenticated
-      registeredInTournament
+      registeredInTournament={index % 2 === 10}
     />);
 
-    return <div>{TournamentList}</div>;
+    const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
+    return (
+      <div>
+        {auth}
+        <h2 className="page">Сегодня</h2>
+        {TodayTournaments}
+        <hr colour="white" width="60%" align="center" />
+        <h2 className="page">Завтра</h2>
+        {TomorrowTournaments}
+        <hr colour="white" width="60%" align="center" />
+        {TournamentList}
+      </div>);
   }
 }

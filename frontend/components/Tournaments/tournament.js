@@ -27,17 +27,11 @@ type PropsType = {
 }
 
 export default class Tournament extends Component {
-  // unregister = (props: PropsType) => {
-  //   return () => {
-  //     props.unregister(props.data.tournamentID);
-  //   };
-  // };
-
   render(props: PropsType) {
     const id = props.data.tournamentID;
 
-    const prizes = props.data.prizes || [100];
-    const prizeList = prizes.map((p: number) => <p>{p}</p>);
+    const prizes = props.data.Prizes || [100];
+    const prizeList = prizes.map((p: number) => <p>{p} РУБ</p>);
 
     const cover = (
       <div className="cover">
@@ -46,10 +40,12 @@ export default class Tournament extends Component {
     );
 
     let actionButtons = '';
+    console.log('props', props);
+
     if (props.authenticated) {
       if (props.registeredInTournament) {
         actionButtons = (
-          <a className="btn toggle-tickets wrap-text" style="display: none;">
+          <a className="btn toggle-tickets wrap-text">
             Вы участвуете в турнире
             <br />
             Дождитесь начала
@@ -57,20 +53,22 @@ export default class Tournament extends Component {
         );
       } else {
         actionButtons = (
-          <a className="btn toggle-tickets wrap-text" onClick={() => props.unregister(id)}>
+          <a className="btn toggle-tickets wrap-text" onClick={() => props.register(id)}>
             Участвовать
           </a>
         );
       }
-    } else {
-      actionButtons = (
-        <a className="btn toggle-tickets wrap-text" href="Login">Авторизоваться</a>
-      );
     }
-
+    // style="width: 300px; display: inline-block;"
+    // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
+    const participating = props.registeredInTournament ? 'participating' : '';
     return (
-      <div>
-        <div className="ticket-card" id={`bgd${id}`}>
+      <div className="col-sm-6 col-md-4">
+        <div
+          className={`ticket-card ${participating}`}
+          id={`bgd${id}`}
+          style="box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);"
+        >
           {cover}
           <div className="body">
             <div className="info">

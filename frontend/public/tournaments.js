@@ -230,7 +230,7 @@ function ManageReg(login, tID, url, regID){
 				}
 				
 				console.log('ManageReg', msg.result);
-				switch(msg.result){
+				switch(msg.result) {
 					case 'OK': txt='Вы зарегистрировались в турнире!'; addTournament_to_storage(tID); /*register_success(tID);*/ break;
 					case 'fail': txt='Ошибка регистрации'; break;
 					case TREG_ALREADY: txt='Вы уже зарегистрировались в турнире. Обновите страницу'; break;
@@ -239,7 +239,7 @@ function ManageReg(login, tID, url, regID){
 					default : txt='Авторизуйтесь, чтобы сыграть'; break;
 				}
 			}	else {
-				switch(msg.result){
+				switch(msg.result) {
 					case 'OK': txt='Вы снялись с турнира. Деньги возвращены'; deleteTournament_from_storage(tID); drawRegButton(tID); break; //drawRegButton(tID);
 					case 'fail': txt='Вы не участвуете в этом турнире'; break;
 					default : txt='Ошибка'; break;
