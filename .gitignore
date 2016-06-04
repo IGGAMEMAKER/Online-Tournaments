@@ -9,3 +9,6 @@ message.txt
 my_file.txt
 Logs/
 PPLog.txt
+frontend/public/output/*
+frontend/app.js
+
