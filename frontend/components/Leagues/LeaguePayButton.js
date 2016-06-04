@@ -24,7 +24,7 @@ export default class LeaguePayButton extends Component {
     return (
       <div>
         <p>{text}</p>
-        <button className="btn btn-success">{price}</button>
+        <button className="btn btn-primary btn-lg">{price}</button>
       </div>
     );
   }

@@ -43,7 +43,6 @@ app.use(bodyParser.urlencoded({ extended: true }));// to support URL-encoded bod
 var tournaments = require('./routes/tournaments');//(mongoose);
 /*var admin = require('./routes/admin');
 var money = require('./routes/money');
-var user = require('./routes/user');
 var clientStats = require('./routes/clientStats');*/
 
 //app.use('/api/gifts', gifts);
@@ -68,7 +67,6 @@ app.use('/api/clientStats', clientStats);*/
 
 
 /*var routes = require('./routes/index');
-var users = require('./routes/users');
 
 
 

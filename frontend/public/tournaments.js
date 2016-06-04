@@ -1,4 +1,4 @@
-const UN_REG_FIELD= '#unregister';// '#UN_REG_FIELD';
+const UN_REG_FIELD = '#unregister';// '#UN_REG_FIELD';
 const REG_FIELD = '#register';
 const AUTH_FIELD = '#auth';
 

@@ -203,8 +203,6 @@ var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer
 var category = require('./routes/category')(app, aux, realtime, SOCKET, io)
 var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io)
 
-// var leagues = require('./routes/leagues')(app)
-
 var TournamentReg = require('./models/tregs');
 var Marathon = require('./models/marathon');
 
@@ -517,14 +515,7 @@ app.get('/Log', function (req, res){
 
 app.get('/main', function (req, res){
   res.render('main2');
-})
-
-  // var packs = [];
-
-  // Packs.available()
-  // .then(function (list){
-  //   packs = list;
-  // })
+});
   
 app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
   var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
