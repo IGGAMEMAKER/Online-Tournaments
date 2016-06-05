@@ -11,6 +11,7 @@ type TournamentType = {
   tournamentID: number,
   gameNameID: number,
   status: number,
+  Prizes: Array<number>,
 }
 
 type StateType = {
@@ -90,15 +91,22 @@ export default class Tournaments extends Component {
   };
 
   filter = (tournaments, filterFunction) => {
+    const registeredIn = this.state.registeredIn || {};
     return tournaments
       .filter(filterFunction)
-      .map(t => <Tournament
-        data={t}
-        register={this.register}
-        unregister={this.unregister}
-        authenticated
-        registeredInTournament
-      />);
+      .map(t => {
+        const registered = registeredIn[t.tournamentID];
+        return (
+          <Tournament
+            data={t}
+            register={this.register}
+            unregister={this.unregister}
+            authenticated
+            registeredInTournament={registered}
+          />
+        );
+      }
+    );
   };
 
   render() {
@@ -106,9 +114,11 @@ export default class Tournaments extends Component {
     const tourns: Array<TournamentType> = TOURNAMENTS;
 
       // .filter((t: TournamentType) => t.settings.tag === 'Daily')
-    const TodayTournaments = this.filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
+    const TodayTournaments = this
+      .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
 
-    const TomorrowTournaments = this.filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
+    const TomorrowTournaments = this
+      .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
 
     const TournamentList = tourns.map((t: TournamentType, index) => <Tournament
       data={t}
@@ -118,17 +128,27 @@ export default class Tournaments extends Component {
       registeredInTournament={index % 2 === 10}
     />);
 
+    const richest = tourns
+      .filter(t => !isNaN(t.Prizes[0]))
+      .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
+      .slice(0, 3);
+
+    const RichestList = this.filter(richest, () => true);
+    // <div className="row">{TournamentList}</div>
     const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
     return (
       <div>
         {auth}
         <h2 className="page">Сегодня</h2>
-        {TodayTournaments}
-        <hr colour="white" width="60%" align="center" />
+        <div className="row">{TodayTournaments}</div>
+
         <h2 className="page">Завтра</h2>
-        {TomorrowTournaments}
+        <div className="row">{TomorrowTournaments}</div>
+
+        <h2 className="page">Турниры с наибольшими призами</h2>
+        <div className="row">{RichestList}</div>
+
         <hr colour="white" width="60%" align="center" />
-        {TournamentList}
       </div>);
   }
 }
