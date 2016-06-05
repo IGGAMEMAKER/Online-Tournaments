@@ -3,6 +3,9 @@ extends layout
 
 block JSlibs
 	script(src="hashes.js")
+	script.
+		var ammount = 100;
+		// var ammount = value;
 
 block title
 	title Оплата
@@ -46,7 +49,7 @@ mixin paymentForm(value, login)
 	//iframe(frameborder="0" allowtransparency="true" scrolling="no" src="https://money.yandex.ru/embed/shop.xml?account=410013860652119&quickpay=shop&payment-type-choice=on&mobile-payment-type-choice=on&writer=seller&targets=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D1%87%D1%91%D1%82%D0%B0+%D0%BD%D0%B0+%D1%81%D0%B0%D0%B9%D1%82%D0%B5+online-tournaments.org&targets-hint=&default-sum=100&button-text=01&successURL=http%3A%2F%2Fonline-tournaments.org%2FpayOK" width="450" height="213")
 
 block content
-	h1(class="white text-center") Пополнение счёта
+	// h1(class="white text-center") Пополнение счёта
 	div(class="col-sm-12")
 		//script.
 			var sMrchLogin = "OnlineTournaments";
@@ -78,10 +81,11 @@ block content
 			//console.log(src);
 			document.write(src);
 		center
-			h2(class="white") QIWI: +79648847260 (обязательно укажите ваш логин "#{session.login}")
+			//h2(class="white") QIWI: +79648847260 (обязательно укажите ваш логин "#{session.login}")
 			//h3(class="white") При отправке средств укажите ваш логин в комментарии к платежу (#{session.login})
-			+paymentForm(ammount, session.login)
-
+			//+paymentForm(ammount, session.login)
+			#app
+			script(src="/output/payments.js")
 			br
 			br
 			p(class="white") Если вы пополнили счёт с мобильного, НЕ УДАЛЯЙТЕ СМС до поступления средств! Деньги будут зачислены в течение получаса

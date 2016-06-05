@@ -51,17 +51,6 @@ export default class Tournaments extends Component {
 
         this.setState({ registeredIn });
       });
-    // request
-    //   .get('/api/tournaments')
-    //   .end((err, res) => {
-    //     if (err) {
-    //       console.error(err, '/api/tournaments/');
-    //       return;
-    //     }
-    //
-    //     const response: ResponseType = res;
-    //     this.setState({ tournaments: response.body.tournaments });
-    //   });
   }
 
   register = (tournamentID) => {
@@ -122,14 +111,6 @@ export default class Tournaments extends Component {
 
     const TomorrowTournaments = this
       .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
-
-    // const TournamentList = tourns.map((t: TournamentType, index) => <Tournament
-    //   data={t}
-    //   register={this.register}
-    //   unregister={this.unregister}
-    //   authenticated
-    //   registeredInTournament={index % 2 === 10}
-    // />);
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
