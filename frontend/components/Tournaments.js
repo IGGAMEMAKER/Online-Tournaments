@@ -117,7 +117,6 @@ export default class Tournaments extends Component {
     // const state: StateType = this.state;
     const tourns: Array<TournamentType> = TOURNAMENTS;
 
-      // .filter((t: TournamentType) => t.settings.tag === 'Daily')
     const TodayTournaments = this
       .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
 
@@ -144,13 +143,13 @@ export default class Tournaments extends Component {
       <div>
         {auth}
         <h2 className="page">Турниры с наибольшими призами</h2>
-        <div className="row">{RichestList}</div>
+        <div className="row killPaddings">{RichestList}</div>
 
         <h2 className="page">Пройдут сегодня</h2>
-        <div className="row">{TodayTournaments}</div>
+        <div className="row killPaddings">{TodayTournaments}</div>
 
         <h2 className="page">Пройдут завтра</h2>
-        <div className="row">{TomorrowTournaments}</div>
+        <div className="row killPaddings">{TomorrowTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
       </div>

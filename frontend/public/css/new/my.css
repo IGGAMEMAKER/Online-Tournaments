@@ -627,7 +627,11 @@ a.glance:hover {
   font-weight: 700;
 }
 
-
+.button {
+  border-radius: 1000px;
+  /*width: 100px;*/
+  /*background-color: #1a6ecc;*/
+}
 
 /*.btn >a {
   color: #f05f40;

@@ -7,84 +7,18 @@ mixin drawReg(val)
 	tr 
 		td 
 			+tLink(val.tournamentID)
-		//td #{val.promo}
 		td регистрация
 		td
-			//script.
-				var lgn="lol";
-				var id = 752;
-				var txt = "unReg(\'"+"lol"+"\',"+id+")";
-				alert(txt)
 			a(href="" onclick='unReg(1, ' + val.tournamentID + ')' ) сняться с турнира
 
 mixin tLink(id)
 	i #{id}
 
-
-///Dublicate from ShowGifts.jade
-mixin ShowGift(gift,add)
-	td
-		center
-			h2!= gift.name
-		
-			//p!='URL = '+gift.photoURL
-			img(src= gift.photoURL display=block max-width='300px' width='400px')
-			br
-			- if (gift.URL)
-				a(href=gift.URL) Show more
-			p!=gift.description
-			p!=gift.price+'$'
-			//p!= '----------------------------'
-
-mixin showGifts(gifts)
-	table
-		each val, index in gifts
-			if(index%3==0 && index!=0)
-				tr
-					+ShowGift(val)
-			else
-				+ShowGift(val)
-
-mixin drawPrizes2(giftIDList, gifts)
-	if giftIDList && gifts
-		table
-			each gft, index in giftIDList
-				//p!= JSON.stringify(gft)
-				- for (var i=0;i<gifts.length;i++)
-					if gft.giftID == gifts[i]._id
-						tr
-							+ShowGift(gifts[i])
-						//
-							if(index%3==0)
-								//tr
-									td
-										p TR
-										//+ShowGift(gifts[i])
-							else
-								+ShowGift(gifts[i])
 		
 ///-----
 mixin buttonLink(link, text)
 	form(action=link) 
 		input(type="submit" value=text style="width:125px;height:50px;")
-
-mixin drawPrizes(gifts)
-	h2 Prizes:
-	if gifts && gifts.length>0
-		+showGifts(gifts)
-	else
-		h3 You have no prizes, but it's high time to win them!
-
-mixin moneyOperations()
-	//a(href="MoneyTransfers") Money HISTORY
-	br
-	//table(width="300px")
-		tr
-			td
-				+buttonLink('Deposit', 'Deposit money')
-			td
-				+buttonLink('Cashout', 'Cashout')
-	br
 
 mixin info()
 	//include templates/account
@@ -168,12 +102,14 @@ block title
 block content
 	script.
 		getProfile()
-	div(class="col-sm-12")
-		h2(class="text-center white") Профиль
-	div(class="col-sm-12")
+	h1(class="text-center white page") Профиль
+	//div(class="col-sm-12")
+	.full
 		h2(class="text-center white") Мои турниры
 		+drawTournamentRegs(msg.tournaments)
-	div(class="col-sm-12")
+	.full
+		+info()
+	//div(class="col-sm-12")
 		if msg && msg.email
 			div(class="col-sm-6 col-xs-12 killPaddings")
 				+info()
@@ -182,9 +118,13 @@ block content
 		else
 			div(class="col-sm-12 col-xs-12 killPaddings")
 				+info()
-	div(class="col-sm-12")
-		h2(class="text-center white") Денежные операции
-		div(class="col-sm-6 col-xs-12 killPaddings" id="dep")
-			+deposit()
-		div(class="col-sm-6 col-xs-12 killPaddings" id="cashoutMoney")
-			+cashout()
+	//div(class="col-sm-12")
+		//div(class="col-sm-6 col-xs-12 killPaddings" id="dep")
+	div(class="full" id="dep")
+		+deposit()
+	div(class="full" id="cashoutMoney")
+		h2(class="page") Вывод средств
+		.ctr
+			label(class="full white text-center") Минимальная сумма вывода - 500 рублей
+			br
+			button(class="btn btn-primary button") Вывести средства
