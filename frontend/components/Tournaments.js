@@ -12,23 +12,22 @@ type TournamentType = {
   gameNameID: number,
   status: number,
   Prizes: Array<number>,
-}
+};
 
 type StateType = {
   tournaments: Array<TournamentType>,
+};
+
+type ProfileData = {
+  tournaments: Object,
 }
 
 type ResponseType = {
   body: {
-    tournaments: Array<TournamentType>,
+    profile: ProfileData,
+    err: Object,
   }
-}
-
-type ProfileData = {
-  body: {
-    tournaments: Object,
-  }
-}
+};
 
 export default class Tournaments extends Component {
   state = {
@@ -39,13 +38,18 @@ export default class Tournaments extends Component {
 
   componentWillMount() {
     request
-      .post('/Profile')
+      .get('/myprofile')
       .end((err, res) => {
         if (err) throw err;
+        if (res.body.err) throw res.body.err;
 
-        const response: ProfileData = res;
-        console.log('load profile data', response.body.tournaments);
-        this.setState({ registeredIn: response.body.tournaments || {} });
+        const response: ResponseType = res;
+        const tRegs: Array = response.body.profile.tournaments;
+
+        const registeredIn = {};
+        tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
+
+        this.setState({ registeredIn });
       });
     // request
     //   .get('/api/tournaments')
@@ -120,13 +124,13 @@ export default class Tournaments extends Component {
     const TomorrowTournaments = this
       .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
 
-    const TournamentList = tourns.map((t: TournamentType, index) => <Tournament
-      data={t}
-      register={this.register}
-      unregister={this.unregister}
-      authenticated
-      registeredInTournament={index % 2 === 10}
-    />);
+    // const TournamentList = tourns.map((t: TournamentType, index) => <Tournament
+    //   data={t}
+    //   register={this.register}
+    //   unregister={this.unregister}
+    //   authenticated
+    //   registeredInTournament={index % 2 === 10}
+    // />);
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
@@ -139,16 +143,17 @@ export default class Tournaments extends Component {
     return (
       <div>
         {auth}
-        <h2 className="page">Сегодня</h2>
-        <div className="row">{TodayTournaments}</div>
-
-        <h2 className="page">Завтра</h2>
-        <div className="row">{TomorrowTournaments}</div>
-
         <h2 className="page">Турниры с наибольшими призами</h2>
         <div className="row">{RichestList}</div>
 
+        <h2 className="page">Пройдут сегодня</h2>
+        <div className="row">{TodayTournaments}</div>
+
+        <h2 className="page">Пройдут завтра</h2>
+        <div className="row">{TomorrowTournaments}</div>
+
         <hr colour="white" width="60%" align="center" />
-      </div>);
+      </div>
+    );
   }
 }

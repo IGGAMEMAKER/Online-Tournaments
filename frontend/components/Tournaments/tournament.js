@@ -35,13 +35,14 @@ function getFormOfParticipants(num) {
   return 'игроков';
 }
 
-function phrase(num, wordOne, word1_4, wordLot) {
+function phrase(num: number, wordOne, word14, wordLot) {
   const modulo = num % 10;
-  if (modulo === 1) return wordOne;
+  let word = wordLot;
+  if (modulo === 1) word = wordOne;
 
-  if (modulo > 1 && modulo < 5) return word1_4;
+  if (modulo > 1 && modulo < 5) word = word14;
 
-  return wordLot;
+  return `${num} ${word}`;
 }
 
 function sphrase(num, word) { // именит падеж: игрок
@@ -61,6 +62,22 @@ function formatDate(date) {
     // second: 'numeric'
   };
   return date.toLocaleString('ru', options);
+}
+
+function roman(number) {
+  switch (number) {
+    case 1: return 'I'; break;
+    case 2: return 'II'; break;
+    case 3: return 'III'; break;
+    case 4: return 'IV'; break;
+    case 5: return 'V'; break;
+    case 6: return 'VI'; break;
+    case 7: return 'VII'; break;
+    case 8: return 'VIII'; break;
+    case 9: return 'IX'; break;
+    case 10: return 'X'; break;
+    default: return number; break;
+  }
 }
 
 export default class Tournament extends Component {
@@ -90,13 +107,14 @@ export default class Tournament extends Component {
   };
 
   getStartConditions = (props: PropsType) => {
-    const date = props.data.settings.startTime || new Date();
+    const date = props.data.settings.startTime;// || new Date();
 
     if (date) return <div>Турнир начнётся в {formatDate(date)}</div>;
 
     return (
       <div>
         Турнир начнётся, когда зарегистрируется
+        <br />
         {sphrase(props.data.goNext[0], 'игрок')}
       </div>
     );
@@ -106,7 +124,7 @@ export default class Tournament extends Component {
     const id = props.data.tournamentID;
 
     const prizes = props.data.Prizes || [100, 20, 20, 5]; //
-    const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}е место: {p} РУБ</p>);
+    const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}-е место: {p} РУБ</p>);
     const buyIn = props.data.buyIn;
 
     const cover = (
@@ -132,8 +150,6 @@ export default class Tournament extends Component {
       participants = <div>Участвует {players} {getFormOfParticipants(players)}</div>;
     }
 
-
-
     // style="width: 300px; display: inline-block;"
     // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
     // <div className="from">Призы</div>
@@ -157,6 +173,7 @@ export default class Tournament extends Component {
           </div>
           <div className="collapse"></div>
           <div className="info text-center">{this.getStartConditions(props)}</div>
+          <br />
           <div className="footer" id={`footer${id}`}>{this.getActionButtons(props)}</div>
         </div>
       </div>

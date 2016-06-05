@@ -417,7 +417,13 @@ function (req, res){
 
 	  	// res.json({msg: null});
 	  	sender.Answer(res, Fail);
-	})
+	});
+
+	app.get('/myprofile', authenticated, get_profile, function (req, res){
+		res.json({ profile : req.profile });
+	}, function (err, req, res, next){
+		res.json({ err });
+	});
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('Profile', {msg:req.profile});
