@@ -78,7 +78,7 @@ mixin freerollDaily()
 						| Присоединяйся!
 					center
 						p
-							a(class="btn btn-primary btn-large btn-lg btn-fixed") Участвовать
+							a(class="btn btn-primary btn-large btn-lg btn-fixed" href="/Tournaments#daily") Участвовать
 							// href="http://google.com"
 					//p
 						a(class="btn btn-primary btn-large btn-lg" href="http://google.com" style="margin-left: 0px;") Поделиться
@@ -175,7 +175,7 @@ mixin createTeam()
 
 block content
 	include templates/news
-	include templates/topics
+	//include templates/topics
 
 	//div(class="col-sm-12")
 		hr(colour="white" width="60%" align="center")

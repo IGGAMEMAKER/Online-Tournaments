@@ -55,23 +55,44 @@ export default class Payment extends Component {
       </form>
     );
   };
-
+  //
   render(props: PropsType) {
     return (
       <div>
         <h1 className="page">Пополнение счёта</h1>
         <h2 className="page">Вы собираетесь пополнить счёт на {props.ammount} руб</h2>
         <h3 className="page">Вы можете сделать это несколькими способами: </h3>
-        <h2 className="page">
-          QIWI: +79648847260 (обязательно укажите ваш логин {login})
-        </h2>
+        <br />
+        <h2 className="page"> 1) QIWI: +79648847260 </h2>
+        <h3 className="page"> Укажите ваш логин ({login}) в комментарии к платежу </h3>
+        <a
+          href="https://qiwi.ru"
+          target="_blank"
+          className="btn btn-lg btn-primary"
+        >Оплатить {props.ammount} руб</a>
+
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, 'Яндекс.Деньгами', 'PC')}
+        {this.payform(100, '2) С мобильного', 'MC')}
+        <p className="white">при оплате с мобильного НЕ УДАЛЯЙТЕ СМС до зачисления средств</p>
+
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, 'Банковской картой', 'AC')}
+        {this.payform(100, '3) Яндекс.Деньгами', 'PC')}
+
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, 'С мобильного', 'MC')}
+        {this.payform(100, '4) Банковской картой', 'AC')}
+
         <hr colour="white" width="60%" align="center" />
+        <br />
+        <br />
+        <p className="white text-center">
+          Если у вас возникли какие-то трудности, напишите в
+          <span>
+            <a
+              href="https://vk.com/topic-111187123_33419618"
+              target="_blank"
+            > техподдержку</a>
+          </span>
+        </p>
       </div>
     );
   }
