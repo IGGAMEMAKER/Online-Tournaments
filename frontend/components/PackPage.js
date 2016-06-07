@@ -72,7 +72,7 @@ export default class PackPage extends Component {
     ],
 
     chosenPack: -1,
-    allPacks: PACKS || [
+    allPacks: PACKS.map(p => ({ src: p.image, packID: p.packID, name: p.topic, price: p.price })) || [
       {
         src: '/img/topics/realmadrid.jpg',
         name: 'realmadrid',

@@ -73,7 +73,7 @@ function redrawFreePacks(packs){
 		
 		
 		$(id).prop("disabled", disabled);
-		console.log(index, packs)
+		// console.log(index, packs)
 	}
 }
 
