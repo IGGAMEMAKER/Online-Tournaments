@@ -257,7 +257,7 @@ button{
 .ticket-card:hover {
   /*box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);*/
   /*box-shadow: -5px -5px 9px 5px rgba(209, 146, 72, 0.4);*/
-  box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);
+  /*box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);*/
   cursor: pointer;
 }
 .ticket-card .list-unstyled{
@@ -424,6 +424,22 @@ button{
   width: 280px;
   height: 200px;
   float: left;
+}
+
+.light-blue:hover {
+  box-shadow: 0 0 18px #2793C7;
+}
+.light-blue-big:hover {
+  box-shadow: 0 0 88px #2793C7;
+}
+
+.light-peach:hover {
+  box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);
+  /*box-shadow: 0 0 18px rgba(209, 146, 72, 0.4);*/
+}
+.light-peach-big:hover {
+  /*box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);*/
+  box-shadow: 0 0 89px rgba(209, 146, 72, 0.4);
 }
 
 .pack-wrapper{

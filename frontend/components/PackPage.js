@@ -165,8 +165,9 @@ export default class PackPage extends Component {
   }
 
   chosePack(id) {
-    console.log('chosePack', id);
+    // console.log('chosePack', id);
     this.setState({ chosenPack: id });
+    window.scrollTo(0, 0);
   }
 
   choseAnother() {
@@ -175,7 +176,7 @@ export default class PackPage extends Component {
 
   render() {
     console.log('pack page render');
-    //
+
     // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
       <div className="col-sm-4 col-md-4 col-xs-6">
@@ -204,7 +205,10 @@ export default class PackPage extends Component {
     } else {
       content = (
         <div>
+          <h1 className=""> Испытай удачу в паках </h1>
+          <h1 className=""> Открывай паки - выигрывай призы! </h1>
           <div className="row pack-container">{PackList}</div>
+          <br />
           <br />
           <button onClick={this.choseAnother.bind(this)} className="btn btn-success">выбрать другой пак</button>
           <br />
@@ -216,8 +220,6 @@ export default class PackPage extends Component {
 
     return (
       <div className="white text-center">
-        <h1 className=""> Испытай удачу в паках </h1>
-        <h1 className=""> Открывай паки - выигрывай призы! </h1>
         {content}
       </div>
     );

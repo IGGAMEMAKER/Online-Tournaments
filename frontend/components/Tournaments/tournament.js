@@ -158,7 +158,7 @@ export default class Tournament extends Component {
     return (
       <div className="col-sm-6 col-md-4">
         <div
-          className={`ticket-card ${participating}`}
+          className={`ticket-card ${participating} light-peach-big`}
           id={`bgd${id}`}
         >
           {cover}

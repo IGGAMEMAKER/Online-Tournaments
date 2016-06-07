@@ -54,21 +54,21 @@ mixin navigation()
 					span(class="icon-bar")
 					span(class="icon-bar")
 					span(class="icon-bar")
-				a(class="navbar-brand" href="/") Онлайн Турниры
+				a(class="navbar-brand light-blue" href="/" ) Онлайн Турниры
 			div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
 				//ul(class="nav navbar-nav navbar-right")
 				ul(class="nav navbar-nav navbar-left")
 					//li
 						a(href="/Marathon") МАРАФОН
 					li
-						a(href="/Tournaments") Турниры
+						a(href="/Tournaments" class="light-blue") Турниры
 					//li
 						a(href="/Categories") Темы
 					li
-						a(href="/Packs") Призы
+						a(href="/Packs" class="light-blue") Призы
 					if session && session.login
 						li
-							a(href="/profile") Профиль
+							a(href="/profile" class="light-blue") Профиль
 						//li
 							a(href="https://vk.com/topic-111187123_33419618" target="_blank") Техподдержка
 						//li
@@ -81,7 +81,7 @@ mixin navigation()
 						//li
 							a(href="/about") О нас
 						li
-							a(href="/Login") Вход
+							a(href="/Login" class="light-blue") Вход
 		div(class="container-fluid")
 			+drawBalance()
 		div(class="container-fluid")
