@@ -420,8 +420,9 @@ button{
   background-color: black;
 }
 
-.pack{
+.pack {
   width: 280px;
+  height: 200px;
   float: left;
 }
 

@@ -2,7 +2,15 @@ import { h, Component } from 'preact';
 import request from 'superagent';
 import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
+import PackGallery from './Packs/PackGallery';
+
 console.log('pack page opened');
+
+function openPack(packID, pay) {
+  request
+    .post(`openPack/${packID}/${pay}`)
+    .end(console.log);
+}
 
 export default class PackPage extends Component {
   state = {
@@ -64,6 +72,73 @@ export default class PackPage extends Component {
       },
     ],
 
+    chosenPack: -1,
+    allPacks: [
+      {
+        src: '/img/topics/realmadrid.jpg',
+        name: 'realmadrid',
+        id: 1,
+      },
+      {
+        src: '/img/topics/bale.jpg',
+        name: 'bale',
+        id: 2,
+      },
+      {
+        src: '/img/topics/manutd.jpg',
+        name: 'manutd',
+        id: 3,
+      },
+
+
+      {
+        src: '/img/topics/realmadrid.jpg',
+        name: 'realmadrid',
+        id: 1,
+      },
+      {
+        src: '/img/topics/bale.jpg',
+        name: 'bale',
+        id: 2,
+      },
+      {
+        src: '/img/topics/manutd.jpg',
+        name: 'manutd',
+        id: 3,
+      },
+
+      {
+        src: '/img/topics/realmadrid.jpg',
+        name: 'realmadrid',
+        id: 1,
+      },
+      {
+        src: '/img/topics/bale.jpg',
+        name: 'bale',
+        id: 2,
+      },
+      {
+        src: '/img/topics/manutd.jpg',
+        name: 'manutd',
+        id: 3,
+      },
+
+      {
+        src: '/img/topics/realmadrid.jpg',
+        name: 'realmadrid',
+        id: 1,
+      },
+      {
+        src: '/img/topics/bale.jpg',
+        name: 'bale',
+        id: 2,
+      },
+      {
+        src: '/img/topics/manutd.jpg',
+        name: 'manutd',
+        id: 3,
+      },
+    ],
     packs: [
       {
         price: 100,
@@ -71,37 +146,10 @@ export default class PackPage extends Component {
         color: 0,
         frees: [],
       },
-      // {
-      //   price: 25,
-      //   color: 1,
-      //   frees: FREES,
-      // },
-      // {
-      //   price: 10,
-      //   color: 2,
-      //   frees: FREES,
-      // },
     ]
   };
 
   componentWillMount() {
-    // // setInterval(() => {
-    // request
-    //   .get('/api/teams/')
-    //   .end((err: String, res) => {
-    //     const message: PropsType = res.body;
-    //     console.log('got request', err, message);
-    //
-    //     this.setState({ joined: message.joined, team: message.team });
-    //     // this.setState({ joined: TEAM_JOINED_TRUE, team: message.team });
-    //   });
-    // // }, 2000);
-  }
-
-  openPack(packID, pay) {
-    request
-      .post(`openPack/${packID}/${pay}`)
-      .end(console.log);
   }
 
   openFree(packId) {
@@ -109,12 +157,21 @@ export default class PackPage extends Component {
       openPack(packId, 0);
     };
   }
+
   openPaid(packId) {
     return function () {
       openPack(packId, 1);
     };
   }
 
+  chosePack(id) {
+    console.log('chosePack', id);
+    this.setState({ chosenPack: id });
+  }
+
+  choseAnother() {
+    this.setState({ chosenPack: -1 });
+  }
 
   render() {
     console.log('pack page render');
@@ -140,17 +197,28 @@ export default class PackPage extends Component {
       );
     });
     // style="margin: 0 auto; display: block;"
+
+    let content = '';
+    if (this.state.chosenPack < 0) {
+      content = <PackGallery chosePack={this.chosePack.bind(this)} packs={this.state.allPacks} />;
+    } else {
+      content = (
+        <div>
+          <div className="row pack-container">{PackList}</div>
+          <br />
+          <button onClick={this.choseAnother.bind(this)} className="btn btn-success">выбрать другой пак</button>
+          <br />
+          <h1 className="text-center"> Что может выпасть в этом паке? </h1>
+          <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
+        </div>
+      );
+    }
+
     return (
       <div className="white text-center">
         <h1 className=""> Испытай удачу в паках </h1>
         <h1 className=""> Открывай паки - выигрывай призы! </h1>
-        <div className="row pack-container">
-          {PackList}
-        </div>
-        <h1 className="text-center"> Что может выпасть в паках? </h1>
-        <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">
-          {CardList}
-        </div>
+        {content}
       </div>
     );
   }
