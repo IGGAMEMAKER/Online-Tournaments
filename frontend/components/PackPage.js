@@ -1,10 +1,9 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
+
 import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
 import PackGallery from './Packs/PackGallery';
-
-console.log('pack page opened');
 
 function openPack(packID, pay) {
   request
@@ -139,6 +138,7 @@ export default class PackPage extends Component {
         id: 3,
       },
     ],
+
     packs: [
       {
         price: 100,
@@ -175,11 +175,10 @@ export default class PackPage extends Component {
   }
 
   render() {
-    console.log('pack page render');
-
+    const { chosenPack } = this.state;
     // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
-      <div className="col-sm-4 col-md-4 col-xs-6">
+      <div className="col-md-4 col-sm-6 col-xs-12">
         <Card
           name={card.name}
           description={card.description}
@@ -189,28 +188,56 @@ export default class PackPage extends Component {
       </div>
     ));
 
-    const PackList = this.state.packs.map((pack, index) => {
+    // const PackList = this.state.packs.map((pack, index) => {
+    //   // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
+    //   return (
+    //     <div className="pack">
+    //       <Pack pack={pack} onClick={this.openPaid(index)} onClickFree={this.openFree(index)} />
+    //     </div>
+    //   );
+    // });
+    let PackList = '';
+    let packIndex = 0;
+    this.state.allPacks.forEach((pack, index) => {
       // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
-      return (
-        <div className="pack">
-          <Pack pack={pack} onClick={this.openPaid(index)} onClickFree={this.openFree(index)} />
-        </div>
-      );
+      if (this.state.chosenPack === pack.id) {
+        packIndex = index;
+        PackList = (
+          <img
+            className="pack img-wrapper"
+            style="cursor: pointer; margin-bottom: 0px;"
+            src={pack.src}
+            alt={pack.name}
+          />
+        );
+      }
     });
     // style="margin: 0 auto; display: block;"
 
     let content = '';
-    if (this.state.chosenPack < 0) {
+    if (chosenPack < 0) {
       content = <PackGallery chosePack={this.chosePack.bind(this)} packs={this.state.allPacks} />;
     } else {
       content = (
         <div>
-          <h1 className=""> Испытай удачу в паках </h1>
-          <h1 className=""> Открывай паки - выигрывай призы! </h1>
-          <div className="row pack-container">{PackList}</div>
+          <div
+            className="row pack-container light-blue-big"
+            style="margin-top: 15px;"
+          >
+            {PackList}
+            <br />
+            <br />
+            <button
+              className="btn btn-primary btn-lg btn-block"
+              style="border-radius: 0;"
+              onClick={this.openPaid(chosenPack)}
+            >Открыть пак за {this.state.allPacks[packIndex].price || 30} руб</button>
+          </div>
           <br />
-          <br />
-          <button onClick={this.choseAnother.bind(this)} className="btn btn-success">выбрать другой пак</button>
+          <a
+            onClick={this.choseAnother.bind(this)}
+            style="cursor: pointer; text-underline: none;"
+          >выбрать другой пак</a>
           <br />
           <h1 className="text-center"> Что может выпасть в этом паке? </h1>
           <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>

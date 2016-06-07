@@ -109,6 +109,9 @@ export default class Tournaments extends Component {
     const TodayTournaments = this
       .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
 
+    const FreeTournaments = this
+      .filter(tourns, ((t: TournamentType) => t.buyIn === 0));
+
     const TomorrowTournaments = this
       .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
 
@@ -123,14 +126,17 @@ export default class Tournaments extends Component {
     return (
       <div>
         {auth}
+        <h2 className="page">Бесплатные</h2>
+        <div className="row killPaddings nomargins">{FreeTournaments}</div>
+
         <h2 className="page">Турниры с наибольшими призами</h2>
-        <div className="row killPaddings">{RichestList}</div>
+        <div className="row killPaddings nomargins">{RichestList}</div>
 
         <h2 className="page">Пройдут сегодня</h2>
-        <div className="row killPaddings">{TodayTournaments}</div>
+        <div className="row killPaddings nomargins">{TodayTournaments}</div>
 
         <h2 className="page">Пройдут завтра</h2>
-        <div className="row killPaddings">{TomorrowTournaments}</div>
+        <div className="row killPaddings nomargins">{TomorrowTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
       </div>

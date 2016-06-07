@@ -156,9 +156,9 @@ export default class Tournament extends Component {
     // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
     const participating = props.registeredInTournament ? 'participating' : '';
     return (
-      <div className="col-sm-6 col-md-4">
+      <div className="col-sm-6 col-md-4 killPaddings">
         <div
-          className={`ticket-card ${participating} light-peach-big`}
+          className={`ticket-card ${participating} light-blue-big bounceIn`}
           id={`bgd${id}`}
         >
           {cover}

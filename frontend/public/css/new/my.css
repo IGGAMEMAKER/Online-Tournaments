@@ -433,6 +433,11 @@ button{
   box-shadow: 0 0 88px #2793C7;
 }
 
+.nomargins {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .light-peach:hover {
   box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);
   /*box-shadow: 0 0 18px rgba(209, 146, 72, 0.4);*/
