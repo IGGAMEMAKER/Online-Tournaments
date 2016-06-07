@@ -43,8 +43,7 @@ export default class Tournaments extends Component {
         if (err) throw err;
         if (res.body.err) throw res.body.err;
 
-        const response: ResponseType = res;
-        const tRegs: Array = response.body.profile.tournaments;
+        const tRegs: Array = res.body.profile.tournaments;
 
         const registeredIn = {};
         tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });

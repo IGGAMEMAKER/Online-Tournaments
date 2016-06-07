@@ -72,7 +72,7 @@ export default class PackPage extends Component {
     ],
 
     chosenPack: -1,
-    allPacks: [
+    allPacks: PACKS || [
       {
         src: '/img/topics/realmadrid.jpg',
         name: 'realmadrid',
@@ -175,7 +175,8 @@ export default class PackPage extends Component {
   }
 
   render() {
-    const { chosenPack } = this.state;
+    const chosenPack = this.state.chosenPack;
+    console.log('chosenPack', chosenPack, this.state);
     // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
       <div className="col-md-4 col-sm-6 col-xs-12">
@@ -188,19 +189,12 @@ export default class PackPage extends Component {
       </div>
     ));
 
-    // const PackList = this.state.packs.map((pack, index) => {
-    //   // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
-    //   return (
-    //     <div className="pack">
-    //       <Pack pack={pack} onClick={this.openPaid(index)} onClickFree={this.openFree(index)} />
-    //     </div>
-    //   );
-    // });
     let PackList = '';
     let packIndex = 0;
     this.state.allPacks.forEach((pack, index) => {
       // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
-      if (this.state.chosenPack === pack.id) {
+      console.log('iterate...', pack, index, 'chosenPack', chosenPack);
+      if (chosenPack === pack.packID) {
         packIndex = index;
         PackList = (
           <img

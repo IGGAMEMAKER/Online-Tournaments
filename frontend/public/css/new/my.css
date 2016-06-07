@@ -258,7 +258,7 @@ button{
   /*box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);*/
   /*box-shadow: -5px -5px 9px 5px rgba(209, 146, 72, 0.4);*/
   /*box-shadow: -1px -2px 9px 9px rgba(209, 146, 72, 0.4);*/
-  cursor: pointer;
+  /*cursor: pointer;*/
 }
 .ticket-card .list-unstyled{
   background: none;

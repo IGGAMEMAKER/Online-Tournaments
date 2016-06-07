@@ -5,11 +5,16 @@ block title
 	title Паки
 
 block JSlibs
-	script(src="packs.js")
+	//script(src="packs.js")
 
 //block ftr
 
 block content
+	script.
+		console.log('packs incoming...');
+		var msg = !{JSON.stringify(msg)}
+		console.log(msg);
+		var PACKS = msg.packs;
 	#app
 	script(src="/output/Packs.js")
 	//div(class="white")
