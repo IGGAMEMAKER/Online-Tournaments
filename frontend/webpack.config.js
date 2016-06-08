@@ -16,6 +16,7 @@ module.exports = [{
     Leagues: './app/Leagues.js',
     Tournaments: './app/Tournaments.js',
     payments: './app/Payment.js',
+    'admin-tournaments': './app/Admin.js',
   },
   output: {
     // filename: 'app.js',
