@@ -1,11 +1,11 @@
 import { h, render } from 'preact';
-import TournamentAdmin from '../components/Tournaments/TournamentAdmin';
+import TournamentListAdmin from '../components/Tournaments/TournamentListAdmin';
 
 const appElement: HTMLElement = document.getElementById('tournaments');
 
 const elements = (
   <center>
-    <TournamentAdmin />
+    <TournamentListAdmin />
   </center>
 );
 

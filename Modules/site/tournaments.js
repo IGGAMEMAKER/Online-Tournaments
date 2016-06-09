@@ -1,46 +1,47 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux){
-var Fail = { result:'fail'};
+module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
+  var Fail = { result:'fail'};
 
-var Tournaments = require('../../models/tournaments');
-var TournamentRegs = require('../../models/tregs');
+  var api = require('../../helpers/api');
+  var Tournaments = require('../../models/tournaments');
+  var TournamentRegs = require('../../models/tregs');
 
-var middlewares = require('../../middlewares')
+  var middlewares = require('../../middlewares');
 //var Actions = require('../../models/actions');
 
-var PRICE_FREE = 4;
-var PRICE_TRAINING = 5;
+  var PRICE_FREE = 4;
+  var PRICE_TRAINING = 5;
 
-var PRICE_GUARANTEED = 3;
+  var PRICE_GUARANTEED = 3;
   var PRICE_NO_EXTRA_FUND = 2;
-var PRICE_CUSTOM = 1;  //
+  var PRICE_CUSTOM = 1;  //
 
 
   var COUNT_FIXED = 1;
-var COUNT_FLOATING = 2;
+  var COUNT_FLOATING = 2;
 
-var strLog = Log;
+  var strLog = Log;
 
-var multer  = require('multer')
+  var multer  = require('multer')
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    //cb(null, './frontend/games/Questions/special')
-    cb(null, './frontend/public/img')
-  },
-  filename: function (req, file, cb) {
-    var tournamentID = req.body.tournamentID;
-    console.log('in storage tournamentID', tournamentID);
-    console.log(file);
-    console.log(req.files);
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      //cb(null, './frontend/games/Questions/special')
+      cb(null, './frontend/public/img')
+    },
+    filename: function (req, file, cb) {
+      var tournamentID = req.body.tournamentID;
+      console.log('in storage tournamentID', tournamentID);
+      console.log(file);
+      console.log(req.files);
 
-    arr = file.originalname.split('.');
-    var last = arr.length-1;
-    var extension = arr[last];
-    console.log('extension', extension)
+      arr = file.originalname.split('.');
+      var last = arr.length-1;
+      var extension = arr[last];
+      console.log('extension', extension)
 
-    cb(null, tournamentID + '.'+extension);// + file.extension)
-  }
-})
+      cb(null, tournamentID + '.'+extension);// + file.extension)
+    }
+  })
   
 var upload = multer({ storage: storage }).single('image');
 
@@ -64,25 +65,27 @@ var upload = multer({ storage: storage }).single('image');
 
   })
 
-	app.get('/AddTournament', function (req, res){
-	  res.render('AddTournament');
-	  /*if (req.session.login=='Alvaro_Fernandez'){
+  app.get('/AddTournament', function (req, res){
+    res.render('AddTournament');
+    /*if (req.session.login=='Alvaro_Fernandez'){
 	    res.render('AddTournament');
 	    //siteAnswer(res, 'AddTournament');
 	  }
 	  else{
 	    res.render('Alive');
 	  }*/
-	});
+  });
 
-	app.post('/AddTournament', AddTournament);
-	function AddTournament(req, res){
-	  var data = req.body;
-	  
-	  if (!data){ 
-	  	Answer(res, Fail); 
-	  	return; 
-	  }
+  app.get('/api/tournaments/available', aux.moderator, api('Tournaments', 'available'));
+
+  app.post('/AddTournament', AddTournament);
+  function AddTournament(req, res){
+    var data = req.body;
+
+    if (!data){
+      Answer(res, Fail);
+      return;
+    }
 
     strLog('Incoming tournament : ' +JSON.stringify(data));
     var buyIn = parseInt(data.buyIn);
@@ -137,16 +140,16 @@ var upload = multer({ storage: storage }).single('image');
 
         rounds:     rounds,
         goNext:     goNext.length>0 ? goNext : [2,1],//
-            places:     [1],
-          Prizes:     prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
-            prizePools:   [1],
+        places:     [1],
+        Prizes:     prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
+        prizePools:   [1],
 
         comment:    'Yo',
         
         playersCountStatus: COUNT_FIXED,///Fixed or float
-          startDate:    null,
-          status:       null,
-          players:      0
+        startDate:    null,
+        status:       null,
+        players:      0
       }
 
       if (data.special || data.regularity || data.specName){
@@ -166,21 +169,21 @@ var upload = multer({ storage: storage }).single('image');
       strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
       sender.Answer(res, Fail);
     }
-	}
+  }
 
   app.get('/api/tournaments/all', aux.isAdmin, function (req, res, next){
     Tournaments.todos()
 
-    .then(aux.setData(req, next))
-    .catch(next)
-  }, aux.render('Lists/Tournaments'), aux.err)
+      .then(aux.setData(req, next))
+      .catch(next)
+  }, aux.render('Lists/Tournaments'), aux.err);
 
   app.get('/api/tournaments/current', aux.isAdmin, function (req, res, next){
     Tournaments.get_available()
 
-    .then(aux.setData(req, next))
-    .catch(next)
-  }, aux.render('Lists/Tournaments'), aux.err)
+      .then(aux.setData(req, next))
+      .catch(next)
+  }, aux.render('Lists/Tournaments'), aux.err);
 
   app.get('/TournamentInfo/:tournamentID', middlewares.authenticated, function (req, res){
     var tournamentID = req.params.tournamentID;
@@ -191,17 +194,17 @@ var upload = multer({ storage: storage }).single('image');
     }
 
     Tournaments.getByID(tournamentID)
-    .then(function (tournament){
-      TournamentInfo.tournament = tournament;
-      return TournamentRegs.getParticipants(tournamentID)
-    })
-    .then(function (players){
-      TournamentInfo.players = players;
-      res.json({msg: TournamentInfo});
-    })
-    .catch(function (error){
-      res.json({error:error});
-    })
+      .then(function (tournament){
+        TournamentInfo.tournament = tournament;
+        return TournamentRegs.getParticipants(tournamentID)
+      })
+      .then(function (players){
+        TournamentInfo.players = players;
+        res.json({msg: TournamentInfo});
+      })
+      .catch(function (error){
+        res.json({error:error});
+      })
     // var data = req.body;
     // data.query = {tournamentID:req.query.tID};
     // data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
@@ -215,64 +218,31 @@ var upload = multer({ storage: storage }).single('image');
     var tournamentID = parseInt(req.params.tournamentID)
 
     Tournaments.getByID(tournamentID)
-    .then(function (tournament){
-      return TournamentRegs.getParticipants(tournamentID)
-      .then(function (players){
-        return {
-          tournament:tournament,
-          players:players
-        }
-        // tournament.list = players;
-        // return tournament
+      .then(function (tournament){
+        return TournamentRegs.getParticipants(tournamentID)
+          .then(function (players){
+            return {
+              tournament:tournament,
+              players:players
+            }
+            // tournament.list = players;
+            // return tournament
+          })
+        // console.log(tournament)
+        // return tournament;
       })
-      // console.log(tournament)
-      // return tournament;
-    })
-    .then(aux.setData(req, next))
-    .catch(next)
+      .then(aux.setData(req, next))
+      .catch(next)
   }, aux.std)
 
-  // app.post('/api/tournaments/edit/:tournamentID', isAdmin, function (req, res){
-  //   var tournamentID = req.params.tournamentID;
-  //   var data = req.body||null;
-
-  //   var obj = {}
-  //   if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){
-  //     obj[data.name] = JSON.parse(data.value)
-  //   }
-
-  //       return res.json({result: 'no changes'});
-  //     }
-  //     Marathon.edit(data, MarathonID)
-  //     .then(function (result){
-  //       if (result){
-  //         res.redirect('/api/tournaments/current');
-  //       } else {
-  //         res.json({result:result});
-  //         //res.end('fail. <a href="MarathonInfo"> go back');
-  //       }
-  //     })
-  //     .catch(function (err){
-  //       res.json({result:'fail', error: err });
-  //     })
-  //   } else {
-  //     res.json({result:'INVALID MarathonID' });
-  //   }
-
-  // })
   app.get('/clearRegs/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = parseInt(req.params.tournamentID);
 
     TournamentRegs.freeTournament(tournamentID)
-    .then(aux.setData(req, next))
-    .catch(next)
+      .then(aux.setData(req, next))
+      .catch(next)
   }, aux.std)
 
-  // app.get('/api/tournaments/edit/:id/:parameter/:type/:value/', aux.isAdmin, function (req, res, next){
-  //   var tournamentID = parseInt(req.params.id);
-  //   var parameter = req.params.parameter;
-  //   var value = req.params.value;
-  //   var type = req.params.type;
   app.get('/mp/:id/:mp/', aux.isAdmin, function (req, res, next){
     var tournamentID = parseInt(req.params.id);
     var mp = parseInt(req.params.mp);
@@ -284,17 +254,35 @@ var upload = multer({ storage: storage }).single('image');
     }
 
     Tournaments.edit(tournamentID, obj)
-    .then(function (result){
-      if (result){
-        res.redirect('/api/tournaments/current');
-      } else {
-        res.json({result:result});
-        //res.end('fail. <a href="MarathonInfo"> go back');
-      }
-    })
-    .then(aux.setData(req, next))
-    .catch(next)
+      .then(function (result){
+        if (result){
+          res.redirect('/api/tournaments/current');
+        } else {
+          res.json({result:result});
+          //res.end('fail. <a href="MarathonInfo"> go back');
+        }
+      })
+      .then(aux.setData(req, next))
+      .catch(next)
   }, aux.render('Lists/Tournaments'), aux.err)
+
+  app.get('/api/tournaments/hidden/:tournamentID/:status', aux.isAdmin, function (req, res){
+    var tournamentID = req.params.tournamentID;
+    var status = req.params.status;
+
+    Tournaments.edit(tournamentID, { 'settings.hidden': status==='true' })
+      .then(result => res.json({ result }))
+      .catch(err => res.json({ err }))
+  });
+
+  app.post('/api/tournaments/date/:tournamentID', aux.isAdmin, function (req, res){
+    var tournamentID = req.params.tournamentID;
+    var startDate = new Date(req.body.startDate);
+
+    Tournaments.edit(tournamentID, { startDate })
+      .then(result => res.json({ result }))
+      .catch(err => res.json({ err }))
+  });
 
   app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = req.params.tournamentID;
@@ -305,41 +293,17 @@ var upload = multer({ storage: storage }).single('image');
       obj[data.name] = JSON.parse(data.value)
     }
 
-    // switch(type){
-    //   case 'obj':
-    //     obj[parameter] = JSON.parse(value);
-    //   break;
-    //   case 'num':
-    //     obj[parameter] = parseInt(value);
-    //   break;
-    //   case 'arr':
-    //     console.log('arrrrrrrrrr')
-    //     var a = JSON.parse(value)
-    //     // console.log(a);
-    //     // a[0]*= 999;
-
-    //     // var arr = [];//Array.from(value);
-    //     // var arr = Array.from(a);
-    //     // console.log(arr);
-    //     obj[parameter] = a;
-    //   break;
-    //   default:
-    //     console.log('default')
-    //     obj[parameter] = value;
-    //   break;
-    // }
-
     Tournaments.edit(tournamentID, obj)
-    .then(function (result){
-      if (result){
-        res.redirect('/api/tournaments/current');
-      } else {
-        res.json({result:result});
-        //res.end('fail. <a href="MarathonInfo"> go back');
-      }
-    })
-    .then(aux.setData(req, next))
-    .catch(next)
+      .then(function (result){
+        if (result){
+          res.redirect('/api/tournaments/current');
+        } else {
+          res.json({result:result});
+          //res.end('fail. <a href="MarathonInfo"> go back');
+        }
+      })
+      .then(aux.setData(req, next))
+      .catch(next)
   }, aux.render('Lists/Tournaments'), aux.err)
 
   function getTopic(topic){
@@ -352,44 +316,29 @@ var upload = multer({ storage: storage }).single('image');
 
   app.get('/specials', middlewares.isAdmin, function (req, res){
     Tournaments.specials()
-    .then(function (result){
-      console.log('specials', result);
-      res.json({ msg:result });
-    })
-    .catch(function (err){
-      res.json({ err:err });
-    })
+      .then(function (result){
+        console.log('specials', result);
+        res.json({ msg:result });
+      })
+      .catch(function (err){
+        res.json({ err:err });
+      })
   })
 
-	app.post('/GetTournamentAddress', function (req, res){
-		//Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
-		AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
-	})
+  app.post('/GetTournamentAddress', function (req, res){
+    //Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
+    AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
+  })
 
-	app.post('/ServeTournament', ServeTournament);
-	function ServeTournament (req, res){
-		var data = req.body;
-		console.log('ServeTournament ... site.tournaments');
-		strLog("ServeTournament ... site.tournaments ", 'Tournaments');
-		//strLog(JSON.stringify(data));//['tournamentStructure']);
+  app.post('/ServeTournament', ServeTournament);
+  function ServeTournament (req, res){
+    var data = req.body;
+    console.log('ServeTournament ... site.tournaments');
+    strLog("ServeTournament ... site.tournaments ", 'Tournaments');
+    //strLog(JSON.stringify(data));//['tournamentStructure']);
 
-		var tournament = data;
+    var tournament = data;
 
-		sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
-	}
-
-  
-
-	// app.all('/Tournaments', function (req, res){
- //    var data = req.body;
- //    data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
- //    data.purpose = GET_TOURNAMENTS_USER;
-
- //    AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
-	// });
-
-	const GET_TOURNAMENTS_INFO = 4;
-  const GET_TOURNAMENTS_USER = 1;
-
-
-}
+    sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
+  }
+};

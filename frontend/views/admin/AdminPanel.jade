@@ -112,6 +112,9 @@ html
 	br
 	a(href="/api/news/all") NEWWWWWWWWWWWS
 
+	#tournaments
+	script(src="/output/admin-tournaments.js")
+
 	iframe(src ="stats2" width="100%" height="800px;")
 
 	//form(method="GET" action="giveMoneyTo/g.iosebashvili/500")
@@ -124,5 +127,3 @@ html
 	//script.
 		var tmr = setInterval(GetRunningTournaments, 3000);
 		var tmr2 = setInterval(GetTotalTournaments, 3000);
-	#tournaments
-	script(src="/output/admin-tournaments")

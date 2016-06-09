@@ -15,6 +15,13 @@ var isAdmin = function (req, res, next){
 	}
 }
 
+var isModerator = function(req, res, next) {
+	if (req.session.login=='23i03g'|| req.session.login=='g.iosebashvili' || req.session.login == 'AlexeyKing'){
+		next()
+	} else {
+		next(null);
+	}
+}
 // middlewares and helpers
 
 	function json(req, res, next){
@@ -33,6 +40,7 @@ var isAdmin = function (req, res, next){
 	// function get_stats(req, res, next){
 	// 	return
 	// }
+
 
 	function answer(req, next){
 		return function (data){
@@ -74,6 +82,7 @@ var isAdmin = function (req, res, next){
 module.exports = {
 	authenticated:authenticated
 
+	,moderator: [authenticated, isModerator]
 	,isAdmin: [authenticated, isAdmin]
 	,drawList: draw_list
 	,send_error: send_error

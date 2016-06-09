@@ -14,7 +14,7 @@ export default class StdClass extends Component {
   render(state: StateType, props: PropsType) {
     return (
       <div>
-        component
+        add tournament
       </div>
     );
   }

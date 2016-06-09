@@ -288,6 +288,7 @@ function addNewTournament(tournament){
 }
 
 function edit(tournamentID, changes){
+	console.log('edit', tournamentID, changes);
 	return Tournament2.update({tournamentID:tournamentID}, {$set: changes})
 }
 
@@ -325,7 +326,7 @@ function setTournStatus(tournamentID, status){
 // 	// 	if(err) { log('Tournament status update Error: ' + JSON.stringify(err)); }
 // 	// });//[{status:null},{status:TOURN_STATUS_RUNNING}, {status:TOURN_STATUS_REGISTER}]
 
-	
+
 
 // }
 
@@ -441,7 +442,8 @@ this.running = running;
 this.setStatus = setTournStatus
 this.find = find
 this.findByQuery = findByQuery
-this.get_available = get_available
+this.get_available = get_available;
+this.available = get_available;
 
 this.updateByID = updateByID
 this.edit = edit

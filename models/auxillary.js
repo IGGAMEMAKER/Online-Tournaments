@@ -64,6 +64,7 @@ module.exports = {
 
 	,isAuthenticated : middlewares.authenticated
 	,authenticated : middlewares.authenticated
+	,moderator: middlewares.moderator
 	,isAdmin : middlewares.isAdmin
 
 	,emit: function (room, event, msg){
