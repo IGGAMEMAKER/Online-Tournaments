@@ -266,27 +266,35 @@ var upload = multer({ storage: storage }).single('image');
       .catch(next)
   }, aux.render('Lists/Tournaments'), aux.err)
 
+  function edit(id, options, res) {
+    Tournaments.edit(id, options)
+      .then(result => res.json({ result }))
+      .catch(err => res.json({ err }))
+  }
+
   app.get('/api/tournaments/hidden/:tournamentID/:status', aux.isAdmin, function (req, res){
     var tournamentID = req.params.tournamentID;
     var status = req.params.status;
 
-    Tournaments.edit(tournamentID, { 'settings.hidden': status==='true' })
-      .then(result => res.json({ result }))
-      .catch(err => res.json({ err }))
+    edit(tournamentID, { 'settings.hidden': status==='true' }, res);
+  });
+
+  app.get('/api/tournaments/clearStartDate/:tournamentID', aux.moderator, function(req, res) {
+    var tournamentID = req.params.tournamentID;
+
+    edit(tournamentID, { startDate: null }, res)
   });
 
   app.post('/api/tournaments/date/:tournamentID', aux.isAdmin, function (req, res){
     var tournamentID = req.params.tournamentID;
-    var startDate = new Date(req.body.startDate);
+    var startDate = req.body.startDate; // new Date(
 
-    Tournaments.edit(tournamentID, { startDate })
-      .then(result => res.json({ result }))
-      .catch(err => res.json({ err }))
+    edit(tournamentID, { startDate }, res)
   });
 
   app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = req.params.tournamentID;
-    var data = req.body||null;
+    var data = req.body || null;
 
     var obj = {}
     if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){

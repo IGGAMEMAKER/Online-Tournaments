@@ -6,7 +6,7 @@ import { h, Component } from 'preact';
 type TournamentType = {
   tournamentID: number,
   status: number,
-  starTime: Date,
+  starDate: Date,
   players: number,
   goNext: Array<number>,
   gameNameID: number,
@@ -49,19 +49,24 @@ function sphrase(num, word) { // именит падеж: игрок
   return phrase(num, word, `${word}а`, `${word}ов`);
 }
 
-function formatDate(date) {
+function formatDate(date1) {
+  if (!date1) return '';
+  const date = new Date(date1);
+  console.log('forced data', date);
   const options = {
     // era: 'long',
     // year: 'numeric',
     month: 'long',
     day: 'numeric',
-    weekday: 'long',
+    // weekday: 'long',
     // timezone: 'UTC',
     hour: 'numeric',
     minute: 'numeric',
     // second: 'numeric'
   };
-  return date.toLocaleString('ru', options);
+  const localed = date.toLocaleString('ru', options);
+  console.log('localed time', localed);
+  return localed;
 }
 
 function roman(number) {
@@ -107,9 +112,11 @@ export default class Tournament extends Component {
   };
 
   getStartConditions = (props: PropsType) => {
-    const date = props.data.settings.startTime;// || new Date();
+    const date = props.data.startDate;// || new Date();
+    const formattedDate = formatDate(date);
+    console.log('startConditions', props.data.tournamentID, date);
 
-    if (date) return <div>Турнир начнётся в {formatDate(date)}</div>;
+    if (date) return <div>Турнир начнётся {formattedDate}</div>;
 
     return (
       <div>

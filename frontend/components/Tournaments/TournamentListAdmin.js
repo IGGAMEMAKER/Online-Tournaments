@@ -31,39 +31,39 @@ export default class TournamentListAdmin extends Component{
     this.update();
   }
 
-  update = () => {
+  setStartDate = (date, id) => {
     request
-      .get('/api/tournaments/available')
-      .end((err, res: ResponseType) => {
-        if (err) throw err;
-        // console.log('availables...', res.body);
-        this.setState({ tournaments: res.body.msg });
-      });
+      .post(`/api/tournaments/date/${id}`)
+      .send({ startDate: date })
+      .end(this.standardCb);
   };
-
-  standardCb = (err, res) => {
-    console.log(err, res);
-    this.update();
-  }
 
   changeVisibility(id, status) {
     console.log('hidden', id, status);
     request
       .get(`/api/tournaments/hidden/${id}/${status}`)
       .end(this.standardCb);
-    /*
-     (err, res) => {
-     console.log(err, res);
-     this.update();
-     }
-     */
   }
 
-  setStartDate = (date, id) => {
+  clearStartDate = (id: number) => {
     request
-      .post(`/api/tournaments/date/${id}`)
-      .send({ startDate: date })
+      .get(`/api/tournaments/clearStartDate/${id}`)
       .end(this.standardCb);
+  };
+
+  standardCb = (err, res) => {
+    console.log(err, res);
+    this.update();
+  };
+
+  update = () => {
+    request
+      .get('/api/tournaments/available')
+      .end((err, res: ResponseType) => {
+        if (err) throw err;
+        console.log('availables...', res.body.msg);
+        this.setState({ tournaments: res.body.msg });
+      });
   };
 
   hideTournament = (id) => {
@@ -84,6 +84,7 @@ export default class TournamentListAdmin extends Component{
           hideTournament={this.hideTournament}
           showTournament={this.showTournament}
           setStartDate={this.setStartDate}
+          clearStartDate={this.clearStartDate}
         />
       );
     });
@@ -91,7 +92,7 @@ export default class TournamentListAdmin extends Component{
     return (
       <div>
         LIst Admin
-        <table>
+        <table border="1">
           <thead>
             <th>id</th>
             <th>Max</th>
