@@ -18,34 +18,59 @@ var server = app.listen(8889, function () {
 
 	logger('Example app listening at http://%s:%s', host, port);
 });
-var auth = (req, res, next) => { next(); };
 
+var auth = (req, res, next) => { next(); };
 app.use(auth);
+
+var requireProp = (obj, property, name) => {
+	// return obj ? (obj[property] || null) : null;
+	// return obj ? (obj[property] || null) : null;
+	if (!obj) throw 'empty obj...' + name;
+
+	if (!obj.hasOwnProperty(property)) throw 'no property in ' + name + ':' + JSON.stringify(obj);
+	return true;
+};
+
+
+
+function setDateTournaments(list) {
+	try {
+		requireProp(list, 'length', 'setDateTournaments');
+		if (list.length) {
+			tournaments = list;
+			list.forEach((t) => {
+				var startDate = t.startDate;
+				if (startDate) {
+					logger('setting tournament', t.tournamentID, startDate);
+					schedule.scheduleJob(startDate, function () {
+						logger('I will start now!');
+					})
+				}
+			})
+		}
+	} catch (e) {
+		logger(e);
+	}
+}
 
 function initialize() {
 	logger('initialize');
 	request
 		.get(`${domain}:9000/tournaments/available`)
 		.end((err, response) => {
-			logger(err, response.body);
+			tournaments = response.body.msg;
+			// logger(err, tournaments);
+			setDateTournaments(tournaments);
 		})
 }
 
 initialize();
-app.get('/LeagueTournaments', function (req, res) {
-	logger('LeagueTournament');
-	res.end();
-});
 
-app.get('/registerUser', function (req, res) {
-	
-});
-
-var date = new Date(2016, 5, 10, 21, 21, 0);
-
-var j = schedule.scheduleJob(date, function(){
-	console.log('The world is going to end today.');
-});
+// var date = new Date(2016, 5, 10, 21, 21, 0);
+//
+// schedule.scheduleJob(date, function(){
+// 	console.log('The world is going to end today.');
+// });
 
 function startTournament() {
 	// console.log('Site starts tournament');
