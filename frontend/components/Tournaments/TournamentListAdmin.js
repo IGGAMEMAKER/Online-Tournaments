@@ -14,6 +14,9 @@ type TournamentType = {
 
 type StateType = {
   tournaments: Array<TournamentType>,
+
+  sortBy: string,
+  order: number,
 }
 
 type ResponseType = {
@@ -25,9 +28,13 @@ type ResponseType = {
 export default class TournamentListAdmin extends Component{
   state = {
     tournaments: [],
+
+    sortBy: 'tournamentID',
+    order: 1,
   };
 
   componentWillMount() {
+    // setInterval(() => { this.update(); }, 5000);
     this.update();
   }
 
@@ -74,39 +81,104 @@ export default class TournamentListAdmin extends Component{
     this.changeVisibility(id, 'false');
   };
 
+  setOrder = (name) => {
+    return () => {
+      const { sortBy, order } = this.state;
+      if (sortBy === name) {
+        this.setState({ order: order === 1 ? -1 : 1 });
+      } else {
+        this.setState({ sortBy: name, order: 1 });
+      }
+    };
+  };
+
+  filter = (sort: Function, list: Array<TournamentType>) => {
+    return list
+      .sort(sort)
+      .map((t: TournamentType) => {
+        return (
+          <TournamentAdmin
+            data={t}
+            hideTournament={this.hideTournament}
+            showTournament={this.showTournament}
+            setStartDate={this.setStartDate}
+            clearStartDate={this.clearStartDate}
+          />
+        );
+      });
+  };
+
+  table = (list) => {
+    return (
+      <table border="1">
+        <thead>
+          <th onClick={this.setOrder('tournamentID')}>id</th>
+          <th>Players</th>
+          <th>Winners</th>
+          <th>Prizes</th>
+          <th onClick={this.setOrder('buyIn')}>BuyIn</th>
+          <th onClick={this.setOrder('status')}>Status</th>
+          <th onClick={this.setOrder('settings.regularity')}>Regularity</th>
+          <th onClick={this.setOrder('settings.hidden')}>hidden</th>
+          <th onClick={this.setOrder('startDate')}>StartDate</th>
+        </thead>
+        <tbody>{list.length ? list : <th>No such tournaments</th>}</tbody>
+      </table>
+    );
+  };
+
   render() {
     const state: StateType = this.state;
-    console.log('TournamentListAdmin', state);
-    const TournamentList = state.tournaments.map((t: TournamentType) => {
-      return (
-        <TournamentAdmin
-          data={t}
-          hideTournament={this.hideTournament}
-          showTournament={this.showTournament}
-          setStartDate={this.setStartDate}
-          clearStartDate={this.clearStartDate}
-        />
-      );
-    });
+    const { sortBy, order } = state;
+    let v1;
+    let v2;
+    let sort;
+    switch (sortBy) {
+      case 'settings.regularity':
+        sort = (t1: TournamentType, t2: TournamentType) => {
+          v1 = t1.settings.regularity || 0;
+          v2 = t2.settings.regularity || 0;
+          return (v2 - v1) * order;
+        };
+        break;
+      default:
+        sort = (t1: TournamentType, t2: TournamentType) => {
+          v1 = t1[sortBy] || 0;
+          v2 = t2[sortBy] || 0;
+          return (v2 - v1) * order;
+        };
+        break;
+    }
+    const Full = this.filter(sort, state.tournaments);
 
+    const runnings = this.filter(sort,
+      state.tournaments.filter((t: TournamentType) => t.status === 2)
+    );
+
+    // <th>hidden</th>
+    /*
+     <table border="1">
+     <thead>
+     <th onClick={this.setOrder('tournamentID')}>id</th>
+     <th>Players</th>
+     <th>Winners</th>
+     <th>Prizes</th>
+     <th onClick={this.setOrder('buyIn')}>BuyIn</th>
+     <th onClick={this.setOrder('status')}>Status</th>
+     <th onClick={this.setOrder('settings.hidden')}>hidden</th>
+     <th onClick={this.setOrder('startDate')}>StartDate</th>
+     </thead>
+     <tbody>
+     {TournamentList}
+     </tbody>
+     </table>
+     */
     return (
       <div>
         LIst Admin
-        <table border="1">
-          <thead>
-            <th>id</th>
-            <th>Max</th>
-            <th>Winners</th>
-            <th>Players</th>
-            <th>Prizes</th>
-            <th>BuyIn</th>
-            <th>hidden</th>
-          </thead>
-          <tbody>
-            {TournamentList}
-          </tbody>
-
-        </table>
+        <h1>{sortBy}({order === 1 ? 'По убыванию' : 'По возрастанию'})</h1>
+        {this.table(runnings)}
+        {this.table(Full)}
       </div>
     );
   }

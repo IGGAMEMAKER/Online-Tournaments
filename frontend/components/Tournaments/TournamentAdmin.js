@@ -38,12 +38,12 @@ export default class ClassNameSpecial extends Component {
     // const state: StateType = this.state;
     const id = props.data.tournamentID;
 
-    let visibilityText = 'hide tournament';
+    let visibilityText = 'hide';
     let visibility = () => props.hideTournament(id);
 
     if (props.data.settings.hidden) {
       visibility = () => props.showTournament(id);
-      visibilityText = 'show tournament';
+      visibilityText = 'show';
     }
     let dateButton = '';
     const startDate = props.data.startDate;
@@ -52,21 +52,20 @@ export default class ClassNameSpecial extends Component {
         <button onClick={() => props.clearStartDate(id)}>{startDate} X</button>
       );
     }
+    // <td>{props.data.settings.hidden}</td>
     return (
       <tr>
         <td>{id}</td>
-        <td>{props.data.goNext[0]}</td>
+        <td>{props.data.players}/{props.data.goNext[0]}</td>
         <td>{props.data.goNext[1]}</td>
-        <td>{props.data.players}</td>
         <td>{props.data.Prizes[0]}</td>
         <td>{props.data.buyIn}</td>
-        <td>{props.data.settings.hidden}</td>
-        <td>{dateButton}</td>
+        <td>{props.data.status}</td>
+        <td>{props.data.settings.regularity}</td>
+        <td><button onClick={visibility}>{visibilityText}</button></td>
         <td>
-          <button onClick={visibility}>{visibilityText}</button>
-        </td>
-        <td>
-          <label>Date!</label>
+          <option></option>
+          {dateButton}
           <input id={`date-input-${id}`} type="datetime-local" />
           <button onClick={this.setStartDate(props, id)}>сменить дату</button>
         </td>
