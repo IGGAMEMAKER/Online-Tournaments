@@ -6,7 +6,7 @@ import { h, Component } from 'preact';
 type TournamentType = {
   tournamentID: number,
   status: number,
-  starDate: Date,
+  startDate: Date,
   players: number,
   goNext: Array<number>,
   gameNameID: number,
