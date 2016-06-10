@@ -38,13 +38,22 @@ function setDateTournaments(list) {
 		requireProp(list, 'length', 'setDateTournaments');
 		if (list.length) {
 			tournaments = list;
-			list.forEach((t) => {
-				var startDate = t.startDate;
-				if (startDate) {
-					logger('setting tournament', t.tournamentID, startDate);
-					schedule.scheduleJob(startDate, function () {
-						logger('I will start now!');
-					})
+			list.forEach(t => {
+				var sd1 = t.startDate;
+				if (sd1) {
+					// logger('setting tournament', t.tournamentID, startDate);
+					var sd = new Date(sd1);
+					var year = sd.getFullYear();
+					var month = sd.getMonth();
+					var day = sd.getDate();
+					var hours = sd.getHours();
+					var min = sd.getMinutes();
+					var sec = sd.getSeconds();
+					var date = new Date(year, month, day, hours, min, sec);
+					schedule.scheduleJob(date, function () {
+						logger('I will start now!', t.tournamentID);
+					});
+					// schedule.scheduledJobs
 				}
 			})
 		}
@@ -59,13 +68,24 @@ function initialize() {
 		.get(`${domain}:9000/tournaments/available`)
 		.end((err, response) => {
 			tournaments = response.body.msg;
-			// logger(err, tournaments);
 			setDateTournaments(tournaments);
 		})
 }
 
-initialize();
+function watchdog() {
+	setInterval(() => {
+		// logger('initialize');
+		request
+			.get(`${domain}:9000/tournaments/available`)
+			.end((err, response) => {
+				tournaments = response.body.msg;
+				setDateTournaments(tournaments);
+			})
+	}, 1000);
+}
 
+initialize();
+// watchdog();
 // var date = new Date(2016, 5, 10, 21, 21, 0);
 //
 // schedule.scheduleJob(date, function(){
