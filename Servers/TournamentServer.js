@@ -1,14 +1,16 @@
 var express = require('express');
 var app = express();
 
-// var cron = require('cron');
+var schedule = require('node-schedule');
+var request = require('superagent');
+var Promise = require('bluebird');
 
 var tournaments = {};
 var configs = require('./../configs');
 
 var logger = console.log;
 
-// var Tournaments = require('./models/tournament')
+var domain = 'http://localhost';
 
 var server = app.listen(8889, function () {
 	var host = server.address().address;
@@ -16,7 +18,20 @@ var server = app.listen(8889, function () {
 
 	logger('Example app listening at http://%s:%s', host, port);
 });
+var auth = (req, res, next) => { next(); };
 
+app.use(auth);
+
+function initialize() {
+	logger('initialize');
+	request
+		.get(`${domain}:9000/tournaments/available`)
+		.end((err, response) => {
+			logger(err, response.body);
+		})
+}
+
+initialize();
 app.get('/LeagueTournaments', function (req, res) {
 	logger('LeagueTournament');
 	res.end();
@@ -24,6 +39,12 @@ app.get('/LeagueTournaments', function (req, res) {
 
 app.get('/registerUser', function (req, res) {
 	
+});
+
+var date = new Date(2016, 5, 10, 21, 21, 0);
+
+var j = schedule.scheduleJob(date, function(){
+	console.log('The world is going to end today.');
 });
 
 function startTournament() {

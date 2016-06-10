@@ -6,7 +6,9 @@ sleep 1
 ##pm2 start Statistics.js --name ST
 pm2 start DBServer.js --name DB
 sleep 1
-#pm2 start TournamentServer.js --name TS
+pm2 start Servers/API.js --name API
+sleep 1
+pm2 start Servers/TournamentServer.js --name TS
 
 pm2 start GameFrontendServer.js --name GFS
 #pm2 start Servers/PingPongServer.js --name PP

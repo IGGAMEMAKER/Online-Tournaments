@@ -134,9 +134,13 @@ export default class Tournament extends Component {
     const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}-е место: {p} РУБ</p>);
     const buyIn = props.data.buyIn;
 
+    const coverUrl = `/img/topics/realmadrid.jpg`;
     const cover = (
-      <div className="cover">
-        <img src="/img/topics/realmadrid.jpg" alt="" />
+      <div className="cover" style="position: relative">
+        <span
+          style="color: blue; position:absolute; top: 20px; left: 20px;z-index: 100;"
+        >#{id}</span>
+        <img src={coverUrl} alt="" />
       </div>
     );
 

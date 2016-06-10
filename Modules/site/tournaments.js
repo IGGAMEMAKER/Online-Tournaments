@@ -101,17 +101,15 @@ var upload = multer({ storage: storage }).single('image');
       if (isNaN(Prizes[i]) ){
         if (Prizes[i].length>0){
           prizes.push({giftID:Prizes[i]})
-        }
-        else{
+        } else {
           strLog('Prize[i] is null. Current prize is: ' + Prizes[i]);
           Answer(res, Fail);
           return;
         }
-      }
-      else{
+      } else {
         prizes.push( parseInt(Prizes[i]) );
       }
-    };
+    }
 
     for (var i=0; i< GoNext.length - 1; ++i){
       var num = parseInt(GoNext[i]);
@@ -129,7 +127,6 @@ var upload = multer({ storage: storage }).single('image');
     strLog('splitted prizes: ' + JSON.stringify(prizes) );
     strLog('goNext.length:' + goNext.length);
     strLog(JSON.stringify(goNext));
-    //strLog('')
     if (buyIn>=0 && rounds && gameNameID){
       var obj = {
         buyIn:      buyIn,

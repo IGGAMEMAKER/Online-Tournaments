@@ -17,4 +17,8 @@ var server = app.listen(9000, function () {
   logger('Example app listening at http://%s:%s', host, port);
 });
 
-app.get('/tournaments/league', api('tournaments', 'league'));
+var auth = (req, res, next) => { next(); };
+
+app.use(auth);
+
+app.get('/tournaments/available', api('Tournaments', 'available'));
