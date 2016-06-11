@@ -2,15 +2,8 @@ import { h, Component } from 'preact';
 import request from 'superagent';
 
 import TournamentAdmin from './TournamentAdmin';
-type TournamentType = {
-  tournamentID: number,
-  status: number,
-  settings: Object,
-  players: number,
-  goNext: Array<number>,
-  Prizes: Array,
-  startDate: Date,
-}
+import TournamentAdder from './TournamentAdder';
+import { TournamentType } from '../types';
 
 type StateType = {
   tournaments: Array<TournamentType>,
@@ -175,6 +168,7 @@ export default class TournamentListAdmin extends Component{
         LIst Admin
         <h1>{sortBy}({order === 1 ? 'По убыванию' : 'По возрастанию'})</h1>
         <h2>{Date.UTC(111)}</h2>
+        <TournamentAdder update={this.update} />
         {this.table(runnings)}
         {this.table(Full)}
       </div>

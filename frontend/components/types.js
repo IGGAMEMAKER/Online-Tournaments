@@ -1,3 +1,12 @@
-/**
- * Created by gaginho on 04.06.16.
- */
+export type TournamentType = {
+  tournamentID: number,
+  buyIn: number,
+  status: number,
+  startDate: Date,
+  players: number,
+  goNext: Array<number>,
+  gameNameID: number,
+  Prizes: Array,
+
+  settings: Object,
+}

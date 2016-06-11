@@ -22,9 +22,9 @@ type StateType = {};
 
 type ResponseType = {}
 
-function convertLocalDateToUTCDate(date: Date) {
-  return new Date(date.getFullYear()  )
-}
+// function convertLocalDateToUTCDate(date: Date) {
+//   return new Date(date.getFullYear()  )
+// }
 
 export default class ClassNameSpecial extends Component {
   state = {};
@@ -39,19 +39,7 @@ export default class ClassNameSpecial extends Component {
       const Time = localDate.getTime();
       const offsetMS = localDate.getTimezoneOffset() * 60 * 1000;
       console.log('picked time', new Date(Time), new Date(Time + offsetMS));
-      // console.log('picked time', date, localDate.getUTCHours() - (localDate.getTimezoneOffset() / 60), localDate.getMinutes());
-      // const d1 = new Date(2017, 3, 4, localDate.getHours(), localDate.getMinutes(), localDate.getSeconds());
 
-      // const year = localDate.getUTCFullYear();
-      // const month = localDate.getUTCMonth();
-      // const day = localDate.getUTCDate();
-      // const hours = localDate.getUTCHours()
-      // const d2 = new Date(2017, 3, 4, localDate.getUTCHours(), localDate.getUTCMinutes(), localDate.getUTCSeconds());
-
-      // console.log('picked time', date, localDate);
-      // console.log(d1, d2, localDate.getTimezoneOffset());
-      // console.log(Date.parse(date));
-      // props.setStartDate(localDate, id);
       props.setStartDate(new Date(Time + offsetMS), id);
     };
   };
@@ -71,7 +59,9 @@ export default class ClassNameSpecial extends Component {
     const startDate = props.data.startDate;
     if (startDate) {
       dateButton = (
-        <button onClick={() => props.clearStartDate(id)}>{startDate} X</button>
+        <button onClick={() => props.clearStartDate(id)}>
+          {startDate} X
+        </button>
       );
     }
     // <td>{props.data.settings.hidden}</td>
@@ -86,7 +76,6 @@ export default class ClassNameSpecial extends Component {
         <td>{props.data.settings.regularity}</td>
         <td><button onClick={visibility}>{visibilityText}</button></td>
         <td>
-          <option></option>
           {dateButton}
           <input id={`date-input-${id}`} type="datetime-local" />
           <button onClick={this.setStartDate(props, id)}>сменить дату</button>

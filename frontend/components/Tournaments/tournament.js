@@ -2,18 +2,7 @@
  * Created by gaginho on 04.06.16.
  */
 import { h, Component } from 'preact';
-
-type TournamentType = {
-  tournamentID: number,
-  status: number,
-  startDate: Date,
-  players: number,
-  goNext: Array<number>,
-  gameNameID: number,
-  prizes: Array<number>,
-
-  settings: Object,
-}
+import { TournamentType } from '../types';
 
 type PropsType = {
   authenticated: boolean,

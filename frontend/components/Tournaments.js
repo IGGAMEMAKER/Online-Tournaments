@@ -4,16 +4,11 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
 import { isToday, isTomorrow } from '../helpers/date';
+import { TournamentType } from './types';
+
+import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
-
-type TournamentType = {
-  buyIn: number,
-  tournamentID: number,
-  gameNameID: number,
-  status: number,
-  Prizes: Array<number>,
-};
 
 type StateType = {
   tournaments: Array<TournamentType>,
@@ -135,8 +130,6 @@ export default class Tournaments extends Component {
     return (
       <div>
         {auth}
-        <h2 className="page">{isToday(new Date(), 1)}</h2>
-
         <h2 className="page">Пройдут сегодня</h2>
         <div className="row killPaddings nomargins">{TodayTournaments}</div>
 
@@ -144,6 +137,8 @@ export default class Tournaments extends Component {
         <div className="row killPaddings nomargins">{TomorrowTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
+
+        <Chat />
       </div>
     );
   }
