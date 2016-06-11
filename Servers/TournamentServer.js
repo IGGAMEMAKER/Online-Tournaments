@@ -31,7 +31,15 @@ var requireProp = (obj, property, name) => {
 	return true;
 };
 
+var starteds = {};
 
+function setJob(id, date, fnc) {
+	if (!starteds[id]) {
+		logger('set tournament', id, date);
+		starteds[id] = 1;
+		schedule.scheduleJob(date, fnc);
+	}
+}
 
 function setDateTournaments(list) {
 	try {
@@ -42,16 +50,26 @@ function setDateTournaments(list) {
 				var sd1 = t.startDate;
 				if (sd1) {
 					// logger('setting tournament', t.tournamentID, startDate);
-					var sd = new Date(); //sd1
-					var year = sd.getFullYear();
-					var month = sd.getMonth();
-					var day = sd.getDate();
-					var hours = sd.getHours();
-					var min = sd.getMinutes();
-					var sec = sd.getSeconds();
-					var date = new Date(year, month, day, hours, min, sec);
-					schedule.scheduleJob(date, function () {
-						logger('I will start now!', t.tournamentID);
+					const ms = Date.parse(sd1);
+					var sd = new Date(ms); //sd1
+
+					// var year = sd.getUTCFullYear();
+					// var month = sd.getUTCMonth();
+					// var day = sd.getUTCDate();
+					// var hours = sd.getUTCHours();
+					// var min = sd.getUTCMinutes();
+					// var sec = sd.getUTCSeconds();
+					// var date = new Date(year, month, day, hours, min, sec);
+					var date = sd;
+					// logger('date', sd1, date, date.toLocaleString());
+					var id = t.tournamentID;
+					setJob(id, date, function () {
+						starteds[id] = 2;
+						logger('I will start now!', id);
+						logger('I will start now!', id);
+						logger('I will start now!', id);
+						logger('I will start now!', id);
+						logger('I will start now!', id);
 					});
 					// schedule.scheduledJobs
 				}
@@ -85,13 +103,19 @@ function watchdog() {
 }
 
 // initialize();
-// watchdog();
-var date = new Date(2016, 5, 11, 10, 20, 0);
+watchdog();
+var date = new Date(2016, 5, 11, 12, 13, 0);
+
 
 //var j =
-schedule.scheduleJob(date, function(){
-	console.log('The world is going to end today.');
-});
+setInterval(() => {
+	schedule.scheduleJob(date, function() {
+		if (!starteds[0]) {
+			console.log('The world is going to end today.');
+			starteds[0] = 1;
+		}
+	});
+}, 1000);
 
 function startTournament() {
 	// console.log('Site starts tournament');

@@ -107,11 +107,9 @@ export default class Tournaments extends Component {
     const tourns: Array<TournamentType> = TOURNAMENTS;
 
     const TodayTournaments = this
-      // .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
       .filter(tourns, (t: TournamentType) => t.startDate && isToday(t.startDate));
 
     const TomorrowTournaments = this
-      // .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
       .filter(tourns, (t: TournamentType) => t.startDate && isTomorrow(t.startDate));
 
     const FreeTournaments = this
@@ -126,15 +124,18 @@ export default class Tournaments extends Component {
     const RichestList = this.filter(richest, () => true);
     // <div className="row">{TournamentList}</div>
     const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
+    /*
+
+     <h2 className="page">Бесплатные</h2>
+     <div className="row killPaddings nomargins">{FreeTournaments}</div>
+
+     <h2 className="page">Турниры с наибольшими призами</h2>
+     <div className="row killPaddings nomargins">{RichestList}</div>
+     */
     return (
       <div>
         {auth}
         <h2 className="page">{isToday(new Date(), 1)}</h2>
-        <h2 className="page">Бесплатные</h2>
-        <div className="row killPaddings nomargins">{FreeTournaments}</div>
-
-        <h2 className="page">Турниры с наибольшими призами</h2>
-        <div className="row killPaddings nomargins">{RichestList}</div>
 
         <h2 className="page">Пройдут сегодня</h2>
         <div className="row killPaddings nomargins">{TodayTournaments}</div>
