@@ -34,11 +34,11 @@ var requireProp = (obj, property, name) => {
 var starteds = {};
 
 function setJob(id, date, fnc) {
-	if (!starteds[id]) {
+	/*if (!starteds[id]) {
 		logger('set tournament', id, date);
 		starteds[id] = 1;
 		schedule.scheduleJob(date, fnc);
-	}
+	}*/
 }
 
 function setDateTournaments(list) {
@@ -53,13 +53,6 @@ function setDateTournaments(list) {
 					const ms = Date.parse(sd1);
 					var sd = new Date(ms); //sd1
 
-					// var year = sd.getUTCFullYear();
-					// var month = sd.getUTCMonth();
-					// var day = sd.getUTCDate();
-					// var hours = sd.getUTCHours();
-					// var min = sd.getUTCMinutes();
-					// var sec = sd.getUTCSeconds();
-					// var date = new Date(year, month, day, hours, min, sec);
 					var date = sd;
 					// logger('date', sd1, date, date.toLocaleString());
 					var id = t.tournamentID;
@@ -71,7 +64,6 @@ function setDateTournaments(list) {
 						logger('I will start now!', id);
 						logger('I will start now!', id);
 					});
-					// schedule.scheduledJobs
 				}
 			})
 		}
@@ -108,14 +100,14 @@ var date = new Date(2016, 5, 11, 12, 13, 0);
 
 
 //var j =
-setInterval(() => {
-	schedule.scheduleJob(date, function() {
-		if (!starteds[0]) {
-			console.log('The world is going to end today.');
-			starteds[0] = 1;
-		}
-	});
-}, 1000);
+// setInterval(() => {
+// 	schedule.scheduleJob(date, function() {
+// 		if (!starteds[0]) {
+// 			console.log('The world is going to end today.');
+// 			starteds[0] = 1;
+// 		}
+// 	});
+// }, 1000);
 
 function startTournament() {
 	// console.log('Site starts tournament');
