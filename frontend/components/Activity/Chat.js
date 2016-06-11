@@ -10,6 +10,8 @@ type MessageType = {
 
 type StateType = {
   messages: Array<MessageType>,
+  text: string,
+  socket: Object,
 };
 
 type ResponseType = {
@@ -28,11 +30,11 @@ export default class Chat extends Component {
   componentWillMount() {
     this.loadMessages();
 
-    const socket = io();
-    socket.on('chat message', (msg) => {
+    const socket1 = io();
+    socket1.on('chat message', (msg) => {
       this.appendMessage(msg.sender, msg.text);
     });
-    this.setState({ socket });
+    this.setState({ socket: socket1 });
   }
 
   appendMessage = (sender, text) => {
@@ -42,17 +44,6 @@ export default class Chat extends Component {
     messages.push({ sender, text });
     this.setState({ messages });
   };
-
-  // drawMessages = (msg) => {
-  //   console.log("drawMSGGGGGG");
-  //   console.log(msg);
-  //   var messages = msg.msg;
-  //   for (var i= messages.length-1; i>= 0; i--){
-  //     var m = messages[i];
-  //     this.appendMessage(m.senderName, m.text);
-  //   }
-  //   this.scrollToMessageEnd()
-  // };
 
   loadMessages = () => {
     // setAsync('/messages/chat/recent', {}, this.drawMessages)
@@ -73,28 +64,36 @@ export default class Chat extends Component {
 
   getText = () => {
     const text = document.getElementById('m').value;
+    console.log(text);
     this.setState({ text });
   };
 
   sendMessage = () => {
-    console.log('sendMessage');
+    // console.log('sendMessage');
+    const text = this.state.text;
+    // scrollToMessageEnd();
+    if (!text) return;
+    this.state.socket.emit('chat message', { text, login });
+    this.setState({ text: '' });
+    // $("#m").val("");
   };
 
   render(props: PropsType, state: StateType) {
     const messageList = state.messages.map((m: MessageType) => {
-      return <p>{m.sender} : {m.text}</p>;
+      return <p style="color: white;">{m.sender} : {m.text}</p>;
     });
-
+    /*
+      <link rel="stylesheet" type="text/css" href="/css/chat1.css" />
+    */
     return (
-      <div>
-        <link rel="stylesheet/css" src="/css/chat.css" />
-        <ul id="messages" style="max-height:500px; overflow:auto;">
+      <div style="width: 100%">
+        <ul id="messages" style="max-height:300px; overflow:auto;">
           {messageList}
         </ul>
-        <form action="">
-          <input id="m" autoComplete="off" onChange={this.getText} />
-          <button onClick={this.sendMessage}>Отправить</button>
-        </form>
+        <input className="circle-input" id="m" autoComplete="off" onInput={this.getText}>
+          {state.text}
+        </input>
+        <button className="btn btn-primary btn-lg" onClick={this.sendMessage}>Отправить</button>
       </div>
     );
   }

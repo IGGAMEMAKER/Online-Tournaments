@@ -623,6 +623,7 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
 // })
 }, aux.render('Cards'), aux.err)
 
+app.get('/Total', (req, res) => { res.render('Total')});
 
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});

@@ -46,6 +46,10 @@ export default class Tournaments extends Component {
 
         this.setState({ registeredIn });
       });
+
+    socket.on('StartTournament', (msg) => {
+      console.log('startTournament AAAAAAAAAAAAAAAAAA', msg);
+    });
   }
 
   register = (tournamentID) => {

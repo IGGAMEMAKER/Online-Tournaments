@@ -32,7 +32,7 @@ function Tell (msg){
   $('#serverMessage').modal('show');
 }
 
-function StartTournament_socket (msg){
+function StartTournament_socket(msg) {
   prt('StartTournament');
   var tournamentID = msg.tournamentID;
   
@@ -41,7 +41,7 @@ function StartTournament_socket (msg){
   } else {
     prt('no tournamentID');
   }
-  
+
   var host = msg.host; var port = msg.port; var running = msg.running;
   curLogins = msg.logins;
 
