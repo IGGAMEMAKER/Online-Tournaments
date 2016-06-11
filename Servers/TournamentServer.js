@@ -42,7 +42,7 @@ function setDateTournaments(list) {
 				var sd1 = t.startDate;
 				if (sd1) {
 					// logger('setting tournament', t.tournamentID, startDate);
-					var sd = new Date(sd1);
+					var sd = new Date(); //sd1
 					var year = sd.getFullYear();
 					var month = sd.getMonth();
 					var day = sd.getDate();
@@ -84,13 +84,14 @@ function watchdog() {
 	}, 1000);
 }
 
-initialize();
+// initialize();
 // watchdog();
-// var date = new Date(2016, 5, 10, 21, 21, 0);
-//
-// schedule.scheduleJob(date, function(){
-// 	console.log('The world is going to end today.');
-// });
+var date = new Date(2016, 5, 11, 10, 20, 0);
+
+//var j =
+schedule.scheduleJob(date, function(){
+	console.log('The world is going to end today.');
+});
 
 function startTournament() {
 	// console.log('Site starts tournament');

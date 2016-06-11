@@ -52,7 +52,7 @@ function sphrase(num, word) { // именит падеж: игрок
 function formatDate(date1) {
   if (!date1) return '';
   const date = new Date(date1);
-  console.log('forced data', date);
+  // console.log('forced data', date);
   const options = {
     // era: 'long',
     // year: 'numeric',
@@ -65,7 +65,7 @@ function formatDate(date1) {
     // second: 'numeric'
   };
   const localed = date.toLocaleString('ru', options);
-  console.log('localed time', localed);
+  // console.log('localed time', localed);
   return localed;
 }
 
@@ -114,7 +114,7 @@ export default class Tournament extends Component {
   getStartConditions = (props: PropsType) => {
     const date = props.data.startDate;// || new Date();
     const formattedDate = formatDate(date);
-    console.log('startConditions', props.data.tournamentID, date);
+    // console.log('startConditions', props.data.tournamentID, date);
 
     if (date) return <div>Турнир начнётся {formattedDate}</div>;
 

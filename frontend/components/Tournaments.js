@@ -3,6 +3,7 @@
  */
 import { h, Component } from 'preact';
 import request from 'superagent';
+import { isToday, isTomorrow } from '../helpers/date';
 
 import Tournament from './Tournaments/tournament';
 
@@ -106,13 +107,16 @@ export default class Tournaments extends Component {
     const tourns: Array<TournamentType> = TOURNAMENTS;
 
     const TodayTournaments = this
-      .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
-
-    const FreeTournaments = this
-      .filter(tourns, ((t: TournamentType) => t.buyIn === 0));
+      // .filter(tourns, ((t: TournamentType) => t.tournamentID % 5 === 0));
+      .filter(tourns, (t: TournamentType) => t.startDate && isToday(t.startDate));
 
     const TomorrowTournaments = this
-      .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
+      // .filter(tourns, ((t: TournamentType) => t.tournamentID % 4 === 0));
+      .filter(tourns, (t: TournamentType) => t.startDate && isTomorrow(t.startDate));
+
+    const FreeTournaments = this
+      .filter(tourns, (t: TournamentType) => t.buyIn === 0);
+
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
@@ -125,6 +129,7 @@ export default class Tournaments extends Component {
     return (
       <div>
         {auth}
+        <h2 className="page">{isToday(new Date(), 1)}</h2>
         <h2 className="page">Бесплатные</h2>
         <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
