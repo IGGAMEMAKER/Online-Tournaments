@@ -681,6 +681,11 @@ a:focus {
   opacity: 0.8;
 }
 
+.chat-text {
+  color: white;
+  text-align: left;
+}
+
 .hero-unit {
   padding: 60px;/* CHANGE PADDING HERE*/
   margin-bottom: 30px; 

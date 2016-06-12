@@ -97,25 +97,36 @@ export default class Chat extends Component {
   render(props: PropsType, state: StateType) {
     const messageList = state.messages
       .map((m: MessageType) => {
-        return <p style="color: white;">{m.sender} : {m.text}</p>;
+        let style = '';
+        if (m.sender === login) {
+          style = 'color: gold;';
+        }
+        return <p className="chat-text" style={style}>{m.sender}: {m.text}</p>;
       });
     /*
       <link rel="stylesheet" type="text/css" href="/css/chat1.css" />
     */
     return (
-      <div style="width: 100%">
+      <div className="full" style="max-width: 600px;">
+        <h2 className="page">Чат</h2>
         <ul id="messages" style="max-height:300px; overflow:auto;">
           {messageList}
         </ul>
         <input
           id="m"
-          className="circle-input"
+          className="circle-input full"
+          style=""
           autoComplete="off"
           onInput={this.getText}
           onKeyDown={this.onEnter}
           value={state.text}
         >{state.text}</input>
-        <button className="btn btn-primary btn-lg" onClick={this.sendMessage}>Отправить</button>
+        <br />
+        <button
+          className="btn btn-primary btn-lg"
+          onClick={this.sendMessage}
+          style="margin-top: 10px;"
+        >Отправить</button>
       </div>
     );
   }
