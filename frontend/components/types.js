@@ -15,3 +15,9 @@ export type ModalMessage = {
   data : Object;
   _id: string,
 }
+
+export type ProfileInfo = {
+  tournaments: Array<TournamentType>,
+  money: number,
+  packs: Object,
+}

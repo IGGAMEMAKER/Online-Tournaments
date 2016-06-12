@@ -33,7 +33,7 @@ function Tell (msg){
 }
 
 function StartTournament_socket(msg) {
-  prt('StartTournament');
+  prt('StartTournament... default');
   var tournamentID = msg.tournamentID;
   
   if (tournamentID) {

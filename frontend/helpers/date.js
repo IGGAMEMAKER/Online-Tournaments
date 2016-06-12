@@ -20,7 +20,7 @@ function isNearDate(date1: Date, days, todayOffset) {
   const date = new Date(date1);
   const dateDiff = diff(date, today);
   const result = dateDiff < 1 && dateDiff >= 0; //&& date.toDateString() < tomorrow.toDateString();
-  console.log(today, tomorrow, date, todayOffset === 1 ? 'isTomorrow' : 'isToday', result);
+  // console.log(today, tomorrow, date, todayOffset === 1 ? 'isTomorrow' : 'isToday', result);
   return result;
 }
 

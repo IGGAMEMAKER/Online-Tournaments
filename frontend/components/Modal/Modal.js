@@ -21,12 +21,14 @@ type ResponseType = {
 export default class Modal extends Component {
   state = {
     visible: false,
+
+    tournaments: {},
+    registeredIn: {},
   };
 
   componentWillMount() {
     this.loadNews();
 
-    // const socket = io.connect().on
     socketNews.on('activity', (msg) => {
       console.log('socketNews', msg);
     });
@@ -35,19 +37,27 @@ export default class Modal extends Component {
       if (msg && msg.msg === login) {
         this.loadNews();
       }
-      // console.log('socketNews', msg);
+    });
+
+    const tournaments = getFromStorage('tournaments');
+    console.log('storage tournaments', tournaments);
+
+    socketNews.on('StartTournament', (msg) => {
+      console.log('StartTournament in socketNews', msg);
+      const tournamentID = msg.tournamentID;
+
+      if (tournamentID) {
+        if (userIsRegisteredIn(tournamentID)) {
+          // window.scrollTo(0,0);
+          const audio = new Audio('/sounds/TOURN_START.wav');
+          audio.play();
+        }
+      }
+
+      const { host, port, running } = msg;
+      curLogins = msg.logins;
     });
   }
-
-  loadNews = () => {
-    request
-      .get('/notifications/news')
-      .end((err, res: ResponseType) => {
-        const messages: Array<ModalMessage> = res.body.msg;
-        console.log('loadNews news...', err, res);
-        this.setState({ messages, visible: !!messages.length });
-      });
-  };
 
   skip = (text: string, id) => {
     console.log('skip', text, id);
@@ -60,12 +70,13 @@ export default class Modal extends Component {
   markAsRead = id => {
     // mark('/message/shown', { id : messageID })
     request
-      .get('/message/shown')
+      .post('/message/shown')
       .send({ id })
       .end((err, res) => {
         console.log(err, res, 'message/shown');
       });
   };
+
   modal_pic = (name) => {
     return <div><br /><img alt="" width="100%" src={`/img/${name}`} /></div>;
   };
@@ -104,8 +115,6 @@ export default class Modal extends Component {
     let footer = '';
 
     const main = (m) => (<h3>{m}</h3>);
-
-
     switch (message.type) {
       case c.NOTIFICATION_GIVE_MONEY:
         header = 'Деньги, деньги, деньги!';
@@ -202,6 +211,16 @@ export default class Modal extends Component {
         break;
     }
     return { header, body, footer };
+  };
+
+  loadNews = () => {
+    request
+      .get('/notifications/news')
+      .end((err, res: ResponseType) => {
+        const messages: Array<ModalMessage> = res.body.msg;
+        console.log('loadNews news...', err, res);
+        this.setState({ messages, visible: !!messages.length });
+      });
   };
 
   render(props: PropsType, state: StateType) {

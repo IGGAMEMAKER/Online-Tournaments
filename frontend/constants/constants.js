@@ -35,6 +35,8 @@ const constants = {
   PAYMENT_ACCELERATOR: 1,
   PAYMENT_FULLFILL: 2,
   PAYMENT_PACK: 3,
+
+  ACTION_INITIALIZE: 'ACTION_INITIALIZE',
 };
 
 module.exports = constants;
