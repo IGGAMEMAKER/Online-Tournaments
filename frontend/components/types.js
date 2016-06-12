@@ -10,3 +10,8 @@ export type TournamentType = {
 
   settings: Object,
 }
+
+export type ModalMessage = {
+  data : Object;
+  _id: string,
+}

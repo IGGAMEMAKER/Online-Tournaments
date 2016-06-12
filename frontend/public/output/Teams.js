@@ -48,7 +48,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamTab = __webpack_require__(103);
+	var _TeamTab = __webpack_require__(106);
 
 	var _TeamTab2 = _interopRequireDefault(_TeamTab);
 
@@ -3908,7 +3908,10 @@
 /* 100 */,
 /* 101 */,
 /* 102 */,
-/* 103 */
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3943,15 +3946,15 @@
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
-	var _TeamCreateForm = __webpack_require__(104);
+	var _TeamCreateForm = __webpack_require__(107);
 
 	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
 
-	var _TeamDraw = __webpack_require__(105);
+	var _TeamDraw = __webpack_require__(108);
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(109);
+	var _TeamShareButton = __webpack_require__(112);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -4209,7 +4212,7 @@
 	exports.default = TeamTab;
 
 /***/ },
-/* 104 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4247,7 +4250,7 @@
 	    */
 
 /***/ },
-/* 105 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4278,15 +4281,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamDivideMoney = __webpack_require__(106);
+	var _TeamDivideMoney = __webpack_require__(109);
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
-	var _TeamInviteFriend = __webpack_require__(107);
+	var _TeamInviteFriend = __webpack_require__(110);
 
 	var _TeamInviteFriend2 = _interopRequireDefault(_TeamInviteFriend);
 
-	var _TeamDestroy = __webpack_require__(108);
+	var _TeamDestroy = __webpack_require__(111);
 
 	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
@@ -4433,7 +4436,7 @@
 	exports.default = drawTeam;
 
 /***/ },
-/* 106 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4500,7 +4503,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 107 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4543,7 +4546,7 @@
 	var _preact = __webpack_require__(1);
 
 /***/ },
-/* 108 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4665,7 +4668,7 @@
 	exports.default = TeamDestroy;
 
 /***/ },
-/* 109 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -39,9 +39,13 @@ export default class Chat extends Component {
 
   appendMessage = (sender, text) => {
     // $("#messages").append($("<p>").text(login + " : " + text));
-    // this.scrollToMessageEnd();
+    this.scrollToMessageEnd();
     const messages = this.state.messages;
     messages.push({ sender, text });
+    this.setMessages(messages);
+  };
+
+  setMessages = (messages) => {
     this.setState({ messages });
   };
 
@@ -50,17 +54,22 @@ export default class Chat extends Component {
     request
       .post('/messages/chat/recent')
       .end((err, res: ResponseType) => {
-        const messages = res.body.msg.map(item => {
-          return { sender: item.senderName, text: item.text };
-        });
-        this.setState({ messages });
+        const messages = res.body.msg
+          .reverse()
+          .map(item => {
+            return { sender: item.senderName, text: item.text };
+          });
+        this.setMessages(messages);
+        this.scrollToMessageEnd();
       });
   };
 
-  // scrollToMessageEnd = () => {
-  //   var elem = document.getElementById("messages");
-  //   elem.scrollTop = elem.scrollHeight;
-  // };
+  scrollToMessageEnd = () => {
+    setTimeout(() => {
+      const elem = document.getElementById('messages');
+      elem.scrollTop = elem.scrollHeight;
+    }, 100);
+  };
 
   getText = () => {
     const text = document.getElementById('m').value;
@@ -71,17 +80,25 @@ export default class Chat extends Component {
   sendMessage = () => {
     // console.log('sendMessage');
     const text = this.state.text;
-    // scrollToMessageEnd();
+    this.scrollToMessageEnd();
     if (!text) return;
     this.state.socket.emit('chat message', { text, login });
     this.setState({ text: '' });
     // $("#m").val("");
   };
 
+  onEnter = (e) => {
+    const KEY_CODE_ENTER = 13;
+    if (e.keyCode === KEY_CODE_ENTER) {
+      this.sendMessage();
+    }
+  };
+
   render(props: PropsType, state: StateType) {
-    const messageList = state.messages.map((m: MessageType) => {
-      return <p style="color: white;">{m.sender} : {m.text}</p>;
-    });
+    const messageList = state.messages
+      .map((m: MessageType) => {
+        return <p style="color: white;">{m.sender} : {m.text}</p>;
+      });
     /*
       <link rel="stylesheet" type="text/css" href="/css/chat1.css" />
     */
@@ -90,9 +107,14 @@ export default class Chat extends Component {
         <ul id="messages" style="max-height:300px; overflow:auto;">
           {messageList}
         </ul>
-        <input className="circle-input" id="m" autoComplete="off" onInput={this.getText}>
-          {state.text}
-        </input>
+        <input
+          id="m"
+          className="circle-input"
+          autoComplete="off"
+          onInput={this.getText}
+          onKeyDown={this.onEnter}
+          value={state.text}
+        >{state.text}</input>
         <button className="btn btn-primary btn-lg" onClick={this.sendMessage}>Отправить</button>
       </div>
     );

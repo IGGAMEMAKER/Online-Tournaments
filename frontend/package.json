@@ -67,5 +67,8 @@
     "uniqid": "^1.0.0",
     "webpack": "^1.13.0",
     "webpack-livereload-plugin": "^0.8.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^1.4.6"
   }
 }
