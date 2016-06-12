@@ -40,20 +40,16 @@ export default class Modal extends Component {
       }
     });
 
-    const tournaments = getFromStorage('tournaments');
-    console.log('storage tournaments', tournaments);
-
     socketNews.on('StartTournament', (msg) => {
       console.log('StartTournament in socketNews', msg);
       const tournamentID = msg.tournamentID;
       // alert('start!');
-      if (tournamentID) {
-        if (userIsRegisteredIn(tournamentID)) {
-          // window.scrollTo(0,0);
+      // if (userIsRegisteredIn(tournamentID)) {
+      if (store.isRegisteredIn(tournamentID)) {
+        // window.scrollTo(0,0);
 
-          const audio = new Audio('/sounds/TOURN_START.wav');
-          audio.play();
-        }
+        const audio = new Audio('/sounds/TOURN_START.wav');
+        audio.play();
       }
 
       const { host, port, running } = msg;

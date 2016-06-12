@@ -42,6 +42,21 @@ class ProfileStore extends EventEmitter {
   isLoaded() {
     return _loaded;
   }
+
+  isRegisteredIn(id) {
+    console.log('currently', _tournaments, _money, _packs, id);
+    return _tournaments[id];
+  }
+
+  register(id) {
+    // _regs[id] = 1;
+    _tournaments[id] = 1;
+  }
+
+  unregister(id) {
+    // _regs[id] = null;
+    _tournaments[id] = null;
+  }
 }
 
 const store = new ProfileStore();
@@ -53,6 +68,8 @@ type PayloadType = {
   tournaments: Object,
   money: number,
   packs: Object,
+
+  tournamentID: number,
 };
 
 Dispatcher.register((p: PayloadType) => {
@@ -65,7 +82,13 @@ Dispatcher.register((p: PayloadType) => {
       store.emitChange();
       break;
     case ACTION_REGISTER_IN_TOURNAMENT:
-      _tournaments = p.tournaments;
+      console.log(ACTION_REGISTER_IN_TOURNAMENT, p.tournamentID, _tournaments);
+      // _tournaments = p.tournaments;
+      _tournaments[p.tournamentID] = 1;
+      // let object = {};
+      // object[p.tournamentID] = 1;
+      // _tournaments = Object.assign(object, store.getMyTournaments());
+      // registeredIn[tournamentID] = 1;// _tournaments = p.tournaments;
       store.emitChange();
       break;
     case ACTION_UNREGISTER_FROM_TOURNAMENT:

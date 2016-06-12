@@ -28,7 +28,7 @@ export default {
       const registeredIn = {};
       tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
 
-      Dispatcher.register({
+      Dispatcher.dispatch({
         type: ACTION_INITIALIZE,
         tournaments: registeredIn,
         money,
@@ -47,12 +47,13 @@ export default {
       // .end((err, response) => {
       console.log('RegisterInTournament', response);
 
-      const registeredIn = Object.assign({}, store.getMyTournaments());
-      registeredIn[tournamentID] = 1;
+      // const registeredIn = Object.assign({}, store.getMyTournaments());
+      // registeredIn[tournamentID] = 1;
 
-      Dispatcher.register({
+      Dispatcher.dispatch({
         type: ACTION_REGISTER_IN_TOURNAMENT,
-        tournaments: registeredIn,
+        // tournaments: registeredIn,
+        tournamentID,
       });
     } catch (err) {
       console.error(err);
@@ -70,9 +71,10 @@ export default {
       const registeredIn = Object.assign({}, store.getMyTournaments());
       registeredIn[tournamentID] = null;
 
-      Dispatcher.register({
+      Dispatcher.dispatch({
         type: ACTION_UNREGISTER_FROM_TOURNAMENT,
         tournaments: registeredIn,
+        tournamentID,
       });
     } catch (err) {
       console.error(err);
