@@ -1,7 +1,11 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
 import { TournamentType, ProfileInfo } from '../components/types';
-import { ACTION_INITIALIZE } from '../constants/constants';
+import {
+  ACTION_INITIALIZE,
+  ACTION_REGISTER_IN_TOURNAMENT,
+  ACTION_UNREGISTER_FROM_TOURNAMENT,
+} from '../constants/constants';
 
 // let _tournaments: Array<TournamentType> = [];
 let _tournaments: Object = {};
@@ -46,7 +50,7 @@ type PayloadType = {
   status: number,
   online: number,
 
-  tournaments: Array<TournamentType>,
+  tournaments: Object,
   money: number,
   packs: Object,
 };
@@ -60,7 +64,14 @@ Dispatcher.register((p: PayloadType) => {
       _packs = p.packs;
       store.emitChange();
       break;
-
+    case ACTION_REGISTER_IN_TOURNAMENT:
+      _tournaments = p.tournaments;
+      store.emitChange();
+      break;
+    case ACTION_UNREGISTER_FROM_TOURNAMENT:
+      _tournaments = p.tournaments;
+      store.emitChange();
+      break;
     default:
       console.warn(`Dispatcher.register unexpected type ${p.type}`);
       break;

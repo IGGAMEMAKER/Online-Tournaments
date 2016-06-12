@@ -85,15 +85,15 @@ function saveProfile(drawFunction){
 		console.log('saveProfile');
 		try {
 			var profile = JSON.parse(data); prt(profile);
-			var tournaments = profile.tournaments||{}; // tregs
+			var tournaments = profile.tournaments || {}; // tregs
 			var money = profile.money;
 
-			var packs = profile.packs || null
+			var packs = profile.packs || null;
 			// console.log(profile, 'profile.info')
 			// var marathon = profile.marathon;
 			// console.log('marathon info', marathon);
 
-			saveInStorage('packs', packs)
+			saveInStorage('packs', packs);
 			saveInStorage('money', money);
 			saveInStorage('tournaments', killID(tournaments, 'tournamentID') );
 

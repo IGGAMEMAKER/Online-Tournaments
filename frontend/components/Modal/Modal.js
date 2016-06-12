@@ -4,6 +4,7 @@ import request from 'superagent';
 
 import * as c from '../../constants/constants';
 // import io from 'socket.io-client';
+import store from '../../stores/Profile';
 
 type PropsType = {}
 
@@ -45,10 +46,11 @@ export default class Modal extends Component {
     socketNews.on('StartTournament', (msg) => {
       console.log('StartTournament in socketNews', msg);
       const tournamentID = msg.tournamentID;
-
+      // alert('start!');
       if (tournamentID) {
         if (userIsRegisteredIn(tournamentID)) {
           // window.scrollTo(0,0);
+
           const audio = new Audio('/sounds/TOURN_START.wav');
           audio.play();
         }

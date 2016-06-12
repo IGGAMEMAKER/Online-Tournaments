@@ -10,6 +10,9 @@ import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
 
+import store from '../stores/Profile';
+import actions from '../actions/ProfileActions';
+
 type StateType = {
   tournaments: Array<TournamentType>,
 };
@@ -33,19 +36,27 @@ export default class Tournaments extends Component {
   };
 
   componentWillMount() {
-    request
-      .get('/myprofile')
-      .end((err, res) => {
-        if (err) throw err;
-        if (res.body.err) throw res.body.err;
-
-        const tRegs: Array = res.body.profile.tournaments;
-
-        const registeredIn = {};
-        tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
-
-        this.setState({ registeredIn });
+    store.addChangeListener(() => {
+      this.setState({
+        registeredIn: store.getMyTournaments(),
+        money: store.getMoney(),
       });
+    });
+
+    actions.initialize();
+    // request
+    //   .get('/myprofile')
+    //   .end((err, res) => {
+    //     if (err) throw err;
+    //     if (res.body.err) throw res.body.err;
+    //
+    //     const tRegs: Array = res.body.profile.tournaments;
+    //
+    //     const registeredIn = {};
+    //     tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
+    //
+    //     this.setState({ registeredIn });
+    //   });
 
     socket.on('StartTournament', (msg) => {
       console.log('startTournament AAAAAAAAAAAAAAAAAA', msg);
@@ -55,31 +66,33 @@ export default class Tournaments extends Component {
   register = (tournamentID) => {
     // function reg(login, tID) { ManageReg(login, tID, 'RegisterInTournament', 1); }
     // function unReg(lgn, tID) { ManageReg(login, tID, 'CancelRegister', 0); }
-    request
-      .post('RegisterInTournament')
-      .send({ login, tournamentID })
-      .end((err, response) => {
-        console.log('RegisterInTournament', err, response);
-
-        let registeredIn = Object.assign({}, this.state.registeredIn);
-        registeredIn[tournamentID] = 1;
-
-        this.setState({ registeredIn });
-      });
+    actions.register(tournamentID);
+    // request
+    //   .post('RegisterInTournament')
+    //   .send({ login, tournamentID })
+    //   .end((err, response) => {
+    //     console.log('RegisterInTournament', err, response);
+    //
+    //     let registeredIn = Object.assign({}, this.state.registeredIn);
+    //     registeredIn[tournamentID] = 1;
+    //
+    //     this.setState({ registeredIn });
+    //   });
   };
 
   unregister = (tournamentID) => {
-    request
-      .post('CancelRegister')
-      .send({ login, tournamentID })
-      .end((err, response) => {
-        console.log('CancelRegister', err, response);
-
-        let registeredIn = Object.assign({}, this.state.registeredIn);
-        registeredIn[tournamentID] = null;
-
-        this.setState({ registeredIn });
-      });
+    // request
+    //   .post('CancelRegister')
+    //   .send({ login, tournamentID })
+    //   .end((err, response) => {
+    //     console.log('CancelRegister', err, response);
+    //
+    //     let registeredIn = Object.assign({}, this.state.registeredIn);
+    //     registeredIn[tournamentID] = null;
+    //
+    //     this.setState({ registeredIn });
+    //   });
+    actions.unregister(tournamentID);
   };
 
   filter = (tournaments, filterFunction) => {
@@ -114,6 +127,8 @@ export default class Tournaments extends Component {
     const FreeTournaments = this
       .filter(tourns, (t: TournamentType) => t.buyIn === 0);
 
+    const StreamTournaments = this
+      .filter(tourns, (t: TournamentType) => t.settings.regularity === 2);
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
@@ -134,11 +149,18 @@ export default class Tournaments extends Component {
     return (
       <div>
         {auth}
+
+        <h2 className="page">Стримовые</h2>
+        <div className="row killPaddings nomargins">{StreamTournaments}</div>
+
         <h2 className="page">Пройдут сегодня</h2>
         <div className="row killPaddings nomargins">{TodayTournaments}</div>
 
         <h2 className="page">Пройдут завтра</h2>
         <div className="row killPaddings nomargins">{TomorrowTournaments}</div>
+
+        <h2 className="page">Бесплатные турниры</h2>
+        <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
 
