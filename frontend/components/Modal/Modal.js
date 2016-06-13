@@ -4,13 +4,16 @@ import request from 'superagent';
 
 import * as c from '../../constants/constants';
 // import io from 'socket.io-client';
-import store from '../../stores/Profile';
+// import store from '../../stores/Profile';
 
-type PropsType = {}
+type PropsType = {
+  store: Object,
+}
 
 type StateType = {
   visible: boolean,
-  messages: Array<ModalMessage>
+  messages: Array<ModalMessage>,
+  runningTournaments: false,
 }
 
 type ResponseType = {
@@ -29,8 +32,9 @@ export default class Modal extends Component {
 
   componentWillMount() {
     this.loadNews();
-
+    console.log('componentWillMount modal');
     socketNews.on('activity', (msg) => {
+      console.log('azaza in modal');
       console.log('socketNews', msg);
     });
 
@@ -45,11 +49,13 @@ export default class Modal extends Component {
       const tournamentID = msg.tournamentID;
       // alert('start!');
       // if (userIsRegisteredIn(tournamentID)) {
-      if (store.isRegisteredIn(tournamentID)) {
+      console.log('props', this.props.store);
+      if (this.props.store.isRegisteredIn(tournamentID)) {
         // window.scrollTo(0,0);
 
         const audio = new Audio('/sounds/TOURN_START.wav');
         audio.play();
+        this.setState({ runningTournaments: true });
       }
 
       const { host, port, running } = msg;
@@ -227,6 +233,31 @@ export default class Modal extends Component {
     let footer = '';
 
     let title = '';
+
+    if (state.runningTournaments) {
+      console.log('state.runningTournament', 'mooooooooooodaaaaaaaaal');
+      setTimeout(() => {
+        console.log('timeout');
+        $("#play-button-modal").modal('show');
+      }, 1500);
+      return (
+        <div>
+          <div id="play-button-modal" className="modal fade" role="dialog">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <button type="button" className="close" data-dismiss="modal"> &times;</button>
+                  <h4 className="modal-title"> Турниры начинаются! </h4>
+                </div>
+                <div className="modal-body" id="cBody">{props.store.getMyTournaments()}</div>
+                <div className="modal-footer" id="cFooter">{`footer ${state.runningTournaments}`}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     try {
       const messages = state.messages;
       const count = messages.length;
@@ -269,5 +300,27 @@ export default class Modal extends Component {
         </div>
       </div>
     );
+
+    // return (
+    //   <div>
+    //     <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+    //     <div id="myModal" class="modal fade" role="dialog">
+    //       <div class="modal-dialog">
+    //         <div class="modal-content">
+    //           <div class="modal-header">
+    //             <button type="button" class="close" data-dismiss="modal">&times;</button>
+    //             <h4 class="modal-title">Modal Header</h4>
+    //           </div>
+    //           <div class="modal-body">
+    //             <p>Some text in the modal.</p>
+    //           </div>
+    //           <div class="modal-footer">
+    //             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
   }
 }

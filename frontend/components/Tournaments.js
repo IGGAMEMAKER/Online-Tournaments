@@ -5,6 +5,7 @@ import { h, Component } from 'preact';
 import request from 'superagent';
 import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
+import Modal from './Modal/Modal';
 
 import Chat from './Activity/Chat';
 
@@ -44,19 +45,6 @@ export default class Tournaments extends Component {
     });
 
     actions.initialize();
-    // request
-    //   .get('/myprofile')
-    //   .end((err, res) => {
-    //     if (err) throw err;
-    //     if (res.body.err) throw res.body.err;
-    //
-    //     const tRegs: Array = res.body.profile.tournaments;
-    //
-    //     const registeredIn = {};
-    //     tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
-    //
-    //     this.setState({ registeredIn });
-    //   });
 
     socket.on('StartTournament', (msg) => {
       console.log('startTournament AAAAAAAAAAAAAAAAAA', msg);
@@ -64,34 +52,10 @@ export default class Tournaments extends Component {
   }
 
   register = (tournamentID) => {
-    // function reg(login, tID) { ManageReg(login, tID, 'RegisterInTournament', 1); }
-    // function unReg(lgn, tID) { ManageReg(login, tID, 'CancelRegister', 0); }
     actions.register(tournamentID);
-    // request
-    //   .post('RegisterInTournament')
-    //   .send({ login, tournamentID })
-    //   .end((err, response) => {
-    //     console.log('RegisterInTournament', err, response);
-    //
-    //     let registeredIn = Object.assign({}, this.state.registeredIn);
-    //     registeredIn[tournamentID] = 1;
-    //
-    //     this.setState({ registeredIn });
-    //   });
   };
 
   unregister = (tournamentID) => {
-    // request
-    //   .post('CancelRegister')
-    //   .send({ login, tournamentID })
-    //   .end((err, response) => {
-    //     console.log('CancelRegister', err, response);
-    //
-    //     let registeredIn = Object.assign({}, this.state.registeredIn);
-    //     registeredIn[tournamentID] = null;
-    //
-    //     this.setState({ registeredIn });
-    //   });
     actions.unregister(tournamentID);
   };
 
@@ -135,10 +99,9 @@ export default class Tournaments extends Component {
       .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
       .slice(0, 3);
 
+    /*
     const RichestList = this.filter(richest, () => true);
     // <div className="row">{TournamentList}</div>
-    const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
-    /*
 
      <h2 className="page">Бесплатные</h2>
      <div className="row killPaddings nomargins">{FreeTournaments}</div>
@@ -146,9 +109,12 @@ export default class Tournaments extends Component {
      <h2 className="page">Турниры с наибольшими призами</h2>
      <div className="row killPaddings nomargins">{RichestList}</div>
      */
+    // const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
+    const auth = <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
     return (
       <div>
-        {auth}
+        <Modal store={store} />
+        {login ? '' : auth}
 
         <h2 className="page">Стримовые</h2>
         <div className="row killPaddings nomargins">{StreamTournaments}</div>
