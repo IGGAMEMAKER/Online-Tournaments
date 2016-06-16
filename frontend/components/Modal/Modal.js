@@ -22,6 +22,11 @@ type ResponseType = {
   }
 }
 
+type TournamentStartType = {
+  tournamentID: number,
+  gameName: number,
+}
+
 export default class Modal extends Component {
   state = {
     visible: false,
@@ -32,10 +37,9 @@ export default class Modal extends Component {
 
   componentWillMount() {
     this.loadNews();
-    console.log('componentWillMount modal');
+    // console.log('componentWillMount modal');
     socketNews.on('activity', (msg) => {
-      console.log('azaza in modal');
-      console.log('socketNews', msg);
+      console.log('activity in modal socketNews', msg);
     });
 
     socketNews.on('newsUpdate', (msg) => {
@@ -48,11 +52,10 @@ export default class Modal extends Component {
       console.log('StartTournament in socketNews', msg);
       const tournamentID = msg.tournamentID;
       // alert('start!');
-      // if (userIsRegisteredIn(tournamentID)) {
-      console.log('props', this.props.store);
+      // console.log('props', this.props.store);
       if (this.props.store.isRegisteredIn(tournamentID)) {
         // window.scrollTo(0,0);
-
+        
         const audio = new Audio('/sounds/TOURN_START.wav');
         audio.play();
         this.setState({ runningTournaments: true });
@@ -217,6 +220,29 @@ export default class Modal extends Component {
     return { header, body, footer };
   };
 
+  drawPlayButton = (host, port, tournamentID) => {
+    var addr = `http://${host}:${port}/Game?tournamentID=${tournamentID}`;
+    return (
+      <form id="form1" method="post" action={addr}>
+        <input type="hidden" name="login" value="'+login+'" />
+        <input
+          type="submit"
+          className="btn btn-primary btn-lg"
+          value={`Сыграть в турнир #${tournamentID}`}
+        />
+      </form>
+    );
+  };
+
+  drawPlayButtons = (tournaments: Array<TournamentStartType>) => {
+    return tournaments.map((t) => {
+      const host = 'localhost';
+      const port = '5010';
+
+      return this.drawPlayButton(host, port, t.tournamentID);
+    });
+  };
+
   loadNews = () => {
     request
       .get('/notifications/news')
@@ -238,8 +264,13 @@ export default class Modal extends Component {
       console.log('state.runningTournament', 'mooooooooooodaaaaaaaaal');
       setTimeout(() => {
         console.log('timeout');
+        const list = props.store.getMyTournaments();
+        console.log('tournaments now...', list);
         $("#play-button-modal").modal('show');
       }, 1500);
+      const list: Object = props.store.getMyTournaments();
+
+      console.log('tournaments now...', list);
       return (
         <div>
           <div id="play-button-modal" className="modal fade" role="dialog">
@@ -249,8 +280,7 @@ export default class Modal extends Component {
                   <button type="button" className="close" data-dismiss="modal"> &times;</button>
                   <h4 className="modal-title"> Турниры начинаются! </h4>
                 </div>
-                <div className="modal-body" id="cBody">{props.store.getMyTournaments()}</div>
-                <div className="modal-footer" id="cFooter">{`footer ${state.runningTournaments}`}</div>
+                <div className="modal-body" id="cBody">{Object.keys(list)}</div>
               </div>
             </div>
           </div>

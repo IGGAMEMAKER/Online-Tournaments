@@ -5,13 +5,17 @@ import {
   ACTION_INITIALIZE,
   ACTION_REGISTER_IN_TOURNAMENT,
   ACTION_UNREGISTER_FROM_TOURNAMENT,
+  ACTION_TEST,
 } from '../constants/constants';
 
 // let _tournaments: Array<TournamentType> = [];
 let _tournaments: Object = {};
+let _adresses: Object = {};
 let _money: number = 100;
 let _packs: Object = {};
 let _loaded: Boolean = false;
+
+let _testValue = 0;
 
 const EC = 'EVENT_CHANGE';
 class ProfileStore extends EventEmitter {
@@ -57,6 +61,10 @@ class ProfileStore extends EventEmitter {
     // _regs[id] = null;
     _tournaments[id] = null;
   }
+
+  getTestValue() {
+    return _testValue;
+  }
 }
 
 const store = new ProfileStore();
@@ -73,6 +81,7 @@ type PayloadType = {
 };
 
 Dispatcher.register((p: PayloadType) => {
+  console.log(ACTION_TEST, p.type, p);
   switch (p.type) {
     case ACTION_INITIALIZE:
       _loaded = true;
@@ -93,6 +102,12 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case ACTION_UNREGISTER_FROM_TOURNAMENT:
       _tournaments = p.tournaments;
+      store.emitChange();
+      break;
+    case ACTION_TEST:
+      console.log('_testValue', _testValue);
+      _testValue = _testValue + 1;
+      console.log('_testValue', _testValue);
       store.emitChange();
       break;
     default:

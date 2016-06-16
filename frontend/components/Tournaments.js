@@ -7,9 +7,13 @@ import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
 import Modal from './Modal/Modal';
 
+// import { Modal } from 'react-bootstrap';
+
 import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
+
+import TestComponent from './TestComponents/Comp1';
 
 import store from '../stores/Profile';
 import actions from '../actions/ProfileActions';
@@ -34,6 +38,7 @@ export default class Tournaments extends Component {
     tournaments: {},
     registeredIn: {},
     options: {},
+    value: store.getTestValue(),
   };
 
   componentWillMount() {
@@ -41,6 +46,7 @@ export default class Tournaments extends Component {
       this.setState({
         registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
+        value: store.getTestValue(),
       });
     });
 
@@ -111,6 +117,19 @@ export default class Tournaments extends Component {
      */
     // const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
     const auth = <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
+    /*
+     <Modal show>
+     <Modal.Header closeButton>
+     <Modal.Title>Modal heading</Modal.Title>
+     </Modal.Header>
+     <Modal.Body>
+     <h4>Text in a modal</h4>
+     </Modal.Body>
+     <Modal.Footer>
+     <button onClick={this.close}>Close</button>
+     </Modal.Footer>
+     </Modal>
+     */
     return (
       <div>
         <Modal store={store} />
@@ -129,7 +148,8 @@ export default class Tournaments extends Component {
         <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
-
+        <button onClick={actions.testFunction}> test in Tournaments{this.state.value}</button>
+        <TestComponent />
         <Chat />
       </div>
     );

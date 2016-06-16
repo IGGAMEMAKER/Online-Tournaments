@@ -4,7 +4,9 @@ import {
   ACTION_INITIALIZE,
   ACTION_REGISTER_IN_TOURNAMENT,
   ACTION_UNREGISTER_FROM_TOURNAMENT,
+  ACTION_TEST,
 } from '../constants/constants';
+import * as c from '../constants/constants';
 import { ProfileType } from '../components/types';
 import store from '../stores/Profile';
 
@@ -80,5 +82,9 @@ export default {
       console.error(err);
     }
   },
-
+  testFunction() {
+    Dispatcher.dispatch({
+      type: c.ACTION_TEST,
+    });
+  },
 };
