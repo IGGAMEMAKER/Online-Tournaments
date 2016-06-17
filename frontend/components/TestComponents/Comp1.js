@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import store from '../../stores/Profile';
+import store from '../../stores/ProfileStore';
 import actions from '../../actions/ProfileActions';
 
 type PropsType = {}

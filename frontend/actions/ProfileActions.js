@@ -1,14 +1,8 @@
 import request from 'superagent';
 import Dispatcher from '../dispatcher';
-import {
-  ACTION_INITIALIZE,
-  ACTION_REGISTER_IN_TOURNAMENT,
-  ACTION_UNREGISTER_FROM_TOURNAMENT,
-  ACTION_TEST,
-} from '../constants/constants';
 import * as c from '../constants/constants';
 import { ProfileType } from '../components/types';
-import store from '../stores/Profile';
+import store from '../stores/ProfileStore';
 
 type ResponseType = {
   body: {
@@ -21,7 +15,7 @@ export default {
     try {
       console.log('async initialize');
       const response: ResponseType = await request.get('/myProfile');
-      console.log('async initialize response...', response);
+      console.log('async initialize response...', response.body);
       const profile = response.body.profile;
       const { tournaments, money, packs } = profile;
 
@@ -31,7 +25,7 @@ export default {
       tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
 
       Dispatcher.dispatch({
-        type: ACTION_INITIALIZE,
+        type: c.ACTION_INITIALIZE,
         tournaments: registeredIn,
         money,
         packs,
@@ -53,7 +47,7 @@ export default {
       // registeredIn[tournamentID] = 1;
 
       Dispatcher.dispatch({
-        type: ACTION_REGISTER_IN_TOURNAMENT,
+        type: c.ACTION_REGISTER_IN_TOURNAMENT,
         // tournaments: registeredIn,
         tournamentID,
       });
@@ -74,13 +68,31 @@ export default {
       registeredIn[tournamentID] = null;
 
       Dispatcher.dispatch({
-        type: ACTION_UNREGISTER_FROM_TOURNAMENT,
+        type: c.ACTION_UNREGISTER_FROM_TOURNAMENT,
         tournaments: registeredIn,
         tournamentID,
       });
     } catch (err) {
       console.error(err);
     }
+  },
+  startTournament(msg) {
+    const tournamentID = msg.tournamentID;
+
+    if (!store.isRegisteredIn(tournamentID)) {
+      return;
+    }
+
+    const audio = new Audio('/sounds/TOURN_START.wav');
+    audio.play();
+
+    const { host, port } = msg;
+    Dispatcher.dispatch({
+      type: c.ACTION_START_TOURNAMENT,
+      tournamentID,
+      host,
+      port,
+    });
   },
   testFunction() {
     Dispatcher.dispatch({

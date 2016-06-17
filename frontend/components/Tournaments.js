@@ -7,15 +7,12 @@ import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
 import Modal from './Modal/Modal';
 
-// import { Modal } from 'react-bootstrap';
-
 import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
+import socketListener from '../helpers/SocketListener';
 
-import TestComponent from './TestComponents/Comp1';
-
-import store from '../stores/Profile';
+import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 
 type StateType = {
@@ -51,10 +48,6 @@ export default class Tournaments extends Component {
     });
 
     actions.initialize();
-
-    socket.on('StartTournament', (msg) => {
-      console.log('startTournament AAAAAAAAAAAAAAAAAA', msg);
-    });
   }
 
   register = (tournamentID) => {
@@ -149,7 +142,6 @@ export default class Tournaments extends Component {
 
         <hr colour="white" width="60%" align="center" />
         <button onClick={actions.testFunction}> test in Tournaments{this.state.value}</button>
-        <TestComponent />
         <Chat />
       </div>
     );

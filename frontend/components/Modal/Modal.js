@@ -4,7 +4,7 @@ import request from 'superagent';
 
 import * as c from '../../constants/constants';
 // import io from 'socket.io-client';
-// import store from '../../stores/Profile';
+import store from '../../stores/ProfileStore';
 
 type PropsType = {
   store: Object,
@@ -36,11 +36,9 @@ export default class Modal extends Component {
   };
 
   componentWillMount() {
+
     this.loadNews();
     // console.log('componentWillMount modal');
-    socketNews.on('activity', (msg) => {
-      console.log('activity in modal socketNews', msg);
-    });
 
     socketNews.on('newsUpdate', (msg) => {
       if (msg && msg.msg === login) {
@@ -48,22 +46,22 @@ export default class Modal extends Component {
       }
     });
 
-    socketNews.on('StartTournament', (msg) => {
-      console.log('StartTournament in socketNews', msg);
-      const tournamentID = msg.tournamentID;
-      // alert('start!');
-      // console.log('props', this.props.store);
-      if (this.props.store.isRegisteredIn(tournamentID)) {
-        // window.scrollTo(0,0);
-        
-        const audio = new Audio('/sounds/TOURN_START.wav');
-        audio.play();
-        this.setState({ runningTournaments: true });
-      }
-
-      const { host, port, running } = msg;
-      curLogins = msg.logins;
-    });
+    // socketNews.on('StartTournament', (msg) => {
+    //   console.log('StartTournament in socketNews', msg);
+    //   const tournamentID = msg.tournamentID;
+    //   // alert('start!');
+    //   // console.log('props', this.props.store);
+    //   if (this.props.store.isRegisteredIn(tournamentID)) {
+    //     // window.scrollTo(0,0);
+    //
+    //     const audio = new Audio('/sounds/TOURN_START.wav');
+    //     audio.play();
+    //     this.setState({ runningTournaments: true });
+    //   }
+    //
+    //   const { host, port, running } = msg;
+    //   curLogins = msg.logins;
+    // });
   }
 
   skip = (text: string, id) => {
