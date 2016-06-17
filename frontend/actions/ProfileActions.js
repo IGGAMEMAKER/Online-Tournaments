@@ -1,7 +1,7 @@
 import request from 'superagent';
 import Dispatcher from '../dispatcher';
 import * as c from '../constants/constants';
-import { ProfileType } from '../components/types';
+import { ProfileType, ModalMessage } from '../components/types';
 import store from '../stores/ProfileStore';
 
 type ResponseType = {
@@ -93,6 +93,18 @@ export default {
       host,
       port,
     });
+  },
+  async loadNews() {
+    request
+      .get('/notifications/news')
+      .end((err, res: ResponseType) => {
+        const news: Array<ModalMessage> = res.body.msg;
+        console.log('async loadNews news...', err, res);
+        Dispatcher.dispatch({
+          type: c.ACTION_LOAD_NEWS,
+          news,
+        });
+      });
   },
   testFunction() {
     Dispatcher.dispatch({

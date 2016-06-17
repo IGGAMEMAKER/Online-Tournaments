@@ -36,15 +36,21 @@ export default class Modal extends Component {
   };
 
   componentWillMount() {
-
-    this.loadNews();
-    // console.log('componentWillMount modal');
-
-    socketNews.on('newsUpdate', (msg) => {
-      if (msg && msg.msg === login) {
-        this.loadNews();
-      }
+    store.addChangeListener(() => {
+      this.setState({
+        messages: store.getMyNews(),
+        visible: store.hasNews(),
+        runningTournaments: store.hasRunning(),
+      });
     });
+    // this.loadNews();
+    // // console.log('componentWillMount modal');
+    //
+    // socketNews.on('newsUpdate', (msg) => {
+    //   if (msg && msg.msg === login) {
+    //     this.loadNews();
+    //   }
+    // });
 
     // socketNews.on('StartTournament', (msg) => {
     //   console.log('StartTournament in socketNews', msg);
