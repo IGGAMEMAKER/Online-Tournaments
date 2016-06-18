@@ -1,5 +1,7 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
+import store from '../../stores/ProfileStore';
+import actions from '../../actions/ProfileActions';
 
 type PropsType = {};
 
@@ -11,7 +13,6 @@ type MessageType = {
 type StateType = {
   messages: Array<MessageType>,
   text: string,
-  socket: Object,
 };
 
 type ResponseType = {
@@ -24,17 +25,15 @@ export default class Chat extends Component {
   state = {
     messages: [],
     text: '',
-    socket: '',
   };
 
   componentWillMount() {
-    this.loadMessages();
-
-    const socket1 = io();
-    socket1.on('chat message', (msg) => {
-      this.appendMessage(msg.sender, msg.text);
+    store.addChangeListener(() => {
+      this.setState({
+        messages: store.getChatMessages(),
+      });
     });
-    this.setState({ socket: socket1 });
+    this.loadMessages();
   }
 
   appendMessage = (sender, text) => {
@@ -50,18 +49,21 @@ export default class Chat extends Component {
   };
 
   loadMessages = () => {
+    actions.loadChatMessages();
+    setTimeout(this.scrollToMessageEnd, 100);
     // setAsync('/messages/chat/recent', {}, this.drawMessages)
-    request
-      .post('/messages/chat/recent')
-      .end((err, res: ResponseType) => {
-        const messages = res.body.msg
-          .reverse()
-          .map(item => {
-            return { sender: item.senderName, text: item.text };
-          });
-        this.setMessages(messages);
-        this.scrollToMessageEnd();
-      });
+
+    // request
+    //   .post('/messages/chat/recent')
+    //   .end((err, res: ResponseType) => {
+    //     const messages = res.body.msg
+    //       .reverse()
+    //       .map(item => {
+    //         return { sender: item.senderName, text: item.text };
+    //       });
+    //     this.setMessages(messages);
+    //     this.scrollToMessageEnd();
+    //   });
   };
 
   scrollToMessageEnd = () => {
@@ -82,9 +84,11 @@ export default class Chat extends Component {
     const text = this.state.text;
     this.scrollToMessageEnd();
     if (!text) return;
-    this.state.socket.emit('chat message', { text, login });
+
+    // actions.sendMessage(text, login || 'nil');
+    // this.state.socket.emit('chat message', { text, login });
+    socket.emit('chat message', { text, login });
     this.setState({ text: '' });
-    // $("#m").val("");
   };
 
   onEnter = (e) => {

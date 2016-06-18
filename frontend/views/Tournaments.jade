@@ -4,7 +4,8 @@ extends layout
 block title
 	title Турниры
 block legacy
-
+	script.
+		var socket = io();
 block content
 	#modal-special-tab
 	//include templates/news

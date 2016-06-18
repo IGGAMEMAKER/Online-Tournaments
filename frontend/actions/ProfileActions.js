@@ -126,6 +126,43 @@ export default {
       sendError(e, 'openPack');
     }
   },
+  async loadChatMessages() {
+    try {
+      type MsgType = {
+        body: {
+          msg: {
+            senderName: string,
+            text: string,
+          }
+        }
+      };
+      const response: MsgType = await request.post('/messages/chat/recent');
+      // .end((err, res: ResponseType) => {
+      const messages = response.body.msg
+        .reverse()
+        .map(item => {
+          return { sender: item.senderName, text: item.text };
+        });
+      Dispatcher.dispatch({
+        type: c.ACTION_SET_MESSAGES,
+        messages,
+      });
+    } catch (e) {
+      sendError(e, 'chat/recent');
+    }
+    // this.setMessages(messages);
+    // this.scrollToMessageEnd();
+    // });
+  },
+  appendChatMessage(data) {
+    Dispatcher.dispatch({
+      type: c.ACTION_ADD_CHAT_MESSAGE,
+      data,
+    });
+  },
+  sendMessage(text, sender) {
+    socket.emit('chat message', { text, sender });
+  },
   testFunction() {
     Dispatcher.dispatch({
       type: c.ACTION_TEST,
