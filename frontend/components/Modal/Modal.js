@@ -5,6 +5,7 @@ import request from 'superagent';
 import * as c from '../../constants/constants';
 // import io from 'socket.io-client';
 import store from '../../stores/ProfileStore';
+import actions from '../../actions/ProfileActions';
 import PackCard from '../Packs/PackCard';
 
 type PropsType = {
@@ -39,37 +40,17 @@ export default class Modal extends Component {
 
   componentWillMount() {
     store.addChangeListener(() => {
+      console.log('callback', store.getMyNews());
       this.setState({
         messages: store.getMyNews(),
         visible: store.hasNews(),
         runningTournaments: store.hasRunning(),
       });
     });
-    // this.loadNews();
-    // // console.log('componentWillMount modal');
-    //
-    // socketNews.on('newsUpdate', (msg) => {
-    //   if (msg && msg.msg === login) {
-    //     this.loadNews();
-    //   }
-    // });
-
-    // socketNews.on('StartTournament', (msg) => {
-    //   console.log('StartTournament in socketNews', msg);
-    //   const tournamentID = msg.tournamentID;
-    //   // alert('start!');
-    //   // console.log('props', this.props.store);
-    //   if (this.props.store.isRegisteredIn(tournamentID)) {
-    //     // window.scrollTo(0,0);
-    //
-    //     const audio = new Audio('/sounds/TOURN_START.wav');
-    //     audio.play();
-    //     this.setState({ runningTournaments: true });
-    //   }
-    //
-    //   const { host, port, running } = msg;
-    //   curLogins = msg.logins;
-    // });
+    actions.loadNews();
+    // setInterval(() => {
+    //   console.log('interval news', store.getMyNews(), 1000);
+    // }, 1000);
   }
 
   skip = (text: string, id) => {
@@ -83,12 +64,12 @@ export default class Modal extends Component {
   markAsRead = id => {
     // mark('/message/shown', { id : messageID })
 
-    // request
-    //   .post('/message/shown')
-    //   .send({ id })
-    //   .end((err, res) => {
-    //     console.log(err, res, 'message/shown');
-    //   });
+    request
+      .post('/message/shown')
+      .send({ id })
+      .end((err, res) => {
+        console.log(err, res, 'message/shown');
+      });
   };
 
   modal_pic = (name) => {
@@ -96,7 +77,8 @@ export default class Modal extends Component {
   };
 
   hide = () => {
-    this.setState({ visibility: false });
+    $("#modal-standard").modal('hide');
+    // this.setState({ visibility: false });
   };
 
   winningPicture = () => {
@@ -124,6 +106,7 @@ export default class Modal extends Component {
   };
 
   getModalData = (message, info, messageID) => {
+    console.log('getModalData');
     let header = '';
     let body = '';
     let footer = '';
@@ -190,6 +173,7 @@ export default class Modal extends Component {
         footer = this.skip('Продолжить', messageID);
         break;
       case c.NOTIFICATION_CARD_GIVEN:
+        // console.error('notification card given');
         header = 'Вы получаете карточку!';
         const card = info;
         console.log(card);
@@ -255,6 +239,13 @@ export default class Modal extends Component {
     });
   };
 
+  show = () => {
+    console.log('show');
+    setTimeout(() => {
+      $("#modal-standard").modal('show');
+    }, 300);
+  };
+
   // loadNews = () => {
   //   request
   //     .get('/notifications/news')
@@ -299,7 +290,7 @@ export default class Modal extends Component {
         </div>
       );
     }
-
+    console.log('no runnings', state.messages);
     try {
       const messages = state.messages;
       const count = messages.length;
@@ -309,12 +300,19 @@ export default class Modal extends Component {
         const data = message.data || {};
         const messageID = message["_id"] || 0;
 
-        header = this.getModalData(message, data, messageID);
+        const modalData = this.getModalData(message, data, messageID);
+        header = modalData.header;
+        body = modalData.body;
+        footer = modalData.footer;
+
         title = header;
         if (count > 1) title += ` (${count})`;
 
         // mark('/message/shown', { id : messageID })
         this.markAsRead(messageID);
+        this.show();
+      } else {
+        console.warn('no messages');
       }
     } catch (err) {
       this.sendError(err, 'drawNewsModal');
@@ -322,41 +320,46 @@ export default class Modal extends Component {
 
     const style = {};
     if (!state.visible) {
-      style.display = 'none';
+      // style.display = 'none';
+      // style.display = 'none';
     }
 
     return (
-      <div style={style}>
-        <div className="modal fade" role="dialog">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal"> &times;</button>
-                <h4 className="modal-title"> {title} </h4>
-              </div>
-              <div className="modal-body" id="cBody">{body}</div>
-              <div className="modal-footer" id="cFooter">{footer}</div>
+      <div id="modal-standard" className="modal fade" role="dialog">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal"> &times;</button>
+              <h4 className="modal-title"> {title} </h4>
             </div>
+            <div className="modal-body" id="cBody">{body}</div>
+            <div className="modal-footer" id="cFooter">{footer}</div>
           </div>
         </div>
+        <script>$("#modal-standard").modal('show');</script>
       </div>
     );
 
     // return (
     //   <div>
-    //     <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-    //     <div id="myModal" class="modal fade" role="dialog">
-    //       <div class="modal-dialog">
-    //         <div class="modal-content">
-    //           <div class="modal-header">
-    //             <button type="button" class="close" data-dismiss="modal">&times;</button>
-    //             <h4 class="modal-title">Modal Header</h4>
+    //     <button
+    //       type="button"
+    //       className="btn btn-info btn-lg"
+    //       data-toggle="modal"
+    //       data-target="#myModal"
+    //     >Open Modal</button>
+    //     <div id="myModal" className="modal fade" role="dialog">
+    //       <div className="modal-dialog">
+    //         <div className="modal-content">
+    //           <div className="modal-header">
+    //             <button type="button" className="close" data-dismiss="modal">&times;</button>
+    //             <h4 className="modal-title">Modal Header</h4>
     //           </div>
-    //           <div class="modal-body">
+    //           <div className="modal-body">
     //             <p>Some text in the modal.</p>
     //           </div>
-    //           <div class="modal-footer">
-    //             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    //           <div className="modal-footer">
+    //             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
     //           </div>
     //         </div>
     //       </div>

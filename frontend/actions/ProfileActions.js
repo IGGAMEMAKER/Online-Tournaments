@@ -111,7 +111,10 @@ export default {
   },
   async openPack(value, pay) {
     try {
+      // console.log('async openPack', value, pay);
       const response = await request.post(`openPack/${value}/${pay}`);
+      if (response.body.err) throw response.body.err;
+      // console.log('async openPack', response.body.err);
 
       if (response.body.result === 'pay' && response.body.ammount) {
         Dispatcher.dispatch({
@@ -121,6 +124,8 @@ export default {
             ammount: parseInt(response.body.ammount, 10),
           }
         });
+      } else {
+        this.loadNews();
       }
     } catch (e) {
       sendError(e, 'openPack');

@@ -7,10 +7,15 @@ import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
 import PackGallery from './Packs/PackGallery';
 
+import socketListener from '../helpers/SocketListener';
+import actions from '../actions/ProfileActions';
+
 function openPack(packID, pay) {
-  request
-    .post(`openPack/${packID}/${pay}`)
-    .end(console.log);
+  console.log('openPack pack page', packID, pay);
+  actions.openPack(packID, pay);
+  // request
+  //   .post(`openPack/${packID}/${pay}`)
+  //   .end(console.log);
 }
 
 export default class PackPage extends Component {
@@ -195,7 +200,7 @@ export default class PackPage extends Component {
     let packIndex = 0;
     this.state.allPacks.forEach((pack, index) => {
       // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
-      console.log('iterate...', pack, index, 'chosenPack', chosenPack);
+      // console.log('iterate...', pack, index, 'chosenPack', chosenPack);
       if (chosenPack === pack.packID) {
         packIndex = index;
         PackList = (

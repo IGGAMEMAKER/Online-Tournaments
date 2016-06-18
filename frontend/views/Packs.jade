@@ -6,7 +6,9 @@ block title
 
 block JSlibs
 	//script(src="packs.js")
-
+block legacy
+	script.
+		var socket = io();
 //block ftr
 
 block content
@@ -17,30 +19,4 @@ block content
 		var PACKS = msg.packs;
 	#app
 	script(src="/output/Packs.js")
-	//div(class="white")
-		div(class="col-sm-12")
-			h1(class="mg-md text-center") Открывай паки
-			h2(class="mg-md text-center") получай призы!
-			p В каждом паке выдаётся одна карточка с футболистом. Цвет карточки может быть любым. 
-			p Наиболее ценными являются красные карточки, наименее ценными - серые.
-			p Соберите коллекцию футболистов и получите бонус: 
-				a(href="/Marathon#accelerator") ускоритель
-				|  для марафона или деньги на счёт!
-			//h3(class="mg-md text-center") Открой больше всех паков за день и получи 40 бесплатных паков в подарок!
-	//div(class="col-sm-12")
-		script.
-			var msg = !{JSON.stringify(msg)};
-			//var usercards = msg.usercards;
-			var collections = msg.collections;
-			var Cards = msg.cards;
-			var Packs = msg.packs
-			drawPackButtons(Packs)
 	br
-	//div(class="col-sm-12 col-xs-12" id="cards")
-		br
-		br
-		script.
-			//var msg = "#{msg}";
-			drawCards(Cards);
-		div(class="white")
-			script showCollections(collections, [], false)

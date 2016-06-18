@@ -48,7 +48,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamTab = __webpack_require__(115);
+	var _TeamTab = __webpack_require__(141);
 
 	var _TeamTab2 = _interopRequireDefault(_TeamTab);
 
@@ -3920,7 +3920,33 @@
 /* 112 */,
 /* 113 */,
 /* 114 */,
-/* 115 */
+/* 115 */,
+/* 116 */,
+/* 117 */,
+/* 118 */,
+/* 119 */,
+/* 120 */,
+/* 121 */,
+/* 122 */,
+/* 123 */,
+/* 124 */,
+/* 125 */,
+/* 126 */,
+/* 127 */,
+/* 128 */,
+/* 129 */,
+/* 130 */,
+/* 131 */,
+/* 132 */,
+/* 133 */,
+/* 134 */,
+/* 135 */,
+/* 136 */,
+/* 137 */,
+/* 138 */,
+/* 139 */,
+/* 140 */,
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3955,15 +3981,15 @@
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
-	var _TeamCreateForm = __webpack_require__(116);
+	var _TeamCreateForm = __webpack_require__(142);
 
 	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
 
-	var _TeamDraw = __webpack_require__(117);
+	var _TeamDraw = __webpack_require__(143);
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(121);
+	var _TeamShareButton = __webpack_require__(147);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -4221,7 +4247,7 @@
 	exports.default = TeamTab;
 
 /***/ },
-/* 116 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4259,7 +4285,7 @@
 	    */
 
 /***/ },
-/* 117 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4290,15 +4316,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamDivideMoney = __webpack_require__(118);
+	var _TeamDivideMoney = __webpack_require__(144);
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
-	var _TeamInviteFriend = __webpack_require__(119);
+	var _TeamInviteFriend = __webpack_require__(145);
 
 	var _TeamInviteFriend2 = _interopRequireDefault(_TeamInviteFriend);
 
-	var _TeamDestroy = __webpack_require__(120);
+	var _TeamDestroy = __webpack_require__(146);
 
 	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
@@ -4445,7 +4471,7 @@
 	exports.default = drawTeam;
 
 /***/ },
-/* 118 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4512,7 +4538,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 119 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4555,7 +4581,7 @@
 	var _preact = __webpack_require__(1);
 
 /***/ },
-/* 120 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4677,7 +4703,7 @@
 	exports.default = TeamDestroy;
 
 /***/ },
-/* 121 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -554,12 +554,12 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   })
   .then(function (card){
     var giftID = card.giftID;
-    card.value = value
+    card.value = value;
     card.isFree = !paid;
 
-    Gifts.user.saveGift(login, giftID, true, card.colour)
-    aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-    res.end('')
+    Gifts.user.saveGift(login, giftID, true, card.colour);
+    aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
+    res.json({});
   })
   .catch(function (err){
     if (!info.paid) {
@@ -568,7 +568,7 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
         ammount: price
       })
     } else {
-      res.end('');
+      res.json({ err });
     }
 
     aux.fail(login, 'openPack', { err: err , info: info })
