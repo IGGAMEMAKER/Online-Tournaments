@@ -485,6 +485,10 @@ button{
   font-size: 42px;
 }
 
+.card-title{
+  font-size: 25px;
+}
+
 .card-description{
   /*color: white;*/
   /*padding-left: 15px;*/

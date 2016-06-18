@@ -9,6 +9,9 @@ type ResponseType = {
     profile: ProfileType
   },
 };
+const sendError = (err, name) => {
+  console.error('error happened in ', name, err);
+};
 
 export default {
   async initialize() {
@@ -105,6 +108,23 @@ export default {
           news,
         });
       });
+  },
+  async openPack(value, pay) {
+    try {
+      const response = await request.post(`openPack/${value}/${pay}`);
+
+      if (response.body.result === 'pay' && response.body.ammount) {
+        Dispatcher.dispatch({
+          type: c.ACTION_ADD_MESSAGE,
+          modal_type: c.MODAL_NO_PACK_MONEY,
+          data: {
+            ammount: parseInt(response.body.ammount, 10),
+          }
+        });
+      }
+    } catch (e) {
+      sendError(e, 'openPack');
+    }
   },
   testFunction() {
     Dispatcher.dispatch({

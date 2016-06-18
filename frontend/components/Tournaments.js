@@ -81,6 +81,8 @@ export default class Tournaments extends Component {
     // const state: StateType = this.state;
     const tourns: Array<TournamentType> = TOURNAMENTS;
 
+    const all = this
+      .filter(tourns, () => true);
     const TodayTournaments = this
       .filter(tourns, (t: TournamentType) => t.startDate && isToday(t.startDate));
 
@@ -125,8 +127,11 @@ export default class Tournaments extends Component {
      */
     return (
       <div>
-        <Modal store={store} />
+        <Modal />
         {login ? '' : auth}
+
+        <h2 className="page">all</h2>
+        <div className="row killPaddings nomargins">{all}</div>
 
         <h2 className="page">Стримовые</h2>
         <div className="row killPaddings nomargins">{StreamTournaments}</div>
@@ -141,7 +146,6 @@ export default class Tournaments extends Component {
         <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
-        <button onClick={actions.testFunction}> test in Tournaments{this.state.value}</button>
         <Chat />
       </div>
     );

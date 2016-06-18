@@ -48,7 +48,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamTab = __webpack_require__(109);
+	var _TeamTab = __webpack_require__(115);
 
 	var _TeamTab2 = _interopRequireDefault(_TeamTab);
 
@@ -3914,7 +3914,13 @@
 /* 106 */,
 /* 107 */,
 /* 108 */,
-/* 109 */
+/* 109 */,
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */,
+/* 114 */,
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3949,15 +3955,15 @@
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
-	var _TeamCreateForm = __webpack_require__(110);
+	var _TeamCreateForm = __webpack_require__(116);
 
 	var _TeamCreateForm2 = _interopRequireDefault(_TeamCreateForm);
 
-	var _TeamDraw = __webpack_require__(111);
+	var _TeamDraw = __webpack_require__(117);
 
 	var _TeamDraw2 = _interopRequireDefault(_TeamDraw);
 
-	var _TeamShareButton = __webpack_require__(115);
+	var _TeamShareButton = __webpack_require__(121);
 
 	var _TeamShareButton2 = _interopRequireDefault(_TeamShareButton);
 
@@ -4215,7 +4221,7 @@
 	exports.default = TeamTab;
 
 /***/ },
-/* 110 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4253,7 +4259,7 @@
 	    */
 
 /***/ },
-/* 111 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4284,15 +4290,15 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _TeamDivideMoney = __webpack_require__(112);
+	var _TeamDivideMoney = __webpack_require__(118);
 
 	var _TeamDivideMoney2 = _interopRequireDefault(_TeamDivideMoney);
 
-	var _TeamInviteFriend = __webpack_require__(113);
+	var _TeamInviteFriend = __webpack_require__(119);
 
 	var _TeamInviteFriend2 = _interopRequireDefault(_TeamInviteFriend);
 
-	var _TeamDestroy = __webpack_require__(114);
+	var _TeamDestroy = __webpack_require__(120);
 
 	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
@@ -4439,7 +4445,7 @@
 	exports.default = drawTeam;
 
 /***/ },
-/* 112 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4506,7 +4512,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 113 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4549,7 +4555,7 @@
 	var _preact = __webpack_require__(1);
 
 /***/ },
-/* 114 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4671,7 +4677,7 @@
 	exports.default = TeamDestroy;
 
 /***/ },
-/* 115 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

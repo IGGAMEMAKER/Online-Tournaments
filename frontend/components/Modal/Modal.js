@@ -5,6 +5,7 @@ import request from 'superagent';
 import * as c from '../../constants/constants';
 // import io from 'socket.io-client';
 import store from '../../stores/ProfileStore';
+import PackCard from '../Packs/PackCard';
 
 type PropsType = {
   store: Object,
@@ -33,6 +34,7 @@ export default class Modal extends Component {
 
     tournaments: {},
     registeredIn: {},
+    messages: [],
   };
 
   componentWillMount() {
@@ -74,18 +76,19 @@ export default class Modal extends Component {
     console.log('skip', text, id);
   };
 
-  sendError = err => {
-    console.log('sendError in modal', err);
+  sendError = (err, name) => {
+    console.log('sendError in modal', name, err);
   };
 
   markAsRead = id => {
     // mark('/message/shown', { id : messageID })
-    request
-      .post('/message/shown')
-      .send({ id })
-      .end((err, res) => {
-        console.log(err, res, 'message/shown');
-      });
+
+    // request
+    //   .post('/message/shown')
+    //   .send({ id })
+    //   .end((err, res) => {
+    //     console.log(err, res, 'message/shown');
+    //   });
   };
 
   modal_pic = (name) => {
@@ -192,13 +195,18 @@ export default class Modal extends Component {
         console.log(card);
         body = (
           <div>
-            <p className="card-name">
-              Собирайте
-              <a href="/Packs">карточки</a>
+            <p className="card-title">
+              Собирайте карточки
               и получайте денежные призы!
             </p>
-            <p className="card-name">{card.description}</p>
-            {drawCard(card)}
+            <p className="card-title">
+              {card.description}
+            </p>
+            <PackCard
+              src={card.src}
+              description={card.description}
+              colour={card.colour}
+            />
           </div>
         );
 
@@ -247,15 +255,15 @@ export default class Modal extends Component {
     });
   };
 
-  loadNews = () => {
-    request
-      .get('/notifications/news')
-      .end((err, res: ResponseType) => {
-        const messages: Array<ModalMessage> = res.body.msg;
-        console.log('loadNews news...', err, res);
-        this.setState({ messages, visible: !!messages.length });
-      });
-  };
+  // loadNews = () => {
+  //   request
+  //     .get('/notifications/news')
+  //     .end((err, res: ResponseType) => {
+  //       const messages: Array<ModalMessage> = res.body.msg;
+  //       console.log('loadNews news...', err, res);
+  //       this.setState({ messages, visible: !!messages.length });
+  //     });
+  // };
 
   render(props: PropsType, state: StateType) {
     let header = '';
@@ -298,16 +306,15 @@ export default class Modal extends Component {
 
       if (count > 0) {
         const message = messages[0];
-        const info = message.data || {};
-        const messageID = message["_id"];
+        const data = message.data || {};
+        const messageID = message["_id"] || 0;
 
-        header = this.getModalData(message, info, messageID);
+        header = this.getModalData(message, data, messageID);
         title = header;
         if (count > 1) title += ` (${count})`;
 
         // mark('/message/shown', { id : messageID })
         this.markAsRead(messageID);
-        // getProfile();
       }
     } catch (err) {
       this.sendError(err, 'drawNewsModal');
