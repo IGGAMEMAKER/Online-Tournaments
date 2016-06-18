@@ -40,7 +40,6 @@ export default class Modal extends Component {
 
   componentWillMount() {
     store.addChangeListener(() => {
-      console.log('callback', store.getMyNews());
       this.setState({
         messages: store.getMyNews(),
         visible: store.hasNews(),
@@ -48,9 +47,6 @@ export default class Modal extends Component {
       });
     });
     actions.loadNews();
-    // setInterval(() => {
-    //   console.log('interval news', store.getMyNews(), 1000);
-    // }, 1000);
   }
 
   skip = (text: string, id) => {
@@ -62,8 +58,6 @@ export default class Modal extends Component {
   };
 
   markAsRead = id => {
-    // mark('/message/shown', { id : messageID })
-
     request
       .post('/message/shown')
       .send({ id })
@@ -77,8 +71,8 @@ export default class Modal extends Component {
   };
 
   hide = () => {
-    $("#modal-standard").modal('hide');
-    // this.setState({ visibility: false });
+    // $("#modal-standard").modal('hide');
+    this.setState({ visible: false });
   };
 
   winningPicture = () => {
@@ -187,9 +181,9 @@ export default class Modal extends Component {
               {card.description}
             </p>
             <PackCard
-              src={card.src}
+              src={`/img/topics/realmadrid/${card.photoURL}`}
               description={card.description}
-              colour={card.colour}
+              color={card.colour}
             />
           </div>
         );
@@ -197,10 +191,14 @@ export default class Modal extends Component {
         const close = <button className="btn btn-default" onClick={this.hide}> Закрыть </button>;
         const value = info.value || c.CARD_COLOUR_GRAY;
         let btn = <a className="btn btn-primary" href="/Packs"> Подробнее </a>;
-        const packOpener = () => openPack(value, 1);
 
         if (!card.isFree) {
-          btn = <button className="btn btn-primary" onClick={packOpener}>Открыть ещё!</button>;
+          btn = (
+            <button
+              className="btn btn-primary"
+              onClick={() => { actions.openPack(value, 1); }}
+            >Открыть ещё!</button>
+          );
         }
 
         footer = <div>{btn}{close}</div>;
@@ -244,6 +242,15 @@ export default class Modal extends Component {
     setTimeout(() => {
       $("#modal-standard").modal('show');
     }, 300);
+  };
+
+  modal = (id, status) => {
+    $(id).modal(status ? 'show' : 'hide');
+    // {$("#modal-standard").modal(state.visible ? 'show' : 'hide')}
+  };
+
+  playModal = (status) => {
+    this.modal('#modal-standard', status);
   };
 
   // loadNews = () => {
@@ -310,18 +317,12 @@ export default class Modal extends Component {
 
         // mark('/message/shown', { id : messageID })
         this.markAsRead(messageID);
-        this.show();
+        // this.show();
       } else {
         console.warn('no messages');
       }
     } catch (err) {
       this.sendError(err, 'drawNewsModal');
-    }
-
-    const style = {};
-    if (!state.visible) {
-      // style.display = 'none';
-      // style.display = 'none';
     }
 
     return (
@@ -336,7 +337,7 @@ export default class Modal extends Component {
             <div className="modal-footer" id="cFooter">{footer}</div>
           </div>
         </div>
-        <script>$("#modal-standard").modal('show');</script>
+        {$("#modal-standard").modal(state.visible ? 'show' : 'hide')}
       </div>
     );
 
