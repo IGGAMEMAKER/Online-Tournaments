@@ -9,6 +9,7 @@ import actions from '../../actions/ProfileActions';
 import PackCard from '../Packs/PackCard';
 
 import Modal from './Modal';
+import PlayModalContainer from './PlayModalContainer';
 
 type PropsType = {
 }
@@ -210,6 +211,7 @@ export default class ModalContainer extends Component {
         footer = this.skip('Урра!', messageID);
         break;
       case c.MODAL_NO_PACK_MONEY:
+        // actions.initialize();
         header = 'Упс... не хватает средств';
         let diff = info.ammount - state.money;
         // if (diff <= 0) invisible = true;
@@ -217,7 +219,9 @@ export default class ModalContainer extends Component {
         body = (
           <div className="card-title">
             Пополните счёт и вы сможете открыть этот пак!
+            <br />
             Стоимость пака: {info.ammount} РУБ
+            <br />
             У вас на счету: {state.money} РУБ
           </div>
         );
@@ -260,13 +264,6 @@ export default class ModalContainer extends Component {
     });
   };
 
-  show = () => {
-    console.log('show');
-    setTimeout(() => {
-      $("#modal-standard").modal('show');
-    }, 300);
-  };
-
   modal = (id, status) => {
     $(id).modal(status ? 'show' : 'hide');
     // {$("#modal-standard").modal(state.visible ? 'show' : 'hide')}
@@ -287,18 +284,24 @@ export default class ModalContainer extends Component {
 
     // let title = '';
     if (state.runningTournaments.length) {
-      console.log('render runningTournaments', state.runningTournaments);
-      let data = {
-        header: 'Турниры начинаются!',
-        body: state.runningTournaments.join(),
-        footer: (
-          <button>close</button>
-        ),
-      };
-      return <Modal data={data} />;
+      return <PlayModalContainer tournaments={state.runningTournaments} />;
     }
+    // if (state.runningTournaments.length) {
+    //   console.log('render runningTournaments', state.runningTournaments);
+    //   let data = {
+    //     header: 'Турниры начинаются!',
+    //     body: state.runningTournaments.join(),
+    //     footer: (
+    //       <button>close</button>
+    //     ),
+    //   };
+    //   console.warn('must show modal');
+    //   return <Modal data={data} />;
+    // }
+
     // console.log('no runnings', state.messages);
     try {
+      console.log('try region after runnings');
       const messages = state.messages;
       count = messages.length;
 
@@ -331,7 +334,10 @@ export default class ModalContainer extends Component {
       footer,
       count,
     };
-    if (!state.messages.length || invisible) return '';
+    if (!state.messages.length || invisible) {
+      console.error('INVISIBLE REGION. WHY?', state.messages.length, invisible);
+      return '';
+    }
 
     return <Modal data={data} />;
 

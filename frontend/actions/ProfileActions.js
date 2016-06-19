@@ -22,7 +22,7 @@ export default {
     try {
       console.log('async initialize');
       const response: ResponseType = await request.get('/myProfile');
-      console.log('async initialize response...', response.body);
+      // console.log('async initialize response...', response.body);
       const profile = response.body.profile;
       const { tournaments, money, packs } = profile;
 
@@ -38,7 +38,7 @@ export default {
           .end((err, res) => {
             if (err) throw err;
             const { host, port, running } = JSON.parse(res.text).address;
-            console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, res);
+            // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, res);
             Dispatcher.dispatch({
               type: c.SET_TOURNAMENT_DATA,
               host,

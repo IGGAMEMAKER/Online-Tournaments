@@ -38,7 +38,7 @@ class ProfileStore extends EventEmitter {
   getRunningTournaments() {
     // return _running;
     // console.log('getRunningTournaments', _running);
-    console.log('getRunningTournaments', Object.keys(_running));
+    // console.log('getRunningTournaments', Object.keys(_running));
     const arr = Object.keys(_running)
       .filter(obj => _running[obj] === 1)
       .map((obj) => parseInt(obj, 10));
@@ -122,7 +122,7 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:
-      console.log('initialize', p.type, p);
+      // console.log('initialize', p.type, p);
       _loaded = true;
       _tournaments = p.tournaments;
       _money = p.money;
@@ -159,7 +159,7 @@ Dispatcher.register((p: PayloadType) => {
       _chatMessages = p.messages;
       break;
     case c.ACTION_LOAD_NEWS:
-      console.log('load my news', p.news);
+      // console.log('load my news', p.news);
       _news = p.news;
       break;
     case c.SET_TOURNAMENT_DATA:

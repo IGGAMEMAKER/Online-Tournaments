@@ -22,13 +22,18 @@ export default class Modal extends Component {
     console.log('Modal markAsRead', id);
     request
       .post('/message/shown')
-      .send({ id });
+      .send({ id })
+      .end((err, res) => {
+        if (err) throw err;
+        // console.log('Modal markAsRead callback', id, err, res);
+      });
   };
 
   render(props: PropsType) {
     let title = props.data.header;
     if (props.data.count > 1) title += ` (${props.data.count})`;
     const messageID = props.data.messageID;
+
     if (messageID) this.markAsRead(messageID);
 
     return (

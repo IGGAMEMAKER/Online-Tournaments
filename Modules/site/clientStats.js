@@ -125,7 +125,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin
 
 	app.post('/message/shown', middlewares.authenticated, function (req, res){
 		res.end('');
-		// console.log('message/shown')
+		console.log('message/shown');
 		
 		var login = getLogin(req);
 		var id = req.body.id;

@@ -8,7 +8,9 @@ socket.on('chat message', (msg) => {
   actions.appendChatMessage(msg);
 });
 // socket.on('Tell', Tell);
-socket.on('FinishTournament', actions.finishTournament);
+socket.on('FinishTournament', (msg) => {
+  actions.finishTournament(msg);
+});
 
 socket.on('activity', (msg) => {
   // alert(JSON.stringify(msg));
