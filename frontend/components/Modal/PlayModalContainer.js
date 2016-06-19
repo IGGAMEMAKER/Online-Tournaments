@@ -28,6 +28,10 @@ export default class PlayModalContainer extends Component {
 
   componentWillMount() {}
 
+  hide = () => {
+    this.setState({ visible: false });
+  };
+
   render(props: PropsType, state: StateType) {
     const tournaments: Array = props.tournaments;
     console.warn('render runningTournaments', tournaments);
@@ -59,11 +63,16 @@ export default class PlayModalContainer extends Component {
     const footer = (
       <button
         className="btn btn-default"
-        onClick={() => { this.setState({ visible: false }); }}
+        onClick={this.hide}
       >Закрыть</button>
     );
     // return <ModalTest />;
     // if (!state.visible)
-    return <Modal data={{ header, body, footer, count: 0 }} hide={!state.visible} />;
+    return (
+      <Modal
+        data={{ header, body, footer, count: 0 }}
+        hide={!state.visible}
+        onClose={this.hide}
+      />);
   }
 }

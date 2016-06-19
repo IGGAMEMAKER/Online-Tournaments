@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
 import actions from '../../actions/ProfileActions';
 import * as c from '../../constants/constants';
+import request from 'superagent';
 
 import PackCard from '../Packs/PackCard';
 
@@ -27,8 +28,14 @@ export default class NotificationModalContainer extends Component {
   componentWillMount() {
   }
 
-  skip = (id) => {
-    console.log('skip', id);
+  skip = (text, id) => {
+    return (
+      <button
+        className="btn btn-primary"
+        onClick={this.hide}
+      >{text}</button>
+    );
+    // console.log('skip', id);
   };
 
   hide = () => {
