@@ -9,7 +9,8 @@ type PropsType = {
 }
 
 type StateType = {
-  tournaments: Array,
+  // tournaments: Array,
+  visible: Boolean,
 }
 
 type TournamentStartType = {
@@ -22,18 +23,18 @@ type TournamentStartType = {
 
 export default class PlayModalContainer extends Component {
   state = {
-    visible: false,
+    visible: true,
   };
 
   componentWillMount() {}
 
-  render(props: PropsType) {
+  render(props: PropsType, state: StateType) {
     const tournaments: Array = props.tournaments;
     console.warn('render runningTournaments', tournaments);
     // return <ModalTest />;
 
-    // if (!tournaments.length || !state.visible) return '';
     if (!tournaments.length) return <div></div>;
+    // if (!tournaments.length) return <div></div>;
 
     const header = 'Турниры начинаются!';
     // const body = 'BODY';
@@ -45,7 +46,7 @@ export default class PlayModalContainer extends Component {
       // id="form1"
       return (
         <form method="post" action={gameUrl}>
-          <input type="hidden" name="login" value="'+login+'" />
+          <input type="hidden" name="login" value={login} />
           <input
             type="submit"
             className="btn btn-primary btn-lg"
@@ -55,13 +56,14 @@ export default class PlayModalContainer extends Component {
       );
     });
 
-    // onClick={() => { this.setState({ visible: false }); }}
     const footer = (
       <button
         className="btn btn-default"
+        onClick={() => { this.setState({ visible: false }); }}
       >Закрыть</button>
     );
     // return <ModalTest />;
-    return <Modal data={{ header, body, footer, count: 0 }} />;
+    // if (!state.visible)
+    return <Modal data={{ header, body, footer, count: 0 }} hide={!state.visible} />;
   }
 }

@@ -119,6 +119,11 @@ type PayloadType = {
   messages: Array,
 };
 
+const delayedUpdate = (s) => {
+  const time = 1000;
+  setTimeout(() => { s.emitChange(); }, time);
+};
+
 Dispatcher.register((p: PayloadType) => {
   // console.log(p.type, p);
   let change = true;
@@ -161,15 +166,18 @@ Dispatcher.register((p: PayloadType) => {
     case c.ACTION_START_TOURNAMENT:
       _running[p.tournamentID] = 1;
       _adresses[p.tournamentID] = { port: p.port, host: p.host };
+      delayedUpdate(store);
       break;
     case c.ACTION_FINISH_TOURNAMENT:
       _running[p.tournamentID] = 0;
+      delayedUpdate(store);
       break;
     case c.SET_TOURNAMENT_DATA:
       console.warn('running is....', p.running, p.tournamentID);
       _running[p.tournamentID] = p.running === true || p.running === 1 ? 1 : 0;
       // _running[p.tournamentID] = 1;
       _adresses[p.tournamentID] = { port: p.port, host: p.host };
+      delayedUpdate(store);
       break;
 
     case c.ACTION_TEST:
@@ -181,9 +189,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
   }
   if (change) store.emitChange();
-  setInterval(() => {
-    store.emitChange();
-  }, 3000);
+  // setInterval(() => {
+  //   store.emitChange();
+  // }, 3000);
 });
 
 export default store;

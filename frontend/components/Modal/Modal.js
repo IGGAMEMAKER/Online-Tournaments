@@ -10,6 +10,8 @@ type PropsType = {
     messageID: number,
   },
 
+  hide: Boolean,
+
   buttons: Array<Component>,
   onClick: Function,
   onClose: Function,
@@ -49,7 +51,7 @@ export default class Modal extends Component {
             <div className="modal-footer" id="cFooter">{props.data.footer}</div>
           </div>
         </div>
-        {$(`#${modalID}`).modal('show')}
+        {$(`#${modalID}`).modal(props.hide ? 'hide' : 'show')}
       </div>
     );
   }

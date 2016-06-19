@@ -140,12 +140,14 @@ export default class NotificationModalContainer extends Component {
         header = 'Вы получаете карточку!';
         const card = info;
         console.log(card);
+        /*
+         <p className="card-title">
+         Собирайте карточки
+         и получайте денежные призы!
+         </p>
+         */
         body = (
           <div>
-            <p className="card-title">
-              Собирайте карточки
-              и получайте денежные призы!
-            </p>
             <p className="card-title">
               {card.description}
             </p>
