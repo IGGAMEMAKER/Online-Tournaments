@@ -62,7 +62,7 @@ class ProfileStore extends EventEmitter {
   }
 
   isRegisteredIn(id) {
-    console.log('currently', _tournaments, _money, _packs, id);
+    // console.log('currently', _tournaments, _money, _packs, id);
     return _tournaments[id];
   }
 
@@ -87,6 +87,7 @@ class ProfileStore extends EventEmitter {
   getGameUrl(id) {
     // var addr = `http://${host}:${port}/Game?tournamentID=${tournamentID}`;
     return `http://${_adresses[id].host}:${_adresses[id].port}/Game?tournamentID=${id}`;
+    // return `http://localhost:5010/Game?tournamentID=${id}`;
   }
 
   getMyNews() {
@@ -119,7 +120,7 @@ type PayloadType = {
 };
 
 Dispatcher.register((p: PayloadType) => {
-  console.log(p.type, p);
+  // console.log(p.type, p);
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:
@@ -134,13 +135,6 @@ Dispatcher.register((p: PayloadType) => {
       break;
     case c.ACTION_UNREGISTER_FROM_TOURNAMENT:
       _tournaments = p.tournaments;
-      break;
-    case c.ACTION_START_TOURNAMENT:
-      _running[p.tournamentID] = 1;
-      _adresses[p.tournamentID] = { port: p.port, host: p.host };
-      break;
-    case c.ACTION_FINISH_TOURNAMENT:
-      _running[p.tournamentID] = 0;
       break;
     case c.ACTION_ADD_MESSAGE:
       _news.splice(0, 0, {
@@ -163,12 +157,19 @@ Dispatcher.register((p: PayloadType) => {
       // console.log('load my news', p.news);
       _news = p.news;
       break;
+
+    case c.ACTION_START_TOURNAMENT:
+      _running[p.tournamentID] = 1;
+      _adresses[p.tournamentID] = { port: p.port, host: p.host };
+      break;
+    case c.ACTION_FINISH_TOURNAMENT:
+      _running[p.tournamentID] = 0;
+      break;
     case c.SET_TOURNAMENT_DATA:
-      _adresses[p.tournamentID] = {
-        host: p.host,
-        port: p.port,
-      };
-      _running[p.tournamentID] = p.running;
+      console.warn('running is....', p.running, p.tournamentID);
+      _running[p.tournamentID] = p.running === true || p.running === 1 ? 1 : 0;
+      // _running[p.tournamentID] = 1;
+      _adresses[p.tournamentID] = { port: p.port, host: p.host };
       break;
 
     case c.ACTION_TEST:
@@ -180,6 +181,9 @@ Dispatcher.register((p: PayloadType) => {
       break;
   }
   if (change) store.emitChange();
+  setInterval(() => {
+    store.emitChange();
+  }, 3000);
 });
 
 export default store;

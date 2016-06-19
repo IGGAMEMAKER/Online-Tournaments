@@ -36,8 +36,9 @@ export default class Modal extends Component {
 
     if (messageID) this.markAsRead(messageID);
 
+    const modalID = `modal-standard${messageID}`;
     return (
-      <div id="modal-standard" className="modal fade" role="dialog">
+      <div id={modalID} className="modal fade" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -48,7 +49,7 @@ export default class Modal extends Component {
             <div className="modal-footer" id="cFooter">{props.data.footer}</div>
           </div>
         </div>
-        {$("#modal-standard").modal('show')}
+        {$(`#${modalID}`).modal('show')}
       </div>
     );
   }

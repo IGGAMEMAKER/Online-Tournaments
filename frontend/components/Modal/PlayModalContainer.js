@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 import Modal from './Modal';
-import store from '../../stores/ProfileStore';
-import actions from '../../actions/ProfileActions';
+import ModalTest from './ModalTest';
+// import store from '../../stores/ProfileStore';
+// import actions from '../../actions/ProfileActions';
 
 type PropsType = {
   tournaments: Array,
@@ -13,65 +14,37 @@ type StateType = {
 
 type TournamentStartType = {
   tournamentID: number,
+  gameUrl: string,
   gameName: number,
 }
 
-type ResponseType = {}
+// type ResponseType = {}
 
 export default class PlayModalContainer extends Component {
   state = {
-    tournaments: [],
     visible: false,
   };
 
-  componentWillMount() {
-    // store.addChangeListener(() => {
-    //   this.setState({
-    //     runningTournaments: store.getRunningTournaments,
-    //     visible: true,
-    //   });
-    // });
-    // actions.initialize();
-  }
+  componentWillMount() {}
 
-  drawPlayButton = (host, port, tournamentID) => {
-    var addr = `http://${host}:${port}/Game?tournamentID=${tournamentID}`;
-    return (
-      <form id="form1" method="post" action={addr}>
-        <input type="hidden" name="login" value="'+login+'" />
-        <input
-          type="submit"
-          className="btn btn-primary btn-lg"
-          value={`Сыграть в турнир #${tournamentID}`}
-        />
-      </form>
-    );
-  };
-
-  drawPlayButtons = (tournaments: Array<TournamentStartType>) => {
-    return tournaments.map((t) => {
-      const host = 'localhost';
-      const port = '5010';
-
-      return this.drawPlayButton(host, port, t.tournamentID);
-    });
-  };
-
-  render(props: PropsType, state: StateType) {
+  render(props: PropsType) {
     const tournaments: Array = props.tournaments;
+    console.warn('render runningTournaments', tournaments);
+    // return <ModalTest />;
 
-    if (!tournaments.length || !state.visible) return '';
+    // if (!tournaments.length || !state.visible) return '';
+    if (!tournaments.length) return <div></div>;
 
-    console.log('render runningTournaments', tournaments);
     const header = 'Турниры начинаются!';
+    // const body = 'BODY';
 
-    // const body = this.drawPlayButtons(tournaments);
     const body = tournaments.map((t: TournamentStartType) => {
       const id = t.tournamentID;
-      const gameUrl = store.getGameUrl(id);
-
+      // const gameUrl = store.getGameUrl(id);
+      const gameUrl = t.gameUrl;
+      // id="form1"
       return (
-        <form id="form1" method="post" action={gameUrl}>
+        <form method="post" action={gameUrl}>
           <input type="hidden" name="login" value="'+login+'" />
           <input
             type="submit"
@@ -82,12 +55,13 @@ export default class PlayModalContainer extends Component {
       );
     });
 
+    // onClick={() => { this.setState({ visible: false }); }}
     const footer = (
       <button
         className="btn btn-default"
-        onClick={() => { this.setState({ visible: false }); }}
       >Закрыть</button>
     );
-    return <Modal data={{ header, body, footer }} />;
+    // return <ModalTest />;
+    return <Modal data={{ header, body, footer, count: 0 }} />;
   }
 }

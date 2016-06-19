@@ -1,6 +1,9 @@
 import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
+import actions from '../../actions/ProfileActions';
 import * as c from '../../constants/constants';
+
+import PackCard from '../Packs/PackCard';
 
 import Modal from './Modal';
 
@@ -24,8 +27,27 @@ export default class NotificationModalContainer extends Component {
   componentWillMount() {
   }
 
+  skip = (id) => {
+    console.log('skip', id);
+  };
+
+  hide = () => {
+    // $("#modal-standard").modal('hide');
+    this.setState({ visible: false });
+  };
+
+  answer = (code, messageID) => {
+    request.get(`message/action/${code}/${messageID}`);
+    this.hide();
+  };
+
+  buttons = {
+    action: (code, messageID, style) => {
+      return <a className="btn btn-primary" onClick={this.answer(code, messageID)}>{style.text}</a>;
+    },
+  };
+
   modal_pic = (name) => {
-    console.log('modal_pic', name);
     return <div><br /><img alt="" style="width:100%" src={`/img/${name}`} /></div>;
   };
 
@@ -194,7 +216,7 @@ export default class NotificationModalContainer extends Component {
 
     const modalData = this.getModalData(message, data, messageID);
     const drawData = Object.assign({}, modalData, { count: props.count, messageID });
-
+    // console.log('draw notification modal container', drawData);
     return <Modal data={drawData} />;
   }
-};
+}

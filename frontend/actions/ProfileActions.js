@@ -32,28 +32,35 @@ export default {
       tRegs.forEach(reg => {
         const tID = reg.tournamentID;
         registeredIn[tID] = 1;
+      });
+      // console.warn('async ACTION_INITIALIZE');
+      Dispatcher.dispatch({
+        type: c.ACTION_INITIALIZE,
+        tournaments: registeredIn,
+        money,
+        packs,
+      });
+
+      tRegs.forEach(reg => {
+        const tID = reg.tournamentID;
         request
           .post('/GetTournamentAddress')
           .send({ tournamentID: tID })
           .end((err, res) => {
             if (err) throw err;
             const { host, port, running } = JSON.parse(res.text).address;
-            // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, res);
+            // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, tID);
+            console.log('/GetTournamentAddress running', running, tID);
+
+            console.warn('async SET_TOURNAMENT_DATA');
             Dispatcher.dispatch({
               type: c.SET_TOURNAMENT_DATA,
               host,
               port,
-              running: running || 0,
+              running: running ? 1 : 0,
               tournamentID: tID,
             });
           });
-      });
-
-      Dispatcher.dispatch({
-        type: c.ACTION_INITIALIZE,
-        tournaments: registeredIn,
-        money,
-        packs,
       });
     } catch (err) {
       console.error(err);
