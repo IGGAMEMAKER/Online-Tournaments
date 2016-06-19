@@ -13,6 +13,11 @@ const sendError = (err, name) => {
   console.error('error happened in ', name, err);
 };
 
+const sendPaymentStat = (name, ammount, user) => {
+  console.log('no money(', name, ammount, user);
+  
+};
+
 export default {
   async initialize() {
     try {
@@ -158,6 +163,10 @@ export default {
     // this.setMessages(messages);
     // this.scrollToMessageEnd();
     // });
+  },
+
+  payModalStat() {
+
   },
   appendChatMessage(data) {
     Dispatcher.dispatch({

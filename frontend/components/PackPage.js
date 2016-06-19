@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
 // import Chat from '../components/Activity/Chat';
-import Modal from '../components/Modal/Modal';
+import ModalContainer from '../components/Modal/ModalContainer';
 
 import Card from './Packs/PackCard';
 import Pack from './Packs/Pack';
@@ -157,6 +157,7 @@ export default class PackPage extends Component {
   };
 
   componentWillMount() {
+    actions.initialize();
   }
 
   openFree(packId) {
@@ -248,7 +249,7 @@ export default class PackPage extends Component {
 
     return (
       <div>
-        <Modal />
+        <ModalContainer />
         <div className="white text-center">
           {content}
         </div>

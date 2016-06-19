@@ -1,11 +1,11 @@
 import { h, render } from 'preact';
-import Modal from '../components/Modal/Modal';
+import ModalContainer from '../components/Modal/ModalContainer';
 
 const appElement: HTMLElement = document.getElementById('modal-special-tab');
 
 const elements = (
   <center>
-    <Modal />
+    <ModalContainer />
   </center>
 );
 

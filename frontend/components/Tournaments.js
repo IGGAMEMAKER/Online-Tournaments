@@ -5,7 +5,7 @@ import { h, Component } from 'preact';
 import request from 'superagent';
 import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
-import Modal from './Modal/Modal';
+import ModalContainer from '../components/Modal/ModalContainer';
 
 import Chat from './Activity/Chat';
 
@@ -127,7 +127,7 @@ export default class Tournaments extends Component {
      */
     return (
       <div>
-        <Modal />
+        <ModalContainer />
         {login ? '' : auth}
 
         <h2 className="page">all</h2>
