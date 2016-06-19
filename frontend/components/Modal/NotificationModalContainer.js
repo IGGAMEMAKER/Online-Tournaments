@@ -18,11 +18,22 @@ type StateType = {}
 
 type ResponseType = {}
 
-export default class ModalDrawer extends Component {
+export default class NotificationModalContainer extends Component {
   state = {};
 
   componentWillMount() {
   }
+
+  modal_pic = (name) => {
+    console.log('modal_pic', name);
+    return <div><br /><img alt="" style="width:100%" src={`/img/${name}`} /></div>;
+  };
+
+  winningPicture = () => this.modal_pic('win_1.png');
+
+  ratingPicture = () => this.modal_pic('win_2.jpg');
+
+  losePicture = () => this.modal_pic('lose_1.jpg');
 
   getModalData = (message, info, messageID) => {
     // console.log('getModalData');

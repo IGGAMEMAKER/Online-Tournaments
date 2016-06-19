@@ -8,8 +8,7 @@ import store from '../../stores/ProfileStore';
 import actions from '../../actions/ProfileActions';
 import PackCard from '../Packs/PackCard';
 
-import Modal from './Modal';
-import ModalDrawer from './ModalDrawer';
+import NotificationModalContainer from './NotificationModalContainer';
 import PlayModalContainer from './PlayModalContainer';
 
 type PropsType = {
@@ -25,11 +24,6 @@ type ResponseType = {
   body: {
     msg: Array<ModalMessage>,
   }
-}
-
-type TournamentStartType = {
-  tournamentID: number,
-  gameName: number,
 }
 
 export default class ModalContainer extends Component {
@@ -53,7 +47,10 @@ export default class ModalContainer extends Component {
         money: store.getMoney(),
       });
     });
-    actions.loadNews();
+    setInterval(() => {
+      actions.loadNews();
+      actions.initialize();
+    }, 3000);
   }
 
   skip = (text: string, id) => {
@@ -64,21 +61,10 @@ export default class ModalContainer extends Component {
     console.log('sendError in modal', name, err);
   };
 
-  modal_pic = (name) => {
-    console.log('modal_pic', name);
-    return <div><br /><img alt="" style="width:100%" src={`/img/${name}`} /></div>;
-  };
-
   hide = () => {
     // $("#modal-standard").modal('hide');
     this.setState({ visible: false });
   };
-
-  winningPicture = () => this.modal_pic('win_1.png');
-
-  ratingPicture = () => this.modal_pic('win_2.jpg');
-
-  losePicture = () => this.modal_pic('lose_1.jpg');
 
   answer = (code, messageID) => {
     request.get(`message/action/${code}/${messageID}`);
@@ -91,86 +77,22 @@ export default class ModalContainer extends Component {
     },
   };
 
-  drawPlayButton = (host, port, tournamentID) => {
-    var addr = `http://${host}:${port}/Game?tournamentID=${tournamentID}`;
-    return (
-      <form id="form1" method="post" action={addr}>
-        <input type="hidden" name="login" value="'+login+'" />
-        <input
-          type="submit"
-          className="btn btn-primary btn-lg"
-          value={`Сыграть в турнир #${tournamentID}`}
-        />
-      </form>
-    );
-  };
-
-  drawPlayButtons = (tournaments: Array<TournamentStartType>) => {
-    return tournaments.map((t) => {
-      const host = 'localhost';
-      const port = '5010';
-
-      return this.drawPlayButton(host, port, t.tournamentID);
-    });
-  };
-
-  modal = (id, status) => {
-    $(id).modal(status ? 'show' : 'hide');
-    // {$("#modal-standard").modal(state.visible ? 'show' : 'hide')}
-  };
-
-  playModal = (status) => {
-    this.modal('#modal-standard', status);
-  };
-
   render(props: PropsType, state: StateType) {
-    let header = '';
-    let body = '';
-    let footer = '';
-    let messageID;
-    let count;
-
-    let invisible;
-
-    // let title = '';
     if (state.runningTournaments.length) {
+      console.log('running tournaments modal');
       return <PlayModalContainer tournaments={state.runningTournaments} />;
     }
 
-    console.log('try region after runnings');
     const messages = state.messages;
-    count = messages.length;
+    const count = messages.length;
 
     if (count > 0) {
-      const message = messages[0];
-      return <ModalDrawer message={message} count={count} />;
-
-      // const data = message.data || {};
-      // messageID = message["_id"] || 0;
-      //
-      // const modalData = this.getModalData(message, data, messageID, state);
-      // header = modalData.header;
-      // body = modalData.body;
-      // footer = modalData.footer;
-    } else {
-      console.warn('no messages here');
-      return '';
+      console.log('notifications modal');
+      return <NotificationModalContainer message={messages[0]} count={count} />;
     }
 
-    // const data = {
-    //   messageID,
-    //   header,
-    //   body,
-    //   footer,
-    //   count,
-    // };
-
-    // if (!state.messages.length) {
-    //   console.error('INVISIBLE REGION. WHY?', state.messages.length, invisible);
-    //   return '';
-    // }
-
-    // return <Modal data={{data}} />;
+    console.log('no modal');
+    return '';
 
     // return (
     //   <div>

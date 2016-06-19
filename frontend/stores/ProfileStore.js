@@ -85,7 +85,8 @@ class ProfileStore extends EventEmitter {
   }
 
   getGameUrl(id) {
-    return `http://${_adresses[id].host}:${_adresses[id].port}/Game`;
+    // var addr = `http://${host}:${port}/Game?tournamentID=${tournamentID}`;
+    return `http://${_adresses[id].host}:${_adresses[id].port}/Game?tournamentID=${id}`;
   }
 
   getMyNews() {
