@@ -19,6 +19,7 @@ export default class Modal extends Component {
   componentWillMount() {}
 
   markAsRead = id => {
+    console.log('Modal markAsRead', id);
     request
       .post('/message/shown')
       .send({ id });
@@ -27,8 +28,8 @@ export default class Modal extends Component {
   render(props: PropsType) {
     let title = props.data.header;
     if (props.data.count > 1) title += ` (${props.data.count})`;
-    this.markAsRead(props.data.messageID);
-
+    const messageID = props.data.messageID;
+    if (messageID) this.markAsRead(messageID);
 
     return (
       <div id="modal-standard" className="modal fade" role="dialog">
@@ -43,7 +44,6 @@ export default class Modal extends Component {
           </div>
         </div>
         {$("#modal-standard").modal('show')}
-
       </div>
     );
   }

@@ -124,14 +124,13 @@ export default class Tournaments extends Component {
      <button onClick={this.close}>Close</button>
      </Modal.Footer>
      </Modal>
+        <h2 className="page">all</h2>
+        <div className="row killPaddings nomargins">{all}</div>
      */
     return (
       <div>
         <ModalContainer />
         {login ? '' : auth}
-
-        <h2 className="page">all</h2>
-        <div className="row killPaddings nomargins">{all}</div>
 
         <h2 className="page">Стримовые</h2>
         <div className="row killPaddings nomargins">{StreamTournaments}</div>

@@ -15,7 +15,6 @@ const sendError = (err, name) => {
 
 const sendPaymentStat = (name, ammount, user) => {
   console.log('no money(', name, ammount, user);
-  
 };
 
 export default {
@@ -30,7 +29,25 @@ export default {
       const tRegs: Array = tournaments;
 
       const registeredIn = {};
-      tRegs.forEach(reg => { registeredIn[reg.tournamentID] = 1; });
+      tRegs.forEach(reg => {
+        const tID = reg.tournamentID;
+        registeredIn[tID] = 1;
+        request
+          .post('/GetTournamentAddress')
+          .send({ tournamentID: tID })
+          .end((err, res) => {
+            if (err) throw err;
+            const { host, port, running } = JSON.parse(res.text).address;
+            console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, res);
+            Dispatcher.dispatch({
+              type: c.SET_TOURNAMENT_DATA,
+              host,
+              port,
+              running: running || 0,
+              tournamentID: tID,
+            });
+          });
+      });
 
       Dispatcher.dispatch({
         type: c.ACTION_INITIALIZE,
@@ -107,7 +124,6 @@ export default {
       .get('/notifications/news')
       .end((err, res: ResponseType) => {
         const news: Array<ModalMessage> = res.body.msg;
-        console.log('async loadNews news...', err, res);
         Dispatcher.dispatch({
           type: c.ACTION_LOAD_NEWS,
           news,
