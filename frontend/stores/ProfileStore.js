@@ -118,7 +118,7 @@ type PayloadType = {
 };
 
 Dispatcher.register((p: PayloadType) => {
-  // console.log(p.type, p);
+  console.log(p.type, p);
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:
