@@ -62,7 +62,8 @@ export default class Modal extends Component {
                 type="button"
                 className="close"
                 data-dismiss="modal"
-                style=""
+                style="font-size: 40px;"
+                onClick={props.onClose}
               > &times;</button>
               <h4 className="modal-title"> {title} </h4>
             </div>

@@ -213,6 +213,10 @@ export default class NotificationModalContainer extends Component {
     return { header, body, footer, invisible };
   };
 
+  componentWillReceiveProps() {
+    this.setState({ visible: true });
+  }
+
   render(props:PropsType, state: StateType) {
     const message = props.message;
     const data = message.data || {};
@@ -221,6 +225,7 @@ export default class NotificationModalContainer extends Component {
     const modalData = this.getModalData(message, data, messageID);
     const drawData = Object.assign({}, modalData, { count: props.count, messageID });
     // console.log('draw notification modal container', drawData);
-    return <Modal data={drawData} hide={!state.visible} />;
+
+    return <Modal data={drawData} hide={!state.visible} onClose={this.hide} />;
   }
 }

@@ -137,7 +137,7 @@ export default class Tournaments extends Component {
           style={{
             display: login ? 'none' : 'block'
           }}
-        >Авторизуйтесь, чтобы сыграть!</a>;
+        >Авторизуйтесь, чтобы сыграть!</a>
 
         <h2 className="page">Стримовые</h2>
         <div className="row killPaddings nomargins">{StreamTournaments}</div>
