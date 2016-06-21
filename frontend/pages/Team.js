@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import TeamTab from '../../components/TeamTab';
+import TeamTab from '../components/TeamTab';
 
 const appElement: HTMLElement = document.getElementById('app');
 

@@ -7,18 +7,20 @@ const currentDir = __dirname;
 
 const JS_DIST_DIR = `${currentDir}/public/`;
 
+const app = 'pages/'; //pages root${
+
 module.exports = [{
   name: 'react',
   entry: {
     app: './app.src.js',
-    Teams: './app/Team/Team.js',
-    Packs: './app/Pack.js',
-    Leagues: './app/Leagues.js',
-    Tournaments: './app/Tournaments.js',
-    payments: './app/Payment.js',
-    'admin-tournaments': './app/Admin.js',
+    Teams: `./${app}/Team.js`,
+    Packs: `./${app}/Pack.js`,
+    Leagues: `./${app}/Leagues.js`,
+    Tournaments: `./${app}/Tournaments.js`,
+    payments: `./${app}/Payment.js`,
+    'admin-tournaments': `./${app}/Admin.js`,
     // total: './app/TotalTest.js',
-    Modal: './app/Modal.js',
+    Modal: `./${app}/Modal.js`,
   },
   output: {
     // filename: 'app.js',
