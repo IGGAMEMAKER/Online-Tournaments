@@ -6,6 +6,7 @@ import request from 'superagent';
 import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
 import ModalContainer from '../components/Modal/ModalContainer';
+import TestComponent from '../components/TestComponents/Comp1';
 
 import Chat from './Activity/Chat';
 
@@ -111,7 +112,6 @@ export default class Tournaments extends Component {
      <div className="row killPaddings nomargins">{RichestList}</div>
      */
     // const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
-    const auth = <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
     /*
      <Modal show>
      <Modal.Header closeButton>
@@ -127,10 +127,17 @@ export default class Tournaments extends Component {
         <h2 className="page">all</h2>
         <div className="row killPaddings nomargins">{all}</div>
      */
+    //     <TestComponent />
     return (
       <div>
         <ModalContainer />
-        {login ? '' : auth}
+        <a
+          href="/Login"
+          className="btn btn-success"
+          style={{
+            display: login ? 'none' : 'block'
+          }}
+        >Авторизуйтесь, чтобы сыграть!</a>;
 
         <h2 className="page">Стримовые</h2>
         <div className="row killPaddings nomargins">{StreamTournaments}</div>

@@ -73,6 +73,7 @@ export default class PlayModalContainer extends Component {
         data={{ header, body, footer, count: 0 }}
         hide={!state.visible}
         onClose={this.hide}
-      />);
+      />
+    );
   }
 }

@@ -18,12 +18,16 @@ type PropsType = {
   // state: Object,
 }
 
-type StateType = {}
+type StateType = {
+  visible: boolean,
+}
 
 type ResponseType = {}
 
 export default class NotificationModalContainer extends Component {
-  state = {};
+  state = {
+    visible: true,
+  };
 
   componentWillMount() {
   }
@@ -35,7 +39,6 @@ export default class NotificationModalContainer extends Component {
         onClick={this.hide}
       >{text}</button>
     );
-    // console.log('skip', id);
   };
 
   hide = () => {
@@ -48,11 +51,11 @@ export default class NotificationModalContainer extends Component {
     this.hide();
   };
 
-  buttons = {
-    action: (code, messageID, style) => {
-      return <a className="btn btn-primary" onClick={this.answer(code, messageID)}>{style.text}</a>;
-    },
-  };
+  // buttons = {
+  //   action: (code, messageID, style) => {
+  //     return <a className="btn btn-primary" onClick={this.answer(code, messageID)}>{style.text}</a>;
+  //   },
+  // };
 
   modal_pic = (name) => {
     return <div><br /><img alt="" style="width:100%" src={`/img/${name}`} /></div>;
@@ -83,11 +86,13 @@ export default class NotificationModalContainer extends Component {
         body = `Примите ${info.ammount}рублей на счёт!`;
 
         // footer = news.buttons.action(0, messageID, { text: 'Спасибо!' });
-        footer = this.buttons.action(0, messageID, {text: 'Спасибо!'});
-        break;
-      case c.NOTIFICATION_FORCE_PLAYING:
-        // body = 'Настало время играть!';
-        // footer = fast_register_button();
+        // footer = this.buttons.action(0, messageID, {text: 'Спасибо!'});
+        footer = (
+          <a
+            className="btn btn-primary"
+            onClick={() => { this.answer(0, messageID); }}
+          >Спасибо</a>
+        );
         break;
       case c.NOTIFICATION_CUSTOM:
         header = info.header;
@@ -101,8 +106,6 @@ export default class NotificationModalContainer extends Component {
         break;
       case c.NOTIFICATION_FIRST_MESSAGE:
         var mainPrize = info.mainPrize;
-        console.log(mainPrize);
-
         header = 'С почином!';
         // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
 
@@ -118,7 +121,7 @@ export default class NotificationModalContainer extends Component {
         //   prizes:prizes
         // }
         console.log('messageID of NOTIFICATION_WIN_MONEY is', messageID);
-        let txt = main(`Вы выиграли ${info.prizes[0]}РУБ !! Так держать!`);
+        let txt = main(`Вы выиграли ${info.prizes[0]} РУБ !! Так держать!`);
         header = `Вы победили в турнире #${info.tournamentID}`;
 
         body = (
@@ -127,12 +130,6 @@ export default class NotificationModalContainer extends Component {
             {this.winningPicture()}
           </div>
         );
-        // body = (
-        //   <div>
-        //     {txt}
-        //     <img alt="" style="width:100%" src="/img/win_1.png" />
-        //   </div>
-        // );
 
         footer = this.skip('Урра!', messageID);
         break;
@@ -146,13 +143,6 @@ export default class NotificationModalContainer extends Component {
         // console.error('notification card given');
         header = 'Вы получаете карточку!';
         const card = info;
-        console.log(card);
-        /*
-         <p className="card-title">
-         Собирайте карточки
-         и получайте денежные призы!
-         </p>
-         */
         body = (
           <div>
             <p className="card-title">
@@ -186,6 +176,11 @@ export default class NotificationModalContainer extends Component {
         body = drawPackButton(info.colour);
         footer = this.skip('Урра!', messageID);
         break;
+      case c.NOTIFICATION_TOURNAMENT_START:
+        header = 'Турниры начинаются!';
+        body = 'КНОПКИ КНОПКИ';
+        footer = '';
+        break;
       case c.MODAL_NO_PACK_MONEY:
         // actions.initialize();
         header = 'Упс... не хватает средств';
@@ -215,10 +210,10 @@ export default class NotificationModalContainer extends Component {
         console.warn('no such modal type', message.type);
         break;
     }
-    return {header, body, footer, invisible};
+    return { header, body, footer, invisible };
   };
 
-  render(props:PropsType) {
+  render(props:PropsType, state: StateType) {
     const message = props.message;
     const data = message.data || {};
     const messageID = message["_id"] || 0;
@@ -226,6 +221,6 @@ export default class NotificationModalContainer extends Component {
     const modalData = this.getModalData(message, data, messageID);
     const drawData = Object.assign({}, modalData, { count: props.count, messageID });
     // console.log('draw notification modal container', drawData);
-    return <Modal data={drawData} />;
+    return <Modal data={drawData} hide={!state.visible} />;
   }
 }

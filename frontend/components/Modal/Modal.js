@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
+import actions from '../../actions/ProfileActions';
 
 type PropsType = {
   data: {
@@ -12,8 +13,8 @@ type PropsType = {
 
   hide: Boolean,
 
-  buttons: Array<Component>,
-  onClick: Function,
+  // buttons: Array<Component>,
+  // onClick: Function,
   onClose: Function,
 }
 
@@ -28,6 +29,7 @@ export default class Modal extends Component {
       .end((err, res) => {
         if (err) throw err;
         // console.log('Modal markAsRead callback', id, err, res);
+        // actions.loadNews();
       });
   };
 
@@ -38,16 +40,20 @@ export default class Modal extends Component {
 
     if (messageID) this.markAsRead(messageID);
 
-    const modalID = `modal-standard${messageID}`;
+    // const modalID = `modal-standard${messageID}`;
+    const modalID = 'modal-standard';
     /*
      <script>
      $("#" + modalID).modal(props.hide ? 'hide' : 'show');
      </script>
       <div id={modalID} className="modal fade in" role="dialog">
      */
-    const className = props.hide ? 'fade hide' : 'show';
+                // onClick={props.onClose}
+      // <div id={modalID} className={`modal ${className}`} role="dialog">
+    // const className = props.hide ? 'fade hide' : 'show';
+    //   <div id={modalID} className="modal fade" role="dialog">
     return (
-      <div id={modalID} className={`modal ${className}`} role="dialog">
+      <div style={{ display: props.hide ? 'none' : 'block' }}>
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -55,7 +61,6 @@ export default class Modal extends Component {
                 type="button"
                 className="close"
                 data-dismiss="modal"
-                onClick={props.onClose}
               > &times;</button>
               <h4 className="modal-title"> {title} </h4>
             </div>
@@ -67,3 +72,4 @@ export default class Modal extends Component {
     );
   }
 }
+        // {$(`#${modalID}`).modal(props.hide ? 'hide' : 'show')}

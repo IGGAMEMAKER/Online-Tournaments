@@ -9,6 +9,7 @@ type ResponseType = {
     profile: ProfileType
   },
 };
+
 const sendError = (err, name) => {
   console.error('error happened in ', name, err);
 };
@@ -17,55 +18,114 @@ const sendPaymentStat = (name, ammount, user) => {
   console.log('no money(', name, ammount, user);
 };
 
-export default {
-  async initialize() {
-    try {
-      console.log('async initialize');
-      const response: ResponseType = await request.get('/myProfile');
-      // console.log('async initialize response...', response.body);
-      const profile = response.body.profile;
-      const { tournaments, money, packs } = profile;
-
-      const tRegs: Array = tournaments;
-
-      const registeredIn = {};
-      tRegs.forEach(reg => {
-        const tID = reg.tournamentID;
-        registeredIn[tID] = 1;
+async function loadChatMessages() {
+  try {
+    type MsgType = {
+      body: {
+        msg: {
+          senderName: string,
+          text: string,
+        }
+      }
+    };
+    const response: MsgType = await request.post('/messages/chat/recent');
+    // .end((err, res: ResponseType) => {
+    const messages = response.body.msg
+      .reverse()
+      .map(item => {
+        return { sender: item.senderName, text: item.text };
       });
-      // console.warn('async ACTION_INITIALIZE');
+    Dispatcher.dispatch({
+      type: c.ACTION_SET_MESSAGES,
+      messages,
+    });
+  } catch (e) {
+    sendError(e, 'chat/recent');
+  }
+  // this.setMessages(messages);
+  // this.scrollToMessageEnd();
+  // });
+}
+
+function loadNews() {
+  request
+    .get('/notifications/news')
+    .end((err, res: ResponseType) => {
+      const news: Array<ModalMessage> = res.body.msg;
       Dispatcher.dispatch({
-        type: c.ACTION_INITIALIZE,
-        tournaments: registeredIn,
-        money,
-        packs,
+        type: c.ACTION_LOAD_NEWS,
+        news,
       });
+    });
+}
 
-      tRegs.forEach(reg => {
-        const tID = reg.tournamentID;
-        request
-          .post('/GetTournamentAddress')
-          .send({ tournamentID: tID })
-          .end((err, res) => {
-            if (err) throw err;
-            const { host, port, running } = JSON.parse(res.text).address;
-            // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, tID);
-            console.log('/GetTournamentAddress running', running, tID);
+async function loadProfile() {
+  try {
+    console.log('async initialize');
+    const response: ResponseType = await request.get('/myProfile');
+    // console.log('async initialize response...', response.body);
+    const profile = response.body.profile;
+    const { tournaments, money, packs } = profile;
 
-            console.warn('async SET_TOURNAMENT_DATA');
-            Dispatcher.dispatch({
-              type: c.SET_TOURNAMENT_DATA,
-              host,
-              port,
-              running: running ? 1 : 0,
-              tournamentID: tID,
-            });
+    const tRegs: Array = tournaments;
+
+    const registeredIn = {};
+    tRegs.forEach(reg => {
+      const tID = reg.tournamentID;
+      registeredIn[tID] = 1;
+    });
+    // console.warn('async ACTION_INITIALIZE');
+    Dispatcher.dispatch({
+      type: c.ACTION_INITIALIZE,
+      tournaments: registeredIn,
+      money,
+      packs,
+    });
+    Dispatcher.dispatch({
+      type: c.CLEAR_TOURNAMENT_DATA,
+    });
+    tRegs.forEach(reg => {
+      const tID = reg.tournamentID;
+      request
+        .post('/GetTournamentAddress')
+        .send({ tournamentID: tID })
+        .end((err, res) => {
+          if (err) throw err;
+          const { host, port, running } = JSON.parse(res.text).address;
+          // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, tID);
+          console.log('/GetTournamentAddress running', running, tID);
+
+          // if (running) {
+          console.warn('async SET_TOURNAMENT_DATA');
+          Dispatcher.dispatch({
+            type: c.SET_TOURNAMENT_DATA,
+            host,
+            port,
+            running: running ? 1 : 0,
+            tournamentID: tID,
           });
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  },
+          // }
+        });
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function initialize() {
+  loadProfile();
+  loadChatMessages();
+  loadNews();
+}
+
+function update() {
+  loadProfile();
+  loadNews();
+}
+
+export default {
+  initialize,
+  update,
 
   async register(tournamentID) {
     try {
@@ -108,6 +168,7 @@ export default {
       console.error(err);
     }
   },
+
   startTournament(msg) {
     const tournamentID = msg.tournamentID;
 
@@ -126,17 +187,25 @@ export default {
       port,
     });
   },
-  async loadNews() {
-    request
-      .get('/notifications/news')
-      .end((err, res: ResponseType) => {
-        const news: Array<ModalMessage> = res.body.msg;
-        Dispatcher.dispatch({
-          type: c.ACTION_LOAD_NEWS,
-          news,
-        });
-      });
+
+  finishTournament(msg) {
+    const { tournamentID } = msg;
+    console.warn('finish', msg);
+    if (!store.isRegisteredIn(tournamentID)) {
+      return;
+    }
+
+    const audio = new Audio('/sounds/TOURN_START.wav');
+    audio.play();
+
+    Dispatcher.dispatch({
+      type: c.ACTION_FINISH_TOURNAMENT,
+      tournamentID,
+    });
   },
+
+  loadNews,
+
   async openPack(value, pay) {
     try {
       // console.log('async openPack', value, pay);
@@ -159,35 +228,16 @@ export default {
       sendError(e, 'openPack');
     }
   },
-  async loadChatMessages() {
-    try {
-      type MsgType = {
-        body: {
-          msg: {
-            senderName: string,
-            text: string,
-          }
-        }
-      };
-      const response: MsgType = await request.post('/messages/chat/recent');
-      // .end((err, res: ResponseType) => {
-      const messages = response.body.msg
-        .reverse()
-        .map(item => {
-          return { sender: item.senderName, text: item.text };
-        });
-      Dispatcher.dispatch({
-        type: c.ACTION_SET_MESSAGES,
-        messages,
-      });
-    } catch (e) {
-      sendError(e, 'chat/recent');
-    }
-    // this.setMessages(messages);
-    // this.scrollToMessageEnd();
-    // });
-  },
 
+  loadChatMessages,
+  addNotification(data, modalType) {
+
+    Dispatcher.dispatch({
+      type: c.ACTION_ADD_NOTIFICATION,
+      data,
+      modalType,
+    });
+  },
   payModalStat() {
 
   },

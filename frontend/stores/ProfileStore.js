@@ -4,8 +4,8 @@ import * as c from '../constants/constants';
 import * as t from '../components/types';
 
 // let _tournaments: Array<TournamentType> = [];
-let _tournaments: Object = {};
-let _adresses: Object = {};
+let _tournaments: Object = {}; // tournaments, where the player is registered
+let _adresses: Object = {}; // adresses of tournaments
 let _running: Object = {};
 
 let _money: number = 0;
@@ -120,12 +120,12 @@ type PayloadType = {
 };
 
 const delayedUpdate = (s) => {
-  const time = 1000;
-  setTimeout(() => { s.emitChange(); }, time);
+  // const time = 1000;
+  // setTimeout(() => { s.emitChange(); }, time);
 };
 
 Dispatcher.register((p: PayloadType) => {
-  // console.log(p.type, p);
+  console.error(p.type);//, p);
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:
@@ -179,9 +179,20 @@ Dispatcher.register((p: PayloadType) => {
       _adresses[p.tournamentID] = { port: p.port, host: p.host };
       delayedUpdate(store);
       break;
-
+    case c.CLEAR_TOURNAMENT_DATA:
+      _running = {};
+      _adresses = {};
+      break;
+    case c.ACTION_ADD_NOTIFICATION:
+      _news.splice(0, 0, {
+        data: p.data,
+        type: p.modalType,
+        _id: 0,
+      });
+      break;
     case c.ACTION_TEST:
       console.warn('_testValue', _testValue);
+      _testValue++;
       break;
     default:
       change = false;
