@@ -50,10 +50,11 @@ export default class Modal extends Component {
      */
                 // onClick={props.onClose}
       // <div id={modalID} className={`modal ${className}`} role="dialog">
-    // const className = props.hide ? 'fade hide' : 'show';
-    //   <div id={modalID} className="modal fade" role="dialog">
+    const className = props.hide ? 'modal fade hide' : 'modal show';
+      // <div style={{ display: props.hide ? 'none' : 'block' }}>
+      // <div id={modalID} className="modal fade" role="dialog">
     return (
-      <div style={{ display: props.hide ? 'none' : 'block' }}>
+      <div id={modalID} className={className} role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -61,6 +62,7 @@ export default class Modal extends Component {
                 type="button"
                 className="close"
                 data-dismiss="modal"
+                style=""
               > &times;</button>
               <h4 className="modal-title"> {title} </h4>
             </div>
