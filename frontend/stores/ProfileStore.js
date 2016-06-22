@@ -125,7 +125,7 @@ const delayedUpdate = (s) => {
 };
 
 Dispatcher.register((p: PayloadType) => {
-  console.error(p.type);//, p);
+  // console.error(p.type);//, p);
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:

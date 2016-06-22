@@ -23,7 +23,6 @@ export default class ModalContainer extends Component {
 
   componentWillMount() {
     store.addChangeListener(() => {
-      console.warn('callback in store');
       this.setState({
         messages: store.getMyNews(),
         runningTournaments: store.getRunningTournaments(),

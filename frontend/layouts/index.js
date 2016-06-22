@@ -1,4 +1,6 @@
 import { h, Component } from 'preact';
+import Menu from '../components/Shared/Menu';
+import socketListener from '../helpers/SocketListener';
 
 type PropsType = {
   content: ?any,
@@ -6,17 +8,16 @@ type PropsType = {
 
 type StateType = {}
 
-type ResponseType = {}
-
 export default class Layout extends Component {
-  state = {};
-
   componentWillMount() {}
 
-  render(state: StateType, props: PropsType) {
+  render(props: PropsType, state: StateType) {
     return (
       <div>
-        component
+        <center>
+          <Menu />
+          <div>{props.content}</div>
+        </center>
       </div>
     );
   }

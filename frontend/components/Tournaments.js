@@ -11,7 +11,6 @@ import TestComponent from '../components/TestComponents/Comp1';
 import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
-import socketListener from '../helpers/SocketListener';
 
 import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';

@@ -118,7 +118,8 @@ html
 		//include templates/googleAd
 	body(class="background")
 		//div(class="container")
-		+navigation()
+		block overrideMenu
+			+navigation()
 		br
 		br
 		div(class="container containetWithTourn killPaddings")
