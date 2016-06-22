@@ -28,7 +28,7 @@ export default function (props:PropsType): Component {
     console.log('gallery', pack);
     return (
       <img
-        className="pack img-wrapper"
+        className="pack img-wrapper light-blue-big"
         style="cursor: pointer;"
         src={pack.src}
         alt={pack.name}

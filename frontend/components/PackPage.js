@@ -218,7 +218,12 @@ export default class PackPage extends Component {
 
     let content = '';
     if (chosenPack < 0) {
-      content = <PackGallery chosePack={this.chosePack.bind(this)} packs={this.state.allPacks} />;
+      content = (
+        <PackGallery
+          chosePack={this.chosePack.bind(this)}
+          packs={this.state.allPacks}
+        />
+      );
     } else {
       content = (
         <div>
@@ -249,7 +254,6 @@ export default class PackPage extends Component {
 
     return (
       <div>
-        <ModalContainer />
         <div className="white text-center">
           {content}
         </div>

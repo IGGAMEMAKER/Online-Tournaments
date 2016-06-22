@@ -1,12 +1,11 @@
 import { h, render } from 'preact';
 import PackPage from '../components/PackPage';
+import Layout from '../layouts/index';
 
 const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
-  <center>
-    <PackPage />
-  </center>
+  <Layout content={<PackPage />} nochat />
 );
 
 render(

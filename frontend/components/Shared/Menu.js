@@ -30,10 +30,11 @@ export default class Menu extends Component {
   render(props: PropsType, state: StateType) {
     const text = `  На вашем счету ${state.money}p   : `;
     return (
-      <div>
+      <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
           <div className="container-fluid">
-            <div className="navbar-header">
+            <div style="margin: auto;">
+              <div className="navbar-header">
               <button
                 type="button"
                 data-toggle="collapse"
@@ -47,12 +48,13 @@ export default class Menu extends Component {
               </button>
               <a href="/" className="navbar-brand light-blue">Онлайн Турниры</a>
             </div>
-            <div id="bs-example-navbar-collapse-2" className="collapse navbar-collapse">
+              <div id="bs-example-navbar-collapse-2" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-left">
                 <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
                 <li><a href="/Packs" className="light-blue">Призы</a></li>
                 <li><a href="/Profile" className="light-blue">Профиль</a></li>
               </ul>
+            </div>
             </div>
           </div>
           <div className="container-fluid">
@@ -71,7 +73,7 @@ export default class Menu extends Component {
             </center>
           </div>
         </nav>
-      </div>
+      </center>
     );
   }
 }

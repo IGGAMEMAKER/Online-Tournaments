@@ -27,7 +27,7 @@ export default class Payment extends Component {
       });
   }
 
-  payform = (value, text, paymentType) => {
+  payform = (value, paymentType) => {
     /*
      label Яндекс.Деньгами
      input(type="radio" name="paymentType" value="PC")
@@ -48,23 +48,24 @@ export default class Payment extends Component {
           <input type="hidden" id="targets" name="targets" value={`Пополнение счёта у ${login}`} />
           <input type="hidden" id="sumAttribute" name="sum" value={value} data-type="number" />
           <input type="hidden" name="comment" value="Платёж принят!" />
-          <h2 className="page">{text}</h2>
           <input type="hidden" name="paymentType" value={paymentType} />
           <input type="submit" className="btn btn-lg btn-primary" value={`Оплатить ${value} руб`} />
         </div>
       </form>
     );
   };
-  //
+  // <h2 className="page">Вы собираетесь пополнить счёт на {props.ammount} руб</h2>
   render(props: PropsType) {
-    return (
+    const qiwi = '1) QIWI: +79648847260';
+    const mobile = '2) С мобильного';
+    const yandexMoney = '3) Яндекс.Деньги';
+    const bankCard = '4) Банковская карточка';
+  return (
       <div>
-        <h1 className="page">Пополнение счёта</h1>
-        <h2 className="page">Вы собираетесь пополнить счёт на {props.ammount} руб</h2>
-        <h3 className="page">Вы можете сделать это несколькими способами: </h3>
-        <br />
-        <h2 className="page"> 1) QIWI: +79648847260 </h2>
-        <h3 className="page"> Укажите ваш логин ({login}) в комментарии к платежу </h3>
+        <h1 className="page">Пополнение счёта ({props.ammount} РУБ)</h1>
+        <h2 className="page">Способы оплаты: </h2>
+        <h2 className="page">{qiwi}</h2>
+        <p className="page"> Укажите ваш логин ({login}) в комментарии к платежу </p>
         <a
           href="https://qiwi.ru"
           target="_blank"
@@ -72,14 +73,17 @@ export default class Payment extends Component {
         >Оплатить {props.ammount} руб</a>
 
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, '2) С мобильного', 'MC')}
-        <p className="white">при оплате с мобильного НЕ УДАЛЯЙТЕ СМС до зачисления средств</p>
+        <h2 className="page">{mobile}</h2>
+        <p className="page">НЕ УДАЛЯЙТЕ СМС до зачисления средств</p>
+        {this.payform(100, 'MC')}
 
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, '3) Яндекс.Деньгами', 'PC')}
+        <h2 className="page">{yandexMoney}</h2>
+        {this.payform(100, 'PC')}
 
         <hr colour="white" width="60%" align="center" />
-        {this.payform(100, '4) Банковской картой', 'AC')}
+        <h2 className="page">{bankCard}</h2>
+        {this.payform(100, 'AC')}
 
         <hr colour="white" width="60%" align="center" />
         <br />

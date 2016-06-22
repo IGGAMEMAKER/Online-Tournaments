@@ -2,13 +2,8 @@
  * Created by gaginho on 04.06.16.
  */
 import { h, Component } from 'preact';
-import request from 'superagent';
 import { isToday, isTomorrow } from '../helpers/date';
 import { TournamentType } from './types';
-import ModalContainer from '../components/Modal/ModalContainer';
-import TestComponent from '../components/TestComponents/Comp1';
-
-import Chat from './Activity/Chat';
 
 import Tournament from './Tournaments/tournament';
 
@@ -100,8 +95,8 @@ export default class Tournaments extends Component {
       .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
       .slice(0, 3);
 
-    /*
     const RichestList = this.filter(richest, () => true);
+    /*
     // <div className="row">{TournamentList}</div>
 
      <h2 className="page">Бесплатные</h2>
@@ -129,7 +124,6 @@ export default class Tournaments extends Component {
     //     <TestComponent />
     return (
       <div>
-        <ModalContainer />
         <a
           href="/Login"
           className="btn btn-success"
@@ -151,7 +145,6 @@ export default class Tournaments extends Component {
         <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
         <hr colour="white" width="60%" align="center" />
-        <Chat />
       </div>
     );
   }
