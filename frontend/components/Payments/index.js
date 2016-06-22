@@ -141,30 +141,42 @@ export default class Payment extends Component {
     const paymentForm = this.drawChosenPaymentForm(state.chosen, props.ammount);
     const width = 50;
     const height = 50;
+    // Если у вас возникли какие-то трудности, напишите в
     return (
       <div>
-        <h1 className="page">Пополнение счёта ({props.ammount} РУБ)</h1>
-        <h2
-          className="page"
-          style={{
-            display: state.chosen ? 'none' : 'block',
-          }}
-        >Выберите способ оплаты</h2>
-        {this.getPaymentImage(1, 'QIWI', '/img/qiwi.jpeg', width, height)}
-        {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.jpeg', width, height)}
-        {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
-        {this.getPaymentImage(4, 'Оплата картой', '/img/qiwi.jpeg', width, height)}
-        {paymentForm}
+        <div style="width: 100%; height: auto;">
+          <h1 className="page">Пополнение счёта ({props.ammount} РУБ)</h1>
+          <h2
+            className="page"
+            style={{
+              display: state.chosen ? 'none' : 'block',
+            }}
+          >Выберите способ оплаты</h2>
+          {this.getPaymentImage(1, 'QIWI', '/img/qiwi.jpeg', width, height)}
+          {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.jpeg', width, height)}
+          {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
+          {this.getPaymentImage(4, 'Оплата картой', '/img/qiwi.jpeg', width, height)}
+          {paymentForm}
+        </div>
         <br />
-        <p className="white text-center">
-          Если у вас возникли какие-то трудности, напишите в
+        <div
+          className="white text-center"
+          style={{
+            position: 'fixed',
+            width: '100%',
+            left: 0,
+            right: 0,
+            bottom: '35px',
+          }}
+        >
+          Что-то не так? пишите в &nbsp;
           <span>
             <a
               href="https://vk.com/topic-111187123_33419618"
               target="_blank"
-            > техподдержку</a>
+            >техподдержку</a>
           </span>
-        </p>
+        </div>
       </div>
     );
   }
