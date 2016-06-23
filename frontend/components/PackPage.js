@@ -205,12 +205,10 @@ export default class PackPage extends Component {
       if (chosenPack === pack.packID) {
         packIndex = index;
         PackList = (
-          <img
+          <div
             className="pack img-wrapper"
-            style="cursor: pointer; margin-bottom: 0px;"
-            src={pack.src}
-            alt={pack.name}
-          />
+            style={`margin-bottom: 0px; background-image: url(${pack.src});`}
+          ></div>
         );
       }
     });
