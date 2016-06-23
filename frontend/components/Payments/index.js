@@ -9,6 +9,11 @@ type PropsType = {
   buyType: number,
 };
 
+const PAY_QIWI = 1;
+const PAY_MOBILE = 2;
+const PAY_YANDEX = 3;
+const PAY_BANK = 4;
+
 export default class Payment extends Component {
   state = {
     chosen: 0,
@@ -68,15 +73,23 @@ export default class Payment extends Component {
 
   getPaymentImage = (chosen, alt, src, width, height) => {
     return (
+      // <div style="background-color: white;">
       <img
         src={src}
         alt={alt}
         onClick={this.choosePaymentType(chosen)}
-        width={width}
-        height={height}
+        // width={width}
+        height={height*1.25}
         className="light-blue-big"
-        style="margin-right: 15px;"
+        color="white"
+        style={{
+          'margin-right': '35px',
+          cursor: 'pointer',
+          'border-radius': '15px',
+          'margin-bottom': '25px',
+        }}
       />
+      // </div>
     );
   };
 
@@ -92,7 +105,7 @@ export default class Payment extends Component {
     const yandexMoney = 'Яндекс.Деньги';
     const bankCard = 'Банковская карточка';
 
-    if (chosen === 1) {
+    if (chosen === PAY_QIWI) {
       return (
         <div>
           <h2 className="page">{qiwi}</h2>
@@ -106,7 +119,7 @@ export default class Payment extends Component {
       );
     }
 
-    if (chosen === 2) {
+    if (chosen === PAY_MOBILE) {
       return (
         <div>
           <h2 className="page">{mobile}</h2>
@@ -116,7 +129,7 @@ export default class Payment extends Component {
       );
     }
 
-    if (chosen === 3) {
+    if (chosen === PAY_YANDEX) {
       return (
         <div>
           <h2 className="page">{yandexMoney}</h2>
@@ -125,7 +138,7 @@ export default class Payment extends Component {
       );
     }
 
-    if (chosen === 4) {
+    if (chosen === PAY_BANK) {
       return (
         <div>
           <h2 className="page">{bankCard}</h2>
@@ -142,34 +155,60 @@ export default class Payment extends Component {
     const width = 50;
     const height = 50;
     // Если у вас возникли какие-то трудности, напишите в
+    let choseText = 'Выберите способ оплаты';
+    if (state.chosen === PAY_QIWI) {
+      choseText = 'QIWI';
+    }
+    if (state.chosen === PAY_MOBILE) {
+      choseText = 'Оплата с мобильного';
+    }
+
+    if (state.chosen === PAY_YANDEX) {
+      choseText = 'Оплата Яндекс.Деньгами';
+    }
+
+    if (state.chosen === PAY_BANK) {
+      choseText = 'Оплата банковской картой';
+    }
+    // {this.getPaymentImage(2, 'Оплата с мобильного', 'http://s1.iconbird.com/ico/2013/9/452/w352h5121380477012phone.png', width, height)}
+    // {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/28577/EkehfwEF_l/orig', width, height)}
+    // {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
     return (
       <div>
         <div style="width: 100%; height: auto;">
-          <h1 className="page">Пополнение счёта ({props.ammount} РУБ)</h1>
-          <h2
-            className="page"
+          <h1 className="page">Пополнение счёта на {props.ammount} РУБ</h1>
+          <i className="fa fa-icon-ya-money" />
+          <i className="fa fa-yandex" />
+          <h2 className="page" >{choseText}</h2>
+          {this.getPaymentImage(1, 'QIWI', 'http://qiwi.by/uploads/files/logo_qiwi_rgb.png', width, height)}
+          {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.png', width, height)}
+          <div
             style={{
-              display: state.chosen ? 'none' : 'block',
+              'background-color': 'white',
+              display: 'inline-block',
+              width: '245px',
+              height: height * 1.25,
+              'border-radius': '15px',
+              'margin-right': '35px',
             }}
-          >Выберите способ оплаты</h2>
-          {this.getPaymentImage(1, 'QIWI', '/img/qiwi.jpeg', width, height)}
-          {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.jpeg', width, height)}
-          {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
-          {this.getPaymentImage(4, 'Оплата картой', '/img/qiwi.jpeg', width, height)}
+          >
+            {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/114306/VyZTMD4F_g/orig', width, height)}
+          </div>
+          {this.getPaymentImage(4, 'Оплата картой', 'http://learnthat.com/files/2010/02/credit-cards1.png', width, height)}
           {paymentForm}
         </div>
         <br />
         <div
           className="white text-center"
           style={{
-            position: 'fixed',
+            // position: 'fixed',
             width: '100%',
-            left: 0,
-            right: 0,
-            bottom: '35px',
+            // left: 0,
+            // right: 0,
+            // bottom: '35px',
           }}
         >
-          Что-то не так? пишите в &nbsp;
+          Что-то не так? Пишите в &nbsp;
           <span>
             <a
               href="https://vk.com/topic-111187123_33419618"

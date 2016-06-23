@@ -9,8 +9,6 @@ type StateType = {
   loaded: boolean,
 }
 
-type ResponseType = {}
-
 export default class Menu extends Component {
   state = {
     loaded: false,
@@ -18,43 +16,44 @@ export default class Menu extends Component {
 
   componentWillMount() {
     store.addChangeListener(() => {
-      console.warn('callback in store');
+      // console.warn('callback in store');
       this.setState({
         money: store.getMoney(),
         loaded: true,
       });
     });
-    // actions.initialize();
   }
 
   render(props: PropsType, state: StateType) {
     const text = `  На вашем счету ${state.money}p   : `;
+    const loginMenu = login ? '' : <li><a href="/Login" className="light-blue">Вход</a></li>;
     return (
       <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
           <div className="container-fluid">
             <div style="margin: auto;">
               <div className="navbar-header">
-              <button
-                type="button"
-                data-toggle="collapse"
-                data-target="#bs-example-navbar-collapse-2"
-                className="navbar-toggle"
-              >
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-              </button>
-              <a href="/" className="navbar-brand light-blue">Онлайн Турниры</a>
-            </div>
-              <div id="bs-example-navbar-collapse-2" className="collapse navbar-collapse">
-              <ul className="nav navbar-nav navbar-left">
-                <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
-                <li><a href="/Packs" className="light-blue">Призы</a></li>
-                <li><a href="/Profile" className="light-blue">Профиль</a></li>
-              </ul>
-            </div>
+                <button
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#bs-example-navbar-collapse-1"
+                  className="navbar-toggle"
+                >
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                </button>
+                <a href="/" className="navbar-brand light-blue">Онлайн Турниры</a>
+              </div>
+              <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
+                <ul className="nav navbar-nav navbar-left">
+                  <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
+                  <li><a href="/Packs" className="light-blue">Призы</a></li>
+                  <li><a href="/Profile" className="light-blue">Профиль</a></li>
+                  {loginMenu}
+                </ul>
+              </div>
             </div>
           </div>
           <div className="container-fluid">

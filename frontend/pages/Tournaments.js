@@ -5,7 +5,7 @@ import Layout from '../layouts/index';
 const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
-  <Layout content={<Tournaments />} />
+  <Layout content={<Tournaments />} chat />
 );
 
 render(
