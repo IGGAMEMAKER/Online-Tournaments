@@ -105,10 +105,11 @@ export default class Chat extends Component {
         if (m.sender === login) {
           style = 'color: gold;';
         }
+        const text = `${m.sender || 'Гость'}: ${m.text}`;
         if (i === arr.length - 1) {
-          return <p id="chat" className="chat-text" style={style}>{m.sender}: {m.text}</p>;
+          return <p id="chat" className="chat-text" style={style}>{text}</p>;
         }
-        return <p className="chat-text" style={style}>{m.sender}: {m.text}</p>;
+        return <p className="chat-text" style={style}>{text}</p>;
       });
     /*
       <link rel="stylesheet" type="text/css" href="/css/chat1.css" />

@@ -25,7 +25,7 @@ export default class Footer extends Component {
     let chat = '';
     if (state.loaded) {
       const m = state.messages[state.messages.length - 1];
-      chat = <a href="#chat">{m.sender}: {m.text}</a>;
+      chat = <a href="#chat">{m.sender || 'Гость'}: {m.text}</a>;
     }
     //
     // <li>

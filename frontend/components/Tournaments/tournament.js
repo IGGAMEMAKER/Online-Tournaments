@@ -123,7 +123,9 @@ export default class Tournament extends Component {
     const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}-е место: {p} РУБ</p>);
     const buyIn = props.data.buyIn;
 
-    const coverUrl = `/img/topics/realmadrid.jpg`;
+    const maxPlayers = props.data.goNext[1];
+
+    const coverUrl = `/img/topics/default.jpg`;
     const cover = (
       <div className="cover" style="position: relative">
         <span
@@ -143,11 +145,35 @@ export default class Tournament extends Component {
       </div>
     );
 
+    let difficulty = 'Проще простого';
+    if (maxPlayers > 5) {
+      if (maxPlayers > 28) {
+        if (maxPlayers > 100) {
+          difficulty = 'Будет жарко';
+        } else {
+          difficulty = 'Придётся потрудиться';
+        }
+      } else {
+        difficulty = 'Вполне по силам';
+      }
+    }
+    // participants = ;
+
     const players = props.data.players;
     if (players === 0) {
-      participants = <div>Стань первым!</div>;
+      participants = (
+        <div>
+          Стань первым!
+          <div>Сложность: {difficulty}</div>
+        </div>
+      );
     } else {
-      participants = <div>Участвует {players} {getFormOfParticipants(players)}</div>;
+      participants = (
+        <div>
+          Участвует {players} {getFormOfParticipants(players)}
+          <div>Сложность: {difficulty}</div>
+        </div>
+      );
     }
 
     // style="width: 300px; display: inline-block;"
