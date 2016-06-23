@@ -122,6 +122,8 @@ export default class Tournaments extends Component {
         <div className="row killPaddings nomargins">{all}</div>
      */
     //     <TestComponent />
+    //         <h2 className="page">Стримовые</h2>
+    // <div className="row killPaddings nomargins">{StreamTournaments}</div>
     return (
       <div>
         <a
@@ -131,9 +133,6 @@ export default class Tournaments extends Component {
             display: login ? 'none' : 'block'
           }}
         >Авторизуйтесь, чтобы сыграть!</a>
-
-        <h2 className="page">Стримовые</h2>
-        <div className="row killPaddings nomargins">{StreamTournaments}</div>
 
         <h2 className="page">Пройдут сегодня</h2>
         <div className="row killPaddings nomargins">{TodayTournaments}</div>
