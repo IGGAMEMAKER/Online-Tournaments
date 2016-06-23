@@ -123,7 +123,7 @@ export default class Tournament extends Component {
     const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}-е место: {p} РУБ</p>);
     const buyIn = props.data.buyIn;
 
-    const maxPlayers = props.data.goNext[1];
+    const maxPlayers = props.data.goNext[0];
 
     const coverUrl = `/img/topics/default.jpg`;
     const cover = (
