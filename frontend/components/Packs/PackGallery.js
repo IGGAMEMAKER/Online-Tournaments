@@ -27,13 +27,17 @@ export default function (props:PropsType): Component {
   const gallery = props.packs.map((pack: PackLayer) => {
     console.log('gallery', pack);
     return (
-      <img
+      <div
         className="pack img-wrapper light-blue-big"
-        style="cursor: pointer;"
-        src={pack.src}
-        alt={pack.name}
+        style={{
+          'background-image': `url(${pack.src})`,
+          // width: '100%',
+          // height: '100%',
+        }}
+        // src={pack.src}
+        // alt={pack.name}
         onClick={chosePack(pack.packID, props)}
-      />
+      ></div>
     );
   });
 

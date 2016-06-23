@@ -424,6 +424,11 @@ button{
   width: 280px;
   height: 200px;
   float: left;
+
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .light-blue:hover {
