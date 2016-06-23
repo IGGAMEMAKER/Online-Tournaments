@@ -84,6 +84,11 @@ export default class Tournaments extends Component {
     const TomorrowTournaments = this
       .filter(tourns, (t: TournamentType) => t.startDate && isTomorrow(t.startDate));
 
+    const REGULARITY_REGULAR = 1;
+    const RegularList = this
+      .filter(tourns, (t: TournamentType) =>
+      t.settings && t.settings.regularity === REGULARITY_REGULAR);
+
     const FreeTournaments = this
       .filter(tourns, (t: TournamentType) => t.buyIn === 0);
 
@@ -124,6 +129,9 @@ export default class Tournaments extends Component {
     //     <TestComponent />
     //         <h2 className="page">Стримовые</h2>
     // <div className="row killPaddings nomargins">{StreamTournaments}</div>
+
+    // <h2 className="page">Бесплатные турниры</h2>
+    // <div className="row killPaddings nomargins">{FreeTournaments}</div>
     return (
       <div>
         <a
@@ -134,14 +142,17 @@ export default class Tournaments extends Component {
           }}
         >Авторизуйтесь, чтобы сыграть!</a>
 
+        <h2 className="page">Регулярные турниры</h2>
+        <div className="row killPaddings nomargins">{RegularList}</div>
+
         <h2 className="page">Пройдут сегодня</h2>
         <div className="row killPaddings nomargins">{TodayTournaments}</div>
 
         <h2 className="page">Пройдут завтра</h2>
         <div className="row killPaddings nomargins">{TomorrowTournaments}</div>
 
-        <h2 className="page">Бесплатные турниры</h2>
-        <div className="row killPaddings nomargins">{FreeTournaments}</div>
+        <h2 className="page">Турниры с наибольшими призами</h2>
+        <div className="row killPaddings nomargins">{RichestList}</div>
 
         <hr colour="white" width="60%" align="center" />
       </div>
