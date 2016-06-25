@@ -17,13 +17,14 @@ export default class Layout extends Component {
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
+    const header = props.noheader ? '' : <Menu />;
     const chat = props.chat ? <Chat /> : '';
     const modals = props.nomodals ? '' : <ModalContainer />;
     const footer = props.nofooter ? '' : <Footer />;
     return (
       <div>
         <center>
-          <Menu />
+          {header}
           {modals}
           <div>{props.content}</div>
           {chat}

@@ -155,7 +155,14 @@ app.use('/leagues', require('./routes/leagues'));
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
-app.set('views', ['./frontend/views', './frontend/views/admin', './frontend/games/PingPong', './frontend/games/Questions']);
+var views = [
+  './frontend/views',
+  './frontend/views/admin',
+  './frontend/games/PingPong',
+  './frontend/games/Questions',
+  './frontend/games/Football',
+];
+app.set('views', views);
 //app.set('games/PingPong', './views');
 
 
@@ -599,6 +606,10 @@ app.get('/MyCollections', aux.authenticated, function (req, res, next) {
   })
   .catch(next)
 }, aux.render('MyCollections'), aux.err)
+
+app.get('/Football', function (req, res) {
+  res.render('Football');
+});
 
 app.get('/Cards', aux.authenticated, function (req, res, next){
 

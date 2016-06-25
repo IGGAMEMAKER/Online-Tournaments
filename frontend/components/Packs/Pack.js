@@ -22,7 +22,7 @@ export default function (props:PropsType): Component {
   if (props.pack.color > -1) {
     style['background-image'] = `url('/img/cardLayers/${props.pack.color}.jpg')`;
   }
-  
+
   return (
     <div>
       <img border="0" alt="" className="card img-wrapper" style={style} src="/img/topics/realmadrid/pack.png" />

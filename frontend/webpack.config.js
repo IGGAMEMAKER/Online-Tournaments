@@ -8,6 +8,7 @@ const currentDir = __dirname;
 const JS_DIST_DIR = `${currentDir}/public/`;
 
 const app = 'pages/'; //pages root${
+const games = 'pages/Games'; //pages root${
 
 module.exports = [{
   name: 'react',
@@ -21,6 +22,7 @@ module.exports = [{
     'admin-tournaments': `./${app}/Admin.js`,
     // total: './app/TotalTest.js',
     Modal: `./${app}/Modal.js`,
+    Football: `./${games}/Football.js`,
   },
   output: {
     // filename: 'app.js',

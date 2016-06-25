@@ -55,7 +55,7 @@ export default class ModalContainer extends Component {
     }
 
     // console.log('no modal');
-    $('#modal-standard').modal('hide');
+    // $('#modal-standard').modal('hide');
     return <div style="display: none;"></div>;
   }
 }
