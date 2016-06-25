@@ -42,17 +42,16 @@ export default class FootballTeam extends Component {
   render(props: PropsType, state: StateType) {
     const playerList = props.team.map((p: Footballer, i: number) => {
       return (
-        <div
-          className="white page footballer"
-        >
-          {p.name}
-          {i === 10 ? (
-            <div>
-              <hr width="60%" color="white" />
-              <div>Запасные</div>
-              <br />
-            </div>
-          ) : ''}
+        <div>
+          <div
+            className={`white page footballer ${props.isUserTeam ? 'light-blue' : ''}`}
+          >{p.name}
+          </div>
+          <div className={i !== 10 ? 'hide' : ''}>
+            <hr width="60%" color="white" />
+            <div>Запасные</div>
+            <br />
+          </div>
         </div>
       );
     });

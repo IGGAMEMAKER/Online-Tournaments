@@ -508,13 +508,37 @@ button{
   text-align: center;
 }
 
+.responsive {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 .football-team {
   width: 150px;
   float: left;
 }
+
+.football-team-image {
+  width: 200px;
+  height: 175px;
+}
+
+.football-team-realmadrid {
+  background-image: url('/img/topics/realmadrid.jpg');
+}
+
+.football-team-manunited {
+  background-image: url('/img/topics/manutd.jpg');
+}
+
 .football-translation {
   width: calc(100% - 302px);
   float: left;
+}
+
+.hide {
+  display: none;
 }
 
 .footballer {
