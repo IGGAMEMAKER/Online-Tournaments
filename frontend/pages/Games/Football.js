@@ -6,7 +6,7 @@ import Layout from '../../layouts/index';
 const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
-  <Layout content={<Football />} chat nomodals nofooter noheader />
+  <Layout content={<Football />} nomodals nofooter noheader />
 );
 // const elements = (
 //   <center>

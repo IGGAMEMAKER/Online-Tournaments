@@ -81,6 +81,18 @@ export default class Football extends Component {
     }, {
       name: 'Isco',
       position: AM,
+    }, {
+      name: 'Jese',
+      position: WG,
+    }, {
+      name: 'Vazquez',
+      position: WG,
+    }, {
+      name: 'Mayoral',
+      position: FW,
+    }, {
+      name: 'Morata',
+      position: FW,
     }
     ];
   };
@@ -91,15 +103,17 @@ export default class Football extends Component {
 
   render(props: PropsType, state: StateType) {
     return (
-      <div className="white page">
-        <div style="width: 300px; float: left;">
-          <FootballTeam team={this.getLeftTeam()} />
+      <center>
+        <div className="white page">
+          <div className="football-team left">
+            <FootballTeam team={this.getLeftTeam()} />
+          </div>
+          <div className="football-translation">ТРАНСЛЯЦИЯ</div>
+          <div className="football-team right">
+            <FootballTeam team={this.getLeftTeam()} />
+          </div>
         </div>
-        <div style="width: 300px; float: left;">ТРАНСЛЯЦИЯ</div>
-        <div style="width: 300px; float: left;">
-          <FootballTeam team={this.getLeftTeam()} />
-        </div>
-      </div>
+      </center>
     );
   }
 }

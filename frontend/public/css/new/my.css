@@ -508,6 +508,26 @@ button{
   text-align: center;
 }
 
+.football-team {
+  width: 150px;
+  float: left;
+}
+.football-translation {
+  width: calc(100% - 302px);
+  float: left;
+}
+
+.footballer {
+  cursor: pointer;
+}
+
+.football-team.left {
+  border-right: 1px solid;
+}
+.football-team.right {
+  border-left: 1px solid;
+}
+
 @media (max-width: 360px){
   .marathon-multipliers {
     overflow: hidden;
