@@ -30,11 +30,20 @@ type TeamSettings = {
  быстрая (контра)
  */
 
+type TranslationMessage = {
+  text: string,
+}
+
 type StateType = {
   mode: string,
   team: string,
 
   settings: TeamSettings,
+
+  scored: number,
+  conceded: number,
+  time: number,
+  messages: Array<TranslationMessage>,
 }
 
 type ResponseType = {}
@@ -139,10 +148,7 @@ const teams = {
     }, {
       name: 'Morata',
       position: FW,
-    }, {
-      name: 'Khedira',
-      position: DM,
-    }
+    },
     ],
     cover: '/img/topics/realmadrid.jpg',
   },
@@ -220,13 +226,31 @@ const teams = {
     cover: '/img/topics/manutd.jpg',
   }
 };
-
+/*
+ {
+ name: 'Khedira',
+ position: DM,
+ }
+ */
 export default class Football extends Component {
   state = {
     // mode: MODE_INITIALIZE,
     mode: MODE_MAKE_SQUAD,
     team: 'realmadrid',
     selected: -1,
+
+    scored: 0,
+    conceded: 0,
+    time: 0,
+
+    messages: [
+      { text: 'Матч начинается!' },
+      { text: 'Мяч в цетре поля, идёт нешуточная борьба за него' },
+      { text: 'Удар! Это было опасно!' },
+      { text: 'ГООООООЛ!!!!!! ВЕЛИКОЛЕПНОЕ ЗАВЕРШЕНИЕ!!!' },
+      { text: 'Modric отбирает мяч, что же будет дальше?' },
+      { text: 'Длинная передача на ход вингеру' },
+    ],
   };
 
   componentWillMount() {
@@ -365,16 +389,22 @@ export default class Football extends Component {
           </div>
         ));
       // &nbsp;{s.index}
+      //     <button>Заменить игрока</button>
       subs = (
         <div>
           <div>{footballer.name}</div>
           <div>{footballer.form}</div>
           <div>{footballer.position}</div>
           {expectedSubs}
-          <button>Заменить игрока</button>
         </div>
       );
     }
+
+    const messages = state.messages
+      .reverse()
+      .map((m: TranslationMessage) => (
+        <div className="football-translation-text">{m.text}</div>
+      ));
 
     return (
       <center>
@@ -390,6 +420,9 @@ export default class Football extends Component {
           <div className="football-translation">
             {subs}
             <h2>ТРАНСЛЯЦИЯ</h2>
+            <h2>{state.scored}:{state.conceded}</h2>
+            <h4>Минута: {state.time}</h4>
+            {messages}
           </div>
           <div className="football-team right">
             <h2 className="white page">Команда соперника</h2>
