@@ -256,6 +256,9 @@ export default class Football extends Component {
   componentWillMount() {
     // const timeout = 3000;
     // setTimeout(() => { this.setState({ mode: MODE_CHOOSE_TEAM }); }, timeout);
+
+    // setInterval(() => { this.onGoalScored({ scorer: 'g.iosebashvili' }); }, 4000);
+    // setTimeout(() => { this.onGoalScored({ scorer: 'Raja' }); }, 1500);
   }
 
   getFunnyPhrase = () => {
@@ -317,6 +320,21 @@ export default class Football extends Component {
       seconds = `0${seconds}`;
     }
     return `${minutes}:${seconds}`;
+  };
+
+  onGoalScored = (msg) => {
+    let scored;
+    let conceded;
+
+    if (msg.usernames[0] === login) {
+      scored = msg.scores[0];
+      conceded = msg.scores[1];
+    } else {
+      scored = msg.scores[1];
+      conceded = msg.scores[0];
+    }
+
+    this.setState({ conceded, scored });
   };
 
   render(props: PropsType, state: StateType) {
