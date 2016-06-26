@@ -241,7 +241,7 @@ export default class Football extends Component {
 
     scored: 0,
     conceded: 0,
-    time: 0,
+    time: 185,
 
     messages: [
       { text: 'Матч начинается!' },
@@ -304,6 +304,19 @@ export default class Football extends Component {
 
   selectPlayer = (i) => {
     this.setState({ selected: i });
+  };
+
+  getGameTime = (state: StateType) => {
+    let minutes = Math.floor(state.time / 60);
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+
+    let seconds = Math.floor(state.time % 60);
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    return `${minutes}:${seconds}`;
   };
 
   render(props: PropsType, state: StateType) {
@@ -401,11 +414,14 @@ export default class Football extends Component {
     }
 
     const messages = state.messages
+      .map(m => m)
       .reverse()
       .map((m: TranslationMessage) => (
         <div className="football-translation-text">{m.text}</div>
       ));
 
+
+    const time = this.getGameTime(state);
     return (
       <center>
         <div className="white page">
@@ -421,7 +437,7 @@ export default class Football extends Component {
             {subs}
             <h2>ТРАНСЛЯЦИЯ</h2>
             <h2>{state.scored}:{state.conceded}</h2>
-            <h4>Минута: {state.time}</h4>
+            <h4>{time}</h4>
             {messages}
           </div>
           <div className="football-team right">
