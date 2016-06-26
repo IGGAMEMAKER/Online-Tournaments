@@ -3,15 +3,47 @@ import FootballTeam from './FootballTeam';
 
 type PropsType = {}
 
+type TeamSettings = {
+  side: number,
+  passing: number,
+  defence: number,
+  fouls: number,
+  attack: number,
+}
+/*
+ атаковать через:
+ лев центр прав
+
+ передачи
+ длин коротк средн
+
+ линия защиты
+ низк, средн, высок
+
+ фолы
+ мало средн много
+
+ тип атаки
+ медлен (как РФ)
+ средн (позиционное наступление без особого риска)
+ средн (позиционное наступление + риск)
+ быстрая (контра)
+ */
+
 type StateType = {
   mode: string,
   team: string,
+
+  settings: TeamSettings,
 }
 
 type ResponseType = {}
 
+const MODE_INITIALIZE = 'MODE_INITIALIZE';
+const MODE_INTRO = 'MODE_INTRO';
 const MODE_CHOOSE_TEAM = 'MODE_CHOOSE_TEAM';
-const MODE_WAIT_OPONENT = 'MODE_WAIT_OPONENT';
+const MODE_WAIT_OPPONENT = 'MODE_WAIT_OPPONENT';
+const MODE_MAKE_SQUAD = 'MODE_MAKE_SQUAD';
 
 const GK = 1;
 const CB = 2;
@@ -24,6 +56,18 @@ const WG = 7;
 const FW = 8;
 
 const teamnames = ['realmadrid', 'manunited'];
+
+const funnyPhrases = [
+  'Брюки Зидана представляют...',
+  'Плащ Зидана представляет...',
+  'Я один прочитал "Касильяс" ?',
+  'Укус Суарес представляет...',
+  'Яйца Лёва представляют...',
+  'Мимика Моу представляет...',
+  'Покер Смолова представляет...',
+  'Дриблинг Арбелоа представляет...',
+];
+
 const teams = {
   realmadrid: {
     players: [{
@@ -72,13 +116,13 @@ const teams = {
       name: 'Nacho',
       position: CB,
     }, {
-      name: 'Isco',
-      position: AM,
+      name: 'Danilo',
+      position: FB,
     }, {
       name: 'James',
       position: AM,
     }, {
-      name: 'Covacic',
+      name: 'Kovacic',
       position: CM,
     }, {
       name: 'Isco',
@@ -95,6 +139,9 @@ const teams = {
     }, {
       name: 'Morata',
       position: FW,
+    }, {
+      name: 'Khedira',
+      position: DM,
     }
     ],
     cover: '/img/topics/realmadrid.jpg',
@@ -104,34 +151,34 @@ const teams = {
       name: 'De Gea',
       position: GK,
     }, {
-      name: 'Pepe',
+      name: 'Blind',
       position: CB,
     }, {
-      name: 'Ramos',
+      name: 'Smalling',
       position: CB,
     }, {
-      name: 'Marcelo',
+      name: 'Shaw',
       position: FB,
     }, {
-      name: 'Carvajal',
+      name: 'Darmian',
       position: FB,
     }, {
-      name: 'Casemiro',
+      name: 'Schweinsteiger',
       position: DM,
     }, {
-      name: 'Modric',
+      name: 'Carrick',
       position: CM,
     }, {
-      name: 'Kroos',
+      name: 'Rooney',
       position: CM,
     }, {
-      name: 'Ronaldo',
+      name: 'Martial',
       position: WG,
     }, {
-      name: 'Bale',
+      name: 'Mata',
       position: WG,
     }, {
-      name: 'Benzema',
+      name: 'Rashford',
       position: FW,
     }, {
       name: 'Casilla',
@@ -140,7 +187,7 @@ const teams = {
       name: 'Yanez',
       position: GK,
     }, {
-      name: 'Varane',
+      name: 'Rojo',
       position: CB,
     }, {
       name: 'Nacho',
@@ -169,37 +216,84 @@ const teams = {
     }, {
       name: 'Morata',
       position: FW,
-    }
-    ],
+    }],
     cover: '/img/topics/manutd.jpg',
   }
 };
 
 export default class Football extends Component {
   state = {
-    mode: MODE_CHOOSE_TEAM,
-    teamname: 'none',
+    // mode: MODE_INITIALIZE,
+    mode: MODE_MAKE_SQUAD,
+    team: 'realmadrid',
+    selected: -1,
   };
 
   componentWillMount() {
+    // const timeout = 3000;
+    // setTimeout(() => { this.setState({ mode: MODE_CHOOSE_TEAM }); }, timeout);
   }
 
-  getLeftTeam = (name) => {
-    return teams[name];
+  getFunnyPhrase = () => {
+    const date = new Date();
+    const index = date.getTime() % funnyPhrases.length;
+    return funnyPhrases[index];
+  };
+
+  getLeftTeam = () => {
+    console.log('get my team', this.state.team, teams);
+    return teams[this.state.team];
   };
 
   getRightTeam = (name) => {
     return teams[name];
   };
 
+  makeSub = () => {
+
+  };
+
+  getPlayers = (state: StateType): Array => {
+    console.log('getPlayers', state);
+    return teams[state.team].players;
+  };
+
+  getMyPlayerById = (state: StateType) => {
+    return teams[state.team].players[state.selected];
+  };
+
   chooseTeam = (team) => {
     console.log('chosen: ', team);
-    this.setState({ team, mode: MODE_WAIT_OPONENT });
+    setTimeout(() => { this.setState({ mode: MODE_MAKE_SQUAD }); }, 3000);
+    this.setState({ team, mode: MODE_WAIT_OPPONENT });
+  };
+
+  selectPlayer = (i) => {
+    this.setState({ selected: i });
   };
 
   render(props: PropsType, state: StateType) {
+    if (state.mode === MODE_INITIALIZE) {
+      return (
+        <div>
+          <h2 className="white page">{this.getFunnyPhrase()}</h2>
+        </div>
+      );
+    }
+
+    // if (state.mode === MODE_INTRO) {
+    //   return (
+    //     <div>
+    //       <h1 className="white page">Football</h1>
+    //       <button
+    //         className=""
+    //         onClick={() => { this.setState({ mode: MODE_CHOOSE_TEAM }); }}
+    //       >ИГРАТЬ</button>
+    //     </div>
+    //   );
+    // }
+
     if (state.mode === MODE_CHOOSE_TEAM) {
-      console.log('MODE_CHOOSE_TEAM');
       let teamList = teamnames.map(name =>
         <div
           className={`responsive football-team-image img-wrapper football-team-${name}`}
@@ -209,21 +303,84 @@ export default class Football extends Component {
       return (
         <div>
           <center>
+            <h1 className="white page">Football</h1>
             <h2 className="white page">Выберите команду</h2>
             {teamList}
           </center>
         </div>
       );
     }
+
+    if (state.mode === MODE_WAIT_OPPONENT) {
+      return (
+        <div>
+          <h2 className="white page">Поиск оппонента...</h2>
+          <div className="img-loading responsive"></div>
+        </div>
+      );
+    }
+
+          // <progress>hhh</progress>
+    let subs;
+    const selected = state.selected;
+    if (selected >= 0 && selected < 11) {
+
+      const footballer = this.getMyPlayerById(state);
+
+      // const expectedSubs = 'expectedSubs';
+      const expectedSubs = this.getPlayers(state)
+        .map((p, i) => Object.assign({ index: i }, p))
+        .filter(
+          (p, i) => {
+            const position = footballer.position;
+            const positionIsSame =
+              p.position === footballer.position ||
+              (position === CB && p.position === DM) ||
+              (position === FB && p.position === CB) ||
+              (position === DM && (p.position === CB || p.position === CM)) ||
+              (position === CM && (p.position === DM || p.position === AM)) ||
+              (position === AM && p.position === CM) ||
+              (position === WG && (p.position === AM || p.position === FW)) ||
+              (position === FW && p.position === WG);
+
+            return positionIsSame &&
+            i !== selected && !p.wasSubstituted
+            && i > 10;
+          })
+        .map(s => (
+          <div>
+            {s.name}&nbsp;{s.index}
+          </div>
+        ));
+      subs = (
+        <div>
+          <div>{footballer.name}</div>
+          <div>{footballer.form}</div>
+          <div>{footballer.position}</div>
+          {expectedSubs}
+          <button>Заменить игрока</button>
+        </div>
+      );
+    }
+
     return (
       <center>
         <div className="white page">
           <div className="football-team left">
-            <FootballTeam team={this.getLeftTeam('realmadrid')} isUserTeam />
+            <h2 className="white page">Ваша команда</h2>
+            <FootballTeam
+              isUserTeam
+              team={this.getLeftTeam('realmadrid')}
+              selectPlayer={this.selectPlayer}
+            />
           </div>
-          <div className="football-translation">ТРАНСЛЯЦИЯ</div>
+          <div className="football-translation">
+            {subs}
+            <h2>ТРАНСЛЯЦИЯ</h2>
+          </div>
           <div className="football-team right">
-            <FootballTeam team={this.getLeftTeam('manunited')} />
+            <h2 className="white page">Команда соперника</h2>
+            <FootballTeam team={this.getRightTeam('manunited')} />
           </div>
         </div>
       </center>

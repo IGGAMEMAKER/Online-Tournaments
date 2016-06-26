@@ -514,14 +514,22 @@ button{
   background-position: center;
 }
 
+.img-loading {
+  width: 20px;
+  height: 17px;
+  background-image: url('/img/loading.gif');
+}
+
 .football-team {
   width: 150px;
   float: left;
 }
 
+
 .football-team-image {
   width: 200px;
   height: 175px;
+  display: inline-block;
 }
 
 .football-team-realmadrid {
@@ -543,6 +551,9 @@ button{
 
 .footballer {
   cursor: pointer;
+}
+.footballer.selected {
+  box-shadow: 0 0 18px #2793C7;
 }
 
 .football-team.left {

@@ -9,9 +9,13 @@ type Footballer = {
 }
 
 type PropsType = {
-  team: Array<Footballer>,
+  team: {
+    players: Array<Footballer>
+  },
   name: string,
   isUserTeam: boolean,
+
+  selectedPlayer: Function,
 }
 
 type StateType = {
@@ -19,15 +23,15 @@ type StateType = {
   substitutions: number,
 }
 
-const GK = 1;
-const CB = 2;
-const FB = 3;
-const DM = 4;
-const AM = 5;
-const CM = 6;
-
-const WG = 7;
-const FW = 8;
+// const GK = 1;
+// const CB = 2;
+// const FB = 3;
+// const DM = 4;
+// const AM = 5;
+// const CM = 6;
+//
+// const WG = 7;
+// const FW = 8;
 
 type ResponseType = {}
 
@@ -39,12 +43,25 @@ export default class FootballTeam extends Component {
 
   componentWillMount() {}
 
+  selectPlayer = (selected, props: PropsType) => {
+    if (props.isUserTeam) {
+      props.selectPlayer(selected);
+      this.setState({ selected });
+    }
+  };
+
   render(props: PropsType, state: StateType) {
-    const playerList = props.team.map((p: Footballer, i: number) => {
+    console.log('FootballTeam', props.team);
+    const playerList = props.team.players.map((p: Footballer, i: number) => {
+      let className = `white page footballer ${props.isUserTeam ? 'light-blue' : ''}`;
+      if (state.selected === i) {
+        className += ' selected';
+      }
       return (
         <div>
           <div
-            className={`white page footballer ${props.isUserTeam ? 'light-blue' : ''}`}
+            className={className}
+            onClick={() => { this.selectPlayer(i, props); }}
           >{p.name}
           </div>
           <div className={i !== 10 ? 'hide' : ''}>

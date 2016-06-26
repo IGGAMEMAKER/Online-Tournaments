@@ -2394,17 +2394,56 @@
 /***/ },
 /* 91 */,
 /* 92 */,
-/* 93 */
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */,
+/* 114 */,
+/* 115 */,
+/* 116 */,
+/* 117 */,
+/* 118 */,
+/* 119 */,
+/* 120 */,
+/* 121 */,
+/* 122 */,
+/* 123 */,
+/* 124 */,
+/* 125 */,
+/* 126 */,
+/* 127 */,
+/* 128 */,
+/* 129 */,
+/* 130 */,
+/* 131 */,
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 
-	var Emitter = __webpack_require__(94);
-	var reduce = __webpack_require__(95);
-	var requestBase = __webpack_require__(96);
-	var isObject = __webpack_require__(97);
+	var Emitter = __webpack_require__(133);
+	var reduce = __webpack_require__(134);
+	var requestBase = __webpack_require__(135);
+	var isObject = __webpack_require__(136);
 
 	/**
 	 * Root reference for iframes.
@@ -2453,7 +2492,7 @@
 	 * Expose `request`.
 	 */
 
-	var request = module.exports = __webpack_require__(98).bind(null, Request);
+	var request = module.exports = __webpack_require__(137).bind(null, Request);
 
 	/**
 	 * Determine XHR.
@@ -3477,7 +3516,7 @@
 
 
 /***/ },
-/* 94 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -3646,7 +3685,7 @@
 
 
 /***/ },
-/* 95 */
+/* 134 */
 /***/ function(module, exports) {
 
 	
@@ -3675,13 +3714,13 @@
 	};
 
 /***/ },
-/* 96 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module of mixed-in functions shared between node and client code
 	 */
-	var isObject = __webpack_require__(97);
+	var isObject = __webpack_require__(136);
 
 	/**
 	 * Clear previous timeout.
@@ -3847,7 +3886,7 @@
 
 
 /***/ },
-/* 97 */
+/* 136 */
 /***/ function(module, exports) {
 
 	/**
@@ -3866,7 +3905,7 @@
 
 
 /***/ },
-/* 98 */
+/* 137 */
 /***/ function(module, exports) {
 
 	// The node and browser modules expose versions of this with the
@@ -3904,45 +3943,6 @@
 
 
 /***/ },
-/* 99 */,
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
-/* 129 */,
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
 /* 138 */,
 /* 139 */,
 /* 140 */,
@@ -3987,7 +3987,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _superagent = __webpack_require__(93);
+	var _superagent = __webpack_require__(132);
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -4338,7 +4338,7 @@
 
 	var _TeamDestroy2 = _interopRequireDefault(_TeamDestroy);
 
-	var _superagent = __webpack_require__(93);
+	var _superagent = __webpack_require__(132);
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -4541,7 +4541,7 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _superagent = __webpack_require__(93);
+	var _superagent = __webpack_require__(132);
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
