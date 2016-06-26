@@ -249,8 +249,18 @@ export default class Football extends Component {
     return teams[name];
   };
 
-  makeSub = () => {
+  getPlayerById = (team, id) => {
+    return Object.assign({}, teams[team].players[id]);
+  };
 
+  makeSub = (id, state: StateType) => {
+    const selected = state.selected;
+    const was = this.getMyPlayerById(state);
+    const sub = this.getPlayerById(state.team, id);
+
+    teams[state.team].players[selected] = sub;
+    teams[state.team].players[id] = was;
+    this.setState({ selected: -1 });
   };
 
   getPlayers = (state: StateType): Array => {
@@ -259,7 +269,7 @@ export default class Football extends Component {
   };
 
   getMyPlayerById = (state: StateType) => {
-    return teams[state.team].players[state.selected];
+    return Object.assign({}, teams[state.team].players[state.selected]);
   };
 
   chooseTeam = (team) => {
@@ -349,9 +359,12 @@ export default class Football extends Component {
           })
         .map(s => (
           <div>
-            {s.name}&nbsp;{s.index}
+            <button onClick={() => { this.makeSub(s.index, state); }}>
+              выпустить {s.name} вместо {footballer.name}
+            </button>
           </div>
         ));
+      // &nbsp;{s.index}
       subs = (
         <div>
           <div>{footballer.name}</div>
