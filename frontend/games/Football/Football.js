@@ -337,6 +337,21 @@ export default class Football extends Component {
     this.setState({ conceded, scored });
   };
 
+  onMessage = (msg) => {
+    let messages = this.state.messages.map(m => m);
+    messages.push(msg);
+    this.setState({ messages });
+  };
+
+  onFinish = (msg) => {
+
+  };
+
+  onSubstitution = (msg) => {
+    const { was, now } = msg;
+    console.log('onSubstitution', msg);
+  };
+
   render(props: PropsType, state: StateType) {
     if (state.mode === MODE_INITIALIZE) {
       return (

@@ -126,11 +126,19 @@ export default class Tournament extends Component {
     const maxPlayers = props.data.goNext[0];
 
     const coverUrl = `/img/topics/default.jpg`;
+    const colourOfInfo = 'white';
     const cover = (
       <div className="cover" style="position: relative">
+        <div className="tournament-cover">
+          <i style={{ color: colourOfInfo }} className="fa fa-users fa-lg" aria-hidden="true" >
+            &nbsp;&nbsp;&nbsp;{props.data.players} / {props.data.goNext[0]}
+          </i>
+        </div>
         <span
-          style="color: blue; position:absolute; top: 20px; left: 20px;z-index: 100;"
-        >#{id}</span>
+          style={{
+            color: colourOfInfo, position: 'absolute', top: '20px', right: '20px', 'z-index': '100'
+          }}
+        >№{id}</span>
         <img src={coverUrl} alt="" />
       </div>
     );
@@ -159,22 +167,22 @@ export default class Tournament extends Component {
     }
     // participants = ;
 
-    const players = props.data.players;
-    if (players === 0) {
-      participants = (
-        <div>
-          Стань первым!
-          <div>Сложность: {difficulty}</div>
-        </div>
-      );
-    } else {
-      participants = (
-        <div>
-          Участвует {players} {getFormOfParticipants(players)}
-          <div>Сложность: {difficulty}</div>
-        </div>
-      );
-    }
+    // const players = props.data.players;
+    // if (players === 0) {
+    //   participants = (
+    //     <div>
+    //       Стань первым!
+    //       <div>Сложность: {difficulty}</div>
+    //     </div>
+    //   );
+    // } else {
+    //   participants = (
+    //     <div>
+    //       Участвует {players} {getFormOfParticipants(players)}
+    //       <div>Сложность: {difficulty}</div>
+    //     </div>
+    //   );
+    // }
 
     // style="width: 300px; display: inline-block;"
     // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
@@ -182,12 +190,14 @@ export default class Tournament extends Component {
     // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
     const participating = props.registeredInTournament ? 'participating' : '';
     const ticketCardClassName = `ticket-card ${participating} light-blue-big bounceIn`;
+    // killPaddings
+    //   <div className="col-sm-6 col-md-4">
     return (
-      <div className="col-sm-6 col-md-4 killPaddings">
+      <div className="" style="width: 305px; display: inline-block; margin: 7px;">
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
           <div className="body">
-            <div className="info">{participants}</div>
+            <div className="info">Сложность: {difficulty}</div>
             <br />
             <div className="price text-center">
               <div className="value">{prizeList}</div>
