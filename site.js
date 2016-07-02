@@ -136,7 +136,7 @@ app.use(function(req,res,next){
   next();
 });
 
-app.use('/leagues', require('./routes/leagues'));
+// app.use('/leagues', require('./routes/leagues'));
 
 //var handler = require('./errHandler')(app, Log, serverName);
 /*app.use(function(err, req, res, next){
@@ -194,14 +194,12 @@ if (socket_enabled){
 var aux = require('./models/auxillary')
 aux.io(SOCKET); // set socket in aux
 
-var updatables = {};
-
 var realtime = require('./helpers/realtime')(app, io);
 
-var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, aux);
-var collections = require('./Modules/site/collections')(app, AsyncRender, Answer, sender, Log, aux);
+var gifts = require('./Modules/site/gifts')(app, Answer, sender, Log, aux);
+var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
-var money = require('./Modules/site/money')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
+var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
@@ -328,11 +326,11 @@ var Answer = sender.Answer;
 
 app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
-})
+});
 
 app.get('/about', function (req, res){
   res.render('about');
-})
+});
 
 app.post('/FinishGame', FinishGame);
 
@@ -370,7 +368,7 @@ app.get('/realtime/update', aux.isAdmin, function(req, res){
 //   .catch(next)
 // }, aux.raw, aux.err)
 
-var tournament_finisher = require('./chains/finishTournament')(aux)
+var tournament_finisher = require('./chains/finishTournament')(aux);
 
 function FinishGame(req, res){
   var data = req.body;
@@ -382,54 +380,6 @@ function FinishGame(req, res){
   console.log('FinishGame', data);
 
   tournament_finisher.finish(data);
-  // var winners = data.scores//sort.winners(data.scores);
-  // var winnerCount = data.places[1] || null;
-  // var prizes = data.prizes || null;
-
-  // var obj = { 
-  //   tournamentID : data.tournamentID,
-  //   winners:winners,
-  //   count:winnerCount,
-  //   prizes:prizes 
-  // }
-
-  // // Send('FinishTournament', obj);
-  
-  // console.log('FinishTournament FinishGame', obj);
-
-  // var is_money_tournament = (prizes[0] >= 2);
-  // console.log('is_money_tournament', is_money_tournament);
-  // if (is_money_tournament){
-  //   //show win or lose message
-  //   for (var i = 0; i < winners.length; i++) {
-  //     var winner = winners[i];
-  //     var login = winner.login;
-
-  //     if (i<winnerCount){
-  //       //send winning message
-  //       console.log(login, 'WINS TOURNAMENT')
-  //       aux.alert(login, c.NOTIFICATION_WIN_MONEY, obj)
-  //     } else {
-  //       //send lose message
-  //       console.log(login, 'LOSES TOURNAMENT')
-  //       aux.alert(login, c.NOTIFICATION_LOSE_TOURNAMENT, obj)
-  //     }
-
-  //   }
-  // } else {
-  //   //send custom messages
-  //   Marathon.get_current_marathon()
-  //   .then(function (marathon){
-  //     var mainPrize = marathon.prizes[0];
-
-  //     for (var i = 0; i < winners.length; i++) {
-  //       var user = winners[i];
-  //       var login = user.login
-        
-  //       sendAfterGameNotification(login, mainPrize);
-  //     }
-  //   })
-  // }
 }
 
 
@@ -471,7 +421,12 @@ app.get('/Log', function (req, res){
 app.get('/main', function (req, res){
   res.render('main2');
 });
-  
+app.get('/Football', function (req, res) {
+  res.render('Football');
+});
+
+// packs + cards + realtime
+
 app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
   var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
   var paid = parseInt(req.params.paid) || 0;
@@ -481,8 +436,6 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   var login = req.login;
   // var price = (10 + (4 - value)* 20);
   var price = realtime().packs[value].price || 1;
-  
-
 
   var obj = {value:value, paid:paid};
   if (paid) obj.price = price;
@@ -557,12 +510,7 @@ app.get('/MyCollections', aux.authenticated, function (req, res, next) {
   .catch(next)
 }, aux.render('MyCollections'), aux.err)
 
-app.get('/Football', function (req, res) {
-  res.render('Football');
-});
-
 app.get('/Cards', aux.authenticated, function (req, res, next){
-
   // var login = aux.getLogin(req);
   var login = req.login;
   Gifts.user.cardsGroup(login)
@@ -575,15 +523,41 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
     }
     next();
   })
-  .catch(next)
-  
-  // res.render('Packs', { 
-  //   msg:{
-  //     cards: realtime().cards
-  //   }
-  // });
-// })
-}, aux.render('Cards'), aux.err)
+  .catch(next);
+}, aux.render('Cards'), aux.err);
+
+app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
+  var login = req.params.login;
+  var count = parseInt(req.params.count);
+  var colour = parseInt(req.params.colour);
+  if (!isNumeric(count) || !isNumeric(colour) ) {
+    return next('notnum')
+  }
+  grantPacksTo(login, colour, count)
+    .then(aux.setData(req, next))
+    .catch(next)
+}, aux.std);
+
+app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
+  var login = req.params.login;
+  // console.log('login', login);
+
+  Users.pack.setDefault(login)
+    // .then(console.log)
+    .then(aux.setData(req, next))
+    .catch(next)
+}, aux.std);
+
+function grantPacksTo(login, colour, count){
+  return Users.pack.add(login, colour, count)
+    .then(function (result){
+      aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour })
+      return result
+    })
+    .catch(aux.drop)
+}
+
+// --- end packs
 
 app.get('/Total', (req, res) => { res.render('Total')});
 
@@ -600,41 +574,13 @@ function JSLog(msg, topic){
 app.get('/Alive', function (req, res){ res.render('Alive'); })
 app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
-const GET_TOURNAMENTS_INFO = 4;
-const GET_TOURNAMENTS_USER = 1;
-
 app.get('/', function (req, res) {
   res.render('index');
-})
+});
 
-// app.get('/', function (req, res, next){
-//   // var tournaments = realtime().updater.tournaments || [];
-//   // req.data = tournaments;
-//   next()
-// }, aux.render('index'), aux.error)
-
-// app.get('/', function (req, res){
-//   // res.render('main2');//{ msg:specials }
-//   // res.render('Tournaments',);
-// })
-
-// app.get('/Tournaments', function (req, res){
-//   res.render('Tournaments');//, {msg: updater.tournaments||[] }
-// })
-
-app.get('/Tournaments', function (req, res, next){
-  var tournaments = realtime().updater.tournaments || [];
-  req.data = tournaments;
-  next()
-}, aux.render('Tournaments'), aux.error)
-
-app.post('/Tournaments', function (req, res){
-  res.json({msg: updater.tournaments || [] });
-})
-
-// app.get('/addQuestion', middlewares.authenticated, function (req, res){
-//   res.render('AddQuestion', { 'draw.name': "general" });  
-// })
+app.get('/Tournaments', function (req, res){
+  res.render('Tournaments');//, {msg: updater.tournaments||[] }
+});
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var login = getLogin(req);
@@ -700,16 +646,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
   // } else {
   //   res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
   // }
-})
-
-
-app.post('/', function (req, res){
-  var data = req.body;
-  console.log('social auth', data);
-
-  data.queryFields = 'tournamentID buyIn goNext gameNameID players';
-  AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'GetTournaments'}, data);                
-})
+});
 
 //Error: Failed to serialize user into session
 /*app.get('/vk-auth', function (req, res){
@@ -749,9 +686,7 @@ function session_save(req, res, next){
   })
 }
 
-
-
-var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' })
+var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' });
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
@@ -762,14 +697,14 @@ app.get('/getLogs', isAdmin, sender.getLogs, function (req, res){
   res.render('Logs', { time:req.time, msg:req.files })
 }, function (err, req, res, next){
   res.json({err:err});
-})
+});
 
 app.get('/getLogFile', isAdmin, sender.getLogFile, function (req, res){
   // res.json({msg:'OK'})
   res.render('logViewer', { time:req.time, msg:req.file })
 }, function (err, req, res, next){
   res.json({err:err});
-})
+});
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
@@ -782,12 +717,12 @@ app.post('/tellToFinishTournament', function (req, res){
   // Actions.add('SYSTEM' ,'stopTournament', { tournamentID:tournamentID });
 
   Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
-})
+});
 
 app.get('/Tell', isAdmin, function (req, res){
   res.render('Tell');
   //res.sendFile(__dirname + '/sock1.html');
-})
+});
 
 app.post('/Tell', isAdmin, function (req, res){
   var message = req.body.message;
@@ -797,83 +732,10 @@ app.post('/Tell', isAdmin, function (req, res){
   Send('Tell', { message:message, action:action || null });
 
   res.render('Tell');
-})
+});
 
 
-app.get('/ModalTest', aux.answer('ModalTest'))
-
-app.get('/notifications/send', middlewares.isAdmin, aux.answer('admin/SendMessage'))
-
-app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
-  var data = req.body;
-  var target = data.target;
-  var notificationType = data.type;
-
-  var header = data.header;
-  var imageUrl = data.imageUrl;
-  var text = data.text;
-
-  //var targetType = typeof(target);
-
-  if (!target){
-    return next(null);
-  }
-
-  var obj = {
-    imageUrl: imageUrl,
-    text: text,
-    header : header
-  };
-  // console.log(obj, target);
-
-  aux.alert(target, notificationType || 6, obj)
-  .then(function (result){
-    req.data = result;
-    next();
-  })
-  .catch(next)
-
-}, aux.json, aux.err)
-
-app.post('/messages/chat/recent', function (req, res, next){
-  // console.log('messages/chat/recent')
-  var room = 'default';
-
-  Message.chat.load(room)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std)
-
-app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
-  var login = req.params.login;
-  var count = parseInt(req.params.count);
-  var colour = parseInt(req.params.colour);
-  if (!isNumeric(count) || !isNumeric(colour) ) {
-    return next('notnum')
-  }
-  grantPacksTo(login, colour, count)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std);
-
-app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
-  var login = req.params.login;
-  // console.log('login', login);
-
-  Users.pack.setDefault(login)
-  // .then(console.log)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std);
-
-function grantPacksTo(login, colour, count){
-  return Users.pack.add(login, colour, count)
-  .then(function (result){
-    aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour })
-    return result
-  })
-  .catch(aux.drop)
-}
+app.get('/ModalTest', aux.answer('ModalTest'));
 
 app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
@@ -925,39 +787,41 @@ app.post('/autoreg', function (req, res){
             sender.Answer(res, Fail);
           }
         }
-      })
+      });
       // 
     } else {
       sender.Answer(res, Fail);
       //res.redirect('Login');
     }
   })
+});
+
+/*
+app.get('/linker/:login/:link', function (req, res){
+  var login = req.params.login;
+  var link = req.params.link;
+
+
+  Actions.add(login, 'linker');
+  // Users.auth(login, password)//, req.user.email, req.user.inviter
+  Users.auth_by_link(login, link)
+  .then(function (user){
+    // console.log('logged In', user);
+    req.user= user;
+
+
+    saveSession(req, res, 'Login');
+
+
+    // Actions.add(login, 'login');
+  })
+  .catch(function (err){
+    res.redirect('/Login');//, {msg : err});
+    Errors.add(login, 'linker', { code:err })
+  })
+
 })
-
-// app.get('/linker/:login/:link', function (req, res){
-//   var login = req.params.login;
-//   var link = req.params.link;
-
-
-//   Actions.add(login, 'linker');
-//   // Users.auth(login, password)//, req.user.email, req.user.inviter
-//   Users.auth_by_link(login, link)
-//   .then(function (user){
-//     // console.log('logged In', user);
-//     req.user= user;
-
-
-//     saveSession(req, res, 'Login');
-
-
-//     // Actions.add(login, 'login');
-//   })
-//   .catch(function (err){
-//     res.redirect('/Login');//, {msg : err});
-//     Errors.add(login, 'linker', { code:err })
-//   })
-
-// })
+*/
 
 function increase_money_and_notify(login, ammount){
   if (login && ammount && isNumeric(ammount) ) {
@@ -1011,8 +875,6 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   }
 })
 
-//app.post('/')
-
 /*app.get('/vk-auth', function (req, res){
   var uid = req.params.uid;
   var first_name = req.params.first_name;
@@ -1020,20 +882,19 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   res.render('testVK');
 })*/
 
-/*app.get('/close', function (req, res){
-  console.log('closing');
-  res.render('Alive');
-  
-  io.close();
-  server.close();
-  console.log(process.pid);
-  process.exit(0);
-  process.kill(process.pid, 'SIGHUP');
-  //app.close();
-})*/
+/*
+  app.get('/close', function (req, res){
+    console.log('closing');
+    res.render('Alive');
 
-
-var clients = [];
+    io.close();
+    server.close();
+    console.log(process.pid);
+    process.exit(0);
+    process.kill(process.pid, 'SIGHUP');
+    //app.close();
+  })
+*/
 
 // server = app.listen(8888, function () {
 //   var host = server.address().address;
@@ -1060,17 +921,13 @@ function SendToRoom( room, event, msg, socket){
   if (socket_enabled) io.of(room).emit(event, msg);
 }
 
-function compare(tournaments, previous){
-
-}
-
 app.post('/Winners', function (req, res){
   res.end('OK');
   var winners = req.body.winners;
   var tournamentID = req.body.tournamentID;
 
   Send('winners', {winners:winners, tournamentID:tournamentID});
-})
+});
 
 app.get('/Payment', middlewares.authenticated, function (req, res){
   var ammount = req.query.ammount || null;
@@ -1080,7 +937,7 @@ app.get('/Payment', middlewares.authenticated, function (req, res){
   Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type })
 
   res.render('Payment', { ammount:ammount, type:type });
-})
+});
 
 var json2csv = require('json2csv');
 
@@ -1117,8 +974,7 @@ app.get('/getCSV', middlewares.isAdmin, function (req, res, next){
   })
   .catch(next)
 
-}, aux.raw, aux.err)
-// app.get('/fillList', middlewares.isAdmin, function (req, res, ))
+}, aux.raw, aux.err);
 
 app.get('/mailLists', middlewares.isAdmin, function (req, res, next){
   aux.mailLists()
@@ -1128,7 +984,7 @@ app.get('/mailLists', middlewares.isAdmin, function (req, res, next){
   })
   .catch(next);
 
-}, aux.json, aux.err)
+}, aux.json, aux.err);
 
 app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
   aux.mailUsers()
@@ -1138,11 +994,15 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
   })
   .catch(next);
 
-}, aux.json, aux.err)
+}, aux.json, aux.err);
+
+
+
+
 
 app.get('/api/news/get', function (req, res) {
   res.json({ news: realtime().news || null })
-})
+});
 
 app.get('/api/news/all', aux.isAdmin, function (req, res, next){
   Message.news.all()
@@ -1151,8 +1011,6 @@ app.get('/api/news/all', aux.isAdmin, function (req, res, next){
 }, aux.render('News'), aux.error);
 
 app.post('/api/news/add', aux.isAdmin, function (req, res, next){
-  var id = req.params.id || null;
-  var obj = {};
   var data = req.body;
 
   var text = data.text || "";
@@ -1167,7 +1025,6 @@ app.post('/api/news/add', aux.isAdmin, function (req, res, next){
 
 app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
   var id = req.params.id || null;
-  var obj = {};
   var data = req.body;
 
   var text = data.text || "";
@@ -1175,12 +1032,12 @@ app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
   var url = data.url || "";
   var title = data.title || "";
 
-  obj = {
+  var obj = {
     text:text,
     image:image,
     url:url,
     title:title
-  }
+  };
 
   Message.news.edit(id, obj)
   .then(aux.setData(req, next))
@@ -1195,7 +1052,7 @@ app.get('/api/news/activation/:id/:status', aux.isAdmin, function (req, res, nex
   })
   .then(aux.setData(req, next))
   .catch(next)
-}, aux.json, aux.err)
+}, aux.json, aux.err);
 
 
 
@@ -1207,7 +1064,7 @@ app.get('/get_message', middlewares.isAdmin, function (req, res, next){
     next();
   })
   .catch(next)
-}, aux.json, aux.err)
+}, aux.json, aux.err);
 
 app.get('/messages', middlewares.isAdmin, function (req, res, next){
   var login = req.query.login;
@@ -1217,27 +1074,62 @@ app.get('/messages', middlewares.isAdmin, function (req, res, next){
     next()
   })
   .catch(next)
-}, aux.answer('Notifications'), aux.err)
+}, aux.answer('Notifications'), aux.err);
 
+
+app.get('/notifications/send', middlewares.isAdmin, aux.answer('admin/SendMessage'));
+
+app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
+  var data = req.body;
+  var target = data.target;
+  var notificationType = data.type;
+
+  var header = data.header;
+  var imageUrl = data.imageUrl;
+  var text = data.text;
+
+  //var targetType = typeof(target);
+
+  if (!target){
+    return next(null);
+  }
+
+  var obj = {
+    imageUrl: imageUrl,
+    text: text,
+    header : header
+  };
+  // console.log(obj, target);
+
+  aux.alert(target, notificationType || 6, obj)
+    .then(function (result){
+      req.data = result;
+      next();
+    })
+    .catch(next)
+
+}, aux.json, aux.err);
+
+app.post('/messages/chat/recent', function (req, res, next){
+  // console.log('messages/chat/recent')
+  var room = 'default';
+
+  Message.chat.load(room)
+    .then(aux.setData(req, next))
+    .catch(next)
+}, aux.std);
 
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
-  // var login = req.params.login;
-  // console.log('news');
-  var login = getLogin(req);
+  var login = req.login;
 
   Message.notifications.news(login)
   .then(function (news){
     req.data = news;
-
-    // Message.notifications.markAll(login)
-    // // .then(console.log)
-    // .catch(function(){})
-
     next()
   })
   .catch(next)
-}, aux.json, aux.err)
+}, aux.json, aux.err);
 
 app.get('/notifications/all', middlewares.authenticated, function (req, res, next){
   // var login = req.params.login;
@@ -1248,12 +1140,12 @@ app.get('/notifications/all', middlewares.authenticated, function (req, res, nex
     req.data = news;
 
     Message.notifications.markAll(login)
-    .catch(function(){})
+    .catch(function(){});
 
     next()
   })
   .catch(next)
-}, aux.json, aux.err)
+}, aux.json, aux.err);
 
 // app.post('/message/read/:id', middlewares.authenticated, function (req, res, next){
 //   var id = req.params.id;
@@ -1264,46 +1156,16 @@ var players = [];
 setInterval(function (){
   // Send('players', {msg: players});
   Log('Online: ' + JSON.stringify(players), 'Users');
-  // players=[];
-}, 20000)
+}, 20000);
 
-setInterval(function (){
-  players=[];
-}, 60000)
+setInterval(function (){ players=[]; }, 60000);
 
 app.post('/mark/Here/:login', function (req, res){
-  var login = req.params.login;//getLogin(req);
-  // console.log('mark/Here');
+  var login = req.params.login;
   // strLog('Online: ' + login, 'Users');
   players.push(login);
 
   res.end('');
 });
 
-
-
-var previousTournaments=[];
-
 const GET_TOURNAMENTS_UPDATE = 6;
-var frontendVersion;
-
-
-
-UpdateFrontendVersion(20000);
-
-var updater = {
-  tournaments: []
-};
-
-function UpdateFrontendVersion(period){
-  sender.sendRequest("GetFrontendVersion", { }, "127.0.0.1", "DBServer", null, function (error, response, body, res){
-    if (!error){
-      frontendVersion = body? body.frontendVersion || null : null;
-      //compare(body, previousTournaments);
-    }
-  })
-
-  setTimeout(function(){
-    UpdateFrontendVersion(period)
-  }, period);
-}

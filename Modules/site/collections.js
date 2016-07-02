@@ -1,4 +1,4 @@
-module.exports = function setApp(app, AsyncRender, Answer, sender, Log, aux){
+module.exports = function setApp(app, Answer, sender, Log, aux){
 	var Gifts = require('../../models/gifts')
 	var Collections = require('../../models/collections')
 	var Packs = require('../../models/packs')

@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux){
+module.exports = function(app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux){
 	var Money = require('../../models/money')
 
 	var Fail = { result:'fail' };
