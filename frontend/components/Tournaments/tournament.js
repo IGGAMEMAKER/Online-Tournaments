@@ -150,12 +150,29 @@ export default class Tournament extends Component {
     const color = 'white';
     const coverColor = this.pickTournamentCoverColour(id);
     console.log(coverColor);
+
+    let difficulty = 'Проще простого';
+    if (maxPlayers > 5) {
+      if (maxPlayers > 28) {
+        if (maxPlayers > 100) {
+          difficulty = 'Будет жарко';
+        } else {
+          difficulty = 'Придётся потрудиться';
+        }
+      } else {
+        difficulty = 'Вполне по силам';
+      }
+    }
+
     const cover = (
       <div className="cover">
         <div className="tournament-cover">
-          <i style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
+          <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
             &nbsp;&nbsp;{props.data.players}/{props.data.goNext[0]}
-          </i>
+          </p>
+        </div>
+        <div className="tournament-difficulty">
+          <div>{difficulty}</div>
         </div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
         <div className={`tournament-cover-container ${coverColor}`}>
@@ -180,19 +197,6 @@ export default class Tournament extends Component {
       </div>
     );
 
-    let difficulty = 'Проще простого';
-    if (maxPlayers > 5) {
-      if (maxPlayers > 28) {
-        if (maxPlayers > 100) {
-          difficulty = 'Будет жарко';
-        } else {
-          difficulty = 'Придётся потрудиться';
-        }
-      } else {
-        difficulty = 'Вполне по силам';
-      }
-    }
-
     // style="width: 300px; display: inline-block;"
     // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
     // <div className="from">Призы</div>
@@ -211,8 +215,6 @@ export default class Tournament extends Component {
               <div className="price text-center">
                 <div className="value">{prizeList}</div>
               </div>
-              <div className="info">Сложность: {difficulty}</div>
-              <br />
               <div className="clearfix"></div>
               <div className="clearfix"></div>
             </div>
