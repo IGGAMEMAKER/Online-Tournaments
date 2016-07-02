@@ -124,8 +124,11 @@ export default class Tournament extends Component {
       case 2: return 'red';
       case 3: return 'pomegranate';
       case 4: return 'pomegranate';
+      case 5: return 'blue';
       case 6: return 'pomegranate';
       case 7: return 'darkblue';
+      case 8: return 'purple';
+      case 9: return 'purple';
       default:
         console.log('default');
         return '';

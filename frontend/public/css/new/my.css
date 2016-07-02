@@ -606,6 +606,8 @@ button{
 .tournament-cover-container.pomegranate { background-color: #c0392b; }
 .tournament-cover-container.red { background-color: #e74c3c; }
 .tournament-cover-container.green { background-color: #2ecc71; }
+.tournament-cover-container.blue { background-color: #3498db; }
+.tournament-cover-container.purple { background-color: #9b59b6; }
 
 .tournament-users {
   position: absolute;
