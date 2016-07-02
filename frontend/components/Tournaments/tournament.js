@@ -107,13 +107,14 @@ export default class Tournament extends Component {
 
     if (date) return <div>Турнир начнётся {formattedDate}</div>;
 
-    return (
-      <div>
-        Турнир начнётся, когда зарегистрируется
-        <br />
-        {sphrase(props.data.goNext[0], 'игрок')}
-      </div>
-    );
+    return <div>Свободных мест: {props.data.goNext[0] - props.data.players}</div>;
+    // return (
+    //   <div>
+    //     Турнир начнётся, когда зарегистрируется
+    //     <br />
+    //     {sphrase(props.data.goNext[0], 'игрок')}
+    //   </div>
+    // );
   };
 
   pickTournamentCoverColour = (id) => {
@@ -151,16 +152,21 @@ export default class Tournament extends Component {
     const coverColor = this.pickTournamentCoverColour(id);
     console.log(coverColor);
 
-    let difficulty = 'Проще простого';
+    const easiest = 'Проще простого';
+    const impossible = 'Будет жарко';
+    const easy = 'Вполне по силам';
+    const middle = 'Придётся потрудиться';
+    let difficulty = easiest;
+
     if (maxPlayers > 5) {
       if (maxPlayers > 28) {
         if (maxPlayers > 100) {
-          difficulty = 'Будет жарко';
+          difficulty = impossible;
         } else {
-          difficulty = 'Придётся потрудиться';
+          difficulty = middle;
         }
       } else {
-        difficulty = 'Вполне по силам';
+        difficulty = easy;
       }
     }
 
