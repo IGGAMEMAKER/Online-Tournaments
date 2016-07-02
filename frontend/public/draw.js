@@ -230,11 +230,11 @@ function loadRating(){
 }
 
 function getMoney(index){
-  setAsync("/getMoney/"+index)
+  // setAsync("/getMoney/"+index)
 }
 
 function getPoints(){
-  setAsync("/getMyPoints", {}, drawPoints, "GET")
+  // setAsync("/getMyPoints", {}, drawPoints, "GET")
 }
 
 

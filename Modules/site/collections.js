@@ -1,4 +1,4 @@
-module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, aux){
+module.exports = function setApp(app, AsyncRender, Answer, sender, Log, aux){
 	var Gifts = require('../../models/gifts')
 	var Collections = require('../../models/collections')
 	var Packs = require('../../models/packs')
@@ -158,8 +158,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 	app.get('/rewardme/:collectionID', aux.authenticated, function (req, res, next){
 		console.log('rewardme');
 		var collectionID = req.params.collectionID;
-		var login = aux.getLogin(req);
-
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		var collection;
 		var uGifts;
 

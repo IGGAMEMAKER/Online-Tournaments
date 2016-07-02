@@ -22,7 +22,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	app.post('/Team', aux.authenticated, function(req, res) { // create team
 		var name = req.body.name;
-		var login = getLogin(req);
+		// var login = getLogin(req);
+		var login = req.login;
 
 		if (!name) {
 			logger('invalid data', team);
@@ -70,7 +71,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	};
 
 	app.post('/api/teams/kick/:user/:teamname', aux.authenticated, function (req, res, next) {
-		Teams.removePlayer(req.params.teamname, req.params.user, getLogin(req))
+		Teams.removePlayer(req.params.teamname, req.params.user, req.login)
 			.then(function (result) {
 				// return result;
 				return Users.quitTeam(req.params.user);

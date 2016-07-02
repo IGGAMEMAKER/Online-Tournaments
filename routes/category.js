@@ -207,7 +207,8 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var topic = req.params.topic;
 		if (!categories[topic]) topic = 'default'; // { category: topic }
 		
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		if (login) onliners[topic][login] = login;
 
 		res.render('Category', categories[topic])
@@ -217,14 +218,16 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		var topic = req.params.topic;
 		if (!categories[topic]) topic = 'default'; // { category: topic }
 		
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		if (login) onliners[topic][login] = login;
 		res.end('')
 	})
 
 	app.post('/Category/register/:topic', aux.isAuthenticated, function (req, res, next){
 		var topic = req.params.topic;
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 
 		console.log('category/register', topic, login)
 

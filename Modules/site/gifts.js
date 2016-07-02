@@ -1,4 +1,4 @@
-module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, aux){
+module.exports = function setApp(app, AsyncRender, Answer, sender, Log, aux){
   var Gifts = require('../../models/gifts')
   var Collections = require('../../models/collections')
   var Packs = require('../../models/packs')
@@ -126,7 +126,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
 
   app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
     // console.log('all player cards')
-    var login = aux.getLogin(req);
+    // var login = aux.getLogin(req);
+    var login = req.login;
     Gifts.user.cards(login)
 
     .then(aux.setData(req, next))
@@ -134,8 +135,8 @@ module.exports = function setApp(app, AsyncRender, Answer, sender, Log, proxy, a
   }, aux.std);
 
   app.get('/api/usergifts/removeAll/', middlewares.authenticated, function (req, res, next){
-    var login = aux.getLogin(req);
-
+    // var login = aux.getLogin(req);
+    var login = req.login;
     Gifts.user.clearAllByUsername(login)
 
     .then(aux.setData(req, next))

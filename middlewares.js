@@ -1,6 +1,7 @@
 
 var authenticated= function(req, res, next){
 	if (req.session && req.session.login){
+		req.login = login;
 		next();
 	} else {
 		res.redirect('Login');

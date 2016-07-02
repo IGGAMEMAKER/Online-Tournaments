@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux){
+module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 	var Fail = { result:'fail' };
 	var OK = { result:'OK' };
 	var Promise = require('bluebird');

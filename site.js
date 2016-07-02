@@ -196,22 +196,21 @@ aux.io(SOCKET); // set socket in aux
 
 var updatables = {};
 
-var realtime = require('./helpers/realtime')(app, io)
+var realtime = require('./helpers/realtime')(app, io);
 
-var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, proxy, aux);
-var collections = require('./Modules/site/collections')(app, AsyncRender, Answer, sender, Log, proxy, aux);
+var gifts = require('./Modules/site/gifts')(app, AsyncRender, Answer, sender, Log, aux);
+var collections = require('./Modules/site/collections')(app, AsyncRender, Answer, sender, Log, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money = require('./Modules/site/money')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
-var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, proxy, getLogin, aux);
+var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, getLogin, aux);
 
 var category = require('./routes/category')(app, aux, realtime, SOCKET, io)
 var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io)
 
 var TournamentReg = require('./models/tregs');
-var Marathon = require('./models/marathon');
 
 var middlewares = require('./middlewares');
 var isAdmin = middlewares.isAdmin;
@@ -268,20 +267,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
   }
 }
 
-function renderInfo(targetServer, reqUrl, res, options, parameters){
-  var resIsSet = res?' res is set ':' no res ';
-  var optionsDescription = ' options: ';
-  if (options) {
-    optionsDescription+= 'null';
-  }
-  else{
-    optionsDescription += 'rendPage: ' + options.renderPage + ' parameters: ' + parameters + ' sender: ' + options.sender + ' callback is ';
-    if (!options.callback) optionsDescription+= ' not ';
-    optionsDescription+= ' set ';
-  }
-  return targetServer + ' Url: ' + reqUrl + resIsSet + optionsDescription ;
-}
-
 function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
@@ -298,8 +283,6 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
     console.log('INVALID siteAnswer');
   }
 }
-
-
 
 // var CRON_TASK = schedule.scheduleJob('33 * * * * *', function(){
 //   console.log('The answer to life, the universe, and everything!');
@@ -343,14 +326,6 @@ const CODE_INVALID_DATA='Неправильные данные';
 
 var Answer = sender.Answer;
 
-
-
-app.get('/CheckServer', function (req, res){
-  var serv = req.query.serv;
-  sender.expressSendRequest('Alive', {msg:'CheckServer'}, '127.0.0.1', serv, res, sender.printer);
-
-});
-
 app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
 })
@@ -364,37 +339,6 @@ app.post('/FinishGame', FinishGame);
 
 app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
 app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
-
-// app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
-  
-// })
-
-app.get('/realtime/update', aux.isAdmin, function(req, res){
-  realtime().UPDATE_ALL();
-  res.end('OK');
-})
-
-// app.get('/Gifts', function (req, res, next){
-//   Gifts.all()
-//   .then(
-//   //   function (giftList){
-//   //   req.data = giftList
-//   // }
-//   aux.setData(req, next)
-//   )
-//   .catch(next)
-// }, aux.raw, aux.err)
-
-// app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
-//   Users.mailers()
-//   .then(function(users){
-//     req.data = 'found';
-//     next();
-//     Users.update_auth_links(users)
-//   })
-//   .catch(next)
-// }, aux.raw, aux.err)
-
 function Landing(name, picture){
   return function (req, res){
     var obj = { landing: name };
@@ -407,11 +351,24 @@ function Landing(name, picture){
   }
 }
 
-app.post('/new_tournament', function (req, res){
-  res.end();
-  var tournament = req.body;
-  Send("NewTournament", tournament);
+// app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
+  
+// })
+
+app.get('/realtime/update', aux.isAdmin, function(req, res){
+  realtime().UPDATE_ALL();
+  res.end('OK');
 })
+
+// app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
+//   Users.mailers()
+//   .then(function(users){
+//     req.data = 'found';
+//     next();
+//     Users.update_auth_links(users)
+//   })
+//   .catch(next)
+// }, aux.raw, aux.err)
 
 var tournament_finisher = require('./chains/finishTournament')(aux)
 
@@ -475,15 +432,6 @@ function FinishGame(req, res){
   // }
 }
 
-function getMarathonUser(login){
-  return MarathonPlaces[login];
-  // return {
-  //   points: 3,
-  //   place: 10,
-  //   accelerator: 7,
-  //   pretends: 34
-  // }
-}
 
 app.all('/StartTournament', function (req, res){
   console.log('Site starts tournament');
@@ -529,7 +477,8 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   var paid = parseInt(req.params.paid) || 0;
 
 
-  var login = aux.getLogin(req);
+  // var login = aux.getLogin(req);
+  var login = req.login;
   // var price = (10 + (4 - value)* 20);
   var price = realtime().packs[value].price || 1;
   
@@ -593,7 +542,8 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
 }, aux.render('Packs'), aux.err);
 
 app.get('/MyCollections', aux.authenticated, function (req, res, next) {
-  var login = aux.getLogin(req);
+  // var login = aux.getLogin(req);
+  var login = req.login;
   Gifts.user.cardsGroup(login)
   .then(function (cards){
     req.data = {
@@ -613,7 +563,8 @@ app.get('/Football', function (req, res) {
 
 app.get('/Cards', aux.authenticated, function (req, res, next){
 
-  var login = aux.getLogin(req);
+  // var login = aux.getLogin(req);
+  var login = req.login;
   Gifts.user.cardsGroup(login)
   .then(function (cards){
     // console.log(cards);
@@ -848,153 +799,8 @@ app.post('/Tell', isAdmin, function (req, res){
   res.render('Tell');
 })
 
-app.get('/Marathon', function (req, res){ res.render('Marathon'); })
-
-app.get('/MarathonInfo', isAdmin, function (req, res){
-  Marathon.get_current_marathon()
-  .then(function (marathon){
-    if (marathon){
-      res.render('admin/MarathonInfo', {msg: marathon});
-    } else {
-      res.render('admin/MarathonInfo', {msg: null});
-    }
-  })
-})
-
-app.get('/Leaderboard', function (req, res){
-  res.render('Leaderboard', { msg: Leaderboard });
-});
-
-app.get('/api/marathon/:MarathonID', aux.isAdmin, function (req, res, next){
-  var MarathonID = req.params.MarathonID;
-  Marathon.get(MarathonID)
-  // .then(aux.setData(req, next))
-  .then((d) => { req.data = d; next(); })
-  .catch(next)
-}, aux.std)
-
-app.get('/Marathon/setFinishDate/:MarathonID/:date', aux.isAdmin, function (req, res){
-  var MarathonID = req.params.MarathonID;
-  var date = req.params.date;
-
-  var data = {
-    finishDate: new Date(date)
-  }
-  Marathon.edit(data||null, MarathonID)
-  .then(function (result){
-    // console.log('edit done');
-    res.json({result:result});
-  })
-  .catch(function (error){
-    res.json({error:error});
-  })
-})
-
-app.post('/Marathon/edit/:MarathonID', isAdmin, function (req, res){
-  var MarathonID = req.params.MarathonID;
-  var data = req.body||null;
-  if (MarathonID && !isNaN(MarathonID)){
-    if (data){
-      if (data.accelerators) { data.accelerators = JSON.parse(data.accelerators); }
-      if (data.prizes) { data.prizes = JSON.parse(data.prizes); }
-      if (data.counts) { data.counts = JSON.parse(data.counts); }
-
-    } else {
-      return res.json({result: 'no changes'});
-    }
-    Marathon.edit(data, MarathonID)
-    .then(function (result){
-      if (result){
-        res.redirect('/MarathonInfo');
-      } else {
-        res.json({result:result});
-        //res.end('fail. <a href="MarathonInfo"> go back');
-      }
-    })
-    .catch(function (err){
-      res.json({result:'fail', error: err });
-    })
-  } else {
-    res.json({result:'INVALID MarathonID' });
-  }
-
-})
 
 app.get('/ModalTest', aux.answer('ModalTest'))
-
-app.post('/Marathon/new', isAdmin, function (req, res){
-  var data = req.body;
-
-  Marathon.add()
-  .then(function(marathon){
-    // console.log('added', marathon);
-    return Marathon.edit(data||null, marathon.MarathonID);
-  })
-  .then(function (result){
-    // console.log('edit done');
-    res.json({result:result});
-  })
-  .catch(function (error){
-    res.json({error:error});
-  })
-})
-
-// Middleware
-function getAcceleratorsAndMarathon(req, res, next){
-  var accelerator = req.params.accelerator||null;
-  if (accelerator && !isNaN(accelerator)){
-    req.accelerator = accelerator;
-    Marathon.get_or_reject()
-    .then(function (marathon){
-      req.marathon = marathon;
-      next()
-    })
-    .catch(function (err){
-      next(err);
-    })
-  } else {
-    // next(null);
-    // res.json({result:0, code:CODE_INVALID_DATA});
-    req.accelerator=null;
-    req.marathon=null;
-    next()
-  }
-}
-
-app.get('/buyAccelerator/:accelerator', middlewares.authenticated, getAcceleratorsAndMarathon, function (req, res){
-  var login = getLogin(req);
-  var index = req.accelerator;
-  var marathon = req.marathon;
-  var price;
-  // console.log(index, marathon);
-  if (index && marathon && marathon.accelerators[index]){
-    price = marathon.accelerators[index].price;
-    // need price of accelerator
-    return Money.pay(login, price, c.SOURCE_TYPE_ACCELERATOR_BUY)
-    .then(function (result){
-      // if (!result) return null;
-      console.error('Money.pay', result, login, index);
-      return Marathon.sell_accelerator(login, index);
-    })
-    .then(function (result){
-      // if (result){
-      // }
-        console.log('marathon.sell_accelerator', result);
-        Actions.add(login, 'buyAccelerator', {accelerator:index})
-
-      res.json({ result:result });
-    })
-    .catch(function (err){
-      Errors.add(login, 'buyAccelerator', { err:err, accelerator:index })
-      res.json({ err:err, pay:price||0 })
-    })
-  } else {
-    Errors.add(login, 'buyAccelerator', { err:'invalid data', accelerator:index })
-    res.json({ err:null })
-    // cancel(res);
-    // res.json({result:0, code:CODE_INVALID_DATA});
-  }
-})
 
 app.get('/notifications/send', middlewares.isAdmin, aux.answer('admin/SendMessage'))
 
@@ -1038,36 +844,6 @@ app.post('/messages/chat/recent', function (req, res, next){
   .catch(next)
 }, aux.std)
 
-app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
-  var leaders = Leaderboard.leaderboard;
-  var prizes = Leaderboard.prizes || [];
-  var counts = Leaderboard.counts || [];
-
-  var prizeList = getPrizeList(prizes, counts);
-  for (var i=0; i<prizeList.length;i++) {
-    var lgn = leaders[i].login;
-    var count = leaders[i].played;
-    var points = leaders[i].points;
-    var prize = prizeByPlace(i, prizeList);
-
-    increase_money_and_notify(lgn, parseInt(prize))
-  }
-  res.json({msg: Leaderboard })
-})
-
-
-app.get('/requestPlaying/:login', middlewares.isAdmin, function (req, res, next){
-  var login = req.params.login;
-  console.log('requestPlaying', login);
-  aux.alert(login, c.NOTIFICATION_FORCE_PLAYING, { })
-  .then(function (result){
-    req.data = result;
-    next();
-  })
-  .catch(next)
-
-}, aux.json, aux.err)
-
 app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
   var login = req.params.login;
   var count = parseInt(req.params.count);
@@ -1098,48 +874,6 @@ function grantPacksTo(login, colour, count){
   })
   .catch(aux.drop)
 }
-app.get('/givePointsTo/:login/:points', isAdmin, function (req, res, next){
-  var login = req.params.login;
-  var points = parseInt(req.params.points);
-
-  Marathon.giveNpoints(login, points)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std);
-
-app.get('/giveAcceleratorTo/:login/:accelerator', isAdmin, function (req, res){
-  var login = req.params.login;
-  var accelerator = req.params.accelerator;
-
-  if (login && accelerator && isNumeric(accelerator) ){
-    // console.log('constants', c);
-
-    Marathon.grant_accelerator(login, accelerator)
-    .then(function (result){
-      res.json({msg: 'grant', result:result})
-
-      aux.alert(login, c.NOTIFICATION_GIVE_ACCELERATOR, { index:accelerator })
-      .catch(aux.catcher)
-
-      // Message.notifications.personal(login, 'Лови бонус!', {
-      //   type: c.NOTIFICATION_GIVE_ACCELERATOR,
-      //   body:'Набирайте очки быстрее с помощью ускорителя',
-      //   index:accelerator
-      // })
-      // .then(function(){
-      //   forceTakingNews(login)
-      // })
-      // .catch(console.error)
-
-    })
-    .catch(function (err) { 
-      cancel(res, err, 'grant fail');
-    })
-
-  } else {
-    cancel(res);
-  }
-})
 
 app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
   var login = req.params.login;
@@ -1275,14 +1009,6 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   } else {
     cancel(res);
   }
-})
-
-app.get('/api/mini-rating', function (req, res){
-  res.json({
-    leaderboard: activity_board, 
-    counts: leaderboard_min.counts, 
-    prizes: leaderboard_min.prizes 
-  })
 })
 
 //app.post('/')
@@ -1534,8 +1260,6 @@ app.get('/notifications/all', middlewares.authenticated, function (req, res, nex
 //   var login 
 // })
 
-// Message.notifications
-
 var players = [];
 setInterval(function (){
   // Send('players', {msg: players});
@@ -1554,189 +1278,18 @@ app.post('/mark/Here/:login', function (req, res){
   players.push(login);
 
   res.end('');
-})
-// app.all('/Tournaments', function (req, res){
-//   var data = req.body;
-//   data.queryFields = 'tournamentID buyIn goNext gameNameID players Prizes';
-//   data.purpose = GET_TOURNAMENTS_USER;
+});
 
-//   AsyncRender('DBServer', 'GetTournaments', res, {renderPage:'Tournaments'}, data);
-// });
 
-function has_enough_points(index, points){
-  if (points < 600) return { money:0, discount:0 };
-
-  if (points < 1000) return { money:5, discount:600 };
-  if (points < 5000) return { money:10, discount:1000 };
-  if (points < 15000) return { money:50, discount:5000 };
-  if (points < 50000) return { money:150, discount:15000 };
-  if (points < 100000) return { money:500, discount:50000 };
-  
-  return { money:1000, discount:points };
-}
-
-app.get('/getMyPoints', function (req, res){
-  // console.log('/getMyPoints')
-  var login = aux.getLogin(req);
-  var points = 0;
-
-  if (login) {
-    var marathonUser = getMarathonUser(login);
-    points = marathonUser.points;
-  }
-  res.json({points: points});
-})
-
-app.post('/getMoney/:index', aux.authenticated, function (req, res){
-  var login = aux.getLogin(req)
-  var index = parseInt(req.params.index);
-  res.end('');
-
-  // Marathon.getMarathonUser(login)
-  var marathonUser = getMarathonUser(login);
-  // .then(function (marathonUser){
-    var points = marathonUser.points;
-
-    var has = has_enough_points(index, points);
-    var money = has.money;
-    var discount = has.discount;
-    if (money>0){
-      Marathon.giveNpoints(login, -discount)
-      .then(function (result){
-        if (result){
-          // Marathon.increase_money_and_notify(login, money)
-          increase_money_and_notify(login, money)
-        }
-      })
-    }
-  // })
-})
 
 var previousTournaments=[];
 
 const GET_TOURNAMENTS_UPDATE = 6;
 var frontendVersion;
 
-var Leaderboard=null;
-updateLeaderboard();
 
-var MarathonPlaces = {
-  // 'Raja': {
-  //   points: 3,
-  //   place: 10,
-  //   accelerator: 7,
-  //   pretends: 34
-  // }
-  // places : {},
-  // prizes : {}
-};
-
-// setTimeout(function (){
-//   var marathonUser = getMarathonUser('Raja');
-//   // marathonUser.mainPrize = 100500;
-
-//   aux.alert('Raja', c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
-  
-// }, 4000);
-
-
-// login => marathonUser
-
-// login => place
-// login => prize
-
-function prizeByPlace(place, prizeList){
-  if (place>=prizeList.length) return 0;
-
-  return prizeList[place];
-}
-function updatePlaces(){
-
-  var leaders = Leaderboard.leaderboard;
-  // console.log('updatePlaces', leaders.length);
-  var prizes = Leaderboard.prizes|| [];
-  var counts = Leaderboard.counts|| [];
-
-  var prizeList = getPrizeList(prizes, counts);
-
-  var obj = {}
-
-  for (var i=0; i<leaders.length; i++){
-  try{
-    var login = leaders[i].login;
-    // console.log(login);
-    var count = leaders[i].played;
-    var points = leaders[i].points;
-    var prize = prizeByPlace(i, prizeList);
-    var number = i+1; //place
-
-    // console.log(login, count, points, prize, number);
-
-    var acceleratorValue = 1;
-    if (leaders[i].accelerator && leaders[i].accelerator.value){
-      acceleratorValue = leaders[i].accelerator.value;
-    }
-
-    obj[login] = {
-      points: points,
-      place: number,
-      accelerator: acceleratorValue,
-      mainPrize:prizes[0]
-    }
-    if (prize) obj.pretends = prize;
-      // pretends: 34
-    // if (prizes.length && counts.length && )
-    } catch(error){
-      console.error(error);
-    }
-  }
-  // console.log(obj);
-  // return MarathonPlaces;
-  return obj;
-}
-
-const DEFAULT_MARATHON_PRIZE = 100;
-
-function getPrizeList(prizes, counts){
-  if (prizes.length==0 || counts.length==0){
-    return [DEFAULT_MARATHON_PRIZE];
-  }
-
-  var prizeList = [];
-  for (var i = 0; i < prizes.length; i++) {
-    var prize = prizes[i];
-
-    for (var j = 0; j < counts[i]; j++) {
-      prizeList.push(prize);
-    };
-  };
-  // console.log('prizeList', prizeList);
-  return prizeList;
-}
-
-function updateLeaderboard(){
-
-  setInterval(function(){
-    Marathon.leaderboard()
-    .then(function (leaderboard){
-        Leaderboard = {
-          leaderboard:leaderboard,
-          counts: leaderboard.counts,
-          prizes: leaderboard.prizes
-        }
-
-        MarathonPlaces = updatePlaces();
-    })
-    .catch(function (err){
-      Errors.add('', 'updateLeaderboard', { err:err });
-    })
-
-  }, 3000)
-
-}
 
 UpdateFrontendVersion(20000);
-get_Leaderboard(4000);
 
 var updater = {
   tournaments: []
@@ -1754,46 +1307,3 @@ function UpdateFrontendVersion(period){
     UpdateFrontendVersion(period)
   }, period);
 }
-
-function getShortActivityBoard(leaderboard){
-  var short_activity_board=[];
-  for (var i=0; (i<leaderboard.length) && (i<10); i++ ){
-    short_activity_board.push(leaderboard[i]);
-  }
-  return short_activity_board;
-}
-
-var leaderboard_min={};
-
-
-
-function get_Leaderboard(period){
-  // console.log('get_Leaderboard');
-  Marathon.leaderboard()
-  .then(function (leaderboard){
-    activity_board = getShortActivityBoard(leaderboard);
-    leaderboard_min = leaderboard;
-
-    io.emit('leaderboard', {
-      id: leaderboard.id,
-      start: leaderboard.start,
-      finish: leaderboard.finish,
-      counts: leaderboard.counts, 
-      prizes: leaderboard.prizes,
-      leaderboard: activity_board
-    });
-
-    // { leaderboard: activity_board } , counts: [1, 3], prizes:[150, 50]
-  })
-  .catch(function (err){
-    //console.log('error', 'get_Leaderboard', err);
-    Errors.add('', 'leaderboard', { code:err })
-    //res.json({code:'err', message:'Ошибка'})
-  })
-
-  setTimeout(function(){
-    get_Leaderboard(period)
-  }, period);
-}
-
-var activity_board;

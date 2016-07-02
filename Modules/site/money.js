@@ -114,7 +114,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	app.post('/api/transfers/mobile/mark/form', aux.authenticated, function (req, res, next){
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		var payID = req.body.payID
 		var ammount = req.body.ammount;
 
@@ -140,7 +141,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}, mobilePayment, aux.render('Transfers'), aux.error)
 
 	app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next){
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		var payID = req.params.payID
 		var ammount = req.params.ammount;
 		
@@ -227,7 +229,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}, aux.render('List'), aux.err)
 
 	app.post('/PAY', aux.authenticated, function (req, res, next){
-		var login = aux.getLogin(req);
+		// var login = aux.getLogin(req);
+		var login = req.login;
 		var ammount = req.body.ammount || 100;
 		var phone = req.body.phone;//"79261000000"
 
