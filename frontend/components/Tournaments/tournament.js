@@ -182,7 +182,7 @@ export default class Tournament extends Component {
         </div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
         <div className={`tournament-cover-container ${coverColor}`}>
-          <div className="centerize">
+          <div className="tournament-centerize">
             <div className="white tournament-cover-text">
               <div>Главный приз</div>
               <span>{prizes[0]} Р</span>
