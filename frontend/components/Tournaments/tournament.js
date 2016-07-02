@@ -116,6 +116,23 @@ export default class Tournament extends Component {
     );
   };
 
+  pickTournamentCoverColour = (id) => {
+    const modulo = id % 10;
+    console.log(modulo);
+    switch (modulo) {
+      case 1: return 'green';
+      case 2: return 'red';
+      case 3: return 'pomegranate';
+      case 4: return 'pomegranate';
+      case 6: return 'pomegranate';
+      case 7: return 'darkblue';
+      default:
+        console.log('default');
+        return '';
+        break;
+    }
+  };
+
   render(props: PropsType) {
     const id = props.data.tournamentID;
 
@@ -128,8 +145,8 @@ export default class Tournament extends Component {
     // const coverUrl = `/img/topics/default.jpg`;
     const coverUrl = `/img/logo.png`;
     const color = 'white';
-    // let coverColor = 'darkblue';
-    let coverColor = '';
+    const coverColor = this.pickTournamentCoverColour(id);
+    console.log(coverColor);
     const cover = (
       <div className="cover">
         <div className="tournament-cover">
