@@ -125,20 +125,31 @@ export default class Tournament extends Component {
 
     const maxPlayers = props.data.goNext[0];
 
-    const coverUrl = `/img/topics/default.jpg`;
+    // const coverUrl = `/img/topics/default.jpg`;
+    const coverUrl = `/img/logo.png`;
     const color = 'white';
+    // let coverColor = 'darkblue';
+    let coverColor = '';
     const cover = (
-      <div className="cover" style="position: relative">
+      <div className="cover">
         <div className="tournament-cover">
           <i style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
             &nbsp;&nbsp;{props.data.players}/{props.data.goNext[0]}
           </i>
         </div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
-        <img src={coverUrl} alt="" />
+        <div className={`tournament-cover-container ${coverColor}`}>
+          <div className="centerize">
+            <div className="white tournament-cover-text">
+              <div>Главный приз</div>
+              <span>{prizes[0]} Р</span>
+            </div>
+          </div>
+        </div>
       </div>
     );
 
+        // <img src={coverUrl} alt="" />
     let participants = (
       <div>
         <div className="going" id={`plrs-${id}`}>
@@ -175,19 +186,21 @@ export default class Tournament extends Component {
       <div className="col-sm-6 col-md-4">
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
-          <div className="body">
-            <div className="price text-center">
-              <div className="value">{prizeList}</div>
+          <div className="tournament-body">
+            <div className="body">
+              <div className="price text-center">
+                <div className="value">{prizeList}</div>
+              </div>
+              <div className="info">Сложность: {difficulty}</div>
+              <br />
+              <div className="clearfix"></div>
+              <div className="clearfix"></div>
             </div>
-            <div className="info">Сложность: {difficulty}</div>
+            <div className="collapse"></div>
+            <div className="info text-center">{this.getStartConditions(props)}</div>
             <br />
-            <div className="clearfix"></div>
-            <div className="clearfix"></div>
+            <div className="footer" id={`footer${id}`}>{this.getActionButtons(props)}</div>
           </div>
-          <div className="collapse"></div>
-          <div className="info text-center">{this.getStartConditions(props)}</div>
-          <br />
-          <div className="footer" id={`footer${id}`}>{this.getActionButtons(props)}</div>
         </div>
       </div>
     );

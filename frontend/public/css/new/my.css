@@ -204,6 +204,29 @@ button{
   width: 100%;
 }
 
+.centerize {
+  /*margin: auto;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*bottom: 0;*/
+  /*top: 0;*/
+  position: absolute;
+  top: 50%;  /* position the top  edge of the element at the middle of the parent */
+  left: 50%; /* position the left edge of the element at the middle of the parent */
+
+  transform: translate(-50%, -50%);
+}
+.centerize2 {
+  /*margin: auto;*/
+  left: 0;
+  right: 0;
+  position: absolute;
+  top: 50%;  /* position the top  edge of the element at the middle of the parent */
+  /*left: 50%; !* position the left edge of the element at the middle of the parent *!*/
+
+  /*transform: translate(-50%, -50%);*/
+}
+
 .pack-container {
   margin-left: auto;
   margin-right: auto;
@@ -556,6 +579,30 @@ button{
   left: 20px;
   z-index: 100;
 }
+.tournament-body {
+  padding-top: 15px;
+  background: #F7F6F6;
+}
+
+.tournament-cover-text span {
+  font-size: 35px;
+}
+.tournament-cover-text {
+  font-family: Impact;
+  /*position: absolute;*/
+  /*font-size: 40px;*/
+  font-size: 20px;
+}
+
+.tournament-cover-container {
+  background-color: #303030;
+  height: 262px;
+  position: relative;
+}
+
+.tournament-cover-container.darkblue {
+  background-color: #34495e;
+}
 
 .tournament-users {
   position: absolute;
@@ -637,8 +684,10 @@ button{
 }
 
 .ticket-card .cover{
-  margin: 0;
-  margin-bottom: 15px;
+  /*margin: 0;*/
+  margin: auto;
+  /*margin-bottom: 15px;*/
+  /*position: relative*/
 }
 
 .ticket-card .cover img{
@@ -848,6 +897,7 @@ a:focus {
   border: 0;
   text-indent: 15px;
   height: 40px;
+  outline: none;
 }
 
 .btn-mid {

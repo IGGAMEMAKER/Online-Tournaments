@@ -140,6 +140,10 @@ export default class Tournaments extends Component {
 
     // <h2 className="page">Бесплатные турниры</h2>
     // <div className="row killPaddings nomargins">{FreeTournaments}</div>
+
+    // if (!tourns.length) {
+    //   return <h1>AZAZAZA</h1>;
+    // }
     return (
       <div>
         <a
