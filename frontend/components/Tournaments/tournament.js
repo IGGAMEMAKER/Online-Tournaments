@@ -192,16 +192,17 @@ export default class Tournament extends Component {
     const ticketCardClassName = `ticket-card ${participating} light-blue-big bounceIn`;
     // killPaddings
     //   <div className="col-sm-6 col-md-4">
+    //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
     return (
-      <div className="" style="width: 305px; display: inline-block; margin: 7px;">
+      <div className="col-sm-6 col-md-4">
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
           <div className="body">
-            <div className="info">Сложность: {difficulty}</div>
-            <br />
             <div className="price text-center">
               <div className="value">{prizeList}</div>
             </div>
+            <div className="info">Сложность: {difficulty}</div>
+            <br />
             <div className="clearfix"></div>
             <div className="clearfix"></div>
           </div>
