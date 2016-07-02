@@ -40,6 +40,7 @@ export default class Tournaments extends Component {
     this.setState({
       tournaments: TOURNAMENTS,
     });
+
     store.addChangeListener(() => {
       this.setState({
         registeredIn: store.getMyTournaments(),
@@ -144,9 +145,7 @@ export default class Tournaments extends Component {
         <a
           href="/Login"
           className="btn btn-success"
-          style={{
-            display: login ? 'none' : 'block'
-          }}
+          style={{ display: login ? 'none' : 'block' }}
         >Авторизуйтесь, чтобы сыграть!</a>
 
         <h2 className="page">Регулярные турниры</h2>

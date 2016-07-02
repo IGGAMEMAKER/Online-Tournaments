@@ -9,7 +9,7 @@ mixin libsAndStyles()
 	//script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
 
 	link(href="/css/new/bootstrap.css" rel="stylesheet")
-	link(href="/css/new/style.css" rel="stylesheet")
+	//link(href="/css/new/style.css" rel="stylesheet")
 	link(href="/css/new/style1.css" rel="stylesheet" type="text/css")
 	link(href="/css/new/my.css?4" rel="stylesheet")
 
@@ -20,6 +20,7 @@ mixin libsAndStyles()
 
 	script(type="text/javascript" src="//vk.com/js/api/openapi.js?121")
 	script.
+		// console.log('loaded vk', VK);
 		if (document.location.hostname == "localhost") {
 			VK.init({	apiId: 5205914, onlyWidgets: true });
 		} else {

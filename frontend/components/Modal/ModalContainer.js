@@ -34,7 +34,7 @@ export default class ModalContainer extends Component {
   }
 
   render(props: PropsType, state: StateType) {
-    console.warn('render ModalContainer');
+    // console.warn('render ModalContainer');
     if (state.runningTournaments.length) {
       console.warn('has running tournaments');
       const tournaments = state.runningTournaments

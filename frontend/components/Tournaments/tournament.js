@@ -126,19 +126,15 @@ export default class Tournament extends Component {
     const maxPlayers = props.data.goNext[0];
 
     const coverUrl = `/img/topics/default.jpg`;
-    const colourOfInfo = 'white';
+    const color = 'white';
     const cover = (
       <div className="cover" style="position: relative">
         <div className="tournament-cover">
-          <i style={{ color: colourOfInfo }} className="fa fa-users fa-lg" aria-hidden="true" >
-            &nbsp;&nbsp;&nbsp;{props.data.players} / {props.data.goNext[0]}
+          <i style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
+            &nbsp;&nbsp;{props.data.players}/{props.data.goNext[0]}
           </i>
         </div>
-        <span
-          style={{
-            color: colourOfInfo, position: 'absolute', top: '20px', right: '20px', 'z-index': '100'
-          }}
-        >№{id}</span>
+        <span className="tournament-users" style={{ color }}>№{id}</span>
         <img src={coverUrl} alt="" />
       </div>
     );
@@ -165,24 +161,6 @@ export default class Tournament extends Component {
         difficulty = 'Вполне по силам';
       }
     }
-    // participants = ;
-
-    // const players = props.data.players;
-    // if (players === 0) {
-    //   participants = (
-    //     <div>
-    //       Стань первым!
-    //       <div>Сложность: {difficulty}</div>
-    //     </div>
-    //   );
-    // } else {
-    //   participants = (
-    //     <div>
-    //       Участвует {players} {getFormOfParticipants(players)}
-    //       <div>Сложность: {difficulty}</div>
-    //     </div>
-    //   );
-    // }
 
     // style="width: 300px; display: inline-block;"
     // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);

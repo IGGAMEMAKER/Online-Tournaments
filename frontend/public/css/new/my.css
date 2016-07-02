@@ -557,6 +557,13 @@ button{
   z-index: 100;
 }
 
+.tournament-users {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
 .hide {
   display: none;
 }
