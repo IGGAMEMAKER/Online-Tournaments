@@ -231,7 +231,6 @@ export default {
 
   loadChatMessages,
   addNotification(data, modalType) {
-
     Dispatcher.dispatch({
       type: c.ACTION_ADD_NOTIFICATION,
       data,
@@ -240,6 +239,12 @@ export default {
   },
   payModalStat() {
 
+  },
+  updateTournaments(tournaments) {
+    Dispatcher.dispatch({
+      type: c.UPDATE_TOURNAMENTS,
+      tournaments,
+    });
   },
   appendChatMessage(data) {
     Dispatcher.dispatch({

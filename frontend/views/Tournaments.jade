@@ -1,4 +1,3 @@
-//
 extends layout
 
 block title
@@ -15,7 +14,6 @@ block content
 		//hr(colour="white" width="60%" align="center")
 	script.
 		var TOURNAMENTS = !{JSON.stringify(msg)};
-		//drawTournaments(tournaments)
 	div(class="col-sm-12 killPaddings" id="tournamentBlock")
 		#app
 	script(src="/output/Tournaments.js")

@@ -101,6 +101,7 @@ export default class Chat extends Component {
   render(props: PropsType, state: StateType) {
     const messageList = state.messages
       .map((m: MessageType, i: number, arr: Array) => {
+        if (!m) return '';
         let style = '';
         if (m.sender === login) {
           style = 'color: gold;';

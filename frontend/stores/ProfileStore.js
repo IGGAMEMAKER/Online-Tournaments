@@ -8,6 +8,8 @@ let _tournaments: Object = {}; // tournaments, where the player is registered
 let _adresses: Object = {}; // adresses of tournaments
 let _running: Object = {};
 
+let _availableTournaments = [];
+
 let _money: number = 0;
 let _packs: Object = {};
 let _loaded: Boolean = false;
@@ -101,6 +103,10 @@ class ProfileStore extends EventEmitter {
   getChatMessages() {
     return _chatMessages;
   }
+
+  getAvailableTournaments() {
+    return _availableTournaments;
+  }
 }
 
 const store = new ProfileStore();
@@ -134,6 +140,9 @@ Dispatcher.register((p: PayloadType) => {
       _tournaments = p.tournaments;
       _money = p.money;
       _packs = p.packs;
+      break;
+    case c.UPDATE_TOURNAMENTS:
+      _availableTournaments = p.tournaments;
       break;
     case c.ACTION_REGISTER_IN_TOURNAMENT:
       _tournaments[p.tournamentID] = 1;

@@ -18,6 +18,11 @@ socket.on('activity', (msg) => {
   // alert(JSON.stringify(msg));
 });
 
+socket.on('update', (msg) => {
+  // console.log('update', msg);
+  actions.updateTournaments(msg.tournaments);
+});
+
 socket.on('newsUpdate', (msg) => {
   // console.log('newsUpdate', msg);
   if (msg && msg.msg === login) {

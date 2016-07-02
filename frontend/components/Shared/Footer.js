@@ -23,7 +23,7 @@ export default class Footer extends Component {
 
   render(props: PropsType, state: StateType) {
     let chat = '';
-    if (state.loaded) {
+    if (state.loaded && state.messages.length) {
       const m = state.messages[state.messages.length - 1];
       chat = <a href="#chat">{m.sender || 'Гость'}: {m.text}</a>;
     }

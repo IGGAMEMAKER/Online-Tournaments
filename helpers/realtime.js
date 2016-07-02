@@ -100,7 +100,7 @@ function update_tournaments(period){
     return objects.updater; // io.emit('update', updater);
   })
   .then(send('update'))
-  .catch(console.error)
+  .catch(console.error);
 
   setTimeout(function(){ update_tournaments(period) }, period);
 }

@@ -58,8 +58,6 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
-
-
 passport.use(new VKontakteStrategy({
     clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
     clientSecret: configs.vk.secret_id,
@@ -87,13 +85,11 @@ passport.use(new VKontakteStrategy({
 
     //done(null, profile);
 
-
     //User.findOrCreate({ vkontakteId: profile.id }, function (err, user) { return done(err, user); });
   }
 ));
 
-
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 app.use(cookieParser());
 app.use(bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -165,9 +161,6 @@ var views = [
 app.set('views', views);
 //app.set('games/PingPong', './views');
 
-
-
-
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
@@ -191,7 +184,7 @@ var SOCKET = require('./socket')(app, server)
 if (socket_enabled){
   io = SOCKET.io;
 }
-var aux = require('./models/auxillary')
+var aux = require('./models/auxillary');
 aux.io(SOCKET); // set socket in aux
 
 var realtime = require('./helpers/realtime')(app, io);
@@ -205,8 +198,8 @@ var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log,
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, getLogin, aux);
 
-var category = require('./routes/category')(app, aux, realtime, SOCKET, io)
-var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io)
+var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
+var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
 
 var TournamentReg = require('./models/tregs');
 
@@ -290,7 +283,6 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
 function Log(data, topic){
   JSLog({msg:data}, topic);
 }
-
 
 function proxy(error, response, body, res){
   Answer(res, body);
@@ -579,7 +571,8 @@ app.get('/', function (req, res) {
 });
 
 app.get('/Tournaments', function (req, res){
-  res.render('Tournaments');//, {msg: updater.tournaments||[] }
+  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
+  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
 });
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
@@ -874,27 +867,6 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
     cancel(res);
   }
 })
-
-/*app.get('/vk-auth', function (req, res){
-  var uid = req.params.uid;
-  var first_name = req.params.first_name;
-  //var last_name = 
-  res.render('testVK');
-})*/
-
-/*
-  app.get('/close', function (req, res){
-    console.log('closing');
-    res.render('Alive');
-
-    io.close();
-    server.close();
-    console.log(process.pid);
-    process.exit(0);
-    process.kill(process.pid, 'SIGHUP');
-    //app.close();
-  })
-*/
 
 // server = app.listen(8888, function () {
 //   var host = server.address().address;

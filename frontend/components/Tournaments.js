@@ -14,6 +14,8 @@ type StateType = {
   tournaments: Array<TournamentType>,
 };
 
+type PropsType = {};
+
 type ProfileData = {
   tournaments: Object,
 }
@@ -27,18 +29,23 @@ type ResponseType = {
 
 export default class Tournaments extends Component {
   state = {
-    tournaments: {},
+    tournaments: [],
     registeredIn: {},
     options: {},
     value: store.getTestValue(),
   };
 
   componentWillMount() {
+    // const tourns: Array<TournamentType> = TOURNAMENTS;
+    this.setState({
+      tournaments: TOURNAMENTS,
+    });
     store.addChangeListener(() => {
       this.setState({
         registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
         value: store.getTestValue(),
+        tournaments: store.getAvailableTournaments(),
       });
     });
 
@@ -57,24 +64,24 @@ export default class Tournaments extends Component {
     const registeredIn = this.state.registeredIn || {};
     return tournaments
       .filter(filterFunction)
-      .map(t => {
-        const registered = registeredIn[t.tournamentID];
-        return (
-          <Tournament
-            data={t}
-            register={this.register}
-            unregister={this.unregister}
-            authenticated
-            registeredInTournament={registered}
-          />
-        );
-      }
-    );
+      .map(t =>
+        <Tournament
+          data={t}
+          register={this.register}
+          unregister={this.unregister}
+          authenticated
+          registeredInTournament={registeredIn[t.tournamentID]}
+        />
+      );
   };
 
-  render() {
+  render(props: PropsType, state: StateType) {
     // const state: StateType = this.state;
-    const tourns: Array<TournamentType> = TOURNAMENTS;
+    // const tourns: Array<TournamentType> = TOURNAMENTS;
+    // console.log('render TOURNAMENTS');
+    // console.log(TOURNAMENTS);
+    // console.log(state.tournaments);
+    const tourns: Array<TournamentType> = state.tournaments;
 
     const all = this
       .filter(tourns, () => true);
