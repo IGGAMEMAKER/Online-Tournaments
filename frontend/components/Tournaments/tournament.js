@@ -177,9 +177,7 @@ export default class Tournament extends Component {
             &nbsp;&nbsp;{props.data.players}/{props.data.goNext[0]}
           </p>
         </div>
-        <div className="tournament-difficulty">
-          <div>{difficulty}</div>
-        </div>
+        <div className="tournament-difficulty">{difficulty}</div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
         <div className={`tournament-cover-container ${coverColor}`}>
           <div className="tournament-centerize">
