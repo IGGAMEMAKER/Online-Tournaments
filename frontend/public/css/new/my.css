@@ -195,7 +195,9 @@ button{
     /*width:120px;*/
     /*height:30px;*/
 }
-
+.freeroll-description {
+  /*width: 300px;*/
+}
 .center{
   /*margin: 0 auto;*/
   margin-left: auto;
@@ -874,7 +876,8 @@ a:focus {
 
 .freeroll {
   /*background-color: #042E54;*/
-  /*background-image: url(/images/20-banner.jpg) no-repeat center;*/
+  /*background-image: url(/img/logo.png) no-repeat center;*/
+  /*background-image: url('/img/cardLayers/317350-blur-image-light.jpg');*/
   /*background-image: url("/images/20-banner.jpg");*/
   padding: 30px;
   background-position-x: 50%;
@@ -896,11 +899,11 @@ a:focus {
 .freeroll p{
   font-size: 20px;
 }
-@media (min-width: 700px){
-  .freeroll{
-    border-radius: 1000px;
-  }
-}
+/*@media (min-width: 700px){*/
+  /*.freeroll{*/
+    /*border-radius: 1000px;*/
+  /*}*/
+/*}*/
 
 .league-container {
   margin-left: auto;

@@ -4,6 +4,7 @@ import Team from '../components/Team/TeamDraw';
 import Payment from '../components/Payments/index';
 import Chat from '../components/Activity/Chat';
 import PackPage from '../components/PackPage';
+import Index from '../components/Index';
 
 const appElement: HTMLElement = document.getElementById('app');
 
@@ -11,9 +12,10 @@ const elements = (
   <center>
     <Chat />
     <Payment />
-    <Tournaments />
     <Team />
     <PackPage />
+    <Index />
+    <Tournaments />
   </center>
 );
 

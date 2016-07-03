@@ -66,7 +66,7 @@ async function loadProfile() {
     // console.log('async initialize response...', response.body);
     const profile = response.body.profile;
     const { tournaments, money, packs } = profile;
-
+    
     const tRegs: Array = tournaments;
 
     const registeredIn = {};

@@ -6,6 +6,7 @@ const MINIFY = process.argv.indexOf('--minify') !== -1;
 const currentDir = __dirname;
 
 const JS_DIST_DIR = `${currentDir}/public/`;
+const ESLINT_CONFIG_FILE = __dirname + '/.eslintrc';
 
 const app = 'pages/'; //pages root${
 const games = 'pages/Games'; //pages root${
@@ -20,7 +21,7 @@ module.exports = [{
     Tournaments: `./${app}/Tournaments.js`,
     payments: `./${app}/Payment.js`,
     'admin-tournaments': `./${app}/Admin.js`,
-    // total: './app/TotalTest.js',
+    // total: `./${app}/TotalTest.js`,
     Modal: `./${app}/Modal.js`,
     Football: `./${games}/Football.js`,
   },

@@ -63,20 +63,23 @@ export default class Index extends Component {
       </div>
     );
 
+    /*
+      <hr width="40%" />
+      <p>Если вы (или ваш друг) выиграете в ежедневном бесплатном турнире,</p>
+      <p>то вся команда получит вплоть до 150 рублей</p>
+      <p>(в зависимости от размера команды)</p>
+     */
+
     const teamTab = (
       <div>
         <div className="freeroll ctr purple">
           <div className="white">
-            <h1 className="fadeText">Раздели радость побед с друзьями!</h1>
-            <p>
-              <div>Создай свою команду</div>
-              <div>Побеждай с друзьями в турнирах</div>
-              <div>Получи бонус в 300% призовых</div>
+            <h1 className="fadeText">Раздели радость побед с друзьями</h1>
+            <p className="center">
+              <div>Собери свою команду</div>
+              <div>Побеждай с друзьями в бесплатных турнирах</div>
+              <div>Получите в 3 раза больше призов на команду!</div>
             </p>
-            <hr width="40%" />
-            <p>Если вы (или ваш друг) выиграете в ежедневном бесплатном турнире,</p>
-            <p>то вся команда получит вплоть до 150 рублей</p>
-            <p>(в зависимости от размера команды)</p>
             <center>
               <a
                 className="btn btn-primary btn-large btn-lg btn-fixed"
@@ -90,12 +93,15 @@ export default class Index extends Component {
 
     return (
       <div>
+        <div id="WeeklyFreeroll" className="row">{weeklyFreeroll}</div>
         <div id="Freeroll" className="row">{dailyFreeroll}</div>
+        <div className="row">{teamTab}</div>
+
         <div className="offset-lg">
-          <div id="WeeklyFreeroll" className="row">{weeklyFreeroll}</div>
         </div>
         <div className="offset-lg">
-          <div className="row">{teamTab}</div>
+        </div>
+        <div className="offset-lg">
         </div>
       </div>
     );
