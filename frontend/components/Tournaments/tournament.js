@@ -60,25 +60,25 @@ function formatDate(date1) {
 
 function roman(number) {
   switch (number) {
-    case 1: return 'I'; break;
-    case 2: return 'II'; break;
-    case 3: return 'III'; break;
-    case 4: return 'IV'; break;
-    case 5: return 'V'; break;
-    case 6: return 'VI'; break;
-    case 7: return 'VII'; break;
-    case 8: return 'VIII'; break;
-    case 9: return 'IX'; break;
-    case 10: return 'X'; break;
-    default: return number; break;
+    case 1: return 'I';
+    case 2: return 'II';
+    case 3: return 'III';
+    case 4: return 'IV';
+    case 5: return 'V';
+    case 6: return 'VI';
+    case 7: return 'VII';
+    case 8: return 'VIII';
+    case 9: return 'IX';
+    case 10: return 'X';
+    default: return number;
   }
 }
 
 export default class Tournament extends Component {
   getActionButtons = (props: PropsType) => {
     let actionButtons = '';
-    const buyIn = props.data.buyIn;
-    const id = props.data.tournamentID;
+    const { buyIn, tournamentID } = props.data;
+
     if (props.authenticated) {
       if (props.registeredInTournament) {
         actionButtons = (
@@ -91,7 +91,7 @@ export default class Tournament extends Component {
       } else {
         const text = buyIn > 0 ? `за ${buyIn} РУБ` : 'бесплатно';
         actionButtons = (
-          <a className="btn toggle-tickets wrap-text" onClick={() => props.register(id)}>
+          <a className="btn toggle-tickets wrap-text" onClick={() => props.register(tournamentID)}>
             Участвовать {text}
           </a>
         );
@@ -103,23 +103,22 @@ export default class Tournament extends Component {
   getStartConditions = (props: PropsType) => {
     const date = props.data.startDate;// || new Date();
     const formattedDate = formatDate(date);
+    const frees = props.data.goNext[0] - props.data.players;
     // console.log('startConditions', props.data.tournamentID, date);
 
-    if (date) return <div>Турнир начнётся {formattedDate}</div>;
+    if (date) {
+      return <div>Турнир начнётся {formattedDate}</div>;
+    }
 
-    return <div>Свободных мест: {props.data.goNext[0] - props.data.players}</div>;
-    // return (
-    //   <div>
-    //     Турнир начнётся, когда зарегистрируется
-    //     <br />
-    //     {sphrase(props.data.goNext[0], 'игрок')}
-    //   </div>
-    // );
+    if (frees === 0) {
+      return <div>Свободных мест нет</div>;
+    }
+
+    return <div>Свободных мест: {frees}</div>;
   };
 
   pickTournamentCoverColour = (id) => {
     const modulo = id % 10;
-    console.log(modulo);
     switch (modulo) {
       case 1: return 'green';
       case 2: return 'red';
@@ -130,10 +129,7 @@ export default class Tournament extends Component {
       case 7: return 'darkblue';
       case 8: return 'purple';
       case 9: return 'purple';
-      default:
-        console.log('default');
-        return '';
-        break;
+      default: return '';
     }
   };
 
@@ -150,7 +146,7 @@ export default class Tournament extends Component {
     const coverUrl = `/img/logo.png`;
     const color = 'white';
     const coverColor = this.pickTournamentCoverColour(id);
-    console.log(coverColor);
+    // console.log(coverColor);
 
     const easiest = 'Проще простого';
     const impossible = 'Будет жарко';
@@ -214,7 +210,7 @@ export default class Tournament extends Component {
       <div className="col-sm-6 col-md-4">
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
-          <div className="tournament-body">
+          <div className={`tournament-body ${participating}`}>
             <div className="body">
               <div className="price text-center">
                 <div className="value">{prizeList}</div>

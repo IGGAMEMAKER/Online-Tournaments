@@ -290,15 +290,6 @@ button{
   overflow-X: hidden;
 }
 
-.participating
-{
-  /*background: #CCFF90;*/
-  /*background-color: navajowhite;*/
-  /*background-color: #FFF176;*/
-  /*background-color: #F4FF81;*/
-  background-color: #FFECB3;
-}
-
 .ticket-card .price .from
 {
   color: #777777;
@@ -608,6 +599,13 @@ button{
 .tournament-body {
   padding-top: 15px;
   background: #F7F6F6;
+}
+.tournament-body.participating {
+  /*background: #CCFF90;*/
+  /*background-color: navajowhite;*/
+  /*background-color: #FFF176;*/
+  /*background-color: #F4FF81;*/
+  background-color: #FFECB3;
 }
 
 .tournament-cover-text span {

@@ -46,18 +46,17 @@ export default class Index extends Component {
     const weeklyFreeroll = (
       <div className="freeroll ctr red">
         <div className="white">
-          <h1 className="fadeText"> Сорви куш в еженедельной викторине!</h1>
+          <h1 className="fadeText"> Сорви куш в ежемесячной викторине!</h1>
           <p>
-            <div>Время начала - 20:00 (воскресенье)</div>
-            <div>Призовой фонд турнира - 500 рублей</div>
-            <div>Призовых мест: 18</div>
-            <div>Присоединяйся!</div>
+            <div>Главный приз - 1000 рублей</div>
+            <div>Призовых мест: 10</div>
+            <div>Всего за 50 рублей</div>
           </p>
           <center>
             <a
               className="btn btn-primary btn-large btn-lg btn-fixed"
               href="/Tournaments#daily"
-            >Участвовать</a>
+            >Участвовать </a>
           </center>
         </div>
       </div>
@@ -96,13 +95,6 @@ export default class Index extends Component {
         <div id="WeeklyFreeroll" className="row">{weeklyFreeroll}</div>
         <div id="Freeroll" className="row">{dailyFreeroll}</div>
         <div className="row">{teamTab}</div>
-
-        <div className="offset-lg">
-        </div>
-        <div className="offset-lg">
-        </div>
-        <div className="offset-lg">
-        </div>
       </div>
     );
   }

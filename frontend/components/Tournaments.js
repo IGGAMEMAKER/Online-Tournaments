@@ -46,7 +46,7 @@ export default class Tournaments extends Component {
         registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
         value: store.getTestValue(),
-        tournaments: store.getAvailableTournaments(),
+        // tournaments: store.getAvailableTournaments(),
       });
     });
 
