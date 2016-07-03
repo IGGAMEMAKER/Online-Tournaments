@@ -17,8 +17,8 @@ export default class Layout extends Component {
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
+    const chat = !props.chat ? '' : <Chat />;
     const header = props.noheader ? '' : <Menu />;
-    const chat = props.chat ? <Chat /> : '';
     const modals = props.nomodals ? '' : <ModalContainer />;
     const footer = props.nofooter ? '' : <Footer />;
     return (

@@ -1,5 +1,5 @@
 'use strict';
-
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 const webpack = require('webpack');
 const MINIFY = process.argv.indexOf('--minify') !== -1;
 
@@ -15,8 +15,8 @@ module.exports = [{
   entry: {
     app: './app.src.js',
     Teams: `./${app}/Team.js`,
+    Index: `./${app}/Index.js`,
     Packs: `./${app}/Pack.js`,
-    Leagues: `./${app}/Leagues.js`,
     Tournaments: `./${app}/Tournaments.js`,
     payments: `./${app}/Payment.js`,
     'admin-tournaments': `./${app}/Admin.js`,
@@ -64,14 +64,23 @@ module.exports = [{
       }
     ]
   },
-  plugins: MINIFY ? [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    }),
+  plugins: [
     new LiveReloadPlugin({
       port: 35729
     })
-  ] : []
+  ],
+  // eslint: {
+  //   configFile: ESLINT_CONFIG_FILE
+  // },
+
+  // plugins: MINIFY ? [
+  //   new webpack.optimize.UglifyJsPlugin({
+  //     compress: {
+  //       warnings: false
+  //     }
+  //   }),
+  //   new LiveReloadPlugin({
+  //     port: 35729
+  //   })
+  // ] : []
 }];

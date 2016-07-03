@@ -8,7 +8,7 @@ type StateType = {
 
 type ResponseType = {}
 
-export default class StdClass extends Component {
+export default class TournamentAdder extends Component {
   state = {
   };
 
