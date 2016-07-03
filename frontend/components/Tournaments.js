@@ -37,19 +37,16 @@ export default class Tournaments extends Component {
 
   componentWillMount() {
     // const tourns: Array<TournamentType> = TOURNAMENTS;
-    this.setState({
-      tournaments: TOURNAMENTS,
-    });
-
     store.addChangeListener(() => {
       this.setState({
         registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
         value: store.getTestValue(),
-        // tournaments: store.getAvailableTournaments(),
+        tournaments: store.getAvailableTournaments(),
       });
     });
 
+    actions.updateTournaments(TOURNAMENTS);
     actions.initialize();
   }
 
@@ -61,9 +58,9 @@ export default class Tournaments extends Component {
     actions.unregister(tournamentID);
   };
 
-  filter = (tournaments, filterFunction) => {
+  filter = (tournaments, filterFunction, group) => {
     const registeredIn = this.state.registeredIn || {};
-    return tournaments
+    const list = tournaments
       .filter(filterFunction)
       .map(t =>
         <Tournament
@@ -74,31 +71,60 @@ export default class Tournaments extends Component {
           registeredInTournament={registeredIn[t.tournamentID]}
         />
       );
+    if (!list.length) {
+      return '';
+    }
+
+    if (group) {
+      // <hr colour="white" width="30%" align="center" />
+      return (
+        <div>
+          <h2 className="page">{group}</h2>
+          <div className="row killPaddings nomargins">{list}</div>
+        </div>
+      );
+    }
+
+    return list;
   };
 
   render(props: PropsType, state: StateType) {
     // const state: StateType = this.state;
     // const tourns: Array<TournamentType> = TOURNAMENTS;
+
     // console.log('render TOURNAMENTS');
     // console.log(TOURNAMENTS);
     // console.log(state.tournaments);
     const tourns: Array<TournamentType> = state.tournaments;
 
-    const all = this
-      .filter(tourns, () => true);
+    const all = this.filter(tourns, () => true, 'Все турниры');
+
     const TodayTournaments = this
-      .filter(tourns, (t: TournamentType) => t.startDate && isToday(t.startDate));
+      .filter(
+        tourns,
+        (t: TournamentType) => t.startDate && isToday(t.startDate),
+        'Пройдут сегодня'
+      );
 
     const TomorrowTournaments = this
-      .filter(tourns, (t: TournamentType) => t.startDate && isTomorrow(t.startDate));
+      .filter(
+        tourns,
+        (t: TournamentType) => t.startDate && isTomorrow(t.startDate),
+        'Пройдут завтра'
+      );
 
     const REGULARITY_REGULAR = 1;
-    const RegularList = this
-      .filter(tourns, (t: TournamentType) =>
-      t.settings && t.settings.regularity === REGULARITY_REGULAR);
+
+    const RegularTournaments = this
+      .filter(
+        tourns,
+        (t: TournamentType) =>
+        t.settings && t.settings.regularity === REGULARITY_REGULAR,
+        'Регулярные турниры'
+      );
 
     const FreeTournaments = this
-      .filter(tourns, (t: TournamentType) => t.buyIn === 0);
+      .filter(tourns, (t: TournamentType) => t.buyIn === 0, 'Бесплатные турниры');
 
     const StreamTournaments = this
       .filter(tourns, (t: TournamentType) => t.settings.regularity === 2);
@@ -108,7 +134,8 @@ export default class Tournaments extends Component {
       .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
       .slice(0, 3);
 
-    const RichestList = this.filter(richest, () => true);
+    const RichestTournaments = this.filter(richest, () => true, 'ТОП турниры');
+
     /*
     // <div className="row">{TournamentList}</div>
 
@@ -152,17 +179,13 @@ export default class Tournaments extends Component {
           style={{ display: login ? 'none' : 'block' }}
         >Авторизуйтесь, чтобы сыграть!</a>
 
-        <h2 className="page">Регулярные турниры</h2>
-        <div className="row killPaddings nomargins">{RegularList}</div>
+        {RegularTournaments}
 
-        <h2 className="page">Пройдут сегодня</h2>
-        <div className="row killPaddings nomargins">{TodayTournaments}</div>
+        {TodayTournaments}
 
-        <h2 className="page">Пройдут завтра</h2>
-        <div className="row killPaddings nomargins">{TomorrowTournaments}</div>
+        {TomorrowTournaments}
 
-        <h2 className="page">Турниры с наибольшими призами</h2>
-        <div className="row killPaddings nomargins">{RichestList}</div>
+        {RichestTournaments}
 
         <hr colour="white" width="60%" align="center" />
       </div>
