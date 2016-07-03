@@ -1,4 +1,6 @@
 import { h, Component } from 'preact';
+import store from '../stores/ProfileStore';
+import actions from '../actions/ProfileActions';
 
 type PropsType = {}
 
@@ -9,7 +11,18 @@ type ResponseType = {}
 export default class Index extends Component {
   state = {};
 
-  componentWillMount() {}
+  componentWillMount() {
+    // store.addChangeListener(() => {
+    //   this.setState({
+    //     registeredIn: store.getMyTournaments(),
+    //     money: store.getMoney(),
+    //     value: store.getTestValue(),
+    //     tournaments: store.getAvailableTournaments(),
+    //   });
+    // });
+
+    actions.initialize();
+  }
 
   render(props: PropsType, state: StateType) {
     const dailyFreeroll = (
