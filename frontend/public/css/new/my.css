@@ -351,7 +351,12 @@ button{
 }
 
 #vk_groups, #vk_groups iframe {
-  width: 100% !important;
+  /*width: 100% !important;*/
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 300px !important;
+  height: 300px;
   max-width: inherit;
   /*max-height: 500px;*/
 }
@@ -584,13 +589,32 @@ button{
 
   transform: translateY(-50%);
 }
-
-.tournament-difficulty {
+.big-cards-container {
+  display: table;
+}
+.card-container-semi {
+  /*height: 100%;*/
+  /*height: 350px;*/
+  /*width: 300px;*/
+  /*float: left;*/
+}
+.tournament-date-start {
+  text-align: left;
   position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  /*left: 20px;*/
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  color: whitesmoke;
+}
+.tournament-difficulty {
+  display: none;
+  text-align: left;
+  position: absolute;
+  /*top: 20px;*/
+  bottom: 20px;
+  /*left: 0;*/
+  /*right: 0;*/
+  left: 20px;
   /*left: 50%;*/
   /*transform: translate(-50%);*/
   z-index: 100;
@@ -642,6 +666,20 @@ button{
 
 .hide {
   display: none;
+}
+
+.show {
+  display: block;
+}
+
+.contacts-tab {
+  width: 50%;
+  float: left;
+}
+
+.navbar.chat {
+  height: 30px;
+  min-height: 30px;
 }
 
 .footballer {
@@ -873,6 +911,7 @@ a:focus {
 }
 
 .freeroll {
+  /*height: 100%;*/
   /*background-color: #042E54;*/
   /*background-image: url(/img/logo.png) no-repeat center;*/
   /*background-image: url('/img/cardLayers/317350-blur-image-light.jpg');*/

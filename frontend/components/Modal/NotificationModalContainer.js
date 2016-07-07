@@ -44,6 +44,7 @@ export default class NotificationModalContainer extends Component {
   hide = () => {
     // $("#modal-standard").modal('hide');
     this.setState({ visible: false });
+    actions.loadNews();
   };
 
   answer = (code, messageID) => {
@@ -105,7 +106,7 @@ export default class NotificationModalContainer extends Component {
         footer = this.skip('Хорошо', messageID);
         break;
       case c.NOTIFICATION_FIRST_MESSAGE:
-        var mainPrize = info.mainPrize;
+        const mainPrize = info.mainPrize;
         header = 'С почином!';
         // 'Проверь свои знания, участвуй в турнирах, и выигрывай ценные призы!'
 

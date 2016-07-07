@@ -29,7 +29,7 @@ type ResponseType = {
 
 export default class Tournaments extends Component {
   state = {
-    tournaments: [],
+    tournaments: TOURNAMENTS,
     registeredIn: {},
     options: {},
     value: store.getTestValue(),
@@ -80,9 +80,10 @@ export default class Tournaments extends Component {
       return (
         <div>
           <h2 className="page">{group}</h2>
-          <div className="row killPaddings nomargins">{list}</div>
+          <div className="row nomargins">{list}</div>
         </div>
       );
+      // killPaddings nomargins
     }
 
     return list;
@@ -96,45 +97,31 @@ export default class Tournaments extends Component {
     // console.log(TOURNAMENTS);
     // console.log(state.tournaments);
     const tourns: Array<TournamentType> = state.tournaments;
-
-    const all = this.filter(tourns, () => true, 'Все турниры');
-
-    const TodayTournaments = this
-      .filter(
-        tourns,
-        (t: TournamentType) => t.startDate && isToday(t.startDate),
-        'Пройдут сегодня'
-      );
-
-    const TomorrowTournaments = this
-      .filter(
-        tourns,
-        (t: TournamentType) => t.startDate && isTomorrow(t.startDate),
-        'Пройдут завтра'
-      );
-
     const REGULARITY_REGULAR = 1;
 
-    const RegularTournaments = this
-      .filter(
-        tourns,
-        (t: TournamentType) =>
-        t.settings && t.settings.regularity === REGULARITY_REGULAR,
-        'Регулярные турниры'
-      );
-
-    const FreeTournaments = this
-      .filter(tourns, (t: TournamentType) => t.buyIn === 0, 'Бесплатные турниры');
-
-    const StreamTournaments = this
-      .filter(tourns, (t: TournamentType) => t.settings.regularity === 2);
+    const todayF = (t: TournamentType) => t.startDate && isToday(t.startDate);
+    const tommorrowF = (t: TournamentType) => t.startDate && isTomorrow(t.startDate);
+    const regularF = (t: TournamentType) =>
+    t.settings && t.settings.regularity === REGULARITY_REGULAR;
+    const freeF = (t: TournamentType) => t.buyIn === 0;
+    const streamF = (t: TournamentType) => t.settings.regularity === 2;
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
       .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
       .slice(0, 3);
 
-    const RichestTournaments = this.filter(richest, () => true, 'ТОП турниры');
+    const all = this.filter(tourns, () => true, 'Все турниры');
+    const TodayTournaments = this.filter(tourns, todayF, 'Пройдут сегодня');
+    const TomorrowTournaments = this.filter(tourns, tommorrowF, 'Пройдут завтра');
+    const RegularTournaments = this.filter(tourns, regularF, 'Регулярные турниры');
+    const FreeTournaments = this.filter(tourns, freeF, 'Бесплатные турниры');
+    const StreamTournaments = this.filter(tourns, streamF);
+    const RichestTournaments = (
+      <div id="top">
+        {this.filter(richest, () => true, 'ТОП турниры')}
+      </div>
+    );
 
     /*
     // <div className="row">{TournamentList}</div>

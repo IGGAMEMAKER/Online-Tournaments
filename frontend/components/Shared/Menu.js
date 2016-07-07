@@ -51,6 +51,7 @@ export default class Menu extends Component {
                   <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
                   <li><a href="/Packs" className="light-blue">Призы</a></li>
                   <li><a href="/Profile" className="light-blue">Профиль</a></li>
+                  <li><a href="/about"> О нас</a></li>
                   {loginMenu}
                 </ul>
               </div>

@@ -149,9 +149,10 @@ export default class Tournament extends Component {
     // console.log(coverColor);
 
     const easiest = 'Проще простого';
-    const impossible = 'Будет жарко';
     const easy = 'Вполне по силам';
-    const middle = 'Придётся потрудиться';
+    const middle = 'Средне';
+    const impossible = 'Будет жарко';
+
     let difficulty = easiest;
 
     if (maxPlayers > 5) {
@@ -166,14 +167,24 @@ export default class Tournament extends Component {
       }
     }
 
+    let playerCount = props.data.players;
+
+    const startDate = props.data.startDate;
+    if (!startDate) {
+      playerCount = `${props.data.players}/${props.data.goNext[0]}`;
+    }
+
     const cover = (
       <div className="cover">
         <div className="tournament-cover">
           <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
-            &nbsp;&nbsp;{props.data.players}/{props.data.goNext[0]}
+            &nbsp;&nbsp;{playerCount}
           </p>
         </div>
-        <div className="tournament-difficulty">{difficulty}</div>
+        <div className="tournament-difficulty">Сложность<br />{difficulty}</div>
+        <div className={`tournament-date-start ${startDate ? 'show' : 'hide'}`}>
+          {formatDate(startDate)}
+        </div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
         <div className={`tournament-cover-container ${coverColor}`}>
           <div className="tournament-centerize">
@@ -206,8 +217,14 @@ export default class Tournament extends Component {
     // killPaddings
     //   <div className="col-sm-6 col-md-4">
     //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
+
+    let tournamentSpecialID = '';
+    if (prizes[0] === 50) {
+      tournamentSpecialID = 'daily';
+    }
+
     return (
-      <div className="col-sm-6 col-md-4">
+      <div className="col-sm-6 col-md-4" id={tournamentSpecialID}>
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
           <div className={`tournament-body ${participating}`}>

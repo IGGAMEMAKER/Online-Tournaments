@@ -10,22 +10,50 @@ type StateType = {
 export default class Footer extends Component {
   state = {
     loaded: false,
+    vk: !false,
+  };
+
+  arraysEqual = (a, b) => {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+
+    // If you don't care about the order of the elements inside
+    // the array, you should sort both arrays here.
+
+    for (let i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
   };
 
   componentWillMount() {
     store.addChangeListener(() => {
+      // if (!this.arraysEqual(this.state.messages, store.getChatMessages())) {
       this.setState({
         messages: store.getChatMessages(),
         loaded: true,
       });
+      // }
     });
+    // VK.Widgets.Group('vk_groups', {
+    //   mode: 2,
+    //   width: '300',
+    //   height: '360',
+    //   color1: 'FFFFFF',
+    //   color2: '2B587A',
+    //   color3: '5B7FA6'
+    // }, 111187123);
   }
+  // toggleVK = () => {
+  //   this.setState({ vk: !this.state.vk });
+  // };
 
   render(props: PropsType, state: StateType) {
     let chat = '';
     if (state.loaded && state.messages.length) {
       const m = state.messages[state.messages.length - 1];
-      chat = <a href="#chat">{m.sender || 'Гость'}: {m.text}</a>;
+      chat = <a href="#chat" className="text-center">{m.sender || 'Гость'}: {m.text}</a>;
     }
     //
     // <li>
@@ -59,37 +87,57 @@ export default class Footer extends Component {
      <span className="icon-bar" />
      </button>
 
+          <script>
+            console.log('script VK')
+            const options = {};
+            options.mode = 2;
+            options.width = "auto";
+            options.height = "360";
+            options.color1 = 'FFFFFF';
+            options.color2 = '2B587A';
+            options.color3 = '5B7FA6';
+            console.log(VK);
+            VK.Widgets.Group("vk_groups", options, 111187123);
+          </script>
      */
+
+    // <div id="vk_groups" className={`${state.vk ? 'show' : 'hide'}`}></div>
+    // <a className="fa fa-vk fa-lg" onClick={this.toggleVK}>Группа ВК</a>
+
+    const tpLink = 'https://vk.com/topic-111187123_33419618';
+    const group = 'https://vk.com/o_tournaments';
+
+    const vkText = 'Вступайте, будем рады вам :)';
+
+    const contacts = (
+      <center>
+        <div className="white page">
+          <div className="offset text-center contacts-tab">
+            <i className="fa fa-vk fa-lg">&nbsp;
+              <a href={group} target="_blank">Наша группа ВК</a>
+            </i>
+            <div className="white">{vkText}</div>
+          </div>
+          <div className="offset text-center contacts-tab">
+            <i className="fa fa-lg">
+              <a href={tpLink} target="_blank">Техподдержка</a>
+            </i>
+            <div className="white">Что-то не так? Пишите, не стесняйтесь</div>
+          </div>
+        </div>
+      </center>
+    );
+
     return (
       <center>
         <div style="height: 35px;"></div>
-        <center>
-          <div style="width: 150px; float: left;">
-            <a
-              href="https://vk.com/o_tournaments"
-              className="fa fa-vk fa-lg"
-              target="_blank"
-            >Группа ВК</a>
-          </div>
-          <div style="width: 100px; float: left;">
-            <a
-              href="https://vk.com/topic-111187123_33419618"
-              target="_blank"
-            >Техподдержка</a>
-          </div>
-          <div style="width: 100px; float: left;">
-            <a href="/about"> О нас</a>
-          </div>
-        </center>
-        <div style="height: 35px;"></div>
-        <nav className="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+        <h1 className="white page">Контакты</h1>
+        {contacts}
+        <div style="height: 60px;"></div>
+        <nav className="navbar navbar-inverse navbar-fixed-bottom chat" role="navigation">
           <div className="container-fluid">
             <div className="navbar-header">
-              <p className="navbar-brand" id="activity">{chat}</p>
-            </div>
-            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
-              <ul className="nav navbar-nav navbar-right">
-              </ul>
+              <p id="activity">{chat}</p>
             </div>
           </div>
         </nav>
