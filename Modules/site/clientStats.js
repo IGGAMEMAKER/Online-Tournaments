@@ -66,6 +66,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 	// Stats.attempt('game-drawPopup')
 	app.get('/mark/metrics/:stat', aux.authenticated, (req, res) => {
 		res.end();
+		console.log('got metrics request', req.params);
 		Actions.add(req.login, req.params.stat, {});
 	});
 

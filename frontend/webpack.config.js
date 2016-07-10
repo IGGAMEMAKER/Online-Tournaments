@@ -18,6 +18,7 @@ module.exports = [{
     Teams: `./${app}/Team.js`,
     Index: `./${app}/Index.js`,
     Packs: `./${app}/Pack.js`,
+    Profile: `./${app}/Profile.js`,
     Tournaments: `./${app}/Tournaments.js`,
     payments: `./${app}/Payment.js`,
     'admin-tournaments': `./${app}/Admin.js`,

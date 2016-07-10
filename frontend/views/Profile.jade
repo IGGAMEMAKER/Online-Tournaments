@@ -94,12 +94,17 @@ mixin modal()
 extends layout
 
 block JSlibs
-	script(src="tournaments.js")
+	//script(src="tournaments.js")
 
 block title
 	title Профиль
 
+//block content
+//	#app
+//	script(src="/output/Profile.js")
 block content
+	#app
+	script(src="/output/Profile.js")
 	script.
 		getProfile()
 	h1(class="text-center white page") Профиль
@@ -109,17 +114,6 @@ block content
 		+drawTournamentRegs(msg.tournaments)
 	.full
 		+info()
-	//div(class="col-sm-12")
-		if msg && msg.email
-			div(class="col-sm-6 col-xs-12 killPaddings")
-				+info()
-			div(class="col-sm-6 col-xs-12 killPaddings")
-				+changePass()
-		else
-			div(class="col-sm-12 col-xs-12 killPaddings")
-				+info()
-	//div(class="col-sm-12")
-		//div(class="col-sm-6 col-xs-12 killPaddings" id="dep")
 	div(class="full" id="dep")
 		+deposit()
 	div(class="full" id="cashoutMoney")

@@ -26,8 +26,13 @@ export default class Menu extends Component {
   }
 
   render(props: PropsType, state: StateType) {
-    const text = `  На вашем счету ${state.money}p   : `;
-    const loginMenu = login ? '' : <li><a href="/Login" className="light-blue">Вход</a></li>;
+    const text = state.loaded ? `  На вашем счету ${state.money}p   : ` : '';
+    let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
+
+    if (login) {
+      loginMenu = '';
+    }
+
     return (
       <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
@@ -61,10 +66,10 @@ export default class Menu extends Component {
           <div className="container-fluid">
             <center>
               <div style="width:100%; background-color:#111111;" className="balance">
-                <span>{state.loaded ? text : ''}</span>
+                <span>{text}</span>
                 <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
                 <span> / </span>
-                <a href="/Profile#cashoutMoney">Снять</a>
+                <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
               </div>
             </center>
           </div>
