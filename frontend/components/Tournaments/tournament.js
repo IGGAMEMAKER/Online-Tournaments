@@ -1,6 +1,3 @@
-/**
- * Created by gaginho on 04.06.16.
- */
 import { h, Component } from 'preact';
 import { TournamentType } from '../types';
 
@@ -12,7 +9,8 @@ type PropsType = {
 
   register: Function,
   unregister: Function,
-
+  onSelected: Function,
+  isSelected: boolean,
 }
 
 function getFormOfParticipants(num) {
@@ -174,8 +172,9 @@ export default class Tournament extends Component {
       playerCount = `${props.data.players}/${props.data.goNext[0]}`;
     }
 
+    const cost = buyIn === 0 ? 'БЕСПЛАТНО' : `Всего за ${buyIn} руб`;
     const cover = (
-      <div className="cover">
+      <div className="cover" onClick={() => props.onSelected(id)}>
         <div className="tournament-cover">
           <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
             &nbsp;&nbsp;{playerCount}
@@ -186,6 +185,8 @@ export default class Tournament extends Component {
           {formatDate(startDate)}
         </div>
         <span className="tournament-users" style={{ color }}>№{id}</span>
+        <div className="tournament-prize-count">Призов: {prizes.length}</div>
+        <div className="tournament-cost">{cost}</div>
         <div className={`tournament-cover-container ${coverColor}`}>
           <div className="tournament-centerize">
             <div className="white tournament-cover-text">
@@ -227,7 +228,7 @@ export default class Tournament extends Component {
       <div className="col-sm-6 col-md-4" id={tournamentSpecialID}>
         <div className={ticketCardClassName} id={`bgd${id}`}>
           {cover}
-          <div className={`tournament-body ${participating}`}>
+          <div className={`tournament-body ${participating} ${props.isSelected ? '' : 'hide'}`}>
             <div className="body">
               <div className="price text-center">
                 <div className="value">{prizeList}</div>

@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
+import stats from '../../helpers/stats';
 // import actions from '../../actions/ProfileActions';
 
 type PropsType = {}
@@ -50,8 +51,8 @@ export default class Menu extends Component {
                 <ul className="nav navbar-nav navbar-left">
                   <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
                   <li><a href="/Packs" className="light-blue">Призы</a></li>
-                  <li><a href="/Profile" className="light-blue">Профиль</a></li>
-                  <li><a href="/about"> О нас</a></li>
+                  <li><a href="/profile" className="light-blue">Профиль</a></li>
+                  <li><a href="/about" className="light-blue"> О нас</a></li>
                   {loginMenu}
                 </ul>
               </div>
@@ -61,7 +62,7 @@ export default class Menu extends Component {
             <center>
               <div style="width:100%; background-color:#111111;" className="balance">
                 <span>{state.loaded ? text : ''}</span>
-                <a href="/Profile#dep">Пополнить</a>
+                <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
                 <span> / </span>
                 <a href="/Profile#cashoutMoney">Снять</a>
               </div>

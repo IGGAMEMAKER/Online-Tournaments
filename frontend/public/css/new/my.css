@@ -109,6 +109,8 @@ button{
 
   /*background-color: #263238;*/
   background-color: #111111;
+  /*background-color: #1A2633;*/
+  /*background-color: #17212c;*/
 
   /*background-image: url('dark_brown.png');*/
 }
@@ -606,6 +608,21 @@ button{
   z-index: 100;
   color: whitesmoke;
 }
+.tournament-prize-count {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+  color: whitesmoke;
+}
+.tournament-cost {
+  text-align: left;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  color: whitesmoke;
+}
 .tournament-difficulty {
   display: none;
   text-align: left;
@@ -620,6 +637,7 @@ button{
   z-index: 100;
   color: whitesmoke;
 }
+
 .tournament-body {
   padding-top: 15px;
   background: #F7F6F6;
@@ -657,6 +675,17 @@ button{
 .tournament-cover-container.blue { background-color: #3498db; }
 .tournament-cover-container.purple { background-color: #9b59b6; }
 
+.tournament-body.darkblue { background-color: #34495e; }
+.tournament-body.darkdarkblue { background-color: #2c3e50; }
+.tournament-body.pomegranate { background-color: #c0392b; }
+.tournament-body.red { background-color: #e74c3c; }
+.tournament-body.green { background-color: #2ecc71; }
+.tournament-body.blue { background-color: #3498db; }
+.tournament-body.purple { background-color: #9b59b6; }
+
+.cover {
+  cursor: pointer;
+}
 .tournament-users {
   position: absolute;
   top: 20px;

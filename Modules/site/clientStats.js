@@ -4,9 +4,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 	var Promise = require('bluebird');
 	// var Stats = sender.Stats;
 	var Stats = require('../../models/statistics');
-	var TournamentRegs = require('../../models/tregs')
-	var Users = require('../../models/users')
-	var Messages = require('../../models/message')
+	var TournamentRegs = require('../../models/tregs');
+	var Users = require('../../models/users');
+	var Messages = require('../../models/message');
+	var Actions = require('../../models/actions');
 	var time = require('../../helpers/time');
 
 	// var aux = require('../../models/auxillary')
@@ -23,10 +24,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		var tournamentID = req.body.tournamentID;
 		// Stats('AttemptToStart', {login:login, tournamentID: tournamentID});
 
-		Stats.attempt('startGame')//, { tournamentID: tournamentID })
-	})
-
-
+		Stats.attempt('startGame'); //, { tournamentID: tournamentID })
+	});
 
 	app.post('/UserGetsData', function (req, res){
 		sender.Answer(res, OK);
@@ -51,7 +50,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		Stats.attempt('gameLoaded');
 
 		
-	})
+	});
 
 	app.post('/NoMoney', function (req, res){
 		var tournamentID = req.body.tournamentID;
@@ -62,18 +61,23 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		strLog('No money for ' + tournamentID + ' need: ' + money, 'Money')
 
 		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
-	})
+	});
 
 	// Stats.attempt('game-drawPopup')
+	app.get('/mark/metrics/:stat', aux.authenticated, (req, res) => {
+		res.end();
+		Actions.add(req.login, req.params.stat, {});
+	});
+
 	app.all('/mark/payment/:login/:ammount', function (req, res){
 		var login = req.params.login;
 		var ammount = req.params.ammount;
 
-		res.end('')
+		res.end('');
 
-		Stats.attempt('PRESSED-PAYMENT')
+		Stats.attempt('PRESSED-PAYMENT');
 		strLog('TRIED TO PAY! ' + login + ' ' + ammount, 'Money');
-	})
+	});
 
 	app.post('/gamestats/:name', function (req, res){
 		res.end('');
@@ -91,9 +95,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		}
 
 		// Stats.attempt('game-'+ name)
-
-
-	})
+	});
 
 	app.post('/mark/game/:name', middlewares.authenticated, function (req, res){
 		res.end('MARK GAME RECEIVED');
@@ -108,20 +110,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		// Stats.attempt('game-'+ name)
 
 
-		var obj	= { type: 'game-'+ name }
-		if (name=='movement') aux.clientside(login, obj)
-
-
-		// aux.done(login, 'game-'+ name)
-		// .then(function (result){
-		// 	console.log(result);
-		// })
-		// .catch(function (err){
-		// 	console.log(err);
-		// })
+		var obj	= { type: 'game-'+ name };
+		if (name=='movement') aux.clientside(login, obj);
 
 		// Stats('/mark/game/'+name, {login:login, tournamentID:tournamentID });
-	})
+	});
 
 	app.post('/message/shown', middlewares.authenticated, function (req, res){
 		res.end('');
@@ -233,7 +226,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		.then(answer(req, next))
 		.catch(next);
 
-	}, render('playedTop'), send_error) //draw_list)
+	}, render('playedTop'), send_error); //draw_list)
 
 
 	app.get('/moneyTop', function (req, res, next){
@@ -241,7 +234,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		Users.moneyTop(moneyMoreThan)
 		.then(answer(req, next))
 		.catch(next);
-	}, render('Users'), send_error)
+	}, render('Users'), send_error);
 
 	app.get('/Stats2', function (req, res, next){
 		var date = req.query.date || null;
@@ -249,7 +242,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		Stats.get(date)
 		// .then(printer)
 		.then(answer(req, next))
-		.catch(next)
+		.catch(next);
 
 /*		
 		.then(function (data){
@@ -262,4 +255,4 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 */
 
 	}, render('Statistics'), send_error) //draw_list
-}
+};

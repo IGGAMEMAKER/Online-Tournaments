@@ -12,6 +12,7 @@ import actions from '../actions/ProfileActions';
 
 type StateType = {
   tournaments: Array<TournamentType>,
+  selected: number,
 };
 
 type PropsType = {};
@@ -33,15 +34,16 @@ export default class Tournaments extends Component {
     registeredIn: {},
     options: {},
     value: store.getTestValue(),
+    selected: 0,
   };
 
   componentWillMount() {
     // const tourns: Array<TournamentType> = TOURNAMENTS;
     store.addChangeListener(() => {
       this.setState({
-        registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
         value: store.getTestValue(),
+        registeredIn: store.getMyTournaments(),
         tournaments: store.getAvailableTournaments(),
       });
     });
@@ -58,8 +60,15 @@ export default class Tournaments extends Component {
     actions.unregister(tournamentID);
   };
 
+  onSelected = (id) => {
+    this.setState({
+      selected: this.state.selected === id ? 0 : id
+    });
+  };
+
   filter = (tournaments, filterFunction, group) => {
     const registeredIn = this.state.registeredIn || {};
+
     const list = tournaments
       .filter(filterFunction)
       .map(t =>
@@ -69,8 +78,11 @@ export default class Tournaments extends Component {
           unregister={this.unregister}
           authenticated
           registeredInTournament={registeredIn[t.tournamentID]}
+          onSelected={this.onSelected}
+          isSelected={this.state.selected === t.tournamentID}
         />
       );
+
     if (!list.length) {
       return '';
     }
@@ -111,12 +123,12 @@ export default class Tournaments extends Component {
       .sort((a: TournamentType, b: TournamentType) => b.Prizes[0] - a.Prizes[0])
       .slice(0, 3);
 
-    const all = this.filter(tourns, () => true, 'Все турниры');
+    // const all = this.filter(tourns, () => true, 'Все турниры');
     const TodayTournaments = this.filter(tourns, todayF, 'Пройдут сегодня');
     const TomorrowTournaments = this.filter(tourns, tommorrowF, 'Пройдут завтра');
     const RegularTournaments = this.filter(tourns, regularF, 'Регулярные турниры');
-    const FreeTournaments = this.filter(tourns, freeF, 'Бесплатные турниры');
-    const StreamTournaments = this.filter(tourns, streamF);
+    // const FreeTournaments = this.filter(tourns, freeF, 'Бесплатные турниры');
+    // const StreamTournaments = this.filter(tourns, streamF);
     const RichestTournaments = (
       <div id="top">
         {this.filter(richest, () => true, 'ТОП турниры')}
@@ -158,13 +170,16 @@ export default class Tournaments extends Component {
     // if (!tourns.length) {
     //   return <h1>AZAZAZA</h1>;
     // }
+    const authButton = (
+      <a
+        href="/Login"
+        className="btn btn-success"
+        style={{ display: login ? 'none' : 'block' }}
+      >Авторизуйтесь, чтобы сыграть!</a>
+    );
     return (
       <div>
-        <a
-          href="/Login"
-          className="btn btn-success"
-          style={{ display: login ? 'none' : 'block' }}
-        >Авторизуйтесь, чтобы сыграть!</a>
+        {authButton}
 
         {RegularTournaments}
 

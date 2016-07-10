@@ -42,8 +42,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       cb(null, tournamentID + '.'+extension);// + file.extension)
     }
   })
-  
-var upload = multer({ storage: storage }).single('image');
+
+  var upload = multer({ storage: storage }).single('image');
 
 //var upload = multer({ storage: storage })
 //var Answer = sender.Answer;
@@ -68,12 +68,12 @@ var upload = multer({ storage: storage }).single('image');
   app.get('/AddTournament', function (req, res){
     res.render('AddTournament');
     /*if (req.session.login=='Alvaro_Fernandez'){
-	    res.render('AddTournament');
-	    //siteAnswer(res, 'AddTournament');
-	  }
-	  else{
-	    res.render('Alive');
-	  }*/
+     res.render('AddTournament');
+     //siteAnswer(res, 'AddTournament');
+     }
+     else{
+     res.render('Alive');
+     }*/
   });
 
   app.get('/api/tournaments/available', aux.moderator, api('Tournaments', 'available'));
@@ -111,7 +111,7 @@ var upload = multer({ storage: storage }).single('image');
       }
     }
 
-    for (var i=0; i< GoNext.length - 1; ++i){
+    for (var i = 0; i< GoNext.length - 1; ++i){
       var num = parseInt(GoNext[i]);
       if (isNaN(num)){
         strLog('goNext num parseInt error! ');
@@ -142,12 +142,12 @@ var upload = multer({ storage: storage }).single('image');
         prizePools:   [1],
 
         comment:    'Yo',
-        
+
         playersCountStatus: COUNT_FIXED,///Fixed or float
         startDate:    null,
         status:       null,
         players:      0
-      }
+      };
 
       if (data.special || data.regularity || data.specName){
         obj.settings={};
@@ -186,9 +186,9 @@ var upload = multer({ storage: storage }).single('image');
     var tournamentID = req.params.tournamentID;
 
     var TournamentInfo= {
-      tournament:null,
-      players:null
-    }
+      tournament: null,
+      players: null
+    };
 
     Tournaments.getByID(tournamentID)
       .then(function (tournament){
@@ -201,7 +201,7 @@ var upload = multer({ storage: storage }).single('image');
       })
       .catch(function (error){
         res.json({error:error});
-      })
+      });
     // var data = req.body;
     // data.query = {tournamentID:req.query.tID};
     // data.queryFields = 'tournamentID buyIn goNext gameNameID Prizes players status';
@@ -293,7 +293,7 @@ var upload = multer({ storage: storage }).single('image');
     var tournamentID = req.params.tournamentID;
     var data = req.body || null;
 
-    var obj = {}
+    var obj = {};
     if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){
       obj[data.name] = JSON.parse(data.value)
     }
@@ -309,7 +309,7 @@ var upload = multer({ storage: storage }).single('image');
       })
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.render('Lists/Tournaments'), aux.err)
+  }, aux.render('Lists/Tournaments'), aux.err);
 
   function getTopic(topic){
     Log("getTopic : " + topic, "Tournaments");
@@ -333,7 +333,7 @@ var upload = multer({ storage: storage }).single('image');
   app.post('/GetTournamentAddress', function (req, res){
     //Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
     AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
-  })
+  });
 
   app.post('/ServeTournament', ServeTournament);
   function ServeTournament (req, res){

@@ -91,7 +91,11 @@ module.exports = {
 
 	,SPECIALITY_SPECIAL : 1
 
+	,TREG_NO_MONEY: 'TREG_NO_MONEY'
+	,TREG_FULL: 'TREG_FULL'
+	,TREG_ALREADY: 'Registered'
+
 	// ,COLLECTION_PRIZE_
 
 	// ,MESSAGE_TYPE_
-}
+};

@@ -1,10 +1,12 @@
-var Packs = require('../models/packs')
-var Gifts = require('../models/gifts')
-var Users = require('../models/users')
-var Money = require('../models/money')
-var Marathon = require('../models/marathon')
-var TournamentReg = require('../models/tregs')
-var Tournaments = require('../models/tournaments')
+var Packs = require('../models/packs');
+var Gifts = require('../models/gifts');
+var Users = require('../models/users');
+var Money = require('../models/money');
+var Marathon = require('../models/marathon');
+var TournamentReg = require('../models/tregs');
+var Tournaments = require('../models/tournaments');
+
+var c = require('../constants');
 
 
 var sender = require('../requestSender');
@@ -166,7 +168,7 @@ function reg(tournamentID, login){
 
 		// check max players count
 		if (playerCount < maxPlayers) { // pay money
-			if (buyIn>0) { 
+			if (buyIn > 0) {
 				return Money.pay(login, buyIn, { type:aux.c.SOURCE_TYPE_BUY_IN, tournamentID:tournamentID })
 			}
 			return 1;
@@ -271,31 +273,29 @@ function register(tournamentID, login, res){
 
 	return reg(tournamentID, login)
 	.then(function (tournament){
-		// info['changePlayersCount'] = saved;
-		// queue[tournamentID][login] = null;
-
-		// aux.done(login, 'tournament.join', {tournamentID:tournamentID});
 		if (res) Answer(res, OK);
-		
 
 		join_if_stream(tournament, login);
 		
 		needsStart(tournament);
 	})
-	.catch(function (err){
+	.catch(function (err) {
 		// queue[tournamentID][login]=null;
-		clearQueue(tournamentID, login)
+		clearQueue(tournamentID, login);
 		console.log('CATCHED error while player registering!', err);
+		// if (res) Answer(res, OK);
+		// res.json({ result: tournamentID });
+		// Answer(res, OK);
 
-		if (res) { 
+		if (res) {
 			switch (err){
-				case aux.c.TREG_FULL: Answer(res, { result: aux.c.TREG_FULL } ); break;
-				case aux.c.TREG_ALREADY: Answer(res, { result: aux.c.TREG_ALREADY }); break;
-				case aux.c.TREG_NO_MONEY: Answer(res, { result: buyIn }); break;
+				case aux.c.TREG_FULL: res.json({ result: aux.c.TREG_FULL }); break;
+				case aux.c.TREG_ALREADY: res.json({ result: aux.c.TREG_ALREADY }); break;
+				case aux.c.TREG_NO_MONEY: res.json({ result: aux.c.TREG_NO_MONEY }); break;
 				default:
-					Answer(res, { result: buyIn });
+					res.json({ result: aux.c.TREG_NO_MONEY });
 					// Answer(res, Fail);
-				break;
+					break;
 			}
 		}
 		// Error(err);

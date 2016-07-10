@@ -1,21 +1,5 @@
 //var http = require('http');
 var request = require('request');
-
-this.sendRequest = sendRequest;
-this.expressSendRequest = expressSendRequest;
-this.printer = printer;
-this.Answer = Answer;
-this.Proxy = Proxy;
-this.strLog = strLog;
-this.getPort = getPort;
-this.setServer = setServer;
-this.Stats = Stats;
-this.customSend = customSend
-this.getLogs = getLogs;
-this.getLogFile = getLogFile;
-
-this.getDay = getDay;
-
 var serverList = {};
 
 var fs = require('fs');
@@ -167,15 +151,14 @@ function Stats(topic, statObject){
 
 function printer(error, response, body) {
 	if (!error) {
-    	/*console.log('printing:');
+		/*console.log('printing:');
     	console.log(body);*/
-        //var info = JSON.parse(JSON.stringify(body));
-        //console.log(info);
-    }
-    else {
-        console.error('Error happened: '+ error);
-    }
-};
+		//var info = JSON.parse(JSON.stringify(body));
+		//console.log(info);
+	} else {
+		console.error('Error happened: '+ error);
+	}
+}
 
 function Proxy(error, response, body, res){
 	Answer(res, body);
@@ -288,3 +271,19 @@ function sendRequest(urlPath, curData, host, targetServer, res, responseCallBack
 	//req.write(curData);
 	//request.end();
 }
+
+module.exports = {
+	sendRequest,
+	expressSendRequest,
+	printer,
+	Answer,
+	Proxy,
+	strLog,
+	getPort,
+	setServer,
+	Stats,
+	customSend,
+	getLogs,
+	getLogFile,
+	getDay
+};

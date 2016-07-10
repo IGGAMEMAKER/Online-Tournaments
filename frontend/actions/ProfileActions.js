@@ -129,20 +129,31 @@ export default {
 
   async register(tournamentID) {
     try {
+      // request
+      //   .post('RegisterInTournament')
+      //   .send({ login, tournamentID })
+      //   .end((err, response) => {
+      //     console.log('get respond from server');
+      //     if (err) throw err;
+      //
+      //     console.log('register in tournament', tournamentID, response);
+      //   });
       const response = await request
         .post('RegisterInTournament')
         .send({ login, tournamentID });
-      // .end((err, response) => {
       console.log('RegisterInTournament', response);
 
-      // const registeredIn = Object.assign({}, store.getMyTournaments());
-      // registeredIn[tournamentID] = 1;
-
-      Dispatcher.dispatch({
-        type: c.ACTION_REGISTER_IN_TOURNAMENT,
-        // tournaments: registeredIn,
-        tournamentID,
-      });
+      const registeredIn = Object.assign({}, store.getMyTournaments());
+      registeredIn[tournamentID] = 1;
+      if (response.body.result) {
+        console.log('draw modals... no register in ', tournamentID);
+      } else {
+        Dispatcher.dispatch({
+          type: c.ACTION_REGISTER_IN_TOURNAMENT,
+          tournaments: registeredIn,
+          tournamentID,
+        });
+      }
     } catch (err) {
       console.error(err);
     }
