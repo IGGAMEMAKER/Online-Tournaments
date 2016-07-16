@@ -145,14 +145,16 @@ export default {
 
       const registeredIn = Object.assign({}, store.getMyTournaments());
       registeredIn[tournamentID] = 1;
-      if (response.body.result) {
-        console.log('draw modals... no register in ', tournamentID);
-      } else {
+      // console.log(response.body);
+
+      if (response.body.result === 'OK') {
         Dispatcher.dispatch({
           type: c.ACTION_REGISTER_IN_TOURNAMENT,
           tournaments: registeredIn,
           tournamentID,
         });
+      } else {
+        console.log('draw modals... no register in ', tournamentID);
       }
     } catch (err) {
       console.error(err);
@@ -175,6 +177,8 @@ export default {
         tournaments: registeredIn,
         tournamentID,
       });
+
+      update();
     } catch (err) {
       console.error(err);
     }

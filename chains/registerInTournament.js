@@ -263,7 +263,8 @@ function register(tournamentID, login, res){
 
 	return reg(tournamentID, login)
 	.then(function (tournament){
-		if (res) Answer(res, OK);
+		// if (res) Answer(res, OK);
+		if (res) res.json(OK);
 
 		join_if_stream(tournament, login);
 		

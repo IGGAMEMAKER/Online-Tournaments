@@ -2,33 +2,21 @@
 
 mixin drawRegs(msg)
 	each val in msg
-		+drawReg(val)
-mixin drawReg(val)
-	tr 
-		td 
-			+tLink(val.tournamentID)
-		td регистрация
-		td
-			a(href="" onclick='unReg(1, ' + val.tournamentID + ')' ) сняться с турнира
-
-mixin tLink(id)
-	i #{id}
+		tr
+			td
+				i #{val.tournamentID}
+				//+tLink(val.tournamentID)
+			td регистрация
+			td
+				a(href="" onclick='unReg(1, ' + val.tournamentID + ')' ) сняться с турнира
 
 		
 ///-----
-mixin buttonLink(link, text)
+//mixin buttonLink(link, text)
 	form(action=link) 
 		input(type="submit" value=text style="width:125px;height:50px;")
 
 mixin info()
-	//include templates/account
-	+drawAccount(msg.email)
-	//+drawAccount(msg.email)
-
-mixin drawAccount(email)
-	//div(class="bloc l-bloc bgc-white bloc-tile-2" id="bloc-6")
-		div(class="container bloc-lg")
-
 	div(class="panel")
 		div(class="panel-heading")
 			h3(class="mg-clear") Данные профиля
@@ -39,7 +27,7 @@ mixin drawAccount(email)
 					h4(class="mg-md") #{session.login}
 				div(class="form-group")
 					label Email
-					h4(class="mg-md") #{email}
+					h4(class="mg-md") #{msg.email}
 				div(class="form-group")
 					label Баланс
 					h4(class="mg-md" id="money1") 0
@@ -58,7 +46,6 @@ mixin drawTournamentRegs(tournaments)
 					//th Приглашён
 					th Статус
 					th Действие
-
 			tbody
 				+drawRegs(tournaments)
 	else
@@ -99,13 +86,17 @@ block JSlibs
 block title
 	title Профиль
 
-//block content
-//	#app
-//	script(src="/output/Profile.js")
 block content
 	#app
-	script(src="/output/Profile.js")
 	script.
+		var email = "#{msg.email}"
+	script(src="/output/Profile.js")
+// block content
+	#app
+	script.
+		var email = "#{msg.email}"
+	script(src="/output/Profile.js")
+	// script.
 		getProfile()
 	h1(class="text-center white page") Профиль
 	//div(class="col-sm-12")
@@ -114,9 +105,11 @@ block content
 		+drawTournamentRegs(msg.tournaments)
 	.full
 		+info()
-	div(class="full" id="dep")
+	// div(class="full" id="dep")
+	.full#dep
 		+deposit()
-	div(class="full" id="cashoutMoney")
+	//div(class="full" id="cashoutMoney")
+	.full#cashoutMoney
 		h2(class="page") Вывод средств
 		.ctr
 			label(class="full white text-center") Минимальная сумма вывода - 500 рублей

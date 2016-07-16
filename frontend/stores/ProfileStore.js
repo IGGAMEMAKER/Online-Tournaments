@@ -37,6 +37,10 @@ class ProfileStore extends EventEmitter {
     return _tournaments;
   }
 
+  getMyTournamentList() {
+    return Object.keys(_tournaments);
+  }
+
   getRunningTournaments() {
     // return _running;
     // console.log('getRunningTournaments', _running);

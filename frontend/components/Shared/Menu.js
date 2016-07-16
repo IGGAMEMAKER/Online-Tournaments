@@ -66,7 +66,7 @@ export default class Menu extends Component {
 
               </div>
               <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
-                <ul className="nav navbar-nav navbar-left">
+                <ul className="nav navbar-nav">
                   <li><a href="/" className={`${menuIndex} navbar-brand`}>Онлайн Турниры</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
                   <li><a href="/Packs" className={menuPacks}>Призы</a></li>

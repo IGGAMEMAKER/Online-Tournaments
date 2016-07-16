@@ -179,16 +179,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		// var login = aux.getLogin(req)
 		var login = req.login;
 
-		register_manager.register(tournamentID, login, res)
-		// register_manager.register(tournamentID, login, res)
-
-		// register_manager.register(tournamentID, login, res)
-		// register_manager.register(tournamentID, login, res)
+		register_manager.register(tournamentID, login, res);
 
 	  // regManager('RegisterUserInTournament',req, res);
 	  // ****
 	  //console.log('WRITE Socket emitter!!!')
-	})
+	});
 
 	// app.post('/autoreg', function (req, res){
 	// 	Tournaments.getStreamID()

@@ -11,6 +11,21 @@
   transition: all 0.3s;
 }
 
+.button-sm {
+  width: 100px;
+}
+
+.button-input-rur {
+  position: relative;
+  /*pointer-events: none;*/
+}
+.button-input-rur:after {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  content: 'РУБ';
+  pointer-events: none;
+}
 
 .navbar-inverse .navbar-nav > li > a.active, .navbar-inverse .navbar-nav .active > li > a:focus {
   background-color: #e74c3c;
