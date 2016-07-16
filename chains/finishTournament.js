@@ -32,7 +32,6 @@ function notifyUsersAboutFinish(data) {
 	console.log('FinishTournament FinishGame', obj);
 
 	var is_money_tournament = (prizes[0] >= 2);
-	console.log('is_money_tournament', is_money_tournament);
 
 	if (is_money_tournament) {
 		for (var i = 0; i < winners.length; i++) {
@@ -40,11 +39,11 @@ function notifyUsersAboutFinish(data) {
 
 			if (i < winnerCount) {
 				//send winning message
-				console.log(login, 'WINS TOURNAMENT');
+				// console.log(login, 'WINS TOURNAMENT');
 				aux.alert(login, aux.c.NOTIFICATION_WIN_MONEY, obj)
 			} else {
 				//send lose message
-				console.log(login, 'LOSES TOURNAMENT');
+				// console.log(login, 'LOSES TOURNAMENT');
 				aux.alert(login, aux.c.NOTIFICATION_LOSE_TOURNAMENT, obj)
 			}
 		}
@@ -63,6 +62,18 @@ function dataBaseChanges(data) {
 	var scores = data['scores'];
 	var winners = sort.winners(scores);
 
+	var winnerLogins = winners.map((p, i) => p.value.login);
+	var winnerRegs = [];
+
+	var getWinnerTRegs = (result) => {
+		return TournamentReg.winners(tournamentID, winnerLogins)
+			.then(list => {
+				winnerRegs = list;
+				info.getWinnerTregs = list;
+				return list;
+			})
+	};
+
 	// console.log(scores, winners);
 	TournamentLog(tournamentID, 'Winners:' + str(winners));
 
@@ -71,24 +82,26 @@ function dataBaseChanges(data) {
 	var info = {};
 
 	var tournament;
-	// var winners;
 
 	Tournaments.finish(tournamentID)
-	.then(function (result){
+	.then(function (result) {
 		info.finish = result;
 		return TournamentReg.clearParticipants(tournamentID)
 	})
-	.then(function (result){
+	.then(function (result) {
 		info.clearParticipants = result;
+		return result;
+	})
+	.then(getWinnerTRegs)
+	.then(result => {
 		return Tournaments.find(tournamentID)
 	})
-	.then(function (t){
-		// console.log('get tournament info', t)
+	.then(function (t) {
 		info.tournament = t;
 		tournament = t;
 
 		// goes in parallel
-		if (needsAutoAdd(tournament)){
+		if (needsAutoAdd(tournament)) {
 			// Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
 			var youngerizedTournament = YoungerizeTournament(tournament);
 			
@@ -99,24 +112,60 @@ function dataBaseChanges(data) {
 			.catch(aux.report('autoAdd', { info }))
 		}
 
-		// if (isStreamTournament(tournament)){
-		// 	var topic = tournament.settings.topic || 'default';
-		// 	sender.sendRequest("FinishCategoryTournament/" + topic, tournament, '127.0.0.1', 'site');
-		// }
+		var loginToPromo = {};
+		winnerRegs.forEach(reg => {
+			loginToPromo[reg.userID] = reg.promo || null;
+		});
 
-		// return givePrizes(winners, tournament)
-		for (i = 0; i < winners.length; i++){
+		for (i = 0; i < winners.length; i++) {
+			var Prize = getPrize(tournament.Prizes, tournament.goNext, i + 1);
 			var player = winners[i];
-			var Prize = getPrize(tournament.Prizes, tournament.goNext, i+1);
+			var promoter = loginToPromo[player.value.login];
 
-			givePrizeToPlayer(player, Prize, tournamentID );
+			givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter);
 		}
 	})
-	// .then(function (result){
-	// 	// console.log('done ALL', result, info)
-	// })
-	.catch(aux.report('dataBaseChanges', { info:info } ))
+	.catch(aux.report('dataBaseChanges', { info }))
 	
+}
+
+function singlePromo(player, promoter, amount, tournament) {
+	var isPromotable = tournament.buyIn <= 0; // tournament.settings.tag === 'regularFreeroll'
+
+	if (!isPromotable) {
+		return;
+	}
+
+	var sum = Math.floor(parseInt(amount) / 2);
+	console.log(promoter + ' invited ', player, ' and deserves ', sum, '$');
+	Money.increase(promoter, sum, aux.c.SOURCE_TYPE_PROMO);
+}
+
+function updatePromos(tournRegs) {
+	if (tournRegs.length){
+		var promoterIDs = {};
+		var promoterIDsArray= [];
+
+		for (var i = tournRegs.length - 1; i >= 0; i--) {
+			var ID = tournRegs[i].promo;// PROMOTER ID (login)
+			if (promoterIDs[ID]) {
+				promoterIDs[ID]++;
+			} else {
+				promoterIDs[ID] = 1;
+				promoterIDsArray.push(ID);
+			}
+		}
+
+		for (var i = promoterIDsArray.length - 1; i >= 0; i--) {
+			var promoter = promoterIDsArray[i];//parseInt
+			var promoUsersCount = parseInt(promoterIDs[promoter]);
+
+			var payment = buyIn * promoUsersCount * PROMO_COMISSION / 100;
+
+			// Log('Promoter ' + promoter + ' invited ' + promoUsersCount + ' players and deserves to get ' + payment + ' $');
+			// incrMoney(null, promoter, payment, {type:SOURCE_TYPE_PROMO, tournamentID} );
+		}
+	}
 }
 
 function serveTournament(tournament){
@@ -138,26 +187,29 @@ var str = JSON.stringify;
 
 function TournamentLog(tournamentID, message){
 	var time = new Date();
-	//console.log('TournamentLog LOGGING!!!!');
-	fs.appendFile('Logs/Tournaments/' + tournamentID + '.txt', '\r\n' + time + ' TS: ' + message + '\r\n', function (err) {
+
+	var path = 'Logs/Tournaments/' + tournamentID + '.txt';
+	var text = '\r\n' + time + ' TS: ' + message + '\r\n';
+
+	fs.appendFile(path, text, function (err) {
 		if (err) { Log(err); throw err; }
 		//console.log('The "data to append" was appended to file!');
 	});
 }
 
 function getPrize(Prizes, goNext, i){
-	Log('Rewrite getPrize function. NOW YOU MUST ALL PRIZES FOR EACH PLAYER!!!');
+	// Log('Rewrite getPrize function. NOW YOU MUST ALL PRIZES FOR EACH PLAYER!!!');
 	var roundIndex=1;
 	var next = 2;
 
-	if (i > goNext[1]){
+	if (i > goNext[1]) {
 		return 0;
 	}	else {
-		while(next < goNext.length && goNext[next] >= i){//playerRoundIndex<goNext.length-1 &&
-			roundIndex=next;
-			next = roundIndex+1;
+		while(next < goNext.length && goNext[next] >= i) {//playerRoundIndex<goNext.length-1 &&
+			roundIndex = next;
+			next = roundIndex + 1;
 		}
-		return Prizes[roundIndex-1];
+		return Prizes[roundIndex - 1];
 	}
 }
 
@@ -170,7 +222,7 @@ function YoungerizeTournament(tournament){
 		pricingType:  			tournament.pricingType,
 
 		rounds:     				tournament.rounds,
-		goNext:     				tournament.goNext,//
+		goNext:     				tournament.goNext,
 		places:     				tournament.places,
 		Prizes:     				tournament.Prizes,
 		prizePools:   			tournament.prizePools,
@@ -181,13 +233,12 @@ function YoungerizeTournament(tournament){
 		startDate:    			null,
 		status:       			null,
 		players:      			0
-   };
-	// regular tournaments settings
-	if (tournament.settings) { // && data.regularity!="0"
-		obj.settings=tournament.settings;
+	};
+
+	if (tournament.settings) {
+		obj.settings = tournament.settings;
 	}
 
-	//console.log(tournament1)
 	if (isStreamTournament(tournament)) {
 		obj.goNext[0] = 1;
 	}
@@ -203,19 +254,19 @@ function needsAutoAdd(tournament){
 }
 
 function isStreamTournament(tournament){
-	return tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM;
+	return tournament.settings && tournament.settings.regularity == aux.c.REGULARITY_STREAM;
 }
 
 function isRegularTournament(tournament){
-	return tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_REGULAR;
+	return tournament.settings && tournament.settings.regularity == aux.c.REGULARITY_REGULAR;
 }
 
 function isSpecialTournament(tournament){
-	return tournament.settings && tournament.settings.special==aux.c.SPECIALITY_SPECIAL;
+	return tournament.settings && tournament.settings.special == aux.c.SPECIALITY_SPECIAL;
 }
 
 
-function givePrizeToPlayer(player, Prize, tournamentID){
+function givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter){
 	Log('givePrizeToPlayer: ' + JSON.stringify(player));
 	var login = player.value.login;
 	
@@ -227,24 +278,25 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 			.then(function (result){
 				console.log('saveGift', result)
 			})
-			.catch(aux.report('Prize is gift:', { Prize:Prize, login:login } ))
+			.catch(aux.report('Prize is gift:', { Prize, login } ))
 		}
 
 	}	else { //money
-		if (Prize>0){
+		if (Prize > 0) {
 			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID:tournamentID };
-			
-			Money.increase(login, Prize, src)
-			.then(function (result){
-				console.log('money increased, transfer saved', login, Prize, src)
+			var money = Prize;
+			Money.increase(login, money, src)
+			.then(function (result) {
+				console.log('money increased, transfer saved', login, money, src);
+
+				singlePromo(login, promoter, money, tournament);
 			})
-			.catch(aux.report('mmmMoney', { src:src, Prize:Prize, login:login } ))
+			.catch(aux.report('mmmMoney', { src, money, login } ))
 		}
 	}
 }
 
 function finishTournament(data){
-
 	dataBaseChanges(data);
 
 	notifyUsersAboutFinish(data)

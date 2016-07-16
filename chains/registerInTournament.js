@@ -1,6 +1,7 @@
 var Money = require('../models/money');
 var TournamentReg = require('../models/tregs');
 var Tournaments = require('../models/tournaments');
+var Users = require('../models/users');
 
 var c = require('../constants');
 var getPortAndHostOfGame = require('../helpers/GameHostAndPort').getPortAndHostOfGame;
@@ -88,15 +89,23 @@ function StartTournament(tournamentID, force, res){
 	.catch(aux.report('RegisterUserInTournament.StartTournament', {tournamentID:tournamentID}))
 }
 
-function add_participant(tournamentID, login){
+function add_participant(tournamentID, login) {
+	var promoter = 'g.iosebashvili';
+	return Users.profile(login)
+		.then(profile => {
+			if (profile.inviter) {
+				promoter = profile.inviter;
+				console.log('PROMOTER for ', login,' IS', promoter);
+			}
 
-	return TournamentReg.registerUser(login, tournamentID, 'gaginho')
-	.then(function (result){
-		return TournamentReg.participants(tournamentID)
-	})
-	.then(function (participants){
-		return Tournaments.updateByID(tournamentID, { players:participants.length || 0 })
-	})
+			return TournamentReg.registerUser(login, tournamentID, promoter)
+		})
+		.then(function (result) {
+			return TournamentReg.participants(tournamentID)
+		})
+		.then(function (participants){
+			return Tournaments.updateByID(tournamentID, { players: participants.length || 0 })
+		})
 }
 
 function reg(tournamentID, login){
@@ -128,24 +137,30 @@ function reg(tournamentID, login){
 		return getRegistrableTournament(tournamentID)
 	})
 	.then(function (tournament) {
+		var is_stream = false;
 
 		TT = tournament;
 		buyIn = tournament.buyIn;
 		playerCount = tournament.players;
 		maxPlayers = tournament.goNext[0];
 
-		var is_stream = false;
-		if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM) is_stream = true;
+		if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM) {
+			is_stream = true;
+		}
 
 		var has_player_count_limitation = is_stream;
 
-		if (is_stream) return 1; 		// no check, go to next step
+		if (is_stream) {
+			// no check, go to next step
+			return 1;
+		}
 
 		// check max players count
 		if (playerCount < maxPlayers) { // pay money
 			if (buyIn > 0) {
-				return Money.pay(login, buyIn, { type:aux.c.SOURCE_TYPE_BUY_IN, tournamentID:tournamentID })
+				return Money.pay(login, buyIn, { type: aux.c.SOURCE_TYPE_BUY_IN, tournamentID })
 			}
+
 			return 1;
 		}
 		

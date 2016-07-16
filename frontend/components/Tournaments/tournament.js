@@ -120,12 +120,12 @@ export default class Tournament extends Component {
     switch (modulo) {
       case 1: return 'green';
       case 2: return 'red';
-      case 3: return 'pomegranate';
+      case 3: return 'purple';
       case 4: return 'pomegranate';
       case 5: return 'blue';
       case 6: return 'pomegranate';
       case 7: return 'darkblue';
-      case 8: return 'purple';
+      case 8: return 'pomegranate';
       case 9: return 'purple';
       default: return '';
     }

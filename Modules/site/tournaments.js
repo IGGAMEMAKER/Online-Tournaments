@@ -8,7 +8,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   var middlewares = require('../../middlewares');
 
   var getPortAndHostOfGame = require('../../helpers/GameHostAndPort').getPortAndHostOfGame;
-//var Actions = require('../../models/actions');
+  //var Actions = require('../../models/actions');
 
   var PRICE_FREE = 4;
   var PRICE_TRAINING = 5;
@@ -23,7 +23,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
 
   var strLog = Log;
 
-  var multer  = require('multer')
+  var multer  = require('multer');
 
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -39,11 +39,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       arr = file.originalname.split('.');
       var last = arr.length-1;
       var extension = arr[last];
-      console.log('extension', extension)
+      console.log('extension', extension);
 
       cb(null, tournamentID + '.'+extension);// + file.extension)
     }
-  })
+  });
 
   var upload = multer({ storage: storage }).single('image');
 
@@ -156,8 +156,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       if (data.hidden!=0) {obj.settings.hidden = true; obj.settings.topic = getTopic(data.hidden); }
 
       AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
-    }
-    else{
+    } else {
       strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
       sender.Answer(res, Fail);
     }
@@ -195,7 +194,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
         res.json({msg: TournamentInfo});
       })
       .catch(function (error){
-        res.json({error:error});
+        res.json({error});
       });
     // var data = req.body;
     // data.query = {tournamentID:req.query.tID};
@@ -224,19 +223,19 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       .catch(next)
   }, aux.std);
 
-  app.get('/clearRegs/:tournamentID', aux.isAdmin, function (req, res, next){
+  app.get('/clearRegs/:tournamentID', aux.isAdmin, function (req, res, next) {
     var tournamentID = parseInt(req.params.tournamentID);
 
     TournamentRegs.freeTournament(tournamentID)
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.std)
+  }, aux.std);
 
-  app.get('/mp/:id/:mp/', aux.isAdmin, function (req, res, next){
+  app.get('/mp/:id/:mp/', aux.isAdmin, function (req, res, next) {
     var tournamentID = parseInt(req.params.id);
     var mp = parseInt(req.params.mp);
 
-    var obj = {}
+    var obj = {};
     if (tournamentID && !isNaN(tournamentID)){
       obj.Prizes = [{ MP: mp || 1000 }];
       obj['settings.hold'] = true;
@@ -252,7 +251,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       })
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.render('Lists/Tournaments'), aux.err)
+  }, aux.render('Lists/Tournaments'), aux.err);
 
   function edit(id, options, res) {
     Tournaments.edit(id, options)
@@ -260,11 +259,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       .catch(err => res.json({ err }))
   }
 
-  app.get('/api/tournaments/hidden/:tournamentID/:status', aux.isAdmin, function (req, res){
+  app.get('/api/tournaments/hidden/:tournamentID/:status', aux.isAdmin, function (req, res) {
     var tournamentID = req.params.tournamentID;
     var status = req.params.status;
 
-    edit(tournamentID, { 'settings.hidden': status==='true' }, res);
+    edit(tournamentID, { 'settings.hidden': status === 'true' }, res);
   });
 
   app.get('/api/tournaments/clearStartDate/:tournamentID', aux.moderator, function(req, res) {
@@ -273,36 +272,35 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
     edit(tournamentID, { startDate: null }, res)
   });
 
-  app.post('/api/tournaments/date/:tournamentID', aux.isAdmin, function (req, res){
+  app.post('/api/tournaments/date/:tournamentID', aux.isAdmin, function (req, res) {
     var tournamentID = req.params.tournamentID;
     var startDate = req.body.startDate; // new Date(
 
     edit(tournamentID, { startDate }, res)
   });
 
-  app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next){
+  app.post('/api/tournaments/edit/:tournamentID', aux.isAdmin, function (req, res, next) {
     var tournamentID = req.params.tournamentID;
     var data = req.body || null;
 
     var obj = {};
-    if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value){
+    if (tournamentID && !isNaN(tournamentID) && data && data.name && data.value) {
       obj[data.name] = JSON.parse(data.value)
     }
 
     Tournaments.edit(tournamentID, obj)
       .then(function (result){
-        if (result){
+        if (result) {
           res.redirect('/api/tournaments/current');
         } else {
-          res.json({result:result});
-          //res.end('fail. <a href="MarathonInfo"> go back');
+          res.json({ result });
         }
       })
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.render('Lists/Tournaments'), aux.err);
 
-  function getTopic(topic){
+  function getTopic(topic) {
     Log("getTopic : " + topic, "Tournaments");
     switch(topic){
       case '1': return 'realmadrid'; break;
@@ -310,20 +308,19 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
     }
   }
 
-  app.get('/specials', middlewares.isAdmin, function (req, res){
+  app.get('/specials', middlewares.isAdmin, function (req, res) {
     Tournaments.specials()
-      .then(function (result){
+      .then(function (result) {
         console.log('specials', result);
-        res.json({ msg:result });
+        res.json({ msg: result });
       })
-      .catch(function (err){
-        res.json({ err:err });
+      .catch(function (err) {
+        res.json({ err });
       })
-  })
+  });
 
-  app.post('/GetTournamentAddress', function (req, res){
+  app.post('/GetTournamentAddress', function (req, res) {
     // AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
-
     var tournamentID = req.body.tournamentID;
 
     Tournaments.getByID(tournamentID)
@@ -344,10 +341,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
     var data = req.body;
     console.log('ServeTournament ... site.tournaments');
     strLog("ServeTournament ... site.tournaments ", 'Tournaments');
-    //strLog(JSON.stringify(data));//['tournamentStructure']);
 
-    var tournament = data;
-
-    sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'GameFrontendServer', res, proxy);
+    sender.sendRequest("ServeTournament", data, '127.0.0.1', 'GameFrontendServer', res, proxy);
   }
 };

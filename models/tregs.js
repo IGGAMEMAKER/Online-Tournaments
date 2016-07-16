@@ -69,11 +69,16 @@ function getParticipants(tournamentID){
 }
 
 function clearParticipants(tournamentID){
-	return TournamentReg2.update({ tournamentID : tournamentID }, { $set: { status : TOURN_STATUS_FINISHED } }, {multi: true})
+	return TournamentReg2.update({ tournamentID: tournamentID }, { $set: { status : TOURN_STATUS_FINISHED } }, {multi: true})
 }
 
 function participants(tournamentID){
 	return TournamentReg2.list({tournamentID:tournamentID})
+}
+
+function winners(tournamentID, players){
+	console.log('TREGS WINNERS', tournamentID, players);
+	return TournamentReg2.list({tournamentID, userID: { $in: players }})
 }
 
 
@@ -306,6 +311,7 @@ module.exports = {
 	playedCount,
 	leaderboard,
 	playedTop,
+	winners,
 	participants,
 	clearParticipants,
 

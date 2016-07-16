@@ -27,7 +27,7 @@ var time = require('../helpers/time');
 
 
 function saveTransfer(login, cash, source, tag){
-	console.log('saveTransfer', arguments);
+	// console.log('saveTransfer', arguments);
 	return new Promise(function (resolve, reject){
 		// if (cash!=0 && cash!=null) return reject(null);
 		if (cash==0 || cash==null) return reject(null);

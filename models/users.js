@@ -487,9 +487,9 @@ function setInviter(login, inviter, inviter_type){
 			if (user.inviter) return reject('isSet');
 
 			var updObject = { 
-				inviter:inviter, 
-				inviter_type:inviter_type||null 
-			}
+				inviter,
+				inviter_type: inviter_type||null
+			};
 			
 			User.update({login:login}, {$set : updObject }, function (err, count){
 				if (err) return reject(err);

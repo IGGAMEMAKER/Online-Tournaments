@@ -437,7 +437,7 @@ module.exports = {
 	specials,
 
 	running,
-	setTournStatus,
+	setStatus: setTournStatus,
 	find,
 	findByQuery,
 	get_available,
