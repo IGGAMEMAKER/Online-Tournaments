@@ -4,17 +4,25 @@
 }
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
   background-color: #3498db;
+  /*transition: all 0.5s;*/
 }
 .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
   background-color: #3498db;
+  transition: all 0.3s;
 }
 
 
 .navbar-inverse .navbar-nav > li > a.active, .navbar-inverse .navbar-nav .active > li > a:focus {
   background-color: #e74c3c;
+  /*background-color: #3498db;*/
 }
-.navbar-inverse .navbar-brand .active:hover, .navbar-inverse .navbar-brand .active:focus {
+.navbar-inverse .navbar-brand .active, .navbar-inverse .navbar-brand .active:focus {
   background-color: #e74c3c;
+  /*background-color: #3498db;*/
+}
+
+.navbar-brand .active {
+  background-color: red;
 }
 
 .navbar-inverse .navbar-nav > li > a {

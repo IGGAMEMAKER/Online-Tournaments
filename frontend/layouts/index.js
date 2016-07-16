@@ -9,6 +9,7 @@ import Chat from '../components/Activity/Chat';
 type PropsType = {
   content: ?any,
   chat: Boolean,
+  active: string,
 }
 
 type StateType = {}
@@ -18,7 +19,7 @@ export default class Layout extends Component {
 
   render(props: PropsType, state: StateType) {
     const chat = !props.chat ? '' : <Chat />;
-    const header = props.noheader ? '' : <Menu />;
+    const header = props.noheader ? '' : <Menu active={props.active || ''} />;
     const modals = props.nomodals ? '' : <ModalContainer />;
     const footer = props.nofooter ? '' : <Footer />;
     return (

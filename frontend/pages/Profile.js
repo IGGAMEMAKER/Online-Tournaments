@@ -5,7 +5,7 @@ import Layout from '../layouts/index';
 const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
-  <Layout content={<Profile />} nochat />
+  <Layout content={<Profile />} nochat active="Profile" />
 );
 
 render(

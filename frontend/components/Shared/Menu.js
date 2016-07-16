@@ -41,6 +41,11 @@ export default class Menu extends Component {
     const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
+
+    //     font-size: 18px;
+    // line-height: 20px;
+    // <a href="/" className={`navbar-brand ${menuIndex}`}>Онлайн Турниры</a>
+
     return (
       <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
@@ -58,10 +63,11 @@ export default class Menu extends Component {
                   <span className="icon-bar" />
                   <span className="icon-bar" />
                 </button>
-                <a href="/" className={`navbar-brand ${menuIndex}`}>Онлайн Турниры</a>
+
               </div>
               <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
                 <ul className="nav navbar-nav navbar-left">
+                  <li><a href="/" className={`${menuIndex} navbar-brand`}>Онлайн Турниры</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
                   <li><a href="/Packs" className={menuPacks}>Призы</a></li>
                   <li><a href="/profile" className={menuProfile}>Профиль</a></li>

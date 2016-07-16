@@ -5,7 +5,7 @@ import Layout from '../layouts/index';
 const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
-  <Layout content={<Index />} nochat nofooter />
+  <Layout content={<Index />} nochat nofooter active="Index" />
 );
 
 render(
