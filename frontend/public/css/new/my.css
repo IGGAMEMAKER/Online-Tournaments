@@ -11,12 +11,16 @@
   transition: all 0.3s;
 }
 
-.button-sm {
+.input-sm {
   width: 100px;
+}
+.input-mid {
+  width: 150px;
 }
 
 .button-input-rur {
   position: relative;
+  width: 125px;
   /*pointer-events: none;*/
 }
 .button-input-rur:after {
@@ -25,6 +29,10 @@
   top: 10px;
   content: 'РУБ';
   pointer-events: none;
+}
+
+.container-mobile {
+  width: 300px;
 }
 
 .navbar-inverse .navbar-nav > li > a.active, .navbar-inverse .navbar-nav .active > li > a:focus {
