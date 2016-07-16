@@ -31,6 +31,10 @@
   pointer-events: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .container-mobile {
   width: 300px;
 }

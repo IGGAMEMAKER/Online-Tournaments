@@ -7,6 +7,7 @@ type PropsType = {}
 type StateType = {
   deposit: number,
   cashout: number,
+  money: number,
 
   registeredIn: Array,
 }
@@ -18,6 +19,7 @@ export default class Profile extends Component {
     deposit: 200,
     cashout: 500,
 
+    money: 0,
     registeredIn: []
   };
 
@@ -46,11 +48,15 @@ export default class Profile extends Component {
     const registeredIn = state.registeredIn;
 
     if (!registeredIn.length) {
+      return '';
+    }
+
+    if (!registeredIn.length) {
       return (
         <div>
           <div className="text-center white">
             <h3>Вы не зарегистрированы ни в одном турнире((</h3>
-            <a href="Tournaments" >Начните играть !</a>
+            <a href="Tournaments" className="btn btn-primary pointer">Начните играть !</a>
             <br />
             <br />
           </div>
@@ -65,124 +71,35 @@ export default class Profile extends Component {
         </td>
         <td>регистрация</td>
         <td>
-          <a href="" onclick={() => {actions.unregister(tournamentID)}}>сняться с турнира</a>
+          <a className="pointer" onclick={() => {actions.unregister(tournamentID)}}>сняться с турнира</a>
         </td>
       </tr>
     ));
 
     return (
-      <table className="table table-bordered panel">
-        <thead>
+      <div>
+        <h2 class="text-center white">Мои турниры</h2>
+        <table className="table table-bordered panel">
+          <thead>
           <tr>
             <th>№</th>
             <th>Статус</th>
             <th>Действие</th>
           </tr>
-        </thead>
-        <tbody>{tournaments}</tbody>
-      </table>
+          </thead>
+          <tbody>{tournaments}</tbody>
+        </table>
+      </div>
     );
   };
 
   render(props: PropsType, state: StateType) {
-    // return (
-    //   <div>
-    //     <h1 className="text-center white page">Профиль</h1>
-    //
-    //     <div className="full">
-    //       <h2 className="text-center white">Мои турниры</h2>
-    //       <p>+drawTournamentRegs(msg.tournaments)</p>
-    //     </div>
-    //
-    //     <div className="full pull-left">
-    //       <div class="panel">
-    //         <div class="panel-heading">
-    //           <h3 class="mg-clear">Данные профиля</h3>
-    //         </div>
-    //         <div class="panel-body">
-    //           <form id="form-928" novalidate="novalidate">
-    //             <div class="form-group">
-    //               <label>Имя</label>
-    //               <h4 class="mg-md">{login}</h4>
-    //             </div>
-    //             <div class="form-group">
-    //               <label>Email</label>
-    //               <h4 class="mg-md">{email}</h4>
-    //             </div>
-    //             <div class="form-group">
-    //               <label>Баланс</label>
-    //               <h4 id="money1" class="mg-md">525p</h4>
-    //             </div>
-    //           </form>
-    //         </div>
-    //       </div>
-    //     </div>
-    //
-    //     <div className="full" id="dep">
-    //       <div class="panel">
-    //         <div class="panel-heading">
-    //           <h3 id="depositMoney" class="mg-clear">Пополнить счет</h3>
-    //         </div>
-    //         <div class="panel-body">
-    //           <form id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate="novalidate">
-    //             <div class="form-group">
-    //               <label>Сумма (в рублях)</label>
-    //               <input type="hidden" name="receiver" value="410013860652119" />
-    //               <input type="hidden" name="formcomment" value="Пополнение счёта в online-tournaments.org" />
-    //               <input type="hidden" name="short-dest" value="Пополнение счёта в online-tournaments.org" />
-    //               <input type="hidden" id="userLogin" name="label" />
-    //               <input type="hidden" name="quickpay-form" value="shop" />
-    //               <input type="hidden" id="targets" name="targets" value="Пополнение счёта у undefined" />
-    //               <input type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number" />
-    //               <input type="hidden" name="comment" value="Платёж принят!" />
-    //               <input type="hidden" name="paymentType" value="AC" />
-    //               <input
-    //                 name="sum"
-    //                 id="deposit"
-    //                 value={state.deposit}
-    //                 required="required"
-    //                 autocomplete="off"
-    //                 className="form-control"
-    //                 onInput={this.onDepositInput}
-    //               />
-    //             </div>
-    //             <a id="depositLink3"
-    //                href={`/Payment?ammount=${state.deposit}&buyType=2`}
-    //                className="btn btn-lg btn-primary"
-    //             >Пополнить счёт на {state.deposit} руб</a>
-    //           </form>
-    //         </div>
-    //       </div>
-    //     </div>
-    //
-    //     <div className="full" id="cashoutMoney">
-    //       <div class="panel-body">
-    //         <div class="ctr">
-    //           <label class="full text-center">Минимальная сумма вывода - 500 рублей</label>
-    //           <br />
-    //           <input
-    //             name="sum"
-    //             id="cashout"
-    //             value={state.cashout}
-    //             required="required"
-    //             autocomplete="off"
-    //             className="form-control"
-    //             onInput={this.onCashoutInput}
-    //           />
-    //           <button class="btn btn-lg btn-primary button">Вывести средства</button>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
-
     const tournaments = this.getTournamentRegs(state);
 
+    // <h3 class="mg-clear">Профиль</h3>
     const profileInfo = (
       <div class="panel">
-        <div class="panel-heading">
-          <h3 class="mg-clear">Данные профиля</h3>
-        </div>
+        <div class="panel-heading"></div>
         <div class="panel-body">
           <form id="form-928" novalidate="novalidate">
             <div class="form-group">
@@ -271,6 +188,7 @@ export default class Profile extends Component {
         <button className="btn btn-lg btn-primary button">Вывести</button>
       </div>
     );
+
     const cashout = (
       <div>
         <div className="panel">
@@ -285,14 +203,14 @@ export default class Profile extends Component {
             </div>
           </div>
         </div>
-        <h2 class="page">Вывод средств</h2>
       </div>
     );
+
+    // <h1 class="text-center white page">Профиль</h1>
     return (
       <div>
         <h1 class="text-center white page">Профиль</h1>
         <div class="full">
-          <h2 class="text-center white">Мои турниры</h2>
           {tournaments}
 
           {profileInfo}
