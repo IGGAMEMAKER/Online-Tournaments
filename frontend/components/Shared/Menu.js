@@ -3,7 +3,9 @@ import store from '../../stores/ProfileStore';
 import stats from '../../helpers/stats';
 // import actions from '../../actions/ProfileActions';
 
-type PropsType = {}
+type PropsType = {
+  active: string,
+}
 
 type StateType = {
   money: number,
@@ -33,6 +35,12 @@ export default class Menu extends Component {
       loginMenu = '';
     }
 
+    const hover = ''; //light-blue
+    const menuTournaments = `${hover} ${props.active === 'Tournaments' ? 'active' : ''}`;
+    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''}`;
+    const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''}`;
+    const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
+    const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
     return (
       <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
@@ -50,14 +58,14 @@ export default class Menu extends Component {
                   <span className="icon-bar" />
                   <span className="icon-bar" />
                 </button>
-                <a href="/" className="navbar-brand light-blue">Онлайн Турниры</a>
+                <a href="/" className={`navbar-brand ${menuIndex}`}>Онлайн Турниры</a>
               </div>
               <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
                 <ul className="nav navbar-nav navbar-left">
-                  <li><a href="/Tournaments" className="light-blue">Турниры</a></li>
-                  <li><a href="/Packs" className="light-blue">Призы</a></li>
-                  <li><a href="/profile" className="light-blue">Профиль</a></li>
-                  <li><a href="/about" className="light-blue"> О нас</a></li>
+                  <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+                  <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+                  <li><a href="/profile" className={menuProfile}>Профиль</a></li>
+                  <li><a href="/about" className={menuAbout}> О нас</a></li>
                   {loginMenu}
                 </ul>
               </div>
@@ -65,7 +73,7 @@ export default class Menu extends Component {
           </div>
           <div className="container-fluid">
             <center>
-              <div style="width:100%; background-color:#111111;" className="balance">
+              <div style={`background-color:#111111; display: ${login ? 'block' : 'none'}`} className="balance">
                 <span>{text}</span>
                 <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
                 <span> / </span>

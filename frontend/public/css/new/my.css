@@ -2,6 +2,28 @@
   /*font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;*/
   /*font-weight: lighter;*/
 }
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+  background-color: #3498db;
+}
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+  background-color: #3498db;
+}
+
+
+.navbar-inverse .navbar-nav > li > a.active, .navbar-inverse .navbar-nav .active > li > a:focus {
+  background-color: #e74c3c;
+}
+.navbar-inverse .navbar-brand .active:hover, .navbar-inverse .navbar-brand .active:focus {
+  background-color: #e74c3c;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: white;
+}
+
+.navbar-inverse .navbar-brand {
+  color: white;
+}
 
 .wrapper2 {
   width: 100%;
