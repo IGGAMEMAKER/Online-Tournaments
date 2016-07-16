@@ -1,144 +1,62 @@
-// var Marathon = require('../models/marathon')
-// var Packs = require('../models/packs')
-// var Gifts = require('../models/gifts')
-// var Users = require('../models/users')
-// var TournamentReg = require('../models/tregs')
-// var Tournaments = require('../models/tournaments')
-// var Money = require('../models/money')
-var Packs = require('../models/packs')
-var Gifts = require('../models/gifts')
-var Users = require('../models/users')
-var Money = require('../models/money')
-var Marathon = require('../models/marathon')
-var TournamentReg = require('../models/tregs')
-var Tournaments = require('../models/tournaments')
+var Gifts = require('../models/gifts');
+var Users = require('../models/users');
+var Money = require('../models/money');
+var Marathon = require('../models/marathon');
+var TournamentReg = require('../models/tregs');
+var Tournaments = require('../models/tournaments');
 
 
 var sender = require('../requestSender');
 
 
-var helper = require('../helpers/helper')
+var helper = require('../helpers/helper');
 
 var sort = require('../helpers/sort');
 
-var fs = require('fs')
+var fs = require('fs');
 
-console.log('chain finishTournament')
+console.log('chain finishTournament');
 
-function notifyUsersAboutFinish(data){
-	var winners = data.scores//sort.winners(data.scores);
+function notifyUsersAboutFinish(data) {
+	var winners = data.scores; //sort.winners(data.scores);
 	var winnerCount = data.places[1] || null;
 	var prizes = data.prizes || null;
 
-	var obj = { 
-		tournamentID : data.tournamentID,
-		winners:winners,
-		count:winnerCount,
-		prizes:prizes 
-	}
+	var obj = {
+		tournamentID: data.tournamentID,
+		winners,
+		count: winnerCount,
+		prizes
+	};
 
 	console.log('FinishTournament FinishGame', obj);
 
 	var is_money_tournament = (prizes[0] >= 2);
 	console.log('is_money_tournament', is_money_tournament);
-	if (is_money_tournament){
-		//show win or lose message
-		for (var i = 0; i < winners.length; i++) {
-			var winner = winners[i];
-			var login = winner.login;
 
-			if (i<winnerCount){
+	if (is_money_tournament) {
+		for (var i = 0; i < winners.length; i++) {
+			var login = winners[i].login;
+
+			if (i < winnerCount) {
 				//send winning message
-				console.log(login, 'WINS TOURNAMENT')
+				console.log(login, 'WINS TOURNAMENT');
 				aux.alert(login, aux.c.NOTIFICATION_WIN_MONEY, obj)
 			} else {
 				//send lose message
-				console.log(login, 'LOSES TOURNAMENT')
+				console.log(login, 'LOSES TOURNAMENT');
 				aux.alert(login, aux.c.NOTIFICATION_LOSE_TOURNAMENT, obj)
 			}
 		}
-	} else {
-		//send custom messages
-		Marathon.get_current_marathon()
-		.then(function (marathon){
-			var mainPrize = marathon.prizes[0];
-
-			for (var i = 0; i < winners.length; i++) {
-				var user = winners[i];
-				var login = user.login
-
-				sendAfterGameNotification(login, mainPrize);
-			}
-		})
 	}
 }
 
-function Log(){
+function Log() {
 	console.log(arguments)
 }
 
-function sendAfterGameNotification(login, mainPrize){
-  Users.profile(login)
-  .then(function (profile){
-    if (!profile) return null;
-    var profileInfo = profile.info;
-      // what we can send?
-      // win
-      // lose
-
-      // advise (if newbie)
-      // rating +
-
-      // check
-      // was it money tournament?
-      // did he win money?
-      // is
-
-      // var is_newbie = (!profileInfo || !profileInfo.status || profileInfo.status==aux.c.USER_STATUS_NEWBIE) ;
-      // if (is_newbie){
-      //   // //show newbie messages
-      //   // //analyze, what he knows about us
-
-      //   // show hello message
-      //   aux.alert(login, aux.c.NOTIFICATION_FIRST_MESSAGE, { mainPrize: mainPrize })
-
-      //   console.log('mark, that user received first message','USER_STATUS_READ_FIRST_MESSAGE')
-
-      //   Users.update_user_status(login, aux.c.USER_STATUS_READ_FIRST_MESSAGE)
-      //   .catch(function (err){
-      //     console.error('update_user_status failed', err);
-      //   })
-
-      // } else {
-        // send rating
-        // console.log('send NOTIFICATION_MARATHON_CURRENT. must be function of getMarathonUser');
-
-        var card = Packs.get_after_game_card()
-        var giftID = card.giftID;
-        card.isFree = true;
-        // console.log('grant card', card)
-
-        Gifts.user.saveGift(login, giftID, true, card.colour)
-        .then(function (result){
-          // return aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card)
-        })
-        .catch(console.error)
-
-        // var marathonUser = getMarathonUser(login);
-        // marathonUser.mainPrize = mainPrize;
-        // aux.alert(login, aux.c.NOTIFICATION_MARATHON_CURRENT, marathonUser)
-
-        // send advices
-        // send bonuses
-      // }
-  })
-  .catch(function (err){
-    console.error('sendAfterGameNotification', err);
-  })
-}
-
-function dataBaseChanges(data){
-	console.log('dataBaseChanges')
+function dataBaseChanges(data) {
+	console.log('dataBaseChanges');
 
 	var gameID = data['gameID'];
 	var tournamentID = data['tournamentID'];
@@ -150,20 +68,10 @@ function dataBaseChanges(data){
 
 	// EndTournament(scores, gameID, tournamentID);
 
-	// give marathon points to participants
-	// 
-	var info = {}
+	var info = {};
 
 	var tournament;
 	// var winners;
-
-	// TournamentReg.participants(tournamentID)
-	// .then(give_marathon_points) // parallel. returns undefined
-	// .then(function (result){
-	// 	info.marathonPointsGiven = result;
-	// 	return Tournaments.finish(tournamentID)
-	// })
-	give_marathon_points(scores);
 
 	Tournaments.finish(tournamentID)
 	.then(function (result){
@@ -188,7 +96,7 @@ function dataBaseChanges(data){
 			.then(function (result) {
 				serveTournament(youngerizedTournament)
 			})
-			.catch(aux.report('autoAdd', { info:info } ))
+			.catch(aux.report('autoAdd', { info }))
 		}
 
 		// if (isStreamTournament(tournament)){
@@ -197,7 +105,7 @@ function dataBaseChanges(data){
 		// }
 
 		// return givePrizes(winners, tournament)
-		for (i=0; i < winners.length; i++){
+		for (i = 0; i < winners.length; i++){
 			var player = winners[i];
 			var Prize = getPrize(tournament.Prizes, tournament.goNext, i+1);
 
@@ -226,52 +134,7 @@ function serveTournament(tournament){
 	// aux.system('autoAdd', { result: tournament })
 }
 
-function givePrizes(winners, tournament){
-	var tournamentID = tournament.tournamentID;
-
-	for (i=0; i < winners.length; i++){// && i <Prizes.Prizes.length
-		var player = winners[i];
-		var Prize = getPrize(tournament.Prizes, tournament.goNext, i+1);
-
-		givePrizeToPlayer(player, Prize, tournamentID );
-	}
-}
-
-var str = JSON.stringify
-
-function give_marathon_points_to_user(login, MarathonID){
-	console.error('give_marathon_points_to_user', login, MarathonID);
-
-	Marathon.find_or_create_user(login, MarathonID)
-	.then(function (user){
-		// console.error('user found or created', user);
-		return Marathon.increase_points(login, MarathonID);
-	})
-	.catch(helper.catcher);
-}
-
-function give_marathon_points(tregs){
-	Marathon.get_current_marathon()
-	.then(function (marathon){
-		if (marathon){
-			// console.log(tregs);
-			var MarathonID = marathon.MarathonID;
-			// console.error('got marathon', marathon, tregs.length - 1);
-			for (var i = tregs.length - 1; i >= 0; i--) {
-				// var login = tregs[i].userID;
-				var login = tregs[i].login;
-
-				if (tregs[i].value==0) continue;
-
-				// console.error('trying to increase marathon points to ' + login + '  ', tregs[i]);
-				Log('trying to increase marathon points to ' + login + '  ', aux.c.STREAM_GAMES);
-				give_marathon_points_to_user(login, MarathonID);
-			};
-		}
-	})
-	.catch(helper.catcher);
-
-}
+var str = JSON.stringify;
 
 function TournamentLog(tournamentID, message){
 	var time = new Date();
@@ -286,11 +149,11 @@ function getPrize(Prizes, goNext, i){
 	Log('Rewrite getPrize function. NOW YOU MUST ALL PRIZES FOR EACH PLAYER!!!');
 	var roundIndex=1;
 	var next = 2;
-	if (i>goNext[1]){
-		return 0;
 
+	if (i > goNext[1]){
+		return 0;
 	}	else {
-		while(next<goNext.length && goNext[next] >= i){//playerRoundIndex<goNext.length-1 && 
+		while(next < goNext.length && goNext[next] >= i){//playerRoundIndex<goNext.length-1 &&
 			roundIndex=next;
 			next = roundIndex+1;
 		}
@@ -300,25 +163,25 @@ function getPrize(Prizes, goNext, i){
 
 function YoungerizeTournament(tournament){
 	var obj = {
-		buyIn:      tournament.buyIn,
-		initFund:     tournament.initFund,
-		gameNameID:   tournament.gameNameID,
+		buyIn:      				tournament.buyIn,
+		initFund:     			tournament.initFund,
+		gameNameID:   			tournament.gameNameID,
 
-		pricingType:  tournament.pricingType,
+		pricingType:  			tournament.pricingType,
 
-		rounds:     tournament.rounds,
-		goNext:     tournament.goNext,//
-		places:     tournament.places,
-		Prizes:     tournament.Prizes,
-		prizePools:   tournament.prizePools,
+		rounds:     				tournament.rounds,
+		goNext:     				tournament.goNext,//
+		places:     				tournament.places,
+		Prizes:     				tournament.Prizes,
+		prizePools:   			tournament.prizePools,
 
-		comment:    tournament.comment,
+		comment:    				tournament.comment,
 
 		playersCountStatus: tournament.playersCountStatus,///Fixed or float
-		startDate:    null,
-		status:       null,
-		players:      0
-   }
+		startDate:    			null,
+		status:       			null,
+		players:      			0
+   };
 	// regular tournaments settings
 	if (tournament.settings) { // && data.regularity!="0"
 		obj.settings=tournament.settings;
@@ -382,7 +245,7 @@ function givePrizeToPlayer(player, Prize, tournamentID){
 
 function finishTournament(data){
 
-	dataBaseChanges(data)
+	dataBaseChanges(data);
 
 	notifyUsersAboutFinish(data)
 }
@@ -395,4 +258,4 @@ module.exports = function(_aux){
 	return {
 		finish: finishTournament
 	}
-}
+};

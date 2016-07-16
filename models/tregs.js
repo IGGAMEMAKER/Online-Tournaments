@@ -297,18 +297,19 @@ function test_add(tournamentID, login, promo){
 	log('Experiment: ' + val);
 })
 .catch(helper.catcher)*/
+module.exports = {
+	getParticipants,
+	get,
+	add,
+	remove,
+	userRegistered,
+	playedCount,
+	leaderboard,
+	playedTop,
+	participants,
+	clearParticipants,
 
-this.getParticipants = getParticipants;
-this.get = get;
-this.add = add;
-this.remove = remove;
-this.userRegistered = userRegistered;
-this.playedCount = playedCount;
-this.leaderboard = leaderboard;
-this.playedTop = playedTop;
-this.participants = participants
-this.clearParticipants = clearParticipants
-
-this.registerUser = registerUser;
-this.unregisterUser = unregisterUser;
-this.freeTournament = freeTournament;
+	registerUser,
+	unregisterUser,
+	freeTournament,
+};

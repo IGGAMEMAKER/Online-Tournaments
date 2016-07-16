@@ -81,12 +81,12 @@ var isModerator = function(req, res, next) {
 
 
 module.exports = {
-	authenticated:authenticated
+	authenticated,
 
-	,moderator: [authenticated, isModerator]
-	,isAdmin: [authenticated, isAdmin]
-	,drawList: draw_list
-	,send_error: send_error
-	,answer: answer
-	,render: render
-}
+	moderator: [authenticated, isModerator],
+	isAdmin: [authenticated, isAdmin],
+	drawList: draw_list,
+	send_error,
+	answer,
+	render,
+};

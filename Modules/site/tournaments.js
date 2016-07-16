@@ -6,6 +6,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   var TournamentRegs = require('../../models/tregs');
 
   var middlewares = require('../../middlewares');
+
+  var getPortAndHostOfGame = require('../../helpers/GameHostAndPort').getPortAndHostOfGame;
 //var Actions = require('../../models/actions');
 
   var PRICE_FREE = 4;
@@ -65,15 +67,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
 
   })
 
-  app.get('/AddTournament', function (req, res){
+  app.get('/AddTournament', aux.moderator, function (req, res){
     res.render('AddTournament');
-    /*if (req.session.login=='Alvaro_Fernandez'){
-     res.render('AddTournament');
-     //siteAnswer(res, 'AddTournament');
-     }
-     else{
-     res.render('Alive');
-     }*/
   });
 
   app.get('/api/tournaments/available', aux.moderator, api('Tournaments', 'available'));
@@ -212,25 +207,22 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   });
 
   app.get('/api/tournaments/get/:tournamentID', aux.isAdmin, function (req, res, next){
-    var tournamentID = parseInt(req.params.tournamentID)
+    var tournamentID = parseInt(req.params.tournamentID);
 
     Tournaments.getByID(tournamentID)
       .then(function (tournament){
         return TournamentRegs.getParticipants(tournamentID)
           .then(function (players){
             return {
-              tournament:tournament,
-              players:players
-            }
-            // tournament.list = players;
-            // return tournament
-          })
-        // console.log(tournament)
-        // return tournament;
+              tournament,
+              players
+            };
+          });
       })
+      // .then(d => { req.data = d; })
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.std)
+  }, aux.std);
 
   app.get('/clearRegs/:tournamentID', aux.isAdmin, function (req, res, next){
     var tournamentID = parseInt(req.params.tournamentID);
@@ -255,8 +247,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
         if (result){
           res.redirect('/api/tournaments/current');
         } else {
-          res.json({result:result});
-          //res.end('fail. <a href="MarathonInfo"> go back');
+          res.json({ result });
         }
       })
       .then(aux.setData(req, next))
@@ -331,8 +322,21 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   })
 
   app.post('/GetTournamentAddress', function (req, res){
-    //Log('tournaments.js ... tID = ' + req.body.tournamentID, 'Tournaments');
-    AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
+    // AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
+
+    var tournamentID = req.body.tournamentID;
+
+    Tournaments.getByID(tournamentID)
+      .then(tournament => {
+        var address = getPortAndHostOfGame(tournament.gameNameID);
+
+        address.running = tournament.status == aux.c.TOURN_STATUS_RUNNING;
+
+        sender.Answer(res, { address });
+      })
+      .catch(err => {
+        console.error('/GetTournamentAddress in site', err);
+      })
   });
 
   app.post('/ServeTournament', ServeTournament);

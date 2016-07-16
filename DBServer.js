@@ -64,7 +64,10 @@ var helper = require('./helpers/helper');
 });*/
 
 
-
+app.use((req, res, next) => {
+	console.log('DB SERVER GOT REQUEST', req.url);
+	next();
+});
 
 app.post('/GetUsers', GetUsers);
 app.post('/Register', Register);

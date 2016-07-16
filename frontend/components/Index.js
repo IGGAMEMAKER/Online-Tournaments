@@ -87,11 +87,9 @@ export default class Index extends Component {
           <div className="white">
             <h1 className="fadeText">Раздели радость побед с друзьями</h1>
             <p className="center">
-              <div>Отправь ссылку друзьям и они смогут бесплатно сыграть в 10 турнирах</div>
-              <div>
-                Если они выиграют какой-либо приз,
-                ты получишь дополнительные 10% от их выигрыша!
-              </div>
+              <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
+              <div>Если они займут призовое место в бесплатном турнире</div>
+              <div>ты получишь дополнительные 50% от их выигрыша!</div>
             </p>
             <div
               style={{
@@ -99,7 +97,13 @@ export default class Index extends Component {
               }}
             >
               <center>
-                <input id="invite-link" type="text" className="black circle-input" value={link} />
+                <input
+                  id="invite-link"
+                  type="text"
+                  className="black circle-input"
+                  value={link}
+                  onClick={this.CopyShareLink}
+                >{link}</input>
                 <a
                   className="btn btn-primary btn-large btn-lg"
                   onClick={this.CopyShareLink}

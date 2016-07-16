@@ -423,35 +423,34 @@ function get_tournaments(query, fields, filters, sort){
 		});
 	})
 }
+module.exports = {
+	all : get_tournaments_default,
+	get_tournaments_for_user,
+	get : get_tournaments_update,
+	getByID,
+	start,
+	stop,
+	enable,
+	add,
+	finish,
+	getStreamID,
+	specials,
 
-this.all = get_tournaments_default;
-this.get_tournaments_for_user = get_tournaments_for_user;
-this.get = get_tournaments_update;
+	running,
+	setTournStatus,
+	find,
+	findByQuery,
+	get_available,
+	available: get_available,
 
-this.getByID = getByID;
+	updateByID,
+	edit,
+	addNewTournament,
+	todos: all,
 
-this.start = start;
-this.stop = stop;
-this.enable = enable;
-this.add = add;
-this.finish = finish;
-this.getStreamID = getStreamID;
-this.specials = specials;
-
-this.running = running;
-this.setStatus = setTournStatus
-this.find = find
-this.findByQuery = findByQuery
-this.get_available = get_available;
-this.available = get_available;
-
-this.updateByID = updateByID
-this.edit = edit
-this.addNewTournament = addNewTournament;
-this.todos = all
-
-this.getByTopic = getByTopic;
-this.addTopicStreamTournament = addTopicStreamTournament;
+	getByTopic,
+	addTopicStreamTournament,
+};
 
 
 // specials()
