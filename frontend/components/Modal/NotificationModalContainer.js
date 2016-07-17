@@ -191,7 +191,7 @@ export default class NotificationModalContainer extends Component {
             <div className="card-title">
               Пополните счёт и вы сможете сыграть в этом турнире!
               <br />
-              Стоимость турнира: {info.ammount} РУБ
+              Стоимость участия: {info.ammount} РУБ
               <br />
               У вас на счету: {money} РУБ
             </div>

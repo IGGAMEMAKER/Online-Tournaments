@@ -46,6 +46,9 @@ export default class Menu extends Component {
     // line-height: 20px;
     // <a href="/" className={`navbar-brand ${menuIndex}`}>Онлайн Турниры</a>
 
+    // navbar-brand
+
+    // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
     return (
       <center>
         <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
@@ -67,9 +70,8 @@ export default class Menu extends Component {
               </div>
               <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
                 <ul className="nav navbar-nav">
-                  <li><a href="/" className={`${menuIndex} navbar-brand`}>Онлайн Турниры</a></li>
+                  <li><a href="/" className={`${menuIndex}`}>Онлайн Турниры</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
-                  <li><a href="/Packs" className={menuPacks}>Призы</a></li>
                   <li><a href="/profile" className={menuProfile}>Профиль</a></li>
                   <li><a href="/about" className={menuAbout}> О нас</a></li>
                   {loginMenu}
