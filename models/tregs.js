@@ -98,7 +98,7 @@ function playedCount(login){
 	})
 }
 
-function get(login){
+function get(login) {
 	return new Promise(function (resolve, reject){
 		TournamentReg
 		.find({userID:login, status : { $ne: TOURN_STATUS_FINISHED } })
@@ -304,7 +304,7 @@ function test_add(tournamentID, login, promo){
 .catch(helper.catcher)*/
 module.exports = {
 	getParticipants,
-	get,
+	get: get,
 	add,
 	remove,
 	userRegistered,
