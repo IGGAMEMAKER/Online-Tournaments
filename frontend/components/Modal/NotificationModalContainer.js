@@ -200,7 +200,7 @@ export default class NotificationModalContainer extends Component {
           footer = (
             <div>
               <a
-                href="/Payment"
+                href={`/Payment?ammount=${diff}&buyType=${3}`}
                 className="btn btn-primary"
                 onClick={stats.pressedModalTournamentNoMoney}
               >Пополнить на {diff} руб</a>
@@ -224,7 +224,7 @@ export default class NotificationModalContainer extends Component {
           footer = (
             <div>
               <a
-                href="/Payment"
+                href={`/Payment?ammount=${diff}&buyType=${1}`}
                 className="btn btn-primary"
                 onClick={stats.pressedModalPackNoMoney}
               >Пополнить на {diff} руб</a>
