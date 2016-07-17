@@ -52,8 +52,8 @@ export default class Tournaments extends Component {
     actions.initialize();
   }
 
-  register = (tournamentID) => {
-    actions.register(tournamentID);
+  register = (tournamentID, buyIn) => {
+    actions.register(tournamentID, buyIn);
   };
 
   unregister = (tournamentID) => {

@@ -89,7 +89,7 @@ export default class Tournament extends Component {
       } else {
         const text = buyIn > 0 ? `за ${buyIn} РУБ` : 'бесплатно';
         actionButtons = (
-          <a className="btn toggle-tickets wrap-text" onClick={() => props.register(tournamentID)}>
+          <a className="btn toggle-tickets wrap-text" onClick={() => props.register(tournamentID, buyIn)}>
             Участвовать {text}
           </a>
         );

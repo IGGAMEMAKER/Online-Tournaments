@@ -149,9 +149,7 @@ export default class NotificationModalContainer extends Component {
           const card = info;
           body = (
             <div>
-              <p className="card-title">
-                {card.description}
-              </p>
+              <p className="card-title">{card.description}</p>
               <PackCard
                 src={`/img/topics/realmadrid/${card.photoURL}`}
                 description={card.description}
@@ -222,6 +220,7 @@ export default class NotificationModalContainer extends Component {
               У вас на счету: {money} РУБ
             </div>
           );
+
           footer = (
             <div>
               <a

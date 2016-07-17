@@ -82,37 +82,37 @@ async function loadProfile() {
       const tID = reg.tournamentID;
       registeredIn[tID] = 1;
     });
+
     // console.warn('async ACTION_INITIALIZE');
     Dispatcher.dispatch({
       type: c.ACTION_INITIALIZE,
       tournaments: registeredIn,
       money,
-      packs,
+      packs
     });
+
     Dispatcher.dispatch({
-      type: c.CLEAR_TOURNAMENT_DATA,
+      type: c.CLEAR_TOURNAMENT_DATA
     });
+
     tRegs.forEach(reg => {
-      const tID = reg.tournamentID;
+      const tournamentID = reg.tournamentID;
       request
         .post('/GetTournamentAddress')
-        .send({ tournamentID: tID })
+        .send({ tournamentID })
         .end((err, res) => {
           if (err) throw err;
           const { host, port, running } = JSON.parse(res.text).address;
           // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, tID);
-          console.log('/GetTournamentAddress running', running, tID);
 
-          // if (running) {
           console.warn('async SET_TOURNAMENT_DATA');
           Dispatcher.dispatch({
             type: c.SET_TOURNAMENT_DATA,
             host,
             port,
             running: running ? 1 : 0,
-            tournamentID: tID,
+            tournamentID
           });
-          // }
         });
     });
   } catch (err) {
@@ -135,18 +135,14 @@ export default {
   initialize,
   update,
 
-  async register(tournamentID) {
+  async register(tournamentID, buyIn) {
     try {
-      const response = await request
-        .post('RegisterInTournament')
-        .send({ login, tournamentID });
-      console.log('RegisterInTournament', response);
+      const response = await request.post('RegisterInTournament').send({ login, tournamentID });
+      const result = response.body.result;
 
       const registeredIn = Object.assign({}, store.getMyTournaments());
 
       registeredIn[tournamentID] = 1;
-
-      const result = response.body.result;
 
       switch (result) {
         case 'OK':
@@ -158,7 +154,7 @@ export default {
           break;
         case c.TREG_NO_MONEY:
           addNotification({
-            ammount: 1000
+            ammount: buyIn
           }, c.MODAL_NO_TOURNAMENT_MONEY);
           break;
       }
@@ -253,9 +249,7 @@ export default {
 
   loadChatMessages,
   addNotification,
-  payModalStat() {
-
-  },
+  payModalStat() {},
   updateTournaments(tournaments) {
     Dispatcher.dispatch({
       type: c.UPDATE_TOURNAMENTS,

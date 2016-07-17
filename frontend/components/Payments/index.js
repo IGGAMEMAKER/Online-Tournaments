@@ -78,7 +78,7 @@ export default class Payment extends Component {
         alt={alt}
         onClick={this.choosePaymentType(chosen)}
         // width={width}
-        height={height*1.25}
+        height={height * 1.25}
         className="light-blue-big"
         color="white"
         style={{

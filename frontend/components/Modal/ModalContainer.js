@@ -18,7 +18,7 @@ type StateType = {
 export default class ModalContainer extends Component {
   state = {
     messages: [],
-    runningTournaments: [],
+    runningTournaments: []
   };
 
   componentWillMount() {
@@ -30,19 +30,18 @@ export default class ModalContainer extends Component {
         money: store.getMoney()
       });
     });
+
     actions.loadNews();
   }
 
   render(props: PropsType, state: StateType) {
-    // console.warn('render ModalContainer');
     if (state.runningTournaments.length) {
       console.warn('has running tournaments');
       const tournaments = state.runningTournaments
-        .map((t) => {
-          const id = t;
+        .map(tournamentID => {
           return {
-            tournamentID: id,
-            gameUrl: store.getGameUrl(id),
+            tournamentID,
+            gameUrl: store.getGameUrl(tournamentID)
           };
         });
       return <PlayModalContainer tournaments={tournaments} />;
@@ -54,7 +53,6 @@ export default class ModalContainer extends Component {
       return <NotificationModalContainer message={messages[0]} count={messages.length} />;
     }
 
-    // console.log('no modal');
     // $('#modal-standard').modal('hide');
     return <div style="display: none;"></div>;
   }
