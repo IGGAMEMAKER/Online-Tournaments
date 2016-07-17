@@ -64,7 +64,6 @@ export default class Payment extends Component {
 
   choosePaymentType = (id) => {
     return () => {
-      console.log('chosen', id);
       this.setState({
         chosen: id,
       });

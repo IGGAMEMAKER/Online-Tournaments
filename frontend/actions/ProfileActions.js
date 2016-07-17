@@ -59,6 +59,14 @@ function loadNews() {
     });
 }
 
+function addNotification(data, modalType) {
+  Dispatcher.dispatch({
+    type: c.ACTION_ADD_NOTIFICATION,
+    data,
+    modalType,
+  });
+}
+
 async function loadProfile() {
   try {
     console.log('async initialize');
@@ -129,33 +137,32 @@ export default {
 
   async register(tournamentID) {
     try {
-      // request
-      //   .post('RegisterInTournament')
-      //   .send({ login, tournamentID })
-      //   .end((err, response) => {
-      //     console.log('get respond from server');
-      //     if (err) throw err;
-      //
-      //     console.log('register in tournament', tournamentID, response);
-      //   });
       const response = await request
         .post('RegisterInTournament')
         .send({ login, tournamentID });
       console.log('RegisterInTournament', response);
 
       const registeredIn = Object.assign({}, store.getMyTournaments());
-      registeredIn[tournamentID] = 1;
-      // console.log(response.body);
 
-      if (response.body.result === 'OK') {
-        Dispatcher.dispatch({
-          type: c.ACTION_REGISTER_IN_TOURNAMENT,
-          tournaments: registeredIn,
-          tournamentID,
-        });
-      } else {
-        console.log('draw modals... no register in ', tournamentID);
+      registeredIn[tournamentID] = 1;
+
+      const result = response.body.result;
+
+      switch (result) {
+        case 'OK':
+          Dispatcher.dispatch({
+            type: c.ACTION_REGISTER_IN_TOURNAMENT,
+            tournaments: registeredIn,
+            tournamentID,
+          });
+          break;
+        case c.TREG_NO_MONEY:
+          addNotification({
+            ammount: 1000
+          }, c.MODAL_NO_TOURNAMENT_MONEY);
+          break;
       }
+
     } catch (err) {
       console.error(err);
     }
@@ -245,13 +252,7 @@ export default {
   },
 
   loadChatMessages,
-  addNotification(data, modalType) {
-    Dispatcher.dispatch({
-      type: c.ACTION_ADD_NOTIFICATION,
-      data,
-      modalType,
-    });
-  },
+  addNotification,
   payModalStat() {
 
   },

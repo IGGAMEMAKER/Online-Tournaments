@@ -27,7 +27,7 @@ export default class ModalContainer extends Component {
         messages: store.getMyNews(),
         runningTournaments: store.getRunningTournaments(),
 
-        money: store.getMoney(),
+        money: store.getMoney()
       });
     });
     actions.loadNews();
