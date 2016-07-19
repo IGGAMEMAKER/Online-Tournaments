@@ -2665,6 +2665,7 @@
 	      // navbar-brand
 
 	      // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+	      // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
 	      return (0, _preact.h)(
 	        'center',
 	        null,
@@ -2720,15 +2721,6 @@
 	                      'a',
 	                      { href: '/Tournaments', className: menuTournaments },
 	                      'Турниры'
-	                    )
-	                  ),
-	                  (0, _preact.h)(
-	                    'li',
-	                    null,
-	                    (0, _preact.h)(
-	                      'a',
-	                      { href: '/Packs', className: menuPacks },
-	                      'Призы'
 	                    )
 	                  ),
 	                  (0, _preact.h)(
