@@ -177,6 +177,13 @@ export default class Tournaments extends Component {
         style={{ display: login ? 'none' : 'block' }}
       >Авторизуйтесь, чтобы сыграть!</a>
     );
+
+    /*
+
+
+     <hr colour="white" width="60%" align="center" />
+     */
+
     return (
       <div>
         {authButton}
@@ -188,8 +195,6 @@ export default class Tournaments extends Component {
         {TomorrowTournaments}
 
         {RichestTournaments}
-
-        <hr colour="white" width="60%" align="center" />
       </div>
     );
   }

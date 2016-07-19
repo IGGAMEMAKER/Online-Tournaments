@@ -51,52 +51,76 @@ export default class Menu extends Component {
 
     // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
     // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+    // collapse <div id="bs-example-navbar-collapse-1" className="navbar-collapse">
+
+    const balance = (
+      <center>
+        <div style={`background-color:#111111; display: ${login ? 'block' : 'none'}`} className="balance">
+          <span>{text}</span>
+          <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
+          <span> / </span>
+          <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
+        </div>
+      </center>
+    );
+
+    const standardNav = (
+      <div style="margin: auto;">
+        <div className="navbar-header">
+          <button
+            type="button"
+            data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1"
+            className="navbar-toggle"
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+          </button>
+
+        </div>
+        <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
+          <ul className="nav navbar-nav">
+            <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
+            <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+            <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+            <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
+            {loginMenu}
+          </ul>
+        </div>
+      </div>
+    );
+
+    const previous = (
+      <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
+        <div className="container-fluid">
+          {standardNav}
+        </div>
+
+        <div className="container-fluid">
+          {balance}
+        </div>
+      </nav>
+    );
+
+    return previous;
+
     return (
       <center>
-        <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
-          <div className="container-fluid">
-            <div style="margin: auto;">
-              <div className="navbar-header">
-                <button
-                  type="button"
-                  data-toggle="collapse"
-                  data-target="#bs-example-navbar-collapse-1"
-                  className="navbar-toggle"
-                >
-                  <span className="sr-only">Toggle navigation</span>
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                </button>
+        <div className="container-fluid">
+          <ul className="nav navbar-nav">
+            <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
+            <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+            <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+            <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
+            {loginMenu}
+          </ul>
+        </div>
 
-              </div>
-              <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
-                <ul className="nav navbar-nav">
-                  <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
-                  <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
-                  <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
-                  <li><a href="/Chat" className={menuChat}>Чат</a></li>
-                  {loginMenu}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="container-fluid">
-            <center>
-              <div style={`background-color:#111111; display: ${login ? 'block' : 'none'}`} className="balance">
-                <span>{text}</span>
-                <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
-                <span> / </span>
-                <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
-              </div>
-            </center>
-          </div>
-          <div className="container-fluid">
-            <center>
-              <div style="width:100%; background-color:#222;" className="balance"></div>
-            </center>
-          </div>
-        </nav>
+        <div className="container-fluid">
+          {balance}
+        </div>
       </center>
     );
   }
