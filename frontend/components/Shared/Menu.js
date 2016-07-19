@@ -41,6 +41,7 @@ export default class Menu extends Component {
     const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
+    const menuChat = `${hover} ${props.active === 'Chat' ? 'active' : ''}`;
 
     //     font-size: 18px;
     // line-height: 20px;
@@ -74,7 +75,7 @@ export default class Menu extends Component {
                   <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
                   <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
-                  <li><a href="/About" className={menuAbout}> О нас</a></li>
+                  <li><a href="/Chat" className={menuChat}>Чат</a></li>
                   {loginMenu}
                 </ul>
               </div>

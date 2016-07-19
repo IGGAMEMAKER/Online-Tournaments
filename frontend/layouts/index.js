@@ -25,11 +25,16 @@ export default class Layout extends Component {
     return (
       <div>
         <center>
-          {header}
+          <div className="center" style="overflow: hidden; height: auto">
+            {header}
+          </div>
           {modals}
-          <div>{props.content}</div>
-          {chat}
-          {footer}
+          <div className="center" style="overflow: hidden; height: auto">
+            {props.content}
+          </div>
+          <div className="center offset" style="overflow: hidden; height: auto">
+            {footer}
+          </div>
         </center>
       </div>
     );

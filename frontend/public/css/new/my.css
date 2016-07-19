@@ -25,7 +25,7 @@
 }
 .button-input-rur:after {
   position: absolute;
-  right: 12px;
+  right: 15px;
   top: 10px;
   content: 'РУБ';
   pointer-events: none;
@@ -1038,7 +1038,10 @@ a:focus {
   border-width: 1px;
   /*border-style: solid;*/
 }
-
+.height-fix {
+  height: auto;
+  overflow: hidden;
+}
 .freeroll {
   /*height: 100%;*/
   /*background-color: #042E54;*/
@@ -1047,7 +1050,7 @@ a:focus {
   /*background-image: url("/images/20-banner.jpg");*/
   min-height: 250px;
   /*box-sizing: border-box;*/
-  padding: 30px;
+  padding: 20px 30px;
   background-position-x: 50%;
   background-position-y: 50%;
   background-size: cover;

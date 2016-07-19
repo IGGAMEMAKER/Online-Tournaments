@@ -12,6 +12,7 @@ const Routing = (): Component => (
     <Pages.Profile path="/Profile" />
     <Pages.About path="/About" />
     <Pages.Payment path="/Payment" />
+    <Pages.Chat path="/Chat" />
   </Router>
 );
 // <Pages.Tournaments path="/Tournaments" />

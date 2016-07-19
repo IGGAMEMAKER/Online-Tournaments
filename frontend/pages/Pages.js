@@ -4,3 +4,4 @@ export Profile from './Profile';
 export Tournaments from './Tournaments';
 export Payment from './Payment';
 export About from './About';
+export Chat from './Chat';

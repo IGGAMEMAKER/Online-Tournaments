@@ -53,7 +53,7 @@ export default class Footer extends Component {
   getfooterLink = (link, text = 'Перейти', blank) => {
         // className="btn btn-primary btn-large btn-lg btn-fixed"
     return (
-      <a className="white" href={link} target={blank ? '_blank' : ''} >{text}</a>
+      <a className="btn btn-primary btn-large btn-lg btn-fixed offset" href={link} target={blank ? '_blank' : ''} >{text}</a>
     );
   };
 
@@ -137,6 +137,7 @@ export default class Footer extends Component {
 
     const groupButton = this.getfooterLink(groupLink, 'Группа ВК', true);
     const supportButton = this.getfooterLink(supportLink, 'Техподдержка', true);
+    const aboutButton = this.getfooterLink('/About', 'О нас', false);
 
     // const contacts = (
     //   <div className="white page">
@@ -148,15 +149,16 @@ export default class Footer extends Component {
     //     </div>
     //   </div>
     // );
+
+    // <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
     const contacts = (
       <div className="white page">
-        <div className="offset text-center contacts-tab">
-          {groupButton}
-        </div>
-        <div className="offset text-center contacts-tab">
-          {supportButton}
-        </div>
+        {groupButton}
+        {supportButton}
+        {aboutButton}
       </div>
+      // <div className="center offset-lg">
+      // </div>
     );
 
     // return (
@@ -176,7 +178,6 @@ export default class Footer extends Component {
 
     return (
       <div className="offset padding">
-        <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
         {contacts}
         <nav className="navbar navbar-inverse navbar-fixed-bottom chat" role="navigation">
           <div className="container-fluid">
