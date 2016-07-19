@@ -320,10 +320,6 @@ app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
 });
 
-app.get('/about', function (req, res){
-  res.render('about');
-});
-
 app.post('/FinishGame', FinishGame);
 
 
@@ -348,7 +344,7 @@ function Landing(name, picture){
 app.get('/realtime/update', aux.isAdmin, function(req, res){
   realtime().UPDATE_ALL();
   res.end('OK');
-})
+});
 
 // app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
 //   Users.mailers()
@@ -417,6 +413,34 @@ app.get('/Football', function (req, res) {
   res.render('Football');
 });
 
+var templateData = () => ({
+  collections: realtime().collections,
+  cards: realtime().cards,
+  packs: realtime().userpacks(),
+  tournaments: realtime().tournaments
+});
+
+var application_page = (req, res) => {
+  res.render('index', { msg: templateData() })
+};
+
+app.get('/', application_page);
+app.get('/about', application_page);
+app.get('/Tournaments', application_page);
+app.get('/Packs', aux.authenticated, application_page);
+app.get('/MyCollections', aux.authenticated, application_page);
+app.get('/Cards', aux.authenticated, application_page);
+// app.get('/Payment', aux.authenticated, application_page);
+/*
+app.get('/', function (req, res) {
+  res.render('index');
+});
+
+app.get('/Tournaments', function (req, res){
+  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
+  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
+});
+
 app.get('/Packs', aux.authenticated, function (req, res, next){
   req.data = {
     collections: realtime().collections,
@@ -458,22 +482,13 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
     })
     .catch(next);
 }, aux.render('Cards'), aux.err);
-
-app.get('/', function (req, res) {
-  res.render('index');
-});
-
-app.get('/Tournaments', function (req, res){
-  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
-  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
-});
-
-app.get('/Payment', middlewares.authenticated, function (req, res){
+*/
+app.get('/Payment', middlewares.authenticated, function (req, res) {
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
 
   var login = getLogin(req);
-  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type })
+  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type });
 
   res.render('Payment', { ammount:ammount, type:type });
 });

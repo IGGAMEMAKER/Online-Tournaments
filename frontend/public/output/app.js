@@ -70,7 +70,9 @@
 	    (0, _preact.h)(Pages.Home, { path: '/' }),
 	    (0, _preact.h)(Pages.Tournaments, { path: '/Tournaments' }),
 	    (0, _preact.h)(Pages.Packs, { path: '/Packs' }),
-	    (0, _preact.h)(Pages.Profile, { path: '/Profile' })
+	    (0, _preact.h)(Pages.Profile, { path: '/Profile' }),
+	    (0, _preact.h)(Pages.About, { path: '/About' }),
+	    (0, _preact.h)(Pages.Home, { 'default': true })
 	  );
 	};
 	// <Pages.Tournaments path="/Tournaments" />
@@ -2725,6 +2727,15 @@
 	                    null,
 	                    (0, _preact.h)(
 	                      'a',
+	                      { href: '/Packs', className: menuPacks },
+	                      'Призы'
+	                    )
+	                  ),
+	                  (0, _preact.h)(
+	                    'li',
+	                    null,
+	                    (0, _preact.h)(
+	                      'a',
 	                      { href: '/Profile', className: menuProfile },
 	                      'Профиль'
 	                    )
@@ -2734,7 +2745,7 @@
 	                    null,
 	                    (0, _preact.h)(
 	                      'a',
-	                      { href: '/about', className: menuAbout },
+	                      { href: '/About', className: menuAbout },
 	                      ' О нас'
 	                    )
 	                  ),
@@ -9012,15 +9023,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Payment = exports.Tournaments = exports.Profile = exports.Pack = exports.Home = undefined;
+	exports.About = exports.Payment = exports.Tournaments = exports.Profile = exports.Packs = exports.Home = undefined;
 
 	var _Home2 = __webpack_require__(151);
 
 	var _Home3 = _interopRequireDefault(_Home2);
 
-	var _Pack2 = __webpack_require__(153);
+	var _Packs2 = __webpack_require__(153);
 
-	var _Pack3 = _interopRequireDefault(_Pack2);
+	var _Packs3 = _interopRequireDefault(_Packs2);
 
 	var _Profile2 = __webpack_require__(158);
 
@@ -9034,13 +9045,18 @@
 
 	var _Payment3 = _interopRequireDefault(_Payment2);
 
+	var _About2 = __webpack_require__(167);
+
+	var _About3 = _interopRequireDefault(_About2);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.Home = _Home3.default;
-	exports.Pack = _Pack3.default;
+	exports.Packs = _Packs3.default;
 	exports.Profile = _Profile3.default;
 	exports.Tournaments = _Tournaments3.default;
 	exports.Payment = _Payment3.default;
+	exports.About = _About3.default;
 
 /***/ },
 /* 151 */
@@ -9435,9 +9451,9 @@
 
 	var _preact = __webpack_require__(1);
 
-	var _PackPage = __webpack_require__(154);
+	var _Packs = __webpack_require__(154);
 
-	var _PackPage2 = _interopRequireDefault(_PackPage);
+	var _Packs2 = _interopRequireDefault(_Packs);
 
 	var _index = __webpack_require__(96);
 
@@ -9456,7 +9472,9 @@
 	  (0, _createClass3.default)(PackPage, [{
 	    key: 'render',
 	    value: function render() {
-	      return (0, _preact.h)(_index2.default, { content: (0, _preact.h)(_PackPage2.default, null), nochat: true, active: 'Packs' });
+	      console.log('PackPage page');
+	      // return <div>aaaa</div>;
+	      return (0, _preact.h)(_index2.default, { content: (0, _preact.h)(_Packs2.default, null), nochat: true, active: 'Packs' });
 	    }
 	  }]);
 	  return PackPage;
@@ -9537,6 +9555,58 @@
 	  //   .end(console.log);
 	}
 
+	var standardPacks = [{
+	  src: '/img/topics/realmadrid.jpg',
+	  name: 'realmadrid',
+	  id: 1
+	}, {
+	  src: '/img/topics/bale.jpg',
+	  name: 'bale',
+	  id: 2
+	}, {
+	  src: '/img/topics/manutd.jpg',
+	  name: 'manutd',
+	  id: 3
+	}, {
+	  src: '/img/topics/realmadrid.jpg',
+	  name: 'realmadrid',
+	  id: 1
+	}, {
+	  src: '/img/topics/bale.jpg',
+	  name: 'bale',
+	  id: 2
+	}, {
+	  src: '/img/topics/manutd.jpg',
+	  name: 'manutd',
+	  id: 3
+	}, {
+	  src: '/img/topics/realmadrid.jpg',
+	  name: 'realmadrid',
+	  id: 1
+	}, {
+	  src: '/img/topics/bale.jpg',
+	  name: 'bale',
+	  id: 2
+	}, {
+	  src: '/img/topics/manutd.jpg',
+	  name: 'manutd',
+	  id: 3
+	}, {
+	  src: '/img/topics/realmadrid.jpg',
+	  name: 'realmadrid',
+	  id: 1
+	}, {
+	  src: '/img/topics/bale.jpg',
+	  name: 'bale',
+	  id: 2
+	}, {
+	  src: '/img/topics/manutd.jpg',
+	  name: 'manutd',
+	  id: 3
+	}];
+
+	// PACKS.map(p => ({ src: p.image, packID: p.packID, name: p.topic, price: p.price })) ||
+
 	var PackPage = function (_Component) {
 	  (0, _inherits3.default)(PackPage, _Component);
 
@@ -9601,57 +9671,7 @@
 	      }],
 
 	      chosenPack: -1,
-	      allPacks: PACKS.map(function (p) {
-	        return { src: p.image, packID: p.packID, name: p.topic, price: p.price };
-	      }) || [{
-	        src: '/img/topics/realmadrid.jpg',
-	        name: 'realmadrid',
-	        id: 1
-	      }, {
-	        src: '/img/topics/bale.jpg',
-	        name: 'bale',
-	        id: 2
-	      }, {
-	        src: '/img/topics/manutd.jpg',
-	        name: 'manutd',
-	        id: 3
-	      }, {
-	        src: '/img/topics/realmadrid.jpg',
-	        name: 'realmadrid',
-	        id: 1
-	      }, {
-	        src: '/img/topics/bale.jpg',
-	        name: 'bale',
-	        id: 2
-	      }, {
-	        src: '/img/topics/manutd.jpg',
-	        name: 'manutd',
-	        id: 3
-	      }, {
-	        src: '/img/topics/realmadrid.jpg',
-	        name: 'realmadrid',
-	        id: 1
-	      }, {
-	        src: '/img/topics/bale.jpg',
-	        name: 'bale',
-	        id: 2
-	      }, {
-	        src: '/img/topics/manutd.jpg',
-	        name: 'manutd',
-	        id: 3
-	      }, {
-	        src: '/img/topics/realmadrid.jpg',
-	        name: 'realmadrid',
-	        id: 1
-	      }, {
-	        src: '/img/topics/bale.jpg',
-	        name: 'bale',
-	        id: 2
-	      }, {
-	        src: '/img/topics/manutd.jpg',
-	        name: 'manutd',
-	        id: 3
-	      }],
+	      allPacks: standardPacks,
 
 	      packs: [{
 	        price: 100,
@@ -11623,6 +11643,209 @@
 	    // return /$name=([^&]+)/.exec(url)[1];
 	  }
 	};
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(42);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(47);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(48);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(52);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(87);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	var _About = __webpack_require__(168);
+
+	var _About2 = _interopRequireDefault(_About);
+
+	var _index = __webpack_require__(96);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var elements = (0, _preact.h)(_index2.default, { content: (0, _preact.h)(_About2.default, null), nochat: true, active: 'About' });
+
+	var ProfilePage = function (_Component) {
+	  (0, _inherits3.default)(ProfilePage, _Component);
+
+	  function ProfilePage() {
+	    (0, _classCallCheck3.default)(this, ProfilePage);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(ProfilePage).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(ProfilePage, [{
+	    key: 'render',
+	    value: function render() {
+	      return elements;
+	    }
+	  }]);
+	  return ProfilePage;
+	}(_preact.Component);
+
+	exports.default = ProfilePage;
+
+/***/ },
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(42);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(47);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(48);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(52);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(87);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _preact = __webpack_require__(1);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var About = function (_Component) {
+	  (0, _inherits3.default)(About, _Component);
+
+	  function About() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, About);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_Object$getPrototypeO = (0, _getPrototypeOf2.default)(About)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {}, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(About, [{
+	    key: "componentWillMount",
+	    value: function componentWillMount() {}
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      return (0, _preact.h)(
+	        "div",
+	        null,
+	        (0, _preact.h)(
+	          "div",
+	          { className: "white" },
+	          (0, _preact.h)(
+	            "div",
+	            { className: "col-sm-12" },
+	            (0, _preact.h)(
+	              "h1",
+	              { className: "mg-md text-center" },
+	              "О нас"
+	            ),
+	            (0, _preact.h)(
+	              "p",
+	              { className: "justify" },
+	              "Мы проводим онлайн–турниры, в которых разыгрываем деньги и футбольную атрибутику. Ваша цель - ответить на наибольшее количество вопросов. Вы можете играть в любое время. Турниры начинаются тогда, когда в них регистрируется необходимое количество игроков."
+	            )
+	          ),
+	          (0, _preact.h)(
+	            "div",
+	            { className: "col-sm-12" },
+	            (0, _preact.h)(
+	              "h2",
+	              { className: "mg-md text-center" },
+	              "Порядок проведения турниров"
+	            ),
+	            (0, _preact.h)(
+	              "p",
+	              { className: "justify" },
+	              "В самом начале турнира вам даётся 20 секунд на подготовку. После этого, вам предлагается ответить на ряд вопросов викторины. Число вопросов - от 6 до 20, в зависимости от типа турнира. В каждом вопросе 4 варианта ответа, где лишь один из них является верным. На ответ даётся 10 секунд и в зависимости от скорости и точности ответа начисляются очки. Для победы в турнире необходимо набрать наибольшее количество очков. В случае равенства очков (что крайне маловероятно), победа присуждается тому, кто первым зарегистрировался в турнире."
+	            )
+	          ),
+	          (0, _preact.h)(
+	            "div",
+	            { className: "col-sm-12" },
+	            (0, _preact.h)(
+	              "h2",
+	              { className: "mg-md text-center" },
+	              "Как пополнить счёт?"
+	            ),
+	            (0, _preact.h)(
+	              "p",
+	              { className: "justify" },
+	              "Пополнить счёт вы можете в своём ",
+	              (0, _preact.h)(
+	                "a",
+	                { href: "profile#depositMoney" },
+	                "профиле"
+	              ),
+	              "."
+	            )
+	          ),
+	          (0, _preact.h)(
+	            "div",
+	            { className: "col-sm-12" },
+	            (0, _preact.h)(
+	              "h2",
+	              { className: "mg-md text-center" },
+	              "Как снять деньги?"
+	            ),
+	            (0, _preact.h)(
+	              "p",
+	              { className: "justify" },
+	              "Вывести средства вы можете в своём ",
+	              (0, _preact.h)(
+	                "a",
+	                { href: "profile#cashoutMoney" },
+	                "профиле"
+	              ),
+	              ". Отправьте заявку в техподдержку и мы переведём вам деньги удобным для вас способом в течение одной рабочей недели. Минимальная сумма вывода - 500 рублей. В будущем, постараемся смягчить или даже отменить это ограничение. Это наша цель №1! Просим отнестись к этому с пониманием."
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return About;
+	}(_preact.Component);
+
+	exports.default = About;
 
 /***/ }
 /******/ ]);

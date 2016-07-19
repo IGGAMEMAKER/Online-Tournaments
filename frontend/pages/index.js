@@ -10,6 +10,8 @@ const Routing = (): Component => (
     <Pages.Tournaments path="/Tournaments" />
     <Pages.Packs path="/Packs" />
     <Pages.Profile path="/Profile" />
+    <Pages.About path="/About" />
+    <Pages.Home default />
   </Router>
 );
 // <Pages.Tournaments path="/Tournaments" />

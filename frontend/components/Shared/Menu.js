@@ -72,8 +72,9 @@ export default class Menu extends Component {
                 <ul className="nav navbar-nav">
                   <li><a href="/" className={`${menuIndex}`}>Онлайн Турниры</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+                  <li><a href="/Packs" className={menuPacks}>Призы</a></li>
                   <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
-                  <li><a href="/about" className={menuAbout}> О нас</a></li>
+                  <li><a href="/About" className={menuAbout}> О нас</a></li>
                   {loginMenu}
                 </ul>
               </div>

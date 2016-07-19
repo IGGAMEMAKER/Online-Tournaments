@@ -170,33 +170,22 @@ block legacy
 block overrideMenu
 
 block content
-	//include templates/news
-	//include templates/topics
-
-	//div(class="col-sm-12")
-		hr(colour="white" width="60%" align="center")
-		h2(class="white text-center") Турниры
-	//script.
-		var tournaments = !{JSON.stringify(msg)};
-		drawTournaments(tournaments)
-
-	br
-	br
+	// br
+	// br
 	div(class="col-sm-12 bgc-white" id="ratingField")
 		//div(class="row")
 			+marathonCarousel()
-		//a(href="#" style="text-decoration:none;")
-		//+freerollDaily()
-		//+freerollWeekly()
-		//+createTeam()
 		#app
 		//script(src="/output/Index.js")
 		script.
 			console.log('packs incoming...');
-			// var msg = !{JSON.stringify(msg)}
-			// console.log(msg);
-			var PACKS = [];
+			var msg = !{JSON.stringify(msg)}
+			console.log(msg);
+			var PACKS = msg.packs || [];
+			var TOURNAMENTS = msg.tournaments;
+		// var TOURNAMENTS = !{JSON.stringify(msg.tournaments)};
 		script(src="/output/app.js")
+
 		//ul(class="list-group")
 			li(class="list-group-item")
 				//a(href="invite" target="_blank")

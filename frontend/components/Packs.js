@@ -18,6 +18,75 @@ function openPack(packID, pay) {
   //   .end(console.log);
 }
 
+const standardPacks = [
+  {
+    src: '/img/topics/realmadrid.jpg',
+    name: 'realmadrid',
+    id: 1
+  },
+  {
+    src: '/img/topics/bale.jpg',
+    name: 'bale',
+    id: 2
+  },
+  {
+    src: '/img/topics/manutd.jpg',
+    name: 'manutd',
+    id: 3
+  },
+
+
+  {
+    src: '/img/topics/realmadrid.jpg',
+    name: 'realmadrid',
+    id: 1
+  },
+  {
+    src: '/img/topics/bale.jpg',
+    name: 'bale',
+    id: 2
+  },
+  {
+    src: '/img/topics/manutd.jpg',
+    name: 'manutd',
+    id: 3
+  },
+
+  {
+    src: '/img/topics/realmadrid.jpg',
+    name: 'realmadrid',
+    id: 1
+  },
+  {
+    src: '/img/topics/bale.jpg',
+    name: 'bale',
+    id: 2
+  },
+  {
+    src: '/img/topics/manutd.jpg',
+    name: 'manutd',
+    id: 3
+  },
+
+  {
+    src: '/img/topics/realmadrid.jpg',
+    name: 'realmadrid',
+    id: 1
+  },
+  {
+    src: '/img/topics/bale.jpg',
+    name: 'bale',
+    id: 2
+  },
+  {
+    src: '/img/topics/manutd.jpg',
+    name: 'manutd',
+    id: 3
+  },
+];
+
+// PACKS.map(p => ({ src: p.image, packID: p.packID, name: p.topic, price: p.price })) ||
+
 export default class PackPage extends Component {
   state = {
     cards: [
@@ -75,84 +144,19 @@ export default class PackPage extends Component {
         description: 'Карточка Модрича для игры в Funny Football',
         src: '19.png',
         color: 1
-      },
+      }
     ],
 
     chosenPack: -1,
-    allPacks: PACKS.map(p => ({ src: p.image, packID: p.packID, name: p.topic, price: p.price })) || [
-      {
-        src: '/img/topics/realmadrid.jpg',
-        name: 'realmadrid',
-        id: 1,
-      },
-      {
-        src: '/img/topics/bale.jpg',
-        name: 'bale',
-        id: 2,
-      },
-      {
-        src: '/img/topics/manutd.jpg',
-        name: 'manutd',
-        id: 3,
-      },
-
-
-      {
-        src: '/img/topics/realmadrid.jpg',
-        name: 'realmadrid',
-        id: 1,
-      },
-      {
-        src: '/img/topics/bale.jpg',
-        name: 'bale',
-        id: 2,
-      },
-      {
-        src: '/img/topics/manutd.jpg',
-        name: 'manutd',
-        id: 3,
-      },
-
-      {
-        src: '/img/topics/realmadrid.jpg',
-        name: 'realmadrid',
-        id: 1,
-      },
-      {
-        src: '/img/topics/bale.jpg',
-        name: 'bale',
-        id: 2,
-      },
-      {
-        src: '/img/topics/manutd.jpg',
-        name: 'manutd',
-        id: 3,
-      },
-
-      {
-        src: '/img/topics/realmadrid.jpg',
-        name: 'realmadrid',
-        id: 1,
-      },
-      {
-        src: '/img/topics/bale.jpg',
-        name: 'bale',
-        id: 2,
-      },
-      {
-        src: '/img/topics/manutd.jpg',
-        name: 'manutd',
-        id: 3,
-      },
-    ],
+    allPacks: standardPacks,
 
     packs: [
       {
         price: 100,
         buttons: [],
         color: 0,
-        frees: [],
-      },
+        frees: []
+      }
     ]
   };
 

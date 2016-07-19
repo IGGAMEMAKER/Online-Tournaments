@@ -71,9 +71,7 @@ function setDateTournaments(list) {
 		logger(e);
 	}
 }
-
-function initialize() {
-	logger('initialize');
+function getAvailableTournaments() {
 	request
 		.get(`${domain}:9000/tournaments/available`)
 		.end((err, response) => {
@@ -81,16 +79,15 @@ function initialize() {
 			setDateTournaments(tournaments);
 		})
 }
+function initialize() {
+	logger('initialize');
+
+}
 
 function watchdog() {
 	setInterval(() => {
 		// logger('initialize');
-		request
-			.get(`${domain}:9000/tournaments/available`)
-			.end((err, response) => {
-				tournaments = response.body.msg;
-				setDateTournaments(tournaments);
-			})
+		getAvailableTournaments();
 	}, 1000);
 }
 
