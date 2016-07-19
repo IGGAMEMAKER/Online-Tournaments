@@ -1,6 +1,8 @@
 import {h, Component} from "preact";
 import store from "../stores/ProfileStore";
 import actions from "../actions/ProfileActions";
+import Card from '../components/Shared/Card';
+import AdvancedCard from '../components/Shared/AdvancedCard';
 
 type PropsType = {}
 
@@ -29,7 +31,9 @@ export default class Profile extends Component {
         registeredIn: store.getMyTournamentList(),
         money: store.getMoney()
       });
+      // console.log('changes!');
     });
+
     actions.initialize();
   }
 
@@ -77,8 +81,8 @@ export default class Profile extends Component {
     ));
 
     return (
-      <div>
-        <h2 class="text-center white">Мои турниры</h2>
+      <div className="center">
+        <h2 class="text-center white offset-bg">Мои турниры</h2>
         <table className="table table-bordered panel">
           <thead>
           <tr>
@@ -97,27 +101,50 @@ export default class Profile extends Component {
     const tournaments = this.getTournamentRegs(state);
     const email = '';
     // <h3 class="mg-clear">Профиль</h3>
+
+    // const profileInfo = (
+    //   <div class="panel">
+    //     <div class="panel-heading"></div>
+    //     <div class="panel-body">
+    //       <form id="form-928" novalidate="novalidate">
+    //         <div class="form-group">
+    //           <label>Логин</label>
+    //           <h4 class="mg-md">{login}</h4>
+    //         </div>
+    //         <div class="form-group">
+    //           <label>Email</label>
+    //           <h4 class="mg-md">{email}</h4>
+    //         </div>
+    //         <div class="form-group">
+    //           <label>Баланс</label>
+    //           <h4 id="money1" class="mg-md">{state.money} p</h4>
+    //         </div>
+    //       </form>
+    //     </div>
+    //   </div>
+    // );
+
     const profileInfo = (
-      <div class="panel">
-        <div class="panel-heading"></div>
-        <div class="panel-body">
-          <form id="form-928" novalidate="novalidate">
-            <div class="form-group">
-              <label>Логин</label>
-              <h4 class="mg-md">{login}</h4>
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <h4 class="mg-md">{email}</h4>
-            </div>
-            <div class="form-group">
-              <label>Баланс</label>
-              <h4 id="money1" class="mg-md">{state.money} p</h4>
-            </div>
-          </form>
+      <form novalidate="novalidate">
+        <div class="form-group">
+          <label>Логин</label>
+          <h4 class="mg-md">{login}</h4>
         </div>
-      </div>
+        <div class="form-group">
+          <label>Баланс</label>
+          <h4 id="money1" class="mg-md">{state.money} pуб</h4>
+        </div>
+      </form>
     );
+
+    /*
+
+     <div class="form-group">
+     <label>Email</label>
+     <h4 class="mg-md">{email}</h4>
+     </div>
+
+     */
 
     const depositForm = (
       <div className="container-mobile">
@@ -135,7 +162,7 @@ export default class Profile extends Component {
             />
           </div>
         </div>
-        <a id="depositLink3"
+        <a
            href={`/Payment?ammount=${state.deposit}&buyType=2`}
            className="btn btn-lg btn-primary inline pull-left"
         >Пополнить</a>
@@ -143,38 +170,76 @@ export default class Profile extends Component {
     );
 
     //  на {state.deposit} РУБ
-    const deposit = (
-      <div className="panel">
-        <div className="panel-heading">
-          <h3 id="depositMoney" className="mg-clear">Пополнить счет</h3>
+
+    // const deposit = (
+    //   <div className="panel">
+    //     <div className="panel-heading">
+    //       <h3 id="depositMoney" className="mg-clear">Пополнить счет</h3>
+    //     </div>
+    //     <div className="panel-body">
+    //       {depositForm}
+    //     </div>
+    //   </div>
+    // );
+
+
+    // const deposit: Component = (
+    //   <div className="panel">
+    //     <div className="panel-heading">
+    //       <h3 id="depositMoney" className="mg-clear">Пополнить счет</h3>
+    //     </div>
+    //     <div className="panel-body">
+    //       {depositForm}
+    //     </div>
+    //   </div>
+    // );
+
+    const deposit: Component = (
+      <div>
+        <div className="button-input-rur">
+          <input
+            name="sum"
+            id="deposit"
+            value={state.deposit}
+            required="required"
+            autocomplete="off"
+            className="form-control circle-input"
+            onInput={this.onDepositInput}
+          />
         </div>
-        <div className="panel-body">
-          <form id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate="novalidate">
-            <div className="form-group">
-              <label>Сумма</label>
-              <input type="hidden" name="receiver" value="410013860652119" />
-              <input type="hidden" name="formcomment" value="Пополнение счёта в online-tournaments.org" />
-              <input type="hidden" name="short-dest" value="Пополнение счёта в online-tournaments.org" />
-              <input type="hidden" id="userLogin" name="label" />
-              <input type="hidden" name="quickpay-form" value="shop" />
-              <input type="hidden" id="targets" name="targets" value="Пополнение счёта у undefined" />
-              <input type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number" />
-              <input type="hidden" name="comment" value="Платёж принят!" />
-              <input type="hidden" name="paymentType" value="AC" />
-              {depositForm}
-            </div>
-          </form>
+        <div className="offset">
+          <a
+            href={`/Payment?ammount=${state.deposit}&buyType=2`}
+            className="btn btn-lg btn-primary"
+          >Пополнить</a>
         </div>
       </div>
     );
 
+    /*
+     <form id="form-928" method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" novalidate="novalidate">
+     <div className="form-group">
+     <label>Сумма</label>
+     <input type="hidden" name="receiver" value="410013860652119" />
+     <input type="hidden" name="formcomment" value="Пополнение счёта в online-tournaments.org" />
+     <input type="hidden" name="short-dest" value="Пополнение счёта в online-tournaments.org" />
+     <input type="hidden" id="userLogin" name="label" />
+     <input type="hidden" name="quickpay-form" value="shop" />
+     <input type="hidden" id="targets" name="targets" value="Пополнение счёта у undefined" />
+     <input type="hidden" id="sumAttribute" name="sum" value="4568.25" data-type="number" />
+     <input type="hidden" name="comment" value="Платёж принят!" />
+     <input type="hidden" name="paymentType" value="AC" />
+     {depositForm}
+     </div>
+     </form>
+
+     */
     const cashoutForm = (
       <div className="container-mobile">
         <div className="input-mid inline pull-left">
           <div className="button-input-rur">
             <input
               name="sum"
-              // type="number"
               min="500"
               id="cashout"
               value={state.cashout}
@@ -185,40 +250,82 @@ export default class Profile extends Component {
             />
           </div>
         </div>
-        <button className="btn btn-lg btn-primary button">Вывести</button>
+        <button
+          className="btn btn-lg btn-primary button"
+          onClick={() => { console.log('cashout'); }}
+        >Вывести</button>
       </div>
     );
 
-    const cashout = (
+    const cashout: Component = (
       <div>
-        <div className="panel">
-          <div className="panel-heading">
-            <h3 id="depositMoney" className="mg-clear">Вывод средств</h3>
-          </div>
-          <div className="panel-body">
-            <div className="form-group">
-              <label className="full text-center">Минимальная сумма вывода - 500 рублей</label>
-              <br />
-              {cashoutForm}
-            </div>
-          </div>
+        <div className="button-input-rur">
+          <input
+            name="sum"
+            min="500"
+            id="cashout"
+            value={state.cashout}
+            required="required"
+            autocomplete="off"
+            className="form-control circle-input"
+            onInput={this.onCashoutInput}
+          />
+        </div>
+        <div className="offset">
+          <button
+            className="btn btn-lg btn-primary button"
+            onClick={() => { console.log('cashout'); }}
+          >Вывести</button>
         </div>
       </div>
     );
+    // const cashout = (
+    //   <div>
+    //     <div className="panel">
+    //       <div className="panel-heading">
+    //         <h3 id="depositMoney" className="mg-clear">Вывод средств</h3>
+    //       </div>
+    //       <div className="panel-body">
+    //         <div className="form-group">
+    //           <label className="full text-center">Минимальная сумма вывода - 500 рублей</label>
+    //           <br />
+    //           {cashoutForm}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
 
     // <h1 class="text-center white page">Профиль</h1>
+    const profileTab = (
+      <AdvancedCard
+        title="Данные профиля"
+        button={profileInfo}
+        color="purple"
+        type="big"
+      />
+    );
     return (
       <div>
-        <h1 class="text-center white page">Профиль</h1>
-        <div class="full">
-          {tournaments}
-
-          {profileInfo}
-
-          <div id="dep">{deposit}</div>
-        </div>
-        <div id="cashoutMoney" class="full">
-          {cashout}
+        <div className="padding">{profileTab}</div>
+        <div className="padding">{tournaments}</div>
+        <div className="center">
+          <div id="dep" style="height: auto;">
+            <AdvancedCard
+              title="Пополните счёт"
+              info={['и начните играть!']}
+              button={deposit}
+              color="green"
+            />
+          </div>
+          <div id="cashoutMoney" style="height: auto;">
+            <AdvancedCard
+              title="Вывод средств"
+              info={['минимально - 500 рублей']}
+              color="red"
+              button={cashout}
+            />
+          </div>
         </div>
       </div>
     );

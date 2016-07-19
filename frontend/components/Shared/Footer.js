@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
+import AdvancedCard from './AdvancedCard';
 
 type PropsType = {}
 
@@ -48,6 +49,13 @@ export default class Footer extends Component {
   // toggleVK = () => {
   //   this.setState({ vk: !this.state.vk });
   // };
+
+  getfooterLink = (link, text = 'Перейти', blank) => {
+        // className="btn btn-primary btn-large btn-lg btn-fixed"
+    return (
+      <a className="white" href={link} target={blank ? '_blank' : ''} >{text}</a>
+    );
+  };
 
   render(props: PropsType, state: StateType) {
     let chat = '';
@@ -104,36 +112,72 @@ export default class Footer extends Component {
     // <div id="vk_groups" className={`${state.vk ? 'show' : 'hide'}`}></div>
     // <a className="fa fa-vk fa-lg" onClick={this.toggleVK}>Группа ВК</a>
 
-    const tpLink = 'https://vk.com/topic-111187123_33419618';
-    const group = 'https://vk.com/o_tournaments';
+    const supportLink = 'https://vk.com/topic-111187123_33419618';
+    const groupLink = 'https://vk.com/o_tournaments';
 
     const vkText = 'Вступайте, будем рады вам :)';
+    const supportText = 'Что-то не так? Пишите, не стесняйтесь';
 
+    // const contacts = (
+    //   <div className="white page">
+    //     <div className="offset text-center contacts-tab">
+    //       <i className="fa fa-vk fa-lg">&nbsp;
+    //         <a href={group} target="_blank">Наша группа ВК</a>
+    //       </i>
+    //       <div className="white">{vkText}</div>
+    //     </div>
+    //     <div className="offset text-center contacts-tab">
+    //       <i className="fa fa-lg">
+    //         <a href={tpLink} target="_blank">Техподдержка</a>
+    //       </i>
+    //       <div className="white">Что-то не так? Пишите, не стесняйтесь</div>
+    //     </div>
+    //   </div>
+    // );
+
+    const groupButton = this.getfooterLink(groupLink, 'Группа ВК', true);
+    const supportButton = this.getfooterLink(supportLink, 'Техподдержка', true);
+
+    // const contacts = (
+    //   <div className="white page">
+    //     <div className="offset text-center contacts-tab">
+    //       <AdvancedCard button={groupButton} title="Наша группа ВК" info={[vkText]} color="green" />
+    //     </div>
+    //     <div className="offset text-center contacts-tab">
+    //       <AdvancedCard button={supportButton} title="Техподдержка" info={[supportText]} color="green" />
+    //     </div>
+    //   </div>
+    // );
     const contacts = (
-      <center>
-        <div className="white page">
-          <div className="offset text-center contacts-tab">
-            <i className="fa fa-vk fa-lg">&nbsp;
-              <a href={group} target="_blank">Наша группа ВК</a>
-            </i>
-            <div className="white">{vkText}</div>
-          </div>
-          <div className="offset text-center contacts-tab">
-            <i className="fa fa-lg">
-              <a href={tpLink} target="_blank">Техподдержка</a>
-            </i>
-            <div className="white">Что-то не так? Пишите, не стесняйтесь</div>
-          </div>
+      <div className="white page">
+        <div className="offset text-center contacts-tab">
+          {groupButton}
         </div>
-      </center>
+        <div className="offset text-center contacts-tab">
+          {supportButton}
+        </div>
+      </div>
     );
 
+    // return (
+    //   <div className="center">
+    //     <h1 className="white page">Контакты</h1>
+    //     {contacts}
+    //     <div style="height: 60px;"></div>
+    //     <nav className="navbar navbar-inverse navbar-fixed-bottom chat" role="navigation">
+    //       <div className="container-fluid">
+    //         <div className="navbar-header">
+    //           <p id="activity">{chat}</p>
+    //         </div>
+    //       </div>
+    //     </nav>
+    //   </div>
+    // );
+
     return (
-      <center>
-        <div style="height: 35px;"></div>
-        <h1 className="white page">Контакты</h1>
+      <div className="offset padding">
+        <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
         {contacts}
-        <div style="height: 60px;"></div>
         <nav className="navbar navbar-inverse navbar-fixed-bottom chat" role="navigation">
           <div className="container-fluid">
             <div className="navbar-header">
@@ -141,7 +185,7 @@ export default class Footer extends Component {
             </div>
           </div>
         </nav>
-      </center>
+      </div>
     );
   }
 }

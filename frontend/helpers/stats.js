@@ -11,7 +11,7 @@ function post(url, data) {
 }
 
 export default {
-  pressedMenuFulfill: () => { send('/mark/metrics/MenuFulfill'); },
+  pressedMenuFulfill: () => { send('/mark/metrics/MenuDeposit'); },
   pressedMenuCashout: () => { send('/mark/metrics/MenuCashout'); },
   pressedModalTournamentNoMoney: () => { send('/mark/metrics/ModalTournamentNoMoney'); },
   pressedModalPackNoMoney: () => { send('/mark/metrics/ModalPackNoMoney'); },

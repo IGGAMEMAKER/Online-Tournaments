@@ -2,6 +2,10 @@ export default {
   parameter(name) {
     var params = {};
 
+    // setInterval(() => {
+      // console.log('Location', window.location, location.href);
+    // }, 2000);
+
     if (location.search) {
       var parts = location.search.substring(1).split('&');
 
@@ -12,6 +16,7 @@ export default {
       }
     }
 
+    // console.log(params);
     return params[name];
 
     // const url = location.pathName;

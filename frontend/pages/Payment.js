@@ -1,5 +1,6 @@
 import { h, render, Component } from 'preact';
 import Payment from '../components/Payments/index';
+import Layout from '../layouts/index';
 import query from '../helpers/queryParser';
 
 // const appElement: HTMLElement = document.getElementById('app');
@@ -22,6 +23,6 @@ const elements = (
 
 export default class PaymentPage extends Component {
   render() {
-    return elements;
+    return <Layout content={elements} nochat nofooter active="Payment" />;
   }
 }

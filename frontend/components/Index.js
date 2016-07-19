@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
+import Card from '../components/Shared/Card';
 
 type PropsType = {}
 
@@ -10,7 +11,7 @@ type ResponseType = {}
 
 export default class Index extends Component {
   state = {
-    copied: false,
+    copied: false
   };
 
   componentWillMount() {
@@ -35,6 +36,32 @@ export default class Index extends Component {
     this.setState({ copied: true });
   };
 
+  categoryButton = (url, onClick, text) => {
+    return (
+      <a
+        className="btn btn-primary btn-large btn-lg btn-fixed"
+        href={url}
+        onClick={onClick}
+      >{text ? text : 'Подробнее'}</a>
+    );
+  };
+
+  category = (title, info, color = 'green', button) => {
+    return (
+      <div className={`freeroll ctr ${color}`}>
+        <div className="white">
+          <h1 className="fadeText">{title}</h1>
+          <p>
+            {info.map(t => <div>{t}</div>)}
+          </p>
+          <center>
+            {button}
+          </center>
+        </div>
+      </div>
+    );
+  };
+
   render(props: PropsType, state: StateType) {
     const dailyFreeroll = (
       <div className="freeroll ctr green">
@@ -54,6 +81,67 @@ export default class Index extends Component {
       </div>
     );
 
+    // const freerolls = (
+    //   <div className="freeroll ctr green">
+    //     <div className="white">
+    //       <h1 className="fadeText">Турниры для новичков</h1>
+    //       <p>
+    //         <div>Каждый день в 20:00</div>
+    //       </p>
+    //       <center>
+    //         <a
+    //           className="btn btn-primary btn-large btn-lg btn-fixed"
+    //           href="/Tournaments#daily"
+    //         >Подробнее</a>
+    //       </center>
+    //     </div>
+    //   </div>
+    // );
+
+    const freerolls = this.category(
+      'Турниры для новичков',
+      ['Каждый день в 20:00'],
+      'green',
+      this.categoryButton(
+        '/',
+        () => { console.log('aa'); }
+      )
+    );
+
+    const eliteTournaments = this.category(
+      'Элитные турниры',
+      ['Самые крупные призы'],
+      'red',
+      this.categoryButton(
+        '/',
+        () => { console.log('aa'); }
+      )
+    );
+
+    const middleTournaments = this.category(
+      'Хардкорные турниры',
+      ['Крупные призы'],
+      'carrot',
+      this.categoryButton(
+        '/',
+        () => { console.log('aa'); }
+      )
+    );
+
+    // const eliteTournaments = (
+    //   <div className="freeroll ctr red">
+    //     <div className="white">
+    //       <h1 className="fadeText">Элитные турниры</h1>
+    //       <p>Самые крупные призы</p>
+    //       <center>
+    //         <a
+    //           className="btn btn-primary btn-large btn-lg btn-fixed"
+    //           href="/Tournaments#top"
+    //         >Участвовать </a>
+    //       </center>
+    //     </div>
+    //   </div>
+    // );
     const weeklyFreeroll = (
       <div className="freeroll ctr red">
         <div className="white">
@@ -93,7 +181,7 @@ export default class Index extends Component {
             </p>
             <div
               style={{
-                display: login ? 'block' : 'none',
+                display: login ? 'block' : 'none'
               }}
             >
               <center>
@@ -110,7 +198,7 @@ export default class Index extends Component {
                 >Скопировать ссылку</a>
                 <p
                   style={{
-                    display: state.copied ? 'block' : 'none',
+                    display: state.copied ? 'block' : 'none'
                   }}
                 >Ссылка скопирована</p>
               </center>
@@ -119,6 +207,11 @@ export default class Index extends Component {
         </div>
       </div>
     );
+
+    // <div id="WeeklyFreeroll" className="row" style="height: inherit;">{weeklyFreeroll}</div>
+    // <div id="Freeroll" className="row" style="height: inherit;">{dailyFreeroll}</div>
+
+    // <div className="row">{teamTab}</div>
 
     return (
       <div>
@@ -134,11 +227,11 @@ export default class Index extends Component {
             </li>
           </ul>
         </div>
-        <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-        </div>
-        <div id="WeeklyFreeroll" className="row" style="height: inherit;">{weeklyFreeroll}</div>
-        <div id="Freeroll" className="row" style="height: inherit;">{dailyFreeroll}</div>
-        <div className="row">{teamTab}</div>
+        <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
+        <Card content={freerolls} style="" />
+        <Card content={middleTournaments} style="" />
+        <Card content={eliteTournaments} style="" />
+        <div className="col-lg-12 offset-bg">{teamTab}</div>
       </div>
     );
   }

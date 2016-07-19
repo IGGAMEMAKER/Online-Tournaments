@@ -29,6 +29,7 @@
   top: 10px;
   content: 'РУБ';
   pointer-events: none;
+  color: #555;
 }
 .justify {
   text-align: justify;
@@ -131,7 +132,9 @@
 button{
   outline: none!important;
 }
-
+.padding {
+  padding: 0 15px;
+}
 .page {
   font-family: 'Courier New', 'Arial';
   font-style: italic;
@@ -141,6 +144,11 @@ button{
 
 .page.text-left {
   text-align: left;
+}
+
+.card-new {
+  width: 280px;
+  display: inline-block;
 }
 
 .modal-body {
@@ -789,6 +797,10 @@ button{
   display: block;
 }
 
+.list-item {
+
+}
+
 .contacts-tab {
   width: 50%;
   float: left;
@@ -1033,6 +1045,8 @@ a:focus {
   /*background-image: url(/img/logo.png) no-repeat center;*/
   /*background-image: url('/img/cardLayers/317350-blur-image-light.jpg');*/
   /*background-image: url("/images/20-banner.jpg");*/
+  min-height: 250px;
+  /*box-sizing: border-box;*/
   padding: 30px;
   background-position-x: 50%;
   background-position-y: 50%;

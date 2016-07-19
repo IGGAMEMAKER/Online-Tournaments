@@ -88,7 +88,7 @@ function watchdog() {
 	setInterval(() => {
 		// logger('initialize');
 		getAvailableTournaments();
-	}, 1000);
+	}, 4000);
 }
 
 // initialize();

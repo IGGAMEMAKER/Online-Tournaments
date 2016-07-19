@@ -1,17 +1,17 @@
 import { h, render, Component } from 'preact';
-import Router from 'preact-router';
+import { Router, Route, IndexRoute, browserHistory } from 'preact-router';
 
 const appElement: HTMLElement = document.getElementById('app');
 import * as Pages from './Pages';
-
+//     <Pages.Home default />
 const Routing = (): Component => (
-  <Router>
+  <Router history={browserHistory}>
     <Pages.Home path="/" />
     <Pages.Tournaments path="/Tournaments" />
     <Pages.Packs path="/Packs" />
     <Pages.Profile path="/Profile" />
     <Pages.About path="/About" />
-    <Pages.Home default />
+    <Pages.Payment path="/Payment" />
   </Router>
 );
 // <Pages.Tournaments path="/Tournaments" />

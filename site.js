@@ -420,6 +420,16 @@ var templateData = () => ({
   tournaments: realtime().tournaments
 });
 
+var markPaymentPageOpening = (req, res, next) => {
+  var ammount = req.query.ammount || null;
+  var type = req.query.buyType || null;
+
+  var login = getLogin(req);
+  Actions.add(login, 'Payment-page-opened', { ammount, type });
+
+  next();
+};
+
 var application_page = (req, res) => {
   res.render('index', { msg: templateData() })
 };
@@ -430,6 +440,8 @@ app.get('/Tournaments', application_page);
 app.get('/Packs', aux.authenticated, application_page);
 app.get('/MyCollections', aux.authenticated, application_page);
 app.get('/Cards', aux.authenticated, application_page);
+app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
+
 // app.get('/Payment', aux.authenticated, application_page);
 /*
 app.get('/', function (req, res) {
@@ -482,7 +494,7 @@ app.get('/Cards', aux.authenticated, function (req, res, next){
     })
     .catch(next);
 }, aux.render('Cards'), aux.err);
-*/
+
 app.get('/Payment', middlewares.authenticated, function (req, res) {
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
@@ -492,7 +504,7 @@ app.get('/Payment', middlewares.authenticated, function (req, res) {
 
   res.render('Payment', { ammount:ammount, type:type });
 });
-
+*/
 // packs + cards + realtime
 
 app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
