@@ -1,15 +1,13 @@
-import { h, render } from 'preact';
+import { h, render, Component } from 'preact';
 import Profile from '../components/Profile';
 import Layout from '../layouts/index';
-
-const appElement: HTMLElement = document.getElementById('app');
 
 const elements = (
   <Layout content={<Profile />} nochat active="Profile" />
 );
 
-render(
-  elements,
-  appElement.parentNode,
-  appElement
-);
+export default class ProfilePage extends Component {
+  render() {
+    return elements;
+  }
+}

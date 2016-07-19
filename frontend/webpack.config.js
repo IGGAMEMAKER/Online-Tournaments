@@ -8,23 +8,24 @@ const currentDir = __dirname;
 const JS_DIST_DIR = `${currentDir}/public/`;
 const ESLINT_CONFIG_FILE = __dirname + '/.eslintrc';
 
-const app = 'pages/'; //pages root${
+const pages = 'pages/'; //pages root${
 const games = 'pages/Games'; //pages root${
 
 module.exports = [{
   name: 'react',
   entry: {
-    app: './app.src.js',
-    Teams: `./${app}/Team.js`,
-    Index: `./${app}/Index.js`,
-    Packs: `./${app}/Pack.js`,
-    Profile: `./${app}/Profile.js`,
-    Tournaments: `./${app}/Tournaments.js`,
-    payments: `./${app}/Payment.js`,
-    'admin-tournaments': `./${app}/Admin.js`,
-    // total: `./${app}/TotalTest.js`,
-    Modal: `./${app}/Modal.js`,
-    Football: `./${games}/Football.js`,
+    // app: './app.src.js',
+    app: `./${pages}/index.js`,
+    // Teams: `./${pages}/Team.js`,
+    // Index: `./${pages}/Index.js`,
+    // Packs: `./${pages}/Pack.js`,
+    // Profile: `./${pages}/Profile.js`,
+    // Tournaments: `./${pages}/Tournaments.js`,
+    // payments: `./${pages}/Payment.js`,
+    'admin-tournaments': `./${pages}/Admin.js`,
+    // total: `./${pages}/TotalTest.js`,
+    Modal: `./${pages}/Modal.js`,
+    Football: `./${games}/Football.js`
   },
   output: {
     // filename: 'app.js',
@@ -69,7 +70,8 @@ module.exports = [{
   plugins: [
     new LiveReloadPlugin({
       port: 35729
-    })
+    }),
+    // new webpack.optimize.UglifyJsPlugin({minimize: true})
   ],
   // eslint: {
   //   configFile: ESLINT_CONFIG_FILE

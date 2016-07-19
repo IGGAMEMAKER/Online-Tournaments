@@ -134,7 +134,11 @@ function update() {
 export default {
   initialize,
   update,
-
+  report(err, where) {
+    request
+      .post('/mark/clientError')
+      .send({ err, where });
+  },
   async register(tournamentID, buyIn) {
     try {
       const response = await request.post('RegisterInTournament').send({ login, tournamentID });

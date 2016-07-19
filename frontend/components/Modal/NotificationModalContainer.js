@@ -233,10 +233,12 @@ export default class NotificationModalContainer extends Component {
           break;
         default:
           console.warn('no such modal type', message.type);
+          actions.report(`no such modal type ${message.type}`, 'NotificationModalContainer');
           break;
       }
     } catch (e) {
       console.error('error in modals', e);
+      actions.report(e, 'NotificationModalContainer switch');
     }
     return { header, body, footer, invisible };
   };
@@ -245,14 +247,13 @@ export default class NotificationModalContainer extends Component {
     this.setState({ visible: true });
   }
 
-  render(props:PropsType, state: StateType) {
+  render(props: PropsType, state: StateType) {
     const message = props.message;
     const data = message.data || {};
     const messageID = message["_id"] || 0;
 
     const modalData = this.getModalData(message, data, messageID);
     const drawData = Object.assign({}, modalData, { count: props.count, messageID });
-    // console.log('draw notification modal container', drawData);
 
     return <Modal data={drawData} hide={!state.visible} onClose={this.hide} />;
   }

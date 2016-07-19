@@ -14,7 +14,7 @@ type StateType = {
 
 export default class Menu extends Component {
   state = {
-    loaded: false,
+    loaded: false
   };
 
   componentWillMount() {
@@ -22,7 +22,7 @@ export default class Menu extends Component {
       // console.warn('callback in store');
       this.setState({
         money: store.getMoney(),
-        loaded: true,
+        loaded: true
       });
     });
   }
@@ -72,7 +72,7 @@ export default class Menu extends Component {
                 <ul className="nav navbar-nav">
                   <li><a href="/" className={`${menuIndex}`}>Онлайн Турниры</a></li>
                   <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
-                  <li><a href="/profile" className={menuProfile}>Профиль</a></li>
+                  <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
                   <li><a href="/about" className={menuAbout}> О нас</a></li>
                   {loginMenu}
                 </ul>

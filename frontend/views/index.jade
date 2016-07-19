@@ -190,7 +190,13 @@ block content
 		//+freerollWeekly()
 		//+createTeam()
 		#app
-		script(src="/output/Index.js")
+		//script(src="/output/Index.js")
+		script.
+			console.log('packs incoming...');
+			// var msg = !{JSON.stringify(msg)}
+			// console.log(msg);
+			var PACKS = [];
+		script(src="/output/app.js")
 		//ul(class="list-group")
 			li(class="list-group-item")
 				//a(href="invite" target="_blank")

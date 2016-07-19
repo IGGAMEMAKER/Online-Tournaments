@@ -1,15 +1,9 @@
-import { h, render } from 'preact';
+import { h, render, Component } from 'preact';
 import Tournaments from '../components/Tournaments';
 import Layout from '../layouts/index';
 
-const appElement: HTMLElement = document.getElementById('app');
-
-const elements = (
-  <Layout content={<Tournaments />} chat active="Tournaments" />
-);
-
-render(
-  elements,
-  appElement.parentNode,
-  appElement
-);
+export default class TournamentPage extends Component {
+  render() {
+    return <Layout content={<Tournaments />} chat active="Tournaments" />
+  }
+}

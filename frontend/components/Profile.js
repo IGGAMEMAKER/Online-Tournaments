@@ -44,7 +44,7 @@ export default class Profile extends Component {
   };
 
   getTournamentRegs = (state: StateType) => {
-    console.log(state);
+    // console.log(state);
     const registeredIn = state.registeredIn;
 
     if (!registeredIn.length) {
@@ -95,7 +95,7 @@ export default class Profile extends Component {
 
   render(props: PropsType, state: StateType) {
     const tournaments = this.getTournamentRegs(state);
-
+    const email = '';
     // <h3 class="mg-clear">Профиль</h3>
     const profileInfo = (
       <div class="panel">

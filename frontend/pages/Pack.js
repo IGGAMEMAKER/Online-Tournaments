@@ -1,15 +1,9 @@
-import { h, render } from 'preact';
-import PackPage from '../components/PackPage';
+import { h, render, Component } from 'preact';
+import Packs from '../components/PackPage';
 import Layout from '../layouts/index';
 
-const appElement: HTMLElement = document.getElementById('app');
-
-const elements = (
-  <Layout content={<PackPage />} nochat active="Packs" />
-);
-
-render(
-  elements,
-  appElement.parentNode,
-  appElement
-);
+export default class PackPage extends Component {
+  render() {
+    return <Layout content={<Packs />} nochat active="Packs" />
+  }
+}

@@ -69,6 +69,7 @@
     "webpack-livereload-plugin": "^0.8.1"
   },
   "dependencies": {
+    "preact-router": "^2.0.0",
     "socket.io-client": "^1.4.6"
   }
 }

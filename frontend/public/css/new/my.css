@@ -30,6 +30,34 @@
   content: 'РУБ';
   pointer-events: none;
 }
+.column {
+  padding: 10px 0;
+  background-color: rgba(255, 0, 0, 0.25);
+  text-align: center;
+
+  border: 1px solid rgba(255,255,255,0.25);
+  background-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+}
+.glossy-layout {
+  /*background: #ebe9f9;*/
+  /*background: -moz-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%);*/
+  /*background: -webkit-gradient(left top, left bottom, color-stop(0%, #ebe9f9), color-stop(50%, #d8d0ef), color-stop(51%, #cec7ec), color-stop(100%, #c1bfea));*/
+  /*background: -webkit-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%);*/
+  /*background: -o-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%);*/
+  /*background: -ms-linear-gradient(top, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%);*/
+  /*background: linear-gradient(to bottom, #ebe9f9 0%, #d8d0ef 50%, #cec7ec 51%, #c1bfea 100%);*/
+  /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebe9f9', endColorstr='#c1bfea', GradientType=0 );*/
+
+  background: rgba(235,233,249,1);
+  background: -moz-linear-gradient(top, rgba(235,233,249,1) 0%, rgba(216,208,239,0.78) 50%, rgba(206,199,236,0.77) 52%, rgba(193,191,234,0.55) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(235,233,249,1)), color-stop(50%, rgba(216,208,239,0.78)), color-stop(52%, rgba(206,199,236,0.77)), color-stop(100%, rgba(193,191,234,0.55)));
+  background: -webkit-linear-gradient(top, rgba(235,233,249,1) 0%, rgba(216,208,239,0.78) 50%, rgba(206,199,236,0.77) 52%, rgba(193,191,234,0.55) 100%);
+  background: -o-linear-gradient(top, rgba(235,233,249,1) 0%, rgba(216,208,239,0.78) 50%, rgba(206,199,236,0.77) 52%, rgba(193,191,234,0.55) 100%);
+  background: -ms-linear-gradient(top, rgba(235,233,249,1) 0%, rgba(216,208,239,0.78) 50%, rgba(206,199,236,0.77) 52%, rgba(193,191,234,0.55) 100%);
+  background: linear-gradient(to bottom, rgba(235,233,249,1) 0%, rgba(216,208,239,0.78) 50%, rgba(206,199,236,0.77) 52%, rgba(193,191,234,0.55) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ebe9f9', endColorstr='#c1bfea', GradientType=0 );
+}
 
 .pointer {
   cursor: pointer;

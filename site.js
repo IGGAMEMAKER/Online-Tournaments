@@ -417,6 +417,67 @@ app.get('/Football', function (req, res) {
   res.render('Football');
 });
 
+app.get('/Packs', aux.authenticated, function (req, res, next){
+  req.data = {
+    collections: realtime().collections,
+    cards: realtime().cards,
+    packs: realtime().userpacks()
+  };
+  next();
+}, aux.render('Packs'), aux.err);
+
+
+app.get('/MyCollections', aux.authenticated, function (req, res, next) {
+  // var login = aux.getLogin(req);
+  var login = req.login;
+  Gifts.user.cardsGroup(login)
+    .then(function (cards){
+      req.data = {
+        collections: realtime().collections,
+        cards: realtime().cards,
+        packs: realtime().userpacks(),
+        usercards: cards||[]
+      };
+      next();
+    })
+    .catch(next)
+}, aux.render('MyCollections'), aux.err)
+
+app.get('/Cards', aux.authenticated, function (req, res, next){
+  // var login = aux.getLogin(req);
+  var login = req.login;
+  Gifts.user.cardsGroup(login)
+    .then(function (cards){
+      // console.log(cards);
+      req.data = {
+        collections: realtime().collections,
+        cards: realtime().cards,
+        usercards: cards||[]
+      }
+      next();
+    })
+    .catch(next);
+}, aux.render('Cards'), aux.err);
+
+app.get('/', function (req, res) {
+  res.render('index');
+});
+
+app.get('/Tournaments', function (req, res){
+  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
+  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
+});
+
+app.get('/Payment', middlewares.authenticated, function (req, res){
+  var ammount = req.query.ammount || null;
+  var type = req.query.buyType || null;
+
+  var login = getLogin(req);
+  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type })
+
+  res.render('Payment', { ammount:ammount, type:type });
+});
+
 // packs + cards + realtime
 
 app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
@@ -476,48 +537,6 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   })
 });
 
-app.get('/Packs', aux.authenticated, function (req, res, next){
-  req.data = {
-    collections: realtime().collections,
-    cards: realtime().cards,
-    packs: realtime().userpacks()
-  };
-  next();
-
-}, aux.render('Packs'), aux.err);
-
-app.get('/MyCollections', aux.authenticated, function (req, res, next) {
-  // var login = aux.getLogin(req);
-  var login = req.login;
-  Gifts.user.cardsGroup(login)
-  .then(function (cards){
-    req.data = {
-      collections: realtime().collections,
-      cards: realtime().cards,
-      packs: realtime().userpacks(),
-      usercards: cards||[]
-    };
-    next();
-  })
-  .catch(next)
-}, aux.render('MyCollections'), aux.err)
-
-app.get('/Cards', aux.authenticated, function (req, res, next){
-  // var login = aux.getLogin(req);
-  var login = req.login;
-  Gifts.user.cardsGroup(login)
-  .then(function (cards){
-    // console.log(cards);
-    req.data = {
-      collections: realtime().collections,
-      cards: realtime().cards,
-      usercards: cards||[]
-    }
-    next();
-  })
-  .catch(next);
-}, aux.render('Cards'), aux.err);
-
 app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
   var login = req.params.login;
   var count = parseInt(req.params.count);
@@ -565,15 +584,6 @@ function JSLog(msg, topic){
 
 app.get('/Alive', function (req, res){ res.render('Alive'); })
 app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
-
-app.get('/', function (req, res) {
-  res.render('index');
-});
-
-app.get('/Tournaments', function (req, res){
-  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
-  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
-});
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var login = getLogin(req);
@@ -706,10 +716,10 @@ app.post('/tellToFinishTournament', function (req, res){
  
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
 
-  aux.system('tellToFinishTournament', {tournamentID: tournamentID })
+  aux.system('tellToFinishTournament', { tournamentID });
   // Actions.add('SYSTEM' ,'stopTournament', { tournamentID:tournamentID });
 
-  Send('FinishTournament', { tournamentID : data.tournamentID, data:data })
+  Send('FinishTournament', { tournamentID, data })
 });
 
 app.get('/Tell', isAdmin, function (req, res){
@@ -748,7 +758,7 @@ app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
   } else {
     cancel(res);
   }
-})
+});
 
 function forceTakingNews(login, delay){
   setTimeout(function() {
@@ -756,17 +766,16 @@ function forceTakingNews(login, delay){
   }, delay||0);
 }
 
-app.post('/autoreg', function (req, res){
+app.post('/autoreg', function (req, res) {
   Tournaments.getStreamID()
   .then(function (streamID){
-    if (isAuthenticated(req) && streamID){
+    if (isAuthenticated(req) && streamID) {
       var login = getLogin(req);
       
       var data = {
-        login: login,
+        login,
         tournamentID:streamID
-      }
-      // console.log('autoreg', data);
+      };
       // AsyncRender('DBServer', 'autoreg', res, null,  data);
       sender.sendRequest('autoreg', data, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
         if (err){
@@ -901,16 +910,6 @@ app.post('/Winners', function (req, res){
   Send('winners', {winners:winners, tournamentID:tournamentID});
 });
 
-app.get('/Payment', middlewares.authenticated, function (req, res){
-  var ammount = req.query.ammount || null;
-  var type = req.query.buyType || null;
-
-  var login = getLogin(req);
-  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type })
-
-  res.render('Payment', { ammount:ammount, type:type });
-});
-
 var json2csv = require('json2csv');
 
 //app.get('/getCSV', middlewares.isAdmin, function())
@@ -922,7 +921,7 @@ app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
     Users.update_auth_links(users)
   })
   .catch(next)
-}, aux.raw, aux.err)
+}, aux.raw, aux.err);
 
 var domainName = configs.gameHost || 'localhost';
 

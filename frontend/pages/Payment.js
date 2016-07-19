@@ -1,12 +1,11 @@
-/**
- * Created by gaginho on 04.06.16.
- */
-import { h, render } from 'preact';
+import { h, render, Component } from 'preact';
 import Payment from '../components/Payments/index';
+import query from '../helpers/queryParser';
 
-const appElement: HTMLElement = document.getElementById('app');
-const url = location;
-const captured = /ammount=([^&]+)/.exec(url)[1]; // Value is in [1] ('384' in our case)
+// const appElement: HTMLElement = document.getElementById('app');
+// const url = location;
+// const captured = /ammount=([^&]+)/.exec(url)[1]; // Value is in [1] ('384' in our case)
+const captured = query.parameter('ammount');
 const ammount = captured ? captured : 100;
 
 const elements = (
@@ -15,8 +14,14 @@ const elements = (
   </center>
 );
 
-render(
-  elements,
-  appElement.parentNode,
-  appElement
-);
+// render(
+//   elements,
+//   appElement.parentNode,
+//   appElement
+// );
+
+export default class PaymentPage extends Component {
+  render() {
+    return elements;
+  }
+}
