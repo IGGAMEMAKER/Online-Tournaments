@@ -56,7 +56,12 @@ const Routing = (): Component => (
     history={browserHistory}
   >
     <Pages.Home path="/" />
+
     <Pages.Tournaments path="/Tournaments" />
+    <Pages.Frees path="/Frees" />
+    <Pages.Elite path="/Elite" />
+    <Pages.Crowd path="/Crowd" />
+
     <Pages.Packs path="/Packs" />
     <Pages.Profile path="/Profile" />
     <Pages.About path="/About" />

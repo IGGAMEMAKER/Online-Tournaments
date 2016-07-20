@@ -60,7 +60,12 @@ const constants = {
 
   TREG_NO_MONEY: 'TREG_NO_MONEY',
   TREG_FULL: 'TREG_FULL',
-  TREG_ALREADY: 'Registered'
+  TREG_ALREADY: 'Registered',
+
+  TOURNAMENT_FILTER_FREE: 1,
+  TOURNAMENT_FILTER_CROWD: 2,
+  TOURNAMENT_FILTER_ELITE: 3
+
 };
 
 module.exports = constants;

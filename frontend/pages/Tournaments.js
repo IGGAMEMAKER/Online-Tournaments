@@ -3,7 +3,8 @@ import Tournaments from '../components/Tournaments';
 import Layout from '../layouts/index';
 
 export default class TournamentPage extends Component {
-  render() {
-    return <Layout content={<Tournaments />} chat active="Tournaments" />
+  render(props) {
+    
+    return <Layout content={<Tournaments filter={props.filter || 0} />} chat active="Tournaments" />
   }
 }

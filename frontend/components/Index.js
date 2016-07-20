@@ -3,6 +3,8 @@ import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 import Card from '../components/Shared/Card';
 
+import constants from '../constants/constants';
+
 type PropsType = {}
 
 type StateType = {}
@@ -103,7 +105,7 @@ export default class Index extends Component {
       ['Каждый день в 20:00'],
       'green',
       this.categoryButton(
-        '/',
+        `/Frees`,
         () => { console.log('aa'); }
       )
     );
@@ -113,7 +115,7 @@ export default class Index extends Component {
       ['Самые крупные призы'],
       'red',
       this.categoryButton(
-        '/',
+        `/Elite`,
         () => { console.log('aa'); }
       )
     );
@@ -123,7 +125,7 @@ export default class Index extends Component {
       ['Крупные призы'],
       'carrot',
       this.categoryButton(
-        '/',
+        `/Crowd`,
         () => { console.log('aa'); }
       )
     );

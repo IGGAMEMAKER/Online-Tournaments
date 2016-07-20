@@ -3,6 +3,7 @@
  */
 import { h, Component } from 'preact';
 import { isToday, isTomorrow } from '../helpers/date';
+import constants from '../constants/constants';
 import { TournamentType } from './types';
 
 import Tournament from './Tournaments/tournament';
@@ -15,7 +16,9 @@ type StateType = {
   selected: number,
 };
 
-type PropsType = {};
+type PropsType = {
+  filter: number,
+};
 
 type ProfileData = {
   tournaments: Object,
@@ -34,7 +37,7 @@ export default class Tournaments extends Component {
     registeredIn: {},
     options: {},
     value: store.getTestValue(),
-    selected: 0,
+    selected: 0
   };
 
   componentWillMount() {
@@ -44,7 +47,7 @@ export default class Tournaments extends Component {
         money: store.getMoney(),
         value: store.getTestValue(),
         registeredIn: store.getMyTournaments(),
-        tournaments: store.getAvailableTournaments(),
+        tournaments: store.getAvailableTournaments()
       });
     });
 
@@ -167,9 +170,6 @@ export default class Tournaments extends Component {
     // <h2 className="page">Бесплатные турниры</h2>
     // <div className="row killPaddings nomargins">{FreeTournaments}</div>
 
-    // if (!tourns.length) {
-    //   return <h1>AZAZAZA</h1>;
-    // }
     const authButton = (
       <a
         href="/Login"
@@ -178,23 +178,56 @@ export default class Tournaments extends Component {
       >Авторизуйтесь, чтобы сыграть!</a>
     );
 
-    /*
 
+     // <hr colour="white" width="60%" align="center" />
 
-     <hr colour="white" width="60%" align="center" />
-     */
+    let tournaments;
+
+    console.log('props.filter', props.filter);
+    if (!props.filter) {
+      tournaments = (
+        <div>
+          {RegularTournaments}
+
+          {TodayTournaments}
+
+          {TomorrowTournaments}
+
+          {RichestTournaments}
+        </div>
+      );
+    }
+
+    if (props.filter === constants.TOURNAMENT_FILTER_FREE) {
+      const frees = this.filter(tourns, freeF, 'Бесплатные турниры');
+      tournaments = (
+        <div>
+          {frees}
+        </div>
+      );
+    }
+
+    if (props.filter === constants.TOURNAMENT_FILTER_ELITE) {
+      tournaments = (
+        <div>
+          {RichestTournaments}
+        </div>
+      );
+    }
+
+    if (props.filter === constants.TOURNAMENT_FILTER_CROWD) {
+      tournaments = (
+        <div>
+          {RichestTournaments}
+        </div>
+      );
+    }
 
     return (
       <div>
         {authButton}
 
-        {RegularTournaments}
-
-        {TodayTournaments}
-
-        {TomorrowTournaments}
-
-        {RichestTournaments}
+        {tournaments}
       </div>
     );
   }
