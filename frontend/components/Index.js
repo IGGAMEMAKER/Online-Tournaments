@@ -122,7 +122,7 @@ export default class Index extends Component {
 
     const middleTournaments = this.category(
       'Хардкорные турниры',
-      ['Самые крупные призы'],
+      ['Самые крупные призы', 'Низкая стоимость участия'],
       'carrot',
       this.categoryButton(
         `/Crowd`,

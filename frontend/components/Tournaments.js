@@ -207,17 +207,19 @@ export default class Tournaments extends Component {
     }
 
     if (props.filter === constants.TOURNAMENT_FILTER_ELITE) {
+      const elites = this.filter(tourns, t => (t.buyIn >= 100), 'Элитные турниры');
       tournaments = (
         <div>
-          {RichestTournaments}
+          {elites}
         </div>
       );
     }
 
     if (props.filter === constants.TOURNAMENT_FILTER_CROWD) {
+      const crowds = this.filter(tourns, t => (t.goNext[0] >= 10), 'Большие турниры');
       tournaments = (
         <div>
-          {RichestTournaments}
+          {crowds}
         </div>
       );
     }

@@ -172,7 +172,7 @@ export default class Tournament extends Component {
       playerCount = `${props.data.players}/${props.data.goNext[0]}`;
     }
 
-    const cost = buyIn === 0 ? 'БЕСПЛАТНО' : `Всего за ${buyIn} руб`;
+    const cost = buyIn === 0 ? 'БЕСПЛАТНО' : `Стоимость: ${buyIn} руб`;
     const cover = (
       <div className="cover" onClick={() => props.onSelected(id)}>
         <div className="tournament-cover">
