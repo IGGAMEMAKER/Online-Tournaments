@@ -6,6 +6,8 @@ import { isToday, isTomorrow } from '../helpers/date';
 import constants from '../constants/constants';
 import { TournamentType } from './types';
 
+import tournamentTypeChecker from '../helpers/tournamentTypeChecker';
+
 import Tournament from './Tournaments/tournament';
 
 import store from '../stores/ProfileStore';
@@ -105,21 +107,11 @@ export default class Tournaments extends Component {
   };
 
   render(props: PropsType, state: StateType) {
-    // const state: StateType = this.state;
-    // const tourns: Array<TournamentType> = TOURNAMENTS;
-
-    // console.log('render TOURNAMENTS');
-    // console.log(TOURNAMENTS);
-    // console.log(state.tournaments);
     const tourns: Array<TournamentType> = state.tournaments;
-    const REGULARITY_REGULAR = 1;
 
-    const todayF = (t: TournamentType) => t.startDate && isToday(t.startDate);
-    const tommorrowF = (t: TournamentType) => t.startDate && isTomorrow(t.startDate);
-    const regularF = (t: TournamentType) =>
-    t.settings && t.settings.regularity === REGULARITY_REGULAR;
-    const freeF = (t: TournamentType) => t.buyIn === 0;
-    const streamF = (t: TournamentType) => t.settings.regularity === 2;
+    const todayF = tournamentTypeChecker.willRunToday;
+    const tommorrowF = tournamentTypeChecker.willRunTomorrow;
+    const regularF = tournamentTypeChecker.isRegularTournament;
 
     const richest = tourns
       .filter(t => !isNaN(t.Prizes[0]))
@@ -148,21 +140,6 @@ export default class Tournaments extends Component {
      <div className="row killPaddings nomargins">{RichestList}</div>
      */
     // const auth = login ? '' : <a href="/Login" className="btn btn-success">Авторизуйтесь, чтобы сыграть!</a>;
-    /*
-     <Modal show>
-     <Modal.Header closeButton>
-     <Modal.Title>Modal heading</Modal.Title>
-     </Modal.Header>
-     <Modal.Body>
-     <h4>Text in a modal</h4>
-     </Modal.Body>
-     <Modal.Footer>
-     <button onClick={this.close}>Close</button>
-     </Modal.Footer>
-     </Modal>
-        <h2 className="page">all</h2>
-        <div className="row killPaddings nomargins">{all}</div>
-     */
     //     <TestComponent />
     //         <h2 className="page">Стримовые</h2>
     // <div className="row killPaddings nomargins">{StreamTournaments}</div>
@@ -179,7 +156,7 @@ export default class Tournaments extends Component {
     );
 
 
-     // <hr colour="white" width="60%" align="center" />
+    // <hr colour="white" width="60%" align="center" />
 
     let tournaments;
 
@@ -198,7 +175,7 @@ export default class Tournaments extends Component {
     }
 
     if (props.filter === constants.TOURNAMENT_FILTER_FREE) {
-      const frees = this.filter(tourns, freeF, 'Бесплатные турниры');
+      const frees = this.filter(tourns, tournamentTypeChecker.isFreeTournament, 'Бесплатные турниры');
       tournaments = (
         <div>
           {frees}
@@ -207,7 +184,7 @@ export default class Tournaments extends Component {
     }
 
     if (props.filter === constants.TOURNAMENT_FILTER_ELITE) {
-      const elites = this.filter(tourns, t => (t.buyIn >= 100), 'Элитные турниры');
+      const elites = this.filter(tourns, tournamentTypeChecker.isEliteTournament, 'Элитные турниры');
       tournaments = (
         <div>
           {elites}
@@ -216,7 +193,7 @@ export default class Tournaments extends Component {
     }
 
     if (props.filter === constants.TOURNAMENT_FILTER_CROWD) {
-      const crowds = this.filter(tourns, t => (t.goNext[0] >= 10), 'Большие турниры');
+      const crowds = this.filter(tourns, tournamentTypeChecker.isCrowdTournament, 'Большие турниры');
       tournaments = (
         <div>
           {crowds}
