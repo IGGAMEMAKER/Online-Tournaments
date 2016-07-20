@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
 import AdvancedCard from './AdvancedCard';
+import { Link } from 'preact-router';
 
 type PropsType = {}
 
@@ -52,16 +53,28 @@ export default class Footer extends Component {
 
   getfooterLink = (link, text = 'Перейти', blank) => {
         // className="btn btn-primary btn-large btn-lg btn-fixed"
+    return <Link href={link} >{text}</Link>;
     return (
-      <a className="btn btn-primary btn-large btn-lg btn-fixed offset" href={link} target={blank ? '_blank' : ''} >{text}</a>
+      <a
+        className="footer-link"
+        href={link}
+        target={blank ? '_blank' : ''}
+      >{text}</a>
     );
   };
 
   render(props: PropsType, state: StateType) {
     let chat = '';
+
     if (state.loaded && state.messages.length) {
       const m = state.messages[state.messages.length - 1];
-      chat = <a href="#chat" className="text-center">{m.sender || 'Гость'}: {m.text}</a>;
+
+      chat = (
+        <div className="text-center">
+          ЧАТ - &nbsp;
+          {m.sender || 'Гость'}: {m.text}
+        </div>
+      );
     }
     //
     // <li>
@@ -152,9 +165,11 @@ export default class Footer extends Component {
 
     // <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
     const contacts = (
-      <div className="white page">
+      <div className="white">
         {groupButton}
+        <div className="footer-divider">|</div>
         {supportButton}
+        <div className="footer-divider">|</div>
         {aboutButton}
       </div>
       // <div className="center offset-lg">
@@ -176,16 +191,16 @@ export default class Footer extends Component {
     //   </div>
     // );
 
+    // const chatClassName = "navbar navbar-inverse navbar-fixed-bottom chat"; // "chat-tab"
+    const chatClassName = "chat-tab";
     return (
-      <div className="offset padding">
+      <div className="padding">
         {contacts}
-        <nav className="navbar navbar-inverse navbar-fixed-bottom chat" role="navigation">
+        <div className={chatClassName} role="navigation">
           <div className="container-fluid">
-            <div className="navbar-header">
-              <p id="activity">{chat}</p>
-            </div>
+            <a href="/Chat" id="activity" style="text-decoration: none;">{chat}</a>
           </div>
-        </nav>
+        </div>
       </div>
     );
   }

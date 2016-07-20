@@ -806,6 +806,45 @@ button{
   float: left;
 }
 
+.footer-link {
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+.footer-link:hover {
+  text-decoration: none;
+}
+
+.chat-tab {
+  position: fixed;
+  bottom: 0;
+  /*min-height: 30px;*/
+  height: 30px;
+  overflow: hidden;
+  background-color: #111111;
+  /*background-color: blue;*/
+  /*background-color: #3498db;*/
+  /*background-color: darkgray;*/
+  left: 0;
+  right: 0;
+  color: white;
+  z-index: 100;
+  padding-top: 5px;
+  /*margin-top: 3px;*/
+}
+
+.chat-tab:hover {
+  /*color: black;*/
+  background-color: #2b2d2f;
+}
+
+.footer-divider {
+  color: white;
+  height: 15px;
+  margin: 0 10px;
+  display: inline-block;
+}
+
 .navbar.chat {
   height: 30px;
   min-height: 30px;
@@ -1041,6 +1080,52 @@ a:focus {
 .height-fix {
   height: auto;
   overflow: hidden;
+}
+
+.glass {
+  /*box-shadow:*/
+    /*0 2px 8px rgba(0,0,0,0.5), !* Exterior Shadow *!*/
+    /*inset 0 1px rgba(255,255,255,0.3), !* Top light Line *!*/
+    /*inset 0 10px rgba(255,255,255,0.2), !* Top Light Shadow *!*/
+    /*inset 0 10px 20px rgba(255,255,255,0.25), !* Sides Light Shadow *!*/
+    /*inset 0 -15px 30px rgba(0,0,0,0.3); !* Dark Background *!*/
+  /*text-align: center;*/
+  /*background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0) 100%);*/
+  /*width: 100%;*/
+  /*box-shadow: 0 0 25px rgba(0, 0, 0, 0.1), inset 0 0 1px rgba(255, 255, 255, 0.6);*/
+  /*font-family: Helvetica, arial, serif;*/
+  /*color:#fff;*/
+  /*text-align:center;*/
+  /*font-size:30px;*/
+  /*cursor: pointer;*/
+  /*text-decoration: none;*/
+  /*padding:10px;*/
+  /*border: 1px solid rgba(0,0,0,0.5);*/
+  /*border-bottom: 3px solid rgba(0,0,0,0.5);*/
+  /*border-radius: 3px;*/
+  /*-moz-border-radius: 3px;*/
+  /*-webkit-border-radius: 3px;*/
+
+  /*box-shadow:*/
+          /*0 2px 8px rgba(0,0,0,0.5), !* Exterior Shadow *!*/
+          /*inset 0 1px rgba(255,255,255,0.3), !* Top light Line *!*/
+          /*inset 0 10px rgba(255,255,255,0.2), !* Top Light Shadow *!*/
+          /*inset 0 10px 20px rgba(255,255,255,0.25), !* Sides Light Shadow *!*/
+          /*inset 0 -15px 30px rgba(0,0,0,0.3); !* Dark Background *!*/
+
+  /*-webkit-box-shadow:*/
+          /*0 2px 8px rgba(0,0,0,0.5),*/
+          /*inset 0 1px rgba(255,255,255,0.3),*/
+          /*inset 0 10px rgba(255,255,255,0.2),*/
+          /*inset 0 10px 20px rgba(255,255,255,0.25),*/
+          /*inset 0 -15px 30px rgba(0,0,0,0.3);*/
+
+  /*-moz-box-shadow:*/
+          /*0 2px 8px rgba(0,0,0,0.5),*/
+          /*inset 0 1px rgba(255,255,255,0.3),*/
+          /*inset 0 10px rgba(255,255,255,0.2),*/
+          /*inset 0 10px 20px rgba(255,255,255,0.25),*/
+          /*inset 0 -15px 30px rgba(0,0,0,0.3);*/
 }
 .freeroll {
   /*height: 100%;*/

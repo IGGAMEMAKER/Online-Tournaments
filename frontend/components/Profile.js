@@ -3,6 +3,7 @@ import store from "../stores/ProfileStore";
 import actions from "../actions/ProfileActions";
 import Card from '../components/Shared/Card';
 import AdvancedCard from '../components/Shared/AdvancedCard';
+import autoscroller from '../helpers/autoscroll';
 
 type PropsType = {}
 
@@ -35,6 +36,15 @@ export default class Profile extends Component {
     });
 
     actions.initialize();
+  }
+
+  componentDidUpdate() {
+    console.log('update componentDidUpdate');
+    setTimeout(() => {
+      console.log('upd');
+      // window.scrollTo(0, 0);
+      autoscroller.autoscroll();
+    });
   }
 
   onDepositInput = () => {

@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
 import stats from '../../helpers/stats';
 // import actions from '../../actions/ProfileActions';
+import Link from './Link';
 
 type PropsType = {
   active: string,
@@ -64,6 +65,11 @@ export default class Menu extends Component {
       </center>
     );
 
+    // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+
+    // <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
+    // <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+    // <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
     const standardNav = (
       <div style="margin: auto;">
         <div className="navbar-header">
@@ -82,10 +88,9 @@ export default class Menu extends Component {
         </div>
         <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
           <ul className="nav navbar-nav">
-            <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
-            <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
-            <li><a href="/Packs" className={menuPacks}>Призы</a></li>
-            <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
+            <li><Link href="/" className={`${menuIndex}`} text="Главная" /></li>
+            <li><Link href="/Tournaments" className={menuTournaments} text="Турниры" /></li>
+            <li><Link href="/Profile" className={menuProfile} text="Профиль" /></li>
             {loginMenu}
           </ul>
         </div>
@@ -106,6 +111,19 @@ export default class Menu extends Component {
 
     return previous;
 
+    return (
+      <nav className="navbar navbar-inverse navbar-fixed-top chat" role="navigation">
+        <div className="container-fluid">
+          <ul className="nav navbar-nav">
+            <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
+            <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
+            <li><a href="/Packs" className={menuPacks}>Призы</a></li>
+            <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
+            {loginMenu}
+          </ul>
+        </div>
+      </nav>
+    );
     return (
       <center>
         <div className="container-fluid">

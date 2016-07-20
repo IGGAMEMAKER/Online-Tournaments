@@ -4,6 +4,6 @@ import Layout from '../layouts/index';
 
 export default class Home extends Component {
     render() {
-        return <Layout content={<Index />} nochat nofooter active="Index" />
+        return <Layout content={<Index />} nochat active="Index" />
     }
 }

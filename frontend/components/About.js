@@ -1,4 +1,6 @@
 import { h, Component } from 'preact';
+import autoscroller from '../helpers/autoscroll';
+import actions from '../actions/ProfileActions';
 
 type PropsType = {}
 
@@ -9,9 +11,53 @@ type ResponseType = {}
 export default class About extends Component {
   state = {};
 
-  componentWillMount() {}
+  componentWillMount() {
+    console.log('update componentWillMount');
+    // setInterval(() => {
+    //   console.log('upd');
+    //   window.scrollTo(0, 0);
+    // }, 3000);
+    actions.initialize();
+    // actions.loadNews();
+    // actions.loadChatMessages();
+  }
+
+  componentDidUpdate() {
+    console.log('update componentDidUpdate');
+    setTimeout(() => {
+      console.log('upd');
+      // window.scrollTo(0, 0);
+      autoscroller.autoscroll();
+    });
+  }
+
+  // componentDidMount() {
+  //   console.log('update componentDidMount');
+  // }
+  // componentWillUnmount() {
+  //   console.log('update componentWillUnmount');
+  // }
+  // componentDidUnmount() {
+  //   console.log('update componentDidUnmount');
+  // }
+  // componentWillReceiveProps() {
+  //   console.log('update componentWillReceiveProps');
+  // }
+  // shouldComponentUpdate() {
+  //   console.log('update shouldComponentUpdate');
+  // }
+  // componentWillUpdate() {
+  //   console.log('update componentWillUpdate');
+  // }
+  // componentDidUpdate() {
+  //   console.log('update componentDidUpdate');
+  // }
 
   render() {
+    /*
+     В будущем, постараемся смягчить или даже отменить это ограничение.
+     Это наша цель №1! Просим отнестись к этому с пониманием.
+   */
     return (
       <div>
         <div className="white">
@@ -40,16 +86,15 @@ export default class About extends Component {
             <h2 className="mg-md text-center">Как пополнить счёт?</h2>
             <p className="justify">
               Пополнить счёт вы можете в своём&nbsp;
-              <a href="profile#depositMoney">профиле</a>.
+              <a href="Profile#depositMoney">профиле</a>.
             </p>
           </div>
           <div className="col-sm-12">
             <h2 className="mg-md text-center">Как снять деньги?</h2>
             <p className="justify">
-              Вывести средства вы можете в своём <a href="profile#cashoutMoney">профиле</a>.
+              Вывести средства вы можете в своём <a href="Profile#cashoutMoney">профиле</a>.
               Отправьте заявку в техподдержку и мы переведём вам деньги удобным для вас способом в течение одной рабочей недели.
-              Минимальная сумма вывода - 500 рублей. В будущем, постараемся смягчить или даже отменить это ограничение.
-              Это наша цель №1! Просим отнестись к этому с пониманием.
+              Минимальная сумма вывода - 500 рублей
             </p>
           </div>
         </div>

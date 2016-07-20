@@ -171,9 +171,9 @@ export default class Index extends Component {
     // <a className="btn btn-primary btn-large btn-lg" href="/Team">Создать команду</a>
     const teamTab = (
       <div>
-        <div className="freeroll ctr purple">
+        <div className="freeroll ctr purple glass">
           <div className="white">
-            <h1 className="fadeText">Раздели радость побед с друзьями</h1>
+            <h1 className="fadeText">Побеждай с друзьями</h1>
             <p className="center">
               <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
               <div>Если они займут призовое место в бесплатном турнире</div>
@@ -188,14 +188,15 @@ export default class Index extends Component {
                 <input
                   id="invite-link"
                   type="text"
-                  className="black circle-input"
+                  className="black circle-input offset-md"
                   value={link}
                   onClick={this.CopyShareLink}
+                  style="min-width: 200px; max-width: 350px; width: 100%"
                 >{link}</input>
                 <a
-                  className="btn btn-primary btn-large btn-lg"
+                  className="btn btn-primary btn-large btn-lg offset-md"
                   onClick={this.CopyShareLink}
-                >Скопировать ссылку</a>
+                >Скопировать</a>
                 <p
                   style={{
                     display: state.copied ? 'block' : 'none'
@@ -228,10 +229,14 @@ export default class Index extends Component {
           </ul>
         </div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
-        <Card content={freerolls} style="" />
-        <Card content={middleTournaments} style="" />
-        <Card content={eliteTournaments} style="" />
-        <div className="col-lg-12 offset-bg">{teamTab}</div>
+        <div className="center height-fix offset padding">
+          <Card content={freerolls} style="" />
+          <Card content={middleTournaments} style="" />
+          <Card content={eliteTournaments} style="" />
+        </div>
+        <div className="center height-fix offset padding">
+          <div className="col-lg-12 offset-bg">{teamTab}</div>
+        </div>
       </div>
     );
   }
