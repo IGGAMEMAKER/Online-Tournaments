@@ -183,7 +183,6 @@ export default class Tournaments extends Component {
 
     let tournaments;
 
-    console.log('props.filter', props.filter);
     if (!props.filter) {
       tournaments = (
         <div>

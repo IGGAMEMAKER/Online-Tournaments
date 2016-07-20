@@ -15,15 +15,15 @@ export default class Link extends Component {
   render(props: PropsType) {
     return (
       <a
-        href={props.href}
+        href={props.href || '/'}
         onClick={() => {
           if (props.onClick) {
             props.onClick();
           }
 
-          setTimeout(() => {
-            route(href);
-          }, 0);
+          // setTimeout(() => {
+          //   route(href);
+          // }, 0);
         }}
         className={props.className}
         style={props.style}

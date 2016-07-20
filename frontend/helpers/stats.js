@@ -16,4 +16,8 @@ export default {
   pressedModalTournamentNoMoney: () => { send('/mark/metrics/ModalTournamentNoMoney'); },
   pressedModalPackNoMoney: () => { send('/mark/metrics/ModalPackNoMoney'); },
   pressedCashout: (amount) => { post('/mark/metrics/Cashout', { amount }); },
+
+  goToElite: () => { send('/mark/metrics/tournament-filter-Elite')},
+  goToFrees: () => { send('/mark/metrics/tournament-filter-Frees')},
+  goToCrowd: () => { send('/mark/metrics/tournament-filter-Crowd')}
 };

@@ -437,6 +437,10 @@ var application_page = (req, res) => {
 app.get('/', application_page);
 app.get('/about', application_page);
 app.get('/Tournaments', application_page);
+app.get('/Frees', application_page);
+app.get('/Elite', application_page);
+app.get('/Crowd', application_page);
+app.get('/Chat', application_page);
 app.get('/Packs', aux.authenticated, application_page);
 app.get('/MyCollections', aux.authenticated, application_page);
 app.get('/Cards', aux.authenticated, application_page);
@@ -609,8 +613,8 @@ function JSLog(msg, topic){
   if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
 }
 
-app.get('/Alive', function (req, res){ res.render('Alive'); })
-app.get('/chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
+app.get('/Alive', function (req, res){ res.render('Alive'); });
+app.get('/test-chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
   var login = getLogin(req);

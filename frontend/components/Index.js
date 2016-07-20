@@ -3,6 +3,8 @@ import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 import Card from '../components/Shared/Card';
 
+import stats from '../helpers/stats';
+
 import constants from '../constants/constants';
 
 type PropsType = {}
@@ -44,7 +46,7 @@ export default class Index extends Component {
         className="btn btn-primary btn-large btn-lg btn-fixed"
         href={url}
         onClick={onClick}
-      >{text ? text : 'Подробнее'}</a>
+      >{text ? text : 'Перейти'}</a>
     );
   };
 
@@ -56,9 +58,7 @@ export default class Index extends Component {
           <p>
             {info.map(t => <div>{t}</div>)}
           </p>
-          <center>
-            {button}
-          </center>
+          <center>{button}</center>
         </div>
       </div>
     );
@@ -101,32 +101,32 @@ export default class Index extends Component {
     // );
 
     const freerolls = this.category(
-      'Турниры для новичков',
-      ['Каждый день в 20:00'],
+      'Бесплатные турниры',
+      ['Проходят каждый день'],
       'green',
       this.categoryButton(
         `/Frees`,
-        () => { console.log('aa'); }
+        stats.goToFrees
       )
     );
 
     const eliteTournaments = this.category(
       'Элитные турниры',
-      ['Самые крупные призы'],
+      ['Большие призы', 'Низкая конкуренция'],
       'red',
       this.categoryButton(
         `/Elite`,
-        () => { console.log('aa'); }
+        stats.goToElite
       )
     );
 
     const middleTournaments = this.category(
       'Хардкорные турниры',
-      ['Крупные призы'],
+      ['Самые крупные призы'],
       'carrot',
       this.categoryButton(
         `/Crowd`,
-        () => { console.log('aa'); }
+        stats.goToCrowd
       )
     );
 
