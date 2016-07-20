@@ -12,7 +12,7 @@ export default {
     return t.settings && t.settings.regularity === constants.REGULARITY_REGULAR;
   },
   isFreeTournament: (t: TournamentType) => {
-    return t.buyIn === 0 && isStreamTournament(t);
+    return t.buyIn === 0 && !isStreamTournament(t);
   },
   willRunToday: (t: TournamentType) => {
     return t.startDate && isToday(t.startDate);
