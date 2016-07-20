@@ -169,7 +169,7 @@ export default class Index extends Component {
      */
     const link = `http://online-tournaments.org/register?inviter=${login}`;
     // <a className="btn btn-primary btn-large btn-lg" href="/Team">Создать команду</a>
-    const teamTab = (
+    const shareCard = (
       <div>
         <div className="freeroll ctr purple glass">
           <div className="white">
@@ -235,7 +235,7 @@ export default class Index extends Component {
           <Card content={eliteTournaments} style="" />
         </div>
         <div className="center height-fix offset padding">
-          <div className="col-lg-12 offset-bg">{teamTab}</div>
+          <div className="col-lg-12">{shareCard}</div>
         </div>
       </div>
     );

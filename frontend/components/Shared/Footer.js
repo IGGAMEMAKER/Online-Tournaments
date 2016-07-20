@@ -53,7 +53,7 @@ export default class Footer extends Component {
 
   getfooterLink = (link, text = 'Перейти', blank) => {
         // className="btn btn-primary btn-large btn-lg btn-fixed"
-    return <Link href={link} >{text}</Link>;
+    // return <Link href={link} >{text}</Link>;
     return (
       <a
         className="footer-link"

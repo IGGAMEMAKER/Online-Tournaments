@@ -191,7 +191,7 @@ export default class Tournament extends Component {
           <div className="tournament-centerize">
             <div className="white tournament-cover-text">
               <div>Главный приз</div>
-              <span>{prizes[0]} Р</span>
+              <span>+{prizes[0]} Р</span>
             </div>
           </div>
         </div>
