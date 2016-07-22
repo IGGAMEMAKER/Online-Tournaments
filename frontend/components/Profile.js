@@ -322,8 +322,8 @@ export default class Profile extends Component {
     );
     return (
       <div>
-        <div className="padding">{profileTab}</div>
-        <div className="padding">{tournaments}</div>
+        <div className="padding killPaddings">{profileTab}</div>
+        <div className="padding killPaddings">{tournaments}</div>
         <div className="center">
           <div id="dep" style="height: auto;">
             <AdvancedCard

@@ -39,7 +39,7 @@ export default class Menu extends Component {
 
     const hover = 'menu-item'; //light-blue
     const menuTournaments = `${hover} ${props.active === 'Tournaments' ? 'active' : ''}`;
-    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''}`;
+    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''} hide`;
     const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''} ${login ? '' : 'hide'}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
@@ -120,10 +120,16 @@ export default class Menu extends Component {
           <a href="/Tournaments" className="menu-link">
             <div className={menuTournaments}>Турниры</div>
           </a>
+          <a href="/Packs" className="menu-link">
+            <div className={menuPacks}>Призы</div>
+          </a>
           <a href="/Profile" className="menu-link">
             <div className={menuProfile}>Профиль</div>
           </a>
           {loginMenu}
+        </div>
+        <div className="menu-balance-container">
+          {balance}
         </div>
       </div>
     );

@@ -242,7 +242,7 @@ export default class Index extends Component {
           <Card content={eliteTournaments} style="" />
         </div>
         <div className="center height-fix offset">
-          <div className="col-lg-12">{shareCard}</div>
+          <div className="col-lg-12 killPaddings">{shareCard}</div>
         </div>
       </div>
     );
