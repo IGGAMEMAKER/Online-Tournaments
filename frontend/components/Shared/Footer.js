@@ -194,14 +194,16 @@ export default class Footer extends Component {
     // const chatClassName = "navbar navbar-inverse navbar-fixed-bottom chat"; // "chat-tab"
     const chatClassName = "chat-tab";
     return (
-      <div className="padding">
-        {contacts}
-        <div className={chatClassName} role="navigation">
-          <div className="container-fluid">
-            <a href="/Chat" id="activity" style="text-decoration: none;">{chat}</a>
+      <a href="/Chat" id="activity" style="text-decoration: none;">
+        <div className="padding">
+          {contacts}
+          <div className={chatClassName} role="navigation">
+            <div className="container-fluid">
+              {chat}
+            </div>
           </div>
         </div>
-      </div>
+      </a>
     );
   }
 }

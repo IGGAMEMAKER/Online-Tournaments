@@ -423,7 +423,7 @@ function (req, res){
 	});
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
-	  res.render('Profile', {msg:req.profile});
+	  res.render('index', {msg:req.profile});
 	}, function (err, req, res, next){
 			var login = getLogin(req) || null;
 	  	Errors.add(login, 'get profile', {err:err});

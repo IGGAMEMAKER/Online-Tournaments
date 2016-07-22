@@ -4,6 +4,7 @@ import actions from "../actions/ProfileActions";
 import Card from '../components/Shared/Card';
 import AdvancedCard from '../components/Shared/AdvancedCard';
 import autoscroller from '../helpers/autoscroll';
+import { route } from 'preact-router';
 
 type PropsType = {}
 
@@ -27,6 +28,10 @@ export default class Profile extends Component {
   };
 
   componentWillMount() {
+    if (!login) {
+      setTimeout(() => { route('/Login'); }, 0);
+    }
+
     store.addChangeListener(() => {
       this.setState({
         registeredIn: store.getMyTournamentList(),

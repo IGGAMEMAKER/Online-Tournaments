@@ -24,13 +24,13 @@ type ResponseType = {
 export default class Chat extends Component {
   state = {
     messages: [],
-    text: '',
+    text: ''
   };
 
   componentWillMount() {
     store.addChangeListener(() => {
       this.setState({
-        messages: store.getChatMessages(),
+        messages: store.getChatMessages()
       });
     });
     this.loadMessages();

@@ -38,6 +38,7 @@ export default class Index extends Component {
     document.execCommand('copy');
     node.blur();
     this.setState({ copied: true });
+    stats.shareLinkCopied();
   };
 
   categoryButton = (url, onClick, text) => {
@@ -169,8 +170,16 @@ export default class Index extends Component {
      <p>то вся команда получит вплоть до 150 рублей</p>
      <p>(в зависимости от размера команды)</p>
      */
-    const link = `http://online-tournaments.org/register?inviter=${login}`;
+    let link = 'http://online-tournaments.org/register';
+    if (login) {
+      link += `?inviter=${login}`;
+    }
+
     // <a className="btn btn-primary btn-large btn-lg" href="/Team">Создать команду</a>
+    // http://online-tournaments.org/register
+    // style={{
+    //   display: login ? 'block' : 'none'
+    // }}
     const shareCard = (
       <div>
         <div className="freeroll ctr purple glass">
@@ -181,11 +190,7 @@ export default class Index extends Component {
               <div>Если они займут призовое место в бесплатном турнире</div>
               <div>ты получишь дополнительные 50% от их выигрыша!</div>
             </p>
-            <div
-              style={{
-                display: login ? 'block' : 'none'
-              }}
-            >
+            <div>
               <center>
                 <input
                   id="invite-link"
@@ -231,12 +236,12 @@ export default class Index extends Component {
           </ul>
         </div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
-        <div className="center height-fix offset padding">
+        <div className="center height-fix offset">
           <Card content={freerolls} style="" />
           <Card content={middleTournaments} style="" />
           <Card content={eliteTournaments} style="" />
         </div>
-        <div className="center height-fix offset padding">
+        <div className="center height-fix offset">
           <div className="col-lg-12">{shareCard}</div>
         </div>
       </div>

@@ -48,15 +48,17 @@ async function loadChatMessages() {
 }
 
 function loadNews() {
-  request
-    .get('/notifications/news')
-    .end((err, res: ResponseType) => {
-      const news: Array<ModalMessage> = res.body.msg;
-      Dispatcher.dispatch({
-        type: c.ACTION_LOAD_NEWS,
-        news,
+  if (login) {
+    request
+      .get('/notifications/news')
+      .end((err, res: ResponseType) => {
+        const news: Array<ModalMessage> = res.body.msg;
+        Dispatcher.dispatch({
+          type: c.ACTION_LOAD_NEWS,
+          news
+        });
       });
-    });
+  }
 }
 
 function addNotification(data, modalType) {
@@ -69,6 +71,10 @@ function addNotification(data, modalType) {
 
 async function loadProfile() {
   try {
+    if (!login) {
+      return;
+    }
+
     console.log('async initialize');
     const response: ResponseType = await request.get('/myProfile');
     // console.log('async initialize response...', response.body);

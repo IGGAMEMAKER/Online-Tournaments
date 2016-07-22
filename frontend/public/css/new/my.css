@@ -779,6 +779,11 @@ button{
 .tournament-body.blue { background-color: #3498db; }
 .tournament-body.purple { background-color: #9b59b6; }
 
+.auth-container {
+  max-width: 450px;
+  margin: 0 auto;
+  float: none;
+}
 .cover {
   cursor: pointer;
 }
@@ -1081,6 +1086,46 @@ a:focus {
 .height-fix {
   height: auto;
   overflow: hidden;
+}
+
+.menu-fixed-top {
+  position: fixed;
+  top: 0;
+  height: 50px;
+  left: 0;
+  right: 0;
+  background-color: #111111;
+  z-index: 100;
+}
+
+.menu-item:hover {
+  background-color: #3498db;
+  transition: all 0.3s;
+}
+.menu-item.active {
+  background-color: #e74c3c;
+}
+
+
+.menu-container {
+  margin: 0 auto;
+  max-width: 320px;
+  overflow: hidden;
+}
+
+.menu-item {
+  padding: 15px 13px;
+  display: block;
+  float: left;
+  cursor: pointer;
+}
+
+.menu-link,
+.menu-link:hover,
+.menu-link:visited,
+.menu-link:active {
+  color: white;
+  text-decoration: none;
 }
 
 .glass {

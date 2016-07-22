@@ -19,5 +19,7 @@ export default {
 
   goToElite: () => { send('/mark/metrics/go-to-Elite')},
   goToFrees: () => { send('/mark/metrics/go-to-Frees')},
-  goToCrowd: () => { send('/mark/metrics/go-to-Crowd')}
+  goToCrowd: () => { send('/mark/metrics/go-to-Crowd')},
+
+  shareLinkCopied: () => { send('/mark/metrics/copy-share-link')}
 };

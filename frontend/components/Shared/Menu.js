@@ -30,16 +30,17 @@ export default class Menu extends Component {
 
   render(props: PropsType, state: StateType) {
     const text = state.loaded ? `  На вашем счету ${state.money}p   : ` : '';
-    let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
+    // let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
+    let loginMenu = <a href="/Login" className="menu-item"><div className="menu-link">Вход</div></a>;
 
     if (login) {
       loginMenu = '';
     }
 
-    const hover = ''; //light-blue
+    const hover = 'menu-item'; //light-blue
     const menuTournaments = `${hover} ${props.active === 'Tournaments' ? 'active' : ''}`;
     const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''}`;
-    const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''}`;
+    const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''} ${login ? '' : 'hide'}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
     const menuChat = `${hover} ${props.active === 'Chat' ? 'active' : ''}`;
@@ -70,6 +71,7 @@ export default class Menu extends Component {
     // <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
     // <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
     // <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
+
     const standardNav = (
       <div style="margin: auto;">
         <div className="navbar-header">
@@ -109,7 +111,24 @@ export default class Menu extends Component {
       </nav>
     );
 
+    return (
+      <div className="menu-fixed-top">
+        <div className="menu-container">
+          <a href="/" className="menu-link">
+            <div className={menuIndex}>Главная</div>
+          </a>
+          <a href="/Tournaments" className="menu-link">
+            <div className={menuTournaments}>Турниры</div>
+          </a>
+          <a href="/Profile" className="menu-link">
+            <div className={menuProfile}>Профиль</div>
+          </a>
+          {loginMenu}
+        </div>
+      </div>
+    );
     return previous;
+
 
     return (
       <nav className="navbar navbar-inverse navbar-fixed-top chat" role="navigation">
@@ -124,6 +143,7 @@ export default class Menu extends Component {
         </div>
       </nav>
     );
+
     return (
       <center>
         <div className="container-fluid">

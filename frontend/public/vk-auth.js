@@ -11,7 +11,7 @@ if (document.location.hostname == "localhost") {
 
 function authInfo(response) {
 	if (response.session) {
-		console.log('user : ', response.session)
+		console.log('user : ', response.session);
 		//alert('user: '+response.session.mid);
 		VK.Api.call('users.get', {user_ids: response.session.mid}, function(r) { 
 		  if(r.response) { 
