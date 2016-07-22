@@ -1091,7 +1091,7 @@ a:focus {
 .menu-fixed-top {
   position: fixed;
   top: 0;
-  height: 50px;
+  height: 51px;
   left: 0;
   right: 0;
   background-color: #111111;
@@ -1110,6 +1110,7 @@ a:focus {
 .menu-container {
   margin: 0 auto;
   max-width: 320px;
+  /*display: block;*/
   overflow: hidden;
 }
 
@@ -1131,10 +1132,14 @@ a:focus {
   font-size: 14px;
 }
 
+.menu-balance-offset {
+  /*height: 7px;*/
+  /*background-color: #111111;*/
+}
 .menu-balance-container {
   margin: 0 auto;
-  margin-top: 10px;
-
+  padding-top: 10px;
+  background-color: #111111;
 }
 
 .glass {
