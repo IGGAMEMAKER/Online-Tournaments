@@ -146,7 +146,7 @@ export default class Footer extends Component {
 
     // <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
     const siteSupport = (
-      <div style={`display: ${login ? 'block' : 'none'}`}>
+      <div style={`display: ${login ? 'inline-block' : 'none'}`}>
         <div className="footer-divider">|</div>
         {siteSupportButton}
       </div>
