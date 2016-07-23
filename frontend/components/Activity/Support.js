@@ -15,29 +15,32 @@ type StateType = {
   messages: Array<MessageType>
 };
 
-export default class Chat extends Component {
+export default class Support extends Component {
   state = {
     messages: []
   };
 
   componentWillMount() {
     store.addChangeListener(() => {
-      console.log('Chat addChangeListener');
       this.setState({
         messages: store.getSupportMessages()
       });
     });
 
     actions.loadSupportMessages();
+    actions.initialize();
   }
 
   sendMessage = (text) => {
-    socket.emit('support', { text, login });
+    if (login) {
+      socket.emit('support', { text, login });
+      actions.loadSupportMessages();
+    }
   };
 
   render(props: PropsType, state: StateType) {
     return (
-      <ChatPanel messages={state.messages} send={this.sendMessage} />
+      <ChatPanel messages={state.messages} send={this.sendMessage} preventSend={!login} title="Техподдержка" />
     );
   }
 }

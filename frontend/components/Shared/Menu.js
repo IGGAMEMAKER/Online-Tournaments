@@ -126,9 +126,6 @@ export default class Menu extends Component {
           <a href="/Profile" className="menu-link">
             <div className={menuProfile}>Профиль</div>
           </a>
-          <a href="/Support" className="menu-link">
-            <div className={menuIndex}>Техподдержка</div>
-          </a>
           {loginMenu}
         </div>
         <div className="menu-balance-container">

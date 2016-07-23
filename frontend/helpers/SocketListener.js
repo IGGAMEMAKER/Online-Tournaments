@@ -19,12 +19,12 @@ socket.on('activity', (msg) => {
 });
 
 socket.on('update', (msg) => {
-  // console.log('update', msg);
+  // console.log('socket.on update', msg);
   actions.updateTournaments(msg.tournaments);
 });
 
 socket.on('newsUpdate', (msg) => {
-  // console.log('newsUpdate', msg);
+  console.log('newsUpdate', msg);
   if (msg && msg.msg === login) {
     console.warn('newsUpdate for me', msg);
     // actions.loadNews();

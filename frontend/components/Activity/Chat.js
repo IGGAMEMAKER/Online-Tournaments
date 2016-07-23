@@ -24,7 +24,6 @@ export default class Chat extends Component {
 
   componentWillMount() {
     store.addChangeListener(() => {
-      console.log('Chat addChangeListener');
       this.setState({
         messages: store.getChatMessages()
       });
@@ -39,7 +38,7 @@ export default class Chat extends Component {
 
   render(props: PropsType, state: StateType) {
     return (
-      <ChatPanel messages={state.messages} send={this.sendMessage} canEnter />
+      <ChatPanel messages={state.messages} send={this.sendMessage} title="Чат" />
     );
   }
 }

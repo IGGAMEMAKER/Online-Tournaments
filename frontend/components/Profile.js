@@ -287,10 +287,14 @@ export default class Profile extends Component {
           />
         </div>
         <div className="offset">
-          <button
+          <a
             className="btn btn-lg btn-primary button"
-            onClick={() => { console.log('cashout'); }}
-          >Вывести</button>
+            onClick={() => {
+              console.log('cashout');
+              actions.support(`Я хочу вывести ${state.cashout} руб`)
+            }}
+            href="/Support"
+          >Вывести</a>
         </div>
       </div>
     );

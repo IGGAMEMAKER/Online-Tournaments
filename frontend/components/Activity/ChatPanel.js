@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 type PropsType = {
   send: Function,
   messages: Array,
-  canEnter: boolean,
+  preventSend: boolean,
 }
 
 type MessageType = {
@@ -22,15 +22,33 @@ export default class ChatPanel extends Component {
     text: ''
   };
 
-  componentWillMount() {}
-
-  componentWillReceiveProps() {
-    // scroll messages here
+  componentWillMount() {
     this.scrollToMessageEnd();
   }
 
+  messagesUpdated = (prev, now) => {
+    return prev.length !== now.length;
+    return prev[0].text !== now[0].text;
+  };
+
+  shouldComponentUpdate(nextProps: PropsType, nextState: StateType) {
+    // return true;
+    return this.messagesUpdated(this.props.messages, nextProps.messages)
+    || this.state.text != nextState.text;
+  }
+  componentDidUpdate() {
+    console.log('componentWillUpdate');
+    this.scrollToMessageEnd();
+  }
+  // componentWillReceiveProps() {
+  //   // scroll messages here
+  //   console.log('componentWillReceiveProps');
+  //   this.scrollToMessageEnd();
+  // }
+
   scrollToMessageEnd = () => {
     setTimeout(() => {
+      console.log('scrollToMessageEnd');
       const elem = document.getElementById('messages');
       elem.scrollTop = elem.scrollHeight;
     }, 100);
@@ -43,7 +61,7 @@ export default class ChatPanel extends Component {
   };
 
   send = (props: PropsType) => {
-    if (!props.canEnter) {
+    if (props.preventSend) {
       return;
     }
 
@@ -58,6 +76,7 @@ export default class ChatPanel extends Component {
       props.send(text);
     }
 
+    this.setState({ text: '' });
     this.scrollToMessageEnd();
   };
 
@@ -86,10 +105,10 @@ export default class ChatPanel extends Component {
 
         return <p className="chat-text" style={style}>{text}</p>;
       });
-
+    // console.log('render');
     return (
       <div className="full" style="max-width: 600px;">
-        <h2 className="page">Чат</h2>
+        <h2 className="page">{props.title || "Чат"}</h2>
         <ul id="messages" style="max-height:300px; overflow:auto;">
           {messageList}
         </ul>
@@ -101,11 +120,11 @@ export default class ChatPanel extends Component {
           onInput={this.getText}
           onKeyDown={this.onEnter}
           value={state.text}
-        >{state.text}</input>
+        />
         <br />
         <button
           className="btn btn-primary btn-lg"
-          onClick={this.send}
+          onClick={() => { this.send(props); }}
           style="margin-top: 10px;"
         >Отправить</button>
       </div>

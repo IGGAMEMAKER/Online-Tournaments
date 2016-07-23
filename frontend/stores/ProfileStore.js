@@ -110,7 +110,7 @@ class ProfileStore extends EventEmitter {
   }
 
   getSupportMessages() {
-    console.log('store getSupportMessages', _supportMessages);
+    // console.log('store getSupportMessages', _supportMessages);
     return _supportMessages;
   }
 

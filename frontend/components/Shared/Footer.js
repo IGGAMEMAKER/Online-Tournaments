@@ -12,7 +12,7 @@ type StateType = {
 export default class Footer extends Component {
   state = {
     loaded: false,
-    vk: !false,
+    vk: true
   };
 
   arraysEqual = (a, b) => {
@@ -34,7 +34,7 @@ export default class Footer extends Component {
       // if (!this.arraysEqual(this.state.messages, store.getChatMessages())) {
       this.setState({
         messages: store.getChatMessages(),
-        loaded: true,
+        loaded: true
       });
       // }
     });
@@ -128,28 +128,9 @@ export default class Footer extends Component {
     const supportLink = 'https://vk.com/topic-111187123_33419618';
     const groupLink = 'https://vk.com/o_tournaments';
 
-    const vkText = 'Вступайте, будем рады вам :)';
-    const supportText = 'Что-то не так? Пишите, не стесняйтесь';
-
-    // const contacts = (
-    //   <div className="white page">
-    //     <div className="offset text-center contacts-tab">
-    //       <i className="fa fa-vk fa-lg">&nbsp;
-    //         <a href={group} target="_blank">Наша группа ВК</a>
-    //       </i>
-    //       <div className="white">{vkText}</div>
-    //     </div>
-    //     <div className="offset text-center contacts-tab">
-    //       <i className="fa fa-lg">
-    //         <a href={tpLink} target="_blank">Техподдержка</a>
-    //       </i>
-    //       <div className="white">Что-то не так? Пишите, не стесняйтесь</div>
-    //     </div>
-    //   </div>
-    // );
-
     const groupButton = this.getfooterLink(groupLink, 'Группа ВК', true);
-    const supportButton = this.getfooterLink(supportLink, 'Техподдержка', true);
+    const supportButton = this.getfooterLink(supportLink, 'Сообщить об ошибке', true);
+    const siteSupportButton = this.getfooterLink('/Support', 'Техподдержка', false);
     const aboutButton = this.getfooterLink('/About', 'О нас', false);
 
     // const contacts = (
@@ -169,6 +150,8 @@ export default class Footer extends Component {
         {groupButton}
         <div className="footer-divider">|</div>
         {supportButton}
+        <div className="footer-divider">|</div>
+        {siteSupportButton}
         <div className="footer-divider">|</div>
         {aboutButton}
       </div>
@@ -194,16 +177,14 @@ export default class Footer extends Component {
     // const chatClassName = "navbar navbar-inverse navbar-fixed-bottom chat"; // "chat-tab"
     const chatClassName = "chat-tab";
     return (
-      <a href="/Chat" id="activity" style="text-decoration: none;">
-        <div className="padding">
-          {contacts}
+      <div className="padding">
+        {contacts}
+        <a href="/Chat" id="activity" style="text-decoration: none;">
           <div className={chatClassName} role="navigation">
-            <div className="container-fluid">
-              {chat}
-            </div>
+            {chat}
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
     );
   }
 }

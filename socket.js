@@ -1,4 +1,4 @@
-var Message = require('./models/message')
+var Message = require('./models/message');
 
 var io;
 var socket_enabled = true;
@@ -69,7 +69,7 @@ module.exports = function(app, server){
 			}, delay||0);
 		}
 	}
-}
+};
 
 
   // io = require('socket.io')(server);

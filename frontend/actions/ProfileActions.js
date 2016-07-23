@@ -159,6 +159,7 @@ function initialize() {
 }
 
 function update() {
+  // console.log('actions.update');
   loadProfile();
   loadNews();
 }
@@ -253,6 +254,11 @@ export default {
   },
 
   loadNews,
+
+  support(text) {
+    socket.emit('support', { text, login });
+    loadSupportMessages();
+  },
 
   async openPack(value, pay) {
     try {

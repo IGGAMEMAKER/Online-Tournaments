@@ -1,9 +1,9 @@
 import { h, render, Component } from 'preact';
-import Chat from '../components/Activity/Chat';
+import Support from '../components/Activity/Support';
 import Layout from '../layouts/index';
 
-export default class ChatPage extends Component {
+export default class SupportPage extends Component {
   render() {
-    return <Layout content={<Chat support />} active="Support" />
+    return <Layout content={<Support />} active="Support" nochat />
   }
 }
