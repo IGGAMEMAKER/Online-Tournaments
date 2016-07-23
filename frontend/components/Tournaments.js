@@ -190,10 +190,9 @@ export default class Tournaments extends Component {
       tournaments = <div>{crowds}</div>;
     }
 
+    // {authButton}
     return (
       <div>
-        {authButton}
-
         {tournaments}
       </div>
     );
