@@ -31,7 +31,7 @@ export default class Menu extends Component {
   render(props: PropsType, state: StateType) {
     const text = state.loaded ? `  На вашем счету ${state.money}p   : ` : '';
     // let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
-    let loginMenu = <a href="/Login" className="menu-item"><div className="menu-link">Вход</div></a>;
+    let loginMenu = <a href="/Login" className="menu-link"><div className="menu-item">Вход</div></a>;
 
     if (login) {
       loginMenu = '';
@@ -57,11 +57,20 @@ export default class Menu extends Component {
 
     const balance = (
       <center>
-        <div style={`background-color:#111111; display: ${login ? 'block' : 'none'}`} className="balance">
+        <div style="background-color:#111111;" className="balance">
           <span>{text}</span>
           <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
           <span> / </span>
           <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
+        </div>
+      </center>
+    );
+
+    const auth = (
+      <center>
+        <div style="background-color:#111111;" className="balance">
+          <a href="/Login">Войдите</a>
+          <span>, чтобы начать играть!</span>
         </div>
       </center>
     );
@@ -126,13 +135,13 @@ export default class Menu extends Component {
           <a href="/Profile" className="menu-link">
             <div className={menuProfile}>Профиль</div>
           </a>
-          {loginMenu}
         </div>
         <div className="menu-balance-container">
-          {balance}
+          {login ? balance : auth}
         </div>
       </div>
     );
+    // {loginMenu}
     return previous;
 
 

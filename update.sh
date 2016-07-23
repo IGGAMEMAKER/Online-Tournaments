@@ -1,7 +1,7 @@
 git fetch --all
 git reset --hard origin/master
 cd frontend
-printf "webpack starting...\n"
+printf "webpack starting... Press Ctrl+C to stop if it fails \n"
 webpack
 sleep 1
 printf "5 seconds till start\n"
