@@ -441,7 +441,9 @@ app.get('/Frees', application_page);
 app.get('/Elite', application_page);
 app.get('/Crowd', application_page);
 app.get('/Chat', application_page);
+
 app.get('/Packs', aux.authenticated, application_page);
+app.get('/Support', aux.authenticated, application_page);
 app.get('/MyCollections', aux.authenticated, application_page);
 app.get('/Cards', aux.authenticated, application_page);
 app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
@@ -1121,6 +1123,14 @@ app.post('/messages/chat/recent', function (req, res, next){
     .catch(next)
 }, aux.std);
 
+app.post('/messages/suppport', middlewares.authenticated, function (req, res) {
+  console.log('/messages/support', req.login);
+  Message.loadSupportMessages(req.login)
+    .then(messages => {
+      // console.log('support messages', messages);
+      res.json({ msg: messages })
+    })
+});
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
   var login = req.login;

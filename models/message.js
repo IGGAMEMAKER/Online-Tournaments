@@ -100,12 +100,19 @@ var notifications = {
 		return findOne('Message', { "_id": id })
 	}
 
+};
+
+function loadSupportMessages(login) {
+	return Message2.aggregate([
+		{ $match : { room: 'support-' + login } },
+		{ $sort : { "_id": -1 } }
+	])
 }
 
 var chat = {
 	load: function (room){
-		return Message2.aggregate([ 
-			{ $match : { room:room } }, 
+		return Message2.aggregate([
+			{ $match : { room:room } },
 			// { $sort : { "$natural": -1 } },
 			{ $sort : { "_id": -1 } },
 			{ $limit : 50 }
@@ -114,7 +121,7 @@ var chat = {
 	add: function (room, login, text){
 		return Message2.save({ room:room, senderName:login, text: text, date: new Date() })
 	}
-}
+};
 // chat.add('default', '23i03g', 'QUATTRO')
 
 // chat.load('default')
@@ -126,11 +133,19 @@ var news = {
 	//{ active: Boolean, finishTime: Date, startTime : Date, text: String, image: String, url: String }
 	// text image url
 	add: function(text, image, url, title, finishTime, startTime){
-		var obj = { active: false, title:title, finishTime: finishTime, startTime : startTime, text: text, image: image, url: url }
+		var obj = {
+			active: false,
+			title: title,
+			finishTime: finishTime,
+			startTime: startTime,
+			text: text,
+			image: image,
+			url: url
+		};
 		return News.save(obj);
 	},
 	activation: function(id, status){
-		var obj = { active: false }
+		var obj = { active: false };
 		if (status=='show') obj.active = true;
 
 		return News.update({_id: id}, obj)
@@ -146,7 +161,7 @@ var news = {
 	remove: function(id) { return News.remove({ _id: id }) },
 	clear: function() { return News.remove({}) }
 
-}
+};
 // news.clear();
 // news.activation('')
 
@@ -211,7 +226,14 @@ function catcher(err){
 // module.exports.moneyTop = moneyTop;
 // module.exports.groupByEmails = groupByEmails;
 
+module.exports = {
+	notifications,
+	news,
+	chat,
+	loadSupportMessages
+};
 
-module.exports.notifications = notifications;
-module.exports.news = news;
-module.exports.chat = chat;
+// module.exports.notifications = notifications;
+// module.exports.news = news;
+// module.exports.chat = chat;
+// module.exports.loadSupportMessages = loadSupportMessages;

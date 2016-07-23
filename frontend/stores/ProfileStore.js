@@ -16,6 +16,7 @@ let _loaded: Boolean = false;
 
 let _news: Array = [];
 let _chatMessages: Array = [];
+let _supportMessages: Array = [];
 
 let _testValue = 0;
 
@@ -108,6 +109,11 @@ class ProfileStore extends EventEmitter {
     return _chatMessages;
   }
 
+  getSupportMessages() {
+    console.log('store getSupportMessages', _supportMessages);
+    return _supportMessages;
+  }
+
   getAvailableTournaments() {
     return _availableTournaments;
   }
@@ -158,18 +164,29 @@ Dispatcher.register((p: PayloadType) => {
       _news.splice(0, 0, {
         data: p.data,
         type: p.modal_type,
-        _id: 0,
+        _id: 0
       });
       break;
     case c.ACTION_ADD_CHAT_MESSAGE:
       _chatMessages.push({
         sender: p.data.sender,
         text: p.data.text,
-        _id: 0,
+        _id: 0
+      });
+      break;
+    case c.ACTION_ADD_SUPPORT_MESSAGE:
+      _supportMessages.push({
+        sender: p.data.sender,
+        text: p.data.text,
+        _id: 0
       });
       break;
     case c.ACTION_SET_MESSAGES:
       _chatMessages = p.messages;
+      break;
+    case c.ACTION_SET_SUPPORT_MESSAGES:
+      console.log('ACTION_SET_SUPPORT_MESSAGES', p);
+      _supportMessages = p.messages;
       break;
     case c.ACTION_LOAD_NEWS:
       // console.log('load my news', p.news);

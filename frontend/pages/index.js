@@ -61,6 +61,7 @@ const Routing = (): Component => (
     <Pages.Frees path="/Frees" />
     <Pages.Elite path="/Elite" />
     <Pages.Crowd path="/Crowd" />
+    <Pages.Support path="/Support" />
 
     <Pages.Packs path="/Packs" />
     <Pages.Profile path="/Profile" />

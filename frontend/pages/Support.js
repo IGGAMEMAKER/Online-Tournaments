@@ -4,6 +4,6 @@ import Layout from '../layouts/index';
 
 export default class ChatPage extends Component {
   render() {
-    return <Layout content={<Chat />} active="Chat" />
+    return <Layout content={<Chat support />} active="Support" />
   }
 }

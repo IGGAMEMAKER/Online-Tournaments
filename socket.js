@@ -15,30 +15,40 @@ function defendText(text){
 module.exports = function(app, server){
 	io = require('socket.io')(server);
 
-	console.log('socket loaded')
-  io.on('connection', function (socket){
-  	// 
-    socket.on('chat message', function (msg){
+	console.log('socket loaded');
+  io.on('connection', function (socket) {
+    socket.on('chat message', function (msg) {
       console.log(msg);
       var login = msg.login;
       var text = msg.text;
 
+			if (!login || !text) return;
+
       var def_login = defendText(login);
       var def_text = defendText(text);
 
-      var message = { text : def_text , sender: def_login }
+      var message = { text : def_text , sender: def_login };
       io.emit('chat message', message);
       message.type = 'chat';
       io.emit('activity', message);
 
       // message.room = 'default';
       var room = 'default';
-      Message.chat.add(room, def_login, def_text)
-
-      // console.log(message, 'message');
-
-      // sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
+      Message.chat.add(room, def_login, def_text);
     });
+		socket.on('support', function (msg) {
+			console.log('support', msg);
+			var login = msg.login;
+			var text = msg.text;
+
+			if (!login || !text) return;
+
+			var def_login = defendText(login);
+			var def_text = defendText(text);
+
+			var room = 'support-' + login;
+			Message.chat.add(room, def_login, def_text);
+		});
   });
   // return io;
 	return {

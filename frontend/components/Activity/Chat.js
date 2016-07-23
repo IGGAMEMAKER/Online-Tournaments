@@ -3,21 +3,23 @@ import request from 'superagent';
 import store from '../../stores/ProfileStore';
 import actions from '../../actions/ProfileActions';
 
-type PropsType = {};
+type PropsType = {
+  support: boolean
+};
 
 type MessageType = {
   sender: string,
-  text: string,
+  text: string
 }
 
 type StateType = {
   messages: Array<MessageType>,
-  text: string,
+  text: string
 };
 
 type ResponseType = {
   body: {
-    msg: Array<MessageType>,
+    msg: Array<MessageType>
   }
 };
 
@@ -28,12 +30,20 @@ export default class Chat extends Component {
   };
 
   componentWillMount() {
+    const props: PropsType = this.props;
+
     store.addChangeListener(() => {
+      console.log('Chat addChangeListener');
       this.setState({
-        messages: store.getChatMessages()
+        messages: props.support ? store.getSupportMessages() : store.getChatMessages()
       });
     });
-    this.loadMessages();
+
+    if (props.support) {
+      this.loadSupportMessages();
+    } else {
+      this.loadMessages();
+    }
   }
 
   appendMessage = (sender, text) => {
@@ -51,19 +61,11 @@ export default class Chat extends Component {
   loadMessages = () => {
     actions.loadChatMessages();
     setTimeout(this.scrollToMessageEnd, 100);
-    // setAsync('/messages/chat/recent', {}, this.drawMessages)
+  };
 
-    // request
-    //   .post('/messages/chat/recent')
-    //   .end((err, res: ResponseType) => {
-    //     const messages = res.body.msg
-    //       .reverse()
-    //       .map(item => {
-    //         return { sender: item.senderName, text: item.text };
-    //       });
-    //     this.setMessages(messages);
-    //     this.scrollToMessageEnd();
-    //   });
+  loadSupportMessages = () => {
+    actions.loadSupportMessages();
+    setTimeout(this.scrollToMessageEnd, 100);
   };
 
   scrollToMessageEnd = () => {
@@ -81,13 +83,20 @@ export default class Chat extends Component {
 
   sendMessage = () => {
     // console.log('sendMessage');
+    const props: PropsType = this.props;
+
     const text = this.state.text;
     this.scrollToMessageEnd();
     if (!text) return;
 
     // actions.sendMessage(text, login || 'nil');
     // this.state.socket.emit('chat message', { text, login });
-    socket.emit('chat message', { text, login });
+
+    if (props.support) {
+      socket.emit('support', { text, login });
+    } else {
+      socket.emit('chat message', { text, login });
+    }
     this.setState({ text: '' });
   };
 
@@ -107,9 +116,11 @@ export default class Chat extends Component {
           style = 'color: gold;';
         }
         const text = `${m.sender || 'Гость'}: ${m.text}`;
+
         if (i === arr.length - 1) {
           return <p id="chat" className="chat-text" style={style}>{text}</p>;
         }
+
         return <p className="chat-text" style={style}>{text}</p>;
       });
     /*

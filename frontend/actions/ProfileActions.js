@@ -10,6 +10,15 @@ type ResponseType = {
   },
 };
 
+type MsgType = {
+  body: {
+    msg: {
+      senderName: string,
+      text: string,
+    }
+  }
+};
+
 const sendError = (err, name) => {
   console.error('error happened in ', name, err);
 };
@@ -20,52 +29,69 @@ const sendPaymentStat = (name, ammount, user) => {
 
 async function loadChatMessages() {
   try {
-    type MsgType = {
-      body: {
-        msg: {
-          senderName: string,
-          text: string,
-        }
-      }
-    };
-    const response: MsgType = await request.post('/messages/chat/recent');
-    // .end((err, res: ResponseType) => {
+    const response: MsgType = await request
+      .post('/messages/chat/recent');
+
     const messages = response.body.msg
       .reverse()
       .map(item => {
         return { sender: item.senderName, text: item.text };
       });
+
     Dispatcher.dispatch({
       type: c.ACTION_SET_MESSAGES,
-      messages,
+      messages
     });
   } catch (e) {
     sendError(e, 'chat/recent');
   }
-  // this.setMessages(messages);
-  // this.scrollToMessageEnd();
-  // });
+}
+
+async function loadSupportMessages() {
+  if (!login) {
+    return;
+  }
+
+  try {
+    const response: MsgType = await request
+      .post('/messages/suppport');
+
+    const messages = response.body.msg
+      .reverse()
+      .map(item => {
+        return { sender: item.senderName, text: item.text };
+      });
+    console.log('messages sup', messages);
+    Dispatcher.dispatch({
+      type: c.ACTION_SET_SUPPORT_MESSAGES,
+      messages
+    });
+  } catch (e) {
+    sendError(e, 'messages/support');
+  }
 }
 
 function loadNews() {
-  if (login) {
-    request
-      .get('/notifications/news')
-      .end((err, res: ResponseType) => {
-        const news: Array<ModalMessage> = res.body.msg;
-        Dispatcher.dispatch({
-          type: c.ACTION_LOAD_NEWS,
-          news
-        });
-      });
+  if (!login) {
+    return;
   }
+
+  request
+    .get('/notifications/news')
+    .end((err, res: ResponseType) => {
+      const news: Array<ModalMessage> = res.body.msg;
+      Dispatcher.dispatch({
+        type: c.ACTION_LOAD_NEWS,
+        news
+      });
+    });
 }
 
 function addNotification(data, modalType) {
   Dispatcher.dispatch({
     type: c.ACTION_ADD_NOTIFICATION,
     data,
-    modalType,
+    modalType
   });
 }
 
@@ -111,7 +137,7 @@ async function loadProfile() {
           const { host, port, running } = JSON.parse(res.text).address;
           // console.log('/GetTournamentAddress GetTournamentAddress', host, port, running, tID);
 
-          console.warn('async SET_TOURNAMENT_DATA');
+          // console.warn('async SET_TOURNAMENT_DATA');
           Dispatcher.dispatch({
             type: c.SET_TOURNAMENT_DATA,
             host,
@@ -121,8 +147,8 @@ async function loadProfile() {
           });
         });
     });
-  } catch (err) {
-    console.error(err);
+  } catch (e) {
+    sendError(e, 'loadProfile');
   }
 }
 
@@ -154,19 +180,16 @@ export default {
 
       registeredIn[tournamentID] = 1;
 
-      switch (result) {
-        case 'OK':
-          Dispatcher.dispatch({
-            type: c.ACTION_REGISTER_IN_TOURNAMENT,
-            tournaments: registeredIn,
-            tournamentID,
-          });
-          break;
-        case c.TREG_NO_MONEY:
-          addNotification({
-            ammount: buyIn
-          }, c.MODAL_NO_TOURNAMENT_MONEY);
-          break;
+      if (result === 'OK') {
+        Dispatcher.dispatch({
+          type: c.ACTION_REGISTER_IN_TOURNAMENT,
+          tournaments: registeredIn,
+          tournamentID
+        });
+      }
+
+      if (result === c.TREG_NO_MONEY) {
+        addNotification({ ammount: buyIn }, c.MODAL_NO_TOURNAMENT_MONEY);
       }
 
     } catch (err) {
@@ -179,8 +202,6 @@ export default {
       const response = await request
         .post('CancelRegister')
         .send({ login, tournamentID });
-      // .end((err, response) => {
-      console.log('CancelRegister', response);
 
       const registeredIn = Object.assign({}, store.getMyTournaments());
       registeredIn[tournamentID] = null;
@@ -188,7 +209,7 @@ export default {
       Dispatcher.dispatch({
         type: c.ACTION_UNREGISTER_FROM_TOURNAMENT,
         tournaments: registeredIn,
-        tournamentID,
+        tournamentID
       });
 
       update();
@@ -212,13 +233,12 @@ export default {
       type: c.ACTION_START_TOURNAMENT,
       tournamentID,
       host,
-      port,
+      port
     });
   },
 
   finishTournament(msg) {
     const { tournamentID } = msg;
-    console.warn('finish', msg);
     if (!store.isRegisteredIn(tournamentID)) {
       return;
     }
@@ -228,7 +248,7 @@ export default {
 
     Dispatcher.dispatch({
       type: c.ACTION_FINISH_TOURNAMENT,
-      tournamentID,
+      tournamentID
     });
   },
 
@@ -246,7 +266,7 @@ export default {
           type: c.ACTION_ADD_MESSAGE,
           modal_type: c.MODAL_NO_PACK_MONEY,
           data: {
-            ammount: parseInt(response.body.ammount, 10),
+            ammount: parseInt(response.body.ammount, 10)
           }
         });
       } else {
@@ -258,18 +278,19 @@ export default {
   },
 
   loadChatMessages,
+  loadSupportMessages,
   addNotification,
   payModalStat() {},
   updateTournaments(tournaments) {
     Dispatcher.dispatch({
       type: c.UPDATE_TOURNAMENTS,
-      tournaments,
+      tournaments
     });
   },
   appendChatMessage(data) {
     Dispatcher.dispatch({
       type: c.ACTION_ADD_CHAT_MESSAGE,
-      data,
+      data
     });
   },
   sendMessage(text, sender) {
@@ -277,7 +298,7 @@ export default {
   },
   testFunction() {
     Dispatcher.dispatch({
-      type: c.ACTION_TEST,
+      type: c.ACTION_TEST
     });
-  },
+  }
 };

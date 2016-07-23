@@ -11,3 +11,4 @@ export Crowd from './Crowd';
 export Payment from './Payment';
 export About from './About';
 export Chat from './Chat';
+export Support from './Support';
