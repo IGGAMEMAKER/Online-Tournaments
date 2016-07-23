@@ -13,3 +13,4 @@ printf "2 seconds till start"
 sleep 1
 printf "1 seconds till start"
 sleep 1
+cd ../
