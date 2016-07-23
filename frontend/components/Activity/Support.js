@@ -4,7 +4,6 @@ import actions from '../../actions/ProfileActions';
 import ChatPanel from './ChatPanel';
 
 type PropsType = {
-  support: boolean
 };
 
 type MessageType = {
@@ -13,8 +12,7 @@ type MessageType = {
 }
 
 type StateType = {
-  messages: Array<MessageType>,
-  text: string
+  messages: Array<MessageType>
 };
 
 export default class Chat extends Component {
@@ -26,20 +24,20 @@ export default class Chat extends Component {
     store.addChangeListener(() => {
       console.log('Chat addChangeListener');
       this.setState({
-        messages: store.getChatMessages()
+        messages: store.getSupportMessages()
       });
     });
 
-    actions.loadChatMessages();
+    actions.loadSupportMessages();
   }
 
   sendMessage = (text) => {
-    socket.emit('chat message', { text, login });
+    socket.emit('support', { text, login });
   };
 
   render(props: PropsType, state: StateType) {
     return (
-      <ChatPanel messages={state.messages} send={this.sendMessage} canEnter />
+      <ChatPanel messages={state.messages} send={this.sendMessage} />
     );
   }
 }
