@@ -146,7 +146,7 @@ export default class Footer extends Component {
 
     // <AdvancedCard button={''} type="big" color="purple" title="Контакты" />
     const siteSupport = (
-      <div>
+      <div style={`display: ${login ? 'block' : 'none'}`}>
         <div className="footer-divider">|</div>
         {siteSupportButton}
       </div>
@@ -159,7 +159,7 @@ export default class Footer extends Component {
         {groupButton}
         <div className="footer-divider">|</div>
         {supportButton}
-        {login ? siteSupport : ''}
+        {siteSupport}
         <div className="footer-divider">|</div>
         {aboutButton}
       </div>
