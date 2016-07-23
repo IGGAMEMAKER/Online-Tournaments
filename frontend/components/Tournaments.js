@@ -126,9 +126,13 @@ export default class Tournaments extends Component {
     // const StreamTournaments = this.filter(tourns, streamF);
     const RichestTournaments = (
       <div id="top">
-        {this.filter(richest, () => true, 'Крупнейшие турниры')}
+        {this.filter(richest, () => true, 'Крупнейшие призы')}
       </div>
     );
+
+    const frees = this.filter(tourns, tournamentTypeChecker.isFreeTournament, 'Бесплатные турниры');
+    const elites = this.filter(tourns, tournamentTypeChecker.isEliteTournament, 'Элитные турниры');
+    const crowds = this.filter(tourns, tournamentTypeChecker.isCrowdTournament, 'Большие турниры');
 
     /*
     // <div className="row">{TournamentList}</div>
@@ -163,6 +167,10 @@ export default class Tournaments extends Component {
     if (!props.filter) {
       tournaments = (
         <div>
+          {frees}
+          {elites}
+          {crowds}
+
           {RegularTournaments}
 
           {TodayTournaments}
@@ -173,10 +181,6 @@ export default class Tournaments extends Component {
         </div>
       );
     }
-
-    const frees = this.filter(tourns, tournamentTypeChecker.isFreeTournament, 'Бесплатные турниры');
-    const elites = this.filter(tourns, tournamentTypeChecker.isEliteTournament, 'Элитные турниры');
-    const crowds = this.filter(tourns, tournamentTypeChecker.isCrowdTournament, 'Большие турниры');
 
     if (props.filter === constants.TOURNAMENT_FILTER_FREE) {
       tournaments = <div>{frees}</div>;
