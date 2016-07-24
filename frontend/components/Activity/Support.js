@@ -27,6 +27,10 @@ export default class Support extends Component {
       });
     });
 
+    window.onfocus(() => {
+      actions.loadSupportMessages();
+    });
+
     actions.loadSupportMessages();
     actions.initialize();
   }
