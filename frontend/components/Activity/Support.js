@@ -27,9 +27,9 @@ export default class Support extends Component {
       });
     });
 
-    window.onfocus(() => {
+    window.onfocus = () => {
       actions.loadSupportMessages();
-    });
+    };
 
     actions.loadSupportMessages();
     actions.initialize();
@@ -48,7 +48,7 @@ export default class Support extends Component {
         <br />
         <center>
           <a
-            onClick={() => { actions.loadSupportMessages(); }}
+            onClick={actions.loadSupportMessages}
             className="pointer"
           >Обновить сообщения</a>
         </center>

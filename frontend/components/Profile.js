@@ -44,7 +44,7 @@ export default class Profile extends Component {
   }
 
   componentDidUpdate() {
-    console.log('update componentDidUpdate');
+    // console.log('update componentDidUpdate');
     setTimeout(() => {
       // console.log('upd');
       // window.scrollTo(0, 0);

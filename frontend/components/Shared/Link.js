@@ -8,10 +8,11 @@ type PropsType = {
   className: string,
   style: string,
 
-  text: ?Component
+  content: ?Component
 }
 
-export default class Link extends Component {
+export default class LinkCustom extends Component {
+
   render(props: PropsType) {
     return (
       <a
@@ -20,15 +21,14 @@ export default class Link extends Component {
           if (props.onClick) {
             props.onClick();
           }
-
-          // setTimeout(() => {
-          //   route(href);
-          // }, 0);
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 50);
         }}
         className={props.className}
         style={props.style}
       >
-        {props.text}
+        {props.content}
       </a>
     );
   }

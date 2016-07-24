@@ -1131,7 +1131,7 @@ app.post('/messages/chat/recent', function (req, res, next){
 }, aux.std);
 
 app.get('/messages/support', middlewares.authenticated, function (req, res) {
-  console.log('/messages/support', req.login);
+  // console.log('/messages/support', req.login);
   Message.support.user(req.login)
     .then(messages => {
       // console.log('support messages', messages);
@@ -1147,7 +1147,7 @@ app.get('/messages/support-incoming/', aux.isAdmin, function (req, res) {
 });
 
 app.get('/messages/support/:login', aux.isAdmin, function (req, res) {
-  console.log('/messages/support', req.params.login);
+  // console.log('/messages/support', req.params.login);
   Message.support.user(req.params.login)
     .then(messages => {
       res.json({ msg: messages })
@@ -1156,10 +1156,10 @@ app.get('/messages/support/:login', aux.isAdmin, function (req, res) {
 
 app.post('/messages/support-respond', aux.isAdmin, function (req, res) {
   // console.log('/messages/support', req.params.login);
-  console.log('message support response', req.body);
+  // console.log('message support response', req.body);
   var room = 'support-' + req.body.target;
   var text = req.body.text;
-  console.log(room, text);
+  // console.log(room, text);
   Message.chat.add(room, 'Техподдержка', text)
     .then(messages => {
       res.json({ msg: messages })

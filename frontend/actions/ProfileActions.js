@@ -60,7 +60,7 @@ async function loadSupportMessages() {
       .map(item => {
         return { sender: item.senderName, text: item.text };
       });
-    console.log('messages sup', messages);
+    // console.log('messages sup', messages);
     Dispatcher.dispatch({
       type: c.ACTION_SET_SUPPORT_MESSAGES,
       messages

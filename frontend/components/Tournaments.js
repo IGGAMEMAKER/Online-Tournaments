@@ -57,6 +57,18 @@ export default class Tournaments extends Component {
     actions.initialize();
   }
 
+  componentWillMount() {
+    console.log('componentWillMount tournaments');
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount tournaments');
+  }
+
+  componentDidUpdate() {
+    console.log('componentDidUpdate tournaments');
+  }
+
   register = (tournamentID, buyIn) => {
     actions.register(tournamentID, buyIn);
   };

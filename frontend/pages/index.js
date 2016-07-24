@@ -1,5 +1,7 @@
 import { h, render, Component } from 'preact';
-import { Router, Route, IndexRoute, browserHistory } from 'preact-router';
+import { Router, Route, route, IndexRoute, browserHistory } from 'preact-router';
+// import { Router, Route, route, IndexRoute, browserHistory } from 'react-router';
+
 
 const appElement: HTMLElement = document.getElementById('app');
 import * as Pages from './Pages';
@@ -51,6 +53,26 @@ function hashLinkScroll() {
  <Pages.Chat path="/Chat" />
 
  */
+
+// const Routing = (): Component => (
+//   <Router
+//     history={browserHistory}
+//   >
+//     <Route path="/" component={Pages.Home} />
+//
+//     <Route component={Pages.Tournaments} path="/Tournaments" />
+//     <Route component={Pages.Frees} path="/Frees" />
+//     <Route component={Pages.Elite} path="/Elite" />
+//     <Route component={Pages.Crowd} path="/Crowd" />
+//     <Route component={Pages.Support} path="/Support" />
+//
+//     <Route component={Pages.Packs} path="/Packs" />
+//     <Route component={Pages.Profile} path="/Profile" />
+//     <Route component={Pages.About} path="/About" />
+//     <Route component={Pages.Payment} path="/Payment" />
+//     <Route component={Pages.Chat} path="/Chat" />
+//   </Router>
+// );
 const Routing = (): Component => (
   <Router
     history={browserHistory}
@@ -70,10 +92,6 @@ const Routing = (): Component => (
     <Pages.Chat path="/Chat" />
   </Router>
 );
-// <Pages.Tournaments path="/Tournaments" />
-// <Pages.Packs path="/Packs" />
-// <Pages.Profile path="/Profile" />
-// <Pages.Error404 default />
 
 render(
   <Routing />,

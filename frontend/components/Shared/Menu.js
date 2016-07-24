@@ -77,64 +77,46 @@ export default class Menu extends Component {
 
     // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
 
-    // <li><a href="/" className={`${menuIndex}`}>Главная</a></li>
-    // <li><a href="/Tournaments" className={menuTournaments}>Турниры</a></li>
-    // <li><a href="/Profile" className={menuProfile}>Профиль</a></li>
-
-    const standardNav = (
-      <div style="margin: auto;">
-        <div className="navbar-header">
-          <button
-            type="button"
-            data-toggle="collapse"
-            data-target="#bs-example-navbar-collapse-1"
-            className="navbar-toggle"
-          >
-            <span className="sr-only">Toggle navigation</span>
-            <span className="icon-bar" />
-            <span className="icon-bar" />
-            <span className="icon-bar" />
-          </button>
-
-        </div>
-        <div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
-          <ul className="nav navbar-nav">
-            <li><Link href="/" className={`${menuIndex}`} text="Главная" /></li>
-            <li><Link href="/Tournaments" className={menuTournaments} text="Турниры" /></li>
-            <li><Link href="/Profile" className={menuProfile} text="Профиль" /></li>
-            {loginMenu}
-          </ul>
-        </div>
+    const normal = (
+      <div>
+        <a href="/" className="menu-link">
+          <div className={menuIndex}>Главная</div>
+        </a>
+        <a href="/Tournaments" className="menu-link">
+          <div className={menuTournaments}>Турниры</div>
+        </a>
+        <a href="/Packs" className="menu-link">
+          <div className={menuPacks}>Призы</div>
+        </a>
+        <a href="/Profile" className="menu-link">
+          <div className={menuProfile}>Профиль</div>
+        </a>
       </div>
     );
 
-    const previous = (
-      <nav role="navigation" className="navbar navbar-inverse navbar-fixed-top navbar-my">
-        <div className="container-fluid">
-          {standardNav}
-        </div>
+    const indexLink = <div className={menuIndex}>Главная</div>;
+    const tournamentLink = <div className={menuTournaments}>Турниры</div>;
+    const profileLink = <div className={menuProfile}>Профиль</div>;
 
-        <div className="container-fluid">
-          {balance}
+    return (
+      <div className="menu-fixed-top">
+        <div className="menu-container">
+          <Link href="/" className="menu-link" content={indexLink} />
+          <Link href="/Tournaments" className="menu-link" content={tournamentLink} />
+          <Link href="/Profile" className="menu-link" content={profileLink} />
         </div>
-      </nav>
+        <div className="menu-balance-container">
+          {login ? balance : auth}
+        </div>
+      </div>
     );
 
     return (
       <div className="menu-fixed-top">
         <div className="menu-container">
-          <a href="/" className="menu-link">
-            <div className={menuIndex}>Главная</div>
-          </a>
-          <a href="/Tournaments" className="menu-link">
-            <div className={menuTournaments}>Турниры</div>
-          </a>
-          <a href="/Packs" className="menu-link">
-            <div className={menuPacks}>Призы</div>
-          </a>
-          <a href="/Profile" className="menu-link">
-            <div className={menuProfile}>Профиль</div>
-          </a>
+          <Link href="/" className={`${menuIndex}`} content="Главная" />
+          <Link href="/Tournaments" className={menuTournaments} content="Турниры" />
+          <Link href="/Profile" className={menuProfile} content="Профиль" />
         </div>
         <div className="menu-balance-container">
           {login ? balance : auth}
@@ -142,7 +124,6 @@ export default class Menu extends Component {
       </div>
     );
     // {loginMenu}
-    return previous;
 
 
     return (
