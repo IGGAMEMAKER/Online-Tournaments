@@ -45,7 +45,7 @@ export default class Support extends Component {
         <center>
           <a
             onClick={() => { actions.loadSupportMessages(); }}
-            className=""
+            className="pointer"
           >Обновить сообщения</a>
         </center>
         <ChatPanel messages={state.messages} send={this.sendMessage} preventSend={!login} title="Техподдержка" />
