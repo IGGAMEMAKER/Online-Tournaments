@@ -152,17 +152,11 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     //.then(sendJSON(res))
     .then(render(res, 'Errors'))
     .catch(sendError(res));
-  })
+  });
 
-  app.get('/Users', function (req, res){    
-    /*var data = req.body;
-    data.query = {};//tournamentID:req.query.tID};
-    data.queryFields = 'login money';
-    AsyncRender("DBServer", 'GetUsers', res, {renderPage:'Users'}, data);
-    */
+  app.get('/Users', function (req, res){
     Users.all()
     .then(function (users){
-      // console.log(users);
       res.render('Users', {msg:users});
     })
     .catch(function (err){
@@ -173,11 +167,11 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   app.get('/UserInfo/:login', function (req, res){
     var login = req.params.login;
 
-    if (login){
+    if (login) {
       var profile={
         login:login,
         tournaments:{}
-      }
+      };
       Users.profile(login)
       .then(function (user){
         profile.money = user.money;
@@ -199,7 +193,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
         return profile;
       })
       .then(render(res, 'UserInfo'))//sendJSON(res)
-      .catch(sendError(res))
+      .catch(sendError(res));
 
       /*Actions.findByLogin(login)
       .then(function (actions){
@@ -214,14 +208,15 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     } else {
       res.json({msg:'no login'})
     }
-  })
+  });
 
   function get_profile(req, res, next){
     var login = getLogin(req);
     var profile={
       login:login,
       tournaments:{}
-    }
+    };
+
     Users.profile(login)
     .then(function (user){
       profile.money = user.money;

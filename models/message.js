@@ -129,6 +129,28 @@ var chat = {
 // 	console.log(messages);
 // })
 
+var support = {
+	user: function (login) {
+		return Message2.aggregate([
+			{ $match : { room: 'support-' + login } },
+			{ $sort : { "_id": -1 } }
+		])
+	},
+	recent: function () {
+		const room = 'support-';
+		return Message2.aggregate([
+			// { $match: { room: { $ne: 'default' }, senderName: { $exists: true } }},
+			// { $match: { room: new RegExp('^' + room + '$', "i") }},
+			{ $match: { room: new RegExp(room, "i") }},
+			{ $sort : { "_id": -1 } }
+		])
+	}
+};
+// support.recent()
+// 	.then(list => {
+// 		console.log(list);
+// 	});
+
 var news = {
 	//{ active: Boolean, finishTime: Date, startTime : Date, text: String, image: String, url: String }
 	// text image url
@@ -230,7 +252,7 @@ module.exports = {
 	notifications,
 	news,
 	chat,
-	loadSupportMessages
+	support
 };
 
 // module.exports.notifications = notifications;

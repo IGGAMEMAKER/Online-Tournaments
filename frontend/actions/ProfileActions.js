@@ -53,8 +53,7 @@ async function loadSupportMessages() {
   }
 
   try {
-    const response: MsgType = await request
-      .post('/messages/suppport');
+    const response: MsgType = await request.get('/messages/support');
 
     const messages = response.body.msg
       .reverse()

@@ -23,6 +23,7 @@ module.exports = [{
     // Tournaments: `./${pages}/Tournaments.js`,
     // payments: `./${pages}/Payment.js`,
     'admin-tournaments': `./${pages}/Admin.js`,
+    'admin': `./${pages}/admin.js`,
     // total: `./${pages}/TotalTest.js`,
     Modal: `./${pages}/Modal.js`,
     Football: `./${games}/Football.js`

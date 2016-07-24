@@ -40,7 +40,15 @@ export default class Support extends Component {
 
   render(props: PropsType, state: StateType) {
     return (
-      <ChatPanel messages={state.messages} send={this.sendMessage} preventSend={!login} title="Техподдержка" />
+      <div>
+        <center>
+          <a
+            onClick={() => { actions.loadSupportMessages(); }}
+            className=""
+          >Обновить</a>
+        </center>
+        <ChatPanel messages={state.messages} send={this.sendMessage} preventSend={!login} title="Техподдержка" />
+      </div>
     );
   }
 }

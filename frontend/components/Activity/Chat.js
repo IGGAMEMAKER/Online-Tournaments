@@ -30,6 +30,7 @@ export default class Chat extends Component {
     });
 
     actions.loadChatMessages();
+    actions.initialize();
   }
 
   sendMessage = (text) => {

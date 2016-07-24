@@ -37,7 +37,7 @@ export default class ChatPanel extends Component {
     || this.state.text != nextState.text;
   }
   componentDidUpdate() {
-    console.log('componentWillUpdate');
+    // console.log('componentWillUpdate');
     this.scrollToMessageEnd();
   }
   // componentWillReceiveProps() {
@@ -48,7 +48,7 @@ export default class ChatPanel extends Component {
 
   scrollToMessageEnd = () => {
     setTimeout(() => {
-      console.log('scrollToMessageEnd');
+      // console.log('scrollToMessageEnd');
       const elem = document.getElementById('messages');
       elem.scrollTop = elem.scrollHeight;
     }, 100);
@@ -56,7 +56,7 @@ export default class ChatPanel extends Component {
 
   getText = () => {
     const text = document.getElementById('m').value;
-    console.log(text);
+    // console.log(text);
     this.setState({ text });
   };
 
@@ -96,8 +96,8 @@ export default class ChatPanel extends Component {
         if (m.sender === login) {
           style = 'color: gold;';
         }
-
-        const text = `${m.sender || 'Гость'}: ${m.text}`;
+        console.log(m);
+        const text = `${m.sender || m.senderName || 'Гость'}: ${m.text}`;
 
         if (i === arr.length - 1) {
           return <p id="chat" className="chat-text" style={style}>{text}</p>;

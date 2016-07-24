@@ -433,6 +433,9 @@ var markPaymentPageOpening = (req, res, next) => {
 var application_page = (req, res) => {
   res.render('index', { msg: templateData() })
 };
+var admin_page = (req, res) => {
+  res.render('layout-admin', { msg: templateData() })
+};
 
 app.get('/', application_page);
 app.get('/about', application_page);
@@ -447,6 +450,9 @@ app.get('/Support', aux.authenticated, application_page);
 app.get('/MyCollections', aux.authenticated, application_page);
 app.get('/Cards', aux.authenticated, application_page);
 app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
+
+app.get('/admin/support', middlewares.isAdmin, admin_page);
+app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 
 // app.get('/Payment', aux.authenticated, application_page);
 /*
@@ -642,8 +648,9 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
     createdBy: login,
     question: question,
     answers: answers,
-    correct:correct
-  }
+    correct: correct
+  };
+
   if (topic) obj.topic = topic;
   console.log(obj);
 
@@ -1123,13 +1130,40 @@ app.post('/messages/chat/recent', function (req, res, next){
     .catch(next)
 }, aux.std);
 
-app.post('/messages/suppport', middlewares.authenticated, function (req, res) {
+app.get('/messages/support', middlewares.authenticated, function (req, res) {
   console.log('/messages/support', req.login);
-  Message.loadSupportMessages(req.login)
+  Message.support.user(req.login)
     .then(messages => {
       // console.log('support messages', messages);
       res.json({ msg: messages })
     })
+});
+
+app.get('/messages/support-incoming/', aux.isAdmin, function (req, res) {
+  Message.support.recent()
+    .then(messages => {
+      res.json({ msg: messages })
+    })
+});
+
+app.get('/messages/support/:login', aux.isAdmin, function (req, res) {
+  console.log('/messages/support', req.params.login);
+  Message.support.user(req.params.login)
+    .then(messages => {
+      res.json({ msg: messages })
+    })
+});
+
+app.post('/messages/support-respond', aux.isAdmin, function (req, res) {
+  // console.log('/messages/support', req.params.login);
+  console.log('message support response', req.body);
+  var room = 'support-' + req.body.target;
+  var text = req.body.text;
+  console.log(room, text);
+  Message.chat.add(room, 'Техподдержка', text)
+    .then(messages => {
+      res.json({ msg: messages })
+    });
 });
 
 app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
