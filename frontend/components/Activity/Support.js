@@ -41,11 +41,12 @@ export default class Support extends Component {
   render(props: PropsType, state: StateType) {
     return (
       <div>
+        <br />
         <center>
           <a
             onClick={() => { actions.loadSupportMessages(); }}
             className=""
-          >Обновить</a>
+          >Обновить сообщения</a>
         </center>
         <ChatPanel messages={state.messages} send={this.sendMessage} preventSend={!login} title="Техподдержка" />
       </div>
