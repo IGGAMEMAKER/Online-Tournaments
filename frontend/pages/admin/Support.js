@@ -17,7 +17,7 @@ export default class Support extends Component {
   };
 
   async getMessages () {
-    const response = await request.get('/messages/support');
+    const response = await request.get('/messages/support-incoming');
 
 
     this.setState({ messages: response.body.msg });
@@ -37,12 +37,12 @@ export default class Support extends Component {
         return false;
       }
 
-      return true;
-      // if (!dialogs[username]) {
-      //   dialogs[username] = 1;
-      //   return true;
-      // }
-      // return false;
+      // return true;
+      if (!dialogs[username]) {
+        dialogs[username] = 1;
+        return true;
+      }
+      return false;
     });
 
     const list = filterredList.map(m => {
