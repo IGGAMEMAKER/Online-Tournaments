@@ -37,11 +37,12 @@ export default class Support extends Component {
         return false;
       }
 
-      if (!dialogs[username]) {
-        dialogs[username] = 1;
-        return true;
-      }
-      return false;
+      return true;
+      // if (!dialogs[username]) {
+      //   dialogs[username] = 1;
+      //   return true;
+      // }
+      // return false;
     });
 
     const list = filterredList.map(m => {
