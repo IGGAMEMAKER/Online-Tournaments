@@ -15,13 +15,17 @@ const DEMO_STAGE_TOURNAMENT_SELECTOR = 'DEMO_STAGE_TOURNAMENT_SELECTOR';
 
 type StateType = {
   stage: string,
+
+  result: number,
 }
 
 type ResponseType = {}
 
 export default class Demo extends Component {
   state = {
-    stage: DEMO_STAGE_RESULT
+    stage: DEMO_STAGE_RESULT,
+
+    result: 0
   };
 
   setStage = (stage) => {
@@ -33,7 +37,8 @@ export default class Demo extends Component {
   };
 
   goToTournamentSelectorPage = () => {
-    this.setStage(DEMO_STAGE_TOURNAMENT_SELECTOR);
+    this.setState({ result: this.state.result + 1 });
+    // this.setStage(DEMO_STAGE_TOURNAMENT_SELECTOR);
   };
 
   componentWillMount() {}
@@ -44,7 +49,7 @@ export default class Demo extends Component {
     }
 
     if (state.stage === DEMO_STAGE_RESULT) {
-      return <DemoResult next={this.goToTournamentSelectorPage} result={1} />;
+      return <DemoResult next={this.goToTournamentSelectorPage} result={state.result} />;
     }
 
     if (state.stage === DEMO_STAGE_TOURNAMENT_SELECTOR) {

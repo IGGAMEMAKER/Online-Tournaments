@@ -2,10 +2,10 @@ export default {
   image: (result) => {
     switch (result) {
       case 0:
-        return 'http://idman365.az/images/news/d9pgjaa.jpg';
+        return 'http://www.ronaldo7.net/news/2012/cristiano-ronaldo-551-very-sad-face-in-real-madrid-2012-13.jpg';
         break;
       case 1:
-        return 'http://www.guncelfutbol.com/images/haberler/illaramendi-kiymete-bindi.jpg';
+        return 'http://english.ahram.org.eg/Media/News/2012/9/16/2012-634834021971526885-152.jpg';
         break;
       case 2:
         return 'http://www.guncelfutbol.com/images/haberler/illaramendi-kiymete-bindi.jpg';
