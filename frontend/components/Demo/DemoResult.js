@@ -15,7 +15,6 @@ export default class DemoTest extends Component {
   componentWillMount() {}
 
   getResult = (result, topic, share) => {
-    console.log('getResult', topics);
     return topics[topic].result(result, share);
     return share ? 'Я - верный Мадридист. А ты? Пройди тест и узнай!' : 'Ты - верный Мадридист';
     return share ? 'Я - легенда! А ты? Пройди тест и узнай!' : 'Ты - легенда!';
@@ -61,6 +60,7 @@ export default class DemoTest extends Component {
   };
 
   getImage = (result, topic) => {
+    return topics[topic].image(result);
     return 'http://www.abc.es/Media/201407/08/di-stefano-bernabeu--644x362.jpg';
     return 'http://www2.pictures.gi.zimbio.com/Raul+Gonzalez+Real+Madrid+v+Betis+t5ZDLSaUHRRl.jpg';
     return '/img/CR2.jpg';
@@ -68,7 +68,7 @@ export default class DemoTest extends Component {
 
   render(props: PropsType, state: StateType) {
     const topic = props.topic || 'realmadrid';
-    const result = props.result || 5;
+    const result = props.result;
 
     const resultMessage = this.getResult(result, topic);
     const image = this.getImage(result, topic);

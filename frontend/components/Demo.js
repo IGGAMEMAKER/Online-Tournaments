@@ -44,7 +44,7 @@ export default class Demo extends Component {
     }
 
     if (state.stage === DEMO_STAGE_RESULT) {
-      return <DemoResult next={this.goToTournamentSelectorPage} />;
+      return <DemoResult next={this.goToTournamentSelectorPage} result={1} />;
     }
 
     if (state.stage === DEMO_STAGE_TOURNAMENT_SELECTOR) {
