@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import * as topics from './topics';
 
 type PropsType = {
   next: Function,
@@ -14,6 +15,8 @@ export default class DemoTest extends Component {
   componentWillMount() {}
 
   getResult = (result, topic, share) => {
+    console.log('getResult', topics);
+    return topics[topic].result(result, share);
     return share ? 'Я - верный Мадридист. А ты? Пройди тест и узнай!' : 'Ты - верный Мадридист';
     return share ? 'Я - легенда! А ты? Пройди тест и узнай!' : 'Ты - легенда!';
   };
