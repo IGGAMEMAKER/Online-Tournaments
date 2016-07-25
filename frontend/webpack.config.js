@@ -70,7 +70,7 @@ module.exports = [{
   },
   plugins: [
     new LiveReloadPlugin({
-      port: 35729
+      port: 35739
     }),
     // new webpack.optimize.UglifyJsPlugin({minimize: true})
   ],

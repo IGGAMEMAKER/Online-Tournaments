@@ -90,6 +90,8 @@ const Routing = (): Component => (
     <Pages.About path="/About" />
     <Pages.Payment path="/Payment" />
     <Pages.Chat path="/Chat" />
+
+    <Pages.Demo path="/Demo" />
   </Router>
 );
 

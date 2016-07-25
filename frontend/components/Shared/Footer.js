@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 import store from '../../stores/ProfileStore';
 import AdvancedCard from './AdvancedCard';
-import { Link } from 'preact-router';
+// import { Link } from 'preact-router';
+import Link from './Link';
 
 type PropsType = {}
 
@@ -54,12 +55,22 @@ export default class Footer extends Component {
   getfooterLink = (link, text = 'Перейти', blank) => {
         // className="btn btn-primary btn-large btn-lg btn-fixed"
     // return <Link href={link} >{text}</Link>;
+    if (blank) {
+      return (
+        <a
+          className="footer-link"
+          href={link}
+          target="_blank"
+        >{text}</a>
+      );
+    }
+
     return (
-      <a
+      <Link
         className="footer-link"
         href={link}
-        target={blank ? '_blank' : ''}
-      >{text}</a>
+        content={text}
+      />
     );
   };
 
@@ -182,17 +193,26 @@ export default class Footer extends Component {
     //   </div>
     // );
 
+
     // const chatClassName = "navbar navbar-inverse navbar-fixed-bottom chat"; // "chat-tab"
-    const chatClassName = "chat-tab";
+    const chatContent = (
+      <div className="chat-tab" role="navigation">
+        {chat}
+      </div>
+    );
     return (
       <div className="padding">
         {contacts}
-        <a href="/Chat" id="activity" style="text-decoration: none;">
-          <div className={chatClassName} role="navigation">
-            {chat}
-          </div>
-        </a>
+        <Link
+          href="/Chat"
+          content={chatContent}
+        />
       </div>
     );
   }
 }
+        // <a href="/Chat" id="activity" style="text-decoration: none;">
+        //   <div className={chatClassName} role="navigation">
+        //     {chat}
+        //   </div>
+        // </a>

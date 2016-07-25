@@ -444,6 +444,7 @@ app.get('/Frees', application_page);
 app.get('/Elite', application_page);
 app.get('/Crowd', application_page);
 app.get('/Chat', application_page);
+app.get('/Demo', application_page);
 
 app.get('/Packs', aux.authenticated, application_page);
 app.get('/Support', aux.authenticated, application_page);
