@@ -3,15 +3,13 @@ import DemoTest from './Demo/DemoTest';
 import DemoResult from './Demo/DemoResult';
 import DemoTournamentSelector from './Demo/DemoTournamentSelector';
 
-
-type PropsType = {}
 const DEMO_STAGE_TEST = 'DEMO_STAGE_TEST';
 const DEMO_STAGE_RESULT = 'DEMO_STAGE_RESULT';
-
 const DEMO_STAGE_PACK_RECEIVED = 'DEMO_STAGE_PACK_RECEIVED';
 const DEMO_STAGE_PACK_OPENED = 'DEMO_STAGE_PACK_OPENED';
-
 const DEMO_STAGE_TOURNAMENT_SELECTOR = 'DEMO_STAGE_TOURNAMENT_SELECTOR';
+
+type PropsType = {}
 
 type StateType = {
   stage: string,
@@ -19,11 +17,10 @@ type StateType = {
   result: number,
 }
 
-type ResponseType = {}
-
 export default class Demo extends Component {
   state = {
-    stage: DEMO_STAGE_RESULT,
+    stage: DEMO_STAGE_TEST,
+    // stage: DEMO_STAGE_RESULT,
 
     result: 0
   };
@@ -32,20 +29,20 @@ export default class Demo extends Component {
     this.setState({ stage })
   };
 
-  goToResultPage = () => {
-    this.setStage(DEMO_STAGE_RESULT);
+  goToResultPage = (result) => {
+    this.setState({ stage: DEMO_STAGE_RESULT, result })
   };
 
   goToTournamentSelectorPage = () => {
-    this.setState({ result: this.state.result + 1 });
-    // this.setStage(DEMO_STAGE_TOURNAMENT_SELECTOR);
+    // this.setState({ result: this.state.result + 1 });
+    this.setStage(DEMO_STAGE_TOURNAMENT_SELECTOR);
   };
 
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
     if (state.stage === DEMO_STAGE_TEST) {
-      return <DemoTest next={this.goToResultPage} />;
+      return <DemoTest next={this.goToResultPage} topic="realmadrid" />;
     }
 
     if (state.stage === DEMO_STAGE_RESULT) {

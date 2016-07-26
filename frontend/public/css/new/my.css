@@ -517,6 +517,14 @@ button{
   width: 100%;
 }
 
+.demo-question-tab {
+  height: 80px;
+}
+
+.demo-answer {
+  margin-bottom: 15px;
+}
+
 .demo-container {
   width: 600px;
 }
