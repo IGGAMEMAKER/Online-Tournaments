@@ -145,22 +145,44 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
 
   // gifts
 
-  app.get('/AddGift', aux.isAdmin, aux.render('AddGift'))
+  // app.get('/AddGift', aux.isAdmin, aux.render('AddGift'))
 
-  app.post('/AddGift', aux.isAdmin, function (req, res){
+  // app.post('/AddGift', aux.isAdmin, function (req, res) {
+  app.post('/api/gifts/add', aux.isAdmin, function (req, res, next) {
     var data = req.body;
-    Log('AddGift ' + JSON.stringify(data), 'Manual');
-    if (data){
-      sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
-        res.render('AddGift', {msg:body});
-      });
+    var name = data.name;
+    var photoURL = data.photoURL;
+    var description = data.description;
+    var properties = data.properties;
+
+    try {
+      var price = parseInt(data.price) || 0;
+
+      if (!name || !photoURL || !description || !properties) {
+        console.error('gift adding failed', data);
+        throw 'invalid data;'
+      }
+      Gifts
+        .add(name, photoURL, description, '', price, false, new Date(), properties)
+        .then(aux.setData(req, next))
+        .catch(next);
+    } catch (e) {
+      console.error(e);
+      next(e);
     }
-    else{
-      Answer(res, Fail);
-    }
-    //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res, 
+    // var data = req.body;
+    // Log('AddGift ' + JSON.stringify(data), 'Manual');
+    // if (data){
+    //   sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
+    //     res.render('AddGift', {msg:body});
+    //   });
+    // }
+    // else{
+    //   Answer(res, Fail);
+    // }
+    // //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res,
           
-  });
+  }, aux.std);
   app.get('/api/gifts/cards', aux.isAdmin, function (req, res, next){
     // var rarity = null;
 

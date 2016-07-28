@@ -9,23 +9,25 @@ import sendError from '../helpers/sendError';
 //
 // };
 
+async function getGifts() {
+  try {
+    const response = await request.get('/api/gifts/');
+
+    const gifts = response.body.msg;
+    console.log('got response', gifts);
+
+    Dispatcher.dispatch({
+      type: c.GET_GIFTS,
+      gifts
+    })
+
+  } catch (e) {
+    sendError(e, 'admin/getGifts');
+  }
+}
+
 export default {
-  async getGifts() {
-    try {
-      const response = await request.get('/api/gifts/');
-
-      const gifts = response.body.msg;
-      console.log('got response', gifts);
-
-      Dispatcher.dispatch({
-        type: c.GET_GIFTS,
-        gifts
-      })
-
-    } catch (e) {
-      sendError(e, 'admin/getGifts');
-    }
-  },
+  getGifts,
   async getAvailablePacks() {
     try {
       const response = await request.get('/api/packs/available');
@@ -41,4 +43,26 @@ export default {
       sendError(e, 'admin/getPacks');
     }
   },
+  async addGift(gift) {
+    try {
+      console.log('sended gift...', gift);
+
+      const response = await request
+        .post('/api/gifts/add')
+        .send(gift);
+
+      const result = response.body.msg;
+      const succeeded = result.name;
+
+      if (succeeded) {
+        console.log('adding successfull', result);
+        getGifts();
+      } else {
+        console.error('adding failed', result);
+      }
+
+    } catch (e) {
+      sendError(e, 'admin/addGift');
+    }
+  }
 }

@@ -41,14 +41,20 @@ export default class Packs extends Component {
     this.setState({ newGift });
   };
 
-
+  addGift = () => {
+    actions.addGift(this.state.newGift);
+  };
 
   onDescriptionChange = (e: KeyboardEvent) => {
     this.onFormEdit('description', e.target.value);
   };
 
+  onPropertiesChange = (e: KeyboardEvent) => {
+    this.onFormEdit('properties', JSON.parse(e.target.value));
+  };
+
   onPriceChange = (e: KeyboardEvent) => {
-    this.onFormEdit('price', e.target.value);
+    this.onFormEdit('price', parseInt(e.target.value));
   };
 
   onNameChange = (e: KeyboardEvent) => {
@@ -74,10 +80,10 @@ export default class Packs extends Component {
           <input type="text" name="description" value={g.description} />
           <br />
           <label className="white">price</label>
-          <input type="text" name="price" value={g.price} />
+          <input type="number" name="price" value={g.price} />
           <br />
           <label className="white">properties</label>
-          <input type="text" name="properties" value={JSON.stringify(g.properties)} />
+          <input type="text" name="properties" value={JSON.stringify(g.properties || {})} />
           <br />
           <PackPrize
             src={`/img/topics/realmadrid/${g.photoURL}`}
@@ -124,19 +130,19 @@ export default class Packs extends Component {
             <br />
             <label className="white">price</label>
             <br />
-            <input type="text" name="price" onInput={this.onPriceChange} value={g.price} />
+            <input type="number" name="price" onInput={this.onPriceChange} value={g.price} />
             <br />
             <label className="white">properties</label>
             <br />
-            <input type="text" name="properties" value={JSON.stringify(g.properties)} />
+            <input type="text" name="properties" onInput={this.onPropertiesChange} value={JSON.stringify(g.properties || {})} />
             <br />
+            <button onClick={this.addGift}>add gift</button>
           </div>
           <div className="col-sm-4">
             <br />
             <br />
             <br />
             <br />
-            <div className="white">{g.photoURL}</div>
             <PackPrize
               src={g.photoURL}
               name={g.name}
