@@ -18,7 +18,6 @@ export default class PackPrize extends Component {
     style['background-image'] = `url(${props.src})`;
     style.height = '280px';
 
-    console.log('src', props.src);
     return (
       <div
         style={`background-image: url('/img/cardLayers/${props.color}.jpg')`}

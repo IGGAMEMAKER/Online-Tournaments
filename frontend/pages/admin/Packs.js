@@ -3,6 +3,7 @@ import actions from '../../actions/AdminActions';
 import store from '../../stores/AdminStore';
 
 import PackPrize from '../../components/Packs/PackPrize';
+import GiftForm from '../../components/Packs/GiftForm';
 
 type Gift = {
 
@@ -16,13 +17,24 @@ type StateType = {
 const VIEWS_IMAGED = 'VIEWS_IMAGED';
 const VIEWS_TABLE = 'VIEWS_TABLE';
 
+const getEmptyGift = () => {
+  return {
+    description: '',
+    name: '',
+    properties: {},
+    photoURL: '',
+    price: 0
+  };
+};
+
 export default class Packs extends Component {
   state = {
     gifts: [],
     view: VIEWS_IMAGED,
 
-    newGift: {},
+    newGift: getEmptyGift(),
   };
+
 
   componentWillMount() {
     store.addChangeListener(() => {
@@ -34,36 +46,19 @@ export default class Packs extends Component {
     actions.getGifts();
   }
 
-  onFormEdit = (name, value) => {
-    let { newGift } = this.state;
-    newGift[name] = value;
+  addGift = (gift) => {
+    actions.addGift(gift);
 
-    this.setState({ newGift });
+    this.setState({
+      gift: getEmptyGift()
+    })
   };
 
-  addGift = () => {
-    actions.addGift(this.state.newGift);
+  onChangeNewGift = (newGift) => {
+    console.log('onChangeNewGift!!!', newGift);
+    this.setState({ newGift })
   };
 
-  onDescriptionChange = (e: KeyboardEvent) => {
-    this.onFormEdit('description', e.target.value);
-  };
-
-  onPropertiesChange = (e: KeyboardEvent) => {
-    this.onFormEdit('properties', JSON.parse(e.target.value));
-  };
-
-  onPriceChange = (e: KeyboardEvent) => {
-    this.onFormEdit('price', parseInt(e.target.value));
-  };
-
-  onNameChange = (e: KeyboardEvent) => {
-    this.onFormEdit('name', e.target.value);
-  };
-
-  onPhotoURLChange = (e: KeyboardEvent) => {
-    this.onFormEdit('photoURL', e.target.value);
-  };
   // /img/topics/realmadrid/19.png
 
   render(props, state: StateType) {
@@ -116,27 +111,11 @@ export default class Packs extends Component {
         <center>
           <div className="col-sm-4">
             <h2 className="white">Добавление новой карточки</h2>
-            <label className="white">photoURL</label>
-            <br />
-            <input type="text" name="photoURL" onInput={this.onPhotoURLChange} value={g.photoURL} />
-            <br />
-            <label className="white">name</label>
-            <br />
-            <input type="text" name="name" onInput={this.onNameChange} value={g.name} />
-            <br />
-            <label className="white">description</label>
-            <br />
-            <input type="text" name="description" onInput={this.onDescriptionChange} value={g.description} />
-            <br />
-            <label className="white">price</label>
-            <br />
-            <input type="number" name="price" onInput={this.onPriceChange} value={g.price} />
-            <br />
-            <label className="white">properties</label>
-            <br />
-            <input type="text" name="properties" onInput={this.onPropertiesChange} value={JSON.stringify(g.properties || {})} />
-            <br />
-            <button onClick={this.addGift}>add gift</button>
+            <GiftForm
+              onSubmit={this.addGift}
+              onChange={this.onChangeNewGift}
+              gift={state.newGift}
+            />
           </div>
           <div className="col-sm-4">
             <br />
