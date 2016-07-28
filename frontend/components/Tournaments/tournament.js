@@ -214,7 +214,7 @@ export default class Tournament extends Component {
     // <div className="from">Призы</div>
     // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
     const participating = props.registeredInTournament ? 'participating' : '';
-    const ticketCardClassName = `ticket-card ${participating} light-blue-big bounceIn`;
+    const ticketCardClassName = `ticket-card ${participating} light-blue bounceIn`;
     // killPaddings
     //   <div className="col-sm-6 col-md-4">
     //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">

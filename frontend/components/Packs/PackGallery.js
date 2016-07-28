@@ -25,12 +25,12 @@ function chosePack(id, props: PropsType) {
 export default function (props:PropsType): Component {
   // col-sm-4 white img-wrapper nopadding
   const gallery = props.packs.map((pack: PackLayer) => {
-    console.log('gallery', pack);
+    // console.log('gallery', pack);
     return (
       <div
-        className="pack img-wrapper light-blue-big"
+        className="pack img-wrapper light-blue"
         style={{
-          'background-image': `url(${pack.src})`,
+          'background-image': `url(${pack.src})`
           // width: '100%',
           // height: '100%',
         }}

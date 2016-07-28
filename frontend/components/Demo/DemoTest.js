@@ -50,26 +50,28 @@ export default class DemoTest extends Component {
         <div
           className="demo-answer pointer"
           onClick={() => { this.answer(i, props.topic, correct, props.next)}}
-        >{a}</div>
+        >
+          <div className="btn btn-primary full-mobile">{a}</div>
+        </div>
       )
     });
 
+          // <h4 className="white">Очки: {state.score}</h4>
+
+    // <button
+    //   className="btn btn-primary"
+    //   onClick={props.next}
+    // >Дальше</button>
     return (
       <div>
-        Тест
         <br />
         <div className="white">
-          <h3 className="white">Вопрос: {index + 1}/5</h3>
+          <h3 className="white">Вопрос: {index + 1} из 5</h3>
           <h3 className="white demo-question-tab">{question}</h3>
-          <h4 className="white">Очки: {state.score}</h4>
           <div>
             {answers}
           </div>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={props.next}
-        >Дальше</button>
       </div>
     );
   }

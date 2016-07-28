@@ -2,6 +2,11 @@
   /*font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;*/
   /*font-weight: lighter;*/
 }
+* {
+  /*--main-bg-color: #222222;*/
+  --main-bg-color: #141414;
+}
+
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
   background-color: #3498db;
   /*transition: all 0.5s;*/
@@ -204,14 +209,19 @@ button{
   /*background: url('https://images4.alphacoders.com/485/48578.jpg'); */
 
   /*background-color: #263238;*/
-  background-color: #111111;
+
+  /*background-color: #111111;*/
+  background-color: var(--main-bg-color);
+
+
   /*background-color: #1A2633;*/
   /*background-color: #17212c;*/
 
   /*background-image: url('dark_brown.png');*/
 }
 .navbar {
-  background-color: #111111;
+  /*background-color: #111111;*/
+  background-color: var(--main-bg-color);
 }
 .acceleratorImage{
   opacity: 0.9;
@@ -517,8 +527,42 @@ button{
   width: 100%;
 }
 
+.full-mobile {
+  width: 100%;
+  max-width: 280px;
+}
+
 .demo-question-tab {
   height: 80px;
+}
+
+.relative {
+  position: relative;
+}
+
+.pack-prize-offset {
+  margin-bottom: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pack-prize-description {
+  padding: 10px;
+  font-size: 21px;
+  background-color: white;
+  /*color: black;*/
+  color: white;
+  text-align: center;
+
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /*background-color: #2b2d2f;*/
+  /*opacity: 0.8;*/
+  /*background-color: rgba(6, 6, 6, 0.48);*/
+  background-color: rgba(6, 6, 6, 0.78);
+
+  min-height: 80px;
 }
 
 .demo-answer {
@@ -584,6 +628,7 @@ button{
 
 .light-blue:hover {
   box-shadow: 0 0 18px #2793C7;
+  /*box-shadow: 0 0 28px #2793C7;*/
 }
 .light-blue-big:hover {
   box-shadow: 0 0 88px #2793C7;
@@ -859,7 +904,9 @@ button{
   /*min-height: 30px;*/
   height: 30px;
   overflow: hidden;
-  background-color: #111111;
+
+  background-color: var(--main-bg-color);
+  /*background-color: #111111;*/
   /*background-color: blue;*/
   /*background-color: #3498db;*/
   /*background-color: darkgray;*/
@@ -1126,7 +1173,8 @@ a:focus {
   height: 51px;
   left: 0;
   right: 0;
-  background-color: #111111;
+  /*background-color: #111111;*/
+  background-color: var(--main-bg-color);
   z-index: 200;
 }
 
@@ -1137,7 +1185,6 @@ a:focus {
 .menu-item.active {
   background-color: #e74c3c;
 }
-
 
 .menu-container {
   margin: 0 auto;
@@ -1171,8 +1218,9 @@ a:focus {
 }
 .menu-balance-container {
   margin: 0 auto;
-  padding-top: 10px;
-  background-color: #111111;
+  /*padding-top: 10px;*/
+  /*background-color: #111111;*/
+  background-color: var(--main-bg-color);
 }
 
 .glass {
@@ -1226,7 +1274,7 @@ a:focus {
   /*background-image: url(/img/logo.png) no-repeat center;*/
   /*background-image: url('/img/cardLayers/317350-blur-image-light.jpg');*/
   /*background-image: url("/images/20-banner.jpg");*/
-  min-height: 250px;
+  min-height: 270px;
   /*box-sizing: border-box;*/
   padding: 20px 30px;
   background-position-x: 50%;

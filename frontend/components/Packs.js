@@ -1,21 +1,14 @@
 import { h, Component } from 'preact';
-import request from 'superagent';
-// import Chat from '../components/Activity/Chat';
-import ModalContainer from '../components/Modal/ModalContainer';
-
 import Card from './Packs/PackCard';
-import Pack from './Packs/Pack';
+import PackPrize from './Packs/PackPrize';
 import PackGallery from './Packs/PackGallery';
 
-import socketListener from '../helpers/SocketListener';
+// import socketListener from '../helpers/SocketListener';
 import actions from '../actions/ProfileActions';
 
 function openPack(packID, pay) {
   console.log('openPack pack page', packID, pay);
   actions.openPack(packID, pay);
-  // request
-  //   .post(`openPack/${packID}/${pay}`)
-  //   .end(console.log);
 }
 
 const standardPacks = [
@@ -85,67 +78,71 @@ const standardPacks = [
   },
 ];
 
+const standardCards = [
+  {
+    name: '2000 рублей',
+    description: '2000 рублей на счёт',
+    // src: '../../gifts/1000.png',
+    src: '/img/topics/realmadrid/../../gifts/gold1.png',
+    color: 0
+  },
+  {
+    name: '500 рублей',
+    description: '500 рублей на счёт',
+    src: '/img/topics/realmadrid/../../gifts/gold1.png',
+    color: 1
+  },
+  {
+    name: '100 рублей',
+    description: '100 рублей на счёт',
+    src: '/img/topics/realmadrid/../../gifts/gold1.png',
+    color: 2
+  },
+  {
+    name: 'Футболка',
+    description: 'Футболка твоего любимого клуба',
+    src: '/img/topics/realmadrid/../../gifts/shirt.jpg',
+    color: 1
+  },
+  {
+    name: 'Футболка',
+    // description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
+    description: 'Футболка Реал Мадрид сезона 2016/2017',
+    src: '/img/topics/realmadrid/../../gifts/shirt2.jpg',
+    color: 1
+  },
+  {
+    name: 'Футболка',
+    description: 'Билет на турнир',
+    src: 'http://www.sks-auto.ru/images/icons/bilet.png',
+    // src: '/img/topics/realmadrid/../../gifts/shirt3.jpg',
+    color: 1
+  },
+  {
+    name: 'Карточка Модрича',
+    description: 'Карточка Модрича для игры в Funny Football',
+    src: '/img/topics/realmadrid/19.png',
+    color: 1
+  },
+  {
+    name: 'Карточка Модрича',
+    description: 'Карточка Модрича для игры в Funny Football',
+    src: '/img/topics/realmadrid/19.png',
+    color: 1
+  },
+  {
+    name: 'Карточка Модрича',
+    description: 'Карточка Модрича для игры в Funny Football',
+    src: '/img/topics/realmadrid/19.png',
+    color: 1
+  }
+];
+
 // PACKS.map(p => ({ src: p.image, packID: p.packID, name: p.topic, price: p.price })) ||
 
 export default class PackPage extends Component {
   state = {
-    cards: [
-      {
-        name: '2000 рублей',
-        description: '2000 рублей на счёт',
-        // src: '../../gifts/1000.png',
-        src: '../../gifts/gold1.png',
-        color: 0
-      },
-      {
-        name: '500 рублей',
-        description: '500 рублей на счёт',
-        src: '../../gifts/gold1.png',
-        color: 1
-      },
-      {
-        name: '100 рублей',
-        description: '100 рублей на счёт',
-        src: '../../gifts/gold1.png',
-        color: 2
-      },
-      {
-        name: 'Футболка',
-        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
-        src: '../../gifts/shirt.jpg',
-        color: 1
-      },
-      {
-        name: 'Футболка',
-        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
-        src: '../../gifts/shirt2.jpg',
-        color: 1
-      },
-      {
-        name: 'Футболка',
-        description: 'Выиграй футболку любимого клуба и мы подарим её тебе!',
-        src: '../../gifts/shirt3.jpg',
-        color: 1
-      },
-      {
-        name: 'Карточка Модрича',
-        description: 'Карточка Модрича для игры в Funny Football',
-        src: '19.png',
-        color: 1
-      },
-      {
-        name: 'Карточка Модрича',
-        description: 'Карточка Модрича для игры в Funny Football',
-        src: '19.png',
-        color: 1
-      },
-      {
-        name: 'Карточка Модрича',
-        description: 'Карточка Модрича для игры в Funny Football',
-        src: '19.png',
-        color: 1
-      }
-    ],
+    cards: standardCards,
 
     chosenPack: -1,
     allPacks: standardPacks,
@@ -177,7 +174,6 @@ export default class PackPage extends Component {
   }
 
   chosePack(id) {
-    // console.log('chosePack', id);
     this.setState({ chosenPack: id });
     window.scrollTo(0, 0);
   }
@@ -192,10 +188,10 @@ export default class PackPage extends Component {
     // <div className="col-sm-3 col-md-3 col-xs-12">
     const CardList = this.state.cards.map((card) => (
       <div className="col-md-4 col-sm-6 col-xs-12">
-        <Card
+        <PackPrize
           name={card.name}
           description={card.description}
-          src={`/img/topics/realmadrid/${card.src}`}
+          src={card.src}
           color={card.color}
         />
       </div>
@@ -230,7 +226,7 @@ export default class PackPage extends Component {
       content = (
         <div>
           <div
-            className="row pack-container light-blue-big"
+            className="row pack-container light-blue"
             style="margin-top: 15px;"
           >
             {PackList}
@@ -248,7 +244,7 @@ export default class PackPage extends Component {
             style="cursor: pointer; text-underline: none;"
           >выбрать другой пак</a>
           <br />
-          <h1 className="text-center"> Что может выпасть в этом паке? </h1>
+          <h1 className="text-center"> Что может выпасть в паке? </h1>
           <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
         </div>
       );
@@ -256,9 +252,7 @@ export default class PackPage extends Component {
 
     return (
       <div>
-        <div className="white text-center">
-          {content}
-        </div>
+        <div className="white text-center">{content}</div>
       </div>
     );
   }

@@ -39,7 +39,7 @@ export default class Menu extends Component {
 
     const hover = 'menu-item'; //light-blue
     const menuTournaments = `${hover} ${props.active === 'Tournaments' ? 'active' : ''}`;
-    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''} hide`;
+    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''}`;
     const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''} ${login ? '' : 'hide'}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
@@ -57,7 +57,7 @@ export default class Menu extends Component {
 
     const balance = (
       <center>
-        <div style="background-color:#111111;" className="balance">
+        <div className="balance">
           <span>{text}</span>
           <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
           <span> / </span>
@@ -68,7 +68,7 @@ export default class Menu extends Component {
 
     const auth = (
       <center>
-        <div style="background-color:#111111;" className="balance">
+        <div className="balance">
           <a href="/Login">Войдите</a>
           <span>, чтобы начать играть!</span>
         </div>
@@ -97,12 +97,14 @@ export default class Menu extends Component {
     const indexLink = <div className={menuIndex}>Главная</div>;
     const tournamentLink = <div className={menuTournaments}>Турниры</div>;
     const profileLink = <div className={menuProfile}>Профиль</div>;
+    const packLink = <div className={menuPacks}>Призы</div>;
 
     return (
       <div className="menu-fixed-top">
         <div className="menu-container">
           <Link href="/" className="menu-link" content={indexLink} />
           <Link href="/Tournaments" className="menu-link" content={tournamentLink} />
+          <Link href="/Packs" className="menu-link" content={packLink} />
           <Link href="/Profile" className="menu-link" content={profileLink} />
         </div>
         <div className="menu-balance-container">

@@ -94,6 +94,7 @@ export default class DemoTest extends Component {
     return (
       <div className="demo-container">
         <h2 className="white">{resultMessage}</h2>
+        <h3 className="white">{result} из 5</h3>
         <div
           className="img-responsive img-demo"
           style={`background-image: url(${image});`}

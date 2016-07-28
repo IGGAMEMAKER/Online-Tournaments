@@ -1,14 +1,12 @@
 module.exports = function setApp(app, Answer, sender, Log, aux){
-  var Gifts = require('../../models/gifts')
-  var Collections = require('../../models/collections')
-  var Packs = require('../../models/packs')
-  var Users = require('../../models/users')
-  var Money = require('../../models/money')
-  var Actions = require('../../models/actions')
+  var Gifts = require('../../models/gifts');
+  var Collections = require('../../models/collections');
+  var Packs = require('../../models/packs');
+  var Actions = require('../../models/actions');
 
-  var middlewares = require('../../middlewares')
+  var middlewares = require('../../middlewares');
 
-  var time = require('../../helpers/time')
+  var time = require('../../helpers/time');
 
   // packs
   app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
@@ -42,6 +40,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
 
     var data = req.body;
     console.log(packID, data);
+
     var obj = {
       price: parseInt(data.price),
       colours: JSON.parse(data.colours),
@@ -49,7 +48,8 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       image: data.image,
       available: data.available,
       visible: data.visible
-    }
+    };
+
     Packs.edit(packID, obj)
     .then(aux.setData(req, next))
     .catch(next)
@@ -58,7 +58,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   app.get('/packInfo', aux.isAdmin, function (req, res){
     var info = Packs.info();
     res.json({info: info})
-  })
+  });
 
   app.get('/packOpenings/:type', aux.isAdmin, function (req, res, next){
     // var info = Packs.info();
@@ -188,7 +188,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     .catch(next)
   }, aux.std);
 
-  app.get('/AddCard', aux.isAdmin, aux.render('AddCard'))
+  app.get('/AddCard', aux.isAdmin, aux.render('AddCard'));
 
   app.post('/AddCard', aux.isAdmin, function (req, res, next){
     var data = req.body;
@@ -204,9 +204,13 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     Gifts.addCard(name, description, photoURL, price, rarity, {})
     .then(aux.result(req, next))
     .catch(next);
-  }, aux.std) // aux.render('AddCard')
+  }, aux.std); // aux.render('AddCard')
 
-
+  app.get('/api/gifts', aux.isAdmin, function (req, res, next) {
+    Gifts.all()
+      .then(aux.setData(req, next))
+      .catch(next)
+  }, aux.std);
 
   app.get('/ShowGifts', aux.isAdmin, function (req, res, next){
     Gifts.all()
@@ -219,8 +223,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var data = req.body;
     var query = req.query;
     var giftID = query.giftID;
-    if (query){
-      //siteAnswer(res, 'gift')
+    if (query) {
       sender.sendRequest('GetGift', {giftID:giftID} , '127.0.0.1', 'DBServer', res, 
           function (error, response, body, res1){
             //res.send(body.result);
@@ -251,7 +254,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       res.json({msg:'err'});
     }
   })
-}
+};
 
 //this.setApp = setApp;
 //module.exports = setApp;

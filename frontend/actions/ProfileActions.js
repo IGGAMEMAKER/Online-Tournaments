@@ -4,10 +4,12 @@ import * as c from '../constants/constants';
 import { ProfileType, ModalMessage } from '../components/types';
 import store from '../stores/ProfileStore';
 
+import sendError from '../helpers/sendError';
+
 type ResponseType = {
   body: {
     profile: ProfileType
-  },
+  }
 };
 
 type MsgType = {
@@ -19,9 +21,9 @@ type MsgType = {
   }
 };
 
-const sendError = (err, name) => {
-  console.error('error happened in ', name, err);
-};
+// const sendError = (err, name) => {
+//   console.error('error happened in ', name, err);
+// };
 
 const sendPaymentStat = (name, ammount, user) => {
   console.log('no money(', name, ammount, user);

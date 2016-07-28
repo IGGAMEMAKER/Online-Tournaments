@@ -12,7 +12,7 @@ type PropsType = {
   color: string,
 };
 
-export default function (props:PropsType): Component {
+export default function (props: PropsType): Component {
   let style = {};
   if (props.color > -1) {
     style['background-image'] = `url('/img/cardLayers/${props.color}.jpg')`;

@@ -46,9 +46,9 @@ module.exports = function(dbAddress){
 		TournamentReg : db.model('TournamentRegs', { 
 			tournamentID: Number, 
 			userID: String, 
-			promo:String, 
-			status:Number, 
-			date:Date 
+			promo: String,
+			status: Number,
+			date: Date
 		}),
 
 		Gift : db.model('Gift', { 

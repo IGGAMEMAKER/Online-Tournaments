@@ -454,6 +454,7 @@ app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, applicati
 
 app.get('/admin/support', middlewares.isAdmin, admin_page);
 app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
+app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
 // app.get('/Payment', aux.authenticated, application_page);
 /*

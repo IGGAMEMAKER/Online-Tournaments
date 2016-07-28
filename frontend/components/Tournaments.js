@@ -57,12 +57,16 @@ export default class Tournaments extends Component {
     actions.initialize();
   }
 
-  componentWillMount() {
-    console.log('componentWillMount tournaments');
-  }
+  // componentWillMount() {
+  //   console.log('componentWillMount tournaments');
+  // }
 
   componentDidMount() {
     console.log('componentDidMount tournaments');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
   }
 
   componentDidUpdate() {
