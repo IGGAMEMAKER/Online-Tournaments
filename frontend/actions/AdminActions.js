@@ -43,6 +43,15 @@ export default {
       sendError(e, 'admin/getPacks');
     }
   },
+  async removeGift(id) {
+    try {
+      const response = await request.post(`/api/gifts/remove/${id}`);
+
+      getGifts();
+    } catch (e) {
+      sendError(e, 'admin/getPacks');
+    }
+  },
   async addGift(gift) {
     try {
       console.log('sended gift...', gift);
@@ -63,6 +72,15 @@ export default {
 
     } catch (e) {
       sendError(e, 'admin/addGift');
+    }
+  },
+  async editGift(gift) {
+    try {
+      await request.post(`/api/gifts/edit/${gift._id}`).send(gift);
+
+      getGifts();
+    } catch (e) {
+      sendError('admin/editGift', e);
     }
   }
 }

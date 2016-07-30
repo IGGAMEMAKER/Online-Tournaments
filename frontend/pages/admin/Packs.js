@@ -32,7 +32,7 @@ export default class Packs extends Component {
     gifts: [],
     view: VIEWS_IMAGED,
 
-    newGift: getEmptyGift(),
+    newGift: getEmptyGift()
   };
 
 
@@ -59,29 +59,46 @@ export default class Packs extends Component {
     this.setState({ newGift })
   };
 
+  editGift = (i) => {
+    return (gift) => {
+      let gifts = this.state.gifts;
+      console.log('was', gifts[i]);
+      gifts[i] = Object.assign({}, gifts[i], gift);
+      console.log('now', gift, gifts[i]);
+
+      setTimeout(() => {
+        this.setState({
+          gifts
+        });
+      }, 100);
+    }
+  };
+
+  saveGiftChanges = (i) => {
+    console.log('saveGiftChanges', i);
+    actions.editGift(this.state.gifts[i]);
+  };
+
+  removeGift = (i) => {
+    console.log('removeGift', i);
+  };
+
   // /img/topics/realmadrid/19.png
 
   render(props, state: StateType) {
     const giftData = state.gifts.map((g, i) =>
       <div className="col-sm-2">
         <div>
-          <label className="white">photoURL</label>
-          <input type="text" name="photoURL" value={g.photoURL} />
-          <br />
-          <label className="white">name</label>
-          <input type="text" name="name" value={g.name} />
-          <br />
-          <label className="white">description</label>
-          <input type="text" name="description" value={g.description} />
-          <br />
-          <label className="white">price</label>
-          <input type="number" name="price" value={g.price} />
-          <br />
-          <label className="white">properties</label>
-          <input type="text" name="properties" value={JSON.stringify(g.properties || {})} />
-          <br />
+          <GiftForm
+            onSubmit={() => { this.saveGiftChanges(i); }}
+            onChange={this.editGift(i)}
+            gift={g}
+            action="edit gift"
+            removable
+            onRemove={() => { this.removeGift(i); }}
+          />
           <PackPrize
-            src={`/img/topics/realmadrid/${g.photoURL}`}
+            src={g.photoURL}
             name={g.name}
             description={g.description}
           />
@@ -115,6 +132,7 @@ export default class Packs extends Component {
               onSubmit={this.addGift}
               onChange={this.onChangeNewGift}
               gift={state.newGift}
+              action="add gift"
             />
           </div>
           <div className="col-sm-4">

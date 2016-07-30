@@ -7,8 +7,11 @@ type Gift = {
 type PropsType = {
   onSubmit: Function,
   onChange: Function,
+  onRemove: Function,
 
   gift: Gift,
+  action: string,
+  removable: boolean
 }
 
 type StateType = {
@@ -41,10 +44,9 @@ export default class GiftForm extends Component {
   }
 
   onFormEdit = (name, value) => {
-    let { gift } = this.state;
+    let { gift } = this.props;
     gift[name] = value;
 
-    this.setState({ gift });
     this.props.onChange(gift);
   };
 
@@ -75,9 +77,9 @@ export default class GiftForm extends Component {
       photoURL,
       price,
       name,
-    } = state.gift;
+    } = props.gift;
 
-    console.warn('gift form', state.gift);
+    // console.warn('gift form', state.gift);
 
     return (
       <div>
@@ -101,7 +103,13 @@ export default class GiftForm extends Component {
         <br />
         <input type="text" name="properties" onInput={this.onPropertiesChange} value={JSON.stringify(properties)} />
         <br />
-        <button onClick={() => { props.onSubmit(state.gift) }}>add gift</button>
+        <button onClick={() => { props.onSubmit(props.gift) }}>{props.action}</button>
+        {
+          props.removable ?
+            <button onClick={props.onRemove}>remove gift</button>
+            :
+            ''
+        }
       </div>
     );
   }

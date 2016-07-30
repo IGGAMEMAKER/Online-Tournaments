@@ -26,7 +26,7 @@ function addCard(name, description, photoURL, price, rarity, tags){
 		rarity:rarity,
 		isCard:true,
 	}
-	if (tags) properties.tags = tags
+	if (tags) properties.tags = tags;
 
 	obj.properties = properties;
 	return Gifts.save(obj);
@@ -34,6 +34,10 @@ function addCard(name, description, photoURL, price, rarity, tags){
 
 function remove(id){
 	return Gifts.remove({_id: id})
+}
+
+function edit(id, newGift) {
+	return Gifts.update({ _id: id}, newGift);
 }
 
 function add(name, photoURL, description, URL, price, sended, date, properties){
@@ -171,6 +175,7 @@ module.exports = {
 	addCard: addCard,
 	cards: cards,
 	remove: remove,
+	edit,
 
 	user: usergifts
 }
