@@ -24,6 +24,10 @@ class AdminStore extends EventEmitter {
   getGifts() {
     return _gifts;
   }
+
+  getPacks() {
+    return _packs;
+  }
 }
 
 const store = new AdminStore();

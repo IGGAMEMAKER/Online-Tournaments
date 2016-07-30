@@ -30,20 +30,22 @@ const getEmptyGift = () => {
 export default class Packs extends Component {
   state = {
     gifts: [],
+    packs: [],
     view: VIEWS_IMAGED,
 
     newGift: getEmptyGift()
   };
 
-
   componentWillMount() {
     store.addChangeListener(() => {
       this.setState({
-        gifts: store.getGifts()
+        gifts: store.getGifts(),
+        packs: store.getPacks()
       })
     });
 
     actions.getGifts();
+    actions.getAvailablePacks();
   }
 
   addGift = (gift) => {
@@ -62,49 +64,50 @@ export default class Packs extends Component {
   editGift = (i) => {
     return (gift) => {
       let gifts = this.state.gifts;
-      console.log('was', gifts[i]);
       gifts[i] = Object.assign({}, gifts[i], gift);
-      console.log('now', gift, gifts[i]);
 
       setTimeout(() => {
-        this.setState({
-          gifts
-        });
+        this.setState({ gifts });
       }, 100);
     }
   };
 
   saveGiftChanges = (i) => {
-    console.log('saveGiftChanges', i);
     actions.editGift(this.state.gifts[i]);
   };
 
   removeGift = (i) => {
-    console.log('removeGift', i);
+    actions.removeGift(this.state.gifts[i]._id);
   };
-
-  // /img/topics/realmadrid/19.png
 
   render(props, state: StateType) {
     const giftData = state.gifts.map((g, i) =>
-      <div className="col-sm-2">
+      <div>
         <div>
-          <GiftForm
-            onSubmit={() => { this.saveGiftChanges(i); }}
-            onChange={this.editGift(i)}
-            gift={g}
-            action="edit gift"
-            removable
-            onRemove={() => { this.removeGift(i); }}
-          />
-          <PackPrize
-            src={g.photoURL}
-            name={g.name}
-            description={g.description}
-          />
+          <div className="col-sm-2">
+            <GiftForm
+              onSubmit={() => { this.saveGiftChanges(i); }}
+              onChange={this.editGift(i)}
+              gift={g}
+              action="edit gift"
+              removable
+              onRemove={() => { this.removeGift(i); }}
+            />
+          </div>
+          <div className="col-sm-2">
+            <PackPrize
+              src={g.photoURL}
+              name={g.name}
+              description={g.description}
+            />
+          </div>
         </div>
       </div>
     );
+
+    const packs = state.packs.map((p, i) => {
+      return <div className="white">{JSON.stringify(p)}</div>;
+    });
     // const gifts = state.gifts.map((g) =>
     //   <div className="col-sm-4">
     //     <PackPrize
@@ -149,6 +152,7 @@ export default class Packs extends Component {
         </center>
 
         <div style="height: 150px;"></div>
+        <div>{packs}</div>
       </div>
     );
   }

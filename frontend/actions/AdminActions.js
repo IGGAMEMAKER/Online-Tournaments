@@ -33,7 +33,7 @@ export default {
       const response = await request.get('/api/packs/available');
 
       const packs = response.body.msg;
-
+      // console.log('')
       Dispatcher.dispatch({
         type: c.GET_PACKS,
         packs
