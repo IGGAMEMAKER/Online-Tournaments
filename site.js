@@ -35,6 +35,7 @@ var Errors = require('./models/errors');
 var Tournaments = require('./models/tournaments');
 var Message = require('./models/message');
 var Gifts = require('./models/gifts');
+var Usergifts = require('./models/usergifts');
 
 var Packs = require('./models/packs');
 
@@ -58,7 +59,8 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
-passport.use(new VKontakteStrategy({
+passport.use(
+  new VKontakteStrategy({
     clientID:     configs.vk.app_id, // VK.com docs call it 'API ID'
     clientSecret: configs.vk.secret_id,
     callbackURL:  configs.vk.url
@@ -113,7 +115,7 @@ app.use(session({
     secret: '1234567890QWERTY',
     cookie: { maxAge: new Date(Date.now() + maxAge) },
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: true
 }));
 
 app.use(passport.initialize());
@@ -156,7 +158,7 @@ var views = [
   './frontend/views/admin',
   './frontend/games/PingPong',
   './frontend/games/Questions',
-  './frontend/games/Football',
+  './frontend/games/Football'
 ];
 app.set('views', views);
 //app.set('games/PingPong', './views');
@@ -180,8 +182,8 @@ server = app.listen(8888, function () {
 // socket land
 
 var io;
-var SOCKET = require('./socket')(app, server)
-if (socket_enabled){
+var SOCKET = require('./socket')(app, server);
+if (socket_enabled) {
   io = SOCKET.io;
 }
 var aux = require('./models/auxillary');
@@ -222,7 +224,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: 
         else{ return body; } // or return an answer if it is used in promise
       }
 
-
       else{
         if (options.callback){ // if we have a callback - run it!
           if (options.failCallback){
@@ -262,7 +263,7 @@ function siteProxy( res, FSUrl, data, renderPage, server, title){
   if (FSUrl && res){
     sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
       server, res, function (error, response, body, res){
-        if (!error){
+        if (!error) {
           res.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
         } else {
           sender.Answer(res, { result:error });
@@ -288,7 +289,7 @@ function proxy(error, response, body, res){
   Answer(res, body);
 }
 
-var Fail = { result:'fail'};
+var Fail = { result:'fail' };
 
 var PRICE_FREE = 4;
 var PRICE_TRAINING = 5;
@@ -377,7 +378,16 @@ app.all('/StartTournament', function (req, res){
 
   sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 
-  if (socket_enabled) io.emit('StartTournament', {tournamentID : data.tournamentID, port:data.port, host:data.host, logins : data.logins});//+req.body.tournamentID
+  if (socket_enabled) {
+    var obj = {
+      tournamentID: data.tournamentID,
+      port: data.port,
+      host: data.host,
+      logins: data.logins
+    };
+    io.emit('StartTournament', obj);
+  }
+  //+req.body.tournamentID
   res.end();
 });
 
@@ -480,7 +490,7 @@ app.get('/Packs', aux.authenticated, function (req, res, next){
 app.get('/MyCollections', aux.authenticated, function (req, res, next) {
   // var login = aux.getLogin(req);
   var login = req.login;
-  Gifts.user.cardsGroup(login)
+  Usergifts.cardsGroup(login)
     .then(function (cards){
       req.data = {
         collections: realtime().collections,
@@ -496,7 +506,7 @@ app.get('/MyCollections', aux.authenticated, function (req, res, next) {
 app.get('/Cards', aux.authenticated, function (req, res, next){
   // var login = aux.getLogin(req);
   var login = req.login;
-  Gifts.user.cardsGroup(login)
+  Usergifts.cardsGroup(login)
     .then(function (cards){
       // console.log(cards);
       req.data = {
@@ -534,7 +544,7 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   var obj = {value:value, paid:paid};
   if (paid) obj.price = price;
 
-  aux.done(login, 'openPack', obj)
+  aux.done(login, 'openPack', obj);
 
   var paymentFunction = function(){
     if (paid) {
@@ -560,7 +570,7 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
     card.value = value;
     card.isFree = !paid;
 
-    Gifts.user.saveGift(login, giftID, true, card.colour);
+    Usergifts.saveGift(login, giftID, true, card.colour);
     aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
     res.json({});
   })
@@ -582,7 +592,8 @@ app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, ne
   var login = req.params.login;
   var count = parseInt(req.params.count);
   var colour = parseInt(req.params.colour);
-  if (!isNumeric(count) || !isNumeric(colour) ) {
+
+  if (!isNumeric(count) || !isNumeric(colour)) {
     return next('notnum')
   }
   grantPacksTo(login, colour, count)
@@ -603,7 +614,7 @@ app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
 function grantPacksTo(login, colour, count){
   return Users.pack.add(login, colour, count)
     .then(function (result){
-      aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour })
+      aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour });
       return result
     })
     .catch(aux.drop)
@@ -821,7 +832,7 @@ app.post('/autoreg', function (req, res) {
       // AsyncRender('DBServer', 'autoreg', res, null,  data);
       sender.sendRequest('autoreg', data, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
         if (err){
-          aux.fail(login, 'autoreg', data)
+          aux.fail(login, 'autoreg', data);
           sender.Answer(res, Fail);
         } else {
           if (body){
@@ -890,13 +901,13 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
 
     Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
     .then(function (result){
-      res.json({msg: 'grant', result:result})
+      res.json({msg: 'grant', result:result});
 
       if (ammount>0){
         aux.alert(login, c.NOTIFICATION_GIVE_MONEY, {
           ammount:ammount
         })
-        .catch(aux.catcher)
+        .catch(aux.catcher);
 
         // Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
         //   type: c.NOTIFICATION_GIVE_MONEY,
@@ -917,7 +928,7 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
   } else {
     cancel(res);
   }
-})
+});
 
 // server = app.listen(8888, function () {
 //   var host = server.address().address;
@@ -973,8 +984,8 @@ app.get('/getCSV', middlewares.isAdmin, function (req, res, next){
   .then(function (users){
     // console.log(users);
     for (var i = users.length - 1; i >= 0; i--) {
-      users[i].authlink = 'http://' + domainName+'/linker/'+users[i].login+'/'+ users[i].link;
-    };
+      users[i].authlink = 'http://' + domainName + '/linker/' + users[i].login + '/' + users[i].link;
+    }
     json2csv({ data: users, fields: fields }, function (err, csv) {
       if (err) {
         next(err);
@@ -1103,7 +1114,7 @@ app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
 
   //var targetType = typeof(target);
 
-  if (!target){
+  if (!target) {
     return next(null);
   }
 

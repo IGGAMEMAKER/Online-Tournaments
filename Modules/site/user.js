@@ -99,8 +99,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		var password = req.body.password;
 		//console.log('Login', login, password);
 		req.user = {
-			login : login
-		}
+			login: login
+		};
 
 		Actions.add(login, 'login');
 

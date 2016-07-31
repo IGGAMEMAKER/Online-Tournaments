@@ -1,4 +1,5 @@
 var Gifts = require('../models/gifts');
+var Usergifts = require('../models/usergifts');
 var Users = require('../models/users');
 var Money = require('../models/money');
 var Marathon = require('../models/marathon');
@@ -230,6 +231,7 @@ function YoungerizeTournament(tournament){
 		comment:    				tournament.comment,
 
 		playersCountStatus: tournament.playersCountStatus,///Fixed or float
+
 		startDate:    			null,
 		status:       			null,
 		players:      			0
@@ -274,7 +276,7 @@ function givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter){
 		if (Prize.MP && !isNaN(Prize.MP)){
 			Marathon.giveNpoints(login, parseInt(Prize.MP) || 10)
 		} else {
-			Gifts.user.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
+			Usergifts.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
 			.then(function (result){
 				console.log('saveGift', result)
 			})
@@ -283,7 +285,7 @@ function givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter){
 
 	}	else { //money
 		if (Prize > 0) {
-			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID:tournamentID };
+			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID: tournamentID };
 			var money = Prize;
 			Money.increase(login, money, src)
 			.then(function (result) {

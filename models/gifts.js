@@ -2,12 +2,15 @@ var db = require('../db');
 var Gifts = db.wrap('Gift');
 var UserGifts = db.wrap('UserGift');
 
-var c = require('../constants')
-// var await = require('await')
+var c = require('../constants');
 
-function all(query){
+function all(){
 	// return db.list('Gift', query)
-	return Gifts.list(query)
+	return Gifts.list({})
+}
+
+function get(query) {
+	return Gifts.list(query);
 }
 
 function getByID(giftID){
@@ -15,47 +18,9 @@ function getByID(giftID){
 	return Gifts.findOne({ _id : giftID })
 }
 
-function addCard(name, description, photoURL, price, rarity, tags){
-	var obj = {
-		name:name,
-		photoURL:photoURL,
-		price:price,
-		description:description
-	}
-	var properties = {
-		rarity:rarity,
-		isCard:true,
-	}
-	if (tags) properties.tags = tags;
-
-	obj.properties = properties;
-	return Gifts.save(obj);
-}
-
-function remove(id){
-	return Gifts.remove({_id: id})
-}
-
-function edit(id, newGift) {
-	return Gifts.update({ _id: id}, newGift);
-}
-
-function add(name, photoURL, description, URL, price, sended, date, properties){
+function add(name, photoURL, description, URL, price, sended, date, properties) {
 	//: Object // tags, status (bronze, silver, gold), isCard:Boolean, rarity){
 
-	// return db.save('Gift', data)
-
-	/*
-		name: String,
-		photoURL: String, 
-		description: String, 
-		URL: String, 
-		price: Number, 
-		sended:Object,
-		date:Date,
-
-		properties: Object // tags, status (bronze, silver, gold), isCard:Boolean, rarity
-	*/
 	var obj = {
 		name:name,
 		photoURL:photoURL,
@@ -66,35 +31,53 @@ function add(name, photoURL, description, URL, price, sended, date, properties){
 	return Gifts.save(obj)
 }
 
-function cards(rarity){
-	var obj = {	'properties.isCard': true	}
-	if (rarity || rarity==0) obj['properties.rarity'] = parseInt(rarity);
+function addCard(name, description, photoURL, price, rarity, tags) {
+	var obj = {
+		name: name,
+		photoURL: photoURL,
+		price: price,
+		description: description
+	};
 
-	// var obj = {	
-	// 	properties: { 
-	// 		isCard: true
-	// 	}
-	// }
-	// if (rarity || rarity==0){
-	// 	obj.properties.rarity = parseInt(rarity);
-	// } //obj['properties.rarity'] = rarity;
+	var properties = {
+		rarity: rarity,
+		isCard: true
+	};
+
+	if (tags) properties.tags = tags;
+
+	obj.properties = properties;
+	return Gifts.save(obj);
+}
+
+function remove(id) {
+	return Gifts.remove({_id: id});
+}
+
+function edit(id, newGift) {
+	return Gifts.update({_id: id}, newGift);
+}
+
+function cards(rarity){
+	var obj = {	'properties.isCard': true	};
+
+	if (rarity || rarity == 0) {
+		obj['properties.rarity'] = parseInt(rarity);
+	}
 
 	return Gifts.list(obj)
 }
 
-function remove(id){
-	return Gifts.remove({_id:id})
-}
 
 var usergifts = {
 	saveGift: function (login, giftID, isCard, colour){
 		var usergift = {
 			userID: login,
 			giftID: giftID
-		}
+		};
+
 		if (isCard) usergift.isCard = true;
 		if (colour) usergift.colour = colour;
-		// console.log(arguments, usergift);
 
 		return UserGifts.save(usergift)
 	}
@@ -122,7 +105,7 @@ var usergifts = {
 		},
 		{
 			$sort: { '_id.colour' :-1}
-		}]
+		}];
 		return UserGifts.aggregate(obj)
 	}
 	,remove: function (id){
@@ -135,7 +118,19 @@ var usergifts = {
 		console.log(login);
 		return UserGifts.remove({ userID: login})
 	}
-}
+};
+
+module.exports = {
+	all,
+	getByID,
+	add,
+	addCard,
+	cards,
+	remove,
+	edit,
+	get
+};
+
 
 // addCard()
 // add({})
@@ -167,15 +162,3 @@ var usergifts = {
 // usergifts.cardsGroup('23i03g')
 // .then(console.log)
 // .catch(console.error)
-
-module.exports = {
-	all: all,
-	getByID: getByID,
-	add: add,
-	addCard: addCard,
-	cards: cards,
-	remove: remove,
-	edit,
-
-	user: usergifts
-}

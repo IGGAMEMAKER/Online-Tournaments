@@ -1,5 +1,6 @@
 module.exports = function setApp(app, Answer, sender, Log, aux){
   var Gifts = require('../../models/gifts');
+  var Usergifts = require('../../models/usergifts');
   var Collections = require('../../models/collections');
   var Packs = require('../../models/packs');
   var Actions = require('../../models/actions');
@@ -119,24 +120,19 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   // console.log(middlewares);
 
   app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
-    Gifts.user.all()
+    Usergifts.all()
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);
 
   app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
-    // console.log('all player cards')
-    // var login = aux.getLogin(req);
-    var login = req.login;
-    Gifts.user.cards(login)
+    Usergifts.cards(req.login)
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);
 
   app.get('/api/usergifts/removeAll/', middlewares.authenticated, function (req, res, next){
-    // var login = aux.getLogin(req);
-    var login = req.login;
-    Gifts.user.clearAllByUsername(login)
+    Usergifts.clearAllByUsername(req.login)
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);

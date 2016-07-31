@@ -1,9 +1,9 @@
-var Gifts = require('./gifts')
+var Gifts = require('./gifts');
 
-var db = require('../db')
-var Packs = db.wrap('Pack')
+var db = require('../db');
+var Packs = db.wrap('Pack');
 
-var c = require('../constants')
+var c = require('../constants');
 
 var multiplier = 100;//0000;
 
@@ -16,7 +16,7 @@ var afterGamePack = {
 
 	// multiplier:100,
 	// items: Array,
-}
+};
 
 var poorPack = {
 	packID:1, price:1, image:'3.jpg',
@@ -25,7 +25,7 @@ var poorPack = {
 
 	// multiplier: 100,
 	// items:Array,
-}
+};
 
 var goodPack = {
 	packID:2, price:10, image:'0.jpg',
@@ -34,13 +34,13 @@ var goodPack = {
 
 	// multiplier:Number,
 	// items:Array,
-}
+};
 
 var excellentPack = {
 	packID:3, price:25, image:'0.jpg',
 	colours: [0, 5, 30, 65, 0],
 	available: true, visible: true
-}
+};
 
 
 var stdPacks = [afterGamePack, poorPack, goodPack, excellentPack];
@@ -144,7 +144,7 @@ function fillColourHandler(pack){
 		for (var j = 0; j < colours[i]; j++){
 			colourHandler[packID].push(i)
 		}
-	};
+	}
 	// console.log('fillColourHandler', pack, colours, colourHandler[packID].length)
 }
 
@@ -156,14 +156,14 @@ function getCardsByRarity(rarity){
 	})
 }
 
-function getRandomCard(packID){
+function getRandomCard(packID) {
 	var max = cardHandler.length;
-	var offset = getRandomInt(0, max - 1)
+	var offset = getRandomInt(0, max - 1);
 
 	return cardHandler[offset];
 }
 
-function getRandomColour(packID){
+function getRandomColour(packID) {
 	var max = colourHandler[packID].length;
 	var offset = getRandomInt(0, max - 1);
 
@@ -185,7 +185,7 @@ function cloneCard(card, colour){
 }
 
 function get_random_card(packID) {
-	var card = getRandomCard(packID)
+	var card = getRandomCard(packID);
 	var colour = getRandomColour(packID);
 
 	var crd = cloneCard(card, colour);
