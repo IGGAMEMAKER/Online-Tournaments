@@ -3,6 +3,7 @@ import actions from '../../actions/AdminActions';
 import store from '../../stores/AdminStore';
 
 import PackPrize from '../../components/Packs/PackPrize';
+import DarkCard from '../../components/Containers/DarkCard'; // same thing like PackPrize
 import GiftForm from '../../components/Packs/GiftForm';
 
 type Gift = {
@@ -81,54 +82,65 @@ export default class Packs extends Component {
   };
 
   render(props, state: StateType) {
-    const giftData = state.gifts.map((g, i) =>
-      <div>
+    const giftData = state.gifts.map((g, i) => {
+      return (
         <div>
-          <div className="col-sm-2">
-            <GiftForm
-              onSubmit={() => { this.saveGiftChanges(i); }}
-              onChange={this.editGift(i)}
-              gift={g}
-              action="edit gift"
-              removable
-              onRemove={() => { this.removeGift(i); }}
-            />
+          <div>
+            <div className="col-sm-2">
+              <GiftForm
+                onSubmit={() => { this.saveGiftChanges(i); }}
+                onChange={this.editGift(i)}
+                gift={g}
+                action="edit gift"
+                removable
+                onRemove={() => { this.removeGift(i); }}
+              />
+            </div>
+            <div className="col-sm-2">
+              <PackPrize
+                src={g.photoURL}
+                name={g.name}
+                description={g.description}
+              />
+            </div>
           </div>
+        </div>
+      );
+    });
+
+    const packs = state.packs.map((p, i) => {
+      return (
+        <div className="white">
           <div className="col-sm-2">
-            <PackPrize
-              src={g.photoURL}
-              name={g.name}
-              description={g.description}
+            <div>{p.packID}</div>
+            <div>{p.image}</div>
+            <div>available: {p.available}</div>
+            <div>visible: {p.visible}</div>
+            <div>items: {p.items.toString()}</div>
+            <div>colours: {p.colours.toString()}</div>
+          </div>
+          <div className="col-sm-4">
+            <DarkCard
+              src={`/img/cardLayers/${p.image}`}
+              name={`cost: ${p.price}`}
+              description={`packID: ${p.packID} cost: ${p.price}руб ${p._id}`}
             />
           </div>
         </div>
-      </div>
-    );
-
-    const packs = state.packs.map((p, i) => {
-      return <div className="white">{JSON.stringify(p)}</div>;
+      );
     });
-    // const gifts = state.gifts.map((g) =>
-    //   <div className="col-sm-4">
-    //     <PackPrize
-    //       src={g.photoURL}
-    //       name={g.name}
-    //       description={g.description}
-    //     />
-    //   </div>
-    // );
 
     const g = state.newGift;
-    console.log('render admin pack', g);
 
     return (
       <div>
-        <div style="overflow: hidden; height: auto;">
+        <div className="height-fix">
           <h2 className="white">Все карточки</h2>
           {giftData}
         </div>
 
-        <center>
+        <div className="height-fix">
+          <center>
           <div className="col-sm-4">
             <h2 className="white">Добавление новой карточки</h2>
             <GiftForm
@@ -150,9 +162,12 @@ export default class Packs extends Component {
             />
           </div>
         </center>
-
-        <div style="height: 150px;"></div>
-        <div>{packs}</div>
+        </div>
+        <div className="height-fix white">
+          <h2>Packs</h2>
+          <div style="height: 150px;"></div>
+          <div>{packs}</div>
+        </div>
       </div>
     );
   }

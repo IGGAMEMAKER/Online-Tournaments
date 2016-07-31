@@ -57,14 +57,6 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   });
 
   app.get('/packOpenings/:type', aux.isAdmin, function (req, res, next) {
-    // var info = Packs.info();
-    // res.json({info: info})
-
-    // income: function (time_function){ return spentMostOnPacks(0, time_function) }
-    // // ,incomeGT: function (ammount, time_function){ return spentMostOnPacks(ammount||0, time_function) }
-    // ,all : function (time_function){ return packOpenings(time_function, 0) }
-    // ,allPaid : function (time_function){ return packOpenings(time_function, 1) }
-
     var func;
     switch (req.params.type) {
       case 'incomeToday': // доход за сегодня
@@ -98,16 +90,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       //   func = function() { return Actions.openings.income(0, null) }
       // break;
     }
-    // Actions.packOpenings(req.params.date || null, parseInt(req.params.paid || 0) )
-    // Actions.openings()
     func()
-    // Actions.openings.income(null)
-    // .then(function (openings){
-    //   console.log('paidOpenings', openings)
-    //   // return openings
-    //   req.data = openings;
-    //   next();
-    // })
       .then(aux.setData(req, next))
       .catch(console.error)
   }, aux.list);
