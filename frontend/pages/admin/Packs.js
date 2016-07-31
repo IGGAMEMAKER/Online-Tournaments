@@ -119,12 +119,12 @@ export default class Packs extends Component {
     const items = {};
     this.state.packs[i].items.forEach((p) => {
       const id = this.getGiftIndexByGiftID(p);
-      console.log('id equals', id);
+
       if (id >= 0) {
         items[id] = 1;
       }
     }); //.map((p, i) => p._id);
-    console.log('selectPack', i, items);
+
     this.setState({
       items
     })
@@ -159,6 +159,7 @@ export default class Packs extends Component {
     });
 
     const packs = state.packs.map((p, i) => {
+      // src={`/img/cardLayers/${p.image}`}
       return (
         <div
           className="white"
@@ -174,7 +175,7 @@ export default class Packs extends Component {
           </div>
           <div className="col-sm-4">
             <DarkCard
-              src={`/img/cardLayers/${p.image}`}
+              src={p.image}
               name={`cost: ${p.price}`}
               description={`packID: ${p.packID} cost: ${p.price}руб ${p._id}`}
             />
@@ -203,6 +204,8 @@ export default class Packs extends Component {
         <div className="height-fix white">
           <h2>Packs</h2>
           <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
+          <br />
+          <button onClick={() => { this.setState({ items: {} })}}>clear</button>
           {giftSelector}
           <div>{selectedList.toString()}</div>
           <input value={`${selectedList}`} className="black full" />
