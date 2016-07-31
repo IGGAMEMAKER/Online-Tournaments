@@ -105,15 +105,12 @@ export default class Packs extends Component {
 
   getGiftIndexByGiftID = (giftID) => {
     let index = -1;
-    console.log('searching giftID ...', giftID);
+
     this.state.gifts.forEach((g, i) => {
-      console.log('iteration', i, giftID, g._id);
       if (giftID === g._id) {
-        console.log('equal!!', i);
         index = i;
       }
     });
-    console.log('searching giftID END', giftID);
 
     return index;
   };
