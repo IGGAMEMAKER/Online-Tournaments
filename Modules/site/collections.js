@@ -352,7 +352,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux) {
 	}));
 
 	// app.get('/api/collections/all', aux.isAdmin, function (req, res, next){
-// }
+	// }
 	app.get('/api/collections/all', aux.isAdmin, function (req, res, next){
 		Collections.all({})
 

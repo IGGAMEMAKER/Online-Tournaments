@@ -1,9 +1,9 @@
-var Collection = require('../models/collections')
-var Gifts = require('../models/gifts')
-var Packs = require('../models/packs')
-var Tournaments = require('../models/tournaments')
-var Message = require('../models/message')
-var Category = require('../models/category')
+var Collection = require('../models/collections');
+var Gifts = require('../models/gifts');
+var Packs = require('../models/packs');
+var Tournaments = require('../models/tournaments');
+var Message = require('../models/message');
+var Category = require('../models/category');
 
 
 var app, io;
@@ -11,11 +11,11 @@ var frontendVersion;
 
 
 objects = {
-	counter:0,
-	updater:{},
-	cards:[],
-	packs:[],
-	userpacks:userpacks,
+	counter: 0,
+	updater: {},
+	cards: [],
+	packs: [],
+	userpacks: userpacks,
 	news: null,
 	categories: [],
 	UPDATE_ALL: UPDATE_ALL,
@@ -61,7 +61,7 @@ function update_cards(){
 }
 
 function update_news(){
-	Message.news.active().then(save('news'))
+	Message.news.active().then(save('news'));
 	// Message.news.all().then(save('news'))
 }
 
@@ -75,20 +75,30 @@ function update_packs(){
 }
 
 function userpacks(){
-	var arr=[];
-	for (var i = 0; i < objects.packs.length; i++) {
-		var pack = objects.packs[i]
-		if (!pack.visible || !pack.available) continue;
-		arr.push({
-			packID: pack.packID,
-			price: pack.price,
-			image: pack.image
+	// var arr=[];
+	// for (var i = 0; i < objects.packs.length; i++) {
+	// 	var pack = objects.packs[i];
+  //
+	// 	if (!pack.visible || !pack.available) continue;
+	// 	arr.push({
+	// 		packID: pack.packID,
+	// 		price: pack.price,
+	// 		image: pack.image
+	// 	})
+	// }
+	// return arr
+	return objects.packs
+		.filter(p => p.available && p.visible)
+		.map(p => {
+			return {
+				packID: p.packID,
+				price: p.price,
+				image: p.image
+			}
 		})
-	};
-	return arr
 }
 
-function update_tournaments(period){
+function update_tournaments(period) {
 	Tournaments.get()
   .then(function (tournaments){
     if (tournaments) { 
@@ -105,7 +115,7 @@ function update_tournaments(period){
   setTimeout(function(){ update_tournaments(period) }, period);
 }
 
-setInterval(function(){ objects.counter++; }, 1000)
+setInterval(function(){ objects.counter++; }, 1000);
 
 
 module.exports = function(_app, _io){
@@ -118,6 +128,6 @@ module.exports = function(_app, _io){
 	io = _io;
 	return function(){
 		return objects;
-	}
+	};
 	// get: objects
-}
+};

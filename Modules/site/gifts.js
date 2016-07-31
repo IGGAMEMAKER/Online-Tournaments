@@ -1,7 +1,6 @@
 module.exports = function setApp(app, Answer, sender, Log, aux){
   var Gifts = require('../../models/gifts');
   var Usergifts = require('../../models/usergifts');
-  var Collections = require('../../models/collections');
   var Packs = require('../../models/packs');
   var Actions = require('../../models/actions');
 
@@ -9,18 +8,16 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
 
   var time = require('../../helpers/time');
 
-  // packs
-  app.get('/api/packs/remove/:packID', aux.isAdmin, function (req, res, next){
-    Packs.remove(req.params.packID)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  var respond = require('../../middlewares/api-response');
 
-  app.get('/api/packs/removeAll', aux.isAdmin, function (req, res, next){
-    Packs.remove(req.params.packID)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  // packs
+  app.get('/api/packs/remove/:packID', aux.isAdmin, respond(req => {
+    return Packs.remove(req.params.packID)
+  }));
+
+  app.get('/api/packs/removeAll', aux.isAdmin, respond(req => {
+    return Packs.removeAll()
+  }));
 
 
   app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
@@ -30,11 +27,9 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   }, aux.render('PackInfo'), aux.err);
   // }, aux.std);
 
-  app.get('/api/packs/available', aux.isAdmin, function (req, res, next) {
-    Packs.available()
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/packs/available', aux.isAdmin, respond (req => {
+    return Packs.available()
+  }));
 
   app.post('/api/packs/edit/:id', aux.isAdmin, function (req, res, next) {
     var packID = parseInt(req.params.id);
@@ -117,58 +112,53 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       .catch(console.error)
   }, aux.list);
 
-  // console.log(middlewares);
+  app.get('/api/usergifts/all', aux.isAdmin, respond (req => {
+    return Usergifts.all()
+  }));
 
-  app.get('/api/usergifts/all', aux.isAdmin, function (req, res, next){
-    Usergifts.all()
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/usergifts/cards/', middlewares.authenticated, respond(req => {
+    return Usergifts.cards(req.login)
+  }));
 
-  app.get('/api/usergifts/cards/', middlewares.authenticated, function (req, res, next){
-    Usergifts.cards(req.login)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
-
-  app.get('/api/usergifts/removeAll/', middlewares.authenticated, function (req, res, next){
-    Usergifts.clearAllByUsername(req.login)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/usergifts/removeAll/', middlewares.authenticated, respond(req => {
+    return Usergifts.clearAllByUsername(req.login)
+  }));
 
   // gifts
-  app.post('/api/gifts/remove/:id', aux.isAdmin, function (req, res, next) {
-    var id = req.params.id;
-    Gifts.remove(id)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.post('/api/gifts/remove/:id', aux.isAdmin, respond(req => {
+    return Gifts.remove(req.params.id)
+  }));
+
   app.post('/api/gifts/edit/:id', aux.isAdmin, function (req, res, next) {
     var id = req.params.id;
     var data = req.body;
 
-    var name = data.name;
-    var photoURL = data.photoURL;
-    var description = data.description;
-    var properties = data.properties;
-
-    try {
-      var price = parseInt(data.price) || 0;
-
-      if (!name || !photoURL || !description || !properties) {
-        console.error('gift editing failed', data);
-        throw 'invalid data;'
-      }
+    if (isValidGift(data)) {
       Gifts
         .edit(id, data)
         .then(aux.setData(req, next))
         .catch(next);
-    } catch (e) {
+    } else {
       console.error(e);
       next(e);
     }
   }, aux.std);
+
+  function isValidGift(data) {
+    var name = data.name;
+    var photoURL = data.photoURL;
+    var description = data.description;
+    var properties = data.properties;
+    // var price = parseInt(data.price) || 0;
+
+    if (!name || !photoURL || !description || !properties || isNaN(data.price)) {
+      console.error('gift editing failed', data);
+      return false;
+      // throw 'invalid data;'
+    }
+
+    return true;
+  }
 
   // app.get('/AddGift', aux.isAdmin, aux.render('AddGift'))
 
@@ -179,56 +169,33 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var photoURL = data.photoURL;
     var description = data.description;
     var properties = data.properties;
+    var price = data.price;
 
-    try {
-      var price = parseInt(data.price) || 0;
-
-      if (!name || !photoURL || !description || !properties) {
-        console.error('gift adding failed', data);
-        throw 'invalid data;'
-      }
+    if (isValidGift(data)) {
       Gifts
         .add(name, photoURL, description, '', price, false, new Date(), properties)
         .then(aux.setData(req, next))
         .catch(next);
-    } catch (e) {
+    } else {
       console.error(e);
       next(e);
     }
-    // var data = req.body;
-    // Log('AddGift ' + JSON.stringify(data), 'Manual');
-    // if (data){
-    //   sender.sendRequest('AddGift', data, '127.0.0.1', 'DBServer', res, function (error, response, body, res1){
-    //     res.render('AddGift', {msg:body});
-    //   });
-    // }
-    // else{
-    //   Answer(res, Fail);
-    // }
-    // //sender.sendRequest('AddGift', data?data:{}, '127.0.0.1', 'FrontendServer', res,
-          
   }, aux.std);
+
   app.get('/api/gifts/cards', aux.isAdmin, function (req, res, next){
-    // var rarity = null;
-
     Gifts.cards(null)
-
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);
 
   app.get('/api/gifts/cards/:rarity', aux.isAdmin, function (req, res, next){
-    var rarity = req.params.rarity;
-
-    Gifts.cards(rarity || null)
+    Gifts.cards(req.params.rarity || null)
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);
 
   app.get('/api/gifts/remove/:id', aux.isAdmin, function (req, res, next){
-    var id = req.params.id;
-
-    Gifts.remove(id)
+    Gifts.remove(req.params.id)
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);

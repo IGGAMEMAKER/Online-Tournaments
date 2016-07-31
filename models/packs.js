@@ -73,7 +73,7 @@ function add(new_pack){
 	return Packs.find({packID: packID})
 	.then(function (pack){
 		// if (pack) throw 'pack with same id exists ' + packID;
-		if (pack) return null
+		if (pack) return null;
 
 		return Packs.save(new_pack);
 	})
@@ -94,8 +94,8 @@ var initialized = false;
 function initialize(){
 	availablePacks()
 	.then(function (listOfPacks){
-		if (!listOfPacks || listOfPacks.length==0){
-			addStd()
+		if (!listOfPacks || listOfPacks.length == 0){
+			addStd();
 			return stdPacks;
 		}
 		return listOfPacks;
@@ -106,7 +106,7 @@ function initialize(){
 
 		for (var i = packs.length - 1; i >= 0; i--) {
 			fillColourHandler(packs[i])
-		};
+		}
 
 		return Gifts.cards(null)
 	})
@@ -122,7 +122,7 @@ function initialize(){
 	})
 }
 
-var colourHandler = {}
+var colourHandler = {};
 var cardHandler = [];
 
 function info(){
@@ -203,16 +203,16 @@ module.exports = {
 	get: function (packID) {
 		return get_random_card(packID || 0)
 	},
-	get_after_game_card: get_after_game_card,
+	get_after_game_card,
 	available: availablePacks,
-	all: all,
-	update: update,
-	remove: remove,
-	removeAll: removeAll,
-	info:info,
-	edit:edit
+	all,
+	update,
+	remove,
+	removeAll,
+	info,
+	edit
 	// userpacks:userpacks
-}
+};
 
 function runTests(){
 	// get_random_card(0)
@@ -234,7 +234,7 @@ function showStats(){
 function TestRandomizer(){
 	setTimeout(function(){
 		setInterval(function(){
-			var crd = get_after_game_card()
+			var crd = get_after_game_card();
 
 			if (!stats.cards[crd.name]) stats.cards[crd.name] =0;
 			stats.cards[crd.name]++;
@@ -249,7 +249,7 @@ function TestRandomizer(){
 }
 
 var objects = [];
-var mln = { giftID: 'a0192ej0iqjsd', colour: 2 }
+var mln = { giftID: 'a0192ej0iqjsd', colour: 2 };
 
 function Test2(){
 	console.time('start');

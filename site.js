@@ -1057,10 +1057,10 @@ app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
   var title = data.title || "";
 
   var obj = {
-    text:text,
-    image:image,
-    url:url,
-    title:title
+    text: text,
+    image: image,
+    url: url,
+    title: title
   };
 
   Message.news.edit(id, obj)
