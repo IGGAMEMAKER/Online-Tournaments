@@ -12,7 +12,11 @@ type Gift = {
 
 type StateType = {
   gifts: Array<Gift>,
-  newGift: Gift
+  packs: Array,
+  view: string,
+
+  newGift: Gift,
+  items: Object,
 }
 
 const VIEWS_IMAGED = 'VIEWS_IMAGED';
@@ -34,7 +38,8 @@ export default class Packs extends Component {
     packs: [],
     view: VIEWS_IMAGED,
 
-    newGift: getEmptyGift()
+    newGift: getEmptyGift(),
+    items: {}
   };
 
   componentWillMount() {
@@ -79,6 +84,23 @@ export default class Packs extends Component {
 
   removeGift = (i) => {
     actions.removeGift(this.state.gifts[i]._id);
+  };
+
+  attachGift = (i) => {
+    const state: StateType = this.state;
+    let items = Object.assign({}, state.items);
+
+    if (items[i]) {
+      items[i] = 0;
+    } else {
+      items[i] = 1;
+    }
+
+    this.setState({ items });
+  };
+
+  isAttached = (i) => {
+    return this.state.items[i];
   };
 
   render(props, state: StateType) {
@@ -132,6 +154,19 @@ export default class Packs extends Component {
 
     const g = state.newGift;
 
+    const giftSelector = state.gifts.map((g, i) => {
+      return (
+        <div
+          onClick={() => this.attachGift(i)}
+          className={this.isAttached(i) ? 'red' : ''}>
+          {g.name}
+          {this.isAttached(i) ? '  X' : ''}
+        </div>
+      );
+    });
+
+    let selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => g._id);
+
     return (
       <div>
         <div className="height-fix">
@@ -141,30 +176,34 @@ export default class Packs extends Component {
 
         <div className="height-fix">
           <center>
-          <div className="col-sm-4">
-            <h2 className="white">Добавление новой карточки</h2>
-            <GiftForm
-              onSubmit={this.addGift}
-              onChange={this.onChangeNewGift}
-              gift={state.newGift}
-              action="add gift"
-            />
-          </div>
-          <div className="col-sm-4">
-            <br />
-            <br />
-            <br />
-            <br />
-            <PackPrize
-              src={g.photoURL}
-              name={g.name}
-              description={g.description}
-            />
-          </div>
-        </center>
+            <div className="col-sm-4">
+              <h2 className="white">Добавление новой карточки</h2>
+              <GiftForm
+                onSubmit={this.addGift}
+                onChange={this.onChangeNewGift}
+                gift={state.newGift}
+                action="add gift"
+              />
+            </div>
+            <div className="col-sm-4">
+              <br />
+              <br />
+              <br />
+              <br />
+              <PackPrize
+                src={g.photoURL}
+                name={g.name}
+                description={g.description}
+              />
+            </div>
+          </center>
         </div>
         <div className="height-fix white">
           <h2>Packs</h2>
+          <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
+          {giftSelector}
+          <div>{selectedList.toString()}</div>
+          <input value={`${selectedList}`} className="black full" />
           <div style="height: 150px;"></div>
           <div>{packs}</div>
         </div>
