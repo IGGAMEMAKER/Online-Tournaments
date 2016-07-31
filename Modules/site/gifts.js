@@ -68,31 +68,31 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var func;
     switch (req.params.type) {
       case 'incomeToday': // доход за сегодня
-        func = function() { return Actions.openings.income(0, time.happened_today) }
+        func = function() { return Actions.openings.income(0, time.happened_today) };
         break;
       case 'incomeYesterday': // доход за сегодня
-        func = function() { return Actions.openings.income(0, time.happened_yesterday) }
+        func = function() { return Actions.openings.income(0, time.happened_yesterday) };
         break;
       case 'incomeAll': //доход за всё время
-        func = function() { return Actions.openings.income(0, null) }
+        func = function() { return Actions.openings.income(0, null) };
         break;
       case 'openedYesterday': // открыто за сегодня
-        func = function() { return Actions.openings.all(time.happened_yesterday) }
+        func = function() { return Actions.openings.all(time.happened_yesterday) };
         break;
       case 'openedToday': // открыто за сегодня
-        func = function() { return Actions.openings.all(time.happened_today) }
+        func = function() { return Actions.openings.all(time.happened_today) };
         break;
       case 'openedAll': //открыто за всё время
-        func = function() { return Actions.openings.all(null) }
+        func = function() { return Actions.openings.all(null) };
         break;
       case 'totalToday': // открыто за сегодня
-        func = function() { return Actions.openings.total(time.happened_today) }
+        func = function() { return Actions.openings.total(time.happened_today) };
         break;
       case 'totalYesterday': // открыто за сегодня
-        func = function() { return Actions.openings.total(time.happened_yesterday) }
+        func = function() { return Actions.openings.total(time.happened_yesterday) };
         break;
       case 'totalAll': //открыто за всё время
-        func = function() { return Actions.openings.total(null) }
+        func = function() { return Actions.openings.total(null) };
         break;
       // default:
       //   func = function() { return Actions.openings.income(0, null) }
@@ -182,23 +182,17 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     }
   }, aux.std);
 
-  app.get('/api/gifts/cards', aux.isAdmin, function (req, res, next){
-    Gifts.cards(null)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/gifts/cards', aux.isAdmin, respond(req => {
+    return Gifts.cards(null)
+  }));
 
-  app.get('/api/gifts/cards/:rarity', aux.isAdmin, function (req, res, next){
-    Gifts.cards(req.params.rarity || null)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/gifts/cards/:rarity', aux.isAdmin, respond(req => {
+    return Gifts.cards(req.params.rarity || null)
+  }));
 
-  app.get('/api/gifts/remove/:id', aux.isAdmin, function (req, res, next){
-    Gifts.remove(req.params.id)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/gifts/remove/:id', aux.isAdmin, respond(req => {
+    return Gifts.remove(req.params.id)
+  }));
 
   app.get('/AddCard', aux.isAdmin, aux.render('AddCard'));
 
@@ -218,11 +212,9 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       .catch(next);
   }, aux.std); // aux.render('AddCard')
 
-  app.get('/api/gifts', aux.isAdmin, function (req, res, next) {
-    Gifts.all()
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
+  app.get('/api/gifts', aux.isAdmin, respond(req => {
+    return Gifts.all()
+  }));
 
   app.get('/ShowGifts', aux.isAdmin, function (req, res, next){
     Gifts.all()
