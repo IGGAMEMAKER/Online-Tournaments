@@ -103,10 +103,29 @@ export default class Packs extends Component {
     return this.state.items[i];
   };
 
+  getGiftIndexByGiftID = (giftID) => {
+    let index = -1;
+    console.log('searching giftID ...', giftID);
+    this.state.gifts.forEach((g, i) => {
+      console.log('iteration', i, giftID, g._id);
+      if (giftID === g._id) {
+        console.log('equal!!', i);
+        index = i;
+      }
+    });
+    console.log('searching giftID END', giftID);
+
+    return index;
+  };
+
   selectPack = (i) => {
     const items = {};
-    this.state.packs[i].items.forEach((p, i) => {
-      items[i] = p;
+    this.state.packs[i].items.forEach((p) => {
+      const id = this.getGiftIndexByGiftID(p);
+      console.log('id equals', id);
+      if (id >= 0) {
+        items[id] = 1;
+      }
     }); //.map((p, i) => p._id);
     console.log('selectPack', i, items);
     this.setState({
@@ -120,6 +139,7 @@ export default class Packs extends Component {
         <div>
           <div>
             <div className="col-sm-2">
+              <div className="white">{g._id}</div>
               <GiftForm
                 onSubmit={() => { this.saveGiftChanges(i); }}
                 onChange={this.editGift(i)}
@@ -183,6 +203,15 @@ export default class Packs extends Component {
 
     return (
       <div>
+        <div className="height-fix white">
+          <h2>Packs</h2>
+          <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
+          {giftSelector}
+          <div>{selectedList.toString()}</div>
+          <input value={`${selectedList}`} className="black full" />
+          <div style="height: 150px;"></div>
+          <div>{packs}</div>
+        </div>
         <div className="height-fix">
           <h2 className="white">Все карточки</h2>
           {giftData}
@@ -211,15 +240,6 @@ export default class Packs extends Component {
               />
             </div>
           </center>
-        </div>
-        <div className="height-fix white">
-          <h2>Packs</h2>
-          <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
-          {giftSelector}
-          <div>{selectedList.toString()}</div>
-          <input value={`${selectedList}`} className="black full" />
-          <div style="height: 150px;"></div>
-          <div>{packs}</div>
         </div>
       </div>
     );
