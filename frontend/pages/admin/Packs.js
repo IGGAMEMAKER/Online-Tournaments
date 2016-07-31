@@ -103,6 +103,17 @@ export default class Packs extends Component {
     return this.state.items[i];
   };
 
+  selectPack = (i) => {
+    const items = {};
+    this.state.packs[i].items.forEach((p, i) => {
+      items[i] = p;
+    }); //.map((p, i) => p._id);
+    console.log('selectPack', i, items);
+    this.setState({
+      items
+    })
+  };
+
   render(props, state: StateType) {
     const giftData = state.gifts.map((g, i) => {
       return (
@@ -132,7 +143,10 @@ export default class Packs extends Component {
 
     const packs = state.packs.map((p, i) => {
       return (
-        <div className="white">
+        <div
+          className="white"
+          onClick={() => { this.selectPack(i) }}
+        >
           <div className="col-sm-2">
             <div>{p.packID}</div>
             <div>{p.image}</div>
@@ -165,7 +179,7 @@ export default class Packs extends Component {
       );
     });
 
-    let selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => g._id);
+    let selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => `"${g._id}"`);
 
     return (
       <div>
