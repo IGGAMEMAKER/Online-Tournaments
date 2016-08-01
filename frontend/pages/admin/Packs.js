@@ -115,6 +115,48 @@ export default class Packs extends Component {
     return index;
   };
 
+  drawGiftCard = (i) => {
+    const g = this.state.gifts[i];
+    return <PackPrize
+      src={g.photoURL}
+      name={g.name}
+      description={g.description}
+    />;
+  };
+
+  drawGiftCardTexted = (i) => {
+    const g = this.state.gifts[i];
+    // return <div>{g.name}</div>;
+    return g.name;
+  };
+
+  getProbabilityOfGift = (packID, giftIndex) => {
+    let pack = null;
+    this.state.packs.filter(p => {
+      if (p.packID === packID) {
+        pack = p;
+      }
+    });
+
+    if (!pack) {
+      return 0;
+    }
+
+    const chances = pack.probabilities.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue;
+    }, 0);
+
+    if (chances === 0) {
+      return 0;
+    }
+
+    return pack.probabilities[giftIndex] / chances;
+  };
+
+  savePackChanges = (i) => {
+    actions.editPack(this.state.packs[i]);
+  };
+
   selectPack = (i) => {
     const items = {};
     this.state.packs[i].items.forEach((p) => {
@@ -160,18 +202,45 @@ export default class Packs extends Component {
 
     const packs = state.packs.map((p, i) => {
       // src={`/img/cardLayers/${p.image}`}
+      /*
+       <div>{p.packID}</div>
+       <div>{p.image}</div>
+       <div>available: {p.available}</div>
+       <div>visible: {p.visible}</div>
+       <div>items: {p.items.toString()}</div>
+       <div>probabilities: {p.probabilities.toString()}</div>
+       <div>colours: {p.colours.toString()}</div>
+       */
+      const item = p;
       return (
         <div
           className="white"
           onClick={() => { this.selectPack(i) }}
         >
-          <div className="col-sm-2">
-            <div>{p.packID}</div>
-            <div>{p.image}</div>
-            <div>available: {p.available}</div>
-            <div>visible: {p.visible}</div>
-            <div>items: {p.items.toString()}</div>
-            <div>colours: {p.colours.toString()}</div>
+          <div className="col-sm-4">
+            <h2>pack {p.packID}</h2>
+            <label>price</label>
+            <input type="number" value={item.price} name="price" class="black" />
+            <br />
+            <label> colours </label>
+            <input type="text" value={JSON.stringify(item.colours)} name="colours" class="black" />
+            <br />
+            <label> items </label>
+            <input type="text" value={JSON.stringify(item.items)} name="items" class="black" />
+            <br />
+            <label> probabilities </label>
+            <input type="text" value={JSON.stringify(item.probabilities)} name="probabilities" class="black" />
+            <br />
+            <label> image </label>
+            <input type="text" value={item.image} name="image" class="black" />
+            <br />
+            <label> available </label>
+            <input type="text" value={JSON.stringify(item.available)} name="available" class="black" />
+            <br />
+            <label> visible </label>
+            <input type="text" value={JSON.stringify(item.visible)} name="visible" class="black" />
+            <br />
+            <input type="submit" value="edit pack" onClick={() => { this.savePackChanges(i) }} />
           </div>
           <div className="col-sm-4">
             <DarkCard
@@ -180,6 +249,18 @@ export default class Packs extends Component {
               description={`packID: ${p.packID} cost: ${p.price}руб ${p._id}`}
             />
           </div>
+          <div className="height-fix">
+            {Object.keys(state.items).map(index => {
+              console.log('probabilities of pack ', p.packID, ' of gift ', index, state.items);
+              return (
+                <div>
+                  {this.drawGiftCardTexted(index)}
+                  {this.getProbabilityOfGift(p.packID, index)} %
+                </div>
+              );
+            })}
+          </div>
+          <hr width="60%" className="white" />
         </div>
       );
     });

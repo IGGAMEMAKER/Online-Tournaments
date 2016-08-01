@@ -26,23 +26,25 @@ async function getGifts() {
   }
 }
 
+async function getAvailablePacks() {
+  try {
+    const response = await request.get('/api/packs/available');
+
+    const packs = response.body.msg;
+    // console.log('')
+    Dispatcher.dispatch({
+      type: c.GET_PACKS,
+      packs
+    })
+
+  } catch (e) {
+    sendError(e, 'admin/getPacks');
+  }
+}
+
 export default {
   getGifts,
-  async getAvailablePacks() {
-    try {
-      const response = await request.get('/api/packs/available');
-
-      const packs = response.body.msg;
-      // console.log('')
-      Dispatcher.dispatch({
-        type: c.GET_PACKS,
-        packs
-      })
-
-    } catch (e) {
-      sendError(e, 'admin/getPacks');
-    }
-  },
+  getAvailablePacks,
   async removeGift(id) {
     try {
       const response = await request.post(`/api/gifts/remove/${id}`);
@@ -81,6 +83,15 @@ export default {
       getGifts();
     } catch (e) {
       sendError('admin/editGift', e);
+    }
+  },
+  async editPack(pack) {
+    try {
+      await request.post(`/api/packs/edit/${pack.packID}`).send(pack);
+
+      getAvailablePacks();
+    } catch (e) {
+      sendError('admin/editPack', e);
     }
   }
 }
