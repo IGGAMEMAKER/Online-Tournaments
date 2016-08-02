@@ -70,6 +70,30 @@ export default class PackEditingForm extends Component {
     this.onFormEdit('name', e.target.value);
   };
 
+  onItemsChange = (e: KeyboardEvent) => {
+    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    this.onFormEdit('items', JSON.parse(e.target.value))
+  };
+
+  onProbabilitiesChange = (e: KeyboardEvent) => {
+    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    this.onFormEdit('probabilities', JSON.parse(e.target.value))
+  };
+
+  onColoursChange = (e: KeyboardEvent) => {
+    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    this.onFormEdit('colours', JSON.parse(e.target.value))
+  };
+
+  toggleAvailability = () => {
+    this.onFormEdit('available', !this.props.pack.available);
+  };
+
+  toggleVisibility = () => {
+    this.onFormEdit('visible', !this.props.pack.visible);
+  };
+
+
 
   render(props: PropsType, state: StateType) {
     // console.warn('pack form', state.pack, props.pack);
@@ -95,7 +119,7 @@ export default class PackEditingForm extends Component {
         <input
           type="number"
           value={item.price}
-          class="black"
+          className="black"
           onInput={this.onPriceChange}
         />
         <br />
@@ -103,7 +127,7 @@ export default class PackEditingForm extends Component {
         <input
           type="text"
           value={item.image}
-          class="black"
+          className="black"
           onInput={this.onImageChange}
         />
         <br />
@@ -111,35 +135,40 @@ export default class PackEditingForm extends Component {
         <input
           type="text"
           value={JSON.stringify(item.colours)}
-          class="black"
+          className="black"
+          onInput={this.onColoursChange}
         />
         <br />
         <label> items </label>
         <input
           type="text"
           value={JSON.stringify(item.items)}
-          class="black"
+          className="black"
+          onInput={this.onItemsChange}
         />
         <br />
         <label> probabilities </label>
         <input
           type="text"
           value={JSON.stringify(item.probabilities)}
-          class="black"
+          className="black"
+          onInput={this.onProbabilitiesChange}
         />
         <br />
         <label> available </label>
         <input
           type="text"
           value={JSON.stringify(item.available)}
-          class="black"
+          className="black"
+          onInput={this.toggleAvailability}
         />
         <br />
         <label> visible </label>
         <input
           type="text"
           value={JSON.stringify(item.visible)}
-          class="black"
+          className="black"
+          onInput={this.toggleVisibility}
         />
         <br />
         <button
