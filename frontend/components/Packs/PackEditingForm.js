@@ -50,6 +50,14 @@ export default class PackEditingForm extends Component {
     this.props.onChange(Object.assign({}, pack));
   };
 
+  onImageChange = (e: KeyboardEvent) => {
+    this.onFormEdit('image', e.target.value);
+  };
+
+  onPriceChange = (e: KeyboardEvent) => {
+    this.onFormEdit('price', parseInt(e.target.value));
+  };
+
   onDescriptionChange = (e: KeyboardEvent) => {
     this.onFormEdit('description', e.target.value);
   };
@@ -58,17 +66,10 @@ export default class PackEditingForm extends Component {
     this.onFormEdit('properties', JSON.parse(e.target.value));
   };
 
-  onPriceChange = (e: KeyboardEvent) => {
-    this.onFormEdit('price', parseInt(e.target.value));
-  };
-
   onNameChange = (e: KeyboardEvent) => {
     this.onFormEdit('name', e.target.value);
   };
 
-  onPhotoURLChange = (e: KeyboardEvent) => {
-    this.onFormEdit('photoURL', e.target.value);
-  };
 
   render(props: PropsType, state: StateType) {
     // console.warn('pack form', state.pack, props.pack);
@@ -94,30 +95,57 @@ export default class PackEditingForm extends Component {
         <input
           type="number"
           value={item.price}
-          name="price"
           class="black"
           onInput={this.onPriceChange}
         />
         <br />
         <label> image </label>
-        <input type="text" value={item.image} name="image" class="black" />
+        <input
+          type="text"
+          value={item.image}
+          class="black"
+          onInput={this.onImageChange}
+        />
         <br />
         <label> colours </label>
-        <input type="text" value={JSON.stringify(item.colours)} name="colours" class="black" />
+        <input
+          type="text"
+          value={JSON.stringify(item.colours)}
+          class="black"
+        />
         <br />
         <label> items </label>
-        <input type="text" value={JSON.stringify(item.items)} name="items" class="black" />
+        <input
+          type="text"
+          value={JSON.stringify(item.items)}
+          class="black"
+        />
         <br />
         <label> probabilities </label>
-        <input type="text" value={JSON.stringify(item.probabilities)} name="probabilities" class="black" />
+        <input
+          type="text"
+          value={JSON.stringify(item.probabilities)}
+          class="black"
+        />
         <br />
         <label> available </label>
-        <input type="text" value={JSON.stringify(item.available)} name="available" class="black" />
+        <input
+          type="text"
+          value={JSON.stringify(item.available)}
+          class="black"
+        />
         <br />
         <label> visible </label>
-        <input type="text" value={JSON.stringify(item.visible)} name="visible" class="black" />
+        <input
+          type="text"
+          value={JSON.stringify(item.visible)}
+          class="black"
+        />
         <br />
-        <button className="black" onClick={() => { props.onSubmit(props.pack) }}>{props.action}</button>
+        <button
+          className="black"
+          onClick={() => { props.onSubmit(props.pack) }}
+        >{props.action}</button>
         {
           props.removable ?
             <button className="black" onClick={props.onRemove}>remove pack</button> : ''
