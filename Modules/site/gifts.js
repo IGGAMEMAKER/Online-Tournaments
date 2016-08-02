@@ -37,28 +37,18 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var data = req.body;
     console.log(packID, data);
 
-    var obj = {};
-    obj.price = parseInt(data.price);
-    console.log('attempt', obj);
-    obj.colours = data.colours;
-    console.log('attempt', obj);
-    obj.items = data.items;
-    console.log('attempt', obj);
-    obj.probabilities = data.probabilities;
-    console.log('attempt', obj);
-    obj.image = data.image;
-    console.log('attempt', obj);
-    obj.available = data.available;
-    console.log('attempt', obj);
-    obj.visible = data.visible;
-    console.log('attempt', obj);
+    var obj = {
+      price: parseInt(data.price),
+      colours: data.colours,
+      items: data.items,
+      probabilities: data.probabilities,
+      image: data.image,
+      available: data.available,
+      visible: data.visible,
+    };
 
     console.log('packs.edit', obj);
     Packs.edit(packID, obj)
-      .then(r => {
-        console.log('packs/edit/', packID, obj, r);
-        return r;
-      })
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.std);
