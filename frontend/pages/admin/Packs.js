@@ -6,6 +6,8 @@ import PackPrize from '../../components/Packs/PackPrize';
 import DarkCard from '../../components/Containers/DarkCard'; // same thing like PackPrize
 import GiftForm from '../../components/Packs/GiftForm';
 
+import PackEditingForm from '../../components/Packs/PackEditingForm';
+
 type Gift = {
 
 }
@@ -63,7 +65,7 @@ export default class Packs extends Component {
   };
 
   onChangeNewGift = (newGift) => {
-    console.log('onChangeNewGift!!!', newGift);
+    // console.log('onChangeNewGift!!!', newGift);
     this.setState({ newGift })
   };
 
@@ -78,8 +80,24 @@ export default class Packs extends Component {
     }
   };
 
+  editPack = (i) => {
+    return (pack) => {
+      console.warn('editPack, i=', i, pack);
+      let packs = this.state.packs;
+      packs[i] = Object.assign({}, packs[i], pack);
+
+      setTimeout(() => {
+        this.setState({ packs });
+      }, 100);
+    }
+  };
+
   saveGiftChanges = (i) => {
     actions.editGift(this.state.gifts[i]);
+  };
+
+  savePackChanges = (i) => {
+    actions.editPack(this.state.packs[i]);
   };
 
   removeGift = (i) => {
@@ -153,10 +171,6 @@ export default class Packs extends Component {
     return pack.probabilities[giftIndex] / chances;
   };
 
-  savePackChanges = (i) => {
-    actions.editPack(this.state.packs[i]);
-  };
-
   selectPack = (i) => {
     const items = {};
     this.state.packs[i].items.forEach((p) => {
@@ -211,36 +225,20 @@ export default class Packs extends Component {
        <div>probabilities: {p.probabilities.toString()}</div>
        <div>colours: {p.colours.toString()}</div>
        */
-      const item = p;
       return (
         <div
           className="white"
           onClick={() => { this.selectPack(i) }}
         >
           <div className="col-sm-4">
-            <h2>pack {p.packID}</h2>
-            <label>price</label>
-            <input type="number" value={item.price} name="price" class="black" />
-            <br />
-            <label> colours </label>
-            <input type="text" value={JSON.stringify(item.colours)} name="colours" class="black" />
-            <br />
-            <label> items </label>
-            <input type="text" value={JSON.stringify(item.items)} name="items" class="black" />
-            <br />
-            <label> probabilities </label>
-            <input type="text" value={JSON.stringify(item.probabilities)} name="probabilities" class="black" />
-            <br />
-            <label> image </label>
-            <input type="text" value={item.image} name="image" class="black" />
-            <br />
-            <label> available </label>
-            <input type="text" value={JSON.stringify(item.available)} name="available" class="black" />
-            <br />
-            <label> visible </label>
-            <input type="text" value={JSON.stringify(item.visible)} name="visible" class="black" />
-            <br />
-            <input type="submit" value="edit pack" onClick={() => { this.savePackChanges(i) }} />
+            <PackEditingForm
+              pack={p}
+              onSubmit={() => { this.savePackChanges(i); }}
+              onChange={this.editPack(i)}
+              action="edit pack"
+              removable
+              onRemove={() => { this.removePack(i); }}
+            />
           </div>
           <div className="col-sm-4">
             <DarkCard
@@ -251,10 +249,10 @@ export default class Packs extends Component {
           </div>
           <div className="height-fix">
             {Object.keys(state.items).map(index => {
-              console.log('probabilities of pack ', p.packID, ' of gift ', index, state.items);
+              // console.log('probabilities of pack ', p.packID, ' of gift ', index, state.items);
               return (
                 <div>
-                  {this.drawGiftCardTexted(index)}
+                  {this.drawGiftCardTexted(index)}&nbsp;
                   {this.getProbabilityOfGift(p.packID, index)} %
                 </div>
               );

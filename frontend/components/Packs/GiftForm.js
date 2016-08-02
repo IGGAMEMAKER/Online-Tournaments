@@ -103,10 +103,10 @@ export default class GiftForm extends Component {
         <br />
         <input type="text" name="properties" onInput={this.onPropertiesChange} value={JSON.stringify(properties)} />
         <br />
-        <button onClick={() => { props.onSubmit(props.gift) }}>{props.action}</button>
+        <button className="black" onClick={() => { props.onSubmit(props.gift) }}>{props.action}</button>
         {
           props.removable ?
-            <button onClick={props.onRemove}>remove gift</button>
+            <button className="black" onClick={props.onRemove}>remove gift</button>
             :
             ''
         }

@@ -87,7 +87,9 @@ export default {
   },
   async editPack(pack) {
     try {
-      await request.post(`/api/packs/edit/${pack.packID}`).send(pack);
+      console.log('new version of pack', pack);
+      const response = await request.post(`/api/packs/edit/${pack.packID}`).send(pack);
+      console.log('editPack actions response', response);
 
       getAvailablePacks();
     } catch (e) {

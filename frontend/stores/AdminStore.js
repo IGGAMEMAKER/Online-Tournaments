@@ -61,6 +61,7 @@ Dispatcher.register((p: PayloadType) => {
       _gifts = p.gifts;
       break;
     case c.GET_PACKS:
+      console.log('store admin get packs', p);
       _packs = p.packs;
       break;
     default:
