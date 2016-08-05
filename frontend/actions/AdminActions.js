@@ -14,7 +14,7 @@ async function getGifts() {
     const response = await request.get('/api/gifts/');
 
     const gifts = response.body.msg;
-    console.log('got response', gifts);
+    // console.log('got response', gifts);
 
     Dispatcher.dispatch({
       type: c.GET_GIFTS,

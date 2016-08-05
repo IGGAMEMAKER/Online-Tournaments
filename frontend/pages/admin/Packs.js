@@ -148,6 +148,18 @@ export default class Packs extends Component {
     return g.name;
   };
 
+  getGiftInfoByGiftID = (giftID) => {
+    let gift = null;
+
+    this.state.gifts.forEach(g => {
+      if (g._id === giftID) {
+        gift = g;
+      }
+    });
+
+    return gift;
+  };
+
   getProbabilityOfGift = (packID, giftIndex) => {
     let pack = null;
     this.state.packs.filter(p => {
@@ -157,18 +169,21 @@ export default class Packs extends Component {
     });
 
     if (!pack) {
+      console.log('no pack found by id', packID);
       return 0;
     }
 
-    const chances = pack.probabilities.reduce((previousValue, currentValue) => {
+    const totalChances = pack.probabilities.reduce((previousValue, currentValue) => {
       return previousValue + currentValue;
     }, 0);
 
-    if (chances === 0) {
+    if (totalChances === 0) {
       return 0;
     }
 
-    return pack.probabilities[giftIndex] / chances;
+    const itemProbability = pack.probabilities[giftIndex];
+    console.log('calculating probabilities of', giftIndex, ' in ', packID, ' equals ', itemProbability, '/', totalChances);
+    return  itemProbability / totalChances;
   };
 
   selectPack = (i) => {
@@ -184,6 +199,15 @@ export default class Packs extends Component {
     this.setState({
       items
     })
+  };
+
+  countableGift = (index) => {
+    try {
+      return this.state.gifts[index].properties['isCard'] ? 0 : this.state.gifts[index].price;
+    } catch (e) {
+      console.error(e, 'countableGift', index, this.state.gifts);
+      return 0;
+    }
   };
 
   render(props, state: StateType) {
@@ -214,8 +238,8 @@ export default class Packs extends Component {
       );
     });
 
+    console.log('gifts', state.gifts);
     const packs = state.packs.map((p, i) => {
-      // src={`/img/cardLayers/${p.image}`}
       /*
        <div>{p.packID}</div>
        <div>{p.image}</div>
@@ -225,6 +249,26 @@ export default class Packs extends Component {
        <div>probabilities: {p.probabilities.toString()}</div>
        <div>colours: {p.colours.toString()}</div>
        */
+      const balanceAndProbabilities = p.items.map(itemID => {
+        const index = this.getGiftIndexByGiftID(itemID);
+        console.log(`converted _id=${itemID} to ${index}`);
+
+        if (index < 0) {
+          return 'invalid_gift';
+        }
+
+        console.log('balanceAndProbabilities', p.packID, index);
+        // console.log('probabilities of pack ', p.packID, ' of gift ', index, state.items);
+
+        return (
+          <div>
+            {this.drawGiftCardTexted(index)}&nbsp;
+            {this.getProbabilityOfGift(p.packID, index)} %
+            price: {this.countableGift(index)}
+          </div>
+        );
+      });
+
       return (
         <div
           className="white"
@@ -248,15 +292,8 @@ export default class Packs extends Component {
             />
           </div>
           <div className="height-fix">
-            {Object.keys(state.items).map(index => {
-              // console.log('probabilities of pack ', p.packID, ' of gift ', index, state.items);
-              return (
-                <div>
-                  {this.drawGiftCardTexted(index)}&nbsp;
-                  {this.getProbabilityOfGift(p.packID, index)} %
-                </div>
-              );
-            })}
+            <h3>Probabilities</h3>
+            {balanceAndProbabilities}
           </div>
           <hr width="60%" className="white" />
         </div>
@@ -284,10 +321,13 @@ export default class Packs extends Component {
           <h2>Packs</h2>
           <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
           <br />
-          <button onClick={() => { this.setState({ items: {} })}}>clear</button>
+          <button onClick={() => { this.setState({ items: {} }) }}>clear</button>
           {giftSelector}
           <div>{selectedList.toString()}</div>
           <input value={`${selectedList}`} className="black full" />
+          <br />
+          <label>test</label>
+          <input className="black full" />
           <div style="height: 150px;"></div>
           <div>{packs}</div>
         </div>

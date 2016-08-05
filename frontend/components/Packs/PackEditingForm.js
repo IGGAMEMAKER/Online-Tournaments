@@ -71,17 +71,17 @@ export default class PackEditingForm extends Component {
   };
 
   onItemsChange = (e: KeyboardEvent) => {
-    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    // console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
     this.onFormEdit('items', JSON.parse(e.target.value))
   };
 
   onProbabilitiesChange = (e: KeyboardEvent) => {
-    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    // console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
     this.onFormEdit('probabilities', JSON.parse(e.target.value))
   };
 
   onColoursChange = (e: KeyboardEvent) => {
-    console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
+    // console.log('onChange', e.target.value, Array.from(e.target.value), Array.of(e.target.value));
     this.onFormEdit('colours', JSON.parse(e.target.value))
   };
 
@@ -92,8 +92,6 @@ export default class PackEditingForm extends Component {
   toggleVisibility = () => {
     this.onFormEdit('visible', !this.props.pack.visible);
   };
-
-
 
   render(props: PropsType, state: StateType) {
     // console.warn('pack form', state.pack, props.pack);

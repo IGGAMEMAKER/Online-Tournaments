@@ -57,11 +57,11 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.GET_GIFTS:
-      console.log('store admin', p);
+      // console.log('store admin', p);
       _gifts = p.gifts;
       break;
     case c.GET_PACKS:
-      console.log('store admin get packs', p);
+      // console.log('store admin get packs', p);
       _packs = p.packs;
       break;
     default:
