@@ -59,7 +59,7 @@ function edit(id, gift) {
 	return Gifts.update({ "_id": id }, {
 		$set: {
 			name: gift.name,
-			photoUrl: gift.photoUrl,
+			photoURL: gift.photoURL,
 			description: gift.description,
 			price: gift.price,
 			properties: gift.properties,
