@@ -226,7 +226,7 @@ Dispatcher.register((p: PayloadType) => {
       break;
     default:
       change = false;
-      console.warn(`Dispatcher.register unexpected type ${p.type}`);
+      // console.warn(`Dispatcher.register unexpected type ${p.type}`);
       break;
   }
   if (change) store.emitChange();

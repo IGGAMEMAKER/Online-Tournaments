@@ -28,6 +28,34 @@ class AdminStore extends EventEmitter {
   getPacks() {
     return _packs;
   }
+
+  getGiftByGiftID(giftID) {
+    let gift = null;
+
+    _gifts.forEach((g) => {
+      if (g._id === giftID) {
+        gift = g;
+      }
+    });
+
+    if (gift) {
+      return Object.assign({}, gift);
+    } else {
+      return null;
+    }
+  }
+
+  getGiftIndexByGiftID(giftID) {
+    let index = -1;
+
+    _gifts.forEach((g, i) => {
+      if (g._id === giftID) {
+        index = i;
+      }
+    });
+
+    return index;
+  }
 }
 
 const store = new AdminStore();

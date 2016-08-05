@@ -55,7 +55,9 @@ export default class GiftForm extends Component {
   };
 
   onPropertiesChange = (e: KeyboardEvent) => {
-    this.onFormEdit('properties', JSON.parse(e.target.value));
+    const properties = JSON.parse(e.target.value);
+    console.log('converting properties...', properties, e.target.value);
+    this.onFormEdit('properties', properties);
   };
 
   onPriceChange = (e: KeyboardEvent) => {
@@ -85,23 +87,29 @@ export default class GiftForm extends Component {
       <div>
         <label className="white">photoURL</label>
         <br />
-        <input type="text" name="photoURL" onInput={this.onPhotoURLChange} value={photoURL} />
+        <input type="text" className="black" name="photoURL" onInput={this.onPhotoURLChange} value={photoURL} />
         <br />
         <label className="white">name</label>
         <br />
-        <input type="text" name="name" onInput={this.onNameChange} value={name} />
+        <input type="text" className="black" name="name" onInput={this.onNameChange} value={name} />
         <br />
         <label className="white">description</label>
         <br />
-        <input type="text" name="description" onInput={this.onDescriptionChange} value={description} />
+        <input type="text" className="black" name="description" onInput={this.onDescriptionChange} value={description} />
         <br />
         <label className="white">price</label>
         <br />
-        <input type="number" name="price" onInput={this.onPriceChange} value={price} />
+        <input type="number" className="black" name="price" onInput={this.onPriceChange} value={price} />
         <br />
         <label className="white">properties</label>
         <br />
-        <input type="text" name="properties" onInput={this.onPropertiesChange} value={JSON.stringify(properties)} />
+        <input
+          type="text"
+          className="black"
+          name="properties"
+          onInput={this.onPropertiesChange}
+          value={JSON.stringify(properties)}
+        />
         <br />
         <button className="black" onClick={() => { props.onSubmit(props.gift) }}>{props.action}</button>
         {

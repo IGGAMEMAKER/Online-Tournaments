@@ -54,8 +54,17 @@ function remove(id) {
 	return Gifts.remove({_id: id});
 }
 
-function edit(id, newGift) {
-	return Gifts.update({_id: id}, newGift);
+function edit(id, gift) {
+	console.log('edit gift', id, gift);
+	return Gifts.update({ "_id": id }, {
+		$set: {
+			name: gift.name,
+			photoUrl: gift.photoUrl,
+			description: gift.description,
+			price: gift.price,
+			properties: gift.properties,
+		}
+	});
 }
 
 function cards(rarity){

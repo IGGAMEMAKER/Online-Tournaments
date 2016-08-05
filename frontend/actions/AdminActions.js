@@ -28,10 +28,10 @@ async function getGifts() {
 
 async function getAvailablePacks() {
   try {
-    const response = await request.get('/api/packs/available');
+    // const response = await request.get('/api/packs/available');
+    const response = await request.get('/api/packs/all');
 
     const packs = response.body.msg;
-    // console.log('')
     Dispatcher.dispatch({
       type: c.GET_PACKS,
       packs
@@ -51,7 +51,16 @@ export default {
 
       getGifts();
     } catch (e) {
-      sendError(e, 'admin/getPacks');
+      sendError(e, 'admin/removeGift');
+    }
+  },
+  async removePack(id) {
+    try {
+      const response = await request.post(`/api/packs/remove/${id}`);
+
+      getAvailablePacks();
+    } catch (e) {
+      sendError(e, 'admin/removePack');
     }
   },
   async addGift(gift) {
@@ -78,7 +87,9 @@ export default {
   },
   async editGift(gift) {
     try {
-      await request.post(`/api/gifts/edit/${gift._id}`).send(gift);
+      console.log('sending newer gift', gift);
+      const response = await request.post(`/api/gifts/edit/${gift._id}`).send(gift);
+      console.log('editGift response', response);
 
       getGifts();
     } catch (e) {

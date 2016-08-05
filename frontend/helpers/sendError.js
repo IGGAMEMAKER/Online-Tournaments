@@ -1,3 +1,3 @@
-export default (err, name) => {
-  console.error('error happened in ', name, err);
+export default (err, name, info) => {
+  console.error('error happened in ', name, err, info);
 };

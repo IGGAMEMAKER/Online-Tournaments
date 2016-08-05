@@ -11,7 +11,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   var respond = require('../../middlewares/api-response');
 
   // packs
-  app.get('/api/packs/remove/:packID', aux.isAdmin, respond(req => {
+  app.post('/api/packs/remove/:packID', aux.isAdmin, respond(req => {
     return Packs.remove(req.params.packID)
   }));
 
@@ -20,11 +20,14 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   }));
 
 
-  app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
-    Packs.all()
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.render('PackInfo'), aux.err);
+  app.get('/api/packs/all', aux.isAdmin, respond (req => {
+    return Packs.all()
+  }));
+  // app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
+  //   Packs.all()
+  //     .then(aux.setData(req, next))
+  //     .catch(next)
+  // }, aux.render('PackInfo'), aux.err);
   // }, aux.std);
 
   app.get('/api/packs/available', aux.isAdmin, respond (req => {
@@ -45,6 +48,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       image: data.image,
       available: data.available,
       visible: data.visible,
+      // properties: data.properties,
     };
 
     console.log('packs.edit', obj);
@@ -121,10 +125,14 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     if (isValidGift(data)) {
       Gifts
         .edit(id, data)
+        .then(r => {
+          console.log('update result', data, r);
+          return r;
+        })
         .then(aux.setData(req, next))
         .catch(next);
     } else {
-      console.error(e);
+      console.error('invalidGift', data, e);
       next(e);
     }
   }, aux.std);
@@ -136,7 +144,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var properties = data.properties;
     // var price = parseInt(data.price) || 0;
 
-    if (!name || !photoURL || !description || !properties || isNaN(data.price)) {
+    if (!name || !photoURL || !description || isNaN(data.price)) {
       console.error('gift editing failed', data);
       return false;
       // throw 'invalid data;'
