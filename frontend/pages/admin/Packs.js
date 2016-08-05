@@ -244,7 +244,10 @@ export default class Packs extends Component {
           <br />
 
           <button onClick={() => { this.setState({ items: {} }) }}>clear</button>
-          <div>{giftSelector}</div>
+          <div>
+            <h3 className="">Gift selector</h3>
+            {giftSelector}
+          </div>
           <input value={`[${selectedList}]`} className="black full" />
           <br />
           <label>test</label>

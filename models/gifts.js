@@ -137,7 +137,7 @@ module.exports = {
 	cards,
 	remove,
 	edit,
-	get
+	get,
 };
 
 
