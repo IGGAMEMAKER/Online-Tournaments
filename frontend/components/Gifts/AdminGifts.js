@@ -74,7 +74,7 @@ export default class AdminGifts extends Component {
 
   saveGiftChanges = (i) => {
     const gift = this.state.gifts[i];
-    console.log('saveGiftChanges', gift);
+    // console.log('saveGiftChanges', gift);
     actions.editGift(gift);
   };
 

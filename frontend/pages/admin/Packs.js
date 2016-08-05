@@ -139,8 +139,14 @@ export default class Packs extends Component {
     }
   };
 
-  render(props, state: StateType) {
-    const packs = state.packs.map((p, i) => {
+  roundingToTwoDigits = (num) => {
+    return Math.floor(num * 100) / 100;
+  };
+
+  packList = () => {
+    const state: StateType = this.state;
+
+    return state.packs.map((p, i) => {
       let decrease = 0;
       const totalChances = p.probabilities.reduce((prev, curr) => prev + curr, 0);
 
@@ -154,7 +160,7 @@ export default class Packs extends Component {
 
         const giftChance = totalChances > 0 ? chance / totalChances : 0;
         const price = this.countableGift(gift);
-        decrease += price;// * giftChance;
+        decrease += price * chance;
 
         return (
           <div>
@@ -166,7 +172,7 @@ export default class Packs extends Component {
       });
 
       const balance = totalChances * p.price;
-      const saldo = balance - decrease;
+      const saldo = (balance - decrease) / totalChances;
       let balanceTabColour = 'green';
       let balanceTabText = `Saldo is +${saldo}`;
 
@@ -212,8 +218,10 @@ export default class Packs extends Component {
         </div>
       );
     });
+  };
 
-    const g = state.newGift;
+  render(props, state: StateType) {
+    const packs = this.packList();
 
     const giftSelector = state.gifts.map((g, i) => {
       return (
@@ -226,7 +234,7 @@ export default class Packs extends Component {
       );
     });
 
-    let selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => `"${g._id}"`);
+    const selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => `"${g._id}"`);
 
     return (
       <div>
@@ -242,7 +250,7 @@ export default class Packs extends Component {
           <label>test</label>
 
           <input className="black full" />
-          <div style="height: 150px;"></div>
+          <div style={`height: 150px;`}></div>
           <div>{packs}</div>
         </div>
 

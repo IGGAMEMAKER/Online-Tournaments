@@ -56,7 +56,7 @@ export default class GiftForm extends Component {
 
   onPropertiesChange = (e: KeyboardEvent) => {
     const properties = JSON.parse(e.target.value);
-    console.log('converting properties...', properties, e.target.value);
+    // console.log('converting properties...', properties, e.target.value);
     this.onFormEdit('properties', properties);
   };
 

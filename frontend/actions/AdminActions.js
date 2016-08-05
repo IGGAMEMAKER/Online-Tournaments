@@ -87,9 +87,9 @@ export default {
   },
   async editGift(gift) {
     try {
-      console.log('sending newer gift', gift);
+      // console.log('sending newer gift', gift);
       const response = await request.post(`/api/gifts/edit/${gift._id}`).send(gift);
-      console.log('editGift response', response);
+      // console.log('editGift response', response);
 
       getGifts();
     } catch (e) {
