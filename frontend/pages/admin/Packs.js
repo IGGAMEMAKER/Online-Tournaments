@@ -10,9 +10,9 @@ import PackEditingForm from '../../components/Packs/PackEditingForm';
 import AdminGifts from '../../components/Gifts/AdminGifts';
 import sendError from '../../helpers/sendError';
 
-type Gift = {
+type Gift = {}
 
-}
+type PackType = {}
 
 type StateType = {
   gifts: Array<Gift>,
@@ -20,6 +20,7 @@ type StateType = {
   view: string,
 
   newGift: Gift,
+  newPack: PackType,
   items: Object,
 }
 
@@ -36,6 +37,18 @@ const getEmptyGift = () => {
   };
 };
 
+const getEmptyPack = () => {
+  return {
+    items: [],
+    probabilities: [],
+    colours: [],
+    image: '',
+    available: false,
+    visible: false,
+    price: 1000
+  }
+};
+
 export default class Packs extends Component {
   state = {
     gifts: [],
@@ -43,6 +56,7 @@ export default class Packs extends Component {
     view: VIEWS_IMAGED,
 
     newGift: getEmptyGift(),
+    newPack: getEmptyPack(),
     items: {}
   };
 
@@ -83,6 +97,13 @@ export default class Packs extends Component {
         this.setState({ packs });
       }, 100);
     }
+  };
+
+  editNewPack = (pack) => {
+    console.warn('editNewPack');
+    this.setState({
+      newPack: Object.assign({}, this.state.newPack, pack)
+    });
   };
 
   savePackChanges = (i) => {
@@ -236,6 +257,7 @@ export default class Packs extends Component {
 
     const selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => `"${g._id}"`);
 
+    const p = state.newPack;
     return (
       <div>
         <div className="height-fix white">
@@ -254,6 +276,12 @@ export default class Packs extends Component {
 
           <input className="black full" />
           <div style={`height: 150px;`}></div>
+          <PackEditingForm
+            pack={p}
+            onSubmit={() => { actions.addPack(state.newPack); }}
+            onChange={this.editNewPack}
+            action="add pack"
+          />
           <div>{packs}</div>
         </div>
 

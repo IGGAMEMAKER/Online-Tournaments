@@ -34,22 +34,34 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     return Packs.available()
   }));
 
-  app.post('/api/packs/edit/:id', aux.isAdmin, function (req, res, next) {
-    var packID = parseInt(req.params.id);
-
-    var data = req.body;
-    console.log(packID, data);
-
-    var obj = {
+  function pickPackfromData(data) {
+    return {
       price: parseInt(data.price),
       colours: data.colours,
       items: data.items,
       probabilities: data.probabilities,
       image: data.image,
       available: data.available,
-      visible: data.visible,
-      // properties: data.properties,
-    };
+      visible: data.visible
+    }
+  }
+
+  app.post('/api/packs/add', middlewares.contentManager, respond(req => {
+    var obj = pickPackfromData(req.body);
+    obj.date = new Date();
+    console.log('api/packs/add', obj);
+
+    // return Packs.add(obj.name, obj.photoURL, obj.description, '', obj.price, {}, new Date(), obj.properties)
+    return Packs.add(obj)
+  }));
+
+  app.post('/api/packs/edit/:id', middlewares.contentManager, function (req, res, next) {
+    var packID = parseInt(req.params.id);
+
+    var data = req.body;
+    console.log(packID, data);
+
+    var obj = pickPackfromData(data);
 
     console.log('packs.edit', obj);
     Packs.edit(packID, obj)

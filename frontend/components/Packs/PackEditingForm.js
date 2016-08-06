@@ -112,7 +112,7 @@ export default class PackEditingForm extends Component {
 
     return (
       <div>
-        <h2>pack {p.packID}</h2>
+        <h2>pack {p.packID || ''}</h2>
         <label>price</label>
         <input
           type="number"

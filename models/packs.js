@@ -1,4 +1,5 @@
 var Gifts = require('./gifts');
+var Promise = require('bluebird');
 
 var db = require('../db');
 var Packs = db.wrap('Pack');
@@ -52,12 +53,32 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function addPack(pack) {
+	console.log('addPack in models/packs', pack);
+	return Packs
+		.aggregate([
+			{ $sort : { "packID": -1 } },
+			{ $limit : 1 }
+		])
+		.then(packList => {
+			var maxID = -1;
+			if (packList.length === 1) {
+				maxID = packList[0].packID;
+			}
+			console.log('addPack', pack, packList, maxID);
 
+			pack.packID = maxID + 1;
 
+			// return pack;
+			return Packs.save(pack);
+			// 	.then(resolve)
+			// 	.catch(reject)
+		})
+}
 
 function addStd(){
 	return add(afterGamePack)
-	.then(function (result){
+		.then(function (result){
 		return add(poorPack)
 	})
 	.then(function (result){
@@ -70,7 +91,7 @@ function addStd(){
 
 function add(new_pack){
 	var packID = new_pack.packID;
-	return Packs.find({packID: packID})
+	return Packs.find({ packID: packID })
 	.then(function (pack){
 		// if (pack) throw 'pack with same id exists ' + packID;
 		if (pack) return null;
@@ -91,6 +112,7 @@ function edit(packID, data){
 }
 
 var initialized = false;
+
 function initialize(){
 	availablePacks()
 	.then(function (listOfPacks){
@@ -127,9 +149,9 @@ var cardHandler = [];
 
 function info(){
 	return {
-		colourHandler:colourHandler,
-		cardHandler:cardHandler,
-		packs:packs
+		colourHandler: colourHandler,
+		cardHandler: cardHandler,
+		packs: packs
 	}
 }
 
@@ -210,7 +232,8 @@ module.exports = {
 	remove,
 	removeAll,
 	info,
-	edit
+	edit,
+	add: addPack
 	// userpacks:userpacks
 };
 

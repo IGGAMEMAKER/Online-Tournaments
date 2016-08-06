@@ -85,6 +85,28 @@ export default {
       sendError(e, 'admin/addGift');
     }
   },
+  async addPack(pack) {
+    try {
+      console.log('sended pack...', pack);
+
+      const response = await request
+        .post('/api/packs/add')
+        .send(pack);
+
+      const result = response.body.msg;
+      const succeeded = result.name;
+
+      if (succeeded) {
+        console.log('adding successfull', result);
+        getAvailablePacks();
+      } else {
+        console.error('adding failed', result);
+      }
+
+    } catch (e) {
+      sendError(e, 'admin/addPack', pack);
+    }
+  },
   async editGift(gift) {
     try {
       // console.log('sending newer gift', gift);

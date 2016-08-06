@@ -26,7 +26,7 @@ function add(name, photoURL, description, URL, price, sended, date, properties) 
 		photoURL:photoURL,
 		description:description,
 		price:price,
-		properties:properties
+		properties:properties,
 	};
 	return Gifts.save(obj)
 }
