@@ -28,9 +28,9 @@ export default function (props:PropsType): Component {
     // console.log('gallery', pack);
     return (
       <div
-        className="pack img-wrapper light-blue"
+        className="pack img-wrapper"
         style={{
-          'background-image': `url(${pack.src})`
+          'background-image': `url(${pack.src || pack.image})`
           // width: '100%',
           // height: '100%',
         }}

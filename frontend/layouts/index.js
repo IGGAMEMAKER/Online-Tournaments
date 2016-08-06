@@ -6,6 +6,8 @@ import socketListener from '../helpers/SocketListener';
 import ModalContainer from '../components/Modal/ModalContainer';
 import Chat from '../components/Activity/Chat';
 
+import InfoActions from '../actions/InfoActions';
+
 type PropsType = {
   content: ?any,
   chat: Boolean,
@@ -15,7 +17,10 @@ type PropsType = {
 type StateType = {}
 
 export default class Layout extends Component {
-  componentWillMount() {}
+  componentWillMount() {
+    InfoActions.getAvailablePacks();
+    InfoActions.getGifts();
+  }
 
   render(props: PropsType, state: StateType) {
     const chat = !props.chat ? '' : <Chat />;

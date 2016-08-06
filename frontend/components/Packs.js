@@ -6,6 +6,8 @@ import PackGallery from './Packs/PackGallery';
 // import socketListener from '../helpers/SocketListener';
 import actions from '../actions/ProfileActions';
 
+import InfoStore from '../stores/InfoStore';
+
 function openPack(packID, pay) {
   console.log('openPack pack page', packID, pay);
   actions.openPack(packID, pay);
@@ -159,6 +161,12 @@ export default class PackPage extends Component {
 
   componentWillMount() {
     actions.initialize();
+
+    InfoStore.addChangeListener(() => {
+      this.setState({
+        allPacks: InfoStore.getPacks(),
+      })
+    })
   }
 
   openFree(packId) {
@@ -204,6 +212,7 @@ export default class PackPage extends Component {
       // console.log('iterate...', pack, index, 'chosenPack', chosenPack);
       if (chosenPack === pack.packID) {
         packIndex = index;
+        // pack.src ||
         PackList = (
           <div
             className="pack img-wrapper"
@@ -226,7 +235,7 @@ export default class PackPage extends Component {
       content = (
         <div>
           <div
-            className="row pack-container light-blue"
+            className="row pack-container"
             style="margin-top: 15px;"
           >
             {PackList}
