@@ -110,6 +110,12 @@ export default class Packs extends Component {
     actions.editPack(this.state.packs[i]);
   };
 
+  clearNewGift = () => {
+    this.setState({
+      newGift: getEmptyGift(),
+    })
+  };
+
   attachGift = (i) => {
     const state: StateType = this.state;
     let items = Object.assign({}, state.items);
@@ -278,7 +284,7 @@ export default class Packs extends Component {
           <div style={`height: 150px;`}></div>
           <PackEditingForm
             pack={p}
-            onSubmit={() => { actions.addPack(state.newPack); }}
+            onSubmit={() => { actions.addPack(state.newPack); this.clearNewGift() }}
             onChange={this.editNewPack}
             action="add pack"
           />
