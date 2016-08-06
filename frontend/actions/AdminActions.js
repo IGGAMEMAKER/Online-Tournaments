@@ -76,13 +76,13 @@ export default {
 
       if (succeeded) {
         console.log('adding successfull', result);
+        getGifts();
       } else {
         console.error('adding failed', result);
       }
-      getAvailablePacks();
+
     } catch (e) {
       sendError(e, 'admin/addGift');
-      getAvailablePacks();
     }
   },
   async addPack(pack) {
@@ -98,13 +98,13 @@ export default {
 
       if (succeeded) {
         console.log('adding successfull', result);
-        getAvailablePacks();
       } else {
         console.error('adding failed', result);
       }
-
+      getAvailablePacks();
     } catch (e) {
       sendError(e, 'admin/addPack', pack);
+      getAvailablePacks();
     }
   },
   async editGift(gift) {
