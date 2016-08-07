@@ -77,7 +77,7 @@ const standardPacks = [
     src: '/img/topics/manutd.jpg',
     name: 'manutd',
     id: 3
-  },
+  }
 ];
 
 const standardCards = [
@@ -165,6 +165,7 @@ export default class PackPage extends Component {
     InfoStore.addChangeListener(() => {
       this.setState({
         allPacks: InfoStore.getPacks(),
+        cards: InfoStore.getGifts()
       })
     })
   }
@@ -190,16 +191,37 @@ export default class PackPage extends Component {
     this.setState({ chosenPack: -1 });
   }
 
-  render() {
-    const chosenPack = this.state.chosenPack;
-    console.log('chosenPack', chosenPack, this.state);
+  render(props, state) {
+    const { chosenPack } = state;
+
+    if (chosenPack < 0) {
+      return (
+        <div className="white text-center">
+          <PackGallery chosePack={this.chosePack.bind(this)} packs={this.state.allPacks} />
+        </div>
+      );
+    }
+
+    console.log('chosenPack', chosenPack, state);
     // <div className="col-sm-3 col-md-3 col-xs-12">
-    const CardList = this.state.cards.map((card) => (
+
+    // const CardList = this.state.cards.map((card) => (
+    //   <div className="col-md-4 col-sm-6 col-xs-12">
+    //     <PackPrize
+    //       name={card.name}
+    //       description={card.description}
+    //       src={card.src}
+    //       color={card.color}
+    //     />
+    //   </div>
+    // ));
+
+    const CardList = state.cards.map((card) => (
       <div className="col-md-4 col-sm-6 col-xs-12">
         <PackPrize
           name={card.name}
           description={card.description}
-          src={card.src}
+          src={card.photoURL}
           color={card.color}
         />
       </div>
@@ -212,56 +234,43 @@ export default class PackPage extends Component {
       // console.log('iterate...', pack, index, 'chosenPack', chosenPack);
       if (chosenPack === pack.packID) {
         packIndex = index;
-        // pack.src ||
         PackList = (
           <div
             className="pack img-wrapper"
-            style={`margin-bottom: 0px; background-image: url(${pack.src});`}
+            style={`margin-bottom: 0px; background-image: url(${pack.image});`}
           ></div>
         );
       }
     });
     // style="margin: 0 auto; display: block;"
 
-    let content = '';
-    if (chosenPack < 0) {
-      content = (
-        <PackGallery
-          chosePack={this.chosePack.bind(this)}
-          packs={this.state.allPacks}
-        />
-      );
-    } else {
-      content = (
-        <div>
-          <div
-            className="row pack-container"
-            style="margin-top: 15px;"
-          >
-            {PackList}
-            <br />
-            <br />
-            <button
-              className="btn btn-primary btn-lg btn-block"
-              style="border-radius: 0;"
-              onClick={this.openPaid(chosenPack)}
-            >Открыть пак за {this.state.allPacks[packIndex].price || 30} руб</button>
-          </div>
-          <br />
-          <a
-            onClick={this.choseAnother.bind(this)}
-            style="cursor: pointer; text-underline: none;"
-          >выбрать другой пак</a>
-          <br />
-          <h1 className="text-center"> Что может выпасть в паке? </h1>
-          <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
-        </div>
-      );
-    }
+    const packPrice = this.state.allPacks[packIndex].price;
+    const pricePhrase =  packPrice ? `за ${packPrice} руб`: 'бесплатно';
 
     return (
       <div>
-        <div className="white text-center">{content}</div>
+        <div className="white text-center">
+          <div>
+            <div className="row pack-container" style="margin-top: 15px;">
+              {PackList}
+              <br />
+              <br />
+              <button
+                className="btn btn-primary btn-lg btn-block"
+                style="border-radius: 0;"
+                onClick={this.openPaid(chosenPack)}
+              >Открыть пак {pricePhrase}</button>
+            </div>
+            <br />
+            <a
+              onClick={this.choseAnother.bind(this)}
+              style="cursor: pointer; text-underline: none;"
+            >выбрать другой пак</a>
+            <br />
+            <h1 className="text-center"> Что может выпасть в паке? </h1>
+            <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
+          </div>
+        </div>
       </div>
     );
   }

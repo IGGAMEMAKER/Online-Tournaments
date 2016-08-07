@@ -3,7 +3,7 @@ import Dispatcher from '../dispatcher';
 import * as c from '../constants/constants';
 import * as t from '../components/types';
 
-const EC = 'ADMIN_EVENT_CHANGE';
+const EC = 'INFO_EVENT_CHANGE';
 
 let _gifts = [];
 let _packs = [];
