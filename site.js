@@ -551,11 +551,12 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
   aux.done(login, 'openPackTry', obj);
 
   var paymentFunction = function(){
+    if (price > 0) {
     return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
-    // if (price > 0) {
-    // } else {
-    //   return Users.pack.decrease(login, packID, 1)
-    // }
+    } else {
+      // return new Promise((re))
+      return Users.pack.decrease(login, packID, 1)
+    }
   };
 
   // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
@@ -572,7 +573,7 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
     card.value = packID;
     card.isFree = price === 0;
 
-    aux.done(login, 'openPack', obj);
+    aux.done(login, 'openPack', Object.assign({}, obj, info));
     Usergifts.saveGift(login, giftID, true, card.colour);
     aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
     res.json({});
