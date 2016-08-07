@@ -531,27 +531,31 @@ app.get('/Payment', middlewares.authenticated, function (req, res) {
 */
 // packs + cards + realtime
 
-app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res){
-  var value = parseInt(req.params.value) || aux.c.CARD_COLOUR_GRAY;
-  var paid = parseInt(req.params.paid) || 0;
-
-
-  // var login = aux.getLogin(req);
+app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
   var login = req.login;
-  // var price = (10 + (4 - value)* 20);
-  var price = realtime().packs[value].price || 1;
 
-  var obj = {value:value, paid:paid};
-  if (paid) obj.price = price;
+  var packID = parseInt(req.params.packID);
+  var realPackID = realtime().packs.findIndex(p => p.packID === packID);
+  if (realPackID < 0) {
+    res.json({ msg: 0 });
+    return;
+  }
 
-  aux.done(login, 'openPack', obj);
+  var price = realtime().packs[realPackID].price;
+
+  var obj = {
+    value:packID,
+    price: price
+  };
+
+  aux.done(login, 'openPackTry', obj);
 
   var paymentFunction = function(){
-    if (paid) {
-      return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-    } else {
-      return Users.pack.decrease(login, value, 1)
-    }
+    return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
+    // if (price > 0) {
+    // } else {
+    //   return Users.pack.decrease(login, packID, 1)
+    // }
   };
 
   // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
@@ -560,16 +564,15 @@ app.post('/openPack/:value/:paid', middlewares.authenticated, function (req, res
   paymentFunction()
   .then(function (result){
     info['paid'] = true;
-    // console.log(login, price, result);
-    var card = Packs.get(value);//_standard_pack_card
-    // console.log(card);
+    var card = Packs.get(packID);//_standard_pack_card
     return card;
   })
-  .then(function (card){
+  .then(function (card) {
     var giftID = card.giftID;
-    card.value = value;
-    card.isFree = !paid;
+    card.value = packID;
+    card.isFree = price === 0;
 
+    aux.done(login, 'openPack', obj);
     Usergifts.saveGift(login, giftID, true, card.colour);
     aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
     res.json({});

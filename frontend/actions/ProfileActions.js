@@ -261,12 +261,13 @@ export default {
     loadSupportMessages();
   },
 
-  async openPack(value, pay) {
+  async openPack(value) {
     try {
       // console.log('async openPack', value, pay);
-      const response = await request.post(`openPack/${value}/${pay}`);
+      const response = await request.post(`openPack/${value}`);
+
+      console.log('async openPack', response.body);
       if (response.body.err) throw response.body.err;
-      // console.log('async openPack', response.body.err);
 
       if (response.body.result === 'pay' && response.body.ammount) {
         Dispatcher.dispatch({

@@ -151,7 +151,7 @@ export default class NotificationModalContainer extends Component {
             <div>
               <p className="card-title">{card.description}</p>
               <PackCard
-                src={`/img/topics/realmadrid/${card.photoURL}`}
+                src={card.photoURL}
                 description={card.description}
                 color={card.colour}
               />
