@@ -66,7 +66,7 @@ export default class PackPage extends Component {
     const packIndex = state.allPacks.findIndex(p => p.packID === chosenPack);
 
     if (packIndex < 0) {
-      return 'Pack error';
+      return 'Pack error. Press F5 to retry. If it continues, write to support';
     }
 
     const pack = state.allPacks[packIndex];
