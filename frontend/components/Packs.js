@@ -3,7 +3,6 @@ import Card from './Packs/PackCard';
 import PackPrize from './Packs/PackPrize';
 import PackGallery from './Packs/PackGallery';
 
-// import socketListener from '../helpers/SocketListener';
 import actions from '../actions/ProfileActions';
 
 import InfoStore from '../stores/InfoStore';
@@ -62,7 +61,6 @@ export default class PackPage extends Component {
       );
     }
 
-    console.log('chosenPack', chosenPack, state);
     // <div className="col-sm-3 col-md-3 col-xs-12">
 
     const packIndex = state.allPacks.findIndex(p => p.packID === chosenPack);
@@ -73,9 +71,7 @@ export default class PackPage extends Component {
 
     const pack = state.allPacks[packIndex];
 
-    console.warn('packIndex', packIndex);
-
-    const CardList = state.allPacks[packIndex].items.map(giftID => {
+    const CardList = pack.items.slice().reverse().map(giftID => {
       const card = InfoStore.getGiftByGiftID(giftID);
       return (
         <div className="col-md-4 col-sm-6 col-xs-12">
