@@ -1167,6 +1167,11 @@ a:focus {
   overflow: hidden;
 }
 
+.pointer-no-underline {
+  cursor: pointer;
+  text-underline: none;
+}
+
 .menu-fixed-top {
   position: fixed;
   top: 0;

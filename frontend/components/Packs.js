@@ -216,16 +216,19 @@ export default class PackPage extends Component {
     //   </div>
     // ));
 
-    const CardList = state.cards.map((card) => (
-      <div className="col-md-4 col-sm-6 col-xs-12">
-        <PackPrize
-          name={card.name}
-          description={card.description}
-          src={card.photoURL}
-          color={card.color}
-        />
-      </div>
-    ));
+    const CardList = state.allPacks[chosenPack].items.map(giftID => {
+      const card = InfoStore.getGiftByGiftID(giftID);
+      return (
+        <div className="col-md-4 col-sm-6 col-xs-12">
+          <PackPrize
+            name={card.name}
+            description={card.description}
+            src={card.photoURL}
+            color={card.color}
+          />
+        </div>
+      )
+    });
 
     let PackList = '';
     let packIndex = 0;
@@ -262,10 +265,9 @@ export default class PackPage extends Component {
               >Открыть пак {pricePhrase}</button>
             </div>
             <br />
-            <a
-              onClick={this.choseAnother.bind(this)}
-              style="cursor: pointer; text-underline: none;"
-            >выбрать другой пак</a>
+            <a onClick={this.choseAnother.bind(this)} className="pointer-no-underline">
+              выбрать другой пак
+            </a>
             <br />
             <h1 className="text-center"> Что может выпасть в паке? </h1>
             <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
