@@ -531,6 +531,12 @@ app.get('/Payment', middlewares.authenticated, function (req, res) {
 */
 // packs + cards + realtime
 
+var missStep = () => {
+  return new Promise((resolve, reject) => {
+    return resolve(1);
+  });
+};
+
 app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
   var login = req.login;
 
@@ -552,10 +558,10 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
 
   var paymentFunction = function(){
     if (price > 0) {
-    return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
+      return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
     } else {
-      // return new Promise((re))
-      return Users.pack.decrease(login, packID, 1)
+      return missStep();
+      // return Users.pack.decrease(login, packID, 1)
     }
   };
 
