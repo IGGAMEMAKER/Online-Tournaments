@@ -144,19 +144,8 @@ const standardCards = [
 
 export default class PackPage extends Component {
   state = {
-    cards: standardCards,
-
     chosenPack: -1,
-    allPacks: standardPacks,
-
-    packs: [
-      {
-        price: 100,
-        buttons: [],
-        color: 0,
-        frees: []
-      }
-    ]
+    allPacks: standardPacks
   };
 
   componentWillMount() {
@@ -205,18 +194,17 @@ export default class PackPage extends Component {
     console.log('chosenPack', chosenPack, state);
     // <div className="col-sm-3 col-md-3 col-xs-12">
 
-    // const CardList = this.state.cards.map((card) => (
-    //   <div className="col-md-4 col-sm-6 col-xs-12">
-    //     <PackPrize
-    //       name={card.name}
-    //       description={card.description}
-    //       src={card.src}
-    //       color={card.color}
-    //     />
-    //   </div>
-    // ));
+    let packIndex = 0;
+    try {
+      packIndex = state.allPacks.filter(p => p.packID === chosenPack)[0].packID;
+    } catch (e) {
+      return '';
+    }
+    const pack = state.allPacks[packIndex];
 
-    const CardList = state.allPacks[chosenPack].items.map(giftID => {
+    console.warn('packIndex', packIndex);
+
+    const CardList = state.allPacks[packIndex].items.map(giftID => {
       const card = InfoStore.getGiftByGiftID(giftID);
       return (
         <div className="col-md-4 col-sm-6 col-xs-12">
@@ -229,33 +217,18 @@ export default class PackPage extends Component {
         </div>
       )
     });
-
-    let PackList = '';
-    let packIndex = 0;
-    this.state.allPacks.forEach((pack, index) => {
-      // <div className="col-sm-3 col-md-3 col-xs-6 killPaddings">
-      // console.log('iterate...', pack, index, 'chosenPack', chosenPack);
-      if (chosenPack === pack.packID) {
-        packIndex = index;
-        PackList = (
-          <div
-            className="pack img-wrapper"
-            style={`margin-bottom: 0px; background-image: url(${pack.image});`}
-          ></div>
-        );
-      }
-    });
     // style="margin: 0 auto; display: block;"
-
-    const packPrice = this.state.allPacks[packIndex].price;
-    const pricePhrase =  packPrice ? `за ${packPrice} руб`: 'бесплатно';
+    const pricePhrase =  pack.price ? `за ${pack.price} руб`: 'бесплатно';
 
     return (
       <div>
         <div className="white text-center">
           <div>
             <div className="row pack-container" style="margin-top: 15px;">
-              {PackList}
+              <div
+                className="pack img-wrapper"
+                style={`margin-bottom: 0px; background-image: url(${pack.image});`}
+              ></div>
               <br />
               <br />
               <button
@@ -269,8 +242,11 @@ export default class PackPage extends Component {
               выбрать другой пак
             </a>
             <br />
+
             <h1 className="text-center"> Что может выпасть в паке? </h1>
-            <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">{CardList}</div>
+            <div className="col-sm-12 col-md-12 col-xs-12 killPaddings">
+              {CardList}
+            </div>
           </div>
         </div>
       </div>
