@@ -6,8 +6,6 @@ var Packs = db.wrap('Pack');
 
 var c = require('../constants');
 
-var multiplier = 100;//0000;
-
 var packs= [];
 
 var afterGamePack = {
@@ -36,6 +34,43 @@ var goodPack = {
 	// multiplier:Number,
 	// items:Array,
 };
+
+function getAvailablePacks() {
+	cardHolder = {};
+	return availablePacks()
+		.then(packs => {
+			packs.forEach(p => {
+				var itemList = [];
+
+				p.items.forEach((giftID, i) => {
+					for (var j=0; j < p.probabilities[i]; j++) {
+						itemList.push(giftID);
+					}
+				});
+
+				cardHolder[p.packID] = itemList;
+			});
+			return 1;
+		})
+}
+
+function init() {
+	getAvailablePacks()
+		.then(result => {
+			console.log('getAvailablePacks', result);
+			return Gifts.all()
+		})
+		.then(giftList => {
+			giftList.forEach(g => {
+				gifts[g._id] = g;
+			});
+			console.log('ALL GIFTS', gifts);
+			return gifts;
+		})
+		.catch(err => {
+			console.log('ERROR IN PACK INITIALIZATION', err);
+		})
+}
 
 var excellentPack = {
 	packID:3, price:25, image:'0.jpg',
@@ -78,13 +113,13 @@ function addPack(pack) {
 
 function addStd(){
 	return add(afterGamePack)
-		.then(function (result){
+		.then(function (result) {
 		return add(poorPack)
 	})
-	.then(function (result){
+	.then(function (result) {
 		return add(goodPack)
 	})
-	.then(function (result){
+	.then(function (result) {
 		return add(excellentPack)
 	})
 }
@@ -105,7 +140,10 @@ function all(){ return Packs.list({ }) }
 function availablePacks(){ return Packs.list({ available: true }) }
 function remove(packID){ return Packs.remove({ packID: packID }) }
 function removeAll(){ return Packs.remove({ }) }
-function update(){ initialize(); }
+function update(){
+	// initialize();
+	init();
+}
 
 function edit(packID, data){
 	return Packs.update({packID: packID}, {$set: data})
@@ -145,7 +183,10 @@ function initialize(){
 }
 
 var colourHandler = {};
-var cardHandler = [];
+var cardHandler = {};
+
+var cardHolder = {};
+var gifts = {};
 
 function info(){
 	return {
@@ -170,19 +211,15 @@ function fillColourHandler(pack){
 	// console.log('fillColourHandler', pack, colours, colourHandler[packID].length)
 }
 
-function getCardsByRarity(rarity){
-	return Gifts.cards(rarity)
-	.then(function (cards){
-		cardHandler = cards;
-		console.log('getCardsByRarity', rarity, cardHandler);
-	})
+function getGiftByGiftID(giftID) {
+
 }
 
 function getRandomCard(packID) {
-	var max = cardHandler.length;
+	var max = cardHandler[packID].length;
 	var offset = getRandomInt(0, max - 1);
 
-	return cardHandler[offset];
+	return cardHandler[packID][offset];
 }
 
 function getRandomColour(packID) {
@@ -223,7 +260,7 @@ function get_after_game_card(){
 
 module.exports = {
 	get: function (packID) {
-		return get_random_card(packID || 0)
+		return get_random_card(packID)
 	},
 	get_after_game_card,
 	available: availablePacks,
