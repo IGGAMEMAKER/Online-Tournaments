@@ -194,12 +194,12 @@ export default class PackPage extends Component {
     console.log('chosenPack', chosenPack, state);
     // <div className="col-sm-3 col-md-3 col-xs-12">
 
-    let packIndex = 0;
-    try {
-      packIndex = state.allPacks.filter(p => p.packID === chosenPack)[0].packID;
-    } catch (e) {
-      return '';
+    const packIndex = state.allPacks.findIndex(p => p.packID === chosenPack);
+
+    if (packIndex < 0) {
+      return 'Pack error';
     }
+
     const pack = state.allPacks[packIndex];
 
     console.warn('packIndex', packIndex);
