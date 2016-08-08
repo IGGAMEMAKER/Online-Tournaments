@@ -7,6 +7,8 @@ import actions from '../actions/ProfileActions';
 
 import InfoStore from '../stores/InfoStore';
 
+import c from '../constants/constants';
+
 function openPack(packID, pay) {
   console.log('openPack pack page', packID, pay);
   actions.openPack(packID, pay);
@@ -71,15 +73,16 @@ export default class PackPage extends Component {
 
     const pack = state.allPacks[packIndex];
 
-    const CardList = pack.items.slice().reverse().map(giftID => {
+    const CardList = pack.items.slice().reverse().map((giftID, i) => {
       const card = InfoStore.getGiftByGiftID(giftID);
+      const color = c.CARD_COLOUR_RED;
       return (
         <div className="col-md-4 col-sm-6 col-xs-12">
           <PackPrize
             name={card.name}
             description={card.description}
             src={card.photoURL}
-            color={card.color}
+            color={color}
           />
         </div>
       )

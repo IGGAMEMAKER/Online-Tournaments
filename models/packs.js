@@ -37,11 +37,7 @@ function init() {
 			giftList.forEach((g, i) => {
 				console.log('giftList foreach', g._id);
 				// var gift = Object.assign({}, g);
-				var gift = g;
-				if (i < 5) {
-					console.log(gift);
-				}
-				gifts[g._id] = gift;
+				gifts[g._id] = g;
 			});
 			// console.log('ALL GIFTS', gifts);
 			return gifts;

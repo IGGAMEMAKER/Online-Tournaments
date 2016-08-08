@@ -160,18 +160,16 @@ export default class NotificationModalContainer extends Component {
 
           const close = <button className="btn btn-default" onClick={this.hide}> Закрыть </button>;
           const value = info.value || c.CARD_COLOUR_GRAY;
-          let btn = <a className="btn btn-primary" href="/Packs"> Подробнее </a>;
 
-          if (!card.isFree) {
-            btn = (
+          footer = (
+            <div>
               <button
                 className="btn btn-primary"
                 onClick={() => { actions.openPack(value, 1); }}
               >Открыть ещё!</button>
-            );
-          }
-
-          footer = <div>{btn}{close}</div>;
+              {close}
+            </div>
+          );
           break;
         case c.NOTIFICATION_GIVE_PACK:
           header = `Вы получаете паки: ${info.count}x`;
