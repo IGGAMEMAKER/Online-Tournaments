@@ -542,6 +542,7 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
 
   var packID = parseInt(req.params.packID);
   var realPackID = realtime().packs.findIndex(p => p.packID === packID);
+
   if (realPackID < 0) {
     res.json({ msg: 0 });
     return;
@@ -575,6 +576,7 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
     return card;
   })
   .then(function (card) {
+    info.card = card;
     var giftID = card.giftID;
     card.value = packID;
     card.isFree = price === 0;
@@ -584,7 +586,8 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
     aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
     res.json({});
   })
-  .catch(function (err){
+  .catch(function (err) {
+    console.log('FAIL in /openPack/', err);
     if (!info.paid) {
       res.json({
         result: 'pay',

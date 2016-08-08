@@ -263,10 +263,10 @@ export default {
 
   async openPack(value) {
     try {
-      // console.log('async openPack', value, pay);
-      const response = await request.post(`openPack/${value}`);
+      console.log('async openPack init', value);
+      const response = await request.post(`/openPack/${value}`);
 
-      console.log('async openPack', response.body);
+      console.log('async openPack got request', response.body);
       if (response.body.err) throw response.body.err;
 
       if (response.body.result === 'pay' && response.body.ammount) {

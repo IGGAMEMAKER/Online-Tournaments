@@ -8,33 +8,6 @@ var c = require('../constants');
 
 var packs= [];
 
-var afterGamePack = {
-	packID: 0, price:0, image:'3.jpg',
-	colours: [0, 0, 1, 3, 96],
-	available: true, visible: false
-
-	// multiplier:100,
-	// items: Array,
-};
-
-var poorPack = {
-	packID:1, price:1, image:'3.jpg',
-	colours: [0, 1, 199, 300, 600],
-	available:true, visible: true
-
-	// multiplier: 100,
-	// items:Array,
-};
-
-var goodPack = {
-	packID:2, price:10, image:'0.jpg',
-	colours: [0, 1, 29, 70, 0],
-	available: true, visible: true
-
-	// multiplier:Number,
-	// items:Array,
-};
-
 function getAvailablePacks() {
 	cardHolder = {};
 	return availablePacks()
@@ -57,29 +30,26 @@ function getAvailablePacks() {
 function init() {
 	getAvailablePacks()
 		.then(result => {
-			console.log('getAvailablePacks', result);
+			// console.log('getAvailablePacks', result);
 			return Gifts.all()
 		})
 		.then(giftList => {
-			giftList.forEach(g => {
-				gifts[g._id] = g;
+			giftList.forEach((g, i) => {
+				console.log('giftList foreach', g._id);
+				// var gift = Object.assign({}, g);
+				var gift = g;
+				if (i < 5) {
+					console.log(gift);
+				}
+				gifts[g._id] = gift;
 			});
-			console.log('ALL GIFTS', gifts);
+			// console.log('ALL GIFTS', gifts);
 			return gifts;
 		})
 		.catch(err => {
 			console.log('ERROR IN PACK INITIALIZATION', err);
 		})
 }
-
-var excellentPack = {
-	packID:3, price:25, image:'0.jpg',
-	colours: [0, 5, 30, 65, 0],
-	available: true, visible: true
-};
-
-
-var stdPacks = [afterGamePack, poorPack, goodPack, excellentPack];
 
 // ,CARD_COLOUR_GRAY:4
 
@@ -109,30 +79,6 @@ function addPack(pack) {
 			// 	.then(resolve)
 			// 	.catch(reject)
 		})
-}
-
-function addStd(){
-	return add(afterGamePack)
-		.then(function (result) {
-		return add(poorPack)
-	})
-	.then(function (result) {
-		return add(goodPack)
-	})
-	.then(function (result) {
-		return add(excellentPack)
-	})
-}
-
-function add(new_pack){
-	var packID = new_pack.packID;
-	return Packs.find({ packID: packID })
-	.then(function (pack){
-		// if (pack) throw 'pack with same id exists ' + packID;
-		if (pack) return null;
-
-		return Packs.save(new_pack);
-	})
 }
 
 // function userpacks(){ return Packs.list({ available:true, visible:true })}
@@ -186,6 +132,7 @@ var colourHandler = {};
 var cardHandler = {};
 
 var cardHolder = {};
+var colourHolder = {};
 var gifts = {};
 
 function info(){
@@ -216,20 +163,26 @@ function getGiftByGiftID(giftID) {
 }
 
 function getRandomCard(packID) {
-	var max = cardHandler[packID].length;
+	// console.log('getRandomCard(packID)', packID);
+	var max = cardHolder[packID].length;
 	var offset = getRandomInt(0, max - 1);
-
-	return cardHandler[packID][offset];
+	// console.log('randomCard is', max, offset, cardHolder[packID][offset]);
+	return cardHolder[packID][offset];
 }
 
 function getRandomColour(packID) {
-	var max = colourHandler[packID].length;
-	var offset = getRandomInt(0, max - 1);
+	// var max = colourHolder[packID].length;
+	// var offset = getRandomInt(0, max - 1);
 
-	return colourHandler[packID][offset] || c.CARD_COLOUR_GRAY;
+	// return colourHolder[packID][offset] || c.CARD_COLOUR_GRAY;
+	return c.CARD_COLOUR_GRAY;
 }
 
-function cloneCard(card, colour){
+function cloneCard(giftID, colour) {
+	console.log('cloneCard init...', giftID, colour);//, gifts);
+	// var card = Object.assign({}, );
+	var card = gifts[giftID];
+	console.log('cloneCard result is: ', card);
 	return {
 		giftID: card._id,
 
@@ -244,10 +197,12 @@ function cloneCard(card, colour){
 }
 
 function get_random_card(packID) {
-	var card = getRandomCard(packID);
+	console.log('get_random_card', packID);
+	var giftID = getRandomCard(packID);
 	var colour = getRandomColour(packID);
 
-	var crd = cloneCard(card, colour);
+	console.log('so, the card is...', giftID, colour);
+	var crd = cloneCard(giftID, colour);
 
 	return crd;
 }

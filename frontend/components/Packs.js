@@ -29,17 +29,17 @@ export default class PackPage extends Component {
     })
   }
 
-  openFree(packId) {
-    return function () {
-      openPack(packId, 0);
-    };
-  }
+  // openFree(packId) {
+  //   return function () {
+  //     openPack(packId, 0);
+  //   };
+  // }
 
-  openPaid(packId) {
-    return function () {
-      openPack(packId, 1);
-    };
-  }
+  // openPaid(packId) {
+  //   return function () {
+  //     openPack(packId, 1);
+  //   };
+  // }
 
   chosePack(id) {
     this.setState({ chosenPack: id });
@@ -101,7 +101,7 @@ export default class PackPage extends Component {
               <button
                 className="btn btn-primary btn-lg btn-block"
                 style="border-radius: 0;"
-                onClick={this.openPaid(chosenPack)}
+                onClick={() => { actions.openPack(chosenPack); }}
               >Открыть пак {pricePhrase}</button>
             </div>
             <br />
