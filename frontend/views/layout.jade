@@ -10,10 +10,12 @@ mixin libsAndStyles()
 	//script(src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js")
 
 	link(href="/css/new/bootstrap.css" rel="stylesheet")
+	//link(href="/css/bootstrap.min.css" rel="stylesheet")
 	//link(href="/css/new/style.css" rel="stylesheet")
 
 	link(href="/css/new/style1.css?2" rel="stylesheet" type="text/css")
-	link(href="/css/new/my.css?10" rel="stylesheet")
+	//link(href="/css/new/my.css?10" rel="stylesheet")
+	link(href="/css/new/index.css?0" rel="stylesheet")
 
 	link(href="/css/font-awesome.min.css" rel="stylesheet")
 
@@ -118,8 +120,6 @@ html
 		// charset="windows-1251"
 		include templates/basic
 		+loadHead()
-		//include templates/header
-		//include templates/googleAd
 	body(class="background")
 		//div(class="container")
 		block overrideMenu
@@ -135,8 +135,6 @@ html
 
 		block ftr
 			script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
-			//div(class="navbar-fixed-bottom row-fluid")
-				+footer()
 			div(class="wrapper2")
 				+footer()
 

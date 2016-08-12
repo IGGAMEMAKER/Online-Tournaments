@@ -3,6 +3,8 @@ import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 import Card from '../components/Shared/Card';
 
+import PointTournament from './Tournaments/PointTournament';
+
 import stats from '../helpers/stats';
 
 import constants from '../constants/constants';
@@ -11,22 +13,20 @@ type PropsType = {}
 
 type StateType = {}
 
-type ResponseType = {}
-
 export default class Index extends Component {
   state = {
     copied: false
   };
 
   componentWillMount() {
-    // store.addChangeListener(() => {
-    //   this.setState({
-    //     registeredIn: store.getMyTournaments(),
-    //     money: store.getMoney(),
-    //     value: store.getTestValue(),
-    //     tournaments: store.getAvailableTournaments(),
-    //   });
-    // });
+    store.addChangeListener(() => {
+      this.setState({
+        registeredIn: store.getMyTournaments(),
+        money: store.getMoney(),
+        value: store.getTestValue(),
+        tournaments: store.getAvailableTournaments(),
+      });
+    });
 
     actions.initialize();
   }
@@ -171,6 +171,7 @@ export default class Index extends Component {
      <p>(в зависимости от размера команды)</p>
      */
     let link = 'http://online-tournaments.org/register';
+
     if (login) {
       link += `?inviter=${login}`;
     }
@@ -180,6 +181,42 @@ export default class Index extends Component {
     // style={{
     //   display: login ? 'block' : 'none'
     // }}
+
+    // const shareCard = (
+    //   <div>
+    //     <div className="freeroll ctr purple glass">
+    //       <div className="white">
+    //         <h1 className="fadeText">Побеждай с друзьями</h1>
+    //         <p className="center">
+    //           <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
+    //           <div>Если они займут призовое место в бесплатном турнире</div>
+    //           <div>ты получишь дополнительные 50% от их выигрыша!</div>
+    //         </p>
+    //         <div>
+    //           <center>
+    //             <input
+    //               id="invite-link"
+    //               type="text"
+    //               className="black circle-input offset-md"
+    //               value={link}
+    //               onClick={this.CopyShareLink}
+    //               style="min-width: 200px; max-width: 350px; width: 100%"
+    //             >{link}</input>
+    //             <a
+    //               className="btn btn-primary btn-large btn-lg offset-md"
+    //               onClick={this.CopyShareLink}
+    //             >Скопировать</a>
+    //             <p
+    //               style={{
+    //                 display: state.copied ? 'block' : 'none'
+    //               }}
+    //             >Ссылка скопирована</p>
+    //           </center>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
     const shareCard = (
       <div>
         <div className="freeroll ctr purple glass">
@@ -187,8 +224,6 @@ export default class Index extends Component {
             <h1 className="fadeText">Побеждай с друзьями</h1>
             <p className="center">
               <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
-              <div>Если они займут призовое место в бесплатном турнире</div>
-              <div>ты получишь дополнительные 50% от их выигрыша!</div>
             </p>
             <div>
               <center>
@@ -221,25 +256,32 @@ export default class Index extends Component {
 
     // <div className="row">{teamTab}</div>
 
+    // <div className="big-cards-container">
+    //   <ul style="display: table-row;">
+    //     <li style="display: table-cell; width: 320px; float: left">
+    //       <div className="card-container-semi">
+    //       </div>
+    //     </li>
+    //     <li style="display: table-cell; width: 320px; float: right;">
+    //       <div className="card-container-semi">
+    //       </div>
+    //     </li>
+    //   </ul>
+    // </div>
+
+    // <Card content={freerolls} style="" />
+    // <Card content={middleTournaments} style="" />
+    //   <Card content={eliteTournaments} style="" />
+
     return (
       <div>
-        <div className="big-cards-container">
-          <ul style="display: table-row;">
-            <li style="display: table-cell; width: 320px; float: left">
-              <div className="card-container-semi">
-              </div>
-            </li>
-            <li style="display: table-cell; width: 320px; float: right;">
-              <div className="card-container-semi">
-              </div>
-            </li>
-          </ul>
-        </div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
-          <Card content={freerolls} style="" />
-          <Card content={middleTournaments} style="" />
-          <Card content={eliteTournaments} style="" />
+          <h2 className="white">Ежедневно</h2>
+          <PointTournament points={100} time={20} />
+          <PointTournament points={500} />
+          <PointTournament points={1000} />
+          <PointTournament points={2000} />
         </div>
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>

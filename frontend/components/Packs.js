@@ -31,18 +31,6 @@ export default class PackPage extends Component {
     })
   }
 
-  // openFree(packId) {
-  //   return function () {
-  //     openPack(packId, 0);
-  //   };
-  // }
-
-  // openPaid(packId) {
-  //   return function () {
-  //     openPack(packId, 1);
-  //   };
-  // }
-
   chosePack(id) {
     this.setState({ chosenPack: id });
     window.scrollTo(0, 0);

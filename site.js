@@ -135,6 +135,7 @@ app.use(function(req,res,next){
 });
 
 // app.use('/leagues', require('./routes/leagues'));
+app.use('/VK/', require('./routes/VK'));
 
 //var handler = require('./errHandler')(app, Log, serverName);
 /*app.use(function(err, req, res, next){
@@ -617,7 +618,6 @@ app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, ne
 app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
   var login = req.params.login;
   // console.log('login', login);
-
   Users.pack.setDefault(login)
     // .then(console.log)
     .then(aux.setData(req, next))

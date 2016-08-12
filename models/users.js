@@ -125,7 +125,7 @@ function getByLogin(login){
 	})
 	.then(function (result){
 		return User2.find({login: login})
-	})
+	});
 	// return fixUser(login)
 	// var profile;
 	// return User2.find({login:login})
@@ -816,30 +816,56 @@ function catcher(err){
 	}
 }
 
-module.exports.all = all;
-module.exports.profile = profile;
-module.exports.auth = auth;
-module.exports.setInviter = setInviter;
-module.exports.changePassword = changePassword;
-// module.exports.resetPassword = resetPassword;
-module.exports.create = create;
-module.exports.moneyTop = moneyTop;
-module.exports.groupByEmails = groupByEmails;
-module.exports.resetPassword = create_login_link;
-module.exports.auth_by_link = auth_by_link;
 
-module.exports.kill = kill;
-module.exports.rich = richUsers;
-module.exports.poor = poorUsers;
+module.exports = {
+	all,
+	profile,
+	auth,
+	setInviter,
+	changePassword,
+	create,
+	moneyTop,
+	groupByEmails,
+	auth_by_link,
+	kill,
+	mailers,
+	update_auth_links,
+	grantMoney,
+	update_user_status,
+	pack,
+	moneyIncrease,
+	quitTeam,
+	joinTeam,
 
-module.exports.mailers = mailers;
-module.exports.update_auth_links = update_auth_links;
-
-module.exports.grantMoney = grantMoney
-module.exports.update_user_status = update_user_status
-module.exports.pack = pack
-
-module.exports.moneyIncrease = moneyIncrease
-
-module.exports.quitTeam = quitTeam;
-module.exports.joinTeam = joinTeam;
+	resetPassword: create_login_link,
+	rich: richUsers,
+	poor: poorUsers
+};
+//
+// module.exports.all = all;
+// module.exports.profile = profile;
+// module.exports.auth = auth;
+// module.exports.setInviter = setInviter;
+// module.exports.changePassword = changePassword;
+// // module.exports.resetPassword = resetPassword;
+// module.exports.create = create;
+// module.exports.moneyTop = moneyTop;
+// module.exports.groupByEmails = groupByEmails;
+// module.exports.resetPassword = create_login_link;
+// module.exports.auth_by_link = auth_by_link;
+//
+// module.exports.kill = kill;
+// module.exports.rich = richUsers;
+// module.exports.poor = poorUsers;
+//
+// module.exports.mailers = mailers;
+// module.exports.update_auth_links = update_auth_links;
+//
+// module.exports.grantMoney = grantMoney
+// module.exports.update_user_status = update_user_status
+// module.exports.pack = pack
+//
+// module.exports.moneyIncrease = moneyIncrease
+//
+// module.exports.quitTeam = quitTeam;
+// module.exports.joinTeam = joinTeam;

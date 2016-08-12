@@ -1,5 +1,6 @@
 import { h, render, Component } from 'preact';
-import { Router, Route, route, IndexRoute, browserHistory } from 'preact-router';
+import { Router, browserHistory } from 'preact-router';
+// import { Router, Route, route, IndexRoute, browserHistory } from 'preact-router';
 // import { Router, Route, route, IndexRoute, browserHistory } from 'react-router';
 
 

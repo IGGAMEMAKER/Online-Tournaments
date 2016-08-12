@@ -4,10 +4,11 @@ type PropsType = {
   name: string,
   description: Component,
   src: string,
+  
   // color: number
 }
 
-export default class PackPrize extends Component {
+export default class DarkCard extends Component {
   render(props: PropsType) {
     let style = {};
 

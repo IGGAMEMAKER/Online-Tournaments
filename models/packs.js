@@ -26,16 +26,17 @@ function getAvailablePacks() {
 			return 1;
 		})
 }
-
+var allPacks = [];
 function init() {
 	getAvailablePacks()
 		.then(result => {
+			allPacks = result;
 			// console.log('getAvailablePacks', result);
 			return Gifts.all()
 		})
 		.then(giftList => {
 			giftList.forEach((g, i) => {
-				console.log('giftList foreach', g._id);
+				// console.log('giftList foreach', g._id);
 				// var gift = Object.assign({}, g);
 				gifts[g._id] = g;
 			});
@@ -93,37 +94,6 @@ function edit(packID, data){
 
 var initialized = false;
 
-function initialize(){
-	availablePacks()
-	.then(function (listOfPacks){
-		if (!listOfPacks || listOfPacks.length == 0){
-			addStd();
-			return stdPacks;
-		}
-		return listOfPacks;
-	})
-	.then(function (listOfPacks){
-		packs = listOfPacks;
-		// console.log(packs);
-
-		for (var i = packs.length - 1; i >= 0; i--) {
-			fillColourHandler(packs[i])
-		}
-
-		return Gifts.cards(null)
-	})
-	.then(function (cards){
-		initialized = true;
-
-		cardHandler = cards;
-		// console.log('initialize', cardHandler);
-		// console.log('', colourHandler[0].length, colourHandler[1].length, colourHandler[2].length);
-
-
-		// runTests();
-	})
-}
-
 var colourHandler = {};
 var cardHandler = {};
 
@@ -154,10 +124,6 @@ function fillColourHandler(pack){
 	// console.log('fillColourHandler', pack, colours, colourHandler[packID].length)
 }
 
-function getGiftByGiftID(giftID) {
-
-}
-
 function getRandomCard(packID) {
 	// console.log('getRandomCard(packID)', packID);
 	var max = cardHolder[packID].length;
@@ -167,11 +133,13 @@ function getRandomCard(packID) {
 }
 
 function getRandomColour(packID) {
-	// var max = colourHolder[packID].length;
-	// var offset = getRandomInt(0, max - 1);
+	var max = colourHolder[packID].length;
+	var offset = getRandomInt(0, max - 1);
+	// var offset = getRandomInt(c.CARD_COLOUR_RED, max - 1);
 
-	// return colourHolder[packID][offset] || c.CARD_COLOUR_GRAY;
-	return c.CARD_COLOUR_GRAY;
+
+	return colourHolder[packID][offset] || c.CARD_COLOUR_GRAY;
+	// return c.CARD_COLOUR_GRAY;
 }
 
 function cloneCard(giftID, colour) {

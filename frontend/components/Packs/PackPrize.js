@@ -21,7 +21,7 @@ export default class PackPrize extends Component {
     return (
       <div
         style={`background-image: url('/img/cardLayers/${props.color}.jpg')`}
-        className="pack-prize-offset light-blue responsive"
+        className={`pack-prize-offset color${props.color} light-blue responsive`}
       >
         <div className="responsive img-demo relative" style={style}>
           <div className="pack-prize-description">{props.description}</div>
