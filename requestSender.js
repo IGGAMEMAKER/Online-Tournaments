@@ -7,7 +7,8 @@ var fs = require('fs');
 serverList['LogServer'] = 3000;
 
 serverList['FrontendServer'] = 8888;//5000;
-serverList['TournamentServer'] = 5001;
+// serverList['TournamentServer'] = 5001;
+serverList['TournamentServer'] = 8889;
 serverList['Stats'] = 5002;
 //serverList['TournamentManager'] = 5002;
 //serverList['AccountServer'] = 5003;

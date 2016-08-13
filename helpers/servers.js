@@ -1,4 +1,4 @@
-var Promise = require('Bluebird');
+var Promise = require('bluebird');
 var request = require('../requestSender');
 
 var domain = 'localhost';

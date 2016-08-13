@@ -1,13 +1,22 @@
+var Fail = { result:'fail'};
+
+var api = require('../../helpers/api');
+var API = require('../../helpers/API');
+var Tournaments = require('../../models/tournaments');
+var TournamentRegs = require('../../models/tregs');
+
+var servers = require('../../helpers/servers');
+var respond = require('../../middlewares/api-response');
+
+var middlewares = require('../../middlewares');
+
+var constants = require('../../constants');
+
+var getPortAndHostOfGame = require('../../helpers/GameHostAndPort').getPortAndHostOfGame;
+
+var tournamentValidator = require('../../helpers/tournament-validator');
+
 module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
-  var Fail = { result:'fail'};
-
-  var api = require('../../helpers/api');
-  var Tournaments = require('../../models/tournaments');
-  var TournamentRegs = require('../../models/tregs');
-
-  var middlewares = require('../../middlewares');
-
-  var getPortAndHostOfGame = require('../../helpers/GameHostAndPort').getPortAndHostOfGame;
   //var Actions = require('../../models/actions');
 
   var PRICE_FREE = 4;
@@ -65,13 +74,38 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       //console.log('AddSpecial', filename);      
     })
 
-  })
+  });
 
   app.get('/AddTournament', aux.moderator, function (req, res){
     res.render('AddTournament');
   });
 
   app.get('/api/tournaments/available', aux.moderator, api('Tournaments', 'available'));
+
+  app.get('/api/tournaments/add', respond(req => {
+    var tournament = {
+      buyIn: 0,
+      gameNameID: 2,
+      rounds: 1,
+      goNext: [2,1],
+      Prizes: [5],
+      players: 0,
+      settings: {
+        hidden: false,
+        regularity: constants.REGULARITY_NONE
+      }
+    };
+
+    var error = tournamentValidator(tournament);
+
+    if (error) {
+      console.log('error while adding tournament', error);
+      throw 'invalid_tournament_data';
+    }
+
+    // return servers.TS('add-tournament', tournament);
+    return API.tournaments.add(tournament);
+  }));
 
   app.post('/AddTournament', AddTournament);
   function AddTournament(req, res){

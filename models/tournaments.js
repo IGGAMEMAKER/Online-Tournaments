@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var configs = require('../configs');
 
 var db = require('../db')
-var Tournament2 = db.wrap('Tournament')
+var Tournament2 = db.wrap('Tournament');
 
 
 var helper = require('../helpers/helper');
@@ -12,9 +12,13 @@ var log = helper.log;
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
 
-var c = require('../constants')
+var c = require('../constants');
 
-var sender = require('../requestSender')
+var sender = require('../requestSender');
+
+var logger = (...args) => {
+	return console.log('/models/tournaments', ...args);
+};
 
 // var mongoose = require('mongoose');
 // //mongoose.connect('mongodb://localhost/test');
@@ -188,37 +192,67 @@ function start(tournamentID){
 }
 
 function finish(tournamentID){ 
-	return setTournStatus(tournamentID, TOURN_STATUS_FINISHED)
+	return setTournStatus(tournamentID, TOURN_STATUS_FINISHED);
 	// stop(tournamentID); 
 }
 
-function add(tournament){
-	return new Promise(function(resolve, reject){
-		Tournament
-			.findOne({})
-			.sort('-tournamentID')
-			.exec(function searchTournamentWithMaxID (err, maxTournament){
+function add(tournament) {
+	logger('add', tournament);
+	var searchTournamentWithMaxID = Tournament2
+		.aggregate([
+			{ $sort : { "tournamentID": -1 } },
+			{ $limit : 1 }
+		]);
 
-			if (err) return reject({err:err, stage:'tournament.add find err'});
+	// var tryToAdd =
 
-			var newID=0;
-			if (maxTournament) newID = maxTournament.tournamentID || 0;
-			tournament.tournamentID = newID+1;
+	// return searchTournamentWithMaxID()
+	return Tournament2
+		.aggregate([
+			{ $sort : { "tournamentID": -1 } },
+			{ $limit : 1 }
+		])
+		.then((list) => {
+			logger('tryToAdd', list);
+			var maxID = list.length ? list[0].tournamentID: 0;
+			var tournamentID = maxID + 1;
+			var newTournament = Object.assign({}, tournament, { tournamentID });
 
-			var tourn = new Tournament(tournament);
-			tourn.save(function (err1) {
-				if (err1) return reject({err:err1, stage:'tournament.add save err'});
-
-				log('added Tournament ' + JSON.stringify(tournament));
-				enable(tournamentID);
-				//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
-				
-				return resolve(tournament);
-			});
-
-		});
-	});
+			return Tournament2.save(newTournament)
+				.then(t => {
+					enable(tournamentID);
+					return t;
+				})
+		})
 }
+
+// function add(tournament){
+// 	return new Promise(function(resolve, reject){
+// 		Tournament
+// 			.findOne({})
+// 			.sort('-tournamentID')
+// 			.exec(function searchTournamentWithMaxID (err, maxTournament){
+//
+// 			if (err) return reject({err:err, stage:'tournament.add find err'});
+//
+// 			var newID=0;
+// 			if (maxTournament) newID = maxTournament.tournamentID || 0;
+// 			tournament.tournamentID = newID+1;
+//
+// 			var tourn = new Tournament(tournament);
+// 			tourn.save(function (err1) {
+// 				if (err1) return reject({err:err1, stage:'tournament.add save err'});
+//
+// 				log('added Tournament ' + JSON.stringify(tournament));
+// 				enable(tournamentID);
+// 				//sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');//, null, null );
+//
+// 				return resolve(tournament);
+// 			});
+//
+// 		});
+// 	});
+// }
 
 function addTopicStreamTournament(topic, isNew) {
 	var buyIn = 0
@@ -298,9 +332,10 @@ function find(tournamentID){
 
 function setTournStatus(tournamentID, status){
 	log('Set tourn status of ' + tournamentID + ' to ' + status);
+
 	var updateObj = {
 		status:status
-	}
+	};
 
 	switch(status){
 		case TOURN_STATUS_RUNNING:

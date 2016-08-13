@@ -1,34 +1,35 @@
+// return error if it has it.
 module.exports = (t) => {
-  if (!t.buyIn || isNaN(t.buyIn)) {
-    return false;
+  if (isNaN(t.buyIn)) {
+    return 'buyIn';
   }
 
   if (!t.goNext || !Array.isArray(t.goNext)) {
-    return false;
+    return 'goNext';
   }
 
   if (!t.Prizes || !Array.isArray(t.Prizes)) {
-    return false;
+    return 'Prizes';
   }
 
   if (!t.gameNameID || isNaN(t.gameNameID)) {
-    return false;
+    return 'gameNameID';
   }
 
   if (t.rounds === undefined || t.rounds === null || isNaN(t.rounds)) {
-    return false;
+    return 'rounds';
   }
 
   if (!t.settings) {
-    return false;
+    return 'settings';
   }
 
   if (t.settings.regularity && isNaN(t.settings.regularity)) {
-    return false;
+    return 'regularity';
   }
 
   // need more research for validity (not only type checking, but also range checking)
   // for example: gameNameID cannot be equal to 100, cause we have just three games
 
-  return true;
+  return false;
 };
