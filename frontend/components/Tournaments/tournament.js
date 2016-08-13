@@ -173,31 +173,6 @@ export default class Tournament extends Component {
     }
 
     const cost = buyIn === 0 ? 'БЕСПЛАТНО' : `Стоимость: ${buyIn} руб`;
-    const cover = (
-      <div className="cover" onClick={() => props.onSelected(id)}>
-        <div className="tournament-cover">
-          <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
-            &nbsp;&nbsp;{playerCount}
-          </p>
-        </div>
-        <div className="tournament-difficulty">Сложность<br />{difficulty}</div>
-        <div className={`tournament-date-start ${startDate ? 'show' : 'hide'}`}>
-          {formatDate(startDate)}
-        </div>
-        <span className="tournament-users" style={{ color }}>№{id}</span>
-        <div className="tournament-prize-count">Призов: {prizes.length}</div>
-        <div className="tournament-cost">{cost}</div>
-        <div className={`tournament-cover-container ${coverColor}`}>
-          <div className="tournament-centerize">
-            <div className="white tournament-cover-text">
-              <div>Главный приз</div>
-              <span>+{prizes[0]} Р</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
         // <img src={coverUrl} alt="" />
     let participants = (
       <div>
@@ -209,16 +184,51 @@ export default class Tournament extends Component {
       </div>
     );
 
-    // style="width: 300px; display: inline-block;"
-    // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
-    // <div className="from">Призы</div>
-    // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
     const participating = props.registeredInTournament ? 'participating' : '';
     const ticketCardClassName = `ticket-card ${participating} light-blue bounceIn`;
     // killPaddings
     //   <div className="col-sm-6 col-md-4">
     //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
+    // style="width: 300px; display: inline-block;"
+    // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
+    // <div className="from">Призы</div>
+    // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
 
+    // <div>Главный приз</div>
+    // <span>+{prizes[0]} Р</span>
+    const cover = (
+      <div className="cover" onClick={() => props.onSelected(id)}>
+        <div className="tournament-cover">
+          <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
+            &nbsp;&nbsp;{playerCount}
+          </p>
+        </div>
+        <div className="tournament-difficulty">Сложность<br />{difficulty}</div>
+        <div className={`tournament-date-start`}>
+          <p style={{ color }} className="fa fa-star fa-lg fa-1x">
+            &nbsp;Призов: {prizes.length}
+          </p>
+        </div>
+        <div className={`tournament-users ${startDate ? 'show' : 'hide'}`}>
+          {formatDate(startDate)}
+        </div>
+        <div className="tournament-prize-count"></div>
+        <div className="tournament-cost">{cost}</div>
+        <div className={`tournament-cover-container ${coverColor}`}>
+          <div className="tournament-centerize">
+            <div className="white tournament-cover-text">
+              <div>Призовой фонд</div>
+              <span>{prizes.reduce((pr, cur) => pr + cur, 0)} Р</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+    // <div
+    //   className="tournament-cover-container"
+    //   style="background-color: rgba(0,0,0,0.05); position: absolute; left: 0; right: 0; top: 0; bottom: 0;"
+    // ></div>
+    // #303030
     let tournamentSpecialID = '';
     if (prizes[0] === 50) {
       tournamentSpecialID = 'daily';
@@ -230,6 +240,8 @@ export default class Tournament extends Component {
           {cover}
           <div className={`tournament-body ${participating} ${props.isSelected ? '' : 'hide'}`}>
             <div className="body">
+              <div className="">Турнир №{id}</div>
+              <br />
               <div className="price text-center">
                 <div className="value">{prizeList}</div>
               </div>

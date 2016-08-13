@@ -214,6 +214,7 @@ export default class Tournaments extends Component {
     return (
       <div>
         {tournaments}
+        <br />
       </div>
     );
   }

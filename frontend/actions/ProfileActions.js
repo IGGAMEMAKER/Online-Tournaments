@@ -21,14 +21,6 @@ type MsgType = {
   }
 };
 
-// const sendError = (err, name) => {
-//   console.error('error happened in ', name, err);
-// };
-
-const sendPaymentStat = (name, ammount, user) => {
-  console.log('no money(', name, ammount, user);
-};
-
 async function loadChatMessages() {
   try {
     const response: MsgType = await request
@@ -94,6 +86,32 @@ function addNotification(data, modalType) {
     data,
     modalType
   });
+}
+
+async function register(tournamentID, buyIn) {
+  try {
+    const response = await request.post('RegisterInTournament').send({ login, tournamentID });
+    const result = response.body.result;
+
+    const registeredIn = Object.assign({}, store.getMyTournaments());
+
+    registeredIn[tournamentID] = 1;
+
+    if (result === 'OK') {
+      Dispatcher.dispatch({
+        type: c.ACTION_REGISTER_IN_TOURNAMENT,
+        tournaments: registeredIn,
+        tournamentID
+      });
+    }
+
+    if (result === c.TREG_NO_MONEY) {
+      addNotification({ ammount: buyIn }, c.MODAL_NO_TOURNAMENT_MONEY);
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function loadProfile() {
@@ -173,31 +191,24 @@ export default {
       .post('/mark/clientError')
       .send({ err, where });
   },
-  async register(tournamentID, buyIn) {
+  async registerOnSubscribeTournament(tournamentID) {
     try {
-      const response = await request.post('RegisterInTournament').send({ login, tournamentID });
-      const result = response.body.result;
+      const response = await request
+        .get('/VK/isJoinedGroup');
 
-      const registeredIn = Object.assign({}, store.getMyTournaments());
-
-      registeredIn[tournamentID] = 1;
-
-      if (result === 'OK') {
-        Dispatcher.dispatch({
-          type: c.ACTION_REGISTER_IN_TOURNAMENT,
-          tournaments: registeredIn,
-          tournamentID
-        });
+      console.log('response.body.msg', response.body.msg);
+      if (response.body.msg) {
+        register(tournamentID);
+      } else {
+        console.log('Sorry, subscribers only');
+        addNotification({ tournamentID }, c.NOTIFICATION_JOIN_VK);
       }
-
-      if (result === c.TREG_NO_MONEY) {
-        addNotification({ ammount: buyIn }, c.MODAL_NO_TOURNAMENT_MONEY);
-      }
-
+      // console.log('isJoinedGroup', response);
     } catch (err) {
-      console.error(err);
+      sendError(err, 'registerOnSubscribeTournament');
     }
   },
+  register,
 
   async unregister(tournamentID) {
     try {

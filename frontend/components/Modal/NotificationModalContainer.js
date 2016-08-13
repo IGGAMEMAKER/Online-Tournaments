@@ -23,15 +23,10 @@ type StateType = {
   visible: boolean,
 }
 
-type ResponseType = {}
-
 export default class NotificationModalContainer extends Component {
   state = {
-    visible: true,
+    visible: true
   };
-
-  componentWillMount() {
-  }
 
   skip = (text, id) => {
     return (
@@ -80,6 +75,8 @@ export default class NotificationModalContainer extends Component {
 
     try {
       const main = (m) => (<h3>{m}</h3>);
+      const close = <button className="btn btn-default" onClick={this.hide}> Закрыть </button>;
+
       switch (message.type) {
         case c.NOTIFICATION_GIVE_MONEY:
           header = 'Деньги, деньги, деньги!';
@@ -158,7 +155,6 @@ export default class NotificationModalContainer extends Component {
             </div>
           );
 
-          const close = <button className="btn btn-default" onClick={this.hide}> Закрыть </button>;
           const value = info.value || c.CARD_COLOUR_GRAY;
 
           footer = (
@@ -205,6 +201,33 @@ export default class NotificationModalContainer extends Component {
             </div>
           );
           break;
+        case c.NOTIFICATION_JOIN_VK:
+          header = 'Вступайте в наше сообщество, будем рады вам!';
+
+          body = (
+            <div></div>
+          );
+
+          footer = (
+            <div>
+              {close}
+            </div>
+          );
+
+          let reason;
+
+          if (info.tournamentID) {
+            reason = 'subs_tournament';
+          }
+
+          if (reason === 'subs_tournament') {
+            header = 'Вступайте в наше сообщество!';
+
+            body = (<div>
+
+            </div>);
+          }
+          break;
         case c.MODAL_NO_PACK_MONEY:
           header = 'Упс... не хватает средств';
           diff = info.ammount - money;
@@ -246,12 +269,12 @@ export default class NotificationModalContainer extends Component {
   }
 
   render(props: PropsType, state: StateType) {
-    const message = props.message;
+    const { message, count } = props;
     const data = message.data || {};
     const messageID = message["_id"] || 0;
 
     const modalData = this.getModalData(message, data, messageID);
-    const drawData = Object.assign({}, modalData, { count: props.count, messageID });
+    const drawData = Object.assign({}, modalData, { count, messageID });
 
     return <Modal data={drawData} hide={!state.visible} onClose={this.hide} />;
   }

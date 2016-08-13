@@ -23,7 +23,7 @@ function getRegistrableTournament(tournamentID){
 
 	var is_available = { $or: [ is_registrable, is_available_stream ] };
 	
-	var query = { $and : [{tournamentID:tournamentID}, is_available] };
+	var query = { $and : [{ tournamentID }, is_available] };
 
 	return Tournaments.findByQuery(query)
 }
@@ -114,10 +114,10 @@ function reg(tournamentID, login){
 	var maxPlayers;
 	var TT;
 
-	return new Promise(function (resolve, reject){
+	return new Promise(function (resolve, reject) {
 
 		if (!queue[tournamentID]) {
-			console.log(tournamentID, 'is empty')
+			console.log(tournamentID, 'is empty');
 			queue[tournamentID] = { };
 		} else {
 			console.log(tournamentID, login, queue[tournamentID])
@@ -129,7 +129,7 @@ function reg(tournamentID, login){
 		// queue[tournamentID][login] = 1;
 		setQueue(tournamentID, login);
 
-		console.log('register', login, 'to', tournamentID)
+		console.log('register', login, 'to', tournamentID);
 
 		return resolve(1)
 	})
@@ -198,7 +198,7 @@ function register(tournamentID, login, res) {
 		// Answer(res, OK);
 
 		if (res) {
-			switch (err){
+			switch (err) {
 				case aux.c.TREG_FULL: res.json({ result: aux.c.TREG_FULL }); break;
 				case aux.c.TREG_ALREADY: res.json({ result: aux.c.TREG_ALREADY }); break;
 				case aux.c.TREG_NO_MONEY: res.json({ result: aux.c.TREG_NO_MONEY }); break;

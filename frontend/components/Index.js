@@ -3,6 +3,8 @@ import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 import Card from '../components/Shared/Card';
 
+import VKWidget from './Widgets/VKWidget';
+
 import PointTournament from './Tournaments/PointTournament';
 
 import stats from '../helpers/stats';
@@ -287,12 +289,33 @@ export default class Index extends Component {
       />)
       :
       '';
+
+    const subscriberTournaments = state.tournaments? state.tournaments
+      .filter(
+        (t => t.settings && t.settings.tag === 'point' && t.settings.points)
+      )
+      .map(t => <PointTournament
+        points={t.settings.points}
+        time={20}
+        isRegistered={store.isRegisteredIn(t.tournamentID)}
+        onRegister={() => {
+          actions.registerOnSubscribeTournament(t.tournamentID)
+        }}
+      />)
+      :
+      '';
+
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
-          <h2 className="white">Ежедневно</h2>
+          <h2 className="content-title">Ежедневно</h2>
           {pointTournaments}
+        </div>
+        <div className="center height-fix offset">
+          <h2 className="content-title">Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a></h2>
+          {subscriberTournaments}
+          <VKWidget />
         </div>
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>

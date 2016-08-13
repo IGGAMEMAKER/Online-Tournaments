@@ -8,10 +8,14 @@
 main-bg-color = #141414
 //main-bg-color = #FFFFFF
 main-text-color = white
+menu-background = black
 
 .background
   background-color main-bg-color
-  /*background-image: url('dark_brown.png');*/
+  background-attachment fixed
+  /*background-image: url('');*/
+  background-image url('/img/covers/Abstract_Dark_Planets.jpg')
+  background-size cover
 
 .page
   font-family 'Courier New', 'Arial'
@@ -41,6 +45,12 @@ main-text-color = white
 .text-title
   color main-text-color
   font-size 36px
+
+.content-title
+  color main-text-color
+  //font-family Calibri
+  font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
+  font-size 24px
 .page-header
   color main-text-color
   font-size 42px
@@ -748,7 +758,8 @@ button{
 .tournament-date-start {
   text-align: left;
   position: absolute;
-  bottom: 20px;
+  //bottom: 20px;
+  bottom: 13px;
   left: 20px;
   z-index: 100;
   color: whitesmoke;
@@ -784,7 +795,8 @@ button{
 }
 
 .tournament-body {
-  padding-top: 15px;
+  //padding-top: 15px;
+  padding-top: 5px;
   background: #F7F6F6;
 }
 .tournament-body.participating {
@@ -1098,7 +1110,7 @@ a:focus {
   left: 0;
   right: 0;
   /*background-color: #111111;*/
-  background-color main-bg-color
+  background-color menu-background
   z-index: 200;
 }
 
@@ -1142,9 +1154,9 @@ a:focus {
 }
 .menu-balance-container {
   margin: 0 auto;
-  /*padding-top: 10px;*/
+  padding: 5px;
   /*background-color: #111111;*/
-  background-color main-bg-color
+  background-color #22252d
 }
 .freeroll {
   /*height: 100%;*/

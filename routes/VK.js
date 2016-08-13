@@ -9,7 +9,7 @@ var respond = require('../middlewares/api-response');
 // var request = require('superagent-promise')(agent, Promise);
 
 var API = require('../helpers/API');
-var MY_GROUP_ID = 111187123;
+var MY_GROUP_ID = 1111871234;
 
 var VK = new VKApi({
   // token: 'access_token'
@@ -24,9 +24,13 @@ router.get('/isJoinedGroup', middlewares.authenticated, respond((req) => {
       //   throw 'noVKUser' + req.login;
       // }
       // console.log('search for user', userSocialID);
-      var object = { user_id: userSocialID, group_id: MY_GROUP_ID };
-      return VK.call('groups.isMember', object)
-        .then(r => !!r)
+
+      var object = {
+        user_id: userSocialID,
+        group_id: MY_GROUP_ID
+      };
+
+      return VK.call('groups.isMember', object).then(r => !!r)
     });
 }));
 
