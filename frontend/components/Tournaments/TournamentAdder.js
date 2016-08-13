@@ -128,6 +128,12 @@ export default class TournamentEditor extends Component {
                 <input name="tag" value={tag} />
               </td>
             </tr>
+            <tr>
+              <td>Settings</td>
+              <td>
+                <input name="settings" value={JSON.stringify(settings)} />
+              </td>
+            </tr>
             </tbody>
           </table>
           <input type="submit" value={props.phrase} />

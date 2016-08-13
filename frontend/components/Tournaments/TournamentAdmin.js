@@ -53,8 +53,11 @@ export default class ClassNameSpecial extends Component {
       visibility = () => props.showTournament(id);
       visibilityText = 'show';
     }
-    let dateButton = '';
+
     const startDate = props.data.startDate;
+
+    let dateButton = '';
+
     if (startDate) {
       dateButton = (
         <button onClick={() => props.clearStartDate(id)}>
