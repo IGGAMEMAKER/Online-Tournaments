@@ -24,7 +24,7 @@ export default class Index extends Component {
         registeredIn: store.getMyTournaments(),
         money: store.getMoney(),
         value: store.getTestValue(),
-        tournaments: store.getAvailableTournaments(),
+        tournaments: store.getAvailableTournaments()
       });
     });
 
@@ -273,11 +273,19 @@ export default class Index extends Component {
     // <Card content={middleTournaments} style="" />
     //   <Card content={eliteTournaments} style="" />
 
+    const pointTournaments = state.tournaments? state.tournaments
+      .filter(
+        (t => t.settings && t.settings.tag === 'point' && t.settings.points)
+      )
+      .map(t => <PointTournament points={t.settings.points} time={20} />)
+      :
+      '';
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
           <h2 className="white">Ежедневно</h2>
+          {pointTournaments}
           <PointTournament points={100} time={20} />
           <PointTournament points={500} />
           <PointTournament points={1000} />

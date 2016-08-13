@@ -61,7 +61,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
 
   app.get('/AddSpecial', function (req, res){
     res.render('AddSpecial');
-  })
+  });
 
   app.post('/AddSpecial', function (req, res){//upload.single('image'), 
     // trying to add image
@@ -91,11 +91,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       Prizes: [5],
       players: 0,
       startDate: new Date(),
+      comment: 'Выиграй 100 XP',
 
       settings: {
         hidden: false,
         regularity: constants.REGULARITY_NONE,
-        tag: 'freeroll'
+        tag: 'point',
+        points: 100,
+        cover: 'http://www.newspress.co.il/wp-content/uploads/2016/02/fortune500_hero_cropped1.jpg'
       }
     };
 
@@ -373,12 +376,11 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       })
   });
 
-  app.post('/ServeTournament', ServeTournament);
-  function ServeTournament (req, res){
+  app.post('/ServeTournament', function (req, res) {
     var data = req.body;
     console.log('ServeTournament ... site.tournaments');
     strLog("ServeTournament ... site.tournaments ", 'Tournaments');
 
     sender.sendRequest("ServeTournament", data, '127.0.0.1', 'GameFrontendServer', res, proxy);
-  }
+  });
 };

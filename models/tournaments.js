@@ -73,7 +73,7 @@ function running(tournamentID){
 }
 
 function all(){
-	return Tournament2.list({})
+	return Tournament2.list({});
 	//null - инициализирован
 	//1 - reg - отправлен Турнирному и игровому серверам (объявлена регистрация)
 	//2 - running - турнир начат
@@ -82,7 +82,7 @@ function all(){
 }
 
 function getByID(tournamentID){
-	return Tournament2.findOne({tournamentID:tournamentID})
+	return Tournament2.findOne({ tournamentID: tournamentID });
 	// return new Promise(function(resolve, reject){
 	// 	Tournament.findOne({tournamentID:tournamentID}, '', function(err, tournament){
 	// 		if (err) return reject(err);
@@ -129,11 +129,11 @@ function getByTopic(topic){
 		'settings.hidden': { $ne: true }
 		, 'settings.regularity' : REGULARITY_STREAM
 		,	'status' : { $in : [TOURN_STATUS_REGISTER, TOURN_STATUS_RUNNING] }
-	}
+	};
 
 	var sort = {
 		"_id" : -1
-	}
+	};
 
 	var tpc = topic;
 	// if (topic == 'default') {
@@ -142,7 +142,7 @@ function getByTopic(topic){
 	
 	match['settings.topic'] = tpc;
 
-	var obj = [{ $match : match }, { $sort : sort	}]
+	var obj = [{ $match : match }, { $sort : sort	}];
 
 	// var obj = {
 	// 	'settings.hidden': { $ne: true }
@@ -151,7 +151,7 @@ function getByTopic(topic){
 	// }
 
 	// return Tournament2.find(obj)
-	return Tournament2.aggregate(obj)
+	return Tournament2.aggregate(obj);
 
 	// 	Tournament.findOne({
 	// 	// 'settings.regularity':REGULARITY_STREAM
@@ -197,7 +197,7 @@ function finish(tournamentID){
 }
 
 function add(tournament) {
-	logger('add', tournament);
+	// logger('add', tournament);
 	var searchTournamentWithMaxID = Tournament2
 		.aggregate([
 			{ $sort : { "tournamentID": -1 } },
@@ -205,7 +205,7 @@ function add(tournament) {
 		]);
 
 	var tryToAdd = (list) => {
-		logger('tryToAdd', list);
+		// logger('tryToAdd', list);
 		var maxID = list.length ? list[0].tournamentID: 0;
 		var tournamentID = maxID + 1;
 		var newTournament = Object.assign({}, tournament, { tournamentID });
@@ -250,9 +250,9 @@ function add(tournament) {
 // }
 
 function addTopicStreamTournament(topic, isNew) {
-	var buyIn = 0
+	var buyIn = 0;
 	var gameNameID = 2;
-	var Prizes = [0]
+	var Prizes = [0];
 	var goNext = [1, 1];
 
 	var obj = {
@@ -304,11 +304,11 @@ function addNewTournament(tournament){
 			Tournament2.save(tournament)
 			.then(function (result){
 				// console.log('tournament save', tournament, result)
-				enable(tournamentID)
+				enable(tournamentID);
 				return resolve(tournament)
 			})
 			.catch(function (err){
-				console.log(err)
+				console.log(err);
 				return reject({err: err, message: 'cannot add tournament', tournament: tournament })
 			})
 
@@ -344,7 +344,7 @@ function setTournStatus(tournamentID, status){
 			// Errors.add('', 'invalid setTournStatus', {err:status});
 		break;
 	}
-	return Tournament2.update({tournamentID: tournamentID}, {$set: updateObj})
+	return Tournament2.update({ tournamentID: tournamentID }, { $set: updateObj });
 	// Tournament.update({tournamentID:tournamentID}, {$set: updateObj}, function (err,count){
 	// 	if(err) return Log('Tournament status update Error: ' + JSON.stringify(err));
 	// });
@@ -479,7 +479,7 @@ module.exports = {
 	todos: all,
 
 	getByTopic,
-	addTopicStreamTournament,
+	addTopicStreamTournament
 };
 
 
