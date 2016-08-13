@@ -8,7 +8,11 @@ export type TournamentType = {
   gameNameID: number,
   Prizes: Array,
 
-  settings: Object,
+  settings: {
+    regularity: number,
+    hidden: boolean,
+    tag: string
+  },
 }
 
 export type ModalMessage = {

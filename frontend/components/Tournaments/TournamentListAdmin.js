@@ -24,6 +24,13 @@ export default class TournamentListAdmin extends Component{
 
     sortBy: 'tournamentID',
     order: 1,
+
+    newTournament: {
+      gameNameID: 2,
+      goNext: [2,1],
+      Prizes: [1],
+      buyIn: 0
+    }
   };
 
   componentWillMount() {
@@ -168,9 +175,17 @@ export default class TournamentListAdmin extends Component{
         LIst Admin
         <h1>{sortBy}({order === 1 ? 'По убыванию' : 'По возрастанию'})</h1>
         <h2>{Date.UTC(111)}</h2>
-        <TournamentAdder update={this.update} />
         {this.table(runnings)}
         {this.table(Full)}
+
+
+
+        <TournamentAdder
+          // update={this.update}
+          action="/AddTournament"
+          phrase="Add tournament"
+          tournament={state.newTournament}
+        />
       </div>
     );
   }

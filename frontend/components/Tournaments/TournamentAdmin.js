@@ -20,8 +20,6 @@ type PropsType = {
 
 type StateType = {};
 
-type ResponseType = {}
-
 // function convertLocalDateToUTCDate(date: Date) {
 //   return new Date(date.getFullYear()  )
 // }
