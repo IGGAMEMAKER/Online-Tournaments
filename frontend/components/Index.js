@@ -277,7 +277,14 @@ export default class Index extends Component {
       .filter(
         (t => t.settings && t.settings.tag === 'point' && t.settings.points)
       )
-      .map(t => <PointTournament points={t.settings.points} time={20} />)
+      .map(t => <PointTournament
+        points={t.settings.points}
+        time={20}
+        isRegistered={store.isRegisteredIn(t.tournamentID)}
+        onRegister={() => {
+          actions.register(t.tournamentID)
+        }}
+      />)
       :
       '';
     return (
@@ -286,10 +293,6 @@ export default class Index extends Component {
         <div className="center height-fix offset">
           <h2 className="white">Ежедневно</h2>
           {pointTournaments}
-          <PointTournament points={100} time={20} />
-          <PointTournament points={500} />
-          <PointTournament points={1000} />
-          <PointTournament points={2000} />
         </div>
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>

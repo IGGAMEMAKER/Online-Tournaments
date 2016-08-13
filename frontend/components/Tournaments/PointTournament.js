@@ -6,7 +6,9 @@ type PropsType = {
   date: Date,
   time: number,
   points: number,
+
   isRegistered: boolean,
+  onRegister: Function,
 
   id: number
 }
@@ -86,7 +88,7 @@ export default class PointTournament extends Component {
               </div>
               :
               <div style="position: absolute; z-index: 5" className="centerize">
-                <button className="btn btn-primary btn-lg">Участвовать</button>
+                <button className="btn btn-primary btn-lg" onClick={props.onRegister}>Участвовать</button>
               </div>
           }
           <div style="position: absolute; margin-top: 10px;" className="center">
