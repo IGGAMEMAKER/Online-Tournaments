@@ -90,9 +90,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       goNext: [2,1],
       Prizes: [5],
       players: 0,
+      startDate: new Date(),
+
       settings: {
         hidden: false,
-        regularity: constants.REGULARITY_NONE
+        regularity: constants.REGULARITY_NONE,
+        tag: 'freeroll'
       }
     };
 

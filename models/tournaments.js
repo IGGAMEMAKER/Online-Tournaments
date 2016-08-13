@@ -204,26 +204,21 @@ function add(tournament) {
 			{ $limit : 1 }
 		]);
 
-	// var tryToAdd =
+	var tryToAdd = (list) => {
+		logger('tryToAdd', list);
+		var maxID = list.length ? list[0].tournamentID: 0;
+		var tournamentID = maxID + 1;
+		var newTournament = Object.assign({}, tournament, { tournamentID });
 
-	// return searchTournamentWithMaxID()
-	return Tournament2
-		.aggregate([
-			{ $sort : { "tournamentID": -1 } },
-			{ $limit : 1 }
-		])
-		.then((list) => {
-			logger('tryToAdd', list);
-			var maxID = list.length ? list[0].tournamentID: 0;
-			var tournamentID = maxID + 1;
-			var newTournament = Object.assign({}, tournament, { tournamentID });
+		return Tournament2.save(newTournament)
+			.then(t => {
+				enable(tournamentID);
+				return t;
+			})
+	};
 
-			return Tournament2.save(newTournament)
-				.then(t => {
-					enable(tournamentID);
-					return t;
-				})
-		})
+	return searchTournamentWithMaxID
+		.then(tryToAdd)
 }
 
 // function add(tournament){
@@ -270,7 +265,7 @@ function addTopicStreamTournament(topic, isNew) {
 		startDate:		null,
 		status:				null,
 		players:			0
-	}
+	};
 
 	obj.settings = { topic: topic, regularity: REGULARITY_STREAM };
 	if (isNew) obj.settings.hidden = true;
