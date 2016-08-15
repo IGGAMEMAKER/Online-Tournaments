@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import request from 'superagent';
 
+import constants from '../../constants/constants';
+
 import TournamentAdmin from './TournamentAdmin';
 import TournamentAdder from './TournamentAdder';
 import TournamentSettingGenerator from './TournamentSettingGenerator';
@@ -28,7 +30,9 @@ export default class TournamentListAdmin extends Component{
     sortBy: 'tournamentID',
     order: 1,
 
-    settings: {},
+    settings: {
+      regularity: constants.REGULARITY_NONE
+    },
 
     newTournament: {
       gameNameID: 2,

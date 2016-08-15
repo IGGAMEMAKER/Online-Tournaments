@@ -7,10 +7,6 @@ type PropsType = {
 }
 
 export default class TournamentSettingGenerator extends Component {
-  onRegularityChange = (e: KeyboardEvent) => {
-
-  };
-
   setLeague = (i) => {
     return () => {
       const newField = this.getNewField(this.props.settings, 'tag', 'league');
@@ -32,9 +28,9 @@ export default class TournamentSettingGenerator extends Component {
     return newer;
   };
 
-  onInputChange = (name) => {
+  onInputChange = (name, props) => {
     return (e: KeyboardEvent) => {
-      const settings = this.getNewField(this.props.settings, name, e.target.value);
+      const settings = this.getNewField(props.settings, name, e.target.value);
 
       // const props: PropsType = this.props;
 
@@ -53,22 +49,28 @@ export default class TournamentSettingGenerator extends Component {
     const { settings } = props;
 
     const tag = settings.tag || '';
+    const regularity = settings.regularity || constants.REGULARITY_NONE;
 
     const leagueImages = [];
 
     for (let i=0; i < 7; i++) {
-      leagueImages.push(<div onClick={this.setLeague(i)}>league{i}</div>)
+      leagueImages.push(<div style={`display: inline-block; margin-right: 15px;`} onClick={this.setLeague(i)}>league{i}</div>)
     }
 
     return (
       <div>
-        {leagueImages}
+        <div>
+          <div>Presetted tournaments</div>
+          <br />
+          {leagueImages}
+          <br />
+        </div>
         <div>
           <label>Tag</label>
           <input
             type="text"
             value={tag}
-            onInput={this.onInputChange('tag')}
+            onInput={this.onInputChange('tag', props)}
           />
         </div>
 
@@ -76,8 +78,8 @@ export default class TournamentSettingGenerator extends Component {
           <label>Regularity</label>
           <select
             name="regularity"
-            value={settings.regularity || constants.REGULARITY_NONE}
-            onChange={this.onRegularityChange}
+            value={regularity}
+            onChange={this.onInputChange('regularity', props)}
           >
             <option value="0">none</option>
             <option value="1">regular</option>
