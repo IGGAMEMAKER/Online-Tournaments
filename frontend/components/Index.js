@@ -30,7 +30,7 @@ export default class Index extends Component {
       });
     });
 
-    actions.initialize();
+    // actions.initialize();
   }
 
   CopyShareLink = () => {

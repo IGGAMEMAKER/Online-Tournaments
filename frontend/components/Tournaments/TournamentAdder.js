@@ -14,6 +14,7 @@ type StateType = {
 export default class TournamentEditor extends Component {
   render(props: PropsType, state: StateType) {
     const t: types.TournamentType = props.tournament;
+
     let {
       gameNameID,
       tournamentID,
@@ -40,6 +41,42 @@ export default class TournamentEditor extends Component {
     }
 
     gameNameID = 2;
+
+    /*
+
+     <tr>
+     <td>special</td>
+     <td>
+     <select id="special" name="special">
+     <option value="0">none</option>
+     <option value="1">special</option>
+     </select>
+     </td>
+     </tr>
+     <tr>
+     <td>hidden+topic</td>
+     <td>
+     <select name="hidden">
+     <option value="0">none</option>
+     <option value="1">realmadrid</option>
+     </select>
+     </td>
+     </tr>
+     <tr>
+     <td>specPrizeName</td>
+     <td>
+     <input type="text" name="specPrizeName" />
+     </td>
+     </tr>
+     <tr>
+     <td>Tag</td>
+     <td>
+     <input name="tag" value={tag} />
+     </td>
+     </tr>
+
+     */
+
 
     return (
       <div>
@@ -99,33 +136,9 @@ export default class TournamentEditor extends Component {
               </td>
             </tr>
             <tr>
-              <td>special</td>
+              <td>Tournament start date</td>
               <td>
-                <select id="special" name="special">
-                  <option value="0">none</option>
-                  <option value="1">special</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>hidden+topic</td>
-              <td>
-                <select name="hidden">
-                  <option value="0">none</option>
-                  <option value="1">realmadrid</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>specPrizeName</td>
-              <td>
-                <input type="text" name="specPrizeName" />
-              </td>
-            </tr>
-            <tr>
-              <td>Tag</td>
-              <td>
-                <input name="tag" value={tag} />
+                <input type="datetime-local" value={new Date()} />
               </td>
             </tr>
             <tr>

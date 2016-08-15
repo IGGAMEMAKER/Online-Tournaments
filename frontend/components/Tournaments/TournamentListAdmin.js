@@ -3,6 +3,7 @@ import request from 'superagent';
 
 import TournamentAdmin from './TournamentAdmin';
 import TournamentAdder from './TournamentAdder';
+import TournamentSettingGenerator from './TournamentSettingGenerator';
 import { TournamentType } from '../types';
 
 type StateType = {
@@ -24,6 +25,8 @@ export default class TournamentListAdmin extends Component{
 
     sortBy: 'tournamentID',
     order: 1,
+
+    settings: {},
 
     newTournament: {
       gameNameID: 2,
@@ -158,6 +161,10 @@ export default class TournamentListAdmin extends Component{
     );
   };
 
+  onChangeGeneratedSettings = () => {
+    console.log('onChangeGeneratedSettings', this.state.settings);
+  };
+
   render() {
     const state: StateType = this.state;
     const { sortBy, order } = state;
@@ -178,7 +185,10 @@ export default class TournamentListAdmin extends Component{
         {this.table(runnings)}
         {this.table(Full)}
 
-
+        <TournamentSettingGenerator
+          onChange={this.onChangeGeneratedSettings}
+          settings={{}}
+        />
 
         <TournamentAdder
           // update={this.update}

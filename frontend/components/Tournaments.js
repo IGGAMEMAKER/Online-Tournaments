@@ -54,7 +54,7 @@ export default class Tournaments extends Component {
     });
 
     actions.updateTournaments(TOURNAMENTS);
-    actions.initialize();
+    // actions.initialize();
   }
 
   // componentWillMount() {

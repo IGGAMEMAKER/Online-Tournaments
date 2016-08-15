@@ -104,6 +104,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
 
     var error = tournamentValidator(tournament);
 
+    // API.errors.add()
     if (error) {
       console.log('error while adding tournament', error);
       throw 'invalid_tournament_data';
@@ -113,8 +114,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
     return API.tournaments.add(tournament);
   }));
 
-  app.post('/AddTournament', AddTournament);
-  function AddTournament(req, res){
+  app.post('/AddTournament', function (req, res){
     var data = req.body;
 
     if (!data){
@@ -200,7 +200,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
       sender.Answer(res, Fail);
     }
-  }
+  });
 
   app.get('/api/tournaments/all', aux.isAdmin, function (req, res, next){
     Tournaments.todos()

@@ -97,8 +97,8 @@ export default class Profile extends Component {
 
     return (
       <div className="center">
-        <h2 class="text-center white offset-bg">Мои турниры</h2>
-        <table className="table table-bordered panel">
+        <h2 class="text-center page offset-bg">Мои турниры</h2>
+        <table className="table table-bordered table-striped panel">
           <thead>
           <tr>
             <th>№</th>

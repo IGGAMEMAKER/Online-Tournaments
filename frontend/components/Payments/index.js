@@ -3,6 +3,7 @@
  */
 import { h, Component } from 'preact';
 import request from 'superagent';
+// import actions from '../../actions/ProfileActions';
 
 type PropsType = {
   ammount: number,
@@ -16,11 +17,12 @@ const PAY_BANK = 4;
 
 export default class Payment extends Component {
   state = {
-    chosen: 0,
+    chosen: 0
   };
 
   componentWillMount() {
     // this.loadData();
+    // actions.initialize();
   }
 
   loadData() {
@@ -188,23 +190,24 @@ export default class Payment extends Component {
               width: '245px',
               height: height * 1.25,
               'border-radius': '15px',
-              'margin-right': '35px',
+              'margin-right': '35px'
             }}
           >
             {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/114306/VyZTMD4F_g/orig', width, height)}
           </div>
           {this.getPaymentImage(4, 'Оплата картой', 'http://learnthat.com/files/2010/02/credit-cards1.png', width, height)}
-          {paymentForm}
+
+          <div style="height: 150px;">{paymentForm}</div>
         </div>
         <br />
         <div
           className="white text-center"
           style={{
             // position: 'fixed',
-            width: '100%',
             // left: 0,
             // right: 0,
             // bottom: '35px',
+            width: '100%',
           }}
         >
           Что-то не так? Пишите в &nbsp;

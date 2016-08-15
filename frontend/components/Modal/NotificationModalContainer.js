@@ -203,7 +203,12 @@ export default class NotificationModalContainer extends Component {
           break;
         case c.NOTIFICATION_JOIN_VK:
           header = 'Вступайте в наше сообщество, будем рады вам!';
-
+          const groupImage = (
+            <div
+              style={`width: 300px; height: 300px; background-image: url('https://pp.vk.me/c628118/v628118662/30390/XgsD1vkCdHc.jpg');`}
+              className="img-responsive"
+            ></div>
+          );
           body = (
             <div></div>
           );
@@ -221,11 +226,25 @@ export default class NotificationModalContainer extends Component {
           }
 
           if (reason === 'subs_tournament') {
-            header = 'Вступайте в наше сообщество!';
+            header = 'Вступайте в наше сообщество, чтобы сыграть в этом турнире!';
 
-            body = (<div>
+            body = (
+              <div>
+                {groupImage}
+              </div>
+            );
 
-            </div>);
+            footer = (
+              <div>
+                {close}
+                <a
+                  className="btn btn-primary"
+                  href="https://new.vk.com/o_tournaments"
+                  target="_blank"
+                >Перейти к сообществу</a>
+              </div>
+            );
+
           }
           break;
         case c.MODAL_NO_PACK_MONEY:

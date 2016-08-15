@@ -7,6 +7,7 @@ import ModalContainer from '../components/Modal/ModalContainer';
 import Chat from '../components/Activity/Chat';
 
 import InfoActions from '../actions/InfoActions';
+import ProfileActions from '../actions/ProfileActions';
 
 type PropsType = {
   content: ?any,
@@ -20,6 +21,8 @@ export default class Layout extends Component {
   componentWillMount() {
     InfoActions.getAvailablePacks();
     InfoActions.getGifts();
+
+    ProfileActions.initialize();
   }
 
   render(props: PropsType, state: StateType) {
@@ -35,6 +38,7 @@ export default class Layout extends Component {
           </div>
           {modals}
           <div className="center" style="overflow: hidden; height: auto">
+            <br />
             {props.content}
           </div>
           <div className="center offset" style="overflow: hidden; height: auto">
