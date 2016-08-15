@@ -11,12 +11,39 @@ export default class TournamentSettingGenerator extends Component {
 
   };
 
+  setLeague = (i) => {
+    return () => {
+      const newField = this.getNewField(this.props.settings, 'tag', 'league');
+      const settings = this.getNewField(newField, 'leagueId', i);
+
+      this.props.onChange(settings);
+    }
+  };
+
+  getNewField = (settings, name, value) => {
+    const newer = Object.assign({}, settings);
+
+    newer[name] = value;
+
+    if (value === '' || value === null) {
+      delete newer[name];
+    }
+
+    return newer;
+  };
+
   onInputChange = (name) => {
     return (e: KeyboardEvent) => {
-      const props: PropsType = this.props;
+      const settings = this.getNewField(this.props.settings, name, e.target.value);
 
-      const { settings } = props;
-      settings[name] = e.target.value;
+      // const props: PropsType = this.props;
+
+      // const { settings } = props;
+      // settings[name] = e.target.value;
+
+      // if (e.target.value === '') {
+      //   delete settings[name];
+      // }
 
       props.onChange(settings);
     }
@@ -26,14 +53,22 @@ export default class TournamentSettingGenerator extends Component {
     const { settings } = props;
 
     const tag = settings.tag || '';
+
+    const leagueImages = [];
+
+    for (let i=0; i < 7; i++) {
+      leagueImages.push(<div onClick={this.setLeague(i)}>league{i}</div>)
+    }
+
     return (
       <div>
+        {leagueImages}
         <div>
           <label>Tag</label>
           <input
             type="text"
             value={tag}
-            onChange={this.onInputChange('tag')}
+            onInput={this.onInputChange('tag')}
           />
         </div>
 
@@ -55,7 +90,7 @@ export default class TournamentSettingGenerator extends Component {
         <label>Overall settings</label>
         <br />
         <br />
-        <input type="text" value={JSON.stringify(props.settings)} name=""/>
+        <input type="text" style={`width: 400px`} value={JSON.stringify(props.settings)} name=""/>
       </div>
     );
   }

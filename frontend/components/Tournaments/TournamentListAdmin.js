@@ -107,10 +107,6 @@ export default class TournamentListAdmin extends Component{
       });
   };
 
-  getSortFunction = (sortBy, order) => {
-    return tournamentSortFunction(sortBy, order);
-  };
-
   table = (list) => {
     return (
       <table border="1">
@@ -130,15 +126,17 @@ export default class TournamentListAdmin extends Component{
     );
   };
 
-  onChangeGeneratedSettings = () => {
+  onChangeGeneratedSettings = (settings) => {
     console.log('onChangeGeneratedSettings', this.state.settings);
+
+    this.setState({ settings });
   };
 
   render() {
     const state: StateType = this.state;
     const { sortBy, order } = state;
 
-    const sort = this.getSortFunction(sortBy, order);
+    const sort = tournamentSortFunction(sortBy, order);
 
     const Full = this.filter(sort, state.tournaments);
 
