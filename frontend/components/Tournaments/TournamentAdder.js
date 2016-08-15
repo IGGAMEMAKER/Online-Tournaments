@@ -108,16 +108,6 @@ export default class TournamentEditor extends Component {
               </td>
             </tr>
             <tr>
-              <td>Regularity</td>
-              <td>
-                <select name="regularity" value={regularity}>
-                  <option value="0">none</option>
-                  <option value="1">regular</option>
-                  <option value="2">stream</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
               <td>Buy In</td>
               <td>
                 <input name="buyIn" value={`${buyIn}`} />

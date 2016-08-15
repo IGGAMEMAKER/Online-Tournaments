@@ -42,23 +42,16 @@ export default class TournamentListAdmin extends Component{
   }
 
   setStartDate = (date, id) => {
-    request
-      .post(`/api/tournaments/date/${id}`)
-      .send({ startDate: date })
-      .end(this.standardCb);
+    request.post(`/api/tournaments/date/${id}`).send({ startDate: date }).end(this.standardCb);
   };
 
   changeVisibility(id, status) {
     console.log('hidden', id, status);
-    request
-      .get(`/api/tournaments/hidden/${id}/${status}`)
-      .end(this.standardCb);
+    request.get(`/api/tournaments/hidden/${id}/${status}`).end(this.standardCb);
   }
 
   clearStartDate = (id: number) => {
-    request
-      .get(`/api/tournaments/clearStartDate/${id}`)
-      .end(this.standardCb);
+    request.get(`/api/tournaments/clearStartDate/${id}`).end(this.standardCb);
   };
 
   standardCb = (err, res) => {
@@ -71,6 +64,7 @@ export default class TournamentListAdmin extends Component{
       .get('/api/tournaments/available')
       .end((err, res: ResponseType) => {
         if (err) throw err;
+
         console.log('availables...', res.body.msg);
         this.setState({ tournaments: res.body.msg });
       });
@@ -187,7 +181,7 @@ export default class TournamentListAdmin extends Component{
 
         <TournamentSettingGenerator
           onChange={this.onChangeGeneratedSettings}
-          settings={{}}
+          settings={state.settings}
         />
 
         <TournamentAdder
