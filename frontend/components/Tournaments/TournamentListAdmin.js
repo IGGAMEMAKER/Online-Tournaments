@@ -6,6 +6,8 @@ import TournamentAdder from './TournamentAdder';
 import TournamentSettingGenerator from './TournamentSettingGenerator';
 import { TournamentType } from '../types';
 
+import tournamentSortFunction from '../../helpers/tournaments/tournament-admin-sorter';
+
 type StateType = {
   tournaments: Array<TournamentType>,
 
@@ -106,34 +108,7 @@ export default class TournamentListAdmin extends Component{
   };
 
   getSortFunction = (sortBy, order) => {
-    let v1;
-    let v2;
-    let sort;
-    switch (sortBy) {
-      case 'settings.regularity':
-        sort = (t1: TournamentType, t2: TournamentType) => {
-          v1 = t1.settings.regularity || 0;
-          v2 = t2.settings.regularity || 0;
-          return (v2 - v1) * order;
-        };
-        break;
-      case 'startDate':
-        sort = (t1: TournamentType, t2: TournamentType) => {
-          v1 = Date.parse(t1.startDate) || 0;
-          v2 = Date.parse(t2.startDate) || 0;
-          // v2 = t2.startDate;
-          return (v2 - v1) * order;
-        };
-        break;
-      default:
-        sort = (t1: TournamentType, t2: TournamentType) => {
-          v1 = t1[sortBy] || 0;
-          v2 = t2[sortBy] || 0;
-          return (v2 - v1) * order;
-        };
-        break;
-    }
-    return sort;
+    return tournamentSortFunction(sortBy, order);
   };
 
   table = (list) => {
