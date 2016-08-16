@@ -225,7 +225,7 @@ export default class Index extends Component {
           <div className="white">
             <h1 className="fadeText">Побеждай с друзьями</h1>
             <p className="center">
-              <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
+              <div>Отправь ссылку друзьям и участвуй с ними в турнирах!</div>
             </p>
             <div>
               <center>
@@ -276,32 +276,30 @@ export default class Index extends Component {
     //   <Card content={eliteTournaments} style="" />
 
     const pointTournaments = state.tournaments? state.tournaments
-      .filter(
-        (t => t.settings && t.settings.tag === 'point' && t.settings.points)
+      .filter(t => t.settings && t.settings.tag === 'point' && t.settings.points)
+      .map(t =>
+        <PointTournament
+          points={t.settings.points}
+          time={20}
+          isRegistered={store.isRegisteredIn(t.tournamentID)}
+          onRegister={() => { actions.register(t.tournamentID) }}
+          players={t.players}
+        />
       )
-      .map(t => <PointTournament
-        points={t.settings.points}
-        time={20}
-        isRegistered={store.isRegisteredIn(t.tournamentID)}
-        onRegister={() => {
-          actions.register(t.tournamentID)
-        }}
-      />)
       :
       '';
 
     const subscriberTournaments = state.tournaments? state.tournaments
-      .filter(
-        (t => t.settings && t.settings.tag === 'point' && t.settings.points)
+      .filter(t => t.settings && t.settings.tag === 'subs' && t.settings.points)
+      .map(t =>
+        <PointTournament
+          points={t.settings.points}
+          time={20}
+          isRegistered={store.isRegisteredIn(t.tournamentID)}
+          onRegister={() => { actions.registerOnSubscribeTournament(t.tournamentID) }}
+          players={t.players}
+        />
       )
-      .map(t => <PointTournament
-        points={t.settings.points}
-        time={20}
-        isRegistered={store.isRegisteredIn(t.tournamentID)}
-        onRegister={() => {
-          actions.registerOnSubscribeTournament(t.tournamentID)
-        }}
-      />)
       :
       '';
 
@@ -313,7 +311,9 @@ export default class Index extends Component {
           {pointTournaments}
         </div>
         <div className="center height-fix offset">
-          <h2 className="content-title">Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a></h2>
+          <h2 className="content-title">
+            Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
+          </h2>
           {subscriberTournaments}
           <VKWidget />
         </div>

@@ -6,6 +6,8 @@ import constants from '../../constants/constants';
 import TournamentAdmin from './TournamentAdmin';
 import TournamentAdder from './TournamentAdder';
 import TournamentSettingGenerator from './TournamentSettingGenerator';
+import TournamentPrizeGenerator from './TournamentPrizeGenerator';
+
 import { TournamentType } from '../types';
 
 import tournamentSortFunction from '../../helpers/tournaments/tournament-admin-sorter';
@@ -150,23 +152,39 @@ export default class TournamentListAdmin extends Component{
 
     return (
       <div>
+        <table border="1">
+          <tr>
+            <td>
+              <TournamentSettingGenerator
+                onChange={this.onChangeGeneratedSettings}
+                settings={state.settings}
+              />
+            </td>
+
+            <td>
+              <TournamentPrizeGenerator
+                onChange={this.onChangeGeneratedPrizes}
+                Prizes={state.Prizes}
+              />
+            </td>
+            <td>
+              <TournamentAdder
+                action="/AddTournament"
+                phrase="Add tournament"
+                tournament={state.newTournament}
+              />
+            </td>
+          </tr>
+          <tr>
+
+          </tr>
+        </table>
+
         LIst Admin
         <h1>{sortBy}({order === 1 ? 'По убыванию' : 'По возрастанию'})</h1>
         <h2>{Date.UTC(111)}</h2>
         {this.table(runnings)}
         {this.table(Full)}
-
-        <TournamentSettingGenerator
-          onChange={this.onChangeGeneratedSettings}
-          settings={state.settings}
-        />
-
-        <TournamentAdder
-          // update={this.update}
-          action="/AddTournament"
-          phrase="Add tournament"
-          tournament={state.newTournament}
-        />
       </div>
     );
   }

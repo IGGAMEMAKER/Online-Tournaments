@@ -16,6 +16,20 @@ export default class TournamentSettingGenerator extends Component {
     }
   };
 
+  setSubFreeroll = () => {
+    const newField = this.getNewField(this.props.settings, 'tag', 'subs');
+    const settings = Object.assign(newField, { image: '/img/CR.jpg'});
+
+    this.props.onChange(settings);
+  };
+
+  setRMATags = () => {
+    const newField = this.getNewField(this.props.settings, 'tag', 'subs');
+    const settings = Object.assign(newField, { image: '/img/CR2.jpg'});
+
+    this.props.onChange(settings);
+  };
+
   getNewField = (settings, name, value) => {
     const newer = Object.assign({}, settings);
 
@@ -50,27 +64,50 @@ export default class TournamentSettingGenerator extends Component {
 
     const tag = settings.tag || '';
     const regularity = settings.regularity || constants.REGULARITY_NONE;
+    const image = settings.image || '';
 
     const leagueImages = [];
 
     for (let i=0; i < 7; i++) {
-      leagueImages.push(<div style={`display: inline-block; margin-right: 15px;`} onClick={this.setLeague(i)}>league{i}</div>)
+      leagueImages.push(
+        <div style={`display: inline-block; margin-right: 15px;`} onClick={this.setLeague(i)}>league{i}</div>
+      );
     }
+
 
     return (
       <div>
+
         <div>
           <div>Presetted tournaments</div>
           <br />
+          <button onClick={() => { props.onChange({}) }}>clear all</button>
+          <br />
+          <div style={`display: inline-block; margin-right: 15px;`} onClick={this.setSubFreeroll}>
+            <b>Subs Freeroll</b>
+          </div>
+          <div style={`display: inline-block; margin-right: 15px;`} onClick={this.setRMATags}>
+            <b>RMA Shirt Freeroll</b>
+          </div>
           {leagueImages}
           <br />
         </div>
+
         <div>
           <label>Tag</label>
           <input
             type="text"
             value={tag}
             onInput={this.onInputChange('tag', props)}
+          />
+        </div>
+
+        <div>
+          <label>Image</label>
+          <input
+            type="text"
+            value={image}
+            onInput={this.onInputChange('image', props)}
           />
         </div>
 

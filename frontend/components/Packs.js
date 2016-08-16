@@ -21,7 +21,7 @@ export default class PackPage extends Component {
   };
 
   componentWillMount() {
-    actions.initialize();
+    // actions.initialize();
 
     InfoStore.addChangeListener(() => {
       this.setState({

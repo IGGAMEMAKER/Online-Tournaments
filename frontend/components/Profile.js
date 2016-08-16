@@ -40,7 +40,7 @@ export default class Profile extends Component {
       // console.log('changes!');
     });
 
-    actions.initialize();
+    // actions.initialize();
   }
 
   componentDidUpdate() {

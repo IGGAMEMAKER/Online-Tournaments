@@ -56,8 +56,10 @@ menu-background = black
 .content-title
   color main-text-color
   //font-family Calibri
-  font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
+  //font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
   font-size 24px
+  @extends .page
+  margin-bottom 24px
 .page-header
   color main-text-color
   font-size 42px
@@ -555,10 +557,28 @@ button{
   &.color3
     border-color gray
 
+.tournament-centerize {
+  /*margin: auto;*/
+  left: 0;
+  right: 0;
+  /*bottom: 0;*/
+  /*top: 0;*/
+  position: absolute;
+  top: 50%;  /* position the top  edge of the element at the middle of the parent */
+
+  transform: translateY(-50%);
+}
+.darkened-centered-container
+  @extends .pack-prize-offset
+  border-width 0
+  //border-width 3px
+  border-color royalblue
+.total-centering
+  @extends .tournament-centerize
 .pack-prize-description {
   padding: 10px;
   font-size: 21px;
-  background-color: white;
+  //background-color: white;
   /*color: black;*/
   color: white;
   text-align: center;
@@ -569,10 +589,14 @@ button{
   /*background-color: #2b2d2f;*/
   /*opacity: 0.8;*/
   /*background-color: rgba(6, 6, 6, 0.48);*/
-  background-color: rgba(6, 6, 6, 0.78);
+  background-color: rgba(6, 6, 6, 0.68);
 
   min-height: 80px;
 }
+
+.darkened-centered-container-content
+  @extends .pack-prize-description
+  min-height 100%
 
 .demo-answer {
   margin-bottom: 15px;
@@ -742,17 +766,6 @@ button{
   z-index: 100;
 }
 
-.tournament-centerize {
-  /*margin: auto;*/
-  left: 0;
-  right: 0;
-  /*bottom: 0;*/
-  /*top: 0;*/
-  position: absolute;
-  top: 50%;  /* position the top  edge of the element at the middle of the parent */
-
-  transform: translateY(-50%);
-}
 .big-cards-container {
   display: table;
 }

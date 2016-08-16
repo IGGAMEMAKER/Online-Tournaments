@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import Container from '../Containers/Container';
 import DarkCard from '../Containers/DarkCard';
+import MainPageTournamentContainer from '../Containers/MainPageTournamentContainer';
+import Button from '../Shared/Button';
 
 type PropsType = {
   date: Date,
@@ -9,6 +11,8 @@ type PropsType = {
 
   isRegistered: boolean,
   onRegister: Function,
+
+  players: number,
 
   id: number
 }
@@ -19,30 +23,33 @@ export default class PointTournament extends Component {
   state = {};
 
   render(props: PropsType, state: StateType) {
-    const content = (
-      <div className="white main-title">
-        {props.points} points
-        <br />
-        <br />
-        <div className="sub-title">{props.time}</div>
-      </div>
+    const registerStatus = (
+      props.isRegistered?
+        <div>Вы участвуете</div>
+        :
+        <Button onClick={props.onRegister} text="Участвовать" />
     );
-        // <Container
-        //   image="http://www.applewallpapers.net/wallpapers/violet_colour-1920x1200.jpg"
-        //   faded
-        //   centerize
-        //   width="330px"
-        //   minHeight="280px"
-        //   content={content}
-        // />
+
+    const players = (
+      props.players?
+        <div>
+          <i className="fa fa-user">&nbsp;{props.players}</i>
+        </div>
+        :
+        <div><br />Стань первым</div>
+    );
     // font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
     // <div className="container-mobile">
     const description = (
-      <span>
-        Выиграй {props.points}XP
+      <div>
+        <div className="text-big" style="font-weight: 500">Приз: {props.points}XP</div>
+        <span className="text-micro">Турнир начнётся в 21-00</span>
         <br />
-        <span className="text-micro">Вы участвуете. Турнир начнётся в 21-00</span>
-      </span>
+        <br />
+        {registerStatus}
+        <br />
+        <div>{players}</div>
+      </div>
     );
 
     let image = 'http://www.newspress.co.il/wp-content/uploads/2016/02/fortune500_hero_cropped1.jpg';
@@ -72,29 +79,13 @@ export default class PointTournament extends Component {
     //   </div>
     // );
 
-
-
-
     return (
       <div className="col-md-4 col-sm-6 col-xs-12 killPaddings">
         <div style="position: relative; border-radius: 6px; cursor: pointer">
-          {
-            props.isRegistered?
-              <div
-                style="position: absolute; z-index: 5; background-color: #333; opacity: 0.8"
-                className="center"
-              >
-                <span className="text-small">Вы участвуете</span>
-              </div>
-              :
-              <div style="position: absolute; z-index: 5" className="centerize">
-                <button className="btn btn-primary btn-lg" onClick={props.onRegister}>Участвовать</button>
-              </div>
-          }
           <div style="position: absolute; margin-top: 10px;" className="center">
             <div className="text-small">Каждый день в 21-00</div>
           </div>
-          <DarkCard
+          <MainPageTournamentContainer
             description={description}
             src={image}
           />
