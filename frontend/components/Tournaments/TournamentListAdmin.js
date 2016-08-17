@@ -138,6 +138,12 @@ export default class TournamentListAdmin extends Component{
     this.setState({ settings });
   };
 
+  copyGeneratedPrizeToAddingForm = (Prizes) => {
+    this.setState({
+      newTournament: Object.assign({}, this.state.newTournament, { Prizes })
+    });
+  };
+
   render() {
     const state: StateType = this.state;
     const { sortBy, order } = state;
@@ -165,6 +171,7 @@ export default class TournamentListAdmin extends Component{
               <TournamentPrizeGenerator
                 onChange={this.onChangeGeneratedPrizes}
                 Prizes={state.Prizes}
+                copyGeneratedPrizeToAddingForm={this.copyGeneratedPrizeToAddingForm}
               />
             </td>
             <td>

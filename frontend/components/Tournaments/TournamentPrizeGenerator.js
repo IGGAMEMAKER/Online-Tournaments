@@ -8,9 +8,9 @@ import {
 
 import GiftSelector from '../../components/Gifts/GiftSelector';
 
-import Button from '../Shared/Button';
-
-type PropsType = {}
+type PropsType = {
+  copyGeneratedPrizeToAddingForm: Function
+}
 
 type PrizeType = {
   type: number,
@@ -52,12 +52,14 @@ export default class TournamentPrizeGenerator extends Component {
 
   render(props: PropsType, state: StateType) {
     let inputType = "number", value = 0;
+    let helper;
 
     switch (state.current) {
       case PRIZE_TYPE_MONEY:
         break;
       case PRIZE_TYPE_GIFT:
         inputType = "text";
+        helper = <GiftSelector items={{}} />;
         break;
       case PRIZE_TYPE_POINTS:
         value = 100;
@@ -72,13 +74,16 @@ export default class TournamentPrizeGenerator extends Component {
     return (
       <div>
         <div>TournamentPrizeGenerator</div>
-        <GiftSelector items={{}} />
+        {helper}
+        <br />
+        <br />
         <select value={state.current} onChange={this.onChangeCurrentPrizeType}>
           <option value={PRIZE_TYPE_MONEY}>money</option>
           <option value={PRIZE_TYPE_GIFT}>Gift</option>
           <option value={PRIZE_TYPE_POINTS}>Points</option>
           <option value={PRIZE_TYPE_TICKETS}>Tickets</option>
         </select>
+        <br />
 
         <input type={inputType} id="data" value={value} style="width: 300px;" />
 
@@ -90,6 +95,8 @@ export default class TournamentPrizeGenerator extends Component {
         <br />
         <div>Total</div>
         <input type="text" value={JSON.stringify(this.state.Prizes)} style="width: 300px;" />
+
+        <button onClick={() => { props.copyGeneratedPrizeToAddingForm(state.Prizes) }}>Copy Prize to form</button>
       </div>
     );
   }
