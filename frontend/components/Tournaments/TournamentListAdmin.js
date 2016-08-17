@@ -73,7 +73,7 @@ export default class TournamentListAdmin extends Component{
       .end((err, res: ResponseType) => {
         if (err) throw err;
 
-        console.log('availables...', res.body.msg);
+        // console.log('availables...', res.body.msg);
         this.setState({ tournaments: res.body.msg });
       });
   };

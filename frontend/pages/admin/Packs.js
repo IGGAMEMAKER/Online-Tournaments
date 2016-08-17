@@ -10,6 +10,8 @@ import PackEditingForm from '../../components/Packs/PackEditingForm';
 import AdminGifts from '../../components/Gifts/AdminGifts';
 import sendError from '../../helpers/sendError';
 
+import GiftSelector from '../../components/Gifts/GiftSelector';
+
 type Gift = {}
 
 type PackType = {}
@@ -112,35 +114,18 @@ export default class Packs extends Component {
 
   clearNewGift = () => {
     this.setState({
-      newGift: getEmptyGift(),
+      newGift: getEmptyGift()
     })
   };
 
-  attachGift = (i) => {
-    const state: StateType = this.state;
-    let items = Object.assign({}, state.items);
-
-    if (items[i]) {
-      items[i] = 0;
-    } else {
-      items[i] = 1;
-    }
-
-    this.setState({ items });
-  };
-
-  isAttached = (i) => {
-    return this.state.items[i];
-  };
-
-  drawGiftCard = (i) => {
-    const g = this.state.gifts[i];
-    return <PackPrize
-      src={g.photoURL}
-      name={g.name}
-      description={g.description}
-    />;
-  };
+  // drawGiftCard = (i) => {
+  //   const g = this.state.gifts[i];
+  //   return <PackPrize
+  //     src={g.photoURL}
+  //     name={g.name}
+  //     description={g.description}
+  //   />;
+  // };
 
   selectPack = (i) => {
     const items = {};
@@ -250,19 +235,6 @@ export default class Packs extends Component {
   render(props, state: StateType) {
     const packs = this.packList();
 
-    const giftSelector = state.gifts.map((g, i) => {
-      return (
-        <div
-          onClick={() => this.attachGift(i)}
-          className={this.isAttached(i) ? 'red' : ''}>
-          {g.name}
-          {this.isAttached(i) ? '  X' : ''}
-        </div>
-      );
-    });
-
-    const selectedList = state.gifts.filter((g, i) => this.isAttached(i)).map(g => `"${g._id}"`);
-
     const p = state.newPack;
     return (
       <div>
@@ -271,14 +243,7 @@ export default class Packs extends Component {
           <a href="/api/packs/all" target="_blank">Copy item object and paste it in this page</a>
           <br />
 
-          <button onClick={() => { this.setState({ items: {} }) }}>clear</button>
-          <div>
-            <h3 className="">Gift selector</h3>
-            {giftSelector}
-          </div>
-          <input value={`[${selectedList}]`} className="black full" />
-          <br />
-          <label>test</label>
+          <GiftSelector items={state.items} />
 
           <input className="black full" />
           <div style={`height: 150px;`}></div>
