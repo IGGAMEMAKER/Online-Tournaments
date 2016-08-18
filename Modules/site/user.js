@@ -16,14 +16,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var middlewares = require('../../middlewares');
 	var authenticated = middlewares.authenticated;
 
-	var c = require('../../constants')
+	var c = require('../../constants');
 
 	var Fail = {
 		result: 'fail'
 	};
 	var OK = {
 		result: 'OK'
-	}
+	};
 
 	function destroy_session(req, res, next){
 		var login = getLogin(req);
@@ -43,13 +43,13 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	// app.get('/Login', function (req, res){ res.render('Login',{}); })
 	// app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })
 
-	app.get('/Login', render('Login',{}) )
-	app.get('/Register', render('Register'))
+	app.get('/Login', render('Login',{}) );
+	app.get('/Register', render('Register'));
 
 	
 	app.get('/ResetPassword', render('ResetPassword') )
-	app.get('/Changepassword', authenticated, render('Changepassword') )
-	app.post('/ChangePassword', authenticated, change_password, change_password_fail)
+	app.get('/Changepassword', authenticated, render('Changepassword') );
+	app.post('/ChangePassword', authenticated, change_password, change_password_fail);
 
 	app.post('/Login', Login);//std_auth('Login')
 	app.post('/Register', register);//std_auth('Register') 
@@ -61,7 +61,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			email: req.body.email
 			, login: get_login_from_email(req.body.email)
 			, password: req.body.password
-		}
+		};
 		if (isValid(user)){
 			req.user= user;
 		} else {
@@ -140,15 +140,15 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Users.pack.setDefault(login)
 		.then(aux.setData(req, next))
 		.catch(next)
-	}, aux.std)
+	}, aux.std);
 	
-	var register_manager = require('../../chains/registerInTournament')(aux)
+	var register_manager = require('../../chains/registerInTournament')(aux);
 
 
 	
-	app.post('/CancelRegister', function (req, res){
-	  regManager('CancelRegister',req, res);
-	})
+	app.post('/CancelRegister', function (req, res) {
+	  regManager('CancelRegister', req, res);
+	});
 
 	app.get('/api/tournaments/start/:id/:force', aux.isAdmin, function (req, res){
 		var force = req.params.force
@@ -429,7 +429,7 @@ function (req, res){
 	  	Errors.add(login, 'get profile', {err:err});
 
 	  	res.redirect('Login');
-	})
+	});
 
 	function get_profile(req, res, next){
 		var login = getLogin(req);
@@ -515,4 +515,4 @@ function (req, res){
 			Errors.add(login||null, ErrorName, { code: err });
 		}
 	}
-}
+};

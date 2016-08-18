@@ -12,6 +12,8 @@ var Packs = require('../models/packs');
 var Money = require('../models/money');
 var Teams = require('../models/teams');
 
+var statistics = require('../models/statistics');
+
 module.exports = {
   users: Users,
   actions: Actions,
@@ -23,5 +25,18 @@ module.exports = {
   usergifts: Usergifts,
   packs: Packs,
   money: Money,
-  teams: Teams
+  teams: Teams,
+  statistics,
+
+  Users,
+  Actions,
+  Errors,
+  Tournaments,
+  TRegs,
+  Message,
+  Gifts,
+  Usergifts,
+  Packs,
+  Money,
+  Teams
 };

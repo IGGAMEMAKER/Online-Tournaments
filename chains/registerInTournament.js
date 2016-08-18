@@ -15,11 +15,11 @@ var sort = require('../helpers/sort');
 var fs = require('fs');
 
 function getRegistrableTournament(tournamentID){
-	var is_stream = { 'settings.regularity': aux.c.REGULARITY_STREAM };
-	var is_running = { status: aux.c.TOURN_STATUS_RUNNING };
+	var is_stream = { 'settings.regularity': c.REGULARITY_STREAM };
+	var is_running = { status: c.TOURN_STATUS_RUNNING };
 	var is_available_stream = { $and : [is_stream, is_running] };
 
-	var is_registrable = { status: aux.c.TOURN_STATUS_REGISTER };
+	var is_registrable = { status: c.TOURN_STATUS_REGISTER };
 
 	var is_available = { $or: [ is_registrable, is_available_stream ] };
 	
@@ -60,7 +60,7 @@ var str = JSON.stringify;
 
 function StartTournament(tournamentID, force, res){
 	var gameNameID;
-	Log("Tournament " + tournamentID + " starts", aux.c.STREAM_TOURNAMENTS);
+	Log("Tournament " + tournamentID + " starts", c.STREAM_TOURNAMENTS);
 
 	Tournaments.find(tournamentID)
 	.then(function (tournament){
@@ -108,7 +108,7 @@ function add_participant(tournamentID, login) {
 		})
 }
 
-function reg(tournamentID, login){
+function reg(tournamentID, login, force){
 	var buyIn;
 	var playerCount;
 	var maxPlayers;
@@ -144,7 +144,7 @@ function reg(tournamentID, login){
 		playerCount = tournament.players;
 		maxPlayers = tournament.goNext[0];
 
-		if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM) {
+		if (tournament.settings && tournament.settings.regularity == c.REGULARITY_STREAM) {
 			is_stream = true;
 		}
 
@@ -158,29 +158,37 @@ function reg(tournamentID, login){
 		// check max players count
 		if (playerCount < maxPlayers) { // pay money
 			if (buyIn > 0) {
-				return Money.pay(login, buyIn, { type: aux.c.SOURCE_TYPE_BUY_IN, tournamentID })
+				if (force) {
+					return 1;
+				}
+
+				return Money.pay(login, buyIn, { type: c.SOURCE_TYPE_BUY_IN, tournamentID })
 			}
 
 			return 1;
 		}
 		
-		throw aux.c.TREG_FULL
+		throw c.TREG_FULL
 	})
-	.then(function (result){
+	.then(function (result) {
 		// return TournamentReg.registerUser(login, tournamentID, 'gaginho')
 		return add_participant(tournamentID, login)
 	})
-	.then(function (saved){
+	.then(function (saved) {
 		// queue[tournamentID][login] = null;
-		clearQueue(tournamentID, login)
+		clearQueue(tournamentID, login);
 
 		aux.done(login, 'tournament.join', {tournamentID:tournamentID});
 		return TT;
 	})
 }
 
+function forceRegister(tournamentID, login) {
+	return reg(tournamentID, login, true)
+}
+
 function register(tournamentID, login, res) {
-	return reg(tournamentID, login)
+	return reg(tournamentID, login, false)
 	.then(function (tournament){
 		// if (res) Answer(res, OK);
 		if (res) res.json(OK);
@@ -199,11 +207,11 @@ function register(tournamentID, login, res) {
 
 		if (res) {
 			switch (err) {
-				case aux.c.TREG_FULL: res.json({ result: aux.c.TREG_FULL }); break;
-				case aux.c.TREG_ALREADY: res.json({ result: aux.c.TREG_ALREADY }); break;
-				case aux.c.TREG_NO_MONEY: res.json({ result: aux.c.TREG_NO_MONEY }); break;
+				case c.TREG_FULL: res.json({ result: c.TREG_FULL }); break;
+				case c.TREG_ALREADY: res.json({ result: c.TREG_ALREADY }); break;
+				case c.TREG_NO_MONEY: res.json({ result: c.TREG_NO_MONEY }); break;
 				default:
-					res.json({ result: aux.c.TREG_NO_MONEY });
+					res.json({ result: c.TREG_NO_MONEY });
 					// Answer(res, Fail);
 					break;
 			}
@@ -220,7 +228,7 @@ function join(tournament, login){
 
 function join_if_stream(tournament, login){
 	var tournamentID = tournament.tournamentID;
-	if (tournament.settings && tournament.settings.regularity==aux.c.REGULARITY_STREAM){
+	if (tournament.settings && tournament.settings.regularity == c.REGULARITY_STREAM){
 
 		join(tournament, login)
 	}
@@ -248,6 +256,7 @@ module.exports = function(_aux, _realtime){
 
 	return {
 		register: register,
+		forceRegister,
 		reg: reg,
 		join: join,
 		StartTournament: StartTournament,
@@ -258,4 +267,4 @@ module.exports = function(_aux, _realtime){
 			clearQueue(tournamentID, login);
 		}
 	}
-}
+};

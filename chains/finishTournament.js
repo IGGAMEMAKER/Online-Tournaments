@@ -2,10 +2,17 @@ var Gifts = require('../models/gifts');
 var Usergifts = require('../models/usergifts');
 var Users = require('../models/users');
 var Money = require('../models/money');
-var Marathon = require('../models/marathon');
 var TournamentReg = require('../models/tregs');
 var Tournaments = require('../models/tournaments');
 
+var API = require('../helpers/API');
+
+var prizeTypes = {
+	PRIZE_TYPE_MONEY: 1,
+	PRIZE_TYPE_GIFT: 2,
+	PRIZE_TYPE_POINTS: 3,
+	PRIZE_TYPE_TICKETS: 4
+};
 
 var sender = require('../requestSender');
 
@@ -139,7 +146,7 @@ function singlePromo(player, promoter, amount, tournament) {
 
 	var sum = Math.floor(parseInt(amount) / 2);
 	console.log(promoter + ' invited ', player, ' and deserves ', sum, '$');
-	Money.increase(promoter, sum, aux.c.SOURCE_TYPE_PROMO);
+	API.money.increase(promoter, sum, aux.c.SOURCE_TYPE_PROMO);
 }
 
 function updatePromos(tournRegs) {
@@ -193,7 +200,9 @@ function TournamentLog(tournamentID, message){
 	var text = '\r\n' + time + ' TS: ' + message + '\r\n';
 
 	fs.appendFile(path, text, function (err) {
-		if (err) { Log(err); throw err; }
+		if (err) {
+			Log(err); throw err;
+		}
 		//console.log('The "data to append" was appended to file!');
 	});
 }
@@ -210,6 +219,7 @@ function getPrize(Prizes, goNext, i){
 			roundIndex = next;
 			next = roundIndex + 1;
 		}
+
 		return Prizes[roundIndex - 1];
 	}
 }
@@ -267,35 +277,70 @@ function isSpecialTournament(tournament){
 	return tournament.settings && tournament.settings.special == aux.c.SPECIALITY_SPECIAL;
 }
 
+function sendPrizeMoney(login, Prize, tournamentID, promoter, tournament) {
+	var src = {
+		type: aux.c.SOURCE_TYPE_WIN,
+		tournamentID: tournamentID
+	};
+
+	var money = parseInt(Prize.info);
+
+	Money.increase(login, money, src)
+		.then(function (result) {
+			console.log('money increased, transfer saved', login, money, src);
+
+			singlePromo(login, promoter, money, tournament);
+		})
+		.catch(aux.report('mmmMoney', { src, money, login } ))
+}
+
+function sendPrizeGift(login, Prize) {
+	Usergifts.saveGift(login, Prize.info, null, Prize.colour || 4)
+		.catch(aux.report('Prize is gift:', { Prize, login } ))
+}
 
 function givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter){
 	Log('givePrizeToPlayer: ' + JSON.stringify(player));
 	var login = player.value.login;
-	
-	if (isNaN(Prize) ){ //gift
-		if (Prize.MP && !isNaN(Prize.MP)){
-			Marathon.giveNpoints(login, parseInt(Prize.MP) || 10)
-		} else {
-			Usergifts.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
-			.then(function (result){
-				console.log('saveGift', result)
-			})
-			.catch(aux.report('Prize is gift:', { Prize, login } ))
-		}
+	var prizeType = Prize.type;
 
-	}	else { //money
-		if (Prize > 0) {
-			var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID: tournamentID };
-			var money = Prize;
-			Money.increase(login, money, src)
-			.then(function (result) {
-				console.log('money increased, transfer saved', login, money, src);
-
-				singlePromo(login, promoter, money, tournament);
-			})
-			.catch(aux.report('mmmMoney', { src, money, login } ))
-		}
+	switch (prizeType) {
+		case prizeTypes.PRIZE_TYPE_MONEY:
+			sendPrizeMoney(login, Prize, tournamentID, promoter, tournament);
+			break;
+		case prizeTypes.PRIZE_TYPE_GIFT:
+			sendPrizeGift(login, Prize);
+			break;
+		case prizeTypes.PRIZE_TYPE_POINTS:
+			break;
+		case prizeTypes.PRIZE_TYPE_TICKETS:
+			break;
 	}
+
+	// if (isNaN(Prize) ){ //gift
+	// 	if (Prize.MP && !isNaN(Prize.MP)){
+	// 		Marathon.giveNpoints(login, parseInt(Prize.MP) || 10)
+	// 	} else {
+	// 		Usergifts.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
+	// 		.then(function (result){
+	// 			console.log('saveGift', result)
+	// 		})
+	// 		.catch(aux.report('Prize is gift:', { Prize, login } ))
+	// 	}
+  //
+	// }	else { //money
+	// 	if (Prize > 0) {
+	// 		var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID: tournamentID };
+	// 		var money = Prize;
+	// 		Money.increase(login, money, src)
+	// 		.then(function (result) {
+	// 			console.log('money increased, transfer saved', login, money, src);
+  //
+	// 			singlePromo(login, promoter, money, tournament);
+	// 		})
+	// 		.catch(aux.report('mmmMoney', { src, money, login } ))
+	// 	}
+	// }
 }
 
 function finishTournament(data){

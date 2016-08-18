@@ -67,43 +67,18 @@ function profileByMail(email){
 	})
 }
 
-function find_or_reject(login, parameters){
-	return new Promise(function (resolve, reject){
-		User.findOne({login:login}, parameters||'', function (err, user){
-			if (err) return reject(err);
-			if (!user) return reject(null);
-
-			return resolve(user);
-		})
-	})
-}
-
 function update_user(find, update, parameters){
 	return new Promise(function (resolve, reject){
 		User.update(find, update, parameters, function(err, count){
-			if (err) return reject(err)
+			if (err) return reject(err);
 
-			if (!updated(count)) return reject(null)
+			if (!updated(count)) return reject(null);
 			resolve(1);
 		})
 	})
 }
 
 ///////////////////////////////
-function initializeInfo(login){
-	var upd = {
-		$set : { 
-			info: { status: c.USER_STATUS_NEWBIE } 
-		} 
-	};
-	return update_user({login:login}, upd, {})
-	.then(function (result){
-		return pack.initialize(login)
-	})
-	.then(function (result){
-		return getByLogin(login)
-	})
-}
 
 function update_user_status(login, status){
 	return getByLogin(login)
@@ -112,7 +87,8 @@ function update_user_status(login, status){
 			$set : {
 				'info.status' : status
 			}
-		}
+		};
+
 		return update_user({login:login}, upd, {})
 	})
 }
@@ -120,29 +96,12 @@ function update_user_status(login, status){
 function getByLogin(login){
 	return User2.find({login: login})
 	.then(function (user){
-		if (!user.info) return noInfoFix(login)
+		if (!user.info) return noInfoFix(login);
 		if (!user.info.packs) return noPacksFix(login)
 	})
 	.then(function (result){
 		return User2.find({login: login})
 	});
-	// return fixUser(login)
-	// var profile;
-	// return User2.find({login:login})
-	// .then(function (user){
-	// 	profile = user;
-
-	// 	console.log('getByLogin', user)
-	// 	if (!user.info){
-	// 		return initializeInfo(login)
-	// 	} else {
-	// 		if (!user.info.packs){
-	// 			return pack.initialize(login)
-	// 		} else {
-	// 			return user
-	// 		}
-	// 	}
-	// })
 }
 
 // joinTeam('g.iosebashvili', 'Adidas Team Pro');
@@ -162,7 +121,8 @@ function noInfoFix(login){
 			info : {
 				// status: c.USER_STATUS_NEWBIE,
 				status: c.USER_STATUS_READ_FIRST_MESSAGE,
-				packs: pack.newbiePackSet
+				packs: pack.newbiePackSet,
+				xp: 0
 			}
 		}
 	};
@@ -170,7 +130,7 @@ function noInfoFix(login){
 }
 
 function noPacksFix(login){
-	console.log('noPacksFix', login)
+	console.log('noPacksFix', login);
 	var upd = {
 		$set : {
 			info : {
@@ -179,17 +139,6 @@ function noPacksFix(login){
 		}
 	};
 	return update_user({login:login}, upd, {})
-}
-
-function fixUser(login){
-	return User2.find({login: login})
-	.then(function (user){
-		if (!user.info) return noInfoFix(login)
-		if (!user.info.packs) return noPacksFix(login)
-	})
-	.then(function (result){
-		return User2.find({login: login})
-	})
 }
 
 // profile('MorganFreeman223')
@@ -206,7 +155,6 @@ var pack = {
 		return User2.update({login:login}, {$set: {'info.packs': pack.newbiePackSet }})
 	}
 	,getUser: function (login){
-		// return fixUser(login)
 		return getByLogin(login)
 		// .then(function (user){
 		// 	if (!user.info.packs) {
@@ -481,8 +429,16 @@ function changePassword(login, oldPass, newPass){
 // }
 
 function setInviter(login, inviter, inviter_type){
-	return find_or_reject(login)
-	.then(function (user){
+	return User2.findOne({ login })
+	.then(function (user) {
+		if (user.inviter) throw 'isSet';
+
+		var updObject = {
+			inviter,
+			inviter_type: inviter_type||null
+		};
+
+		return User2.update({ login }, updObject);
 		return new Promise(function (resolve, reject){
 			if (user.inviter) return reject('isSet');
 
@@ -643,7 +599,7 @@ function grantMoney(login){
 
 			if (user && user.money < 100){
 				// User.update({login:login}, {})
-				return moneyIncrease(login, 100)
+				return moneyIncrease(login, 100);
 				// .then(console.log)
 
 				// .catch(console.error)
@@ -771,9 +727,11 @@ function get_new_user(login, password, email){
 		date: now(), 
 		activate:0, 
 		bonus:{},
+
 		info:{
 			status: c.USER_STATUS_NEWBIE,
-			packs: pack.newbiePackSet
+			packs: pack.newbiePackSet,
+			xp: 0,
 		},
 
 		cryptVersion:CURRENT_CRYPT_VERSION,
@@ -785,27 +743,6 @@ function get_new_user(login, password, email){
 
 
 function log(msg){ console.log(msg); }
-
-function printer(obj) { 
-	//log('obj:'); 
-	log(obj); 
-}
-
-function auth_printer(authenticated){
-	if (!authenticated) { 
-		log('auth failed'); 
-	} else {
-		log('authenticated');
-	}
-	return authenticated;
-}
-
-function p_printer (obj) {
-	return new Promise(function (resolve, reject){
-		printer(obj);
-		return resolve(obj);
-	})
-}
 
 function catcher(err){
 	log('catched error!');

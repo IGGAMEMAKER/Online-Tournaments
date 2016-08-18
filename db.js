@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 var configs = require('./configs');
 var models = require('./models')(configs.db);
 
-var helpers = require('./helpers/helper')
+var helpers = require('./helpers/helper');
 
 function list(modelName, find, parameters){
 	return new Promise(function (resolve, reject){
@@ -39,9 +39,9 @@ function findOne(modelName, find, parameters){
 
 function save(modelName, item){
 	return new Promise(function (resolve, reject){
-		var ITEM = new models[modelName](item)
+		var ITEM = new models[modelName](item);
 		ITEM.save(function (err){
-			if (err) return reject(err)
+			if (err) return reject(err);
 
 			return resolve(item)
 		})
@@ -66,7 +66,7 @@ function update(modelName, find, updateObj, options){
 		models[modelName].update(find, updateObj, options || null, function (err, count){
 			if (err) return reject(err);
 
-			if (helpers.updated(count)){
+			if (helpers.updated(count)) {
 				return resolve(1);
 			}
 
@@ -125,7 +125,7 @@ var wrap = function(modelName){
 			return models[modelName]
 		}
 	}
-}
+};
 
 module.exports = {
 	list: list,
@@ -137,4 +137,4 @@ module.exports = {
 	aggregate: aggregate,
 
 	wrap: wrap
-}
+};
