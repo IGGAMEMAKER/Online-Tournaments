@@ -25,6 +25,8 @@ var OK = { result: 'OK' };
 
 var money_koef = 100;
 
+var logger = require('../helpers/logger');
+
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
 
 function all(){
@@ -439,22 +441,6 @@ function setInviter(login, inviter, inviter_type){
 		};
 
 		return User2.update({ login }, updObject);
-		return new Promise(function (resolve, reject){
-			if (user.inviter) return reject('isSet');
-
-			var updObject = { 
-				inviter,
-				inviter_type: inviter_type||null
-			};
-			
-			User.update({login:login}, {$set : updObject }, function (err, count){
-				if (err) return reject(err);
-
-				if (updated(count)) return resolve(1);
-				return reject('update failed');
-			})
-			
-		})
 	})
 }
 
@@ -490,109 +476,73 @@ function mailers(){
 }
 
 function moneyTop(moneyMoreThan){
-	return new Promise(function (resolve, reject){
-		User.find({ money : {$gt: moneyMoreThan } })
-		.sort('-money')
-		.exec(function (err, users){
-			if (err) return reject(err);
-
-			return resolve(users||[]);
-		})
-
-	})
+	return User2.aggregate([
+		{
+			$match: { money : {$gt: moneyMoreThan } }
+		}, {
+			$sort: { money: -1 }
+		}
+	]);
+	// return new Promise(function (resolve, reject){
+	// 	User.find({ money : {$gt: moneyMoreThan } })
+	// 	.sort('-money')
+	// 	.exec(function (err, users){
+	// 		if (err) return reject(err);
+  //
+	// 		return resolve(users||[]);
+	// 	})
+  //
+	// })
 }
 
-/*function setInviter(login, inviter){
-	return new Promise(function (resolve, reject){
-		User.findOne({login:login}, function (err, user){
-			if (err) { return reject(err); }
-
-			if (!user || user.inviter) { return reject(null); }
-
-			User.update({login:login}, function (err, count){
-				if (err) { return reject(err); }
-
-				if (updated(count)) {
-					resolve(null);
-				} else {
-
-					reject(null);
-				}
-
-			})
-
-		})
-	})
-}
-*/
-
-function resetPassword(user){
-	return new Promise(function (resolve, reject){
-		// var login = user.login;
-		var email = user.email;
-		var newPass = security.create_random_password();//HASH();
-		//Log('Filter passwords, when you change them!!', STREAM_SHIT);
-
-		// login:login, 
-		User.update({email:email}, {$set : { password:HASH(newPass), cryptVersion:CURRENT_CRYPT_VERSION } }, function (err, count){
-			//if (err) { Log(err, STREAM_ERROR); reject(err); }
-			if (err) return reject(err);
-			
-			if (updated(count)) {
-				user.password = newPass;
-				resolve(user); // Answer(res, OK);
-				//Log('resetPassword OK '+ login + '  ' + newPass, STREAM_USERS);	
-			} else {
-				reject(Fail);	// Answer(res, Fail);
-				//Log('resetPassword Fail '+login + ' ', STREAM_USERS);
-			}
-
-		})
-
-	})
-}
+// function resetPassword(user){
+// 	return new Promise(function (resolve, reject){
+// 		// var login = user.login;
+// 		var email = user.email;
+// 		var newPass = security.create_random_password();//HASH();
+// 		//Log('Filter passwords, when you change them!!', STREAM_SHIT);
+//
+// 		// login:login,
+// 		User.update({email:email}, {$set : { password:HASH(newPass), cryptVersion:CURRENT_CRYPT_VERSION } }, function (err, count){
+// 			//if (err) { Log(err, STREAM_ERROR); reject(err); }
+// 			if (err) return reject(err);
+//
+// 			if (updated(count)) {
+// 				user.password = newPass;
+// 				resolve(user); // Answer(res, OK);
+// 				//Log('resetPassword OK '+ login + '  ' + newPass, STREAM_USERS);
+// 			} else {
+// 				reject(Fail);	// Answer(res, Fail);
+// 				//Log('resetPassword Fail '+login + ' ', STREAM_USERS);
+// 			}
+//
+// 		})
+//
+// 	})
+// }
 
 
 
-function moneyIncrease(login, ammount){
-	return new Promise(function(resolve, reject){
-		User.update({login:login}, {$inc: { money: ammount }} , function (err, count) {
-			if (err) return reject(err);
-
-			if (updated(count)) return resolve(OK);
-
-			return resolve(Fail);
-		})
-	})
-}
-
-function tryMoneyDecrease(login, ammount, force){
-	return hasEnoughMoney(login, ammount)
-	.then(function(hasMoney){
-		if (hasMoney==OK || force) return moneyDecrease(login, ammount);
-		return Fail;
-	})
-	.then(function(result){
-		log('result: ' + JSON.stringify(result));
-	})
-	.catch(catcher);
-}
-
-function moneyDecrease(login, ammount){
-	return new Promise(function(resolve, reject){
-		User.update({login:login}, {$inc: { money: -ammount }} , function (err, count) {
-			if (err) return reject(err);
-
-			if (updated(count)) return resolve(OK);
-
-			return resolve(Fail);
+function moneyIncrease(login, money){
+	return User2.update({ login }, {$inc: { money }})
+		.catch(err => {
+			logger.log(err);
+			return Fail
 		});
-	});
+	// return new Promise(function(resolve, reject){
+	// 	User.update({login:login}, {$inc: { money: ammount }} , function (err, count) {
+	// 		if (err) return reject(err);
+  //
+	// 		if (updated(count)) return resolve(OK);
+  //
+	// 		return resolve(Fail);
+	// 	})
+	// })
 }
 
 function grantMoney(login){
 	return new Promise(function (resolve, reject){
-		console.log('grantMoney', login)
+		console.log('grantMoney', login);
 		User.findOne({login:login}, function (err, user){
 			if (err) return reject(err);
 			// console.log(err, user);
@@ -611,68 +561,6 @@ function grantMoney(login){
 
 	})
 }
-
-// grantMoney('Raja')
-
-function hasEnoughMoney(login, ammount){
-	return new Promise(function(resolve, reject){
-		User.findOne({login:login}, 'money', function(err, user){
-			if (err) return reject(err);
-
-			if (user && user.money>=ammount) return resolve(OK);
-
-			return resolve(Fail);
-		})
-	})
-}
-
-//----------------------Tests-----------------------------
-
-/*changePassword('AlvaroFernandez', 'pppppppp', 'asdasd')
-.then(function(asd){
-	log('chain added!');
-})*/
-
-/*create('AlvaroFernandez11', 'ghjghj', '789hj@mail.ru')
-.catch(function(err){
-	switch(err){
-		case USER_EXISTS:
-			log('USER_EXISTS: ((' + err);
-		break;
-		default:
-			log('UNKNOWN_ERROR' + err);
-		break;
-	}
-})*/
-
-
-//tryMoneyDecrease('AlvaroFernandez', 100*money_koef);
-//moneyIncrease('AlvaroFernandez', 200*money_koef);
-
-/*auth('AlvaroFernandez', 'cojonesAAA')
-.then(function(auth){
-	if (!auth) { 
-		log('auth failed'); 
-	} else {
-		log('authenticated');
-	}
-})*/
-
-
-
-//update_password('AlvaroFernandez', 'asdasd', CURRENT_CRYPT_VERSION);
-
-/*profile('AlvaroFernandez')
-.then(p_printer)
-.catch(catcher);*/
-
-/*all()
-.then(function(users){
-	log('Users: ');
-	log(users);
-})
-.catch(catcher);*/
-
 
 // -----------------------AUXILARY FUNCTIONS--------------------------
 
