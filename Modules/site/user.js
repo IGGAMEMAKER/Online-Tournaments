@@ -3,6 +3,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var security = require('../DB/security');
 
 	var mail = require('../../helpers/mail');
+
+	var respond = require('../../middlewares/api-response');
 	
 	var Users = require('../../models/users');
 	var TournamentReg = require('../../models/tregs');
@@ -16,6 +18,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	var middlewares = require('../../middlewares');
 	var authenticated = middlewares.authenticated;
 
+	var logger = require('../../helpers/logger');
+
+	var API = require('../../helpers/API');
 	var c = require('../../constants');
 
 	var Fail = {
@@ -141,17 +146,68 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.then(aux.setData(req, next))
 		.catch(next)
 	}, aux.std);
-	
-	var register_manager = require('../../chains/registerInTournament')(aux);
 
+	app.post('/api/users/increase-points/:login/amount', middlewares.isAdmin, respond(req => {
+		var login = req.params.login;
+		var amount = req.params.amount;
 
+		logger.debug('givePoints', login, amount);
+
+		return API.users.givePoints(login, amount);
+	}));
+
+	app.post('/buy-points', middlewares.authenticated, respond(req => {
+		var points = req.body.points;
+		// 6 - 1000000p	3600	278
+		// 7 - 10000000p	10000	1000
+		// 3 - 1000p	30	33
+		// 4 - 10000p	120	80
+		// 5 - 100000p	600	150
+		// 1 - 10p		5	2
+		// 2 - 100p	10	10
+		// 0 - 0p		0	0
+		var amount;
+
+		switch (points) {
+			case 1000:
+				amount = 30;
+				break;
+			case 10000:
+				amount = 120;
+				break;
+			case 100000:
+				amount = 600;
+				break;
+			case 1000000:
+				amount = 3600;
+				break;
+			case 10000000:
+				amount = 10000;
+				break;
+			default:
+				amount = 0;
+		}
+
+		if (!amount) {
+			points = 0;
+		}
+
+		return API.money.pay(req.login, amount, c.SOURCE_TYPE_POINTS_BUY)
+			.then(result => {
+				logger.debug('buy-points', amount, points, req.login, result);
+
+				return API.users.givePoints(req.login, points);
+			})
+	}));
+
+	var register_manager = require('../../chains/registerInTournament');
 	
 	app.post('/CancelRegister', function (req, res) {
 	  regManager('CancelRegister', req, res);
 	});
 
 	app.get('/api/tournaments/start/:id/:force', aux.isAdmin, function (req, res){
-		var force = req.params.force
+		var force = req.params.force;
 		var id = req.params.id;
 		if (isNaN(id)) return res.end('fail');
 
@@ -159,20 +215,20 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Tournaments.getByID(tournamentID)
 		.then(function (tournament){
 			var players = tournament.players || 1;
-			newGonext = [players, 1]
+			newGonext = [players, 1];
 			
 			return Tournaments.edit(tournamentID, { goNext: newGonext })
 		})
 		.then(function (result){
-			res.json({ msg:result })
+			res.json({ msg: result });
 			console.log('START MP Tournaments!', tournamentID, result);
 			if (result || force== 'force') register_manager.StartTournament(tournamentID);//, null, res);
 		})
 		.catch(function (err){
-			res.json({err: err})
+			res.json({err: err});
 			console.log(err);
 		})
-	})
+	});
 
 	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
 		var tournamentID = parseInt(req.body.tournamentID);

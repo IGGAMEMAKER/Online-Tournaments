@@ -183,6 +183,9 @@ function update() {
   loadNews();
 }
 
+
+
+
 export default {
   initialize,
   update,
@@ -210,6 +213,17 @@ export default {
   },
   register,
 
+  async buyPoints(points) {
+    try {
+      await request
+        .post('/buy-points')
+        .send({ points });
+
+      loadProfile();
+    } catch (err) {
+      sendError(err, 'buyPoints');
+    }
+  },
   async unregister(tournamentID) {
     try {
       const response = await request

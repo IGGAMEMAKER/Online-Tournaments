@@ -29,55 +29,24 @@ var logger = require('../helpers/logger');
 
 //-----------------------EXTERNAL FUNCTIONS--------------------------------
 
-function all(){
-	return new Promise(function(resolve, reject){
-		User.find({}, 'login money email social' , function (err, users) {    //'login money'  { item: 1, qty: 1, _id:0 }
-			if (err) return reject(err);
-			//console.log(users)
-			return resolve(users||null);
-		});
-
-	})
+function all() {
+	return User2.list({});
 }
-
-function profile(login){
-	return getByLogin(login)
-	// return User2.find({login:login}, 'login money email social info')
-	// return new Promise(function(resolve, reject){
-	// 	User.findOne({login:login}, 'login money email social info', function (err, user) {
-	// 		if (err) return reject(err);
-			
-	// 		if (!user) return resolve(null);
-	// 		return resolve(user);
-	// 	});
-	// })
-}
-
-// function unsetInviter(login) {
-//
-// }
-
 
 function profileByMail(email){
-	return new Promise(function(resolve,reject){
-		User.findOne({email:email}, 'login money email social', function (err, user) {
-			if (err) return reject(err);
-			
-			if (!user) return resolve(null);
-			return resolve(user);
+	return User2.findOne({ email })
+		.then(p => {
+			return {
+				login: p.login,
+				money: p.money,
+				email: p.email,
+				social: p.social
+			}
 		});
-	})
 }
 
 function update_user(find, update, parameters){
-	return new Promise(function (resolve, reject){
-		User.update(find, update, parameters, function(err, count){
-			if (err) return reject(err);
-
-			if (!updated(count)) return reject(null);
-			resolve(1);
-		})
-	})
+	return User2.update(find, update, parameters);
 }
 
 ///////////////////////////////
@@ -98,8 +67,17 @@ function update_user_status(login, status){
 function getByLogin(login){
 	return User2.find({login: login})
 	.then(function (user){
-		if (!user.info) return noInfoFix(login);
-		if (!user.info.packs) return noPacksFix(login)
+		if (!user.info) {
+			return noInfoFix(login);
+		}
+
+		if (!user.info.points) {
+			return noPointsFix(login);
+		}
+
+		if (!user.info.packs) {
+			return noPacksFix(login)
+		}
 	})
 	.then(function (result){
 		return User2.find({login: login})
@@ -118,21 +96,36 @@ function quitTeam(login){
 
 function noInfoFix(login){
 	console.log('noInfoFix', login);
+
 	var upd = {
 		$set : {
 			info : {
 				// status: c.USER_STATUS_NEWBIE,
 				status: c.USER_STATUS_READ_FIRST_MESSAGE,
 				packs: pack.newbiePackSet,
-				xp: 0
+				points: 0
 			}
 		}
 	};
+
+	return update_user({login:login}, upd, {})
+}
+
+function noPointsFix(login) {
+	var upd = {
+		$set : {
+			info : {
+				points: 0
+			}
+		}
+	};
+
 	return update_user({login:login}, upd, {})
 }
 
 function noPacksFix(login){
 	console.log('noPacksFix', login);
+
 	var upd = {
 		$set : {
 			info : {
@@ -140,16 +133,9 @@ function noPacksFix(login){
 			}
 		}
 	};
+
 	return update_user({login:login}, upd, {})
 }
-
-// profile('MorganFreeman223')
-
-	// ,CARD_COLOUR_RED:1
-	// ,CARD_COLOUR_BLUE:2
-	// ,CARD_COLOUR_GREEN:3
-	// ,CARD_COLOUR_GRAY:4
-
 
 var pack = {
 	initialize: function(login){
@@ -158,15 +144,6 @@ var pack = {
 	}
 	,getUser: function (login){
 		return getByLogin(login)
-		// .then(function (user){
-		// 	if (!user.info.packs) {
-		// 		return pack.initialize(login)
-		// 		.then(function (result){
-		// 			return getByLogin(login)
-		// 		})
-		// 	}
-		// 	return user
-		// })
 	}
 	,pickFrom: function (from){
 		return {
@@ -220,34 +197,18 @@ var pack = {
 			}
 		})
 	}
-}
+};
 
 function update_password_by_email (email, password) {
-	return new Promise(function (resolve, reject){
-		var cryptVersion = CURRENT_CRYPT_VERSION;
+	var cryptVersion = CURRENT_CRYPT_VERSION;
 
-		var newPass = security.Hash(password, cryptVersion);
+	var newPass = security.Hash(password, cryptVersion);
 
-		User.update({email:email}, {$set : {password:newPass, cryptVersion:cryptVersion} }, function (err, count){
-			if (err) return reject(err);
-			
-			if (!updated(count)) return reject(null);
-
-			return resolve(1);
-		});
-	})
+	return User2.update({ email }, {$set : {password:newPass, cryptVersion:cryptVersion} });
 }
 
 function kill(login){
-	return new Promise(function (resolve, reject){
-		User.remove({login:login}, function (err, count){
-			if (err) return reject(err);
-
-			if (helper.removed(count)) return resolve(1);
-
-			return reject(null);
-		})
-	})
+	return User2.remove({ login });
 }
 
 function create_login_link(email){
@@ -262,74 +223,60 @@ function create_login_link(email){
 		login = user.login;
 		return set_login_link(email, link)
 	})
-	.then(function (result){
+	.then(function (result) {
 		return update_password_by_email(email, newPass)
 	})
-	.then(function (result){
+	.then(function (result) {
 		return {
-			password:newPass,
-			link:link,
-			login:login,
-			email:email
+			password: newPass,
+			link: link,
+			login: login,
+			email: email
 		};
 	})
 }
 
 function update_auth_links(users){
 	for (var i = users.length - 1; i >= 0; i--) {
-		update_auth_link(users[i].email)
-	};
-}
+		var email = users[i].email;
 
-function update_auth_link(email){
-	var login;
-	
-	var newPass = security.create_random_password();
-	var link = createLink(newPass);
-	
-	// console.log('create_login_link', login)
-	return profileByMail(email)
-	.then(function (user){
-		login = user.login;
-		return set_login_link(email, link)
-	})
-	.then(function (result){
+		var login;
 
-	})
-	.catch(console.error)
+		var newPass = security.create_random_password();
+		var link = createLink(newPass);
 
+		// console.log('create_login_link', login)
+		return profileByMail(email)
+			.then(function (user){
+				login = user.login;
+				return set_login_link(email, link)
+			})
+			.then(function (result){
+			})
+			.catch(console.error)
+	}
 }
 
 function set_login_link(email, link){
-	return new Promise(function (resolve, reject){
-		User.update({email:email}, {$set: { link:link } }, function (err, count){
-			if (err) return reject(err);
+	return User2.update({email:email}, {$set: { link:link } });
 
-			if (!updated(count)) return reject(null);
-
-			return resolve(1);
-		})
-	})
+	// return new Promise(function (resolve, reject){
+	// 	User.update({email:email}, {$set: { link:link } }, function (err, count){
+	// 		if (err) return reject(err);
+  //
+	// 		if (!updated(count)) return reject(null);
+  //
+	// 		return resolve(1);
+	// 	})
+	// })
 }
 
 function createLink(newPass){
 	return security.sha(newPass);
 }
 
-function get(find){
-	return new Promise(function (resolve, reject){
-		User.findOne(find, function (err, user){
-			if (err) return reject(err);
-
-			if (!user) return reject(null);
-
-			resolve(user)
-		})
-	})
-}
-
 function auth_by_link(login, link){
-	return get({login:login, link:link})
+	return User2.findOne({login:login, link:link})
 }
 
 function create(login, password, email, inviter){
@@ -342,7 +289,7 @@ function create(login, password, email, inviter){
 
 		var user = new User(USER);
 		user.save(function (err) {
-			if (err){
+			if (err) {
 				if (err.code==USER_EXISTS) {
 					log('USER_EXISTS : ' + login);
 					return reject(USER_EXISTS);
@@ -350,11 +297,19 @@ function create(login, password, email, inviter){
 				return reject(UNKNOWN_ERROR);
 			}
 
-			log('added User ' + login+'/' + email);
+			log('added User ' + login + '/' + email);
 			return resolve(USER);
 		})
 
 	});
+}
+
+function givePoints(login, points) {
+	return getByLogin(login)
+		.then(user => {
+			var now = user.info.points || 0;
+			return User2.update({ login }, { $set: { 'info.points': now + points }})
+		})
 }
 
 function richUsers(min, max){
@@ -483,16 +438,6 @@ function moneyTop(moneyMoreThan){
 			$sort: { money: -1 }
 		}
 	]);
-	// return new Promise(function (resolve, reject){
-	// 	User.find({ money : {$gt: moneyMoreThan } })
-	// 	.sort('-money')
-	// 	.exec(function (err, users){
-	// 		if (err) return reject(err);
-  //
-	// 		return resolve(users||[]);
-	// 	})
-  //
-	// })
 }
 
 // function resetPassword(user){
@@ -540,28 +485,6 @@ function moneyIncrease(login, money){
 	// })
 }
 
-function grantMoney(login){
-	return new Promise(function (resolve, reject){
-		console.log('grantMoney', login);
-		User.findOne({login:login}, function (err, user){
-			if (err) return reject(err);
-			// console.log(err, user);
-
-			if (user && user.money < 100){
-				// User.update({login:login}, {})
-				return moneyIncrease(login, 100);
-				// .then(console.log)
-
-				// .catch(console.error)
-				// return resolve(1);
-			}
-
-			return reject(null);
-		})
-
-	})
-}
-
 // -----------------------AUXILARY FUNCTIONS--------------------------
 
 function update_password (login, password, cryptVersion) {
@@ -570,12 +493,12 @@ function update_password (login, password, cryptVersion) {
 
 		User.update({login:login}, {$set : {password:newPass, cryptVersion:cryptVersion} }, function (err, count){
 			if (err) { 
-				log(err, 'CANNOT UPDATE PASSWORD TO NEWER ALGORITHM ' + cryptVersion); 
+				logger.log(err, 'CANNOT UPDATE PASSWORD TO NEWER ALGORITHM ' + cryptVersion);
 				return reject(err);
 			}
 			
 			if (!updated(count)) return resolve(Fail);
-			log('update_password OK');
+			logger.log('update_password OK');
 			return resolve(OK);
 		});
 	})
@@ -598,7 +521,7 @@ function passwordCorrect(user, enteredPassword) { return security.passwordCorrec
 
 function updated(count){
 	//console.log('Updated : ' + JSON.stringify(count), STREAM_USERS );
-	return count.n>0;
+	return count.n > 0;
 }
 
 function invalid_email(email){ return !validator.isEmail(email); }
@@ -619,7 +542,7 @@ function get_new_user(login, password, email){
 		info:{
 			status: c.USER_STATUS_NEWBIE,
 			packs: pack.newbiePackSet,
-			xp: 0,
+			points: 0
 		},
 
 		cryptVersion:CURRENT_CRYPT_VERSION,
@@ -630,21 +553,12 @@ function get_new_user(login, password, email){
 
 
 
-function log(msg){ console.log(msg); }
-
-function catcher(err){
-	log('catched error!');
-	if (err){
-		log(err.stack||err);
-	} else {
-		log('null error');
-	}
-}
+function log(msg){ logger.log(msg); }
 
 
 module.exports = {
 	all,
-	profile,
+	profile: getByLogin,
 	auth,
 	setInviter,
 	changePassword,
@@ -655,7 +569,6 @@ module.exports = {
 	kill,
 	mailers,
 	update_auth_links,
-	grantMoney,
 	update_user_status,
 	pack,
 	moneyIncrease,
@@ -664,33 +577,5 @@ module.exports = {
 
 	resetPassword: create_login_link,
 	rich: richUsers,
-	poor: poorUsers
+	givePoints
 };
-//
-// module.exports.all = all;
-// module.exports.profile = profile;
-// module.exports.auth = auth;
-// module.exports.setInviter = setInviter;
-// module.exports.changePassword = changePassword;
-// // module.exports.resetPassword = resetPassword;
-// module.exports.create = create;
-// module.exports.moneyTop = moneyTop;
-// module.exports.groupByEmails = groupByEmails;
-// module.exports.resetPassword = create_login_link;
-// module.exports.auth_by_link = auth_by_link;
-//
-// module.exports.kill = kill;
-// module.exports.rich = richUsers;
-// module.exports.poor = poorUsers;
-//
-// module.exports.mailers = mailers;
-// module.exports.update_auth_links = update_auth_links;
-//
-// module.exports.grantMoney = grantMoney
-// module.exports.update_user_status = update_user_status
-// module.exports.pack = pack
-//
-// module.exports.moneyIncrease = moneyIncrease
-//
-// module.exports.quitTeam = quitTeam;
-// module.exports.joinTeam = joinTeam;

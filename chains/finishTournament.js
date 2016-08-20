@@ -7,6 +7,10 @@ var Tournaments = require('../models/tournaments');
 
 var API = require('../helpers/API');
 
+var logger = require('../helpers/logger');
+
+var registerManager = require('./registerInTournament');
+
 var prizeTypes = {
 	PRIZE_TYPE_MONEY: 1,
 	PRIZE_TYPE_GIFT: 2,
@@ -117,7 +121,7 @@ function dataBaseChanges(data) {
 			.then(function (result) {
 				serveTournament(youngerizedTournament)
 			})
-			.catch(aux.report('autoAdd', { info }))
+			.catch(logger.report('autoAdd', { info }))
 		}
 
 		var loginToPromo = {};
@@ -128,12 +132,31 @@ function dataBaseChanges(data) {
 		for (i = 0; i < winners.length; i++) {
 			var Prize = getPrize(tournament.Prizes, tournament.goNext, i + 1);
 			var player = winners[i];
-			var promoter = loginToPromo[player.value.login];
+			var login = player.value.login;
 
-			givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter);
+			var promoter = loginToPromo[login];
+
+			// givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter);
+			logger.log('givePrizeToPlayer: ' + JSON.stringify(player));
+			var prizeType = Prize.type;
+
+			switch (prizeType) {
+				case prizeTypes.PRIZE_TYPE_MONEY:
+					sendPrizeMoney(login, Prize, tournamentID, promoter, tournament);
+					break;
+				case prizeTypes.PRIZE_TYPE_GIFT:
+					sendPrizeGift(login, Prize);
+					break;
+				case prizeTypes.PRIZE_TYPE_POINTS:
+					sendPrizePoints(login, Prize);
+					break;
+				case prizeTypes.PRIZE_TYPE_TICKETS:
+					sendPrizeTicket(login, Prize);
+					break;
+			}
 		}
 	})
-	.catch(aux.report('dataBaseChanges', { info }))
+	.catch(logger.report('dataBaseChanges', { info }))
 	
 }
 
@@ -291,56 +314,22 @@ function sendPrizeMoney(login, Prize, tournamentID, promoter, tournament) {
 
 			singlePromo(login, promoter, money, tournament);
 		})
-		.catch(aux.report('mmmMoney', { src, money, login } ))
+		.catch(logger.report('sendPrizeMoney', { src, money, login } ))
 }
 
 function sendPrizeGift(login, Prize) {
 	Usergifts.saveGift(login, Prize.info, null, Prize.colour || 4)
-		.catch(aux.report('Prize is gift:', { Prize, login } ))
+		.catch(logger.report('sendPrizeGift', { Prize, login }))
 }
 
-function givePrizeToPlayer(player, Prize, tournamentID, tournament, promoter){
-	Log('givePrizeToPlayer: ' + JSON.stringify(player));
-	var login = player.value.login;
-	var prizeType = Prize.type;
+function sendPrizeTicket(login, Prize) {
+	registerManager.forceRegister(Prize.info, login)
+		.catch(logger.report('sendPrizeTicket', { Prize, login }))
+}
 
-	switch (prizeType) {
-		case prizeTypes.PRIZE_TYPE_MONEY:
-			sendPrizeMoney(login, Prize, tournamentID, promoter, tournament);
-			break;
-		case prizeTypes.PRIZE_TYPE_GIFT:
-			sendPrizeGift(login, Prize);
-			break;
-		case prizeTypes.PRIZE_TYPE_POINTS:
-			break;
-		case prizeTypes.PRIZE_TYPE_TICKETS:
-			break;
-	}
-
-	// if (isNaN(Prize) ){ //gift
-	// 	if (Prize.MP && !isNaN(Prize.MP)){
-	// 		Marathon.giveNpoints(login, parseInt(Prize.MP) || 10)
-	// 	} else {
-	// 		Usergifts.saveGift(login, Prize.giftID, Prize.isCard || null, Prize.colour || 4)
-	// 		.then(function (result){
-	// 			console.log('saveGift', result)
-	// 		})
-	// 		.catch(aux.report('Prize is gift:', { Prize, login } ))
-	// 	}
-  //
-	// }	else { //money
-	// 	if (Prize > 0) {
-	// 		var src = { type: aux.c.SOURCE_TYPE_WIN, tournamentID: tournamentID };
-	// 		var money = Prize;
-	// 		Money.increase(login, money, src)
-	// 		.then(function (result) {
-	// 			console.log('money increased, transfer saved', login, money, src);
-  //
-	// 			singlePromo(login, promoter, money, tournament);
-	// 		})
-	// 		.catch(aux.report('mmmMoney', { src, money, login } ))
-	// 	}
-	// }
+function sendPrizePoints(login, Prize) {
+	API.users.givePoints(login, parseInt(Prize.info) || 0)
+		.catch(logger.report('sendPrizePoints', { Prize, login }))
 }
 
 function finishTournament(data){

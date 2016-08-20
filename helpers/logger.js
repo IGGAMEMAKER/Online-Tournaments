@@ -1,4 +1,5 @@
 var API = require('./API');
+var report = require('./report-catcher');
 
 module.exports = {
   log: console.log,
@@ -12,7 +13,7 @@ module.exports = {
     return API.errors.add(login, errorType, data)
   },
 
-
+  report,
 
   clientside: function(login, auxillaries){
     return API.actions.add(login, 'clientside', auxillaries)

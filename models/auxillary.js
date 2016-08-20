@@ -107,13 +107,15 @@ module.exports = {
 	,updated: helper.updated
 	,removed: helper.removed
 	,report: function (place, data){  //about errors
-		return function (err){
-			console.error('report', data, err)
+		return function (err) {
+			console.error('report', data, err);
+
 			var obj = {
 				place:place,
 				data:data||{},
 				err:err
-			}
+			};
+
 			return Errors.add('SYSTEM', 'REPORT', obj)
 		}
 	}

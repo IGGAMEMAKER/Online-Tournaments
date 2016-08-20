@@ -99,11 +99,19 @@ export default class ChatPanel extends Component {
         console.log(m);
         const text = `${m.sender || m.senderName || 'Гость'}: ${m.text}`;
 
+        let chatText;
         if (i === arr.length - 1) {
-          return <p id="chat" className="chat-text" style={style}>{text}</p>;
+          chatText = <p id="chat" className="chat-text" style={style}>{text}</p>;
+        } else {
+          chatText = <p className="chat-text" style={style}>{text}</p>;
         }
 
-        return <p className="chat-text" style={style}>{text}</p>;
+        //             <hr />
+        return (
+          <div>
+            {chatText}
+          </div>
+        )
       });
     // console.log('render');
     return (

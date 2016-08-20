@@ -202,9 +202,9 @@ var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answe
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, getLogin, aux);
 
 var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
-var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
+// var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
 
-var TournamentReg = require('./models/tregs');
+// var TournamentReg = require('./models/tregs');
 
 var middlewares = require('./middlewares');
 var isAdmin = middlewares.isAdmin;
@@ -677,7 +677,9 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
     correct: correct
   };
 
-  if (topic) obj.topic = topic;
+  if (topic) {
+    obj.topic = topic;
+  }
   console.log(obj);
 
   var question_is_valid = login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct);
@@ -691,7 +693,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
 
       if (body.result=='ok') {
         code = 1;
-        message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
+        message = 'Добавление произошло успешно, вопрос отправлен на модерацию!';
 
         Send('activity', { type:'addQuestion', sender: login, about: topic||' всё обо всём' })
       }
@@ -760,20 +762,6 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
 var fs = require('fs');
-
-app.get('/getLogs', isAdmin, sender.getLogs, function (req, res){
-  // res.json({msg:'OK'})
-  res.render('Logs', { time:req.time, msg:req.files })
-}, function (err, req, res, next){
-  res.json({err:err});
-});
-
-app.get('/getLogFile', isAdmin, sender.getLogFile, function (req, res){
-  // res.json({msg:'OK'})
-  res.render('logViewer', { time:req.time, msg:req.file })
-}, function (err, req, res, next){
-  res.json({err:err});
-});
 
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
@@ -916,21 +904,11 @@ app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
     .then(function (result){
       res.json({msg: 'grant', result:result});
 
-      if (ammount>0){
+      if (ammount > 0){
         aux.alert(login, c.NOTIFICATION_GIVE_MONEY, {
           ammount:ammount
         })
         .catch(aux.catcher);
-
-        // Message.notifications.personal(login, 'Деньги, деньги, деньги!', {
-        //   type: c.NOTIFICATION_GIVE_MONEY,
-        //   body:'Вы получаете ' + ammount + ' руб на счёт!!!',
-        //   ammount:ammount
-        // })
-        // .then(function(){
-        //   forceTakingNews(login)
-        // })
-        // .catch(console.error)
       }
 
     })
@@ -964,7 +942,7 @@ function Send(tag, message, force){
   }
 }
 
-function SendToRoom( room, event, msg, socket){
+function SendToRoom(room, event, msg, socket){
   if (socket_enabled) io.of(room).emit(event, msg);
 }
 

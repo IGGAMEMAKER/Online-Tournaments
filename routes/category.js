@@ -3,13 +3,13 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	var TournamentRegs = require('../models/tregs');
 	var Category = require('../models/category');
 
-	var request = require('request')
-	var requestSender = require('../requestSender')
+	var request = require('request');
+	var requestSender = require('../requestSender');
 	var logger = console.log;
 
 	var list = ['default', 'realmadrid'];
 
-	var register_manager = require('../chains/registerInTournament')(aux)
+	var register_manager = require('../chains/registerInTournament');
 
 /*
 	var multer  = require('multer')
@@ -72,7 +72,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 		}
 		// createCategory('default', 'Всё обо всём', "Всему подряд"),
 		// 'realmadrid' : createCategory('realmadrid', "Реал Мадрид", "Мадридскому Реалу")
-	}
+	};
 
 	var onliners = {}
 	var tournaments = {}
@@ -85,11 +85,11 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	for (var i = list.length - 1; i >= 0; i--) {
 		var topic = list[i];
 		onliners[topic] = {};
-		resetTopic(topic)
+		resetTopic(topic);
 		// tournaments[topic] = 0;
 
 		setRoom(topic);
-	};
+	}
 
 	getCategories();
 	// setInterval(getCategories, 3000);
@@ -155,7 +155,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 			getTournaments(name);
 
 			// emit(name, 'whoisonline')
-		};
+		}
 
 		setTimeout(getCategories, 5000)
 	}
@@ -165,7 +165,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	}
 
 	function users_are_online(topic) {
-		return get_players(topic).length>0;
+		return get_players(topic).length > 0;
 	}
 
 	function resetTopic(topic, tournamentID){
