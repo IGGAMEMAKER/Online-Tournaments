@@ -12,6 +12,8 @@ var middlewares = require('../../middlewares');
 
 var constants = require('../../constants');
 
+var logger = require('../../helpers/logger');
+
 var getPortAndHostOfGame = require('../../helpers/GameHostAndPort').getPortAndHostOfGame;
 
 var tournamentValidator = require('../../helpers/tournament-validator');
@@ -82,7 +84,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
 
   app.get('/api/tournaments/available', aux.moderator, api('Tournaments', 'available'));
 
-  app.get('/api/tournaments/add', respond(req => {
+  app.post('/api/tournaments/add', respond(req => {
+    // logger.log('/api/tournaments/add', req.body);
+
+    var data = Object.assign({}, req.body.tournament, { rounds: 1, players: 0 });
+    logger.debug('converted new tournament', data);
+
     var tournament = {
       buyIn: 0,
       gameNameID: 2,

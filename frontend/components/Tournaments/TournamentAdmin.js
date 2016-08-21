@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import actions from '../../actions/AdminActions';
 
 type PropsType = {
   data : {
@@ -78,8 +79,14 @@ export default class ClassNameSpecial extends Component {
         <td><button onClick={visibility}>{visibilityText}</button></td>
         <td>
           {dateButton}
+          <br />
           <input id={`date-input-${id}`} type="datetime-local" />
+          <br />
           <button onClick={this.setStartDate(props, id)}>сменить дату</button>
+          <br />
+        </td>
+        <td>
+          <button onClick={() => { actions.stopTournament(id) }}>STOP TOURNAMENT!!</button>
         </td>
       </tr>
     );

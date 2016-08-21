@@ -18,7 +18,7 @@ var security = require('../Modules/DB/security');
 const CURRENT_CRYPT_VERSION = 2;
 
 var USER_EXISTS = 11000;
-var UNKNOWN_ERROR=500;
+var UNKNOWN_ERROR = 500;
 
 var Fail = { result: 'fail' };
 var OK = { result: 'OK' };
@@ -67,7 +67,7 @@ function update_user_status(login, status){
 function getByLogin(login){
 	return User2.find({login: login})
 	.then(function (user){
-		logger.debug(user);
+		// logger.debug(user);
 
 		if (!user.info) {
 			return noInfoFix(login);

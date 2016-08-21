@@ -106,12 +106,16 @@ html
 	br
 	+title("Transfers")
 	a(href="http://online-tournaments.org/api/transfers/recent/0") transfers today. NEEDS FIX
+	br
 	a(href="http://online-tournaments.org/api/transfers/mobile/all") mobile transfers
-
+	br
 
 	br
 	a(href="/api/news/all") NEWWWWWWWWWWWS
 
+	br
+	center
+		a(href="/api/tournaments/current" target="_blank") Current tournaments
 	#tournaments
 	script(src="/output/admin-tournaments.js")
 
@@ -122,7 +126,7 @@ html
 		input(type="text" name="userID")
 	script.
 		GetRunningTournaments();
-		GetTotalTournaments();
+		// GetTotalTournaments();
 		//window.onfocus = function(){location.reload(true);}		
 	//script.
 		var tmr = setInterval(GetRunningTournaments, 3000);

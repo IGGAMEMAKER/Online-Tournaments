@@ -43,7 +43,11 @@ export default class TournamentListAdmin extends Component{
       gameNameID: 2,
       goNext: [2,1],
       Prizes: [1],
-      buyIn: 0
+      buyIn: 0,
+      startDate: new Date(),
+      settings: {
+        "": ""
+      }
     }
   };
 
@@ -136,6 +140,7 @@ export default class TournamentListAdmin extends Component{
           <th onClick={this.setOrder('settings.regularity')}>Regularity</th>
           <th onClick={this.setOrder('settings.hidden')}>hidden</th>
           <th onClick={this.setOrder('startDate')}>StartDate</th>
+          <th><b>ACTIONS</b></th>
         </thead>
         <tbody>{list.length ? list : <th>No such tournaments</th>}</tbody>
       </table>
@@ -204,6 +209,7 @@ export default class TournamentListAdmin extends Component{
                 tournament={state.newTournament}
                 onChange={this.onChangeNewTournament}
               />
+              <button onClick={() => { actions.addTournament(state.newTournament)} }>ADD TOURNAMENT</button>
             </td>
           </tr>
           <tr>

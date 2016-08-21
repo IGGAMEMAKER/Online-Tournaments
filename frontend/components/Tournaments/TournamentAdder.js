@@ -57,7 +57,12 @@ export default class TournamentEditor extends Component {
     const data = e.target.value;
     console.log('onDateChange', data);
 
-    Date.parse(data)
+    try {
+      const startDate = Date.parse(data);
+      this.onChange('startDate', startDate);
+    } catch (err) {
+      sendError(err, 'onDateChange');
+    }
   };
 
   render(props: PropsType, state: StateType) {
@@ -90,43 +95,6 @@ export default class TournamentEditor extends Component {
     }
 
     gameNameID = 2;
-
-    /*
-
-     <tr>
-     <td>special</td>
-     <td>
-     <select id="special" name="special">
-     <option value="0">none</option>
-     <option value="1">special</option>
-     </select>
-     </td>
-     </tr>
-     <tr>
-     <td>hidden+topic</td>
-     <td>
-     <select name="hidden">
-     <option value="0">none</option>
-     <option value="1">realmadrid</option>
-     </select>
-     </td>
-     </tr>
-     <tr>
-     <td>specPrizeName</td>
-     <td>
-     <input type="text" name="specPrizeName" />
-     </td>
-     </tr>
-     <tr>
-     <td>Tag</td>
-     <td>
-     <input name="tag" value={tag} />
-     </td>
-     </tr>
-
-     */
-
-
     return (
       <div>
         add tournament
@@ -177,8 +145,8 @@ export default class TournamentEditor extends Component {
             <tr>
               <td>Tournament start date</td>
               <td>
-                <input type="datetime-local" value={new Date()} onChange={this.onDateChange} />
-                <button onClick={() => { this.onChange('date', null) }}>CLEAR DATE</button>
+                <input type="datetime-local" value={(new Date()).toLocaleDateString()} onChange={this.onDateChange} />
+                <button onClick={() => { this.onChange('startDate', null) }}>CLEAR DATE</button>
               </td>
             </tr>
             <tr>
@@ -191,8 +159,6 @@ export default class TournamentEditor extends Component {
           </table>
           <input value={JSON.stringify(props.tournament)} style="width: 100%;" />
           <input type="submit" value={props.phrase} />
-
-          <button onClick={() => { actions.addTournament(props.tournament)} }>ADD TOURNAMENT</button>
         </form>
       </div>
     );

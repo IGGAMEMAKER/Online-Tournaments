@@ -46,15 +46,24 @@ async function getAvailablePacks() {
 export default {
   getGifts,
   getAvailablePacks,
+  async stopTournament(tournamentID) {
+    try {
+      await request.post('/Admin').send({ command: 'stopTournament', tournamentID });
+      alert(`stopped ${tournamentID}`);
+    } catch (err) {
+      sendError(e, 'stopTournament');
+    }
+  },
   async addTournament(tournament) {
     try {
+      console.log('addTournament AdminActions', tournament);
       const response = await request.post(`/api/tournaments/add`).send({ tournament });
       console.log('adding tournament', tournament);
 
       alert('sended');
       
     } catch (e) {
-      sendError(e, 'admin/removeGift');
+      sendError(e, 'admin/addTournament');
     }
   },
   getAvailableTournaments() {
