@@ -59,10 +59,33 @@ export default class TournamentEditor extends Component {
 
     try {
       const startDate = Date.parse(data);
-      this.onChange('startDate', startDate);
+      console.log('onDateChange try', startDate);
+      this.onChange('startDate', new Date(startDate));
     } catch (err) {
       sendError(err, 'onDateChange');
     }
+  };
+
+  doubleDigit(value) {
+    return value < 10 ? `0${value}` : value;
+  };
+
+  datepickerFormat = (date: Date) => {
+    console.log('datepickerFormat', date);
+    // console.log('datepickerFormat', date.getDate());
+    const d = date.getDate();
+    const DD = this.doubleDigit(d);
+
+    const M = date.getMonth() + 1;
+    const MM = this.doubleDigit(M);
+
+    const h = date.getHours();
+    const hh = this.doubleDigit(h);
+
+    const m = date.getMinutes();
+    const mm = this.doubleDigit(m);
+
+    return `${date.getFullYear()}-${MM}-${DD}T${hh}:${mm}`;
   };
 
   render(props: PropsType, state: StateType) {
@@ -145,7 +168,8 @@ export default class TournamentEditor extends Component {
             <tr>
               <td>Tournament start date</td>
               <td>
-                <input type="datetime-local" value={(new Date()).toLocaleDateString()} onChange={this.onDateChange} />
+                <label>{(new Date()).toISOString()}</label>
+                <input type="datetime-local" value={this.datepickerFormat(startDate)} onChange={this.onDateChange} />
                 <button onClick={() => { this.onChange('startDate', null) }}>CLEAR DATE</button>
               </td>
             </tr>
