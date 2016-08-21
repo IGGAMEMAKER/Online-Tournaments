@@ -42,7 +42,7 @@ export default class TournamentListAdmin extends Component{
     newTournament: {
       gameNameID: 2,
       goNext: [2,1],
-      Prizes: [1],
+      Prizes: [],
       buyIn: 0,
       startDate: new Date(),
       settings: {

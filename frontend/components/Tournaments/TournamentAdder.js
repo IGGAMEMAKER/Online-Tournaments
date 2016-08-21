@@ -79,7 +79,7 @@ export default class TournamentEditor extends Component {
     const M = date.getMonth() + 1;
     const MM = this.doubleDigit(M);
 
-    const h = date.getHours();
+    const h = date.getUTCHours();
     const hh = this.doubleDigit(h);
 
     const m = date.getMinutes();
@@ -168,7 +168,6 @@ export default class TournamentEditor extends Component {
             <tr>
               <td>Tournament start date</td>
               <td>
-                <label>{(new Date()).toISOString()}</label>
                 <input type="datetime-local" value={this.datepickerFormat(startDate)} onChange={this.onDateChange} />
                 <button onClick={() => { this.onChange('startDate', null) }}>CLEAR DATE</button>
               </td>

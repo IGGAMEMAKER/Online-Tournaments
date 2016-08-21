@@ -77,8 +77,6 @@ export default class Menu extends Component {
         <div className="points">
           <span>{levelText}&nbsp;</span>
           <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Купить</a>
-          <span> / </span>
-          <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Заработать</a>
         </div>
       </center>
     );

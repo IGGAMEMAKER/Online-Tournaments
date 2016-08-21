@@ -6,12 +6,9 @@ import Card from '../components/Shared/Card';
 import VKWidget from './Widgets/VKWidget';
 
 import PointTournament from './Tournaments/PointTournament';
+import RoundTournament from './Tournaments/RoundTournament';
 
 import stats from '../helpers/stats';
-
-import constants from '../constants/constants';
-
-type PropsType = {}
 
 type StateType = {}
 
@@ -311,18 +308,18 @@ export default class Index extends Component {
       '';
 
     //           <VKWidget />
+    // Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
-          <h2 className="content-title">Ежедневно</h2>
-          {pointTournaments}
+          <h2 className="content-title">Турнир Мадридиста</h2>
+          <RoundTournament />
+          {subscriberTournaments}
         </div>
         <div className="center height-fix offset">
-          <h2 className="content-title">
-            Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
-          </h2>
-          {subscriberTournaments}
+          <h2 className="content-title">Ежедневно</h2>
+          {pointTournaments}
         </div>
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>

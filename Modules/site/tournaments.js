@@ -93,18 +93,19 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
     var tournament = {
       buyIn: 0,
       gameNameID: 2,
-      rounds: 1,
       goNext: [2,1],
-      Prizes: [5],
-      players: 0,
+      Prizes: [{type: 1, info: 10}],
       startDate: new Date(),
+
+      rounds: 1,
+      players: 0,
       comment: 'Выиграй 100 XP',
 
       settings: {
         hidden: false,
         regularity: constants.REGULARITY_NONE,
         tag: 'point',
-        points: 100,
+        // points: 100,
         cover: 'http://www.newspress.co.il/wp-content/uploads/2016/02/fortune500_hero_cropped1.jpg'
       }
     };
