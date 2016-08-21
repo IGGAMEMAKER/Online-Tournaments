@@ -4,13 +4,11 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   var Errors = require('../../models/errors');
   var TournamentReg = require('../../models/tregs');
 
-  var Marathon = require('../../models/marathon');
-  
   var middlewares = require('../../middlewares');
   var authenticated = middlewares.authenticated;
   var isAdmin = middlewares.isAdmin;
   
-  var multer  = require('multer')
+  var multer  = require('multer');
 
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,7 +31,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
         cb(null, 'qst-'+ Date.now() + '.txt');
       }
     }
-  })
+  });
     
   var upload = multer({ storage: storage }).single('questions');
 

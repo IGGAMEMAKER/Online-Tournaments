@@ -124,7 +124,7 @@ async function loadProfile() {
     const response: ResponseType = await request.get('/myProfile');
     // console.log('async initialize response...', response.body);
     const profile = response.body.profile;
-    const { tournaments, money, packs } = profile;
+    const { tournaments, money, packs, points } = profile;
     
     const tRegs: Array = tournaments;
 
@@ -139,7 +139,8 @@ async function loadProfile() {
       type: c.ACTION_INITIALIZE,
       tournaments: registeredIn,
       money,
-      packs
+      packs,
+      points
     });
 
     Dispatcher.dispatch({

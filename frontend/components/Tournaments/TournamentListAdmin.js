@@ -4,13 +4,16 @@ import request from 'superagent';
 import constants from '../../constants/constants';
 
 import TournamentAdmin from './TournamentAdmin';
-import TournamentAdder from './TournamentAdder';
+import TournamentEditor from './TournamentAdder';
 import TournamentSettingGenerator from './TournamentSettingGenerator';
 import TournamentPrizeGenerator from './TournamentPrizeGenerator';
 
 import { TournamentType } from '../types';
 
 import tournamentSortFunction from '../../helpers/tournaments/tournament-admin-sorter';
+
+import actions from '../../actions/AdminActions';
+import store from '../../stores/AdminStore';
 
 type StateType = {
   tournaments: Array<TournamentType>,
@@ -47,6 +50,7 @@ export default class TournamentListAdmin extends Component{
   componentWillMount() {
     // setInterval(() => { this.update(); }, 5000);
     this.update();
+
   }
 
   setStartDate = (date, id) => {
@@ -68,14 +72,20 @@ export default class TournamentListAdmin extends Component{
   };
 
   update = () => {
-    request
-      .get('/api/tournaments/available')
-      .end((err, res: ResponseType) => {
-        if (err) throw err;
-
-        // console.log('availables...', res.body.msg);
-        this.setState({ tournaments: res.body.msg });
-      });
+    actions.getAvailableTournaments();
+    store.addChangeListener(() => {
+      this.setState({
+        tournaments: store.getTournaments()
+      })
+    });
+    // request
+    //   .get('/api/tournaments/available')
+    //   .end((err, res: ResponseType) => {
+    //     if (err) throw err;
+    //
+    //     // console.log('availables...', res.body.msg);
+    //     this.setState({ tournaments: res.body.msg });
+    //   });
   };
 
   hideTournament = (id) => {
@@ -138,6 +148,19 @@ export default class TournamentListAdmin extends Component{
     this.setState({ settings });
   };
 
+
+  onChangeNewTournament = (name, value) => {
+    const obj = {};
+    obj[name] = value;
+
+    const newTournament = Object.assign({}, this.state.newTournament, obj);
+    console.log('onChangeNewTournament', newTournament);
+    this.setState({
+      newTournament
+    });
+  };
+
+
   copyGeneratedPrizeToAddingForm = (Prizes) => {
     this.setState({
       newTournament: Object.assign({}, this.state.newTournament, { Prizes })
@@ -175,10 +198,11 @@ export default class TournamentListAdmin extends Component{
               />
             </td>
             <td>
-              <TournamentAdder
+              <TournamentEditor
                 action="/AddTournament"
                 phrase="Add tournament"
                 tournament={state.newTournament}
+                onChange={this.onChangeNewTournament}
               />
             </td>
           </tr>

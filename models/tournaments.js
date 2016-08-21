@@ -476,7 +476,7 @@ module.exports = {
 	updateByID,
 	edit,
 	addNewTournament,
-	todos: all,
+	all,
 
 	getByTopic,
 	addTopicStreamTournament

@@ -1,15 +1,20 @@
-var Gifts = require('../models/gifts');
-var Usergifts = require('../models/usergifts');
-var Users = require('../models/users');
-var Money = require('../models/money');
-var TournamentReg = require('../models/tregs');
-var Tournaments = require('../models/tournaments');
-
 var API = require('../helpers/API');
 
 var logger = require('../helpers/logger');
 
 var registerManager = require('./registerInTournament');
+
+var c = require('../constants');
+
+var sender = require('../requestSender');
+
+var helper = require('../helpers/helper');
+
+var sort = require('../helpers/sort');
+
+var fs = require('fs');
+
+var Users = require('../models/users');
 
 var prizeTypes = {
 	PRIZE_TYPE_MONEY: 1,
@@ -17,15 +22,6 @@ var prizeTypes = {
 	PRIZE_TYPE_POINTS: 3,
 	PRIZE_TYPE_TICKETS: 4
 };
-
-var sender = require('../requestSender');
-
-
-var helper = require('../helpers/helper');
-
-var sort = require('../helpers/sort');
-
-var fs = require('fs');
 
 console.log('chain finishTournament');
 
@@ -52,11 +48,11 @@ function notifyUsersAboutFinish(data) {
 			if (i < winnerCount) {
 				//send winning message
 				// console.log(login, 'WINS TOURNAMENT');
-				aux.alert(login, aux.c.NOTIFICATION_WIN_MONEY, obj)
+				aux.alert(login, c.NOTIFICATION_WIN_MONEY, obj)
 			} else {
 				//send lose message
 				// console.log(login, 'LOSES TOURNAMENT');
-				aux.alert(login, aux.c.NOTIFICATION_LOSE_TOURNAMENT, obj)
+				aux.alert(login, c.NOTIFICATION_LOSE_TOURNAMENT, obj)
 			}
 		}
 	}
@@ -78,7 +74,7 @@ function dataBaseChanges(data) {
 	var winnerRegs = [];
 
 	var getWinnerTRegs = (result) => {
-		return TournamentReg.winners(tournamentID, winnerLogins)
+		return API.tregs.winners(tournamentID, winnerLogins)
 			.then(list => {
 				winnerRegs = list;
 				info.getWinnerTregs = list;
@@ -95,10 +91,10 @@ function dataBaseChanges(data) {
 
 	var tournament;
 
-	Tournaments.finish(tournamentID)
+	API.tournaments.finish(tournamentID)
 	.then(function (result) {
 		info.finish = result;
-		return TournamentReg.clearParticipants(tournamentID)
+		return API.tregs.clearParticipants(tournamentID)
 	})
 	.then(function (result) {
 		info.clearParticipants = result;
@@ -106,7 +102,7 @@ function dataBaseChanges(data) {
 	})
 	.then(getWinnerTRegs)
 	.then(result => {
-		return Tournaments.find(tournamentID)
+		return API.tournaments.find(tournamentID)
 	})
 	.then(function (t) {
 		info.tournament = t;
@@ -114,10 +110,10 @@ function dataBaseChanges(data) {
 
 		// goes in parallel
 		if (needsAutoAdd(tournament)) {
-			// Log('AutoAddTournament ' + JSON.stringify(tournament), aux.c.STREAM_TOURNAMENTS);
+			// Log('AutoAddTournament ' + JSON.stringify(tournament), c.STREAM_TOURNAMENTS);
 			var youngerizedTournament = YoungerizeTournament(tournament);
 			
-			Tournaments.addNewTournament(youngerizedTournament)
+			API.tournaments.addNewTournament(youngerizedTournament)
 			.then(function (result) {
 				serveTournament(youngerizedTournament)
 			})
@@ -169,7 +165,7 @@ function singlePromo(player, promoter, amount, tournament) {
 
 	var sum = Math.floor(parseInt(amount) / 2);
 	console.log(promoter + ' invited ', player, ' and deserves ', sum, '$');
-	API.money.increase(promoter, sum, aux.c.SOURCE_TYPE_PROMO);
+	API.money.increase(promoter, sum, c.SOURCE_TYPE_PROMO);
 }
 
 function updatePromos(tournRegs) {
@@ -201,7 +197,7 @@ function updatePromos(tournRegs) {
 
 function serveTournament(tournament){
 	if (!isSpecialTournament(tournament)) {
-		Tournaments.setStatus(tournament.tournamentID, aux.c.TOURN_STATUS_REGISTER)
+		API.tournaments.setStatus(tournament.tournamentID, c.TOURN_STATUS_REGISTER)
 	}
 
 	sender.sendRequest("ServeTournament", tournament, '127.0.0.1', 'site');
@@ -230,21 +226,21 @@ function TournamentLog(tournamentID, message){
 	});
 }
 
-function getPrize(Prizes, goNext, i){
+function getPrize(Prizes, goNext, i) {
 	// Log('Rewrite getPrize function. NOW YOU MUST ALL PRIZES FOR EACH PLAYER!!!');
-	var roundIndex=1;
+	var roundIndex = 1;
 	var next = 2;
 
 	if (i > goNext[1]) {
 		return 0;
-	}	else {
-		while(next < goNext.length && goNext[next] >= i) {//playerRoundIndex<goNext.length-1 &&
-			roundIndex = next;
-			next = roundIndex + 1;
-		}
-
-		return Prizes[roundIndex - 1];
 	}
+
+	while(next < goNext.length && goNext[next] >= i) {//playerRoundIndex<goNext.length-1 &&
+		roundIndex = next;
+		next = roundIndex + 1;
+	}
+
+	return Prizes[roundIndex - 1];
 }
 
 function YoungerizeTournament(tournament){
@@ -278,7 +274,7 @@ function YoungerizeTournament(tournament){
 		obj.goNext[0] = 1;
 	}
 
-	obj.status = aux.c.TOURN_STATUS_REGISTER;
+	obj.status = c.TOURN_STATUS_REGISTER;
 	obj.players = 0;
 
 	return obj;
@@ -289,26 +285,26 @@ function needsAutoAdd(tournament){
 }
 
 function isStreamTournament(tournament){
-	return tournament.settings && tournament.settings.regularity == aux.c.REGULARITY_STREAM;
+	return tournament.settings && tournament.settings.regularity == c.REGULARITY_STREAM;
 }
 
 function isRegularTournament(tournament){
-	return tournament.settings && tournament.settings.regularity == aux.c.REGULARITY_REGULAR;
+	return tournament.settings && tournament.settings.regularity == c.REGULARITY_REGULAR;
 }
 
 function isSpecialTournament(tournament){
-	return tournament.settings && tournament.settings.special == aux.c.SPECIALITY_SPECIAL;
+	return tournament.settings && tournament.settings.special == c.SPECIALITY_SPECIAL;
 }
 
 function sendPrizeMoney(login, Prize, tournamentID, promoter, tournament) {
 	var src = {
-		type: aux.c.SOURCE_TYPE_WIN,
+		type: c.SOURCE_TYPE_WIN,
 		tournamentID: tournamentID
 	};
 
 	var money = parseInt(Prize.info);
 
-	Money.increase(login, money, src)
+	API.money.increase(login, money, src)
 		.then(function (result) {
 			console.log('money increased, transfer saved', login, money, src);
 
@@ -318,7 +314,7 @@ function sendPrizeMoney(login, Prize, tournamentID, promoter, tournament) {
 }
 
 function sendPrizeGift(login, Prize) {
-	Usergifts.saveGift(login, Prize.info, null, Prize.colour || 4)
+	API.usergifts.saveGift(login, Prize.info, null, Prize.colour || 4)
 		.catch(logger.report('sendPrizeGift', { Prize, login }))
 }
 
@@ -328,10 +324,16 @@ function sendPrizeTicket(login, Prize) {
 }
 
 function sendPrizePoints(login, Prize) {
-	API.users.givePoints(login, parseInt(Prize.info) || 0)
+	// console.log(API);
+	// API.users.givePoints(login, parseInt(Prize.info) || 0)
+	Users.givePoints(login, parseInt(Prize.info) || 0)
+		.then(r => {
+			logger.log('givePoints, sendPrizePoints', r, Prize);
+		})
 		.catch(logger.report('sendPrizePoints', { Prize, login }))
 }
 
+// sendPrizePoints('g.iosebashvili', { info: 100 });
 function finishTournament(data){
 	dataBaseChanges(data);
 

@@ -153,7 +153,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		logger.debug('givePoints', login, amount);
 
-		return API.users.givePoints(login, amount);
+		return Users.givePoints(login, amount);
 	}));
 
 	app.post('/buy-points', middlewares.authenticated, respond(req => {
@@ -196,7 +196,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			.then(result => {
 				logger.debug('buy-points', amount, points, req.login, result);
 
-				return API.users.givePoints(req.login, points);
+				return Users.givePoints(req.login, points);
 			})
 	}));
 
@@ -489,27 +489,30 @@ function (req, res){
 
 	function get_profile(req, res, next){
 		var login = getLogin(req);
-		var profile={
-			login:login,
-			tournaments:{}
-		}
+
+		var profile= {
+			login: login,
+			tournaments: {}
+		};
+
 		Users.profile(login)
 		.then(function (user){
 			profile.money = user.money;
 			profile.email = user.email;
 
-			profile.packs = user.info.packs
+			profile.packs = user.info.packs;
+			profile.points = user.info.points;
 		})
-		.then(function (user){
+		.then(function (user) {
 			return TournamentReg.get(login)
 		})
-		.then(function (tournaments){
+		.then(function (tournaments) {
 			profile.tournaments = tournaments;
 			req.profile = profile;
 			next()
 		})
 		.catch(function (err){
-			aux.fail(login, 'get_profile error', {err: err, profile:profile })
+			aux.fail(login, 'get_profile error', {err: err, profile:profile });
 			console.error('get_profile error', login, err);
 			req.profile = null;
 			next(err);

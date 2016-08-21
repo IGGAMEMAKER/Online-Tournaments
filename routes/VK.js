@@ -4,6 +4,7 @@ var VKApi = require('node-vkapi');
 var middlewares = require('../middlewares');
 var respond = require('../middlewares/api-response');
 
+var Users = require('../models/users');
 // var Promise = require('bluebird');
 // var agent = require('superagent');
 // var request = require('superagent-promise')(agent, Promise);
@@ -16,7 +17,7 @@ var VK = new VKApi({
 });
 
 router.get('/isJoinedGroup', middlewares.authenticated, respond((req) => {
-  return API.users.profile(req.login)
+  return Users.profile(req.login)
     .then(p => {
       // console.log('isJoinedGroup: profile', p.social.id);
       var userSocialID = p.social.id;

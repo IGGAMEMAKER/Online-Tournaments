@@ -33,12 +33,17 @@ export default class Index extends Component {
     // actions.initialize();
   }
 
-  CopyShareLink = () => {
-    const id = 'invite-link';
+  CopyLink = (id) => {
     const node = document.getElementById(id);
     node.select();
     document.execCommand('copy');
     node.blur();
+  };
+
+  CopyShareLink = () => {
+    const id = 'invite-link';
+    this.CopyLink(id);
+
     this.setState({ copied: true });
     stats.shareLinkCopied();
   };
@@ -275,11 +280,12 @@ export default class Index extends Component {
     // <Card content={middleTournaments} style="" />
     //   <Card content={eliteTournaments} style="" />
 
-    const pointTournaments = state.tournaments? state.tournaments
+    const pointTournaments = state.tournaments ? state.tournaments
       .filter(t => t.settings && t.settings.tag === 'point' && t.settings.points)
       .map(t =>
         <PointTournament
           points={t.settings.points}
+          cover={t.settings.cover}
           time={20}
           isRegistered={store.isRegisteredIn(t.tournamentID)}
           onRegister={() => { actions.register(t.tournamentID) }}
@@ -294,6 +300,7 @@ export default class Index extends Component {
       .map(t =>
         <PointTournament
           points={t.settings.points}
+          cover={t.settings.cover}
           time={20}
           isRegistered={store.isRegisteredIn(t.tournamentID)}
           onRegister={() => { actions.registerOnSubscribeTournament(t.tournamentID) }}
@@ -303,6 +310,7 @@ export default class Index extends Component {
       :
       '';
 
+    //           <VKWidget />
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
@@ -315,7 +323,6 @@ export default class Index extends Component {
             Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
           </h2>
           {subscriberTournaments}
-          <VKWidget />
         </div>
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>

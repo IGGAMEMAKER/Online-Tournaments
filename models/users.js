@@ -67,6 +67,8 @@ function update_user_status(login, status){
 function getByLogin(login){
 	return User2.find({login: login})
 	.then(function (user){
+		logger.debug(user);
+
 		if (!user.info) {
 			return noInfoFix(login);
 		}
@@ -305,6 +307,7 @@ function create(login, password, email, inviter){
 }
 
 function givePoints(login, points) {
+	logger.debug('debug givePoints', login, points);
 	return getByLogin(login)
 		.then(user => {
 			var now = user.info.points || 0;

@@ -2,6 +2,8 @@ var sender = require('../requestSender');
 var API = require('../helpers/API');
 var logger = require('../helpers/logger');
 
+var Users = require('../models/users');
+
 var c = require('../constants');
 var getPortAndHostOfGame = require('../helpers/GameHostAndPort').getPortAndHostOfGame;
 
@@ -84,7 +86,7 @@ function StartTournament(tournamentID, force, res) {
 
 function add_participant(tournamentID, login) {
 	var promoter = 'g.iosebashvili';
-	return API.users.profile(login)
+	return Users.profile(login)
 		.then(profile => {
 			if (profile.inviter) {
 				promoter = profile.inviter;

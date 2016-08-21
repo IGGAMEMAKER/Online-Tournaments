@@ -26,17 +26,5 @@ module.exports = {
   packs: Packs,
   money: Money,
   teams: Teams,
-  statistics,
-
-  Users,
-  Actions,
-  Errors,
-  Tournaments,
-  TRegs,
-  Message,
-  Gifts,
-  Usergifts,
-  Packs,
-  Money,
-  Teams
+  statistics
 };

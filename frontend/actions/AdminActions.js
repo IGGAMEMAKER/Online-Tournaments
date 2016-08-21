@@ -5,6 +5,7 @@ import store from '../stores/AdminStore';
 
 import sendError from '../helpers/sendError';
 
+import TournamentActions from './InfoActions';
 // const update = () => {
 //
 // };
@@ -45,6 +46,31 @@ async function getAvailablePacks() {
 export default {
   getGifts,
   getAvailablePacks,
+  async addTournament(tournament) {
+    try {
+      const response = await request.post(`/api/tournaments/add`).send({ tournament });
+      console.log('adding tournament', tournament);
+
+      alert('sended');
+      
+    } catch (e) {
+      sendError(e, 'admin/removeGift');
+    }
+  },
+  getAvailableTournaments() {
+    request
+      .get('/api/tournaments/available')
+      .end((err, res: ResponseType) => {
+        if (err) throw err;
+
+        // console.log('availables...', res.body.msg);
+        // this.setState({ tournaments: res.body.msg });
+        Dispatcher.dispatch({
+          type: c.GET_TOURNAMENTS,
+          tournaments: res.body.msg
+        })
+      });
+  },
   async removeGift(id) {
     try {
       const response = await request.post(`/api/gifts/remove/${id}`);

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
-import Container from '../Containers/Container';
-import DarkCard from '../Containers/DarkCard';
+// import Container from '../Containers/Container';
+// import DarkCard from '../Containers/DarkCard';
 import MainPageTournamentContainer from '../Containers/MainPageTournamentContainer';
 import Button from '../Shared/Button';
 
@@ -8,6 +8,7 @@ type PropsType = {
   date: Date,
   time: number,
   points: number,
+  cover: string,
 
   isRegistered: boolean,
   onRegister: Function,
@@ -64,7 +65,9 @@ export default class PointTournament extends Component {
       // image = "http://www.jllvantagepoint.com/wp-content/uploads/2015/10/2015-Fortune-500.jpg";
       image = "http://cdn.playbuzz.com/cdn/b813587c-f36c-4845-8989-a5503ebdeb50/73a8b1e6-7601-498e-b52c-fe475ad659e3.jpg";
     }
-
+    if (props.cover) {
+      image = props.cover;
+    }
     const size = 100;
     // return (
     //   <div className="full height-fix offset">

@@ -1,10 +1,17 @@
 import { h, Component } from 'preact';
 import * as types from '../types';
+
+import sendError from '../../helpers/sendError';
+
+import actions from '../../actions/AdminActions';
+
 type PropsType = {
   tournament: types.TournamentType,
   // "/AddTournament" or /api/tournaments/edit/:tournamentID
   action: string,
-  phrase: string
+  phrase: string,
+
+  onChange: Function
 }
 
 type StateType = {
@@ -12,8 +19,49 @@ type StateType = {
 }
 
 export default class TournamentEditor extends Component {
+  onChange = (name, value) => {
+    this.props.onChange(name, value);
+  };
+
+  onBuyInChange = (e: KeyboardEvent) => {
+    const buyIn = e.target.value;
+
+    if (!isNaN(buyIn)) this.onChange('buyIn', buyIn);
+  };
+
+  onGoNextChange = (e: KeyboardEvent) => {
+    const data = e.target.value;
+    if (Array.isArray(data)) {
+      this.onChange('goNext', Array.from(data));
+    }
+  };
+
+  onPrizesChange = (e: KeyboardEvent) => {
+    const data = e.target.value;
+    if (Array.isArray(data)) {
+      this.onChange('Prizes', Array.from(data));
+    }
+  };
+
+  onSettingsChange = (e: KeyboardEvent) => {
+    const data = e.target.value;
+    try {
+      const settings = JSON.parse(data);
+      this.onChange('settings', settings);
+    } catch (err) {
+      sendError(err, 'onSettingsChange');
+    }
+  };
+
+  onDateChange = (e: KeyboardEvent) => {
+    const data = e.target.value;
+    console.log('onDateChange', data);
+
+    Date.parse(data)
+  };
+
   render(props: PropsType, state: StateType) {
-    const t: types.TournamentType = props.tournament;
+    const tournament: types.TournamentType = props.tournament;
 
     let {
       gameNameID,
@@ -27,14 +75,15 @@ export default class TournamentEditor extends Component {
 
       settings,
       rounds
-    } = t;
+    } = tournament;
 
     let regularity = 0;
     let visibility = true;
     let tag = '';
     let topic = '';
 
-    if (settings && Object.keys(settings).length) {
+    if (settings) {
+      //  && Object.keys(settings).length
       regularity = settings.regularity || 0;
       tag = settings.tag || '';
       topic = settings.topic || '';
@@ -110,36 +159,40 @@ export default class TournamentEditor extends Component {
             <tr>
               <td>Buy In</td>
               <td>
-                <input name="buyIn" value={`${buyIn}`} />
+                <input name="buyIn" value={`${buyIn}`} onChange={this.onBuyInChange} />
               </td>
             </tr>
             <tr>
               <td>goNext</td>
               <td>
-                <input type="text" name="goNext" value={JSON.stringify(goNext)} />
+                <input type="text" name="goNext" value={JSON.stringify(goNext)} onChange={this.onGoNextChange} />
               </td>
             </tr>
             <tr>
               <td>Prizes</td>
               <td>
-                <input type="text" name="Prizes" value={JSON.stringify(Prizes)} />
+                <input type="text" name="Prizes" value={JSON.stringify(Prizes)} onChange={this.onPrizesChange} />
               </td>
             </tr>
             <tr>
               <td>Tournament start date</td>
               <td>
-                <input type="datetime-local" value={new Date()} />
+                <input type="datetime-local" value={new Date()} onChange={this.onDateChange} />
+                <button onClick={() => { this.onChange('date', null) }}>CLEAR DATE</button>
               </td>
             </tr>
             <tr>
               <td>Settings</td>
               <td>
-                <input name="settings" value={JSON.stringify(settings)} />
+                <input name="settings" value={JSON.stringify(settings)} onChange={this.onSettingsChange} />
               </td>
             </tr>
             </tbody>
           </table>
+          <input value={JSON.stringify(props.tournament)} style="width: 100%;" />
           <input type="submit" value={props.phrase} />
+
+          <button onClick={() => { actions.addTournament(props.tournament)} }>ADD TOURNAMENT</button>
         </form>
       </div>
     );

@@ -7,6 +7,7 @@ const EC = 'ADMIN_EVENT_CHANGE';
 
 let _gifts = [];
 let _packs = [];
+let _tournaments = [];
 
 class AdminStore extends EventEmitter {
   addChangeListener(cb:Function) {
@@ -27,6 +28,10 @@ class AdminStore extends EventEmitter {
 
   getPacks() {
     return _packs;
+  }
+
+  getTournaments() {
+    return _tournaments;
   }
 
   getGiftByGiftID(giftID) {
@@ -64,7 +69,7 @@ type PayloadType = {
   status: number,
   online: number,
 
-  tournaments: Object,
+  tournaments: Array,
   money: number,
   packs: Object,
 
@@ -91,6 +96,9 @@ Dispatcher.register((p: PayloadType) => {
     case c.GET_PACKS:
       // console.log('store admin get packs', p);
       _packs = p.packs;
+      break;
+    case c.GET_TOURNAMENTS:
+      _tournaments = p.tournaments;
       break;
     default:
       break;

@@ -23,13 +23,24 @@ export default class Menu extends Component {
       // console.warn('callback in store');
       this.setState({
         money: store.getMoney(),
+        points: store.getPoints(),
         loaded: true
       });
     });
   }
 
   render(props: PropsType, state: StateType) {
-    const text = state.loaded ? `  На вашем счету ${state.money}p   : ` : '';
+    let text = '';
+    let levelText = '';
+    const points = state.points;
+    let nextLevelPoints = 1000; ///!!!!!!!!!!!!!!!!!!
+    const level = 1;
+
+    if (state.loaded) {
+      text = `  На вашем счету ${state.money}p   : `;
+      levelText = `Уровень ${level}. До следующего уровня: ${nextLevelPoints - points} XP`
+    }
+
     // let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
     let loginMenu = <a href="/Login" className="menu-link"><div className="menu-item">Вход</div></a>;
 
@@ -39,7 +50,7 @@ export default class Menu extends Component {
 
     const hover = 'menu-item'; //light-blue
     const menuTournaments = `${hover} ${props.active === 'Tournaments' ? 'active' : ''}`;
-    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''}`;
+    const menuPacks = `${hover} ${props.active === 'Packs' ? 'active' : ''} hide`;
     const menuProfile = `${hover} ${props.active === 'Profile' ? 'active' : ''} ${login ? '' : 'hide'}`;
     const menuAbout = `${hover} ${props.active === 'About' ? 'active' : ''}`;
     const menuIndex = `${hover} ${props.active === 'Index' ? 'active' : ''}`;
@@ -62,6 +73,12 @@ export default class Menu extends Component {
           <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
           <span> / </span>
           <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
+        </div>
+        <div className="points">
+          <span>{levelText}&nbsp;</span>
+          <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Купить</a>
+          <span> / </span>
+          <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Заработать</a>
         </div>
       </center>
     );

@@ -18,6 +18,8 @@ let _news: Array = [];
 let _chatMessages: Array = [];
 let _supportMessages: Array = [];
 
+let _points: number = 0;
+
 let _testValue = 0;
 
 const EC = 'EVENT_CHANGE';
@@ -117,6 +119,10 @@ class ProfileStore extends EventEmitter {
   getAvailableTournaments() {
     return _availableTournaments;
   }
+
+  getPoints() {
+    return _points || 0;
+  }
 }
 
 const store = new ProfileStore();
@@ -145,11 +151,12 @@ Dispatcher.register((p: PayloadType) => {
   let change = true;
   switch (p.type) {
     case c.ACTION_INITIALIZE:
-      // console.log('initialize', p.type, p);
+      console.log('initialize', p.type, p);
       _loaded = true;
       _tournaments = p.tournaments;
       _money = p.money;
       _packs = p.packs;
+      _points = p.points || 0;
       break;
     case c.UPDATE_TOURNAMENTS:
       _availableTournaments = p.tournaments;

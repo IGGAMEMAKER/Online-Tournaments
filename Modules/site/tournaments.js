@@ -203,7 +203,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   });
 
   app.get('/api/tournaments/all', aux.isAdmin, function (req, res, next){
-    Tournaments.todos()
+    Tournaments.all()
 
       .then(aux.setData(req, next))
       .catch(next)
