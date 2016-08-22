@@ -24,8 +24,8 @@ export default class TournamentSettingGenerator extends Component {
   };
 
   setRMATags = () => {
-    const newField = this.getNewField(this.props.settings, 'tag', 'subs');
-    const settings = Object.assign(newField, { image: '/img/CR2.jpg'});
+    const newField = this.getNewField(this.props.settings, 'tag', 'realmadrid');
+    const settings = Object.assign(newField, { round: 5 }, { image: '/img/rounds/Benzema.jpg'});
 
     this.props.onChange(settings);
   };

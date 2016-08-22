@@ -292,30 +292,55 @@ export default class Index extends Component {
       :
       '';
 
-    const subscriberTournaments = state.tournaments? state.tournaments
-      .filter(t => t.settings && t.settings.tag === 'subs' && t.settings.points)
+    // <PointTournament
+    //   points={t.settings.points}
+    //   cover={t.settings.cover}
+    //   time={20}
+    //   isRegistered={store.isRegisteredIn(t.tournamentID)}
+    //   onRegister={() => { actions.registerOnSubscribeTournament(t.tournamentID) }}
+    //   players={t.players}
+    // />
+
+    // const roundTournaments = state.tournaments? state.tournaments
+    //   .filter(t => t.settings && t.settings.tag === 'subs')
+    //   .map(t =>
+    //     <RoundTournament
+    //       data={{
+    //         tournamentID: t.tournamentID
+    //       }}
+    //     />
+    //   )
+    //   :
+    //   '';
+
+    const realmadridTournaments = state.tournaments? state.tournaments
+      .filter(t => t.settings && t.settings.tag === 'realmadrid')
       .map(t =>
-        <PointTournament
-          points={t.settings.points}
-          cover={t.settings.cover}
-          time={20}
-          isRegistered={store.isRegisteredIn(t.tournamentID)}
-          onRegister={() => { actions.registerOnSubscribeTournament(t.tournamentID) }}
-          players={t.players}
+        <RoundTournament
+          data={{
+            tournamentID: t.tournamentID
+          }}
         />
       )
       :
       '';
-
+    // {roundTournaments}
     //           <VKWidget />
     // Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
-          <h2 className="content-title">Турнир Мадридиста</h2>
-          <RoundTournament />
-          {subscriberTournaments}
+          {
+            realmadridTournaments?
+              <div>
+                <h2 className="content-title">Турнир Мадридиста</h2>
+                <h3 className="text-small">Выиграй футболку Реал Мадрид 2016/2017</h3>
+              </div>
+              :
+              ''
+          }
+          {realmadridTournaments}
         </div>
         <div className="center height-fix offset">
           <h2 className="content-title">Ежедневно</h2>

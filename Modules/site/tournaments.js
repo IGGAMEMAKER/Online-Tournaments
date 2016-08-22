@@ -110,6 +110,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
       }
     };
 
+    tournament = data;
+
     var error = tournamentValidator(tournament);
 
     // API.errors.add()
