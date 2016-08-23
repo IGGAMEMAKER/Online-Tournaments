@@ -855,13 +855,20 @@ button{
 }
 
 .tournament-cover-container {
-  background-color: #303030;
+  background-color #303030
   /*height: 262px;*/
-  height: 225px;
-  position: relative;
+  height 225px
+  position relative
   background-size cover
 }
+.my-carousel-item
+  opacity 0
 
+  &.animate
+    opacity 1
+    -webkit-transition: .6s ease-in-out left;
+    -o-transition: .6s ease-in-out left;
+    transition: .6s ease-in-out left;
 .round-tournament-cover
   //max-width 525px
   //width 100%
@@ -873,9 +880,12 @@ button{
   //height 48.5vw
 
   @media (max-width: desktop-size)
-    //.round-tournament-cover
     width 80vw
     height 48.5vw
+  @media (max-width: mobile-size)
+    //.round-tournament-cover
+    width 90vw
+    height 52.5vw
 
 .tournament-cover-container.darkblue { background-color: #34495e; }
 .tournament-cover-container.darkdarkblue { background-color: #2c3e50; }

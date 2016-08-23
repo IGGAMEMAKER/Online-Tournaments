@@ -3,6 +3,8 @@ import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
 import Card from '../components/Shared/Card';
 
+import Carousel from '../components/Shared/Carousel';
+
 import VKWidget from './Widgets/VKWidget';
 
 import PointTournament from './Tournaments/PointTournament';
@@ -70,104 +72,6 @@ export default class Index extends Component {
   };
 
   render(props: PropsType, state: StateType) {
-    const dailyFreeroll = (
-      <div className="freeroll ctr green">
-        <div className="white">
-          <h1 className="fadeText"> Выиграй 50 рублей в бесплатной викторине!</h1>
-          <p>
-            <div>Время начала - 20:00 (каждый день)</div>
-            <div>Присоединяйся!</div>
-          </p>
-          <center>
-            <a
-              className="btn btn-primary btn-large btn-lg btn-fixed"
-              href="/Tournaments#daily"
-            >Участвовать</a>
-          </center>
-        </div>
-      </div>
-    );
-
-    // const freerolls = (
-    //   <div className="freeroll ctr green">
-    //     <div className="white">
-    //       <h1 className="fadeText">Турниры для новичков</h1>
-    //       <p>
-    //         <div>Каждый день в 20:00</div>
-    //       </p>
-    //       <center>
-    //         <a
-    //           className="btn btn-primary btn-large btn-lg btn-fixed"
-    //           href="/Tournaments#daily"
-    //         >Подробнее</a>
-    //       </center>
-    //     </div>
-    //   </div>
-    // );
-
-    const freerolls = this.category(
-      'Бесплатные турниры',
-      ['Проходят каждый день'],
-      'green',
-      this.categoryButton(
-        `/Frees`,
-        stats.goToFrees
-      )
-    );
-
-    const eliteTournaments = this.category(
-      'Элитные турниры',
-      ['Большие призы', 'Низкая конкуренция'],
-      'red',
-      this.categoryButton(
-        `/Elite`,
-        stats.goToElite
-      )
-    );
-
-    const middleTournaments = this.category(
-      'Большие турниры',
-      ['Самые крупные призы', 'Низкая стоимость участия'],
-      'carrot',
-      this.categoryButton(
-        `/Crowd`,
-        stats.goToCrowd
-      )
-    );
-
-    // const eliteTournaments = (
-    //   <div className="freeroll ctr red">
-    //     <div className="white">
-    //       <h1 className="fadeText">Элитные турниры</h1>
-    //       <p>Самые крупные призы</p>
-    //       <center>
-    //         <a
-    //           className="btn btn-primary btn-large btn-lg btn-fixed"
-    //           href="/Tournaments#top"
-    //         >Участвовать </a>
-    //       </center>
-    //     </div>
-    //   </div>
-    // );
-    const weeklyFreeroll = (
-      <div className="freeroll ctr red">
-        <div className="white">
-          <h1 className="fadeText">Сорви куш в ТОП турнирах!</h1>
-          <p>
-            <div>Участвуй в турнирах с большими призами</div>
-            <div>Выиграй вплоть до 5000 рублей</div>
-            <div>Стоимость участия в главном турнире - 50 рублей</div>
-          </p>
-          <center>
-            <a
-              className="btn btn-primary btn-large btn-lg btn-fixed"
-              href="/Tournaments#top"
-            >Участвовать </a>
-          </center>
-        </div>
-      </div>
-    );
-
     /*
      <hr width="40%" />
      <p>Если вы (или ваш друг) выиграете в ежедневном бесплатном турнире,</p>
@@ -327,6 +231,23 @@ export default class Index extends Component {
     // {roundTournaments}
     //           <VKWidget />
     // Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
+
+    // <div className="center height-fix offset">
+    //   <h2 className="content-title">Ежедневно</h2>
+    //   {pointTournaments}
+    // </div>
+
+    const round1 = (
+      <div className="white">
+        R1
+      </div>
+    );
+    const round2 = (
+      <div className="white">
+        R2
+      </div>
+    );
+
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
@@ -335,17 +256,14 @@ export default class Index extends Component {
             realmadridTournaments?
               <div>
                 <h2 className="content-title">Турнир Мадридиста</h2>
-                <h3 className="text-small">Выиграй футболку Реал Мадрид 2016/2017</h3>
+                <h3 className="text-small">Выиграй футболку Реал Мадрид 2016/2017!</h3>
+                {realmadridTournaments}
               </div>
               :
               ''
           }
-          {realmadridTournaments}
         </div>
-        <div className="center height-fix offset">
-          <h2 className="content-title">Ежедневно</h2>
-          {pointTournaments}
-        </div>
+        <Carousel list={[round1, round2]} speed={3000} />
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>
         </div>
