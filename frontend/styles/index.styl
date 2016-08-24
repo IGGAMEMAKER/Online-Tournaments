@@ -4,6 +4,7 @@
 }
 
 @import "./football.styl"
+@import "./animations.styl"
 //@import "../public/css/new/bootstrap.css"
 main-bg-color = #141414
 //main-bg-color = #FFFFFF
@@ -954,22 +955,6 @@ button{
     width 300px
     //height 150px
 round-image-size = 225px
-@keyframes init
-  0%
-    opacity 0
-  100%
-    opacity 1
-
-@-webkit-keyframes shadow {
-  from {text-shadow: 0 0 3px black;}
-  50% {text-shadow: 0 0 30px black;}
-  to {text-shadow: 0 0 3px black;}
-}
-@keyframes shadow {
-  from {text-shadow: 0 0 3px black;}
-  50% {text-shadow: 0 0 30px black;}
-  to {text-shadow: 0 0 3px black;}
-}
 .round-container
   display block
   //width 450px
@@ -1008,24 +993,34 @@ round-image-size = 225px
   overflow hidden
   padding 20px
 .round-number
-  float left
+  font-size 36px
+  //float left
   //width 80px
   color main-text-color
   //text-align left
+  @extend .page
+  padding 35px
+  //background-color #122b40
+  // #2b2d2f
 .round-price
-  float right
+  //float right
+  margin-top 25px
+  text-align left
   color main-text-color
 
 .round-date-time
   //margin-top 25px
   color main-text-color
-  padding-left 20px
+  //padding-left 20px
   text-align left
+
 .round-prize
   margin-top 25px
   color main-text-color
+  text-align left
 .round-join
-  background-color #2b2d2f
+  margin-top 25px
+  background-color transparent
 
 .tournament-cover-container.darkblue { background-color: #34495e; }
 .tournament-cover-container.darkdarkblue { background-color: #2c3e50; }

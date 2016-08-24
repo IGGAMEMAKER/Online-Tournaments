@@ -240,21 +240,6 @@ export default class Index extends Component {
     //   {pointTournaments}
     // </div>
 
-    const round1 = (
-      <div className="white">
-        R1
-      </div>
-    );
-    const round2 = (
-      <div className="white">
-        R2
-      </div>
-    );
-
-
-    //                 {realmadridTournaments}
-
-    // [realmadridTournaments[0], realmadridTournaments[0]]
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>

@@ -14,17 +14,19 @@ export default class Realmadrid extends Component {
 
   roundTab = (num, price, prizes, time, onRegister) => {
     return (
-      <div className="round-container">
-        <div className="round-image"></div>
-        <div className="round-tournament-info">
-          <div className="round-upper">
-            <div className="round-number">Раунд {num}</div>
-            <div className="round-price">{price}</div>
-          </div>
-          <div className="round-date-time">{time}</div>
-          <div className="round-prize">{prizes}</div>
-          <div className="round-join">
-            <Button onClick={onRegister} text="Участвовать" />
+      <div>
+        <div className="round-number">{num}</div>
+        <div className="round-container">
+          <div className="round-image"></div>
+          <div className="round-tournament-info">
+            <div className="round-upper">
+              <div className="round-date-time">{time}</div>
+              <div className="round-prize">{prizes}</div>
+              <div className="round-price">{price}</div>
+              <div className="round-join">
+                <Button onClick={onRegister} text="Участвовать" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -33,11 +35,11 @@ export default class Realmadrid extends Component {
 
   render(props: PropsType, state: StateType) {
 
-    const round1 = this.roundTab(5, 'Бесплатно', 'Призы: 200 билетов на раунд 4', 'Пятница, 21:00 (МСК)', () => {});
-    const round2 = this.roundTab(4, '5 РУБ', 'Призы: 30 билетов на раунд 3', 'Суббота, 21:00 (МСК)', () => {});
-    const round3 = this.roundTab(3, '30 РУБ', 'Призы: 10 билетов на раунд 2', 'Воскресенье, 21:00 (МСК)', () => {});
-    const round4 = this.roundTab(2, '80 РУБ', 'Призы: 4 билета в финал', 'Понедельник, 20:00 (МСК)', () => {});
-    const round5 = this.roundTab(1, '150 РУБ', 'Приз: Футболка Реал Мадрид 2016/2017', 'Понедельник, 21:30 (МСК)', () => {});
+    const round1 = this.roundTab('Раунд 1', 'БЕСПЛАТНО', 'Призы: 200 билетов на раунд 4', 'Пятница, 21:00 (МСК)', () => {});
+    const round2 = this.roundTab('Раунд 2', 'Стоимость участия: 5 РУБ', 'Призы: 30 билетов на раунд 3', 'Суббота, 21:00 (МСК)', () => {});
+    const round3 = this.roundTab('Раунд 3', 'Стоимость участия: 30 РУБ', 'Призы: 10 билетов на раунд 2', 'Воскресенье, 21:00 (МСК)', () => {});
+    const round4 = this.roundTab('Раунд 4', 'Стоимость участия: 80 РУБ', 'Призы: 4 билета в финал', 'Понедельник, 21:00 (МСК)', () => {});
+    const round5 = this.roundTab('ФИНАЛ', 'Стоимость участия: 150 РУБ', 'Приз: Футболка Реал Мадрид 2016/2017', 'Вторник, 21:00 (МСК)', () => {});
 
     return (
       <div>
