@@ -949,7 +949,8 @@ button{
   //width 59vw
   //height 73vw
   @media (max-width: desktop-size)
-    width 600px
+    width 100%
+    max-width 600px
     //height 350px
   @media (max-width: mobile-size)
     width 300px
@@ -999,7 +1000,8 @@ round-image-size = 225px
   color main-text-color
   //text-align left
   @extend .page
-  padding 35px
+  //padding 35px
+  padding 35px 35px 15px 35px
   //background-color #122b40
   // #2b2d2f
 .round-price
@@ -1021,6 +1023,10 @@ round-image-size = 225px
 .round-join
   margin-top 25px
   background-color transparent
+  @media (max-width desktop-size)
+    float left
+  @media (max-width mobile-size)
+    float left
 
 .tournament-cover-container.darkblue { background-color: #34495e; }
 .tournament-cover-container.darkdarkblue { background-color: #2c3e50; }
