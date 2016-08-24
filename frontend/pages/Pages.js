@@ -14,3 +14,5 @@ export Chat from './Chat';
 export Support from './Support';
 
 export Demo from './Demo';
+
+export Realmadrid from './Tournaments/Realmadrid';

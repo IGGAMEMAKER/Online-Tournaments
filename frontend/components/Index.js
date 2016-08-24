@@ -7,6 +7,9 @@ import Carousel from '../components/Shared/Carousel';
 
 import VKWidget from './Widgets/VKWidget';
 
+
+import RMAPage from '../components/Tournaments/Specials/Realmadrid';
+
 import PointTournament from './Tournaments/PointTournament';
 import RoundTournament from './Tournaments/RoundTournament';
 
@@ -248,22 +251,22 @@ export default class Index extends Component {
       </div>
     );
 
+
+    //                 {realmadridTournaments}
+
+    // [realmadridTournaments[0], realmadridTournaments[0]]
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
+        <RMAPage />
         <div className="center height-fix offset">
-          {
-            realmadridTournaments?
-              <div>
-                <h2 className="content-title">Турнир Мадридиста</h2>
-                <h3 className="text-small">Выиграй футболку Реал Мадрид 2016/2017!</h3>
-                {realmadridTournaments}
-              </div>
-              :
-              ''
-          }
+          <h2 className="content-title">Выиграй футболку Реал Мадрид 2016/2017!</h2>
+          <div className="round-tournament-cover" style={`background-image: url('/img/rounds/Benzema.jpg'); position: relative`}>
+            <div style="position: absolute; top: 60%; left: 0; right: 0">
+              <a className="link" href="/realmadrid">Подробнее</a>
+            </div>
+          </div>
         </div>
-        <Carousel list={[round1, round2]} speed={3000} />
         <div className="center height-fix offset">
           <div className="col-lg-12 killPaddings">{shareCard}</div>
         </div>

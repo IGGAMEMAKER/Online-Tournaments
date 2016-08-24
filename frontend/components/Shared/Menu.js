@@ -39,6 +39,7 @@ export default class Menu extends Component {
     if (state.loaded) {
       text = `  На вашем счету ${state.money}p   : `;
       levelText = `Уровень ${level}. До следующего уровня: ${nextLevelPoints - points} XP`
+      levelText = '';
     }
 
     // let loginMenu = <li><a href="/Login" className="light-blue">Вход</a></li>;
@@ -66,6 +67,11 @@ export default class Menu extends Component {
     // <li><a href="/Packs" className={menuPacks}>Призы</a></li>
     // collapse <div id="bs-example-navbar-collapse-1" className="navbar-collapse">
 
+    // <div className="points">
+    //   <span>{levelText}&nbsp;</span>
+    //   <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Купить</a>
+    // </div>
+    
     const balance = (
       <center>
         <div className="balance">
@@ -73,10 +79,6 @@ export default class Menu extends Component {
           <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Пополнить</a>
           <span> / </span>
           <a href="/Profile#cashoutMoney" onClick={stats.pressedMenuCashout}>Снять</a>
-        </div>
-        <div className="points">
-          <span>{levelText}&nbsp;</span>
-          <a href="/Profile#dep" onClick={stats.pressedMenuFulfill}>Купить</a>
         </div>
       </center>
     );

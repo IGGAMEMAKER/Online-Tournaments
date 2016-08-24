@@ -17,14 +17,15 @@ export default class RoundTournament extends Component {
 
   render(props: PropsType, state: StateType) {
     const cover = '/img/rounds/Benzema.jpg';
+              // onClick={() => { actions.register(props.data.tournamentID, 0)} }
     return (
       <div>
         <div className="round-tournament-cover" style={`background-image: url(${cover}); position: relative`}>
           <div style="position: absolute; top: 60%; left: 0; right: 0">
-            <Button
-              onClick={() => { actions.register(props.data.tournamentID, 0)} }
-              text="Принять участие"
-            />
+            <a
+              className="link"
+              href="/realmadrid"
+            >Принять участие</a>
           </div>
         </div>
 

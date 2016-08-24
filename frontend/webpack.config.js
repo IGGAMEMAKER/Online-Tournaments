@@ -48,7 +48,7 @@ module.exports = [{
     new ExtractTextPlugin('[name].css'),
     new LiveReloadPlugin({
       port: 35739
-    }),
+    })
     // Add more instances of HtmlWebpackPlugin for configuration of more html pages
     // new HtmlWebpackPlugin({
     //   filename: `${HTML_DIST_DIR}/index.html`,
@@ -68,10 +68,11 @@ module.exports = [{
     // Tournaments: `./${pages}/Tournaments.js`,
     // payments: `./${pages}/Payment.js`,
     'admin-tournaments': `./${pages}/Admin.js`,
-    'admin': `./${pages}/admin.js`,
+    admin: `./${pages}/admin.js`,
     // total: `./${pages}/TotalTest.js`,
-    Modal: `./${pages}/Modal.js`,
-    Football: `./${games}/Football.js`
+
+    // Modal: `./${pages}/Modal.js`,
+    // Football: `./${games}/Football.js`
   },
   output: {
     // filename: 'app.js',

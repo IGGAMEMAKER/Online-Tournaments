@@ -27,7 +27,7 @@ export default class Carousel extends Component {
 
       setTimeout(() => {
         this.setState({ animate: 'animate' });
-      }, 100);
+      }, 0);
     }, this.props.speed || 4000)
   }
 

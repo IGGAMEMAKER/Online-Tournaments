@@ -93,6 +93,7 @@ const Routing = (): Component => (
     <Pages.Chat path="/Chat" />
 
     <Pages.Demo path="/Demo" />
+    <Pages.Realmadrid path="/realmadrid" />
   </Router>
 );
 

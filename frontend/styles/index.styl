@@ -837,7 +837,7 @@ button{
   background: #F7F6F6;
 }
 .tournament-body.participating {
-  /*background: #CCFF90;*/
+  /*background: #CCFF90 ;*/
   /*background-color: navajowhite;*/
   /*background-color: #FFF176;*/
   /*background-color: #F4FF81;*/
@@ -861,14 +861,41 @@ button{
   position relative
   background-size cover
 }
-.my-carousel-item
-  opacity 0
+.link
+  background-color red
+  padding 22px
+  width 200px
+  text-decoration none
+  //border-radius 100px
+  color main-text-color
 
+  padding: 15px 10px;
+  width: 180px;
+  background: #0099cc;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: bold;
+  line-height: 20px;
+  cursor: pointer;
+  &:hover
+    text-decoration none
+    color main-text-color
+    background-color: #3da1d1
+  &:focus
+    text-decoration none
+    color main-text-color
+    background-color: #3da1d1
+.my-carousel-item
+  opacity 0.3
+  //transition: opacity 0.6s;
   &.animate
     opacity 1
-    -webkit-transition: .6s ease-in-out left;
-    -o-transition: .6s ease-in-out left;
-    transition: .6s ease-in-out left;
+    transition: opacity 0.96s;
+    //-webkit-transition: .6s ease-in-out left;
+    //-o-transition: .6s ease-in-out left;
+    //transition: 1.96s ease-in-out left;
 .round-tournament-cover
   //max-width 525px
   //width 100%
@@ -886,6 +913,92 @@ button{
     //.round-tournament-cover
     width 90vw
     height 52.5vw
+//.faded:after
+//  position absolute
+//  left 0
+//  right 0
+//  top 0
+//  bottom 0
+//  opacity 0.3
+//  z-index 1000
+//  background-color black
+  //position: absolute;
+  //right: 15px;
+  //top: 10px;
+  //content: 'РУБ';
+  //pointer-events: none;
+  //color: #555;
+.rma-cover-img
+  @extend .img-responsive
+  background-image: url('/img/rounds/real-madrid-away-jersey-16-17.jpg')
+  height 400px
+  margin-bottom 36px
+  @media (max-width: desktop-size)
+    height 350px
+  @media (max-width: mobile-size)
+    height 150px
+.rma-cover
+  //@extends .round-tournament-cover
+  //width 100%
+  //max-width 300px
+  width 700px
+  //height 400px
+
+  //background-image: url('/img/CR.jpg')
+  //width 59vw
+  //height 73vw
+  @media (max-width: desktop-size)
+    width 600px
+    //height 350px
+  @media (max-width: mobile-size)
+    width 300px
+    //height 150px
+round-image-size = 225px
+.round-container
+  display block
+  //width 450px
+  width 100%
+  overflow hidden
+  height round-image-size
+  margin-bottom 25px
+  @media (max-width mobile-size)
+    width 100%
+
+.round-image
+  width round-image-size
+  height round-image-size
+  @extend .img-responsive
+  float left
+  padding 15px
+  background-image: url('/img/rounds/real-madrid-away-jersey-16-17.jpg')
+.round-tournament-info
+  float left
+  height 100%
+  background-color #2b2d2f
+  //width 300px
+  width calc(100% - 225px)
+.round-upper
+  overflow hidden
+  padding 20px
+.round-number
+  float left
+  //width 80px
+  color main-text-color
+  //text-align left
+.round-price
+  float right
+  color main-text-color
+
+.round-date-time
+  //margin-top 25px
+  color main-text-color
+  padding-left 20px
+  text-align left
+.round-prize
+  margin-top 25px
+  color main-text-color
+.round-join
+  background-color #2b2d2f
 
 .tournament-cover-container.darkblue { background-color: #34495e; }
 .tournament-cover-container.darkdarkblue { background-color: #2c3e50; }
