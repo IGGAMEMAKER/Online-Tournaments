@@ -954,6 +954,22 @@ button{
     width 300px
     //height 150px
 round-image-size = 225px
+@keyframes init
+  0%
+    opacity 0
+  100%
+    opacity 1
+
+@-webkit-keyframes shadow {
+  from {text-shadow: 0 0 3px black;}
+  50% {text-shadow: 0 0 30px black;}
+  to {text-shadow: 0 0 3px black;}
+}
+@keyframes shadow {
+  from {text-shadow: 0 0 3px black;}
+  50% {text-shadow: 0 0 30px black;}
+  to {text-shadow: 0 0 3px black;}
+}
 .round-container
   display block
   //width 450px
@@ -961,9 +977,16 @@ round-image-size = 225px
   overflow hidden
   height round-image-size
   margin-bottom 25px
-  @media (max-width mobile-size)
-    width 100%
+  //
+  animation-name init
+  animation-delay 1s
+  animation-timing-function ease-in-out
+  animation-iteration-count 1
 
+  //-webkit-animation: shadow  2s infinite ease-in-out;
+  //animation: shadow  2s infinite ease-in-out;
+  -webkit-animation: init 1s 1 ease-in-out;
+  animation: init 1s 1 ease-in-out;
 .round-image
   width round-image-size
   height round-image-size
@@ -971,12 +994,16 @@ round-image-size = 225px
   float left
   padding 15px
   background-image: url('/img/rounds/real-madrid-away-jersey-16-17.jpg')
+  @media (max-width mobile-size)
+    display none
 .round-tournament-info
   float left
   height 100%
   background-color #2b2d2f
   //width 300px
   width calc(100% - 225px)
+  @media (max-width mobile-size)
+    width 100%
 .round-upper
   overflow hidden
   padding 20px

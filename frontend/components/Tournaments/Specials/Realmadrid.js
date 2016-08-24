@@ -7,9 +7,7 @@ type PropsType = {}
 
 type StateType = {}
 
-type ResponseType = {}
-
-export default class StdClass extends Component {
+export default class Realmadrid extends Component {
   state = {};
 
   componentWillMount() {}
@@ -35,11 +33,11 @@ export default class StdClass extends Component {
 
   render(props: PropsType, state: StateType) {
 
-    const round1 = this.roundTab(5, 'Бесплатно', 'Призы: 200 билетов на раунд 4', 'Пятница, 21:00 по МСК', () => {});
-    const round2 = this.roundTab(4, '5 РУБ', 'Призы: 30 билетов на раунд 3', 'Суббота, 21:00 по МСК', () => {});
-    const round3 = this.roundTab(3, '30 РУБ', 'Призы: 10 билетов на раунд 2', 'Воскресенье, 21:00 по МСК', () => {});
-    const round4 = this.roundTab(2, '80 РУБ', 'Призы: 4 билета в финал', 'Понедельник, 20:00 по МСК', () => {});
-    const round5 = this.roundTab(1, '150 РУБ', 'Приз: Футболка Реал Мадрид 2016/2017', 'Понедельник, 21:30 по МСК', () => {});
+    const round1 = this.roundTab(5, 'Бесплатно', 'Призы: 200 билетов на раунд 4', 'Пятница, 21:00 (МСК)', () => {});
+    const round2 = this.roundTab(4, '5 РУБ', 'Призы: 30 билетов на раунд 3', 'Суббота, 21:00 (МСК)', () => {});
+    const round3 = this.roundTab(3, '30 РУБ', 'Призы: 10 билетов на раунд 2', 'Воскресенье, 21:00 (МСК)', () => {});
+    const round4 = this.roundTab(2, '80 РУБ', 'Призы: 4 билета в финал', 'Понедельник, 20:00 (МСК)', () => {});
+    const round5 = this.roundTab(1, '150 РУБ', 'Приз: Футболка Реал Мадрид 2016/2017', 'Понедельник, 21:30 (МСК)', () => {});
 
     return (
       <div>
@@ -47,7 +45,7 @@ export default class StdClass extends Component {
           <h2 className="content-title">Турнир Мадридиста</h2>
           <div className="text-big">Всего 5 шагов отделяет тебя от награды!</div>
           <div className="rma-cover">
-            <div className="rma-cover-img"></div>
+            <div className="rma-cover-img hide"></div>
             {round1}
             {round2}
             {round3}
