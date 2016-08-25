@@ -243,7 +243,6 @@ export default class Index extends Component {
     return (
       <div>
         <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
-        <RMAPage />
         <div className="center height-fix offset">
           <h2 className="content-title">Выиграй футболку Реал Мадрид 2016/2017!</h2>
           <div className="round-tournament-cover" style={`background-image: url('/img/rounds/Benzema.jpg'); position: relative`}>
