@@ -88,6 +88,11 @@ export default class TournamentEditor extends Component {
     return `${date.getFullYear()}-${MM}-${DD}T${hh}:${mm}`;
   };
 
+  onRoundChange = (e: KeyboardEvent) => {
+    console.debug('onRoundChange', e.target.value);
+    this.onChange('rounds', parseInt(e.target.value));
+  };
+
   render(props: PropsType, state: StateType) {
     const tournament: types.TournamentType = props.tournament;
 
@@ -137,7 +142,7 @@ export default class TournamentEditor extends Component {
             <tr>
               <td>Rounds</td>
               <td>
-                <select name="rounds" value={rounds}>
+                <select name="rounds" value={rounds} onChange={this.onRoundChange}>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>

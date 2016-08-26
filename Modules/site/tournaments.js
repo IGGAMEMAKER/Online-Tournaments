@@ -87,7 +87,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, proxy, aux) {
   app.post('/api/tournaments/add', respond(req => {
     // logger.log('/api/tournaments/add', req.body);
 
-    var data = Object.assign({}, req.body.tournament, { rounds: 1, players: 0 });
+    var data = Object.assign({}, req.body.tournament, { rounds: req.body.tournament.rounds || 1, players: 0 });
     logger.debug('converted new tournament', data);
 
     var tournament = {

@@ -7,6 +7,7 @@ export type TournamentType = {
   goNext: Array<number>,
   gameNameID: number,
   Prizes: Array,
+  rounds: number,
 
   settings: {
     regularity: number,

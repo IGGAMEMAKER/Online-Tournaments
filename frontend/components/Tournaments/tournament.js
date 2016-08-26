@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { TournamentType } from '../types';
+import TournamentChecker from '../../helpers/tournamentTypeChecker';
 
 type PropsType = {
   authenticated: boolean,
@@ -131,6 +132,43 @@ export default class Tournament extends Component {
     }
   };
 
+  getPrizeText = (t: TournamentType) => {
+    if (TournamentChecker.isRma(t)) {
+      // на раунд {t.settings.round}
+      let phrase = 'в финал';
+
+      if (t.settings.round > 0) {
+        phrase = `на раунд ${t.settings.round}`;
+      }
+
+      return (
+        <div>
+          <div>Призы</div>
+          <span>билеты {phrase}</span>
+          <div>{phrase}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div>
+        <div>Призовой фонд</div>
+        <span>{t.Prizes.reduce((p, c) => p + c, 0)} Р</span>
+      </div>
+    )
+  };
+
+  // onSelect = (index) => {
+  //   const props: PropsType = this.props;
+  //   if (props.onSelected) {
+  //     return () => {
+  //       props.onSelected(index);
+  //     }
+  //   }
+  //
+  //
+  // };
+
   render(props: PropsType) {
     const id = props.data.tournamentID;
 
@@ -186,6 +224,7 @@ export default class Tournament extends Component {
 
     const participating = props.registeredInTournament ? 'participating' : '';
     const ticketCardClassName = `ticket-card ${participating} light-blue bounceIn`;
+
     // killPaddings
     //   <div className="col-sm-6 col-md-4">
     //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
@@ -196,6 +235,7 @@ export default class Tournament extends Component {
 
     // <div>Главный приз</div>
     // <span>+{prizes[0]} Р</span>
+
     const cover = (
       <div className="cover" onClick={() => props.onSelected(id)}>
         <div className="tournament-cover">
@@ -217,8 +257,7 @@ export default class Tournament extends Component {
         <div className={`tournament-cover-container ${coverColor}`}>
           <div className="tournament-centerize">
             <div className="white tournament-cover-text">
-              <div>Призовой фонд</div>
-              <span>{prizes.reduce((pr, cur) => pr + cur, 0)} Р</span>
+              {this.getPrizeText(props.data)}
             </div>
           </div>
         </div>
