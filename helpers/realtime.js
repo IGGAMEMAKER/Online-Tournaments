@@ -6,7 +6,8 @@ var Message = require('../models/message');
 var Category = require('../models/category');
 
 
-var app, io;
+// var app, io;
+var io;
 var frontendVersion;
 
 
@@ -118,16 +119,11 @@ function update_tournaments(period) {
 setInterval(function(){ objects.counter++; }, 1000);
 
 
-module.exports = function(_app, _io){
-	// set: function(_app, _io){
-	// 	app = _app;
-	// 	io = _io;
-	// 	return 
-	// },
-	app = _app;
+// module.exports = function(_app, _io){
+module.exports = function(_io){
+	// app = _app;
 	io = _io;
 	return function(){
 		return objects;
 	};
-	// get: objects
 };

@@ -55,20 +55,6 @@ mixin libsAndStyles()
 
 	script var login = "#{session.login}";
 
-	//include templates/modals
-
-	//#modals
-		#tournaments()
-			+modal()
-		#tournamentClose
-			+closeTournamentModal()
-		+serverMessage()
-		+winnerModal()
-		+customModal()
-
-	//block modals
-		+notEnoughMoney()
-
 	block CSSlibs
 
 	block JSlibs
@@ -98,7 +84,7 @@ html
 		meta(name="w1-verification" content="179817005946")
 		meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
 
-		title Турниры
+		title Онлайн Турниры
 		+libsAndStyles()
 	body(class="background")
 		//div(class="container")

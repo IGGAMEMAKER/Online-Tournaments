@@ -190,18 +190,19 @@ if (socket_enabled) {
 var aux = require('./models/auxillary');
 aux.io(SOCKET); // set socket in aux
 
-var realtime = require('./helpers/realtime')(app, io);
+// var realtime = require('./helpers/realtime')(app, io);
+var realtime = require('./helpers/realtime')(io);
 
 var gifts = require('./Modules/site/gifts')(app, aux);
-var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
+// var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
 var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, getLogin, aux);
+// var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 
-var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 // var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
 
 // var TournamentReg = require('./models/tregs');
@@ -447,7 +448,7 @@ var markPaymentPageOpening = (req, res, next) => {
 // });
 var application_page = (req, res) => {
   // res.render('index', { msg: templateData() })
-  res.render('index')
+  res.render('index');
   // res.end(template);
 };
 var admin_page = (req, res) => {
@@ -474,68 +475,6 @@ app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
 // app.get('/Payment', aux.authenticated, application_page);
-/*
-app.get('/', function (req, res) {
-  res.render('index');
-});
-
-app.get('/Tournaments', function (req, res){
-  // res.render('Tournaments');//, {msg: updater.tournaments||[] }
-  res.render('Tournaments', { msg: realtime().tournaments });//, {msg: updater.tournaments||[] }
-});
-
-app.get('/Packs', aux.authenticated, function (req, res, next){
-  req.data = {
-    collections: realtime().collections,
-    cards: realtime().cards,
-    packs: realtime().userpacks()
-  };
-  next();
-}, aux.render('Packs'), aux.err);
-
-
-app.get('/MyCollections', aux.authenticated, function (req, res, next) {
-  // var login = aux.getLogin(req);
-  var login = req.login;
-  Usergifts.cardsGroup(login)
-    .then(function (cards){
-      req.data = {
-        collections: realtime().collections,
-        cards: realtime().cards,
-        packs: realtime().userpacks(),
-        usercards: cards||[]
-      };
-      next();
-    })
-    .catch(next)
-}, aux.render('MyCollections'), aux.err)
-
-app.get('/Cards', aux.authenticated, function (req, res, next){
-  // var login = aux.getLogin(req);
-  var login = req.login;
-  Usergifts.cardsGroup(login)
-    .then(function (cards){
-      // console.log(cards);
-      req.data = {
-        collections: realtime().collections,
-        cards: realtime().cards,
-        usercards: cards||[]
-      }
-      next();
-    })
-    .catch(next);
-}, aux.render('Cards'), aux.err);
-
-app.get('/Payment', middlewares.authenticated, function (req, res) {
-  var ammount = req.query.ammount || null;
-  var type = req.query.buyType || null;
-
-  var login = getLogin(req);
-  Actions.add(login, 'Payment-page-opened', { ammount:ammount, type:type });
-
-  res.render('Payment', { ammount:ammount, type:type });
-});
-*/
 // packs + cards + realtime
 
 var missStep = () => {

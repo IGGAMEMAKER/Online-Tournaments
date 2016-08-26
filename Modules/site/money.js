@@ -1,20 +1,22 @@
 module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux) {
-  var Money = require('../../models/money')
+  var Money = require('../../models/money');
+  
+  var middlewares = require('../../middlewares');
 
+  var respond = require('../../middlewares/api-response');
   var Fail = {result: 'fail'};
   var OK = {result: 'OK'};
 
   var rp = require('request-promise');
-  var configs = require('../../configs')
+  var configs = require('../../configs');
 
   /*app.post('/Cashout', function (req, res){
    MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
    })*/
-  app.post('/Cashout', function (req, res) {
+  app.post('/Cashout', middlewares.authenticated, function (req, res) {
     var data = req.body;
     Log("trying to cashout " + JSON.stringify(data), "Money");
-    if (isAuthenticated(req)) {
-      var login = getLogin(req);
+      var login = req.login;
       var cardNumber = data.cardNumber;
       if (data.money && !isNaN(data.money)) money = data.money;
       if (data.cash && !isNaN(data.cash)) money = data.cash;
@@ -29,9 +31,9 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
 
         //siteProxy(res, operation,data,page,'DBServer');
         sender.sendRequest("CashoutRequest", {
-            login: login,
-            money: money,
-            cardNumber: cardNumber
+            login,
+            money,
+            cardNumber
           }, '127.0.0.1', "DBServer", res,
           function (error, body, response, res1) {
             if (error) {
@@ -44,15 +46,12 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
       } else {
         return sender.Answer(res, Fail);
       }
-    } else {
-      return sender.Answer(res, Fail);
-    }
   });
 
   function MoneyTransferOperation(req, res, operation, page) {
     if (isAuthenticated(req)) {
       var data = req.body;
-      var login = getLogin(req);
+      var login = req.login;
       if (data && login) {
         data.login = login;
 
@@ -72,36 +71,31 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
     res.send(400);
   }
 
-  app.get('/api/transfers/mobile/all', aux.isAdmin, function (req, res, next) {
+  app.get('/api/transfers/mobile/all', middlewares.isAdmin, function (req, res, next) {
     // console.log('', Money.mobile)
     Money.mobile.all()
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.list)
+  }, aux.list);
 
-  app.get('/api/transfers/mobile/add/:payID/:ammount', aux.isAdmin, function (req, res, next) {
-    Money.mobile.add(req.params.payID, req.params.ammount)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std)
+  app.get('/api/transfers/mobile/add/:payID/:ammount', middlewares.isAdmin, respond (req => {
+    return Money.mobile.add(req.params.payID, req.params.ammount)
+  }));
 
   function mobilePayment(req, res, next) {
-    console.log('mobilePayment middleware')
-    console.log('mobilePayment middleware', req.payment)
-    // var login = aux.getLogin(req);
+    console.log('mobilePayment middleware');
+    console.log('mobilePayment middleware', req.payment);
     // var payID = req.body.payID
     // var ammount = req.body.ammount;
 
     var login = req.payment.login;
-    var payID = req.payment.payID
+    var payID = req.payment.payID;
     var ammount = req.payment.ammount;
 
-    aux.done(login, 'mobile/mark', {payID: payID, ammount: ammount})
+    aux.done(login, 'mobile/mark', {payID: payID, ammount: ammount});
 
     Money.mobile.mark(payID, ammount, login)
-      // .then(aux.setData(req, next))
       .then(function (result) {
-        // aux.notify(login, )
         console.log('marked,', result);
         if (result) {
           Money.increase(login, parseInt(ammount), aux.c.SOURCE_TYPE_DEPOSIT);
@@ -118,22 +112,20 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
   }
 
   app.post('/api/transfers/mobile/mark/form', aux.authenticated, function (req, res, next) {
-    // var login = aux.getLogin(req);
-    var login = req.login;
-    var payID = req.body.payID
+    var payID = req.body.payID;
     var ammount = req.body.ammount;
 
     req.payment = {
-      login: login,
-      payID: payID,
-      ammount: ammount
-    }
+      login: req.login,
+      payID,
+      ammount
+    };
     next();
-  }, mobilePayment, aux.render('Transfers'), aux.error)
+  }, mobilePayment, aux.render('Transfers'), aux.error);
 
-  app.get('/api/transfers/mobile/markAdmin/:payID/:ammount/:login', aux.isAdmin, function (req, res, next) {
+  app.get('/api/transfers/mobile/markAdmin/:payID/:ammount/:login', middlewares.isAdmin, function (req, res, next) {
     var login = req.params.login;
-    var payID = req.params.payID
+    var payID = req.params.payID;
     var ammount = req.params.ammount;
     console.log(login, payID, ammount, 'markAdmin');
     req.payment = {
@@ -145,28 +137,27 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
   }, mobilePayment, aux.render('Transfers'), aux.error);
 
   app.get('/api/transfers/mobile/mark/:payID/:ammount', aux.authenticated, function (req, res, next) {
-    // var login = aux.getLogin(req);
     var login = req.login;
-    var payID = req.params.payID
+    var payID = req.params.payID;
     var ammount = req.params.ammount;
 
     req.payment = {
       login: login,
       payID: payID,
       ammount: ammount
-    }
+    };
     next()
-  }, mobilePayment, aux.render('Transfers'), aux.error)
+  }, mobilePayment, aux.render('Transfers'), aux.error);
 
-  app.get('/api/transfers/all', aux.isAdmin, function (req, res, next) {
+  app.get('/api/transfers/all', middlewares.isAdmin, function (req, res, next) {
     Money.all()
 
       .then(aux.setData(req, next))
       .catch(next)
-  }, aux.render('Transfers'), aux.err)
+  }, aux.render('Transfers'), aux.err);
 
 
-  app.get('/api/transfers/recent/:period', aux.isAdmin, function (req, res, next) {
+  app.get('/api/transfers/recent/:period', middlewares.isAdmin, function (req, res, next) {
     var period = parseInt(req.params.period) || 0;
     //0 - daily
     //1 - yesterday
@@ -177,15 +168,8 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
       .catch(next)
   }, aux.render('Transfers'), aux.err);
 
-  app.post('/Deposit', aux.isAdmin, function (req, res) {
+  app.post('/Deposit', middlewares.isAdmin, function (req, res) {
     MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
-  });
-
-  app.get('/Cashout', aux.isAdmin, function (req, res) {
-    res.render('Cashout');
-  });
-  app.get('/Deposit', function (req, res) {
-    res.render('Deposit');
   });
 
   app.post('/yandexPayment', function (req, res) {
@@ -217,26 +201,24 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, 
     // sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
   });
 
-  app.get('/api/payments/all', aux.isAdmin, function (req, res, next) {
-    Money.payments()
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std); //render('List'), aux.err
+  app.get('/api/payments/all', middlewares.isAdmin, respond (req => {
+    return Money.payments()
+  }));
+  //render('List'), aux.err
 
-  app.get('/api/payments/all/list', aux.isAdmin, function (req, res, next) {
+  app.get('/api/payments/all/list', middlewares.isAdmin, function (req, res, next) {
     Money.payments()
       .then(aux.setData(req, next))
       .catch(next)
   }, aux.render('List'), aux.err);
 
   app.post('/PAY', aux.authenticated, function (req, res, next) {
-    // var login = aux.getLogin(req);
     var login = req.login;
     var ammount = req.body.ammount || 100;
     var phone = req.body.phone;//"79261000000"
 
     var mixplat = configs.mixplat;
-    var isTest = mixplat.isTest || 0
+    var isTest = mixplat.isTest || 0;
     // var signature =
     var options = {
       method: 'POST',
