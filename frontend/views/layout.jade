@@ -17,7 +17,7 @@ mixin libsAndStyles()
 	//link(href="/css/bootstrap.min.css" rel="stylesheet")
 	//link(href="/css/new/style.css" rel="stylesheet")
 
-	link(href="/css/new/style1.css?2" rel="stylesheet" type="text/css")
+	//link(href="/css/new/style1.css?2" rel="stylesheet" type="text/css")
 	//link(href="/css/new/my.css?10" rel="stylesheet")
 	link(href="/css/new/index.css?0" rel="stylesheet")
 
@@ -72,41 +72,6 @@ mixin libsAndStyles()
 	block CSSlibs
 
 	block JSlibs
-mixin loadHead()
-	meta(charset="utf-8")
-	meta(http-equiv="X-UA-Compatible" content="IE=edge")
-	meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
-	meta(name="keywords" content="онлайн, турниры, викторина, online-tournaments, турниры Реал Мадрид, конкурсы Реал Мадрид")
-	meta(name="description" content="Онлайн турниры")
-	meta(name="author" content="")
-	meta(name="w1-verification" content="179817005946")
-	meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
-
-	title Турниры
-	+libsAndStyles()
-
-mixin drawBalance()
-	if session.login && session.login.length>0
-		center
-			div(class="balance" style="width:100%; background-color:#111111;")
-				span(id="balance") #{session.login}     
-				a(href="profile#dep") Пополнить   
-				span /   
-				a(href="profile#cashoutMoney") Снять
-
-mixin drawMyPoints()
-	if session.login && session.login.length>0
-		center
-			div(class="balance" style="width:100%; background-color:#222;")
-				//span(id="mypoints") Баллы
-				//a(href="/Marathon#points") что это
-				//+getMyPoints()
-
-mixin getMyPoints()
-	if session.login && session.login.length>0
-		script.
-			getPoints();
-			//setInterval(function(){ getPoints(); }, 30*1000);
 
 mixin subscribe()
 	div(id="vk_groups")
@@ -124,7 +89,17 @@ html
 		//script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
 		// charset="windows-1251"
 		include templates/basic
-		+loadHead()
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
+		meta(name="keywords" content="онлайн, турниры, викторина, online-tournaments, турниры Реал Мадрид, конкурсы Реал Мадрид")
+		meta(name="description" content="Онлайн турниры")
+		meta(name="author" content="")
+		meta(name="w1-verification" content="179817005946")
+		meta(name="interkassa-verification" content="9854635e87b63881c7be996dffe2b905")
+
+		title Турниры
+		+libsAndStyles()
 	body(class="background")
 		//div(class="container")
 		block overrideMenu
@@ -142,7 +117,7 @@ html
 		block ftr
 			script(type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="utf-8")
 			div(class="wrapper2")
-				+footer()
+				//+footer()
 
 		script(src="/YandexMetrica.js")
 		noscript

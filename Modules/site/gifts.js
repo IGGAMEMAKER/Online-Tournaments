@@ -1,4 +1,4 @@
-module.exports = function setApp(app, Answer, sender, Log, aux){
+module.exports = function setApp(app, aux){
   var Gifts = require('../../models/gifts');
   var Usergifts = require('../../models/usergifts');
   var Packs = require('../../models/packs');
@@ -11,26 +11,20 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   var respond = require('../../middlewares/api-response');
 
   // packs
-  app.post('/api/packs/remove/:packID', aux.isAdmin, respond(req => {
+  app.post('/api/packs/remove/:packID', middlewares.isAdmin, respond(req => {
     return Packs.remove(req.params.packID)
   }));
 
-  app.get('/api/packs/removeAll', aux.isAdmin, respond(req => {
+  app.get('/api/packs/removeAll', middlewares.isAdmin, respond(req => {
     return Packs.removeAll()
   }));
 
 
-  app.get('/api/packs/all', aux.isAdmin, respond (req => {
+  app.get('/api/packs/all', middlewares.isAdmin, respond (req => {
     return Packs.all()
   }));
-  // app.get('/api/packs/all', aux.isAdmin, function (req, res, next){
-  //   Packs.all()
-  //     .then(aux.setData(req, next))
-  //     .catch(next)
-  // }, aux.render('PackInfo'), aux.err);
-  // }, aux.std);
 
-  app.get('/api/packs/available', aux.isAdmin, respond (req => {
+  app.get('/api/packs/available', middlewares.isAdmin, respond (req => {
     return Packs.available()
   }));
 
@@ -55,7 +49,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     return Packs.add(obj)
   }));
 
-  app.post('/api/packs/edit/:id', middlewares.contentManager, function (req, res, next) {
+  app.post('/api/packs/edit/:id', middlewares.contentManager, respond(req => {
     var packID = parseInt(req.params.id);
 
     var data = req.body;
@@ -64,17 +58,16 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var obj = pickPackfromData(data);
 
     console.log('packs.edit', obj);
-    Packs.edit(packID, obj)
-      .then(aux.setData(req, next))
-      .catch(next)
-  }, aux.std);
 
-  app.get('/packInfo', aux.isAdmin, function (req, res) {
+    return Packs.edit(packID, obj)
+  }));
+
+  app.get('/packInfo', middlewares.isAdmin, function (req, res) {
     var info = Packs.info();
-    res.json({info: info})
+    res.json({ info: info })
   });
 
-  app.get('/packOpenings/:type', aux.isAdmin, function (req, res, next) {
+  app.get('/packOpenings/:type', middlewares.isAdmin, function (req, res, next) {
     var func;
     switch (req.params.type) {
       case 'incomeToday': // доход за сегодня
@@ -113,7 +106,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       .catch(console.error)
   }, aux.list);
 
-  app.get('/api/usergifts/all', aux.isAdmin, respond (req => {
+  app.get('/api/usergifts/all', middlewares.isAdmin, respond (req => {
     return Usergifts.all()
   }));
 
@@ -126,28 +119,24 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
   }));
 
   // gifts
-  app.post('/api/gifts/remove/:id', aux.isAdmin, respond(req => {
+  app.post('/api/gifts/remove/:id', middlewares.isAdmin, respond(req => {
     return Gifts.remove(req.params.id)
   }));
 
-  app.post('/api/gifts/edit/:id', aux.isAdmin, function (req, res, next) {
+  app.post('/api/gifts/edit/:id', middlewares.isAdmin, respond (req => {
     var id = req.params.id;
     var data = req.body;
 
-    if (isValidGift(data)) {
-      Gifts
-        .edit(id, data)
-        .then(r => {
-          console.log('update result', data, r);
-          return r;
-        })
-        .then(aux.setData(req, next))
-        .catch(next);
-    } else {
-      console.error('invalidGift', data, e);
-      next(e);
-    }
-  }, aux.std);
+
+    if (!isValidGift(data)) throw (e);
+
+    return Gifts
+      .edit(id, data)
+      .then(r => {
+        console.log('update result', data, r);
+        return r;
+      })
+  }));
 
   function isValidGift(data) {
     var name = data.name;
@@ -165,10 +154,7 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     return true;
   }
 
-  // app.get('/AddGift', aux.isAdmin, aux.render('AddGift'))
-
-  // app.post('/AddGift', aux.isAdmin, function (req, res) {
-  app.post('/api/gifts/add', aux.isAdmin, function (req, res, next) {
+  app.post('/api/gifts/add', middlewares.isAdmin, respond (req => {
     var data = req.body;
     var name = data.name;
     var photoURL = data.photoURL;
@@ -176,32 +162,27 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
     var properties = data.properties;
     var price = data.price;
 
-    if (isValidGift(data)) {
-      Gifts
-        .add(name, photoURL, description, '', price, false, new Date(), properties)
-        .then(aux.setData(req, next))
-        .catch(next);
-    } else {
-      console.error(e);
-      next(e);
-    }
-  }, aux.std);
+    if (!isValidGift(data)) throw (e);
 
-  app.get('/api/gifts/cards', aux.isAdmin, respond(req => {
+    return Gifts
+      .add(name, photoURL, description, '', price, false, new Date(), properties)
+  }));
+
+  app.get('/api/gifts/cards', middlewares.isAdmin, respond(req => {
     return Gifts.cards(null)
   }));
 
-  app.get('/api/gifts/cards/:rarity', aux.isAdmin, respond(req => {
+  app.get('/api/gifts/cards/:rarity', middlewares.isAdmin, respond(req => {
     return Gifts.cards(req.params.rarity || null)
   }));
 
-  app.get('/api/gifts/remove/:id', aux.isAdmin, respond(req => {
+  app.get('/api/gifts/remove/:id', middlewares.isAdmin, respond(req => {
     return Gifts.remove(req.params.id)
   }));
 
-  app.get('/AddCard', aux.isAdmin, aux.render('AddCard'));
+  app.get('/AddCard', middlewares.isAdmin, aux.render('AddCard'));
 
-  app.post('/AddCard', aux.isAdmin, function (req, res, next){
+  app.post('/AddCard', middlewares.isAdmin, function (req, res, next){
     var data = req.body;
     var name = data.name;
     var description = data.description;
@@ -217,11 +198,11 @@ module.exports = function setApp(app, Answer, sender, Log, aux){
       .catch(next);
   }, aux.std); // aux.render('AddCard')
 
-  app.get('/api/gifts', aux.isAdmin, respond(req => {
+  app.get('/api/gifts', middlewares.isAdmin, respond(req => {
     return Gifts.all()
   }));
 
-  app.get('/ShowGifts', aux.isAdmin, function (req, res, next){
+  app.get('/ShowGifts', middlewares.isAdmin, function (req, res, next){
     Gifts.all()
       .then(aux.setData(req, next))
       .catch(next)

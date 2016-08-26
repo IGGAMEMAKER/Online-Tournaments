@@ -15,7 +15,7 @@ var MongoStore = require('connect-mongo')(session);
 //var io = require('socket.io')(app);
 
 var serverName = 'site';
-
+var logger = require('./helpers/logger');
 var server;
 
 var SOCKET_ON=1;
@@ -135,7 +135,7 @@ app.use(function(req,res,next){
 });
 
 // app.use('/leagues', require('./routes/leagues'));
-app.use('/VK/', require('./routes/VK'));
+// app.use('/VK/', require('./routes/VK'));
 
 //var handler = require('./errHandler')(app, Log, serverName);
 /*app.use(function(err, req, res, next){
@@ -167,7 +167,7 @@ app.set('views', views);
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
-
+var Answer = sender.Answer;
 var sort = require('./helpers/sort');
 
 //var compression = require('compression');
@@ -192,7 +192,7 @@ aux.io(SOCKET); // set socket in aux
 
 var realtime = require('./helpers/realtime')(app, io);
 
-var gifts = require('./Modules/site/gifts')(app, Answer, sender, Log, aux);
+var gifts = require('./Modules/site/gifts')(app, aux);
 var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
 var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
@@ -316,8 +316,6 @@ function isNumeric(num) { return !isNaN(num); }
 
 const CODE_INVALID_DATA='Неправильные данные';
 
-var Answer = sender.Answer;
-
 app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
 });
@@ -327,6 +325,7 @@ app.post('/FinishGame', FinishGame);
 
 app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
 app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
+
 function Landing(name, picture){
   return function (req, res){
     var obj = { landing: name };
@@ -343,7 +342,7 @@ function Landing(name, picture){
   
 // })
 
-app.get('/realtime/update', aux.isAdmin, function(req, res){
+app.get('/realtime/update', middlewares.isAdmin, function(req, res){
   realtime().UPDATE_ALL();
   res.end('OK');
 });
@@ -441,8 +440,15 @@ var markPaymentPageOpening = (req, res, next) => {
   next();
 };
 
+// var template;
+// app.render('index', (err, html) => {
+//   logger.debug(err, html);
+//   template = html;
+// });
 var application_page = (req, res) => {
-  res.render('index', { msg: templateData() })
+  // res.render('index', { msg: templateData() })
+  res.render('index')
+  // res.end(template);
 };
 var admin_page = (req, res) => {
   res.render('layout-admin', { msg: templateData() })
@@ -602,7 +608,7 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
   })
 });
 
-app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, next){
+app.get('/givePackTo/:login/:colour/:count', middlewares.isAdmin, function (req ,res, next){
   var login = req.params.login;
   var count = parseInt(req.params.count);
   var colour = parseInt(req.params.colour);
@@ -615,7 +621,7 @@ app.get('/givePackTo/:login/:colour/:count', aux.isAdmin, function (req ,res, ne
     .catch(next)
 }, aux.std);
 
-app.get('/api/packs/setdefault/:login', aux.isAdmin, function (req ,res, next){
+app.get('/api/packs/setdefault/:login', middlewares.isAdmin, function (req ,res, next){
   var login = req.params.login;
   // console.log('login', login);
   Users.pack.setDefault(login)
@@ -1019,13 +1025,13 @@ app.get('/api/news/get', function (req, res) {
   res.json({ news: realtime().news || null })
 });
 
-app.get('/api/news/all', aux.isAdmin, function (req, res, next){
+app.get('/api/news/all', middlewares.isAdmin, function (req, res, next){
   Message.news.all()
   .then(aux.setData(req, next))
   .catch(next)
 }, aux.render('News'), aux.error);
 
-app.post('/api/news/add', aux.isAdmin, function (req, res, next){
+app.post('/api/news/add', middlewares.isAdmin, function (req, res, next){
   var data = req.body;
 
   var text = data.text || "";
@@ -1038,7 +1044,7 @@ app.post('/api/news/add', aux.isAdmin, function (req, res, next){
   .catch(next)
 }, aux.std);
 
-app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
+app.post('/api/news/edit/:id', middlewares.isAdmin, function (req, res, next){
   var id = req.params.id || null;
   var data = req.body;
 
@@ -1059,7 +1065,7 @@ app.post('/api/news/edit/:id', aux.isAdmin, function (req, res, next){
   .catch(next)
 }, aux.std);
 
-app.get('/api/news/activation/:id/:status', aux.isAdmin, function (req, res, next){
+app.get('/api/news/activation/:id/:status', middlewares.isAdmin, function (req, res, next){
   Message.news.activation(req.params.id||null, req.params.status || null)
   .then(function (result){
     if (result) realtime().UPDATE_ALL();
@@ -1143,14 +1149,14 @@ app.get('/messages/support', middlewares.authenticated, function (req, res) {
     })
 });
 
-app.get('/messages/support-incoming/', aux.isAdmin, function (req, res) {
+app.get('/messages/support-incoming/', middlewares.isAdmin, function (req, res) {
   Message.support.recent()
     .then(messages => {
       res.json({ msg: messages })
     })
 });
 
-app.get('/messages/support/:login', aux.isAdmin, function (req, res) {
+app.get('/messages/support/:login', middlewares.isAdmin, function (req, res) {
   // console.log('/messages/support', req.params.login);
   Message.support.user(req.params.login)
     .then(messages => {
@@ -1158,7 +1164,7 @@ app.get('/messages/support/:login', aux.isAdmin, function (req, res) {
     })
 });
 
-app.post('/messages/support-respond', aux.isAdmin, function (req, res) {
+app.post('/messages/support-respond', middlewares.isAdmin, function (req, res) {
   // console.log('/messages/support', req.params.login);
   // console.log('message support response', req.body);
   var room = 'support-' + req.body.target;

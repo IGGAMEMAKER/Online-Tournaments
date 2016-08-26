@@ -35,7 +35,7 @@ type ResponseType = {
 
 export default class Tournaments extends Component {
   state = {
-    tournaments: TOURNAMENTS,
+    tournaments: [],
     registeredIn: {},
     options: {},
     value: store.getTestValue(),
@@ -53,7 +53,7 @@ export default class Tournaments extends Component {
       });
     });
 
-    actions.updateTournaments(TOURNAMENTS);
+    actions.updateTournaments([]);
     // actions.initialize();
   }
 
