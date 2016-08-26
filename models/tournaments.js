@@ -16,9 +16,9 @@ var c = require('../constants');
 
 var sender = require('../requestSender');
 
-var logger = (...args) => {
-	return console.log('/models/tournaments', ...args);
-};
+// var logger = (...args) => {
+// 	return console.log('/models/tournaments', ...args);
+// };
 
 // var mongoose = require('mongoose');
 // //mongoose.connect('mongodb://localhost/test');

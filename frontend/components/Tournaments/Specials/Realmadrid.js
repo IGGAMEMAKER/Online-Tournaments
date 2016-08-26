@@ -49,7 +49,8 @@ export default class Realmadrid extends Component {
 
   getRegisterIndicator = (id) => {
     if (id === 0) {
-      return  <button disabled className="btn btn-block">Набор участников <br/> закрыт</button>
+      // return  <button disabled className="btn btn-block">Набор участников <br/> закрыт</button>
+      return  <button disabled className="btn btn-block">Турнир завершён</button>
     }
 
     if (store.isRegisteredIn(id)) {
