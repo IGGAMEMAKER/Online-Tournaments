@@ -77,9 +77,9 @@ export default class Realmadrid extends Component {
     const r3ID = r3Ts.length? r3Ts[0].tournamentID: 0;
     const finalID = finalList.length? finalList[0].tournamentID: 0;
 
-    const round1 = this.roundTab(3, 'БЕСПЛАТНО', 'Призы: 200 билетов на раунд 2', 'Пятница, 21:00 (МСК)', 858, r1ID);
-    const round2 = this.roundTab(2, 'Стоимость участия: 5р', 'Призы: 30 билетов на раунд 1', 'Суббота, 21:00 (МСК)', 232, r2ID);
-    const round3 = this.roundTab(1, 'Стоимость участия: 30р', 'Призы: 10 билетов в финал', 'Воскресенье, 21:00 (МСК)', 10, r3ID);
+    const round1 = this.roundTab(3, 'БЕСПЛАТНО', 'Призы: 200 билетов на раунд 2', 'Пятница, 21:00 (МСК)', 0, r1ID);
+    const round2 = this.roundTab(2, 'Стоимость участия: 5р', 'Призы: 30 билетов на раунд 1', 'Суббота, 21:00 (МСК)', 0, r2ID);
+    const round3 = this.roundTab(1, 'Стоимость участия: 30р', 'Призы: 10 билетов в финал', 'Воскресенье, 21:00 (МСК)', 0, r3ID);
     // const round4 = this.roundTab('ФИНАЛ', '', '', '', () => {});
     // const round4 = this.roundTab('ФИНАЛ', 'Стоимость участия: 80р', 'Приз: Футболка Реал Мадрид 2016/2017!', 'Понедельник, 21:00 (МСК)', () => {});
     // const round5 = this.roundTab('ФИНАЛ', 'Стоимость участия: 150р', 'Приз: Футболка Реал Мадрид 2016/2017', 'Вторник, 21:00 (МСК)', () => {});
