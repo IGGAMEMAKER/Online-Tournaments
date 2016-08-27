@@ -1,40 +1,41 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, aux){
-	var validator = require('validator');
-	var security = require('../DB/security');
+var validator = require('validator');
+var security = require('../DB/security');
 
-	var mail = require('../../helpers/mail');
+var mail = require('../../helpers/mail');
 
-	var respond = require('../../middlewares/api-response');
-	
-	var Users = require('../../models/users');
-	var TournamentReg = require('../../models/tregs');
-	var Tournaments = require('../../models/tournaments');
-	var Actions = require('../../models/actions');
-	var Errors = require('../../models/errors');
+var respond = require('../../middlewares/api-response');
 
-	var Marathon = require('../../models/marathon');
-	var statistics = require('../../models/statistics');
+var Users = require('../../models/users');
+var TournamentReg = require('../../models/tregs');
+var Tournaments = require('../../models/tournaments');
+var Actions = require('../../models/actions');
+var Errors = require('../../models/errors');
 
-	var middlewares = require('../../middlewares');
-	var authenticated = middlewares.authenticated;
+var statistics = require('../../models/statistics');
 
-	var logger = require('../../helpers/logger');
+var middlewares = require('../../middlewares');
+var authenticated = middlewares.authenticated;
 
-	var API = require('../../helpers/API');
-	var c = require('../../constants');
+var logger = require('../../helpers/logger');
 
-	var Fail = {
-		result: 'fail'
-	};
-	var OK = {
-		result: 'OK'
-	};
+var API = require('../../helpers/API');
+var c = require('../../constants');
+
+var Fail = {
+	result: 'fail'
+};
+var OK = {
+	result: 'OK'
+};
+var sender = require('../../requestSender');
+
+module.exports = function(app, AsyncRender, aux) {
 
 	function destroy_session(req, res, next){
 		var login = req.login;
 		req.session.destroy(function (err){
 			if (err) { 
-				Errors.add(login, 'destroy_session', { err:err })
+				Errors.add(login, 'destroy_session', { err:err });
 				// console.error('Session destroying error:' + err); 
 			}
 		});
@@ -45,21 +46,16 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		res.redirect('Login');
 	});// render('Login',{}) )
 
-	// app.get('/Login', function (req, res){ res.render('Login',{}); })
-	// app.get('/Register', function (req, res){ res.render(REG_TEMPLATE); })
-
 	app.get('/Login', render('Login',{}) );
 	app.get('/Register', render('Register'));
 
 	
-	app.get('/ResetPassword', render('ResetPassword') )
-	app.get('/Changepassword', authenticated, render('Changepassword') );
+	app.get('/ResetPassword', render('ResetPassword'));
+	app.get('/Changepassword', authenticated, render('Changepassword'));
 	app.post('/ChangePassword', authenticated, change_password, change_password_fail);
 
 	app.post('/Login', Login);//std_auth('Login')
 	app.post('/Register', register);//std_auth('Register') 
-
-	var REG_TEMPLATE="Register";
 
 	function register(req, res){
 		var user = {
@@ -82,7 +78,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		// console.log('trying to register', login, email, password, inviter);
 
 		Users.create(login, password, email, inviter)
-		.then(autoregNewbieOrLongPassed(login))
 		.then(function (user){
 			//console.log('registered', user);
 			saveSession(req, res, 'register');
@@ -91,14 +86,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			Actions.add(login, 'register');
 
 		})
-		.catch(answer_and_save_error(res, 'Register', 'register', login))
+		.catch(answer_and_save_error(res, 'Register', 'register', login));
 /*		.catch(function (err){
 			res.render('Register', { msg:err });
 			Errors.add(login, 'register', { code:err })
 		})*/
 	}
 
-	function Login(req, res){
+	function Login(req, res) {
 		// var login = get_login_from_email(req.body.email);
 		var login = get_login_from_email(req.body.email);
 		var password = req.body.password;
@@ -110,7 +105,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Actions.add(login, 'login');
 
 		Users.auth(login, password)//, req.user.email, req.user.inviter
-		.then(autoregNewbieOrLongPassed(login))
 		.then(function (user){
 			// console.log('logged In', user);
 			req.user = user;
@@ -118,9 +112,9 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 			// Actions.add(login, 'login');
 		})
-		.catch(function (err){
-			res.render('Login', {msg : err});
-			Errors.add(login, 'Login', { code:err })
+		.catch(function (err) {
+			res.render('Login', { msg : err });
+			Errors.add(login, 'Login', { code: err })
 		})
 	}
 
@@ -140,12 +134,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 	}
 
-	app.get('/api/users/:login/setDefault', aux.isAdmin, function (req, res, next){
+	app.get('/api/users/:login/setDefault', middlewares.isAdmin, respond (req => {
 		var login = req.params.login;
-		Users.pack.setDefault(login)
-		.then(aux.setData(req, next))
-		.catch(next)
-	}, aux.std);
+		return Users.pack.setDefault(login)
+	}));
 
 	app.post('/api/users/increase-points/:login/amount', middlewares.isAdmin, respond(req => {
 		var login = req.params.login;
@@ -202,11 +194,14 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	var register_manager = require('../../chains/registerInTournament');
 	
-	app.post('/CancelRegister', function (req, res) {
-	  regManager('CancelRegister', req, res);
+	app.post('/CancelRegister', middlewares.authenticated, function (req, res) {
+		var data = req.body;
+		logger.debug(data.login, data.tournamentID);
+
+		AsyncRender('DBServer', 'CancelRegister', res, null,  data);
 	});
 
-	app.get('/api/tournaments/start/:id/:force', aux.isAdmin, function (req, res){
+	app.get('/api/tournaments/start/:id/:force', middlewares.isAdmin, function (req, res){
 		var force = req.params.force;
 		var id = req.params.id;
 		if (isNaN(id)) return res.end('fail');
@@ -226,13 +221,12 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		})
 		.catch(function (err){
 			res.json({err: err});
-			console.log(err);
+			logger.error(err);
 		})
 	});
 
-	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
+	app.post('/RegisterInTournament', middlewares.authenticated, function (req, res){
 		var tournamentID = parseInt(req.body.tournamentID);
-		// var login = aux.req.login
 		var login = req.login;
 
 		register_manager.register(tournamentID, login, res);
@@ -242,54 +236,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	  //console.log('WRITE Socket emitter!!!')
 	});
 
-	// app.post('/autoreg', function (req, res){
-	// 	Tournaments.getStreamID()
-	// 	.then(function (streamID){
-	// 		if (isAuthenticated(req) && streamID){
-	// 			var data = {
-	// 				login: req.login,
-	// 				tournamentID:streamID
-	// 			}
-	// 			// console.log('autoreg', data);
-	// 			AsyncRender('DBServer', 'autoreg', res, null,  data);
-
-				
-	// 		}
-	// 		else{
-	// 			sender.Answer(res, Fail);
-	// 			//res.redirect('Login');
-	// 		}
-	// 	})
-	// })
-
-	// aux.alert('Raja', c.NOTIFICATION_AUTOREG, { })
-	// .then(function (result) { 
-	// 	console.log(result);
-	// })
-	// .catch(function (err) { 
-	// 	console.error(err);
-	// })
-
-	function autoregNewbieOrLongPassed(login){
-		return function (user){
-			return user;
-			// // Users.grantMoney(login); //increase money if has no money
-			// return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
-			// .then(function (result) { 
-			// 	// console.log(result);
-			// 	return user;
-			// })
-			// .catch(function (err) { 
-			// 	console.error(err);
-			// 	return user;
-			// })
-		}
-	}
-
-	// aux.alert('23i03g', c.NOTIFICATION_AUTOREG, { })
-	
-	// app.get('/userStatus/update', middlewares.isAdmin, aux.answer('updateUserStatus'))
-
 	app.get('/setInviter/:inviter_type/:inviter', middlewares.authenticated, function (req, res){
 		// when new user is redirected to main page I need to know, where he came from.
 		// user sends ajax request and i understand, who invited him/her
@@ -298,8 +244,6 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		var login = req.login;
 		var inviter = req.params.inviter;
 		var inviter_type = req.params.inviter_type;
-
-		// Log("SetInviter " + inviter + " for " + login, "Users");
 
 		if (inviter && inviter_type) {
 			Users.setInviter(login, inviter, inviter_type)
@@ -320,26 +264,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		Actions.add(login, 'linker');
 		// Users.auth(login, password)//, req.user.email, req.user.inviter
 		Users.auth_by_link(login, link)
-		.then(autoregNewbieOrLongPassed(login))
-		// 	function (user){
-		// 	// Users.grantMoney(login); //increase money if has no money
-		// 	return aux.alert(login, c.NOTIFICATION_AUTOREG, { })
-		// 	.then(function (result) { 
-		// 		console.log(result);
-		// 		return user;
-		// 	})
-		// 	.catch(function (err) { 
-		// 		console.error(err);
-		// 		return user;
-		// 	})
-		// }
 		.then(function (user){
-			// console.log('logged In', user);
-			req.user= user;
-
+			req.user = user;
 
 			saveSession(req, res, 'Login');
-
 			// Actions.add(login, 'login');
 		})
 		.catch(function (err){
@@ -372,8 +300,8 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		statistics.attempt('resetPassword', { email:email });
 
 		Users.resetPassword(email)
-		.then(function (linkAndPass){
-			link_pass = linkAndPass; // console.log(link_pass);
+		.then(function (linkAndPass) {
+			link_pass = linkAndPass;
 			return linkAndPass;
 		})
 		.then(mail.sendResetPasswordEmail)
@@ -381,7 +309,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.render('ResetPassword', {msg:OK});
 		})
 		.catch(function (err){
-			statistics.fail('resetPassword', { email: email, err: err }); // console.log(link_pass, err);
+			statistics.fail('resetPassword', { email: email, err: err });
 			res.render('ResetPassword', { msg: err });
 
 			Errors.add(email||null, 'resetPassword', { email: email, err: err });
@@ -404,9 +332,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 		Users.changePassword(login, password, newpassword)
 		.then(function (result) {
-			// console.log(result);
-
-			res.render('Changepassword', { msg:result });
+			res.render('Changepassword', { msg: result });
 			// res.redirect('Profile');
 		})
 		.catch(function (err){
@@ -439,29 +365,16 @@ function (req, res){
 */
 
 
-	app.get('/MoneyTransfers', function (req, res){
-		if (isAuthenticated(req)){
-
-			AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:req.login});
-			return;
-		}
-
-		sender.Answer(res, Fail);
+	app.get('/MoneyTransfers', middlewares.authenticated, function (req, res){
+		AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:req.login});
 	});
 
 	app.get('/mailUsers', authenticated, function (req, res, next){
 		Users.groupByEmails()
-		// .then(function (result){
-		// 	// console.log(result);
-		// 	res.json({msg: result})
-		// })
 		.then(middlewares.answer(req, next))
-		.catch(next)
-		// .catch(function (err){ res.json({err: err}) })
-	// })
+		.catch(next);
 	}, middlewares.render('Lists/mailUsers'), middlewares.send_error);
 
-// , get_marathon
 	app.post('/Profile', authenticated, get_profile, function (req, res){ 
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
@@ -480,7 +393,7 @@ function (req, res){
 
 	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('index', {msg:req.profile});
-	}, function (err, req, res, next){
+	}, function (err, req, res, next) {
 			var login = req.login || null;
 	  	Errors.add(login, 'get profile', {err:err});
 
@@ -512,40 +425,11 @@ function (req, res){
 			next()
 		})
 		.catch(function (err){
-			aux.fail(login, 'get_profile error', {err: err, profile:profile });
-			console.error('get_profile error', login, err);
+			aux.fail(login, 'get_profile error', { err: err, profile:profile });
+			logger.error('get_profile error', login, err);
 			req.profile = null;
 			next(err);
 		})
-	}
-
-	function get_marathon(req, res, next){
-		var login = req.login;
-		Marathon.get_current_marathon_user(login)
-		.then(function (user){
-			req.marathon_user = user;
-		  next();
-		})
-		.catch(function (err){
-		  next(err);
-		})
-	}
-
-	app.post('/marathon_user', middlewares.authenticated, get_marathon, function (req, res){
-		var marathon_user = req.marathon_user;
-		res.json({ result: marathon_user });
-	}, middlewares.send_error)
-
-	function regManager(command, req, res){
-		var data = req.body;
-		console.log(data.login, data.tournamentID);
-
-		if (isAuthenticated(req)){
-			AsyncRender('DBServer', command, res, null,  data);
-		}
-		else{
-			sender.Answer(res, {result:'auth'});
-		}
 	}
 
 	var INVALID_LOGIN_OR_PASS = '';

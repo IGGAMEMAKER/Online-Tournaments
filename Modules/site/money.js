@@ -1,75 +1,55 @@
-module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy, aux) {
-  var Money = require('../../models/money');
-  
-  var middlewares = require('../../middlewares');
+var Money = require('../../models/money');
 
-  var respond = require('../../middlewares/api-response');
-  var Fail = {result: 'fail'};
-  var OK = {result: 'OK'};
+var middlewares = require('../../middlewares');
 
-  var rp = require('request-promise');
-  var configs = require('../../configs');
+var respond = require('../../middlewares/api-response');
+var Fail = {result: 'fail'};
+var OK = {result: 'OK'};
 
-  /*app.post('/Cashout', function (req, res){
-   MoneyTransferOperation(req, res, 'DecreaseMoney', 'Cashout');
-   })*/
+var rp = require('request-promise');
+var configs = require('../../configs');
+
+var logger = require('../../helpers/logger');
+
+var sender = require('../../requestSender');
+
+module.exports = function (app, aux) {
+
   app.post('/Cashout', middlewares.authenticated, function (req, res) {
     var data = req.body;
-    Log("trying to cashout " + JSON.stringify(data), "Money");
-      var login = req.login;
-      var cardNumber = data.cardNumber;
-      if (data.money && !isNaN(data.money)) money = data.money;
-      if (data.cash && !isNaN(data.cash)) money = data.cash;
+    var login = req.login;
 
-      // if (isNaN(cardNumber)){
-      // 	return sender.Answer(res, Fail);
-      // }
+    logger.log(login + " is trying to cashout " + JSON.stringify(data), "Money");
 
-      if (money) {
-        data.money = money * 100;
-        data.cash = money * 100;
+    var cardNumber = data.cardNumber;
+    if (data.money && !isNaN(data.money)) money = data.money;
+    if (data.cash && !isNaN(data.cash)) money = data.cash;
 
-        //siteProxy(res, operation,data,page,'DBServer');
-        sender.sendRequest("CashoutRequest", {
-            login,
-            money,
-            cardNumber
-          }, '127.0.0.1', "DBServer", res,
-          function (error, body, response, res1) {
-            if (error) {
-              console.error("CashoutRequest error", error);
-              return sender.Answer(res, Fail);
-            }
-            if (body) return sender.Answer(res, body);
-            sender.Answer(res, Fail);
-          });
-      } else {
-        return sender.Answer(res, Fail);
-      }
-  });
+    // if (isNaN(cardNumber)){
+    // 	return sender.Answer(res, Fail);
+    // }
 
-  function MoneyTransferOperation(req, res, operation, page) {
-    if (isAuthenticated(req)) {
-      var data = req.body;
-      var login = req.login;
-      if (data && login) {
-        data.login = login;
+    if (money) {
+      data.money = money * 100;
+      data.cash = money * 100;
 
-        var money = null;
-        if (data.money && !isNaN(data.money)) money = data.money;
-        if (data.cash && !isNaN(data.cash)) money = data.cash;
-        if (money) {
-          data.money = money * 100;
-          data.cash = money * 100;
-
-          siteProxy(res, operation, data, page, 'DBServer');
-          return;
-        }
-
-      }
+      sender.sendRequest("CashoutRequest", {
+        login,
+        money,
+        cardNumber
+      }, '127.0.0.1', "DBServer", res,
+        function (error, body, response, res1) {
+          if (error) {
+            console.error("CashoutRequest error", error);
+            return sender.Answer(res, Fail);
+          }
+          if (body) return sender.Answer(res, body);
+          sender.Answer(res, Fail);
+        });
+    } else {
+      return sender.Answer(res, Fail);
     }
-    res.send(400);
-  }
+  });
 
   app.get('/api/transfers/mobile/all', middlewares.isAdmin, function (req, res, next) {
     // console.log('', Money.mobile)
@@ -168,10 +148,6 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy,
       .catch(next)
   }, aux.render('Transfers'), aux.err);
 
-  app.post('/Deposit', middlewares.isAdmin, function (req, res) {
-    MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
-  });
-
   app.post('/yandexPayment', function (req, res) {
     var data = req.body;
 
@@ -183,8 +159,8 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy,
 
      money= money*100;*/
     console.log('yandexPayment', data);
-    Log("Money yandexPayment " + JSON.stringify(data), "Money");
-    Log("payment from " + login + ": " + money + "p", "Money");
+    logger.log("Money yandexPayment " + JSON.stringify(data), "Money");
+    logger.log("payment from " + login + ": " + money + "p", "Money");
 
     Money.savePayment(data)
       .then(function (result) {
@@ -269,10 +245,6 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy,
     //console.error('payment come!!');
     //console.error(data);
     res.end('YES');
-    //sender.sendRequest("IncreaseMoney", {login:data.login, money: data.})
-
-    //MoneyTransferOperation(req, res, 'IncreaseMoney', 'Deposit');
-    //sender.sendRequest()
   });
 
 
@@ -281,6 +253,8 @@ module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy,
 
     var data = req.body;
     var login = data.PAYSTO_PAYER_ID;
+
+    logger.log("app.post('/payment/checkID'", data);
     /*sender.sendRequest('userExists', {userID:login}, '127.0.0.1', "DBServer", res, function (error, body, response, res1){
      if (error) {
      res.end(PAY_NO);

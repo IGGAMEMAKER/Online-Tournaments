@@ -195,8 +195,8 @@ var realtime = require('./helpers/realtime')(io);
 
 // var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var gifts = require('./Modules/site/gifts')(app, aux);
-var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated);
-var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, siteProxy, aux);
+var admin = require('./Modules/site/admin')(app, AsyncRender);
+var money = require('./Modules/site/money')(app, aux);
 
 var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, aux);
 var tournaments = require('./Modules/site/tournaments') (app, aux);
@@ -210,7 +210,7 @@ var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer
 var middlewares = require('./middlewares');
 var isAdmin = middlewares.isAdmin;
 
-function AsyncRender(targetServer, reqUrl, res, options, parameters){//options: parameters, renderPage, callback, sender, failCallback
+function AsyncRender(targetServer, reqUrl, res, options, parameters){ //options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
   if (parameters) basicInfo += JSON.stringify(parameters);
   // res==null generally means that I will use AsyncRender in promise cascade
