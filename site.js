@@ -193,14 +193,14 @@ aux.io(SOCKET); // set socket in aux
 // var realtime = require('./helpers/realtime')(app, io);
 var realtime = require('./helpers/realtime')(io);
 
-var gifts = require('./Modules/site/gifts')(app, aux);
 // var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
-var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin);
-var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux);
+var gifts = require('./Modules/site/gifts')(app, aux);
+var admin = require('./Modules/site/admin')(app, AsyncRender, Answer, sender, Log, isAuthenticated);
+var money = require('./Modules/site/money')(app, Answer, sender, Log, isAuthenticated, siteProxy, aux);
 
-var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux);
-var tournaments = require('./Modules/site/tournaments') (app, AsyncRender, Answer, sender, Log, proxy, aux);
-var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, getLogin, aux);
+var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, aux);
+var tournaments = require('./Modules/site/tournaments') (app, aux);
+var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, aux);
 // var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 
 // var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
@@ -287,10 +287,6 @@ function Log(data, topic){
   JSLog({msg:data}, topic);
 }
 
-function proxy(error, response, body, res){
-  Answer(res, body);
-}
-
 var Fail = { result:'fail' };
 
 var PRICE_FREE = 4;
@@ -362,7 +358,7 @@ var tournament_finisher = require('./chains/finishTournament')(aux);
 
 function FinishGame(req, res){
   var data = req.body;
-  sender.Answer(res, { result:'OK', message:'FinishGame' } );
+  sender.Answer(res, { result:'OK', message: 'FinishGame' } );
 
   // sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer');
   Log(data, 'Tournaments');
@@ -379,30 +375,19 @@ app.all('/StartTournament', function (req, res){
 
   sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
 
-  if (socket_enabled) {
     var obj = {
       tournamentID: data.tournamentID,
       port: data.port,
       host: data.host,
       logins: data.logins
     };
-    io.emit('StartTournament', obj);
-  }
+    Send('StartTournament', obj);
+    // io.emit('StartTournament', obj);
   //+req.body.tournamentID
   res.end();
 });
 
-function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user; 
-
-function getLogin(req){
-  if (isAuthenticated(req)){
-    return req.session.login;
-    /*if (req.session && req.session.login) return req.session.login;
-    return req.user.login;*/
-  } else {
-    return 0;
-  }
-}
+function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user;
 
 app.post('/Log', function (req, res){
   //res.end('sended');
@@ -417,9 +402,6 @@ app.get('/Log', function (req, res){
   res.sendFile(__dirname + '/Logs.html');
 });
 
-app.get('/main', function (req, res){
-  res.render('main2');
-});
 app.get('/Football', function (req, res) {
   res.render('Football');
 });
@@ -435,8 +417,7 @@ var markPaymentPageOpening = (req, res, next) => {
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
 
-  var login = getLogin(req);
-  Actions.add(login, 'Payment-page-opened', { ammount, type });
+  Actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
 
   next();
 };
@@ -506,10 +487,10 @@ app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
   var paymentFunction = function(){
     if (price > 0) {
       return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
-    } else {
-      return missStep();
-      // return Users.pack.decrease(login, packID, 1)
     }
+
+    return missStep();
+    // return Users.pack.decrease(login, packID, 1)
   };
 
   // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
@@ -589,14 +570,16 @@ app.get('/SpecLogs/:topic', function (req, res){
 });
 
 function JSLog(msg, topic){
-  if (socket_enabled) io.emit(topic?topic:'Logs', JSON.stringify(msg));
+  if (socket_enabled) {
+    io.emit(topic?topic:'Logs', JSON.stringify(msg));
+  }
 }
 
 app.get('/Alive', function (req, res){ res.render('Alive'); });
 app.get('/test-chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
 
 app.post('/addQuestion', middlewares.authenticated, function (req, res){
-  var login = getLogin(req);
+  var login = req.login;
   var data = req.body;
   var question = data.question;
 
@@ -761,41 +744,9 @@ app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
 
 function forceTakingNews(login, delay){
   setTimeout(function() {
-    io.emit('newsUpdate', {msg:login})
+    Send('newsUpdate', {msg:login})
   }, delay||0);
 }
-
-app.post('/autoreg', function (req, res) {
-  Tournaments.getStreamID()
-  .then(function (streamID){
-    if (isAuthenticated(req) && streamID) {
-      var login = getLogin(req);
-      
-      var data = {
-        login,
-        tournamentID:streamID
-      };
-      // AsyncRender('DBServer', 'autoreg', res, null,  data);
-      sender.sendRequest('autoreg', data, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
-        if (err){
-          aux.fail(login, 'autoreg', data);
-          sender.Answer(res, Fail);
-        } else {
-          if (body){
-            sender.Answer(res, body);
-            forceTakingNews(login, 500);
-          } else {
-            sender.Answer(res, Fail);
-          }
-        }
-      });
-      // 
-    } else {
-      sender.Answer(res, Fail);
-      //res.redirect('Login');
-    }
-  })
-});
 
 /*
 app.get('/linker/:login/:link', function (req, res){
@@ -1128,7 +1079,7 @@ app.get('/notifications/news', middlewares.authenticated, function (req, res, ne
 
 app.get('/notifications/all', middlewares.authenticated, function (req, res, next){
   // var login = req.params.login;
-  var login = getLogin(req);
+  var login = req.login;
 
   Message.notifications.all(login)
   .then(function (news){

@@ -1,13 +1,12 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
-	var Fail = { result:'fail' };
+module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
 	var OK = { result:'OK' };
-	var Promise = require('bluebird');
 	// var Stats = sender.Stats;
 	var Stats = require('../../models/statistics');
 	var TournamentRegs = require('../../models/tregs');
 	var Users = require('../../models/users');
 	var Messages = require('../../models/message');
 	var Actions = require('../../models/actions');
+
 	var time = require('../../helpers/time');
 
 	// var aux = require('../../models/auxillary')
@@ -20,7 +19,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		// console.log('AttemptToStart');
 		sender.Answer(res, OK);
 
-		var login = getLogin(req);
+		var login = req.login;
 		var tournamentID = req.body.tournamentID;
 		// Stats('AttemptToStart', {login:login, tournamentID: tournamentID});
 
@@ -30,17 +29,17 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 	app.post('/UserGetsData', function (req, res){
 		sender.Answer(res, OK);
 
-		var login =  req.body.login ;//getLogin(req);
+		var login =  req.body.login ;//req.login;
 		var tournamentID = req.body.tournamentID;
 		// Stats('UserGetsData', { login: login , tournamentID:tournamentID});
 		Stats.attempt('getsData');
-	})
+	});
 
 	app.post('/GameLoaded', function (req, res){
 		// console.log('GameLoaded');
 		sender.Answer(res, OK);
 
-		var login = req.body.login;// getLogin(req);
+		var login = req.body.login;// req.login;
 		var tournamentID = req.body.tournamentID;
 
 		// console.log('GameLoaded : ' + login + ' ' + tournamentID);
@@ -103,7 +102,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 
 		var tournamentID = req.body.tournamentID;
 		var name = req.params.name;
-		var login = getLogin(req);
+		var login = req.login;
 		// var login = req.body.login||null;
 
 		// console.log('mark/game/', name)//, tournamentID, login);
@@ -121,7 +120,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		res.end('');
 		// console.log('message/shown');
 		
-		var login = getLogin(req);
+		var login = req.login;
 		var id = req.body.id;
 		var options = req.body.options;
 		// console.log('show', login, id)
@@ -132,22 +131,22 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		// aux.clientside(login, obj)
 		// console.log(id, login,'read')
 		Messages.notifications.read(id, login);
-	})
+	});
 
 	app.post('/mark/clientError', middlewares.authenticated, function (req, res){
 		res.end('');
 
-		var login = getLogin(req);
+		var login = req.login;
 		var err = req.body.err;
 		var where = req.body.where;
 
 		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
-	})
+	});
 	
 	app.get('/mark/clientError', middlewares.authenticated, function (req, res){
 		res.end('');
 
-		var login = getLogin(req);
+		var login = req.login;
 		var err = req.body.err;
 		var where = req.body.where;
 
@@ -160,10 +159,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 	app.get('/Stats', function (req, res){
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
 		//res.render('Stats');
-	})
+	});
 
 	// app.post('/mark/Here/:login', function (req, res){
-	// 	var login = req.params.login;//getLogin(req);
+	// 	var login = req.params.login;//req.login;
 	// 	console.log('mark/Here');
 	// 	strLog('Online: ' + login, 'Users');
 	// 	res.end('');
@@ -255,5 +254,5 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, getLogin, aux){
 		})
 */
 
-	}, render('Statistics'), send_error) //draw_list
+	}, render('Statistics'), send_error); //draw_list
 };

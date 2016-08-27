@@ -126,7 +126,7 @@ export default class TournamentEditor extends Component {
     return (
       <div>
         add tournament
-        <form action={props.action} method="post">
+        <div>
           <table border="1" cellpadding="10" cellspacing="0" bordercolor="000000">
             <tbody>
             <tr>
@@ -186,8 +186,7 @@ export default class TournamentEditor extends Component {
             </tbody>
           </table>
           <input value={JSON.stringify(props.tournament)} style="width: 100%;" />
-          <input type="submit" value={props.phrase} />
-        </form>
+        </div>
       </div>
     );
   }

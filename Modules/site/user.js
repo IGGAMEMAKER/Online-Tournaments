@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, getLogin, aux){
+module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated, aux){
 	var validator = require('validator');
 	var security = require('../DB/security');
 
@@ -31,7 +31,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	};
 
 	function destroy_session(req, res, next){
-		var login = getLogin(req);
+		var login = req.login;
 		req.session.destroy(function (err){
 			if (err) { 
 				Errors.add(login, 'destroy_session', { err:err })
@@ -232,7 +232,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 
 	app.post('/RegisterInTournament', aux.authenticated, function (req, res){
 		var tournamentID = parseInt(req.body.tournamentID);
-		// var login = aux.getLogin(req)
+		// var login = aux.req.login
 		var login = req.login;
 
 		register_manager.register(tournamentID, login, res);
@@ -247,7 +247,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	// 	.then(function (streamID){
 	// 		if (isAuthenticated(req) && streamID){
 	// 			var data = {
-	// 				login: getLogin(req),
+	// 				login: req.login,
 	// 				tournamentID:streamID
 	// 			}
 	// 			// console.log('autoreg', data);
@@ -295,7 +295,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		// user sends ajax request and i understand, who invited him/her
 		// even if this request fails, nothing breaks!
 
-		var login = getLogin(req);
+		var login = req.login;
 		var inviter = req.params.inviter;
 		var inviter_type = req.params.inviter_type;
 
@@ -346,7 +346,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.redirect('/Login');//, {msg : err});
 			Errors.add(login, 'linker', { code:err })
 		})
-	})
+	});
 
 	app.get('/killUser/:login', middlewares.isAdmin, function (req, res){
 		var login = req.params.login;
@@ -358,7 +358,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		.catch(function (err){
 			res.json({err:err});
 		})
-	})
+	});
 
 	// var test_lgn = get_login_from_email('Andrey_vasilyev1994@mail.ru');
 	// console.error(test_lgn);
@@ -381,18 +381,18 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 			res.render('ResetPassword', {msg:OK});
 		})
 		.catch(function (err){
-			statistics.fail('resetPassword', { email:email, err:err }); // console.log(link_pass, err);
-			res.render('ResetPassword', {msg:err})
+			statistics.fail('resetPassword', { email: email, err: err }); // console.log(link_pass, err);
+			res.render('ResetPassword', { msg: err });
 
-			Errors.add(email||null, 'resetPassword', { email:email, err:err });
+			Errors.add(email||null, 'resetPassword', { email: email, err: err });
 		})
-	})
+	});
 
 	function change_password(req, res, next){
 		var password = req.body.password;
 		var passwordRepeat = req.body.passwordRepeat;
 		var newpassword = req.body.newpassword;
-		var login = getLogin(req);
+		var login = req.login;
 
 		var isInputValid = password && passwordRepeat && newpassword && password == passwordRepeat && ValidPass(newpassword);
 		if (!isInputValid) {
@@ -403,10 +403,10 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 		}
 
 		Users.changePassword(login, password, newpassword)
-		.then(function (result){
+		.then(function (result) {
 			// console.log(result);
 
-			res.render('Changepassword', { msg:result })
+			res.render('Changepassword', { msg:result });
 			// res.redirect('Profile');
 		})
 		.catch(function (err){
@@ -415,7 +415,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, isAuthenticated
 	}
 
 	function change_password_fail(err, req, res, next){
-		var login = getLogin(req);
+		var login = req.login;
 		res.render('Changepassword', { msg: { result:'Проверьте введённые данные' } } );
 		Errors.add(login||null, 'Changepassword', { login:login, err:err });
 	}
@@ -427,7 +427,7 @@ function (req, res){
 		var password = req.body.password;
 		var passwordRepeat = req.body.passwordRepeat;
 		var newpassword = req.body.newpassword;
-		var login = getLogin(req);
+		var login = req.login;
 
 		var isInputValid = password && passwordRepeat && newpassword && password == passwordRepeat && ValidPass(newpassword);
 		if (!isInputValid) {
@@ -442,12 +442,12 @@ function (req, res){
 	app.get('/MoneyTransfers', function (req, res){
 		if (isAuthenticated(req)){
 
-			AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:getLogin(req)})
+			AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:req.login});
 			return;
 		}
 
 		sender.Answer(res, Fail);
-	})
+	});
 
 	app.get('/mailUsers', authenticated, function (req, res, next){
 		Users.groupByEmails()
@@ -459,13 +459,13 @@ function (req, res){
 		.catch(next)
 		// .catch(function (err){ res.json({err: err}) })
 	// })
-	}, middlewares.render('Lists/mailUsers'), middlewares.send_error)
+	}, middlewares.render('Lists/mailUsers'), middlewares.send_error);
 
 // , get_marathon
 	app.post('/Profile', authenticated, get_profile, function (req, res){ 
 		sender.Answer(res, req.profile || Fail);
 	}, function (err, req, res, next){
-			var login = getLogin(req) || null;
+			var login = req.login || null;
 	  	Errors.add(login, 'get profile', {err:err});
 
 	  	// res.json({msg: null});
@@ -481,14 +481,14 @@ function (req, res){
 	app.get('/Profile', authenticated, get_profile, function (req, res){
 	  res.render('index', {msg:req.profile});
 	}, function (err, req, res, next){
-			var login = getLogin(req) || null;
+			var login = req.login || null;
 	  	Errors.add(login, 'get profile', {err:err});
 
 	  	res.redirect('Login');
 	});
 
 	function get_profile(req, res, next){
-		var login = getLogin(req);
+		var login = req.login;
 
 		var profile= {
 			login: login,
@@ -520,7 +520,7 @@ function (req, res){
 	}
 
 	function get_marathon(req, res, next){
-		var login = getLogin(req);
+		var login = req.login;
 		Marathon.get_current_marathon_user(login)
 		.then(function (user){
 			req.marathon_user = user;

@@ -1,4 +1,4 @@
-module.exports = function (app, Answer, sender, Log, isAuthenticated, getLogin, siteProxy, aux) {
+module.exports = function (app, Answer, sender, Log, isAuthenticated, siteProxy, aux) {
   var Money = require('../../models/money');
   
   var middlewares = require('../../middlewares');

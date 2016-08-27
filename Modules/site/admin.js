@@ -1,4 +1,4 @@
-module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated, getLogin){
+module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthenticated){
   var Users = require('../../models/users');
   var Actions = require('../../models/actions');
   var Errors = require('../../models/errors');
@@ -124,7 +124,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
     //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
     res.render('AdminPanel', {msg:'hola!'});
       return;
-    if (isAuthenticated(req) && getLogin(req) =='Alvaro_Fernandez'){
+    if (isAuthenticated(req) && req.login =='Alvaro_Fernandez'){
       res.render('AdminPanel', {msg:'hola!'});
       return;
     }
@@ -209,7 +209,7 @@ module.exports = function(app, AsyncRender, Answer, sender, strLog, isAuthentica
   });
 
   function get_profile(req, res, next){
-    var login = getLogin(req);
+    var login = req.login;
     var profile={
       login:login,
       tournaments:{}
