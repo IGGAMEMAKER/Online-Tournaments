@@ -11,13 +11,14 @@ function drawChart(name, labels, datasets){
 
 function makeDataset(data, name, index, colour){
 	var col = "rgba(";
-	if (colour) col+=colour+",";
-	else{
-		if (index>=0){
-			var kef=10;
-			col+= index*kef%256 + ",";
-			col+= index*kef%256 + ",";
-			col+= index*kef%256 + ",";
+	if (colour) {
+		col += colour + ",";
+	}	else {
+		if (index >= 0){
+			var kef = 10;
+			col+= index * kef % 256 + ",";
+			col+= index * kef % 256 + ",";
+			col+= index * kef % 256 + ",";
 		}
 		else{
 			// grey
@@ -115,17 +116,17 @@ function drawTournamentStats(inf){
 	var datasets3 = [
 		makeDataset(register, 'register', 3, "0,0,0"),
 		makeDataset(registerFail  , 'registerFail'  , 3, "256,0,0")
-	]
+	];
 
 	var datasetsMail = [
 		makeDataset(mail, 'mail', 3, "0,0,0"),
 		makeDataset(mailFail  , 'mailFail'  , 3, "256,0,0")
-	]
+	];
 
 	var datasetsReset = [
 		makeDataset(resetPassword, 'resetPassword', 3, "0,0,0"),
 		makeDataset(resetPasswordFail  , 'resetPasswordFail'  , 3, "256,0,0")
-	]
+	];
 
 	/*var gameStats = [
 		makeDataset(resetPassword, 'resetPassword', 3, "0,0,0"),

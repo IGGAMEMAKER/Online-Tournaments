@@ -49,7 +49,7 @@ var VKontakteStrategy = require('passport-vkontakte').Strategy;
 var request = require('request');
 
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function(user, done) { 
   done(null, user);
 });
 
@@ -165,7 +165,6 @@ app.set('views', views);
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
-var Answer = sender.Answer;
 var sort = require('./helpers/sort');
 
 //var compression = require('compression');
@@ -263,23 +262,6 @@ function AsyncRender(targetServer, reqUrl, res, options, parameters){ //options:
   }
 }
 
-function siteProxy( res, FSUrl, data, renderPage, server, title){
-  if (FSUrl && res){
-    sender.expressSendRequest(FSUrl, data?data:{}, '127.0.0.1', 
-      server, res, function (error, response, body, res){
-        if (!error) {
-          res.render(renderPage?renderPage:FSUrl, { title: title?title:'Tournaments!!!', message: body});
-        } else {
-          sender.Answer(res, { result:error });
-        }
-          console.log('***SITE_ANSWER***');
-      });
-  }
-  else {
-    console.log('INVALID siteAnswer');
-  }
-}
-
 // var CRON_TASK = schedule.scheduleJob('33 * * * * *', function(){
 //   console.log('The answer to life, the universe, and everything!');
 // });
@@ -340,16 +322,14 @@ function FinishGame(req, res){
   sender.Answer(res, { result:'OK', message: 'FinishGame' } );
 
   // sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer');
-  Log(data, 'Tournaments');
-  
-  console.log('FinishGame', data);
+  logger.log('FinishGame', data);
 
   tournament_finisher.finish(data);
 }
 
 
 app.all('/StartTournament', function (req, res){
-  console.log('Site starts tournament');
+  logger.log('Site starts tournament');
   var data = req.body;
 
   sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
@@ -419,10 +399,10 @@ app.get('/Crowd', application_page);
 app.get('/Chat', application_page);
 app.get('/Demo', application_page);
 
-app.get('/Packs', aux.authenticated, application_page);
-app.get('/Support', aux.authenticated, application_page);
-app.get('/MyCollections', aux.authenticated, application_page);
-app.get('/Cards', aux.authenticated, application_page);
+app.get('/Packs', middlewares.authenticated, application_page);
+app.get('/Support', middlewares.authenticated, application_page);
+app.get('/MyCollections', middlewares.authenticated, application_page);
+app.get('/Cards', middlewares.authenticated, application_page);
 app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
 
 app.get('/admin/support', middlewares.isAdmin, admin_page);
@@ -562,9 +542,9 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
 app.post('/tellToFinishTournament', function (req, res){
- var data = req.body;
- console.log('tellToFinishTournament', data);
- var tournamentID = data.tournamentID;
+  var data = req.body;
+  console.log('tellToFinishTournament', data);
+  var tournamentID = data.tournamentID;
  
   sender.Answer(res, { result:'OK', message:'FinishGame' } );
 
@@ -618,7 +598,7 @@ app.post('/Winners', function (req, res){
   var winners = req.body.winners;
   var tournamentID = req.body.tournamentID;
 
-  Send('winners', {winners:winners, tournamentID:tournamentID});
+  Send('winners', { winners, tournamentID });
 });
 
 
@@ -628,7 +608,7 @@ setInterval(function (){
   Log('Online: ' + JSON.stringify(players), 'Users');
 }, 20000);
 
-setInterval(function (){ players=[]; }, 60000);
+setInterval(function () { players=[]; }, 60000);
 
 app.post('/mark/Here/:login', function (req, res){
   var login = req.params.login;
