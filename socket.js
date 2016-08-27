@@ -85,24 +85,3 @@ module.exports = function(app, server){
       'websocket'
     , 'polling'
   ]);*/
-
-  
-
-  // io.on('connection', function(socket){
-  //   //console.log('IO connection');
-  //   //socket.join('/111');
-
-  //   socket.on('chat message', function(msg){
-  //     console.log(msg);
-  //     io.emit('chat message', msg);
-  //     var message = { text : msg , sender:'common' }
-  //     console.log(message, 'message');
-  //     sender.sendRequest("AddMessage", message, '127.0.0.1', 'DBServer', null, sender.printer);//sender.printer
-  //   });
-
-  //   // socket.on('event1', function(data){
-  //   //   SendToRoom('/111', 'azz', 'LALKI', socket);
-  //   //   //io.of('/111').emit('azz','LALKI');
-  //   // });
-
-  // });

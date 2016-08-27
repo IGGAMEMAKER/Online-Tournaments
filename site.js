@@ -47,7 +47,7 @@ var VKontakteStrategy = require('passport-vkontakte').Strategy;
 //console.log(configs, configs.vk);
 
 var request = require('request');
-
+var middlewares = require('./middlewares');
 
 passport.serializeUser(function(user, done) { 
   done(null, user);
@@ -187,8 +187,54 @@ if (socket_enabled) {
 var aux = require('./models/auxillary');
 aux.io(SOCKET); // set socket in aux
 
-// var realtime = require('./helpers/realtime')(app, io);
 var realtime = require('./helpers/realtime')(io);
+
+var templateData = () => ({
+  collections: realtime().collections,
+  cards: realtime().cards,
+  packs: realtime().userpacks(),
+  tournaments: realtime().tournaments
+});
+
+var application_page = (req, res) => {
+  // res.render('index', { msg: templateData() })
+  res.render('index');
+};
+
+var admin_page = (req, res) => {
+  res.render('layout-admin', { msg: templateData() })
+};
+
+var markPaymentPageOpening = (req, res, next) => {
+  var ammount = req.query.ammount || null;
+  var type = req.query.buyType || null;
+
+  Actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
+
+  next();
+};
+
+app.get('/', application_page);
+app.get('/about', application_page);
+app.get('/Tournaments', application_page);
+app.get('/Frees', application_page);
+app.get('/Elite', application_page);
+app.get('/Crowd', application_page);
+app.get('/Chat', application_page);
+app.get('/Demo', application_page);
+
+app.get('/Packs', middlewares.authenticated, application_page);
+app.get('/Support', middlewares.authenticated, application_page);
+app.get('/MyCollections', middlewares.authenticated, application_page);
+app.get('/Cards', middlewares.authenticated, application_page);
+app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
+
+app.get('/admin/support', middlewares.isAdmin, admin_page);
+app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
+app.get('/admin/packs', middlewares.isAdmin, admin_page);
+
+
+
 
 // var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var gifts = require('./Modules/site/gifts')(app, aux);
@@ -204,12 +250,9 @@ var messages = require('./routes/messages')(app, aux);
 
 // var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 
-// var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
+// var teamz = require('./routes/teams')(app, aux, SOCKET, io);
 
 // var TournamentReg = require('./models/tregs');
-
-var middlewares = require('./middlewares');
-var isAdmin = middlewares.isAdmin;
 
 function AsyncRender(targetServer, reqUrl, res, options, parameters){ //options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
@@ -321,7 +364,6 @@ function FinishGame(req, res){
   var data = req.body;
   sender.Answer(res, { result:'OK', message: 'FinishGame' } );
 
-  // sender.sendRequest("FinishGame", data, '127.0.0.1', 'DBServer');
   logger.log('FinishGame', data);
 
   tournament_finisher.finish(data);
@@ -364,51 +406,6 @@ app.get('/Log', function (req, res){
 app.get('/Football', function (req, res) {
   res.render('Football');
 });
-
-var templateData = () => ({
-  collections: realtime().collections,
-  cards: realtime().cards,
-  packs: realtime().userpacks(),
-  tournaments: realtime().tournaments
-});
-
-var application_page = (req, res) => {
-  // res.render('index', { msg: templateData() })
-  res.render('index');
-};
-
-var admin_page = (req, res) => {
-  res.render('layout-admin', { msg: templateData() })
-};
-
-var markPaymentPageOpening = (req, res, next) => {
-  var ammount = req.query.ammount || null;
-  var type = req.query.buyType || null;
-
-  Actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
-
-  next();
-};
-
-app.get('/', application_page);
-app.get('/about', application_page);
-app.get('/Tournaments', application_page);
-app.get('/Frees', application_page);
-app.get('/Elite', application_page);
-app.get('/Crowd', application_page);
-app.get('/Chat', application_page);
-app.get('/Demo', application_page);
-
-app.get('/Packs', middlewares.authenticated, application_page);
-app.get('/Support', middlewares.authenticated, application_page);
-app.get('/MyCollections', middlewares.authenticated, application_page);
-app.get('/Cards', middlewares.authenticated, application_page);
-app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, application_page);
-
-app.get('/admin/support', middlewares.isAdmin, admin_page);
-app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
-app.get('/admin/packs', middlewares.isAdmin, admin_page);
-
 // packs + cards
 
 // --- end packs
@@ -542,35 +539,14 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
 app.post('/tellToFinishTournament', function (req, res){
-  var data = req.body;
-  console.log('tellToFinishTournament', data);
-  var tournamentID = data.tournamentID;
- 
-  sender.Answer(res, { result:'OK', message:'FinishGame' } );
+  sender.Answer(res, { result: 'OK', message: 'FinishGame' } );
 
-  aux.system('tellToFinishTournament', { tournamentID });
-  // Actions.add('SYSTEM' ,'stopTournament', { tournamentID:tournamentID });
+  var data = req.body;
+  logger.log('tellToFinishTournament', data);
+  var tournamentID = data.tournamentID;
 
   Send('FinishTournament', { tournamentID, data })
 });
-
-app.get('/Tell', isAdmin, function (req, res){
-  res.render('Tell');
-  //res.sendFile(__dirname + '/sock1.html');
-});
-
-app.post('/Tell', isAdmin, function (req, res){
-  var message = req.body.message;
-  var action = req.body.action;
-
-  console.log('Tell', message, req.body);
-  Send('Tell', { message:message, action:action || null });
-
-  res.render('Tell');
-});
-
-
-app.get('/ModalTest', aux.answer('ModalTest'));
 
 // server = app.listen(8888, function () {
 //   var host = server.address().address;
@@ -602,18 +578,20 @@ app.post('/Winners', function (req, res){
 });
 
 
-var players = [];
+var players = {};
 setInterval(function (){
-  // Send('players', {msg: players});
-  Log('Online: ' + JSON.stringify(players), 'Users');
+  // Send('players', { msg: players });
+  Log('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
 }, 20000);
 
-setInterval(function () { players=[]; }, 60000);
+setInterval(function () {
+  players = {};
+}, 60000);
 
 app.post('/mark/Here/:login', function (req, res){
   var login = req.params.login;
   // strLog('Online: ' + login, 'Users');
-  players.push(login);
+  players[login] = 1;
 
   res.end('');
 });

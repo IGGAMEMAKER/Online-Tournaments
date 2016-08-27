@@ -123,94 +123,6 @@ module.exports = function(app, aux) {
     return API.tournaments.add(tournament);
   }));
 
-  // app.post('/AddTournament', function (req, res){
-  //   var data = req.body;
-  //
-  //   if (!data){
-  //     Answer(res, Fail);
-  //     return;
-  //   }
-  //
-  //   strLog('Incoming tournament : ' +JSON.stringify(data));
-  //   var buyIn = parseInt(data.buyIn);
-  //   var rounds = parseInt(data.rounds);
-  //   var gameNameID = parseInt(data.gameNameID);
-  //   var GoNext = data.goNext?data.goNext.split(" ") : [];
-  //   var Prizes = data.Prizes.split(" ");
-  //   var prizes = [];
-  //   var goNext = [];
-  //   strLog(JSON.stringify(Prizes));
-  //   //convert array of strings to array of objects
-  //   for (var i = 0; i < Prizes.length - 1; i++) {
-  //     if (isNaN(Prizes[i]) ){
-  //       if (Prizes[i].length>0){
-  //         prizes.push({giftID:Prizes[i]})
-  //       } else {
-  //         strLog('Prize[i] is null. Current prize is: ' + Prizes[i]);
-  //         Answer(res, Fail);
-  //         return;
-  //       }
-  //     } else {
-  //       prizes.push( parseInt(Prizes[i]) );
-  //     }
-  //   }
-  //
-  //   for (var i = 0; i < GoNext.length - 1; ++i){
-  //     var num = parseInt(GoNext[i]);
-  //     if (isNaN(num)){
-  //       strLog('goNext num parseInt error! ');
-  //       strLog(GoNext);
-  //       Answer(res, Fail);
-  //       return;
-  //     }
-  //     else{
-  //       goNext.push(num);
-  //     }
-  //   }
-  //
-  //   strLog('splitted prizes: ' + JSON.stringify(prizes) );
-  //   strLog('goNext.length:' + goNext.length);
-  //   strLog(JSON.stringify(goNext));
-  //   if (buyIn >= 0 && rounds && gameNameID){
-  //     var obj = {
-  //       buyIn:      buyIn,
-  //       initFund:     0,
-  //       gameNameID:   gameNameID,
-  //
-  //       pricingType:  PRICE_NO_EXTRA_FUND,
-  //
-  //       rounds:     rounds,
-  //       goNext:     goNext.length>0 ? goNext : [2,1],//
-  //       places:     [1],
-  //       Prizes:     prizes.length>0 ? prizes: [{giftID:'5609b7988b659cb7194c78c6'}],
-  //       prizePools:   [1],
-  //
-  //       comment:    'Yo',
-  //
-  //       playersCountStatus: COUNT_FIXED,///Fixed or float
-  //       startDate:    null,
-  //       status:       null,
-  //       players:      0
-  //     };
-  //
-  //     if (data.special || data.regularity || data.specName){
-  //       obj.settings={};
-  //     }
-  //     // regular tournaments settings  // // && data.regularity!="0"
-  //     if (data.regularity) { obj.settings.regularity = parseInt(data.regularity); }
-  //     if (data.special) { obj.settings.special = parseInt(data.special); }
-  //     if (data.specName) { obj.settings.specName = data.specName; }
-  //     if (data.specPrizeName) { obj.settings.specPrizeName = data.specPrizeName; }
-  //
-  //     if (data.hidden!=0) {obj.settings.hidden = true; obj.settings.topic = getTopic(data.hidden); }
-  //
-  //     AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
-  //   } else {
-  //     strLog('Invalid data comming while adding tournament: buyIn: ' + buyIn + ' rounds: ' + rounds + ' gameNameID: ' + gameNameID, 'WARN');
-  //     sender.Answer(res, Fail);
-  //   }
-  // });
-
   app.get('/api/tournaments/all', middlewares.isAdmin, function (req, res, next){
     Tournaments.all()
 
@@ -350,7 +262,6 @@ module.exports = function(app, aux) {
   });
 
   app.post('/GetTournamentAddress', function (req, res) {
-    // AsyncRender('DBServer', 'GetTournamentAddress', res, {}, {tournamentID: req.body.tournamentID} );
     var tournamentID = req.body.tournamentID;
 
     Tournaments.getByID(tournamentID)

@@ -106,17 +106,21 @@ function update_tournaments(period) {
     	objects.updater.tournaments = tournaments;
     	objects.tournaments = tournaments;
     }
-    if (frontendVersion) objects.updater.frontendVersion = frontendVersion;
+    // if (frontendVersion) objects.updater.frontendVersion = frontendVersion;
 
     return objects.updater; // io.emit('update', updater);
   })
   .then(send('update'))
   .catch(console.error);
 
-  setTimeout(function(){ update_tournaments(period) }, period);
+  setTimeout(function(){
+		update_tournaments(period)
+	}, period);
 }
 
-setInterval(function(){ objects.counter++; }, 1000);
+setInterval(function() {
+	objects.counter++;
+}, 1000);
 
 
 // module.exports = function(_app, _io){

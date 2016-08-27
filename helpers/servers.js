@@ -15,9 +15,6 @@ var PromisifiedRequest = (url, data, target, host) => (
 );
 
 module.exports = {
-  DB: (url, data) => {
-    return PromisifiedRequest(url, data, 'DBServer')
-  },
   TS: (url, data) => {
     return PromisifiedRequest(url, data, 'TournamentServer')
   },

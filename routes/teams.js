@@ -1,4 +1,4 @@
-module.exports = function(app, aux, realtime, SOCKET, io){
+module.exports = function(app, aux, SOCKET, io){
 	var Teams = require('../models/teams');
 	var Users = require('../models/users');
 
@@ -10,7 +10,6 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	var configs = require('../configs');
 
 	// api calls
-	var getLogin = aux.getLogin;
 
 	// var join_team = function (login, teamname) {
 	//
@@ -22,7 +21,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 
 	app.post('/Team', aux.authenticated, function(req, res) { // create team
 		var name = req.body.name;
-		// var login = getLogin(req);
+		// var login = req.login;
 		var login = req.login;
 
 		if (!name) {
@@ -96,7 +95,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	}, aux.std);
 
 	app.get('/api/teams/left', aux.authenticated, function (req, res, next) {
-		var login = getLogin(req);
+		var login = req.login;
 
 		Users.quitTeam(login)
 			.then(aux.setData(req, next))
@@ -113,7 +112,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	}, aux.std);
 
 	app.post('/api/teams/divide', aux.authenticated, function (req, res) {
-		var login = getLogin(req);
+		var login = req.login;
 		var print = function (result) {
 			logger('/api/teams/divide', result);
 			res.render('Teams');
@@ -188,7 +187,7 @@ module.exports = function(app, aux, realtime, SOCKET, io){
 	});
 
 	app.get('/api/teams/', aux.authenticated, function(req, res) {
-		var login = getLogin(req);
+		var login = req.login;
 		Users.profile(login)
 		.then(function (profile){
 			var team = profile.team;

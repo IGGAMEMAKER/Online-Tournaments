@@ -224,8 +224,6 @@ module.exports = function (app, aux) {
           });
       })
       .catch(aux.report('yandexPayment', data));
-
-    // sender.sendRequest("payment", { login:login, cash:money, info:data }, '127.0.0.1', "DBServer");
   });
 
   app.get('/api/payments/all', middlewares.isAdmin, respond (req => {

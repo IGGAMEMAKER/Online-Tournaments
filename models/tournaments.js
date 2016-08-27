@@ -270,7 +270,6 @@ function addTopicStreamTournament(topic, isNew) {
 	obj.settings = { topic: topic, regularity: REGULARITY_STREAM };
 	if (isNew) obj.settings.hidden = true;
 
-	// AsyncRender('DBServer', 'AddTournament', res, {renderPage:'AddTournament'}, obj);
 	return addNewTournament(obj)
 	.then(function (tournament){
 		// console.log('addNewTournament', topic, tournament)
