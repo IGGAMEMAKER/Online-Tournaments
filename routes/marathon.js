@@ -1,5 +1,19 @@
 var Leaderboard=null;
 
+function increase_money_and_notify(login, ammount){
+  if (login && ammount && isNumeric(ammount) ) {
+    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
+      .then(function (result){
+        if (ammount > 0) {
+          aux.alert(login, c.NOTIFICATION_GIVE_MONEY, { ammount:ammount })
+            .catch(aux.catcher)
+        }
+
+      })
+      .catch(aux.report('increase_money_and_notify', {login: login, ammount:ammount }))
+  }
+}
+
 app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
   var leaders = Leaderboard.leaderboard;
   var prizes = Leaderboard.prizes || [];
@@ -15,7 +29,7 @@ app.get('/giveMarathonMoney', aux.isAdmin, function (req, res){
     increase_money_and_notify(lgn, parseInt(prize))
   }
   res.json({msg: Leaderboard })
-})
+});
 
 app.get('/givePointsTo/:login/:points', isAdmin, function (req, res, next){
   var login = req.params.login;

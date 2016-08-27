@@ -181,6 +181,9 @@ module.exports = {
 	get: function (packID) {
 		return get_random_card(packID)
 	},
+	getByID: function (packID) {
+		return Packs.findOne({ packID })
+	},
 	get_after_game_card,
 	available: availablePacks,
 	all,

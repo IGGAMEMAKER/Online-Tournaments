@@ -11,6 +11,84 @@ module.exports = function setApp(app, aux){
   var respond = require('../../middlewares/api-response');
 
   // packs
+  app.get('/givePackTo/:login/:colour/:count', middlewares.isAdmin, function (req ,res, next){
+    var login = req.params.login;
+    var count = parseInt(req.params.count);
+    var colour = parseInt(req.params.colour);
+
+    if (!isNumeric(count) || !isNumeric(colour)) {
+      return next('notnum')
+    }
+
+    Users.pack.add(login, colour, count)
+      .then(function (result){
+        aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour });
+        return result
+      })
+      .then(aux.setData(req, next))
+      .catch(next)
+  }, aux.std);
+
+  var missStep = () => {
+    return new Promise((resolve, reject) => {
+      return resolve(1);
+    });
+  };
+  app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
+    var login = req.login;
+
+    var packID = parseInt(req.params.packID);
+    var price;
+
+    var obj = {
+      value: packID
+      // price: price
+    };
+
+    var info = {};
+    Packs.getByID(packID)
+      .then(pack => {
+        price = pack.price;
+        obj.price = pack.price;
+        aux.done(login, 'openPackTry', obj);
+
+        if (price > 0) {
+          return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
+        }
+
+        return missStep();
+      })
+      .then(function (result) {
+        info['paid'] = true;
+        var card = Packs.get(packID);//_standard_pack_card
+        return card;
+      })
+      .then(function (card) {
+        info.card = card;
+        var giftID = card.giftID;
+        card.value = packID;
+        card.isFree = price === 0;
+
+        aux.done(login, 'openPack', Object.assign({}, obj, info));
+        Usergifts.saveGift(login, giftID, true, card.colour);
+        aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
+        res.json({});
+      })
+      .catch(function (err) {
+        console.log('FAIL in /openPack/', err);
+        if (!info.paid) {
+          res.json({
+            result: 'pay',
+            ammount: price
+          })
+        } else {
+          res.json({ err });
+        }
+
+        aux.fail(login, 'openPack', { err: err , info: info })
+      })
+  });
+
   app.post('/api/packs/remove/:packID', middlewares.isAdmin, respond(req => {
     return Packs.remove(req.params.packID)
   }));

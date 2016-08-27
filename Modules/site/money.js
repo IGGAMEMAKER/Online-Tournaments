@@ -13,8 +13,9 @@ var logger = require('../../helpers/logger');
 
 var sender = require('../../requestSender');
 
-module.exports = function (app, aux) {
+var c = require('../../constants');
 
+module.exports = function (app, aux) {
   app.post('/Cashout', middlewares.authenticated, function (req, res) {
     var data = req.body;
     var login = req.login;
@@ -48,6 +49,56 @@ module.exports = function (app, aux) {
         });
     } else {
       return sender.Answer(res, Fail);
+    }
+  });
+
+  app.get('/setMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+    var login = req.params.login;
+    var ammount = req.params.ammount;
+
+    if (login && ammount && isNumeric(ammount) ){
+      // console.log('constants', c);
+
+      Money.set(login, ammount, c.SOURCE_TYPE_SET)
+        .then(function (result){
+          res.json({msg: 'grant', result:result})
+        })
+        .catch(function (err) {
+          logger.error('/setMoneyTo/:login/:ammount', login, ammount, err);
+          res.json({ err, text: 'set fail'});
+        })
+
+    } else {
+      res.json({ msg: 'invalid data' })
+    }
+  });
+
+  app.get('/giveMoneyTo/:login/:ammount', middlewares.isAdmin, function (req, res){
+    var login = req.params.login;
+    var ammount = req.params.ammount;
+
+    if (login && ammount && isNumeric(ammount) ){
+      // console.log('constants', c);
+
+      Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
+        .then(function (result){
+          res.json({msg: 'grant', result:result});
+
+          if (ammount > 0){
+            aux.alert(login, c.NOTIFICATION_GIVE_MONEY, {
+                ammount:ammount
+              })
+              .catch(aux.catcher);
+          }
+
+        })
+        .catch(function (err) {
+          logger.error('/giveMoneyTo/:login/:ammount', login, ammount, err);
+          res.json({ err, text: 'give fail'});
+        })
+
+    } else {
+      res.json({ msg: 'invalid data' })
     }
   });
 

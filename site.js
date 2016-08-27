@@ -35,14 +35,10 @@ var Users = require('./models/users');
 var Actions = require('./models/actions');
 var Errors = require('./models/errors');
 var Tournaments = require('./models/tournaments');
-var Message = require('./models/message');
-var Gifts = require('./models/gifts');
-var Usergifts = require('./models/usergifts');
 
 var Packs = require('./models/packs');
 
 var Money = require('./models/money');
-var Teams = require('./models/teams');
 
 var c = require('./constants');
 
@@ -204,7 +200,9 @@ var user = require('./Modules/site/user')(app, AsyncRender);
 var tournaments = require('./Modules/site/tournaments')(app, aux);
 var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, aux);
 
+var mailchimp = require('./routes/mailchimp')(app, aux);
 var messages = require('./routes/messages')(app, aux);
+
 // var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 
 // var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
@@ -305,17 +303,8 @@ var PRICE_CUSTOM = 1;  //
 var COUNT_FLOATING = 2;
 
 
-function cancel(res, code, tag){ 
-  return res.json({
-    result:0, 
-    code: code||CODE_INVALID_DATA, 
-    tag:tag||null 
-  }); 
-}
 
 function isNumeric(num) { return !isNaN(num); }
-
-const CODE_INVALID_DATA='Неправильные данные';
 
 app.get('/counter', function (req, res){
   res.json({requests:requestCounter});
@@ -339,24 +328,10 @@ function Landing(name, picture){
   }
 }
 
-// app.get('/Transfers', middlewares.isAdmin, function (req, res, next){
-  
-// })
-
 app.get('/realtime/update', middlewares.isAdmin, function(req, res){
   realtime().UPDATE_ALL();
   res.end('OK');
 });
-
-// app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
-//   Users.mailers()
-//   .then(function(users){
-//     req.data = 'found';
-//     next();
-//     Users.update_auth_links(users)
-//   })
-//   .catch(next)
-// }, aux.raw, aux.err)
 
 var tournament_finisher = require('./chains/finishTournament')(aux);
 
@@ -417,6 +392,15 @@ var templateData = () => ({
   tournaments: realtime().tournaments
 });
 
+var application_page = (req, res) => {
+  // res.render('index', { msg: templateData() })
+  res.render('index');
+};
+
+var admin_page = (req, res) => {
+  res.render('layout-admin', { msg: templateData() })
+};
+
 var markPaymentPageOpening = (req, res, next) => {
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
@@ -424,20 +408,6 @@ var markPaymentPageOpening = (req, res, next) => {
   Actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
 
   next();
-};
-
-// var template;
-// app.render('index', (err, html) => {
-//   logger.debug(err, html);
-//   template = html;
-// });
-var application_page = (req, res) => {
-  // res.render('index', { msg: templateData() })
-  res.render('index');
-  // res.end(template);
-};
-var admin_page = (req, res) => {
-  res.render('layout-admin', { msg: templateData() })
 };
 
 app.get('/', application_page);
@@ -459,96 +429,7 @@ app.get('/admin/support', middlewares.isAdmin, admin_page);
 app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
-// app.get('/Payment', aux.authenticated, application_page);
 // packs + cards
-
-var missStep = () => {
-  return new Promise((resolve, reject) => {
-    return resolve(1);
-  });
-};
-
-app.post('/openPack/:packID/', middlewares.authenticated, function (req, res){
-  var login = req.login;
-
-  var packID = parseInt(req.params.packID);
-  var realPackID = realtime().packs.findIndex(p => p.packID === packID);
-
-  if (realPackID < 0) {
-    res.json({ msg: 0 });
-    return;
-  }
-
-  var price = realtime().packs[realPackID].price;
-
-  var obj = {
-    value:packID,
-    price: price
-  };
-
-  aux.done(login, 'openPackTry', obj);
-
-  var paymentFunction = function(){
-    if (price > 0) {
-      return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK);
-    }
-
-    return missStep();
-    // return Users.pack.decrease(login, packID, 1)
-  };
-
-  // return Money.pay(login, price, aux.c.SOURCE_TYPE_OPEN_PACK)
-  var info = {};
-
-  paymentFunction()
-  .then(function (result){
-    info['paid'] = true;
-    var card = Packs.get(packID);//_standard_pack_card
-    return card;
-  })
-  .then(function (card) {
-    info.card = card;
-    var giftID = card.giftID;
-    card.value = packID;
-    card.isFree = price === 0;
-
-    aux.done(login, 'openPack', Object.assign({}, obj, info));
-    Usergifts.saveGift(login, giftID, true, card.colour);
-    aux.alert(login, aux.c.NOTIFICATION_CARD_GIVEN, card);
-    res.json({});
-  })
-  .catch(function (err) {
-    console.log('FAIL in /openPack/', err);
-    if (!info.paid) {
-      res.json({
-        result: 'pay',
-        ammount: price
-      })
-    } else {
-      res.json({ err });
-    }
-
-    aux.fail(login, 'openPack', { err: err , info: info })
-  })
-});
-
-app.get('/givePackTo/:login/:colour/:count', middlewares.isAdmin, function (req ,res, next){
-  var login = req.params.login;
-  var count = parseInt(req.params.count);
-  var colour = parseInt(req.params.colour);
-
-  if (!isNumeric(count) || !isNumeric(colour)) {
-    return next('notnum')
-  }
-
-  Users.pack.add(login, colour, count)
-    .then(function (result){
-      aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour });
-      return result
-    })
-    .then(aux.setData(req, next))
-    .catch(next)
-}, aux.std);
 
 // --- end packs
 
@@ -680,8 +561,6 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
-var fs = require('fs');
-
 app.post('/tellToFinishTournament', function (req, res){
  var data = req.body;
  console.log('tellToFinishTournament', data);
@@ -713,74 +592,6 @@ app.post('/Tell', isAdmin, function (req, res){
 
 app.get('/ModalTest', aux.answer('ModalTest'));
 
-app.get('/setMoneyTo/:login/:ammount', isAdmin, function (req, res){
-  var login = req.params.login;
-  var ammount = req.params.ammount;
-
-  if (login && ammount && isNumeric(ammount) ){
-    // console.log('constants', c);
-
-    Money.set(login, ammount, c.SOURCE_TYPE_SET)
-    .then(function (result){
-      res.json({msg: 'grant', result:result})
-    })
-    .catch(function (err) { 
-      cancel(res, err, 'grant fail');
-    })
-
-  } else {
-    cancel(res);
-  }
-});
-
-function forceTakingNews(login, delay){
-  setTimeout(function() {
-    Send('newsUpdate', {msg:login})
-  }, delay||0);
-}
-
-function increase_money_and_notify(login, ammount){
-  if (login && ammount && isNumeric(ammount) ) {
-    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
-    .then(function (result){
-      if (ammount>0){
-        aux.alert(login, c.NOTIFICATION_GIVE_MONEY, { ammount:ammount })
-        .catch(aux.catcher)
-      }
-
-    })
-    .catch(aux.report('increase_money_and_notify', {login: login, ammount:ammount }))
-  }
-}
-
-app.get('/giveMoneyTo/:login/:ammount', isAdmin, function (req, res){
-  var login = req.params.login;
-  var ammount = req.params.ammount;
-
-  if (login && ammount && isNumeric(ammount) ){
-    // console.log('constants', c);
-
-    Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
-    .then(function (result){
-      res.json({msg: 'grant', result:result});
-
-      if (ammount > 0){
-        aux.alert(login, c.NOTIFICATION_GIVE_MONEY, {
-          ammount:ammount
-        })
-        .catch(aux.catcher);
-      }
-
-    })
-    .catch(function (err) { 
-      cancel(res, err, 'grant fail');
-    })
-
-  } else {
-    cancel(res);
-  }
-});
-
 // server = app.listen(8888, function () {
 //   var host = server.address().address;
 //   var port = server.address().port;
@@ -802,10 +613,6 @@ function Send(tag, message, force){
   }
 }
 
-function SendToRoom(room, event, msg, socket){
-  if (socket_enabled) io.of(room).emit(event, msg);
-}
-
 app.post('/Winners', function (req, res){
   res.end('OK');
   var winners = req.body.winners;
@@ -813,63 +620,6 @@ app.post('/Winners', function (req, res){
 
   Send('winners', {winners:winners, tournamentID:tournamentID});
 });
-
-var json2csv = require('json2csv');
-
-//app.get('/getCSV', middlewares.isAdmin, function())
-app.get('/updateLinks', middlewares.isAdmin, function (req, res, next){
-  Users.mailers()
-  .then(function(users){
-    req.data = 'found';
-    next();
-    Users.update_auth_links(users)
-  })
-  .catch(next)
-}, aux.raw, aux.err);
-
-var domainName = configs.gameHost || 'localhost';
-
-app.get('/getCSV', middlewares.isAdmin, function (req, res, next){
-  var fields = ['email', 'money', 'authlink'];
-  Users.mailers()
-  .then(function (users){
-    // console.log(users);
-    for (var i = users.length - 1; i >= 0; i--) {
-      users[i].authlink = 'http://' + domainName + '/linker/' + users[i].login + '/' + users[i].link;
-    }
-    json2csv({ data: users, fields: fields }, function (err, csv) {
-      if (err) {
-        next(err);
-      } else {
-        console.log(csv);
-        req.data = csv;
-        next();
-      }
-    });
-  })
-  .catch(next)
-
-}, aux.raw, aux.err);
-
-app.get('/mailLists', middlewares.isAdmin, function (req, res, next){
-  aux.mailLists()
-  .then(function (lists){
-    req.data = lists.data[0];
-    next();
-  })
-  .catch(next);
-
-}, aux.json, aux.err);
-
-app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
-  aux.mailUsers()
-  .then(function (lists){
-    req.data = lists;
-    next();
-  })
-  .catch(next);
-
-}, aux.json, aux.err);
 
 
 var players = [];
@@ -887,5 +637,3 @@ app.post('/mark/Here/:login', function (req, res){
 
   res.end('');
 });
-
-const GET_TOURNAMENTS_UPDATE = 6;
