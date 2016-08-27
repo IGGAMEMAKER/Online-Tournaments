@@ -188,6 +188,17 @@ function update() {
 
 
 export default {
+  online() {
+    setInterval(async function (){
+      // console.log('here');
+      // request
+      const response = await request
+        .post('/mark/Here/')
+        .send({});
+
+      // console.log(response.body);
+    }, 35000)
+  },
   initialize,
   update,
   report(err, where) {

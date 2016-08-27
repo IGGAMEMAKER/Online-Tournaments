@@ -29,7 +29,7 @@ var configs = require('./configs');
 
 var mongoose = require('mongoose');
 var sessionDBAddress = configs.session;
-mongoose.connect('mongodb://'+sessionDBAddress+'/sessionDB');
+mongoose.connect('mongodb://' + sessionDBAddress + '/sessionDB');
 
 var Users = require('./models/users');
 var Actions = require('./models/actions');
@@ -37,10 +37,6 @@ var Errors = require('./models/errors');
 var Tournaments = require('./models/tournaments');
 
 var Packs = require('./models/packs');
-
-var Money = require('./models/money');
-
-var c = require('./constants');
 
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
@@ -165,7 +161,6 @@ app.set('views', views);
 app.set('view engine', 'jade');
 
 var sender = require('./requestSender');
-var sort = require('./helpers/sort');
 
 //var compression = require('compression');
 //app.use(compression());
@@ -232,8 +227,6 @@ app.get('/Payment', middlewares.authenticated, markPaymentPageOpening, applicati
 app.get('/admin/support', middlewares.isAdmin, admin_page);
 app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 app.get('/admin/packs', middlewares.isAdmin, admin_page);
-
-
 
 
 // var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
@@ -579,17 +572,19 @@ app.post('/Winners', function (req, res){
 
 
 var players = {};
-setInterval(function (){
-  // Send('players', { msg: players });
-  Log('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
-}, 20000);
 
 setInterval(function () {
+  Log('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
   players = {};
 }, 60000);
 
-app.post('/mark/Here/:login', function (req, res){
-  var login = req.params.login;
+logger.debug('mark/Here');
+
+app.post('/mark/Here', middlewares.authenticated, function (req, res){
+  // /:login
+  // var login = req.params.login;
+  var login = req.login;
+  logger.debug('Online: ' + login);
   // strLog('Online: ' + login, 'Users');
   players[login] = 1;
 

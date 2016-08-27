@@ -23,6 +23,7 @@ export default class Layout extends Component {
     InfoActions.getGifts();
 
     ProfileActions.initialize();
+    ProfileActions.online();
   }
 
   render(props: PropsType, state: StateType) {
