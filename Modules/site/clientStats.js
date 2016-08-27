@@ -1,20 +1,21 @@
-module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
-	var OK = { result:'OK' };
-	// var Stats = sender.Stats;
-	var Stats = require('../../models/statistics');
-	var TournamentRegs = require('../../models/tregs');
-	var Users = require('../../models/users');
-	var Messages = require('../../models/message');
-	var Actions = require('../../models/actions');
+var OK = { result:'OK' };
+// var Stats = sender.Stats;
+var Users = require('../../models/users');
 
-	var time = require('../../helpers/time');
+var Stats = require('../../models/statistics');
+var TournamentRegs = require('../../models/tregs');
+var Messages = require('../../models/message');
+var Actions = require('../../models/actions');
 
-	// var aux = require('../../models/auxillary')
+var time = require('../../helpers/time');
 
-	var strLog = Log;
+var logger = require('../../helpers/logger');
 
-	var middlewares = require('../../middlewares');
+var middlewares = require('../../middlewares');
 
+var sender = require('../../requestSender');
+
+module.exports = function(app, AsyncRender, aux){
 	app.post('/AttemptToStart', function (req, res){
 		// console.log('AttemptToStart');
 		sender.Answer(res, OK);
@@ -53,17 +54,17 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
 
 	app.post('/NoMoney', function (req, res){
 		var tournamentID = req.body.tournamentID;
-		var money = req.body.money||0;
+		var money = req.body.money || 0;
 
 		res.end('');
-		Stats.attempt('NO-MONEY')
-		strLog('No money for ' + tournamentID + ' need: ' + money, 'Money')
+		Stats.attempt('NO-MONEY');
+		logger.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
 
 		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
 	});
 
 	// Stats.attempt('game-drawPopup')
-	app.get('/mark/metrics/:stat', aux.authenticated, (req, res) => {
+	app.get('/mark/metrics/:stat', middlewares.authenticated, (req, res) => {
 		res.end();
 		console.log('got metrics request', req.params);
 		Actions.add(req.login, req.params.stat, {});
@@ -76,7 +77,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
 		res.end('');
 
 		Stats.attempt('PRESSED-PAYMENT');
-		strLog('TRIED TO PAY! ' + login + ' ' + ammount, 'Money');
+		logger.log('TRIED TO PAY! ' + login + ' ' + ammount, 'Money');
 	});
 
 	app.post('/gamestats/:name', function (req, res){
@@ -153,7 +154,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
 
 
 		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
-	})
+	});
 	//statistics Data
 	
 	app.get('/Stats', function (req, res){
@@ -164,7 +165,7 @@ module.exports = function(app, AsyncRender, Answer, sender, Log, aux){
 	// app.post('/mark/Here/:login', function (req, res){
 	// 	var login = req.params.login;//req.login;
 	// 	console.log('mark/Here');
-	// 	strLog('Online: ' + login, 'Users');
+	// 	logger.log('Online: ' + login, 'Users');
 	// 	res.end('');
 	// })
 

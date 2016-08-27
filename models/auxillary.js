@@ -218,7 +218,7 @@ module.exports = {
 			var email = list[i];
 			var letter = letters[i];
 			mailsender.send(email, letter);
-		};
+		}
 	}
 
-}
+};

@@ -29,8 +29,7 @@ var OK = {
 };
 var sender = require('../../requestSender');
 
-module.exports = function(app, AsyncRender, aux) {
-
+module.exports = function(app, AsyncRender) {
 	function destroy_session(req, res, next){
 		var login = req.login;
 		req.session.destroy(function (err){
@@ -46,7 +45,7 @@ module.exports = function(app, AsyncRender, aux) {
 		res.redirect('Login');
 	});// render('Login',{}) )
 
-	app.get('/Login', render('Login',{}) );
+	app.get('/Login', render('Login', {}));
 	app.get('/Register', render('Register'));
 
 	
@@ -59,9 +58,9 @@ module.exports = function(app, AsyncRender, aux) {
 
 	function register(req, res){
 		var user = {
-			email: req.body.email
-			, login: get_login_from_email(req.body.email)
-			, password: req.body.password
+			email: req.body.email,
+			login: get_login_from_email(req.body.email),
+			password: req.body.password
 		};
 		if (isValid(user)){
 			req.user= user;
@@ -400,6 +399,11 @@ function (req, res){
 	  	res.redirect('Login');
 	});
 
+	app.get('/api/users/set-default-packs/:login', middlewares.isAdmin, respond (req => {
+		var login = req.params.login;
+		return Users.pack.setDefault(login);
+	}));
+
 	function get_profile(req, res, next){
 		var login = req.login;
 
@@ -424,8 +428,9 @@ function (req, res){
 			req.profile = profile;
 			next()
 		})
-		.catch(function (err){
-			aux.fail(login, 'get_profile error', { err: err, profile:profile });
+		.catch(function (err) {
+			API.errors.add(login, 'get_profile error', { err: err, profile:profile });
+			// Errors.fail(login, 'get_profile error', { err: err, profile:profile });
 			logger.error('get_profile error', login, err);
 			req.profile = null;
 			next(err);

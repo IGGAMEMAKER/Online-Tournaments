@@ -18,6 +18,8 @@ var serverName = 'site';
 var logger = require('./helpers/logger');
 var server;
 
+
+var respond = require('./middlewares/api-response');
 var SOCKET_ON=1;
 var socket_enabled=SOCKET_ON;
 
@@ -198,9 +200,11 @@ var gifts = require('./Modules/site/gifts')(app, aux);
 var admin = require('./Modules/site/admin')(app, AsyncRender);
 var money = require('./Modules/site/money')(app, aux);
 
-var user = require('./Modules/site/user')(app, AsyncRender, Answer, sender, Log, isAuthenticated, aux);
-var tournaments = require('./Modules/site/tournaments') (app, aux);
-var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, Answer, sender, Log, aux);
+var user = require('./Modules/site/user')(app, AsyncRender);
+var tournaments = require('./Modules/site/tournaments')(app, aux);
+var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, aux);
+
+var messages = require('./routes/messages')(app, aux);
 // var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
 
 // var teamz = require('./routes/teams')(app, aux, realtime, SOCKET, io);
@@ -456,7 +460,7 @@ app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
 // app.get('/Payment', aux.authenticated, application_page);
-// packs + cards + realtime
+// packs + cards
 
 var missStep = () => {
   return new Promise((resolve, reject) => {
@@ -536,28 +540,15 @@ app.get('/givePackTo/:login/:colour/:count', middlewares.isAdmin, function (req 
   if (!isNumeric(count) || !isNumeric(colour)) {
     return next('notnum')
   }
-  grantPacksTo(login, colour, count)
-    .then(aux.setData(req, next))
-    .catch(next)
-}, aux.std);
 
-app.get('/api/packs/setdefault/:login', middlewares.isAdmin, function (req ,res, next){
-  var login = req.params.login;
-  // console.log('login', login);
-  Users.pack.setDefault(login)
-    // .then(console.log)
-    .then(aux.setData(req, next))
-    .catch(next)
-}, aux.std);
-
-function grantPacksTo(login, colour, count){
-  return Users.pack.add(login, colour, count)
+  Users.pack.add(login, colour, count)
     .then(function (result){
       aux.alert(login, aux.c.NOTIFICATION_GIVE_PACK, { count:count, colour: colour });
       return result
     })
-    .catch(aux.drop)
-}
+    .then(aux.setData(req, next))
+    .catch(next)
+}, aux.std);
 
 // --- end packs
 
@@ -748,33 +739,6 @@ function forceTakingNews(login, delay){
   }, delay||0);
 }
 
-/*
-app.get('/linker/:login/:link', function (req, res){
-  var login = req.params.login;
-  var link = req.params.link;
-
-
-  Actions.add(login, 'linker');
-  // Users.auth(login, password)//, req.user.email, req.user.inviter
-  Users.auth_by_link(login, link)
-  .then(function (user){
-    // console.log('logged In', user);
-    req.user= user;
-
-
-    saveSession(req, res, 'Login');
-
-
-    // Actions.add(login, 'login');
-  })
-  .catch(function (err){
-    res.redirect('/Login');//, {msg : err});
-    Errors.add(login, 'linker', { code:err })
-  })
-
-})
-*/
-
 function increase_money_and_notify(login, ammount){
   if (login && ammount && isNumeric(ammount) ) {
     Money.increase(login, ammount, c.SOURCE_TYPE_GRANT)
@@ -907,196 +871,6 @@ app.get('/mailUsers1', middlewares.isAdmin, function (req, res, next){
 
 }, aux.json, aux.err);
 
-
-
-
-
-app.get('/api/news/get', function (req, res) {
-  res.json({ news: realtime().news || null })
-});
-
-app.get('/api/news/all', middlewares.isAdmin, function (req, res, next){
-  Message.news.all()
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.render('News'), aux.error);
-
-app.post('/api/news/add', middlewares.isAdmin, function (req, res, next){
-  var data = req.body;
-
-  var text = data.text || "";
-  var image = data.image || "";
-  var url = data.url || "";
-  var title = data.title || "";
-
-  Message.news.add(text, image, url, title)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std);
-
-app.post('/api/news/edit/:id', middlewares.isAdmin, function (req, res, next){
-  var id = req.params.id || null;
-  var data = req.body;
-
-  var text = data.text || "";
-  var image = data.image || "";
-  var url = data.url || "";
-  var title = data.title || "";
-
-  var obj = {
-    text: text,
-    image: image,
-    url: url,
-    title: title
-  };
-
-  Message.news.edit(id, obj)
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.std);
-
-app.get('/api/news/activation/:id/:status', middlewares.isAdmin, function (req, res, next){
-  Message.news.activation(req.params.id||null, req.params.status || null)
-  .then(function (result){
-    if (result) realtime().UPDATE_ALL();
-    return result;
-  })
-  .then(aux.setData(req, next))
-  .catch(next)
-}, aux.json, aux.err);
-
-
-
-app.get('/get_message', middlewares.isAdmin, function (req, res, next){
-  var id = req.query.id;
-  Message.notifications.getByID(id)
-  .then(function (notification){
-    req.data = notification;
-    next();
-  })
-  .catch(next)
-}, aux.json, aux.err);
-
-app.get('/messages', middlewares.isAdmin, function (req, res, next){
-  var login = req.query.login;
-  Message.notifications.all(login)
-  .then(function (news){
-    req.data = news;
-    next()
-  })
-  .catch(next)
-}, aux.answer('Notifications'), aux.err);
-
-
-app.get('/notifications/send', middlewares.isAdmin, aux.answer('admin/SendMessage'));
-
-app.post('/notifications/send', middlewares.isAdmin, function (req, res, next){
-  var data = req.body;
-  var target = data.target;
-  var notificationType = data.type;
-
-  var header = data.header;
-  var imageUrl = data.imageUrl;
-  var text = data.text;
-
-  //var targetType = typeof(target);
-
-  if (!target) {
-    return next(null);
-  }
-
-  var obj = {
-    imageUrl: imageUrl,
-    text: text,
-    header : header
-  };
-  // console.log(obj, target);
-
-  aux.alert(target, notificationType || 6, obj)
-    .then(function (result){
-      req.data = result;
-      next();
-    })
-    .catch(next)
-
-}, aux.json, aux.err);
-
-app.post('/messages/chat/recent', function (req, res, next){
-  // console.log('messages/chat/recent')
-  var room = 'default';
-
-  Message.chat.load(room)
-    .then(aux.setData(req, next))
-    .catch(next)
-}, aux.std);
-
-app.get('/messages/support', middlewares.authenticated, function (req, res) {
-  // console.log('/messages/support', req.login);
-  Message.support.user(req.login)
-    .then(messages => {
-      // console.log('support messages', messages);
-      res.json({ msg: messages })
-    })
-});
-
-app.get('/messages/support-incoming/', middlewares.isAdmin, function (req, res) {
-  Message.support.recent()
-    .then(messages => {
-      res.json({ msg: messages })
-    })
-});
-
-app.get('/messages/support/:login', middlewares.isAdmin, function (req, res) {
-  // console.log('/messages/support', req.params.login);
-  Message.support.user(req.params.login)
-    .then(messages => {
-      res.json({ msg: messages })
-    })
-});
-
-app.post('/messages/support-respond', middlewares.isAdmin, function (req, res) {
-  // console.log('/messages/support', req.params.login);
-  // console.log('message support response', req.body);
-  var room = 'support-' + req.body.target;
-  var text = req.body.text;
-  // console.log(room, text);
-  Message.chat.add(room, 'Техподдержка', text)
-    .then(messages => {
-      res.json({ msg: messages })
-    });
-});
-
-app.get('/notifications/news', middlewares.authenticated, function (req, res, next){
-  var login = req.login;
-
-  Message.notifications.news(login)
-  .then(function (news){
-    req.data = news;
-    next()
-  })
-  .catch(next)
-}, aux.json, aux.err);
-
-app.get('/notifications/all', middlewares.authenticated, function (req, res, next){
-  // var login = req.params.login;
-  var login = req.login;
-
-  Message.notifications.all(login)
-  .then(function (news){
-    req.data = news;
-
-    Message.notifications.markAll(login)
-    .catch(function(){});
-
-    next()
-  })
-  .catch(next)
-}, aux.json, aux.err);
-
-// app.post('/message/read/:id', middlewares.authenticated, function (req, res, next){
-//   var id = req.params.id;
-//   var login 
-// })
 
 var players = [];
 setInterval(function (){
