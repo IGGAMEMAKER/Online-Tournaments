@@ -12,6 +12,8 @@ var Packs = require('../models/packs');
 var Money = require('../models/money');
 var Teams = require('../models/teams');
 
+var Pulse = require('../models/pulse');
+
 var statistics = require('../models/statistics');
 
 module.exports = {
@@ -26,5 +28,7 @@ module.exports = {
   packs: Packs,
   money: Money,
   teams: Teams,
-  statistics
+  statistics,
+
+  pulse: Pulse
 };

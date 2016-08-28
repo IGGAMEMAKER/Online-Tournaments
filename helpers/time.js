@@ -25,7 +25,8 @@ module.exports = {
 		return dayQuery(new Date(), -N);
 	}
 
-}
+
+};
 
 function dayQuery(date, days){
 	var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -37,9 +38,9 @@ function dayQuery(date, days){
 	var query = {
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
 		// $lt : ISODate("2014-07-03T00:00:00Z")
-		$gte : today<tmrw ? today:tmrw, 
-		$lt : tmrw>today ? tmrw: today
-	}
+		$gte : today < tmrw ? today : tmrw,
+		$lt : tmrw > today ? tmrw : today
+	};
 	return query;
 }
 
@@ -51,8 +52,8 @@ function queryPeriod(d1, d2){
 	//console.log(today, tmrw);
 
 	var query = {
-		$gte : today<tmrw ? today:tmrw, 
-		$lt : tmrw>today ? tmrw: today
-	}
+		$gte : today < tmrw ? today : tmrw,
+		$lt : tmrw > today ? tmrw : today
+	};
 	return query;
 }

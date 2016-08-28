@@ -364,10 +364,6 @@ function (req, res){
 */
 
 
-	app.get('/MoneyTransfers', middlewares.authenticated, function (req, res){
-		AsyncRender("DBServer", 'MoneyTransfers', res, {renderPage:'MoneyTransfers'}, {login:req.login});
-	});
-
 	app.get('/mailUsers', authenticated, function (req, res, next){
 		Users.groupByEmails()
 		.then(middlewares.answer(req, next))

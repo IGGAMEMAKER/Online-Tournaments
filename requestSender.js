@@ -27,8 +27,6 @@ serverList['1']=5009;// Ping Pong
 serverList['2']=5010;// Questions and Answers
 serverList['3']=5011;// Battle
 
-//console.log(serverList['DBServer']);
-
 var gameNameIDList = {};
 
 gameNameIDList['1'] = 5009;

@@ -250,8 +250,9 @@ var messages = require('./routes/messages')(app, aux);
 function AsyncRender(targetServer, reqUrl, res, options, parameters){ //options: parameters, renderPage, callback, sender, failCallback
   var basicInfo = targetServer+': /' + reqUrl + ' ';
   if (parameters) basicInfo += JSON.stringify(parameters);
-  // res==null generally means that I will use AsyncRender in promise cascade
+  // res==null generally means that I will use it in promise cascade
   Log('AsyncRender', 'Transport');
+
   if (targetServer && reqUrl){
     sender.sendRequest(reqUrl, parameters || {}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
       Log(JSON.stringify(body), 'Transport');
@@ -508,8 +509,6 @@ function vkAuthSuccess(req, res, next) {
   // saveSession(req, res, inviter, login);
 }
 
-var AUTH_SUCCESS_REDIRECT_PAGE='/';
-
 function session_save(req, res, next){
   var login = req.login;
 
@@ -522,7 +521,7 @@ function session_save(req, res, next){
 
     req.session.login = login;
     
-    res.redirect(AUTH_SUCCESS_REDIRECT_PAGE);
+    res.redirect('/');// AUTH_SUCCESS_REDIRECT_PAGE
     // next();
   })
 }

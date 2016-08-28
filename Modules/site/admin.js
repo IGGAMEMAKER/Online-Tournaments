@@ -10,6 +10,10 @@ var isAdmin = middlewares.isAdmin;
 var logger = require('../../helpers/logger');
 var multer  = require('multer');
 
+var API = require('../../helpers/API');
+
+var mailer = require('../../sendMail');
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     var tournamentID = req.body.tournamentID;
@@ -95,17 +99,18 @@ module.exports = function(app, AsyncRender) {
 
   function stopTournament(res, tournamentID){
     logger.log('stopTournament', 'Admin.js', tournamentID);
-    sender.sendRequest('StopTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy);
+    sender.sendRequest('StopTournament', { tournamentID: tournamentID }, 'localhost', 'DBServer', res, sender.Proxy);
 
     logger.log('FrontendServer StopTournament :::' + tournamentID, 'Manual');
-    sender.sendRequest("StopTournament", {tournamentID:tournamentID}, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
+    sender.sendRequest("StopTournament", { tournamentID: tournamentID }, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
 
-    sender.sendRequest("tellToFinishTournament", {tournamentID:tournamentID}, '127.0.0.1', 'site');
+    sender.sendRequest("tellToFinishTournament", { tournamentID: tournamentID }, '127.0.0.1', 'site');
   }
 
-  function runTournament(res, tournamentID){
-   sender.sendRequest('RunTournament', {tournamentID:tournamentID}, 'localhost', 'DBServer', res, sender.Proxy); 
+  function runTournament(res, tournamentID) {
+   sender.sendRequest('RunTournament', { tournamentID: tournamentID }, 'localhost', 'DBServer', res, sender.Proxy);
   }
+
   const GET_TOURNAMENTS_RUNNING = 5;
   function GetTournamentsFromTS(res){
     sender.sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_RUNNING}, 'localhost', 'DBServer', res, sender.Proxy);
@@ -239,11 +244,12 @@ module.exports = function(app, AsyncRender) {
     //.then(sendJSON(res))
     .then(render(res, 'Actions'))
     .catch(sendError(res));
-  })
+  });
 
-  app.get('/Mail', function (req, res){
-    AsyncRender("DBServer", 'Mail', res, {}, {});
-  })
+  app.get('/Mail', function (req, res) {
+    sender.Stats('Mail', {});
+    mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
+  });
 
   function render(res, page){
     return function(data){

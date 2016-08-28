@@ -30,22 +30,14 @@ var Promise = require('bluebird');
 
 var configs = require('../configs');
 var models = require('../models')(configs.db);
+
 var Statistic = models.Statistic;
+
 var time = require('../helpers/time');
 var helper = require('../helpers/helper');
 
-var validator = require('validator');
-
-var security = require('../Modules/DB/security');
-const CURRENT_CRYPT_VERSION = 2;
-
-var USER_EXISTS = 11000;
-var UNKNOWN_ERROR=500;
-
-var Fail = { result: 'fail' };
-var OK = { result: 'OK' };
-
-var money_koef = 100;
+var db = require('../db');
+var Statistic2 = db.wrap('Statistic');
 
 //---------------------------------------------------
 
@@ -54,31 +46,9 @@ var money_koef = 100;
 
 function now(){ return new Date(); }
 
-function log(){	return console.log; }
-
-
-
-function add_personal(tag, login, auxillaries){
-	return new Promise(function (resolve, reject){
-		auxillaries.login = login || null;
-
-		var stat = new Statistic({tag:tag, auxillaries:auxillaries, Date:now() })
-		stat.save(function (err){
-			if (err) return reject(err);
-
-			resolve(1);
-		})
-
-	})
-}
-
-function updatedToday(){
-
-}
-
 function createDaily(tag){
 	return new Promise(function (resolve, reject){
-		var stat = new Statistic({ tag:tag, date:now(), attempt:0, fail:0 })
+		var stat = new Statistic({ tag:tag, date:now(), attempt:0, fail:0 });
 		stat.save(function (err){
 			if (err) return reject(err);
 
@@ -259,9 +229,9 @@ function findOrCreateDaily(tag){
 	}
 */
 
-function updateDaily(tag, updateQuery){
+function updateDaily(tag, updateQuery) {
 	return new Promise(function (resolve, reject){
-		Statistic.update({tag:tag, date:time.happened_today() }, updateQuery, function (err, count){
+		Statistic.update({ tag: tag, date: time.happened_today() }, updateQuery, function (err, count){
 			if (err) return reject(err);
 
 			if (helper.updated(count)) return resolve(1);
@@ -277,20 +247,20 @@ var currentDate;
 
 var log = console.log;
 
-function attempt_daily(tag, auxillaries){
+function attempt_daily(tag, auxillaries) {
 	return findOrCreateDaily(tag)
 	.then(function (result){
 		// log('findOrCreateDaily', tag, result);
-		log('attempt', tag, auxillaries)
+		log('attempt', tag, auxillaries);
 		return updateDaily(tag, {$inc: { attempt: 1 } })
 	})
 }
 
-function fail_daily(tag, auxillaries){
+function fail_daily(tag, auxillaries) {
 	return findOrCreateDaily(tag)
 	.then(function (result){
 		// log('findOrCreateDaily', result);
-		log('fail', tag, auxillaries)
+		log('fail', tag, auxillaries);
 		return updateDaily(tag, {$inc: { fail: 1 } })
 	})
 }
@@ -314,8 +284,8 @@ function get_daily(date){
 // get_daily();
 
 module.exports = {
-	attempt: attempt_daily
-	, fail: fail_daily
+	attempt: attempt_daily,
+	fail: fail_daily,
 
-	, get: get_daily
-}
+	get: get_daily
+};

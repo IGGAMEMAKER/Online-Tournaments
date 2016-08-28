@@ -32,7 +32,7 @@ var configs = require('./configs');
 var mailer = require('./sendMail');
 
 var domainName = configs.gameHost;//domainName
-var mailAuth = { user: configs.mailUser, pass: configs.mailPass }
+var mailAuth = { user: configs.mailUser, pass: configs.mailPass };
 
 //console.error(mailAuth);
 
@@ -114,7 +114,6 @@ app.post('/GetMessages', GetMessages);
 
 //app.post('/Actions', Actions);
 
-app.post('/UpdateFrontend', UpdateFrontend);
 app.post('/GetFrontendVersion', GetFrontendVersion);
 
 app.post('/payment', function(req, res){ 
@@ -125,24 +124,22 @@ app.post('/payment', function(req, res){
 app.post('/Mail', function (req, res){
 	Stats('Mail', {});
 	mailer.sendStd('23i03g@mail.ru', 'API Mail test', 'TEXT TEXT','TXT2', res);
-})
+});
 
 app.post('/StartSpecial', function(req, res){
 	sender.Answer(res, OK);
 
 	StartSpecial(req.body.tournamentID);
-})
+});
 
 app.post('/GetTournamentAddress' , GetTournamentAddress);
-
-//var statistics = require('./Modules/DB/stats')(app, AsyncRender, Answer, sender, Log, proxy);
 
 var Fail = {
 	result: 'fail'
 };
 var OK = {
 	result: 'OK'
-}
+};
 
 const TOURN_STATUS_REGISTER = 1;
 const TOURN_STATUS_RUNNING = 2;
@@ -263,33 +260,6 @@ function create_config(name, value, res){
 		if (err) return sender.Answer(res, null);
 
 		return res.end(value);
-	})
-}
-
-function UpdateFrontend(req, res){
-	console.error('UpdateFrontend');
-	Configs.findOne({name:'frontendVersion'}, function (err, version){
-		if (err) return sender.Answer(res, Fail);
-
-		var v=1;
-		if (version){
-
-			v = parseInt(version.value, 10);
-			v++;
-			v+= "";
-			Configs.update({name:'frontendVersion'}, { $set : { value : v } }, function (err, count){
-				if (err) return sender.Answer(res, Fail);
-
-				if (!updated(count)) {	
-					v="not updated";
-				}
-
-				res.end(v); 
-			})
-		} else {
-			create_config('frontendVersion', v+"", res);
-		}
-
 	})
 }
 
@@ -726,7 +696,6 @@ function last (Arr){
 
 function FinishGame (req, res){
 	var data = req.body;
-	//console.log('DBServer FinishGame');
 
 	Log(data);
 	var gameID = data['gameID'];
@@ -1722,7 +1691,7 @@ function UpdatePromos(tournamentID){
 								promoterIDs[ID]=1;
 								promoterIDsArray.push(ID);
 							}
-						};
+						}
 
 						for (var i = promoterIDsArray.length - 1; i >= 0; i--) {
 							var promoter = promoterIDsArray[i];//parseInt
@@ -1730,7 +1699,7 @@ function UpdatePromos(tournamentID){
 							var payment = buyIn*promoUsersCount*PROMO_COMISSION / 100;
 							Log('Promoter '+promoter + ' invited '+ promoUsersCount + ' players and deserves to get ' + payment + ' points (' + payment/100 + '$)')
 							incrMoney(null, promoter, payment, {type:SOURCE_TYPE_PROMO, tournamentID:tournamentID} );
-						};
+						}
 
 					}
 					else{
@@ -1787,7 +1756,7 @@ function YoungerizeTournament(tournament){
 		startDate:    null,
 		status:       null,
 		players:      0
-   }
+   };
 	// regular tournaments settings
 	if (tournament.settings) { // && data.regularity!="0"
 		obj.settings=tournament.settings;
@@ -1843,14 +1812,14 @@ function ClearRegistersInTournament(TRegIDs){
 				}
 			}
 		})
-	};
+	}
 }
 
 function killID(arr, field){
 	var list = [];
 	for (var i = arr.length - 1; i >= 0; i--) {
 		list.push(arr[i][field]);
-	};
+	}
 	// Log('killID result: ' + JSON.stringify(list) );
 	return list;
 }

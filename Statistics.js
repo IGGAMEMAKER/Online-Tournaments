@@ -39,7 +39,7 @@ var Tournament = mongoose.model('Tournament', {
 
 	startDate:Date,
 	finishDate:Date
-})
+});
 
 var ClientGameStats = mongoose.model('ClientGameStats', {
 	ID:String, //tournamentID
@@ -48,7 +48,7 @@ var ClientGameStats = mongoose.model('ClientGameStats', {
 	loaded:Number,
 	recievedData:Number, // 1 - if user got data from backend (questions in QS, coordinates in PP)
 	movements:Number // gt 0 - user increments this when he plays
-})
+});
 
 var DailyStats = mongoose.model('DailyStats', {
 	mail:Number,
@@ -63,7 +63,7 @@ var DailyStats = mongoose.model('DailyStats', {
 	resetPasswordFail:Number,
 
 	date:Date
-})
+});
 
 function getDefaultDailyStats(date){
 	return new DailyStats({
@@ -87,7 +87,7 @@ app.post('/GivePrize', function (req, res){
 	OK(res);
 	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
 	GivePrize(req.body.tournamentID);
-})
+});
 
 
 app.post('/Mail', function (req, res){
@@ -120,7 +120,7 @@ function dayQuery(date){
 		// $lt : ISODate("2014-07-03T00:00:00Z")
 		$gte : today, 
 		$lt : tmrw 
-	}
+	};
 	return query;
 }
 
@@ -139,8 +139,8 @@ function CreateDaily(date){
 
 	DailyStats.findOne({date:query},'', function (err, data){
 		if (err) { ERROR(err); }
-		else{
-			if (!data){
+		else {
+			if (!data) {
 				dailyStats.save(stdSaver('DailyStats saved!!'));
 				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
 			}
@@ -153,7 +153,7 @@ app.all('/createDailyStats', function (req, res){
 	//CreateDaily();
 	create_daily_for_month();
 	res.end('OK');
-})
+});
 
 create_daily_for_month();
 
@@ -163,7 +163,7 @@ function create_daily_for_month(){
 		//console.log(d)
 		// Wed Feb 29 2012 11:00:00 GMT+1100 (EST)
 
-		d.setDate(d.getDate() + i)
+		d.setDate(d.getDate() + i);
 		//console.log(d)
 		// Thu Mar 01 2012 11:00:00 GMT+1100 (EST)
 
@@ -196,13 +196,13 @@ function get_today_query(date){
 		// $lt : ISODate("2014-07-03T00:00:00Z")
 		$gte : new Date(dtToday + c), 
 		$lt : new Date(dtTommorow + c) 
-	}
+	};
 	return today;
 }
 
 
 function updTournament(tournamentID, todo, message){
-	Tournament.update( {ID: tournamentID}, todo, stdUpdateHandler(message) );
+	Tournament.update( { ID: tournamentID }, todo, stdUpdateHandler(message) );
 }
 
 function GivePrize(tournamentID){
@@ -213,13 +213,13 @@ app.post('/Register', function (req, res){
 	OK(res);
 
 	updateDaily({$inc: {register:1} }, 'Register');
-})
+});
 
 app.post('/RegisterFail', function (req, res){
 	OK(res);
 
 	updateDaily( {$inc: {registerFail:1} }, 'RegisterFail');
-})
+});
 
 app.post('/ResetPassword', function (req, res){
 	OK(res);
@@ -229,7 +229,7 @@ app.post('/ResetPassword', function (req, res){
 	/*if (result==1){
 		Profile.update({login:login}, {$inc : {resetPasswordAttempt: 1 } }, stdUpdateHandler('ResetPassword ' + req.body.login));
 	}*/
-})
+});
 
 function updateDaily(todo, message){
 	var today = getTodayQuery();
@@ -242,32 +242,35 @@ app.post('/ResetPasswordFail', function (req, res){
 	//var login = req.body.login;
 	updateDaily({$inc : {resetPasswordFail:1}}, 'resetPasswordFail');
 	// if (result==1) { Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login)); }
-})
+});
 
 app.post('/StartTournament', function (req, res){ // starts in tournament Server
 	StartTournament(req.body.tournamentID, req.body.players , res);
-})
+});
 
 app.post('/AttemptToStart', function (req, res){
-	var tournamentID = req.body.tournamentID||0;
-	var login = req.body.login||null;
+	var tournamentID = req.body.tournamentID || 0;
+	var login = req.body.login || null;
+
 	AttemptToStart(tournamentID, login , res);
-})
+});
 
 
-app.post('/RestartTournament', function (req, res){ OK(res); })
+app.post('/RestartTournament', function (req, res){ OK(res); });
 
 app.post('/UserGetsData' , function (req, res){
 	OK(res);
 
 	UserGetsData(req.body.tournamentID, req.body.login);
-})
+});
 
-app.post('/GameWorks', function (req, res){ GameWorks(req.body.tournamentID); })
+app.post('/GameWorks', function (req, res){
+	GameWorks(req.body.tournamentID);
+});
 
 app.post('/ClosedTournament', function (req, res){// Closed by force
 
-})
+});
 
 app.post('/FinishedTournament', function (req, res){ // finished in TS (or, maybe DB)
 	OK(res);
@@ -275,7 +278,7 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 	var tournamentID = req.body.tournamentID;
 	Log('FinishedTournament ' + tournamentID, STREAM_STATS);
 	updTournament(tournamentID, {$inc : { finished:1 }}, 'FinishedTournament');
-})
+});
 
 function processStats(tournaments, dailyStats){
 	console.log('dailyStats: ');
@@ -302,7 +305,7 @@ function processStats(tournaments, dailyStats){
 
 		resetPassword:[],
 		resetPasswordFail:[]
-	}
+	};
 	for (var i = 0; i <= tournaments.length - 1; i++) {
 		var t = tournaments[i];
 		console.log('Loaded: ' + t.loaded);
@@ -321,7 +324,7 @@ function processStats(tournaments, dailyStats){
 		obj.IDs.push(t.ID||0);
 
 		//obj.openSuccess += 
-	};
+	}
 	console.log(dailyStats.mail);
 	obj.register.push(dailyStats.register||0);
 	obj.registerFail.push(dailyStats.registerFail||0);
@@ -363,7 +366,7 @@ function getTodayQuery(date){
 
 	var monthNext = '1';
 	var month2 = month;
-	if (month<=9)	month2 = '0'+month
+	if (month<=9)	month2 = '0' + month;
 
 	var c = "T00:00:00.000Z";
 	var c2 = "T23:59:59.000Z";
@@ -379,8 +382,9 @@ function getTodayQuery(date){
 
 		$gte : new Date(dtToday + c), 
 		$lt : new Date(dtToday + c2) 
-	}
+	};
 	console.log('getTodayQuery',dtToday, dtTommorow, today);
+
 	return today;
 	//}
 }
@@ -390,7 +394,7 @@ app.get('/', function (req, res){
 
 	var query = {
 		startDate: getTodayQuery()
-	}
+	};
 	console.log('query', query);
 
 	getTournamentStats(query)
@@ -404,17 +408,16 @@ app.get('/', function (req, res){
 	})
 	.catch(stdCatcher(res));
 	// res.end('OK');
-})
+});
 
 app.post('/GetTournaments', function (req, res){
 	Log('/GetTournaments', STREAM_STATS);
 
 	var query = {
 		startDate: getTodayQuery()
-	}
+	};
 
 	//Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
-//
 	getTournamentStats(query)
 	.then(getDailyStats)
 	.then(function (data){
@@ -424,7 +427,7 @@ app.post('/GetTournaments', function (req, res){
 
 
 	//res.json
-})
+});
 
 function stdCatcher(res){
 	return function (err){
@@ -476,7 +479,7 @@ app.post('/GameLoaded', function (req, res){
 	var login = req.body.login;
 
 	GameLoaded(tournamentID, login);
-})
+});
 
 function GameLoaded(tournamentID, login){
 	// console.log('GameLoaded : ', tournamentID, login);
@@ -499,11 +502,11 @@ app.get('/ClientGameStats', function (req, res){
 
 		// res.render('')
 		res.json(stats||null);
-	})
+	});
 	/*.catch(function (err){
 		res.json({err:err});
 	})*/
-})
+});
 
 app.post('/mark/game/:name', function (req, res){
 	res.end('');
@@ -513,11 +516,11 @@ app.post('/mark/game/:name', function (req, res){
 
 	switch(name){
 		case 'drawPopup':
-			update_tournament_stats({tournamentID:tournamentID})
+			update_tournament_stats({tournamentID:tournamentID});
 		break;
 	}
 	// update_tournament_stats({})
-})
+});
 
 function GameWorks(tournamentID){
 	Tournament.update({ID:tournamentID}, {$inc: {works:1} }, stdUpdateHandler('GameWorks'));
@@ -544,7 +547,7 @@ function AttemptToStart (tournamentID, login, res){
 				Log('AttemptToStart Tournament.update failed: ' + JSON.stringify(count), STREAM_STATS );
 			}
 		}
-	})
+	});
 	console.error('At least tried to update Tournament attempts ', tournamentID, login);
 
 	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} }, 
@@ -562,7 +565,7 @@ function createStatTournament(tournamentID, players){
 		else{
 			Log('createStatTournament OK! ' + tournamentID, STREAM_STATS);
 		}
-	})
+	});
 
 	for (var i = players.length - 1; i >= 0; i--) {
 		var cliGameStat = new ClientGameStats({ID:tournamentID,
@@ -573,7 +576,7 @@ function createStatTournament(tournamentID, players){
 			movements:0});
 
 		cliGameStat.save(stdSaver('cliGameStat saved!'));
-	};
+	}
 }
 
 // ---- AUXillary functions
@@ -605,26 +608,6 @@ function stdUpdateHandler(message){
 	}
 
 }
-
-function stdFindHandler(message, res, dataProcessor){
-	return function (err, data){
-		if (err) { ERROR(err); }
-		else{
-			Log(message + 'found : ' + JSON.stringify(data), STREAM_STATS);
-			if (dataProcessor) { 
-				var obj = dataProcessor(data); 
-				console.log('processed: ' + JSON.stringify(obj) );
-				// console.log(obj);
-				core.Answer(res, obj);
-				//res.json(obj);
-			}else{
-				core.Answer(res, data||null);
-				//res.json(data||null);
-			}
-		}
-	}
-}
-
 
 function ERROR(err){
 	Log(err, STREAM_ERROR);

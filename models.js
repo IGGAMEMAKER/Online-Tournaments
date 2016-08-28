@@ -193,7 +193,7 @@ module.exports = function(dbAddress){
 			tag: String, // topic
 			auxillaries: Object, // if personal it must be { login:login }
 			attempt: Number,
-			fail: Number,
+			fail: Number
 
 		})
 
@@ -205,6 +205,11 @@ module.exports = function(dbAddress){
 			auxillaries: Object
 		})
 
+		,Pulse: db.model('Pulse', {
+			data: Object,
+			time: Date
+		})
+
 	}
-}
+};
 
