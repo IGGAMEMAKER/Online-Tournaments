@@ -29,7 +29,9 @@ var OK = {
 };
 var sender = require('../../requestSender');
 
-module.exports = function(app, AsyncRender) {
+var AsyncRender = require('../../helpers/AsyncRender');
+
+module.exports = function(app) {
 	function destroy_session(req, res, next){
 		var login = req.login;
 		req.session.destroy(function (err){

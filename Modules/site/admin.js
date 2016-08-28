@@ -8,12 +8,12 @@ var middlewares = require('../../middlewares');
 var isAdmin = middlewares.isAdmin;
 
 var logger = require('../../helpers/logger');
-var multer  = require('multer');
 
 var API = require('../../helpers/API');
 
 var mailer = require('../../sendMail');
 
+var multer  = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     var tournamentID = req.body.tournamentID;
@@ -36,11 +36,13 @@ var storage = multer.diskStorage({
     }
   }
 });
-
 var upload = multer({ storage: storage }).single('questions');
+
 var sender = require('../../requestSender');
 
-module.exports = function(app, AsyncRender) {
+var AsyncRender = require('../../helpers/AsyncRender');
+
+module.exports = function(app) {
   app.post('/Admin', isAdmin, (req, res) => {
     var command = req.body.command || '';
     switch(command) {

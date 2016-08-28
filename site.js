@@ -31,12 +31,9 @@ var mongoose = require('mongoose');
 var sessionDBAddress = configs.session;
 mongoose.connect('mongodb://' + sessionDBAddress + '/sessionDB');
 
-var Users = require('./models/users');
-var Actions = require('./models/actions');
-var Errors = require('./models/errors');
-var Tournaments = require('./models/tournaments');
+var API = require('./helpers/API');
 
-var Packs = require('./models/packs');
+var Users = require('./models/users');
 
 var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
@@ -65,12 +62,12 @@ passport.use(
 
     sender.sendRequest("findOrCreateUser", profile, '127.0.0.1', 'DBServer', null, function (err, response, body, res){
       if (err) {
-        Errors.add(null, 'passport.use', { profile:profile, err:err });
+        API.errors.add(null, 'passport.use', { profile:profile, err:err });
         return done(err, null);
       }
 
       if (!body) {
-        Errors.add(null, 'passport.use.body.null', { err:err });
+        API.errors.add(null, 'passport.use.body.null', { err:err });
         // done(null, {})
         // return done(12, null);
         done(null, {})
@@ -204,7 +201,7 @@ var markPaymentPageOpening = (req, res, next) => {
   var ammount = req.query.ammount || null;
   var type = req.query.buyType || null;
 
-  Actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
+  API.actions.add(req.login || 'user-undefined', 'Payment-page-opened', { ammount, type });
 
   next();
 };
@@ -231,12 +228,12 @@ app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
 // var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var gifts = require('./Modules/site/gifts')(app, aux);
-var admin = require('./Modules/site/admin')(app, AsyncRender);
+var admin = require('./Modules/site/admin')(app);
 var money = require('./Modules/site/money')(app, aux);
 
-var user = require('./Modules/site/user')(app, AsyncRender);
+var user = require('./Modules/site/user')(app);
 var tournaments = require('./Modules/site/tournaments')(app, aux);
-var clientStats = require('./Modules/site/clientStats')(app, AsyncRender, aux);
+var clientStats = require('./Modules/site/clientStats')(app, aux);
 
 var mailchimp = require('./routes/mailchimp')(app, aux);
 var messages = require('./routes/messages')(app, aux);
@@ -247,66 +244,14 @@ var messages = require('./routes/messages')(app, aux);
 
 // var TournamentReg = require('./models/tregs');
 
-function AsyncRender(targetServer, reqUrl, res, options, parameters){ //options: parameters, renderPage, callback, sender, failCallback
-  var basicInfo = targetServer+': /' + reqUrl + ' ';
-  if (parameters) basicInfo += JSON.stringify(parameters);
-  // res==null generally means that I will use it in promise cascade
-  Log('AsyncRender', 'Transport');
-
-  if (targetServer && reqUrl){
-    sender.sendRequest(reqUrl, parameters || {}, '127.0.0.1', targetServer, res||null, function (err, response, body, res){
-      Log(JSON.stringify(body), 'Transport');
-      //if (err) return handleError(err, targetServer, reqUrl, res || null, options || null, 'ERR');
-      if (!options){
-        // We don't know, which page to render or what to do with this data, 
-        // so we ... 
-        if (res) { sender.Answer(res, body); } //send data to client Server or client ajax script
-        else{ return body; } // or return an answer if it is used in promise
-      }
-
-      else{
-        if (options.callback){ // if we have a callback - run it!
-          if (options.failCallback){
-            Log('failCallback exists!! body.result: ' + body.result, 'Transport');
-            switch (body.result){
-              case 'OK': break;
-              default: 
-                options.failCallback(res || null, body, options, parameters);
-                return;
-              break;
-            }
-          }
-          Log(' execute normal callback: ' + reqUrl + ' ', 'Transport');
-          //else - execute normally
-          options.callback(res || null, body, options, parameters);
-        }
-        else{ // ... or try to render page/ answer JSON/ return value(answer)
-          Log(' No callback found... try to deal with it ' + basicInfo, 'Transport');
-          if (options.renderPage) { //if renderPage is specified we try render it
-            if (res) { res.render(options.renderPage, {msg:body} ); } //we can send data properly
-            else { Log('Oops, you specified a renderPage |' + options.renderPage + '.jade| but forgot to pass res(ponse) object ', 'WARN'); }
-          } 
-          else{
-            if (res){ sender.Answer(res, body); }
-            else{ return body; }
-          }
-        }
-
-      }
-
-    });
-
-  }
-}
-
 // var CRON_TASK = schedule.scheduleJob('33 * * * * *', function(){
 //   console.log('The answer to life, the universe, and everything!');
 // });
 
 
-function Log(data, topic){
-  JSLog({msg:data}, topic);
-}
+// function Log(data, topic){
+//   JSLog({msg:data}, topic);
+// }
 
 var Fail = { result:'fail' };
 
@@ -494,7 +439,7 @@ app.post('/addQuestion', middlewares.authenticated, function (req, res){
 /*app.get('/vk-auth', function (req, res){
   var uid = req.query.uid;
   var first_name = req.query.first_name;
-  Log('uid: ' + uid + '. '+ first_name, 'Users');
+  log('uid: ' + uid + '. '+ first_name, 'Users');
   //var last_name = 
   res.end('uid ' + uid + ' OK!');
 })*/
@@ -504,7 +449,7 @@ function vkAuthSuccess(req, res, next) {
   req.login = login;
   // Log("SetInviter " + inviter + " for " + login, "Users");
 
-  Actions.add(login, 'login', { auth:'vk' });
+  API.actions.add(login, 'login', { auth:'vk' });
   next();
   // saveSession(req, res, inviter, login);
 }
@@ -514,7 +459,7 @@ function session_save(req, res, next){
 
   req.session.save(function (err){
     if (err) {
-      Errors.add(login, 'session_save', { err:err });
+      API.errors.add(login, 'session_save', { err:err });
       // res.render(inviterUrl,{msg:err});
       return next(err);
     }
@@ -573,7 +518,7 @@ app.post('/Winners', function (req, res){
 var players = {};
 
 setInterval(function () {
-  Log('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
+  logger.debug('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
   players = {};
 }, 60000);
 

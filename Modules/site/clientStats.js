@@ -15,7 +15,9 @@ var middlewares = require('../../middlewares');
 
 var sender = require('../../requestSender');
 
-module.exports = function(app, AsyncRender, aux){
+var AsyncRender = require('../../helpers/AsyncRender');
+
+module.exports = function(app, aux){
 	app.post('/AttemptToStart', function (req, res){
 		// console.log('AttemptToStart');
 		sender.Answer(res, OK);
@@ -49,7 +51,7 @@ module.exports = function(app, AsyncRender, aux){
 		console.log('Stats CATCHED HERE', 'GameLoaded : ' + login + ' ' + tournamentID);
 		Stats.attempt('gameLoaded');
 
-		
+
 	});
 
 	app.post('/NoMoney', function (req, res){
@@ -120,7 +122,7 @@ module.exports = function(app, AsyncRender, aux){
 	app.post('/message/shown', middlewares.authenticated, function (req, res){
 		res.end('');
 		// console.log('message/shown');
-		
+
 		var login = req.login;
 		var id = req.body.id;
 		var options = req.body.options;
@@ -143,7 +145,7 @@ module.exports = function(app, AsyncRender, aux){
 
 		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
 	});
-	
+
 	app.get('/mark/clientError', middlewares.authenticated, function (req, res){
 		res.end('');
 
@@ -156,7 +158,7 @@ module.exports = function(app, AsyncRender, aux){
 		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
 	});
 	//statistics Data
-	
+
 	app.get('/Stats', function (req, res){
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
 		//res.render('Stats');
@@ -245,7 +247,7 @@ module.exports = function(app, AsyncRender, aux){
 		.then(answer(req, next))
 		.catch(next);
 
-/*		
+/*
 		.then(function (data){
 			// throw new Error('my','bla bla');
 			req.data = data;
