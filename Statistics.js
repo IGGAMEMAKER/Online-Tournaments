@@ -2,21 +2,14 @@ var core = require('./core');
 var serverName = 'Stats';
 core.StartServer({host:'localhost', port:5002, serverName:serverName});
 var app = core.app;
-var sendRequest = core.sendRequest;
 var Log = core.Log;
 var OK = core.OK;
-var Fail = core.Fail;
-var str = core.str;
 
 var handler = require('./errHandler')(app, Log, serverName);
 var Promise = require('bluebird');
 
 
 const STREAM_ERROR = 'Err';
-const STREAM_TOURNAMENTS = 'Tournaments';
-const STREAM_USERS = 'Users';
-const STREAM_SHIT = 'shitCode';
-const STREAM_WARN = 'WARN';
 const STREAM_STATS = 'stats';
 
 var configs = require('./configs');
@@ -25,7 +18,7 @@ var mongoose = require('mongoose');
 var stat_server_address = configs.stats || 'localhost';
 mongoose.connect('mongodb://'+stat_server_address+'/stats');
 
-var Tournament = mongoose.model('Tournament', { 
+var Tournament = mongoose.model('Tournament', {
 	started: Number,
 	finished: Number,
 	restarted: Number,
@@ -118,15 +111,15 @@ function dayQuery(date){
 	var query = {
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
 		// $lt : ISODate("2014-07-03T00:00:00Z")
-		$gte : today, 
-		$lt : tmrw 
+		$gte : today,
+		$lt : tmrw
 	};
 	return query;
 }
 
 function CreateDaily(date){
 	var dailyStats = getDefaultDailyStats();
-	if (date) { 
+	if (date) {
 		var dt = new Date(date.getFullYear(), date.getMonth(), date.getDate() );
 		dailyStats = getDefaultDailyStats(dt);
 	}
@@ -145,7 +138,7 @@ function CreateDaily(date){
 				//DailyStats.update({date:today}, dailyStats, {upsert:true}, stdUpdateHandler('CreateDaily'));
 			}
 		}
-	})	
+	})
 }
 
 app.all('/createDailyStats', function (req, res){
@@ -194,8 +187,8 @@ function get_today_query(date){
 	var today = {
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
 		// $lt : ISODate("2014-07-03T00:00:00Z")
-		$gte : new Date(dtToday + c), 
-		$lt : new Date(dtTommorow + c) 
+		$gte : new Date(dtToday + c),
+		$lt : new Date(dtTommorow + c)
 	};
 	return today;
 }
@@ -284,11 +277,13 @@ function processStats(tournaments, dailyStats){
 	console.log('dailyStats: ');
 	// console.log(dailyStats);
 	var obj = {
-		/*started:0,
+		/*
+		started:0,
 		finished:0,
 		prized:0,
 		attempts:0,//opening attempts
-		openSuccess:0*/
+		openSuccess:0
+		*/
 
 		IDs:[],
 		started:[],
@@ -380,8 +375,8 @@ function getTodayQuery(date){
 		// $gte : ISODate("2015-11-02T00:00:00Z"), 
 		// $lt : ISODate("2014-07-03T00:00:00Z")
 
-		$gte : new Date(dtToday + c), 
-		$lt : new Date(dtToday + c2) 
+		$gte : new Date(dtToday + c),
+		$lt : new Date(dtToday + c2)
 	};
 	console.log('getTodayQuery',dtToday, dtTommorow, today);
 
@@ -467,7 +462,7 @@ function getDailyStats(stats){
 //app.post('/')
 
 function UserGetsData(tournamentID, login){
-	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {recievedData : 1 }}, 
+	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {recievedData : 1 }},
 		stdUpdateHandler('UserGetsData ' + tournamentID + ' ' + login));
 }
 
@@ -483,7 +478,7 @@ app.post('/GameLoaded', function (req, res){
 
 function GameLoaded(tournamentID, login){
 	// console.log('GameLoaded : ', tournamentID, login);
-	
+
 	ClientGameStats.update({ID: tournamentID, login:login}, {$inc : {loaded :1} },
 		stdUpdateHandler('GameLoaded ' + tournamentID + ' ' + login));
 
@@ -550,12 +545,12 @@ function AttemptToStart (tournamentID, login, res){
 	});
 	console.error('At least tried to update Tournament attempts ', tournamentID, login);
 
-	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} }, 
+	ClientGameStats.update({ID:tournamentID, login:login}, {$inc : {started:1} },
 		stdUpdateHandler('AttemptToStart ClientGameStats.update'));
 }
 
 function createStatTournament(tournamentID, players){
-	var tournament = {started:1, finished:0, works:0, restarted:0, ID:tournamentID, attempts:0, 
+	var tournament = {started:1, finished:0, works:0, restarted:0, ID:tournamentID, attempts:0,
 		prized:0, loaded:0, startDate: new Date(), finishDate: null};
 
 	var statTournament = new Tournament(tournament);

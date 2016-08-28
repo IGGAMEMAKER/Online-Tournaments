@@ -19,8 +19,8 @@ var logger = require('./helpers/logger');
 var server;
 
 
-var respond = require('./middlewares/api-response');
-var SOCKET_ON=1;
+
+var SOCKET_ON = 1;
 var socket_enabled=SOCKET_ON;
 
 app.use(express.static('./frontend/public'));
@@ -39,8 +39,9 @@ var passport = require('passport');
 var VKontakteStrategy = require('passport-vkontakte').Strategy;
 //console.log(configs, configs.vk);
 
-var request = require('request');
 var middlewares = require('./middlewares');
+
+var addQuestion = require('./middlewares/add-quiz-question');
 
 passport.serializeUser(function(user, done) { 
   done(null, user);
@@ -115,7 +116,7 @@ app.use(passport.session());
 
 var requestCounter=0;
 
-app.use(function(req,res,next){
+app.use(function(req, res, next) {
   //console.log('req.user', req.user, 'req.session', req.session);
 
   requestCounter++;
@@ -145,6 +146,7 @@ app.use(function(req,res,next){
 
 /*app.set('views', './views');
 app.set('views', './games/PingPong');*/
+
 var views = [
   './frontend/views',
   './frontend/views/admin',
@@ -152,6 +154,7 @@ var views = [
   './frontend/games/Questions',
   './frontend/games/Football'
 ];
+
 app.set('views', views);
 //app.set('games/PingPong', './views');
 
@@ -225,8 +228,8 @@ app.get('/admin/support', middlewares.isAdmin, admin_page);
 app.get('/admin/support-chat', middlewares.isAdmin, admin_page);
 app.get('/admin/packs', middlewares.isAdmin, admin_page);
 
+app.get('/Football', function (req, res) { res.render('Football'); });
 
-// var collections = require('./Modules/site/collections')(app, Answer, sender, Log, aux);
 var gifts = require('./Modules/site/gifts')(app, aux);
 var admin = require('./Modules/site/admin')(app);
 var money = require('./Modules/site/money')(app, aux);
@@ -238,11 +241,7 @@ var clientStats = require('./Modules/site/clientStats')(app, aux);
 var mailchimp = require('./routes/mailchimp')(app, aux);
 var messages = require('./routes/messages')(app, aux);
 
-// var category = require('./routes/category')(app, aux, realtime, SOCKET, io);
-
 // var teamz = require('./routes/teams')(app, aux, SOCKET, io);
-
-// var TournamentReg = require('./models/tregs');
 
 // var CRON_TASK = schedule.scheduleJob('33 * * * * *', function(){
 //   console.log('The answer to life, the universe, and everything!');
@@ -250,199 +249,18 @@ var messages = require('./routes/messages')(app, aux);
 
 
 // function Log(data, topic){
-//   JSLog({msg:data}, topic);
+//   JSLog({ msg: data }, topic);
 // }
 
-var Fail = { result:'fail' };
-
-var PRICE_FREE = 4;
-var PRICE_TRAINING = 5;
-
-var PRICE_GUARANTEED = 3;
-  var PRICE_NO_EXTRA_FUND = 2;
-var PRICE_CUSTOM = 1;  //
-
-
-  var COUNT_FIXED = 1;
-var COUNT_FLOATING = 2;
-
-
-
-function isNumeric(num) { return !isNaN(num); }
-
-app.get('/counter', function (req, res){
-  res.json({requests:requestCounter});
-});
-
-app.post('/FinishGame', FinishGame);
-
-
-app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
-app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
-
-function Landing(name, picture){
-  return function (req, res){
-    var obj = { landing: name };
-    if (picture) obj.picture = picture;
-
-    if (isAuthenticated(req)){
-      return res.redirect('/')
-    }
-    res.render('landing/'+name, obj);
-  }
-}
-
-app.get('/realtime/update', middlewares.isAdmin, function(req, res){
-  realtime().UPDATE_ALL();
-  res.end('OK');
-});
-
-var tournament_finisher = require('./chains/finishTournament')(aux);
-
-function FinishGame(req, res){
-  var data = req.body;
-  sender.Answer(res, { result:'OK', message: 'FinishGame' } );
-
-  logger.log('FinishGame', data);
-
-  tournament_finisher.finish(data);
-}
-
-
-app.all('/StartTournament', function (req, res){
-  logger.log('Site starts tournament');
-  var data = req.body;
-
-  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
-
-    var obj = {
-      tournamentID: data.tournamentID,
-      port: data.port,
-      host: data.host,
-      logins: data.logins
-    };
-    Send('StartTournament', obj);
-    // io.emit('StartTournament', obj);
-  //+req.body.tournamentID
-  res.end();
-});
-
-function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user;
-
-app.post('/Log', function (req, res){
-  //res.end('sended');
-  res.end('');
-  var msg = req.body;
-  var topic = req.body.topic;
-  //console.log(topic);
-  JSLog(msg, topic || null);
-});
-
-app.get('/Log', function (req, res){
-  res.sendFile(__dirname + '/Logs.html');
-});
-
-app.get('/Football', function (req, res) {
-  res.render('Football');
-});
-// packs + cards
-
-// --- end packs
-
-app.get('/Total', (req, res) => { res.render('Total')});
-
-app.get('/SpecLogs/:topic', function (req, res){
-  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
-  var topic = req.params.topic||'Forever';
-  res.render('SpecLogs', {topic:topic});
-});
-
-function JSLog(msg, topic){
-  if (socket_enabled) {
-    io.emit(topic?topic:'Logs', JSON.stringify(msg));
-  }
-}
-
-app.get('/Alive', function (req, res){ res.render('Alive'); });
-app.get('/test-chat', function (req, res){ res.sendFile(__dirname + '/sock.html'); });
-
-app.post('/addQuestion', middlewares.authenticated, function (req, res){
-  var login = req.login;
-  var data = req.body;
-  var question = data.question;
-
-  //
-  var answer1 = data.answer1;
-  var answer2 = data.answer2;
-  var answer3 = data.answer3;
-  var answer4 = data.answer4;
-
-  var topic = data.topic;
-
-  var answers = [];
-  answers.push(answer1);
-  answers.push(answer2);
-  answers.push(answer3);
-  answers.push(answer4);
-
-  var correct = data.correct;
-  var obj = {
-    createdBy: login,
-    question: question,
-    answers: answers,
-    correct: correct
-  };
-
-  if (topic) {
-    obj.topic = topic;
-  }
-  console.log(obj);
-
-  var question_is_valid = login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct);
-  if (!question_is_valid) return res.json({ code:0, msg: 'Произошла ошибка' })
-
-  sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
-    if (error) return res.json({ code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
-    if (body){
-      var code=0;
-      var message = 'Ошибка';
-
-      if (body.result=='ok') {
-        code = 1;
-        message = 'Добавление произошло успешно, вопрос отправлен на модерацию!';
-
-        Send('activity', { type:'addQuestion', sender: login, about: topic||' всё обо всём' })
-      }
-      res.json({ code:code , msg:message });
-    }
-  });
-
-  // if (login && question && answer1 && answer2 && answer3 && answer4 && correct && !isNaN(correct)){
-  //   sender.customSend("offerQuestion", obj, '127.0.0.1', 5010, res, function (error, response, body, res){
-  //     if (error) return res.render('AddQuestion', { code:0, msg: 'Ошибка сервера. Повторите вашу попытку чуть позже' })
-  //     if (body){
-  //       var code=0;
-  //       var message = 'Ошибка';
-  //       if (body.result=='ok') {
-  //         code = 1;
-  //         message = 'Добавление произошло успешно, вопрос отправлен на модерацию!'
-  //       }
-  //       res.render('AddQuestion', { code:code , msg:message });
-  //     }
-  //   });
-  // } else {
-  //   res.render('AddQuestion', { code:0, msg: 'Произошла ошибка' });
-  // }
-});
 
 //Error: Failed to serialize user into session
 /*app.get('/vk-auth', function (req, res){
-  var uid = req.query.uid;
-  var first_name = req.query.first_name;
-  log('uid: ' + uid + '. '+ first_name, 'Users');
-  //var last_name = 
-  res.end('uid ' + uid + ' OK!');
-})*/
+ var uid = req.query.uid;
+ var first_name = req.query.first_name;
+ log('uid: ' + uid + '. '+ first_name, 'Users');
+ //var last_name =
+ res.end('uid ' + uid + ' OK!');
+ })*/
 
 function vkAuthSuccess(req, res, next) {
   var login = req.user.login;
@@ -465,7 +283,7 @@ function session_save(req, res, next){
     }
 
     req.session.login = login;
-    
+
     res.redirect('/');// AUTH_SUCCESS_REDIRECT_PAGE
     // next();
   })
@@ -474,6 +292,54 @@ function session_save(req, res, next){
 var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display: 'mobile' });
 
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
+
+
+function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user;
+
+function Landing(landing, picture) {
+  return function (req, res) {
+    if (isAuthenticated(req)) {
+      return res.redirect('/')
+    }
+
+    res.render('landing/' + landing, { landing, picture });
+  }
+}
+
+app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
+app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
+
+
+
+// tournaments ....
+
+var tournament_finisher = require('./chains/finishTournament')(aux);
+
+app.post('/FinishGame', function (req, res){
+  var data = req.body;
+  sender.Answer(res, { result:'OK', message: 'FinishGame' } );
+
+  logger.log('FinishGame', data);
+
+  tournament_finisher.finish(data);
+});
+
+app.all('/StartTournament', function (req, res) {
+  logger.log('Site starts tournament');
+  var data = req.body;
+
+  sender.sendRequest("StartTournament", data, '127.0.0.1', 'GameFrontendServer', null, sender.printer);//sender.printer
+
+    var obj = {
+      tournamentID: data.tournamentID,
+      port: data.port,
+      host: data.host,
+      logins: data.logins
+    };
+    Send('StartTournament', obj);
+  //+req.body.tournamentID
+  res.end();
+});
 
 app.post('/tellToFinishTournament', function (req, res){
   sender.Answer(res, { result: 'OK', message: 'FinishGame' } );
@@ -485,27 +351,6 @@ app.post('/tellToFinishTournament', function (req, res){
   Send('FinishTournament', { tournamentID, data })
 });
 
-// server = app.listen(8888, function () {
-//   var host = server.address().address;
-//   var port = server.address().port;
-
-//   console.log('Example app listening at http://%s:%s', host, port);
-// });
-// // socket land
-
-// var io;
-// var SOCKET = require('./socket')(app, server)
-// if (socket_enabled){
-//   io = SOCKET.io;
-// }
-
-function Send(tag, message, force){
-  if (socket_enabled || force){
-    io.emit(tag, message);
-    // deleted here
-  }
-}
-
 app.post('/Winners', function (req, res){
   res.end('OK');
   var winners = req.body.winners;
@@ -514,7 +359,53 @@ app.post('/Winners', function (req, res){
   Send('winners', { winners, tournamentID });
 });
 
+// --tournaments end
 
+function Send(tag, message, force) {
+  if (socket_enabled || force){
+    io.emit(tag, message);
+    // deleted here
+  }
+}
+
+// etc
+
+app.get('/counter', function (req, res){
+  res.json({ requests: requestCounter });
+});
+
+app.get('/realtime/update', middlewares.isAdmin, function(req, res){
+  realtime().UPDATE_ALL();
+  res.end('OK');
+});
+
+app.post('/Log', function (req, res){
+  //res.end('sended');
+  res.end('');
+  var msg = req.body;
+  var topic = req.body.topic;
+  //console.log(topic);
+  Send(topic || 'Logs', JSON.stringify(msg));
+});
+
+app.get('/Log', function (req, res){
+  res.sendFile(__dirname + '/Logs.html');
+});
+
+app.get('/SpecLogs/:topic', function (req, res){
+  //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
+  var topic = req.params.topic || 'Forever';
+  res.render('SpecLogs', { topic: topic });
+});
+
+
+app.get('/Alive', function (req, res){ res.render('Alive'); });
+
+app.post('/addQuestion', middlewares.authenticated, addQuestion);
+
+
+
+// pulse
 var players = {};
 
 setInterval(function () {
@@ -534,3 +425,19 @@ app.post('/mark/Here', middlewares.authenticated, function (req, res){
 
   res.end('');
 });
+
+
+
+// server = app.listen(8888, function () {
+//   var host = server.address().address;
+//   var port = server.address().port;
+
+//   console.log('Example app listening at http://%s:%s', host, port);
+// });
+// // socket land
+
+// var io;
+// var SOCKET = require('./socket')(app, server)
+// if (socket_enabled){
+//   io = SOCKET.io;
+// }
