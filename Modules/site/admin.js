@@ -84,20 +84,15 @@ module.exports = function(app) {
 
     res.end('StartSpecial ' + tournamentID);
 
-    if (tournamentID > 0) sender.sendRequest('StartSpecial', { tournamentID }, 'localhost', 'DBServer');
+    if (tournamentID > 0) {
+      sender.sendRequest('StartSpecial', { tournamentID }, 'localhost', 'DBServer');
+    }
   });
 
   function GetGameFromGameServer(res, gameNameID){
     var servName = gameNameID;
     AsyncRender(servName, 'GetGames', res);
   }
-
-  app.get("/UpdateFrontend", function (req, res) {
-    sender.sendRequest("UpdateFrontend", {}, '127.0.0.1', 'DBServer', res, function (err, response, body, res){
-      res.end(JSON.stringify(body));
-    });
-  });
-
 
   function stopTournament(res, tournamentID){
     logger.log('stopTournament', 'Admin.js', tournamentID);

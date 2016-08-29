@@ -34,19 +34,19 @@ module.exports = function (app, aux) {
       data.money = money * 100;
       data.cash = money * 100;
 
-      sender.sendRequest("CashoutRequest", {
+      var obj = {
         login,
         money,
         cardNumber
-      }, '127.0.0.1', "DBServer", res,
-        function (error, body, response, res1) {
-          if (error) {
-            console.error("CashoutRequest error", error);
-            return sender.Answer(res, Fail);
-          }
-          if (body) return sender.Answer(res, body);
-          sender.Answer(res, Fail);
-        });
+      };
+      sender.sendRequest("CashoutRequest", obj, '127.0.0.1', "DBServer", res, function (error, body, response, res1) {
+        if (error) {
+          console.error("CashoutRequest error", error);
+          return sender.Answer(res, Fail);
+        }
+        if (body) return sender.Answer(res, body);
+        sender.Answer(res, Fail);
+      });
     } else {
       return sender.Answer(res, Fail);
     }
@@ -304,19 +304,6 @@ module.exports = function (app, aux) {
     var login = data.PAYSTO_PAYER_ID;
 
     logger.log("app.post('/payment/checkID'", data);
-    /*sender.sendRequest('userExists', {userID:login}, '127.0.0.1', "DBServer", res, function (error, body, response, res1){
-     if (error) {
-     res.end(PAY_NO);
-     console.error('fail while user ', login, ' tries to pay. payment/checkID', error);
-     } else {
-     if (body){
-
-     }
-     }
-     })*/
-    //console.error('user exists?');
-    //console.error(data);
     res.end('YES');
   })
-
 };

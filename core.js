@@ -45,7 +45,7 @@ app.post('/Stop', function (req, res){
 	server.close();
 	console.log(process.pid);
 	process.exit(0);
-})
+});
 
 
 //Log('Server Core starts!!');
@@ -109,22 +109,7 @@ function startServer(port){
 		});
 	}
 }
-function DBupdate(urlPath, curData, host, res, responseCallBack){
-	if (!host) {host = 'localhost';}
-	if (res && responseCallBack){
-		Log('DBupdate:' + str(curData) +' host: '+host);
 
-		sendRequest(urlPath, curData, host, 'DBServer', res, responseCallBack);
-		
-	}else{
-		Log('DBupdate NO ARGS');
-		sendRequest(urlPath, curData, host, 'DBServer', null, sender.printer);
-	}
-}
-
-function DBAsk(urlPath, curData, host, res, responseCallBack){
-	sendRequest(urlPath, curData, host, 'DBServer', res, responseCallBack);
-}
 function FSSend(urlPath, curData, host, res, responseCallBack){
 	sendRequest(urlPath, curData, host, 'FrontendServer', res, responseCallBack);
 }

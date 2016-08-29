@@ -281,29 +281,58 @@ function auth_by_link(login, link){
 	return User2.findOne({login:login, link:link})
 }
 
+// function create(login, password, email, inviter){
+// 	return new Promise(function (resolve, reject){
+// 		if (invalid_email(email) || invalid_pass(password) ) {
+// 			reject(INVALID_DATA);
+// 			return;
+// 		}
+// 		//|| invalid_login(login)
+//
+// 		var USER = get_new_user(login, password, email);
+//
+// 		if (inviter && validator.isAlphanumeric(inviter)) USER.inviter= inviter;
+//
+// 		var user = new User(USER);
+// 		user.save(function (err) {
+// 			if (err) {
+// 				if (err.code == USER_EXISTS) {
+// 					log('USER_EXISTS : ' + login);
+// 					return reject(USER_EXISTS);
+// 				}
+// 				return reject(UNKNOWN_ERROR);
+// 			}
+//
+// 			log('added User ' + login + '/' + email);
+// 			return resolve(USER);
+// 		})
+//
+// 	});
+// }
+
 function create(login, password, email, inviter){
-	return new Promise(function (resolve, reject){
-		if ( invalid_email(email) || invalid_pass(password) ) return reject(INVALID_DATA);//|| invalid_login(login)
+	//|| invalid_login(login)
+	if (invalid_email(email) || invalid_pass(password)) throw INVALID_DATA;
 
-		var USER = get_new_user(login, password, email);
+	var USER = get_new_user(login, password, email);
 
-		if (inviter && validator.isAlphanumeric(inviter)) USER.inviter= inviter;
+	if (inviter && validator.isAlphanumeric(inviter)) {
+		USER.inviter= inviter;
+	}
 
-		var user = new User(USER);
-		user.save(function (err) {
-			if (err) {
-				if (err.code==USER_EXISTS) {
-					log('USER_EXISTS : ' + login);
-					return reject(USER_EXISTS);
-				}
-				return reject(UNKNOWN_ERROR);
+	return addUser(USER);
+}
+
+function addUser(user) {
+	return User2.save(user)
+		.catch(err => {
+			if (err.code == USER_EXISTS) {
+				logger.debug('USER_EXISTS : ' + user.login);
+				throw USER_EXISTS;
 			}
 
-			log('added User ' + login + '/' + email);
-			return resolve(USER);
+			throw UNKNOWN_ERROR;
 		})
-
-	});
 }
 
 function givePoints(login, points) {
@@ -553,7 +582,9 @@ function get_new_user(login, password, email){
 		//link:createActivationLink(login) 
 	};
 }
-
+function getSocialUser(uid) {
+	return User2.find({ 'social.id': uid })
+}
 
 
 function log(msg){ logger.log(msg); }
@@ -577,6 +608,9 @@ module.exports = {
 	moneyIncrease,
 	quitTeam,
 	joinTeam,
+
+	getSocialUser,
+	addUser,
 
 	resetPassword: create_login_link,
 	rich: richUsers,
