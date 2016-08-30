@@ -51,7 +51,7 @@ export default class AdminStats extends Component {
             'rgba(153, 102, 255, 1)',
             'rgba(255, 159, 64, 1)'
           ],
-          borderWidth: 1
+          borderWidth: 3
         }]
       },
       options: {
@@ -66,6 +66,7 @@ export default class AdminStats extends Component {
     };
     this.drawPlot("myChart", data);
     this.drawPlot("myChart2", data);
+    this.drawPlot("myChart3", data);
 
     // const ctx = document.getElementById("myChart");
     //
@@ -161,11 +162,14 @@ export default class AdminStats extends Component {
     return (
       <div>
         <h1> HEEEEEEEEEEEEEEEEEEERE</h1>
-        <div style="width: 300px; height: 300px">
+        <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart" width="400" height="400" />
         </div>
-        <div style="width: 300px; height: 300px">
+        <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart2" width="400" height="400" />
+        </div>
+        <div style="width: 300px; height: 300px; display: inline-block;">
+          <canvas id="myChart3" width="400" height="400" />
         </div>
       </div>
     );
