@@ -10,4 +10,4 @@ module.exports = function(app, Log, serverName){
 		res.status(500).send('Something broke!');
 		next(err);
 	});
-}
+};

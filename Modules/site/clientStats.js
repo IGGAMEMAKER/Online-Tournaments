@@ -161,7 +161,6 @@ module.exports = function(app, aux){
 
 	app.get('/Stats', function (req, res){
 		AsyncRender('Stats', 'GetTournaments', res, {renderPage:'Stats'}, null);
-		//res.render('Stats');
 	});
 
 	// app.post('/mark/Here/:login', function (req, res){
@@ -246,16 +245,5 @@ module.exports = function(app, aux){
 		// .then(printer)
 		.then(answer(req, next))
 		.catch(next);
-
-/*
-		.then(function (data){
-			// throw new Error('my','bla bla');
-			req.data = data;
-			next();
-
-			// res.json({ data:data })
-		})
-*/
-
 	}, render('Statistics'), send_error); //draw_list
 };

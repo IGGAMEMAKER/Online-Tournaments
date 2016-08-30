@@ -8,6 +8,7 @@ var OK = core.OK;
 var handler = require('./errHandler')(app, Log, serverName);
 var Promise = require('bluebird');
 
+var respond = require('./middlewares/api-response');
 
 const STREAM_ERROR = 'Err';
 const STREAM_STATS = 'stats';
@@ -16,7 +17,10 @@ var configs = require('./configs');
 
 var mongoose = require('mongoose');
 var stat_server_address = configs.stats || 'localhost';
-mongoose.connect('mongodb://'+stat_server_address+'/stats');
+
+var API = require('./helpers/API');
+
+mongoose.connect('mongodb://' + stat_server_address + '/stats');
 
 var Tournament = mongoose.model('Tournament', {
 	started: Number,
@@ -79,23 +83,28 @@ function getDefaultDailyStats(date){
 app.post('/GivePrize', function (req, res){
 	OK(res);
 	Log('GivePrize ' + JSON.stringify(req.body), STREAM_STATS);
+
 	GivePrize(req.body.tournamentID);
 });
+
+app.post('/save-stat', respond(req => {
+	return API.pulse.save(req.body);
+}));
+
 
 
 app.post('/Mail', function (req, res){
 	OK(res);
 	console.log('Mail');
-	//Log('Mail', )
-	//var mail = new Mail({})
-	updateDaily({$inc: {mail:1} }, 'Mail');
+
+	updateDaily({ $inc: { mail: 1 } }, 'Mail');
 });
 
 app.post('/MailFail', function (req, res){
 	OK(res);
 	console.log('MailFail');
-	//var mail = new Mail({})
-	updateDaily({$inc: {mailFail:1} }, 'Mail');
+
+	updateDaily({ $inc: { mailFail: 1 } }, 'Mail');
 });
 
 
@@ -130,7 +139,7 @@ function CreateDaily(date){
 
 	//console.error(query);
 
-	DailyStats.findOne({date:query},'', function (err, data){
+	DailyStats.findOne({ date: query },'', function (err, data){
 		if (err) { ERROR(err); }
 		else {
 			if (!data) {
@@ -151,7 +160,7 @@ app.all('/createDailyStats', function (req, res){
 create_daily_for_month();
 
 function create_daily_for_month(){
-	for (var i=0; i<30; i++){
+	for (var i=0; i<30; i++) {
 		var d = new Date();
 		//console.log(d)
 		// Wed Feb 29 2012 11:00:00 GMT+1100 (EST)
@@ -218,9 +227,9 @@ app.post('/ResetPassword', function (req, res){
 	OK(res);
 	//var result = req.body.result;
 	//var login = req.body.login;
-	updateDaily({$inc: {resetPassword:1} }, 'ResetPassword');
+	updateDaily({$inc: { resetPassword: 1 } }, 'ResetPassword');
 	/*if (result==1){
-		Profile.update({login:login}, {$inc : {resetPasswordAttempt: 1 } }, stdUpdateHandler('ResetPassword ' + req.body.login));
+		Profile.update({login:login}, {$inc : { resetPasswordAttempt: 1 } }, stdUpdateHandler('ResetPassword ' + req.body.login));
 	}*/
 });
 
@@ -233,7 +242,7 @@ app.post('/ResetPasswordFail', function (req, res){
 	OK(res);
 	//var result = req.body.result;
 	//var login = req.body.login;
-	updateDaily({$inc : {resetPasswordFail:1}}, 'resetPasswordFail');
+	updateDaily({$inc : { resetPasswordFail: 1 }}, 'resetPasswordFail');
 	// if (result==1) { Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login)); }
 });
 
@@ -412,16 +421,12 @@ app.post('/GetTournaments', function (req, res){
 		startDate: getTodayQuery()
 	};
 
-	//Tournament.find(query, '', stdFindHandler('GetTournament ', res, processStats) ); // , processStats
 	getTournamentStats(query)
 	.then(getDailyStats)
 	.then(function (data){
 		core.Answer(res, processStats(data.tournaments, data.dailyStats));
 	})
 	.catch(stdCatcher(res));
-
-
-	//res.json
 });
 
 function stdCatcher(res){

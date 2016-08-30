@@ -345,13 +345,9 @@ function Send(tag, message, force) {
 }
 
 // etc
-app.get('/counter', function (req, res){
-  res.json({ requests: requestCounter });
-});
+app.get('/counter', function (req, res){ res.json({ requests: requestCounter }); });
 
-app.get('/Alive', function (req, res){
-  res.render('Alive');
-});
+app.get('/Alive', function (req, res){ res.render('Alive'); });
 
 app.get('/realtime/update', middlewares.isAdmin, function(req, res){
   realtime().UPDATE_ALL();
@@ -374,12 +370,11 @@ app.get('/Log', function (req, res){
 app.get('/SpecLogs/:topic', function (req, res){
   //res.sendFile(__dirname + '/SpecLogs.html', {topic:'Forever'});
   var topic = req.params.topic || 'Forever';
-  res.render('SpecLogs', { topic: topic });
+  res.render('SpecLogs', { topic });
 });
 
 app.post('/addQuestion', middlewares.authenticated, addQuestion);
 
-// require('./')
 // pulse
 var players = {};
 
