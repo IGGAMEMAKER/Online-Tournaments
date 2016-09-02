@@ -6,6 +6,9 @@ var time = require('../helpers/time');
 
 var Error = models.Error;
 
+var db = require('../db');
+var Error2 = db.wrap('Error');
+
 // Error model
 /*
 	login: String,
@@ -88,4 +91,14 @@ module.exports = {
 	,findAllPerDay: function() {
 		return find_for_recent_period(time.happened_today);
 	}
-}
+	,getAllByPeriod: (d1, d2) => {
+		var find = {
+			date: {
+				$gte: d1,
+				$lt: d2
+			}
+		};
+
+		return Error2.list(find)
+	}
+};

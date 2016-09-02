@@ -2063,6 +2063,7 @@ function findOrCreateUser (req, res){
 					return sender.Answer(res, USER);
 				} else {
 					Log('added User ' + login+'/' + uid, STREAM_USERS);
+					Actions.add(login, 'register-social');
 					sender.Answer(res, USER);
 				}
 			})

@@ -79,7 +79,7 @@ function spentMostOnPacks(spent, time_function){
 	var match = { type:'openPack', 'auxillaries.price' : { $gt: spent || 0 } }
 	if (time_function) match.date = time_function();
 
-	var fields = { login: "$login" }
+	var fields = { login: "$login" };
 	// if (parseInt(date) == 1) {
 	// 	match['date'] = time.happened_today();
 	// }
@@ -95,7 +95,7 @@ function spentMostOnPacks(spent, time_function){
 
 	var project = {
 		spended: { $sum : "$price" }
-	}
+	};
 
 	var sort = { count: -1 };
 // { $sort: sort }, , { $project : project }
@@ -178,7 +178,7 @@ function getPaymentsFromList(list){
 		var index = logins[login];
 		array[index].income += income;
 
-	};
+	}
 
 	return array;
 }
@@ -250,6 +250,15 @@ module.exports = {
 	,findAllPerDay: function() {
 		return find_for_recent_period(time.happened_today);
 	}
+	,getAllByPeriod: (d1, d2) => {
+		var find = {
+			date: {
+				$gte: d1,
+				$lt: d2
+			}
+		};
+		return Actions2.list(find)
+	}
 	,packOpenings: packOpenings
 	,openings: openings
 	
@@ -282,4 +291,4 @@ module.exports = {
 		})
 	}*/
 
-}
+};

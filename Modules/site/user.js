@@ -84,7 +84,11 @@ module.exports = function(app) {
 			saveSession(req, res, 'register');
 			mail.sendActivationEmail(user);
 
-			Actions.add(login, 'register');
+			if (inviter) {
+				Actions.add(login, 'register-by-invite');
+			} else {
+				Actions.add(login, 'register');
+			}
 
 		})
 		.catch(answer_and_save_error(res, 'Register', 'register', login));

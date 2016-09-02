@@ -6,9 +6,9 @@ const appElement: HTMLElement = document.getElementById('tournaments');
 
 const elements = (
   <center>
-    <TournamentListAdmin />
-
     <AdminStats />
+
+    <TournamentListAdmin />
   </center>
 );
 

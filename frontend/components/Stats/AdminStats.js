@@ -2,19 +2,81 @@ import { h, Component } from 'preact';
 
 import Chart from 'chart.js';
 
+import request from 'superagent';
 // import { Line } from 'react-chartjs';
 // import { Chart } from 'react-google-charts';
 
 // import { Chart } from 'react-d3-core';
 // import { LineChart } from 'react-d3-basic';
 
-type PropsType = {}
+type StateType = {
+  copiedShareLink: number,
+  registered: number,
+  registeredSocial: number,
+  registerByInvite: number,
 
-type StateType = {}
+  selfPayments: number,
+  shownPaymentModals: number,
+  forcedPayments: number,
+
+  errors: number,
+
+  day1: number,
+  day2: number,
+  month1: number,
+  month2: number,
+  year1: number,
+  year2: number,
+}
 
 export default class AdminStats extends Component {
+  state = {
+    copiedShareLink: 0,
+    registered: 0,
+    registeredSocial: 0,
+    registerByInvite: 0,
+
+    selfPayments: 0,
+    shownPaymentModals: 0,
+    forcedPayments: 0,
+
+    errors: 0,
+
+    day1: new Date().getDate(),
+    day2: 1,
+    month1: new Date().getMonth(),
+    month2: 1,
+    year1: new Date().getFullYear(),
+    year2: 2016
+  };
   componentWillMount() {
+    this.LoadStats();
+
+    window.onfocus = () => {
+      setTimeout(() => {
+        this.LoadStats();
+      }, 5000);
+    }
   }
+
+  redraw = (delay) => {
+    setTimeout(() => {
+      this.draw();
+    }, delay || 1000)
+  };
+
+  LoadStats = async () => {
+    // const response = await request.post('full-stats').send({ date1: new Date(1, 1, 2016) });
+    const response = await request.post('full-stats').send({ });
+
+    // console.log('LoadStats', response.body);
+    const obj = Object.assign(this.state, response.body.msg);
+
+    this.setState(obj);
+
+    // rerender plots...
+    this.redraw(1000);
+  };
 
   drawPlot = (id, data) => {
     const ctx = document.getElementById(id);
@@ -114,9 +176,7 @@ export default class AdminStats extends Component {
   };
 
   componentDidMount() {
-    setTimeout(() => {
-      this.draw();
-    }, 1000);
+    this.redraw(1);
   }
 
   render(props: PropsType, state: StateType) {
@@ -159,9 +219,59 @@ export default class AdminStats extends Component {
     //     {}
           // const myChart = new Chart(ctx, data);
 
+    const drawField = (k) => {
+      return (
+        <tr>
+          <td>{k}</td>
+          <td>{this.state[k]}</td>
+        </tr>
+      )
+    };
+    const stats = (
+      <table>
+        {drawField('copiedShareLink')}
+        {drawField('registered')}
+        {drawField('registeredSocial')}
+        {drawField('registerByInvite')}
+        {drawField('selfPayments')}
+        {drawField('shownPaymentModals')}
+        {drawField('forcedPayments')}
+        {drawField('errors')}
+      </table>
+    );
+
+    const onDateFieldChange = (field) => {
+      return (e: KeyboardEvent) => {
+        let obj= {};
+        obj[field] = e.target.value;
+        this.setState(obj);
+      }
+    };
+
+    const dateField = (field) => {
+      return <input
+        type="number"
+        value={this.state[field]}
+        onInput={onDateFieldChange(field)}
+      />
+    };
+
     return (
       <div>
         <h1> HEEEEEEEEEEEEEEEEEEERE</h1>
+        <p>Today</p>
+        <div>date1</div>
+        {dateField('day1')}
+        {dateField('month1')}
+        {dateField('year1')}
+        <br />
+        <div>date2</div>
+        {dateField('day2')}
+        {dateField('month2')}
+        {dateField('year2')}
+        <br />
+        <button onClick={this.LoadStats}>update stats</button>
+        {stats}
         <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart" width="400" height="400" />
         </div>

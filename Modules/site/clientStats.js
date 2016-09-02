@@ -17,6 +17,45 @@ var sender = require('../../requestSender');
 
 var AsyncRender = require('../../helpers/AsyncRender');
 
+var respond = require('../../middlewares/api-response');
+
+var API = require('../../helpers/API');
+
+var aggregateStats = require('../../helpers/stats-aggregator');
+
+function yesterday() {
+	var todayMilliseconds = new Date().getTime();
+	// logger.debug('now:', new Date());
+	// logger.debug('nowMillis', todayMilliseconds);
+	return new Date(todayMilliseconds - (3600 * 24 * 1000));
+}
+
+logger.debug('yesterday', yesterday());
+
+function countStatsForPeriod(date1, date2) {
+	var aggregated = {};
+
+	var actions;
+	return API.actions.getAllByPeriod(date1, date2)
+		.then(list => {
+			actions = list;
+			return API.errors.getAllByPeriod(date1, date2);
+		})
+		.then(list => {
+			aggregated = aggregateStats(actions, list);
+
+			logger.debug('aggregated: ', aggregated);
+
+			return aggregated;
+		})
+}
+
+countStatsForPeriod(yesterday(), new Date())
+	.then(r => {
+		logger.debug('aggregated: ', r);
+	})
+	.catch(logger.error);
+
 module.exports = function(app, aux){
 	app.post('/AttemptToStart', function (req, res){
 		// console.log('AttemptToStart');
@@ -196,15 +235,6 @@ module.exports = function(app, aux){
 		}
 	}
 
-	function printer(msg){
-		console.log(msg);
-		return msg;
-	}
-
-	var std = [json, send_error];
-
-	var draw_list = [drawList, send_error];
-
 	function drawList(req, res, next){
 		var list = req.data || [];
 		var txt='';
@@ -246,4 +276,12 @@ module.exports = function(app, aux){
 		.then(answer(req, next))
 		.catch(next);
 	}, render('Statistics'), send_error); //draw_list
+
+
+	app.post('/full-stats', respond(req => {
+		var date1 = req.body.date1 || yesterday();
+		var date2 = req.body.date2 || new Date();
+
+		return countStatsForPeriod(date1, date2);
+	}));
 };
