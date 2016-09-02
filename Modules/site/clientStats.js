@@ -23,36 +23,96 @@ var API = require('../../helpers/API');
 
 var aggregateStats = require('../../helpers/stats-aggregator');
 
+var DAY_MS = 3600 * 24 * 1000;
 function yesterday() {
 	var todayMilliseconds = new Date().getTime();
 	// logger.debug('now:', new Date());
 	// logger.debug('nowMillis', todayMilliseconds);
-	return new Date(todayMilliseconds - (3600 * 24 * 1000));
+	return new Date(todayMilliseconds - DAY_MS);
+}
+
+function dayStartMS(date) {
+	var total_milliseconds = date.getTime();
+	var min_days = Math.floor(total_milliseconds / DAY_MS);
+
+	return min_days * DAY_MS;
+}
+
+function nextDayStartMS(date) {
+	// returns MS of NEXT DAY 00:00
+	var total_milliseconds = date.getTime();
+	var min_days = Math.ceil(total_milliseconds / DAY_MS);
+
+	return min_days * DAY_MS;
+	// return new Date(min_days * DAY_MS);
+}
+
+function dayStartDate(date) {
+	return new Date(dayStartMS(date));
+}
+
+function nextDayStartDate() {
+	return new Date(nextDayStartMS(date));
+}
+
+function compareDates(date1, date2) {
+	return date1.getTime() > date2.getTime();
+}
+
+function dateLessThan(date1, date2) {
+	return date1.getTime() <= date2.getTime();
+}
+// 21.08.16 03:00
+
+// 28.08.16 17:00
+function makePeriodArray(d1, d2) { // array of milliseconds
+	var array = [];
+
+	var endOfLastDay = nextDayStartMS(d2);
+	var startOfFirstDay = dayStartMS(d1);
+
+
+	for (var time = startOfFirstDay; time < endOfLastDay; time += DAY_MS) {
+		// console.log()
+		array.push({ d1: time, d2: time + DAY_MS });
+	}
+
+	return array;
 }
 
 logger.debug('yesterday', yesterday());
 
 function countStatsForPeriod(date1, date2) {
-	var aggregated = {};
+	logger.debug('countStatsForPeriod', date1, date2);
 
 	var actions;
+
+	var periods = makePeriodArray(date1, date2);
+
+	// logger.debug('countStatsForPeriod Period: ', periods);
+
 	return API.actions.getAllByPeriod(date1, date2)
 		.then(list => {
 			actions = list;
 			return API.errors.getAllByPeriod(date1, date2);
 		})
 		.then(list => {
-			aggregated = aggregateStats(actions, list);
+			var result = periods.map(obj => {
+				var aggregated = aggregateStats(actions, list, obj.d1, obj.d2);
 
-			logger.debug('aggregated: ', aggregated);
+				// logger.debug('aggregated: ', aggregated);
 
-			return aggregated;
+				return Object.assign(obj, aggregated);
+			});
+
+			// logger.log('countStatsForPeriod', result.length);
+			return result;
 		})
 }
 
-countStatsForPeriod(yesterday(), new Date())
+countStatsForPeriod(new Date('2016-08-31T21:00:00.000Z'), new Date('2016-09-02T20:59:59.999Z'))
 	.then(r => {
-		logger.debug('aggregated: ', r);
+		logger.debug('aggregated: ', r, r.length);
 	})
 	.catch(logger.error);
 

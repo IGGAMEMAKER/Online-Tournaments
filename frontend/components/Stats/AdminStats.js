@@ -82,13 +82,13 @@ export default class AdminStats extends Component {
 
     const response = await request.post('full-stats').send(query);
 
-    // console.log('LoadStats', response.body);
-    const obj = Object.assign(this.state, response.body.msg);
+    console.log('LoadStats', response.body);
+    const obj = Object.assign(this.state, response.body.msg[0]);
 
     this.setState(obj);
 
     // rerender plots...
-    this.redraw(1000);
+    this.redraw(500);
   };
 
   drawPlot = (id, data) => {
