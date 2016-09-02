@@ -71,7 +71,7 @@ export default class TournamentEditor extends Component {
   };
 
   datepickerFormat = (date: Date) => {
-    console.log('datepickerFormat', date);
+    // console.log('datepickerFormat', date);
     // console.log('datepickerFormat', date.getDate());
     const d = date.getDate();
     const DD = this.doubleDigit(d);

@@ -42,12 +42,12 @@ export default class AdminStats extends Component {
 
     errors: 0,
 
-    day1: new Date().getDate(),
-    day2: 1,
-    month1: new Date().getMonth(),
-    month2: 1,
-    year1: new Date().getFullYear(),
-    year2: 2016
+    day1: 1,
+    day2: new Date().getDate(),
+    month1: 1,
+    month2: new Date().getMonth(),
+    year1: 2016,
+    year2: new Date().getFullYear(),
   };
   componentWillMount() {
     this.LoadStats();
@@ -67,7 +67,20 @@ export default class AdminStats extends Component {
 
   LoadStats = async () => {
     // const response = await request.post('full-stats').send({ date1: new Date(1, 1, 2016) });
-    const response = await request.post('full-stats').send({ });
+    const { day1, day2, month1, month2, year1, year2 } = this.state;
+
+    const date1 = new Date(year1, month1, day1, 0, 0, 0, 0);
+    const date2 = new Date(year2, month2, day2, 23, 59, 59, 999);
+
+    // console.log('dates 1..', date1);
+    // console.log('dates 2..', date2);
+
+    const query = {
+      date1,
+      date2
+    };
+
+    const response = await request.post('full-stats').send(query);
 
     // console.log('LoadStats', response.body);
     const obj = Object.assign(this.state, response.body.msg);
@@ -90,7 +103,7 @@ export default class AdminStats extends Component {
 
   draw = () => {
     const data = {
-      type: 'bar',
+      type: 'doughnut',
       data: {
         labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
 
