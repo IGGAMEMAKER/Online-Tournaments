@@ -278,6 +278,48 @@ export default class AdminStats extends Component {
   drawViralityGraph = () => {
     const aggregated = this.state.data;
 
+    const dataset = this.makeConversionDataset(aggregated, 'copiedShareLink', 'registerByInvite');
+
+    console.log('drawViralityGraph', dataset);
+
+    const copiedShareLinkList = this.pickDataFromDataArray('copiedShareLink', aggregated);
+    console.log('drawViralityGraph copiedShareLink', copiedShareLinkList);
+    const registerByInviteList = this.pickDataFromDataArray('registerByInvite', aggregated);
+    const data = {
+      type: 'line',
+      data: {
+        labels: this.getPeriodArrayFromDataArray(aggregated),
+        datasets: [this.makeDataset(dataset, 'CTR: registeredByInvite / copiedShareLink', 0)],
+        // datasets: [
+        //   this.makeDataset(copiedShareLinkList, 'copiedShareLink', 0),
+        //   this.makeDataset(registerByInviteList, 'registerByInvite', 1)
+        // ]
+      },
+      options
+    };
+
+    this.drawPlot("myChart2", data);
+  };
+
+  makeConversionDataset = (array, field1, field2) => {
+    const round100 = (value) => {
+      return Math.ceil(value * 100) / 100
+    };
+    // to get correct results, you need to have s[f1] > s[f2]
+    return array.map(stat => {
+      const s1 = stat[field1];
+      const s2 = stat[field2];
+
+      if (!s1) return 0;
+
+      // return { ctr: round100(s2 / s1) };
+      return round100(s2 / s1);
+    })
+  };
+
+  drawEmailSocialGraph = () => {
+    const aggregated = this.state.data;
+
     const data = {
       type: 'line',
       data: {
@@ -297,7 +339,7 @@ export default class AdminStats extends Component {
       options
     };
 
-    this.drawPlot("myChart2", data);
+    this.drawPlot("myChart3", data);
   };
 
   componentDidMount() {
