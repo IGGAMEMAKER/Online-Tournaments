@@ -29,6 +29,16 @@ type StateType = {
   year2: number,
 }
 
+const options = {
+  scales: {
+    yAxes: [{
+      ticks: {
+        beginAtZero:true
+      }
+    }]
+  }
+};
+
 export default class AdminStats extends Component {
   state = {
     data: [{
@@ -115,114 +125,91 @@ export default class AdminStats extends Component {
     return `${day}.${month}.${year}`;
   };
 
-  makeDataset = (data) => {
+  makeDataset = (data, label, colour, colourTransparent) => {
+    let backgroundColor = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+    ];
+
+    let borderColor = [
+      'rgba(255,99,132,1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ];
+
+    if (colour) {
+      if (colourTransparent) {
+        backgroundColor = [colourTransparent];
+      } else {
+        backgroundColor = [colour]
+      }
+
+      borderColor = [colour];
+    }
     return {
-      label: '# of Votes',
+      label: label || '# of Votes',
       // data: [12, 19, 3, 5, 2, 3],
       data,
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
+      backgroundColor,
+      borderColor,
       borderWidth: 3
     };
   };
+
+  pickDataFromDataArray = (key, array) => {
+    return array.map(info => info[key]);
+  };
+
+  getPeriodArrayFromDataArray = (array) => {
+    return array.map(info => this.shortDate(info.d1));
+  };
+
   draw = () => {
-    var aggregated = [
-      { d1: 1472601600000,
-        d2: 1472688000000,
-        copiedShareLink: 0,
-        registered: 0,
-        registeredSocial: 0,
-        registerByInvite: 0,
-        selfPayments: 0,
-        shownPaymentModals: 0,
-        forcedPayments: 0,
-        errors: 0 },
-      { d1: 1472688000000,
-        d2: 1472774400000,
-        copiedShareLink: 3,
-        registered: 0,
-        registeredSocial: 0,
-        registerByInvite: 0,
-        selfPayments: 1,
-        shownPaymentModals: 0,
-        forcedPayments: 0,
-        errors: 0 },
-      { d1: 1472774400000,
-        d2: 1472860800000,
-        copiedShareLink: 10,
-        registered: 0,
-        registeredSocial: 0,
-        registerByInvite: 0,
-        selfPayments: 5,
-        shownPaymentModals: 0,
-        forcedPayments: 0,
-        errors: 0 } ];
+    // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    // {
+    // label: '# of Votes',
+    // data: [12, 19, 3, 5, 2, 3],
+    // backgroundColor: [
+    //   'rgba(255, 99, 132, 0.2)',
+    //   'rgba(54, 162, 235, 0.2)',
+    //   'rgba(255, 206, 86, 0.2)',
+    //   'rgba(75, 192, 192, 0.2)',
+    //   'rgba(153, 102, 255, 0.2)',
+    //   'rgba(255, 159, 64, 0.2)'
+    // ],
+    // borderColor: [
+    //   'rgba(255,99,132,1)',
+    //   'rgba(54, 162, 235, 1)',
+    //   'rgba(255, 206, 86, 1)',
+    //   'rgba(75, 192, 192, 1)',
+    //   'rgba(153, 102, 255, 1)',
+    //   'rgba(255, 159, 64, 1)'
+    // ],
+    // borderWidth: 3
+    // }
 
-    aggregated = this.state.data;
-    const pickDataFromDataArray = (key, array) => {
-      return array.map(info => info[key]);
-    };
-
-    const getPeriodArrayFromDataArray = (array) => {
-      return array.map(info => this.shortDate(info.d1));
-    };
+    const aggregated = this.state.data;
 
     const data = {
       type: 'line',
       data: {
-        // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        labels: getPeriodArrayFromDataArray(aggregated),
+        labels: this.getPeriodArrayFromDataArray(aggregated),
 
-        datasets: [this.makeDataset(pickDataFromDataArray('copiedShareLink', aggregated))
-          // {
-          // label: '# of Votes',
-          // data: [12, 19, 3, 5, 2, 3],
-          // backgroundColor: [
-          //   'rgba(255, 99, 132, 0.2)',
-          //   'rgba(54, 162, 235, 0.2)',
-          //   'rgba(255, 206, 86, 0.2)',
-          //   'rgba(75, 192, 192, 0.2)',
-          //   'rgba(153, 102, 255, 0.2)',
-          //   'rgba(255, 159, 64, 0.2)'
-          // ],
-          // borderColor: [
-          //   'rgba(255,99,132,1)',
-          //   'rgba(54, 162, 235, 1)',
-          //   'rgba(255, 206, 86, 1)',
-          //   'rgba(75, 192, 192, 1)',
-          //   'rgba(153, 102, 255, 1)',
-          //   'rgba(255, 159, 64, 1)'
-          // ],
-          // borderWidth: 3
-        // }
+        datasets: [this.makeDataset(this.pickDataFromDataArray('copiedShareLink', aggregated))
         ]
       },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
-            }
-          }]
-        }
-      }
+      options
     };
 
     this.drawPlot("myChart", data);
+    this.drawViralityGraph();
     // this.drawPlot("myChart2", data);
     // this.drawPlot("myChart3", data);
 
@@ -271,7 +258,26 @@ export default class AdminStats extends Component {
     // let chart = new Chart(ctx, data);
   };
 
-  drawViralityGraph = ()
+  drawViralityGraph = () => {
+    const aggregated = this.state.data;
+
+    const data = {
+      type: 'line',
+      data: {
+        labels: this.getPeriodArrayFromDataArray(aggregated),
+
+        datasets: [
+          this.makeDataset(this.pickDataFromDataArray('copiedShareLink', aggregated),
+            'copiedShareLink', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)'),
+          this.makeDataset(this.pickDataFromDataArray('registerByInvite', aggregated),
+            'registerByInvite', 'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 0.2)')
+        ]
+      },
+      options
+    };
+
+    this.drawPlot("myChart2", data);
+  };
 
   componentDidMount() {
     this.redraw(1);
