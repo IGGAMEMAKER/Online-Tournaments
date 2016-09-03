@@ -119,7 +119,7 @@ export default class AdminStats extends Component {
   shortDate = (timestamp) => {
     const date = new Date(timestamp);
     const day = date.getDate();
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const year = date.getFullYear() - 2000;
 
     return `${day}.${month}.${year}`;
@@ -415,13 +415,15 @@ export default class AdminStats extends Component {
         {drawField('shownPaymentModals')}
         {drawField('forcedPayments')}
         {drawField('selfPayments')}
-        {drawField('pressed-payment-qiwi')}
-        {drawField('pressed-payment-yandex')}
-        {drawField('pressed-payment-mobile')}
-        {drawField('pressed-payment-bank')}
+        <br />
+        {drawField('shownPaymentPage')}
+        {drawField('pressedPaymentButtonQiwi')}
+        {drawField('pressedPaymentButtonYandex')}
+        {drawField('pressedPaymentButtonMobiles')}
+        {drawField('pressedPaymentButtonBankCard')}
 
         <br />
-        {drawField('cashout-request')}
+        {drawField('cashoutRequests')}
 
         <br />
         {drawField('errors')}
