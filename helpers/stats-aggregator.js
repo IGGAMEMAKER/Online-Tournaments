@@ -20,15 +20,34 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
   var forcedPayments = search('forced-payment').length;
   var shownPaymentModals = search('modal-no-money').length;
 
+  var shownPaymentPage = search('shown-payment-page').length;
+
+  var pressedPaymentButtonQiwi = search('pressed-payment-qiwi').length;
+  var pressedPaymentButtonYandex = search('pressed-payment-yandex').length;
+  var pressedPaymentButtonMobiles = search('pressed-payment-mobile').length;
+  var pressedPaymentButtonBankCard = search('pressed-payment-bank-card').length;
+
+  var cashoutRequests = search('cashout-request').length;
+
   return {
     copiedShareLink,
     registered,
     registeredSocial,
     registerByInvite,
 
+    // ---------- payments -----------
     selfPayments,
     shownPaymentModals,
     forcedPayments,
+
+    shownPaymentPage,
+    pressedPaymentButtonQiwi,
+    pressedPaymentButtonYandex,
+    pressedPaymentButtonMobiles,
+    pressedPaymentButtonBankCard,
+    // -------------------------------
+
+    cashoutRequests,
 
     errors: errorCount
   };

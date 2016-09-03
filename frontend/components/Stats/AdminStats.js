@@ -176,7 +176,7 @@ export default class AdminStats extends Component {
       data,
       backgroundColor,
       borderColor,
-      borderWidth: 3
+      borderWidth: 1
     };
   };
 
@@ -279,14 +279,15 @@ export default class AdminStats extends Component {
     const aggregated = this.state.data;
 
     const dataset = this.makeConversionDataset(aggregated, 'copiedShareLink', 'registerByInvite');
+    // const dataset = this.makeConversionDataset(aggregated, 'copiedShareLink', 'selfPayments');
 
     console.log('drawViralityGraph', dataset);
 
     const copiedShareLinkList = this.pickDataFromDataArray('copiedShareLink', aggregated);
-    console.log('drawViralityGraph copiedShareLink', copiedShareLinkList);
+    // console.log('drawViralityGraph copiedShareLink', copiedShareLinkList);
     const registerByInviteList = this.pickDataFromDataArray('registerByInvite', aggregated);
     const data = {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: this.getPeriodArrayFromDataArray(aggregated),
         datasets: [this.makeDataset(dataset, 'CTR: registeredByInvite / copiedShareLink', 0)],
@@ -299,6 +300,11 @@ export default class AdminStats extends Component {
     };
 
     this.drawPlot("myChart2", data);
+  };
+
+  drawPaymentPageEfficiencyGraph = () => {
+    
+    this.makeConversionDataset(array)
   };
 
   makeConversionDataset = (array, field1, field2) => {
@@ -409,6 +415,13 @@ export default class AdminStats extends Component {
         {drawField('shownPaymentModals')}
         {drawField('forcedPayments')}
         {drawField('selfPayments')}
+        {drawField('pressed-payment-qiwi')}
+        {drawField('pressed-payment-yandex')}
+        {drawField('pressed-payment-mobile')}
+        {drawField('pressed-payment-bank')}
+
+        <br />
+        {drawField('cashout-request')}
 
         <br />
         {drawField('errors')}
