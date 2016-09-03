@@ -125,7 +125,28 @@ export default class AdminStats extends Component {
     return `${day}.${month}.${year}`;
   };
 
-  makeDataset = (data, label, colour, colourTransparent) => {
+  getColour = (i, opacity) => {
+    const c = [
+      [255, 99, 132],
+      [54, 162, 235],
+      [255, 206, 86],
+      [75, 192, 192],
+      [153, 102, 255],
+      [255, 159, 64]
+    ];
+
+    return `rgba(${c[i].join()}, ${opacity || 1})`;
+  };
+
+  makeDataset = (data, label, colour) => {
+    // bright = (r, g, b) => {
+    //   return `rgba(${r}, ${g}, ${b}, 1)`;
+    // };
+    //
+    // blend = (r, g, b) => {
+    //   return `rgba(${r}, ${g}, ${b}, 1)`;
+    // };
+
     let backgroundColor = [
       'rgba(255, 99, 132, 0.2)',
       'rgba(54, 162, 235, 0.2)',
@@ -145,14 +166,10 @@ export default class AdminStats extends Component {
     ];
 
     if (colour) {
-      if (colourTransparent) {
-        backgroundColor = [colourTransparent];
-      } else {
-        backgroundColor = [colour]
-      }
-
-      borderColor = [colour];
+      backgroundColor = [this.getColour(colour, 0.2)];
+      borderColor = [this.getColour(colour)];
     }
+
     return {
       label: label || '# of Votes',
       // data: [12, 19, 3, 5, 2, 3],
@@ -268,9 +285,13 @@ export default class AdminStats extends Component {
 
         datasets: [
           this.makeDataset(this.pickDataFromDataArray('copiedShareLink', aggregated),
-            'copiedShareLink', 'rgba(255, 99, 132, 1)', 'rgba(255, 99, 132, 0.2)'),
+            'copiedShareLink', 0),
           this.makeDataset(this.pickDataFromDataArray('registerByInvite', aggregated),
-            'registerByInvite', 'rgba(54, 162, 235, 1)', 'rgba(54, 162, 235, 0.2)')
+            'registerByInvite', 1),
+          this.makeDataset(this.pickDataFromDataArray('registered', aggregated),
+            'registeredByEmail', 2),
+          this.makeDataset(this.pickDataFromDataArray('registeredSocial', aggregated),
+            'registeredSocial', 3),
         ]
       },
       options
