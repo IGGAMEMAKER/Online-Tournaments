@@ -31,24 +31,28 @@ type StateType = {
 
 export default class AdminStats extends Component {
   state = {
-    copiedShareLink: 0,
-    registered: 0,
-    registeredSocial: 0,
-    registerByInvite: 0,
+    data: [{
+      copiedShareLink: 0,
+      registered: 0,
+      registeredSocial: 0,
+      registerByInvite: 0,
 
-    selfPayments: 0,
-    shownPaymentModals: 0,
-    forcedPayments: 0,
+      selfPayments: 0,
+      shownPaymentModals: 0,
+      forcedPayments: 0,
 
-    errors: 0,
+      errors: 0,
+
+    }],
 
     day1: 1,
     day2: new Date().getDate(),
-    month1: 1,
+    month1: 8,
     month2: new Date().getMonth(),
     year1: 2016,
     year2: new Date().getFullYear(),
   };
+
   componentWillMount() {
     this.LoadStats();
 
@@ -82,10 +86,11 @@ export default class AdminStats extends Component {
 
     const response = await request.post('full-stats').send(query);
 
-    console.log('LoadStats', response.body);
-    const obj = Object.assign(this.state, response.body.msg[0]);
+    console.log('LoadStats', response.body.msg);
+    // const obj = Object.assign(this.state, response.body.msg);
 
-    this.setState(obj);
+    this.setState({ data: response.body.msg });
+    // this.setState(obj);
 
     // rerender plots...
     this.redraw(500);
@@ -101,33 +106,110 @@ export default class AdminStats extends Component {
     let chart = new Chart(ctx, data);
   };
 
-  draw = () => {
-    const data = {
-      type: 'doughnut',
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+  shortDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear() - 2000;
 
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 3
-        }]
+    return `${day}.${month}.${year}`;
+  };
+
+  makeDataset = (data) => {
+    return {
+      label: '# of Votes',
+      // data: [12, 19, 3, 5, 2, 3],
+      data,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 3
+    };
+  };
+  draw = () => {
+    var aggregated = [
+      { d1: 1472601600000,
+        d2: 1472688000000,
+        copiedShareLink: 0,
+        registered: 0,
+        registeredSocial: 0,
+        registerByInvite: 0,
+        selfPayments: 0,
+        shownPaymentModals: 0,
+        forcedPayments: 0,
+        errors: 0 },
+      { d1: 1472688000000,
+        d2: 1472774400000,
+        copiedShareLink: 3,
+        registered: 0,
+        registeredSocial: 0,
+        registerByInvite: 0,
+        selfPayments: 1,
+        shownPaymentModals: 0,
+        forcedPayments: 0,
+        errors: 0 },
+      { d1: 1472774400000,
+        d2: 1472860800000,
+        copiedShareLink: 10,
+        registered: 0,
+        registeredSocial: 0,
+        registerByInvite: 0,
+        selfPayments: 5,
+        shownPaymentModals: 0,
+        forcedPayments: 0,
+        errors: 0 } ];
+
+    aggregated = this.state.data;
+    const pickDataFromDataArray = (key, array) => {
+      return array.map(info => info[key]);
+    };
+
+    const getPeriodArrayFromDataArray = (array) => {
+      return array.map(info => this.shortDate(info.d1));
+    };
+
+    const data = {
+      type: 'line',
+      data: {
+        // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: getPeriodArrayFromDataArray(aggregated),
+
+        datasets: [this.makeDataset(pickDataFromDataArray('copiedShareLink', aggregated))
+          // {
+          // label: '# of Votes',
+          // data: [12, 19, 3, 5, 2, 3],
+          // backgroundColor: [
+          //   'rgba(255, 99, 132, 0.2)',
+          //   'rgba(54, 162, 235, 0.2)',
+          //   'rgba(255, 206, 86, 0.2)',
+          //   'rgba(75, 192, 192, 0.2)',
+          //   'rgba(153, 102, 255, 0.2)',
+          //   'rgba(255, 159, 64, 0.2)'
+          // ],
+          // borderColor: [
+          //   'rgba(255,99,132,1)',
+          //   'rgba(54, 162, 235, 1)',
+          //   'rgba(255, 206, 86, 1)',
+          //   'rgba(75, 192, 192, 1)',
+          //   'rgba(153, 102, 255, 1)',
+          //   'rgba(255, 159, 64, 1)'
+          // ],
+          // borderWidth: 3
+        // }
+        ]
       },
       options: {
         scales: {
@@ -139,9 +221,10 @@ export default class AdminStats extends Component {
         }
       }
     };
+
     this.drawPlot("myChart", data);
-    this.drawPlot("myChart2", data);
-    this.drawPlot("myChart3", data);
+    // this.drawPlot("myChart2", data);
+    // this.drawPlot("myChart3", data);
 
     // const ctx = document.getElementById("myChart");
     //
@@ -188,6 +271,8 @@ export default class AdminStats extends Component {
     // let chart = new Chart(ctx, data);
   };
 
+  drawViralityGraph = ()
+
   componentDidMount() {
     this.redraw(1);
   }
@@ -233,22 +318,30 @@ export default class AdminStats extends Component {
           // const myChart = new Chart(ctx, data);
 
     const drawField = (k) => {
+      // <td>{this.state.data[0][k]}</td>
       return (
         <tr>
           <td>{k}</td>
-          <td>{this.state[k]}</td>
+          {this.state.data.map(info => <td>{info[k]}</td>)}
         </tr>
       )
     };
     const stats = (
       <table>
         {drawField('copiedShareLink')}
+        {drawField('registerByInvite')}
+
+        <br />
         {drawField('registered')}
         {drawField('registeredSocial')}
-        {drawField('registerByInvite')}
-        {drawField('selfPayments')}
+
+
+        <br />
         {drawField('shownPaymentModals')}
         {drawField('forcedPayments')}
+        {drawField('selfPayments')}
+
+        <br />
         {drawField('errors')}
       </table>
     );

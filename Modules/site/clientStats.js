@@ -68,9 +68,10 @@ function dateLessThan(date1, date2) {
 function makePeriodArray(d1, d2) { // array of milliseconds
 	var array = [];
 
-	var endOfLastDay = nextDayStartMS(d2);
 	var startOfFirstDay = dayStartMS(d1);
+	var endOfLastDay = nextDayStartMS(d2);
 
+	logger.debug('period from: ', new Date(startOfFirstDay), ' to ', new Date(endOfLastDay));
 
 	for (var time = startOfFirstDay; time < endOfLastDay; time += DAY_MS) {
 		// console.log()
@@ -89,32 +90,25 @@ function countStatsForPeriod(date1, date2) {
 
 	var periods = makePeriodArray(date1, date2);
 
-	// logger.debug('countStatsForPeriod Period: ', periods);
-
 	return API.actions.getAllByPeriod(date1, date2)
 		.then(list => {
 			actions = list;
 			return API.errors.getAllByPeriod(date1, date2);
 		})
-		.then(list => {
-			var result = periods.map(obj => {
-				var aggregated = aggregateStats(actions, list, obj.d1, obj.d2);
-
-				// logger.debug('aggregated: ', aggregated);
+		.then(errors => {
+			return periods.map(obj => {
+				var aggregated = aggregateStats(actions, errors, obj.d1, obj.d2);
 
 				return Object.assign(obj, aggregated);
 			});
-
-			// logger.log('countStatsForPeriod', result.length);
-			return result;
 		})
 }
 
-countStatsForPeriod(new Date('2016-08-31T21:00:00.000Z'), new Date('2016-09-02T20:59:59.999Z'))
-	.then(r => {
-		logger.debug('aggregated: ', r, r.length);
-	})
-	.catch(logger.error);
+// countStatsForPeriod(new Date('2016-08-31T21:00:00.000Z'), new Date('2016-09-02T20:59:59.999Z'))
+// 	.then(r => {
+// 		// logger.debug('aggregated: ', r.length);
+// 	})
+// 	.catch(logger.error);
 
 module.exports = function(app, aux){
 	app.post('/AttemptToStart', function (req, res){
@@ -339,8 +333,10 @@ module.exports = function(app, aux){
 
 
 	app.post('/full-stats', respond(req => {
-		var date1 = req.body.date1 || yesterday();
-		var date2 = req.body.date2 || new Date();
+		var date1 = new Date(req.body.date1) || yesterday();
+		var date2 = new Date(req.body.date2) || new Date();
+
+		// logger.debug('request /full-stats', req.body);
 
 		return countStatsForPeriod(date1, date2);
 	}));
