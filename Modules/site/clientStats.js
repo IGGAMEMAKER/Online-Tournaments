@@ -24,6 +24,7 @@ var API = require('../../helpers/API');
 var aggregateStats = require('../../helpers/stats-aggregator');
 
 var DAY_MS = 3600 * 24 * 1000;
+
 function yesterday() {
 	var todayMilliseconds = new Date().getTime();
 	// logger.debug('now:', new Date());
@@ -112,22 +113,14 @@ function countStatsForPeriod(date1, date2) {
 
 module.exports = function(app, aux){
 	app.post('/AttemptToStart', function (req, res){
-		// console.log('AttemptToStart');
-		sender.Answer(res, OK);
-
-		var login = req.login;
-		var tournamentID = req.body.tournamentID;
-		// Stats('AttemptToStart', {login:login, tournamentID: tournamentID});
+		res.end();
 
 		Stats.attempt('startGame'); //, { tournamentID: tournamentID })
 	});
 
 	app.post('/UserGetsData', function (req, res){
-		sender.Answer(res, OK);
+		res.end();
 
-		var login =  req.body.login ;//req.login;
-		var tournamentID = req.body.tournamentID;
-		// Stats('UserGetsData', { login: login , tournamentID:tournamentID});
 		Stats.attempt('getsData');
 	});
 
@@ -143,8 +136,6 @@ module.exports = function(app, aux){
 
 		console.log('Stats CATCHED HERE', 'GameLoaded : ' + login + ' ' + tournamentID);
 		Stats.attempt('gameLoaded');
-
-
 	});
 
 	app.post('/NoMoney', function (req, res){
@@ -159,9 +150,8 @@ module.exports = function(app, aux){
 	});
 
 	// Stats.attempt('game-drawPopup')
-	app.get('/mark/metrics/:stat', middlewares.authenticated, (req, res) => {
+	app.get('/metrics/:stat', middlewares.authenticated, (req, res) => {
 		res.end();
-		console.log('got metrics request', req.params);
 		Actions.add(req.login, req.params.stat, {});
 	});
 
@@ -265,14 +255,6 @@ module.exports = function(app, aux){
 
 // middlewares and helpers
 
-	function json(req, res, next){
-		if (req.err) {
-			res.json({ err: req.err })
-		} else {
-			res.json({ data: req.data || null })
-		}
-	}
-
 	function send_error(err, req, res, next){
 		console.error(err);
 		res.json({ err: err });
@@ -292,7 +274,7 @@ module.exports = function(app, aux){
 	function drawList(req, res, next){
 		var list = req.data || [];
 		var txt='';
-		console.log(list);
+
 		for (var i=0; i<list.length; i++){
 			txt += JSON.stringify(list[i]) + '\n';
 		}

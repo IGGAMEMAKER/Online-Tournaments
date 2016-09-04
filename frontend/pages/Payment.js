@@ -32,6 +32,7 @@ export default class PaymentPage extends Component {
         <Payment ammount={props.ammount} />
       </center>
     );
+
     return <Layout content={elements} nochat nofooter active="Payment" />;
   }
 }

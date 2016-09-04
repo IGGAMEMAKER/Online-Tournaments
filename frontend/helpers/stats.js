@@ -11,15 +11,17 @@ function post(url, data) {
 }
 
 export default {
-  pressedMenuFulfill: () => { send('/mark/metrics/MenuDeposit'); },
-  pressedMenuCashout: () => { send('/mark/metrics/MenuCashout'); },
-  pressedModalTournamentNoMoney: () => { send('/mark/metrics/ModalTournamentNoMoney'); },
-  pressedModalPackNoMoney: () => { send('/mark/metrics/ModalPackNoMoney'); },
-  pressedCashout: (amount) => { post('/mark/metrics/Cashout', { amount }); },
+  pressedMenuFulfill: () => { send('/metrics/MenuDeposit'); },
+  pressedMenuCashout: () => { send('/metrics/MenuCashout'); },
+  pressedModalTournamentNoMoney: () => { send('/metrics/ModalTournamentNoMoney'); },
+  pressedModalPackNoMoney: () => { send('/metrics/ModalPackNoMoney'); },
+  pressedCashout: (amount) => { post('/metrics/Cashout', { amount }); },
 
-  goToElite: () => { send('/mark/metrics/go-to-Elite')},
-  goToFrees: () => { send('/mark/metrics/go-to-Frees')},
-  goToCrowd: () => { send('/mark/metrics/go-to-Crowd')},
+  shownPaymentPage: () => { send('/metrics/Payment-page-opened'); },
 
-  shareLinkCopied: () => { send('/mark/metrics/copy-share-link')}
+  goToElite: () => { send('/metrics/go-to-Elite')},
+  goToFrees: () => { send('/metrics/go-to-Frees')},
+  goToCrowd: () => { send('/metrics/go-to-Crowd')},
+
+  shareLinkCopied: () => { send('/metrics/copy-share-link')}
 };

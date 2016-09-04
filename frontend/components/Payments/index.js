@@ -1,9 +1,5 @@
-/**
- * Created by gaginho on 06.06.16.
- */
 import { h, Component } from 'preact';
-import request from 'superagent';
-// import actions from '../../actions/ProfileActions';
+import stats from '../../helpers/stats';
 
 type PropsType = {
   ammount: number,
@@ -21,19 +17,13 @@ export default class Payment extends Component {
   };
 
   componentWillMount() {
-    // this.loadData();
     // actions.initialize();
+    console.log('componentWillMount Payments');
   }
 
-  loadData() {
-    request
-      .get('/api/teams/')
-      .end((err: String, res) => {
-        const message: PropsType = res.body;
-        console.log('got request', err, message);
-
-        this.setState({ joined: message.joined, team: message.team });
-      });
+  componentDidMount() {
+    console.log('componentDidMount Payments');
+    stats.shownPaymentPage();
   }
 
   payform = (value, paymentType) => {
@@ -67,7 +57,7 @@ export default class Payment extends Component {
   choosePaymentType = (id) => {
     return () => {
       this.setState({
-        chosen: id,
+        chosen: id
       });
     };
   };
@@ -157,6 +147,7 @@ export default class Payment extends Component {
     const height = 50;
     // Если у вас возникли какие-то трудности, напишите в
     let choseText = 'Выберите способ оплаты';
+
     if (state.chosen === PAY_QIWI) {
       choseText = 'QIWI';
     }
@@ -174,13 +165,20 @@ export default class Payment extends Component {
     // {this.getPaymentImage(2, 'Оплата с мобильного', 'http://s1.iconbird.com/ico/2013/9/452/w352h5121380477012phone.png', width, height)}
     // {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/28577/EkehfwEF_l/orig', width, height)}
     // {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
+
     return (
       <div>
         <div style="width: 100%; height: auto;">
-          <h1 className="page">Пополнение счёта на {props.ammount} РУБ</h1>
+          <h1 className="text-small page">Пополнение счёта на {props.ammount} РУБ</h1>
           <i className="fa fa-icon-ya-money" />
           <i className="fa fa-yandex" />
-          <h2 className="page" >{choseText}</h2>
+          <h2 className="text-micro page" >{choseText}</h2>
+          <div className="payment-button light-blue">Яндекс.Деньги</div>
+          <div className="payment-button light-blue">Оплата картой</div>
+          <div className="payment-button light-blue">Оплата с мобильного</div>
+          <br />
+          <br />
+          <div className="payment-button light-blue">QIWI</div>
           {this.getPaymentImage(1, 'QIWI', 'http://qiwi.by/uploads/files/logo_qiwi_rgb.png', width, height)}
           {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.png', width, height)}
           <div
@@ -200,16 +198,8 @@ export default class Payment extends Component {
           <div style="height: 150px;">{paymentForm}</div>
         </div>
         <br />
-        <div
-          className="white text-center"
-          style={{
-            // position: 'fixed',
-            // left: 0,
-            // right: 0,
-            // bottom: '35px',
-            width: '100%',
-          }}
-        >
+
+        <div className="white text-center full">
           Что-то не так? Пишите в &nbsp;
           <span>
             <a

@@ -20,7 +20,8 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
   var forcedPayments = search('forced-payment').length;
   var shownPaymentModals = search('modal-no-money').length;
 
-  var shownPaymentPage = search('shown-payment-page').length;
+  // var shownPaymentPage = search('shown-payment-page').length;
+  var shownPaymentPage = search('Payment-page-opened').length;
 
   var pressedPaymentButtonQiwi = search('pressed-payment-qiwi').length;
   var pressedPaymentButtonYandex = search('pressed-payment-yandex').length;

@@ -377,21 +377,28 @@ app.post('/addQuestion', middlewares.authenticated, addQuestion);
 
 // pulse
 var players = {};
+var unauthenticated = 0;
 
 setInterval(function () {
-  logger.debug('Online: ' + JSON.stringify(Object.keys(players)), 'Users');
+  var authenticated = Object.keys(players).length;
+  logger.debug('Online: ' + unauthenticated + ' unauthenticated users and' + authenticated, 'Users');
+
+  // API.pulse.add(parseInt(unauthenticated) + parseInt(authenticated), 'online-count');
+  // API.pulse.add(players, 'online');
+
   players = {};
-}, 60000);
+  unauthenticated = 0;
+}, 2 * 60000);
 
-logger.debug('mark/Here');
-
-app.post('/mark/Here', middlewares.authenticated, function (req, res){
-  // /:login
+app.post('/mark/Here', function (req, res){
   // var login = req.params.login;
   var login = req.login;
-  logger.debug('Online: ' + login);
-  // strLog('Online: ' + login, 'Users');
-  players[login] = 1;
+  if (login) {
+    // logger.debug('Online: ' + login);
+    players[login] = 1;
+  } else {
+    unauthenticated++;
+  }
 
   res.end('');
 });
