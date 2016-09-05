@@ -130,7 +130,7 @@ export default class Index extends Component {
     // );
     const shareCard = (
       <div>
-        <div className="freeroll ctr purple glass">
+        <div className="freeroll ctr purple share-container">
           <div className="white">
             <h1 className="fadeText">Побеждай с друзьями</h1>
             <p className="center">

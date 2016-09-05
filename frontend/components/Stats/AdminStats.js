@@ -41,19 +41,7 @@ const options = {
 
 export default class AdminStats extends Component {
   state = {
-    data: [{
-      copiedShareLink: 0,
-      registered: 0,
-      registeredSocial: 0,
-      registerByInvite: 0,
-
-      selfPayments: 0,
-      shownPaymentModals: 0,
-      forcedPayments: 0,
-
-      errors: 0,
-
-    }],
+    data: [{}],
 
     day1: 1,
     day2: new Date().getDate(),
@@ -66,11 +54,7 @@ export default class AdminStats extends Component {
   componentWillMount() {
     this.LoadStats();
 
-    window.onfocus = () => {
-      setTimeout(() => {
-        this.LoadStats();
-      }, 5000);
-    }
+    window.onfocus = () => { this.LoadStats(); }
   }
 
   redraw = (delay) => {
@@ -392,17 +376,17 @@ export default class AdminStats extends Component {
     //     {}
           // const myChart = new Chart(ctx, data);
 
-    const drawField = (k) => {
+    const drawField = (key, name) => {
       // <td>{this.state.data[0][k]}</td>
       return (
         <tr>
-          <td>{k}</td>
-          {this.state.data.map(info => <td>{info[k]}</td>)}
+          <td>{name ? name : key}</td>
+          {this.state.data.map(info => <td>{info[key]}</td>)}
         </tr>
       )
     };
     const stats = (
-      <table>
+      <table className="table-striped" width="600px">
         {drawField('copiedShareLink')}
         {drawField('registerByInvite')}
 
@@ -414,7 +398,7 @@ export default class AdminStats extends Component {
         <br />
         {drawField('shownPaymentModals')}
         {drawField('forcedPayments')}
-        {drawField('selfPayments')}
+        {drawField('menuDeposit', 'pressed-deposit-menu')}
         <br />
         {drawField('shownPaymentPage')}
         {drawField('pressedPaymentButtonQiwi')}
@@ -423,7 +407,8 @@ export default class AdminStats extends Component {
         {drawField('pressedPaymentButtonBankCard')}
 
         <br />
-        {drawField('cashoutRequests')}
+        {drawField('menuCashout', 'pressed-cashout-menu')}
+        {drawField('cashoutRequests', 'requested-money')}
 
         <br />
         {drawField('errors')}

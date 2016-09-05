@@ -15,7 +15,7 @@ export default {
   pressedMenuCashout: () => { send('/metrics/MenuCashout'); },
   pressedModalTournamentNoMoney: () => { send('/metrics/ModalTournamentNoMoney'); },
   pressedModalPackNoMoney: () => { send('/metrics/ModalPackNoMoney'); },
-  pressedCashout: (amount) => { post('/metrics/Cashout', { amount }); },
+  pressedCashoutRequest: (amount) => { send(`/metrics/Cashout?amount=${amount}`); },
 
   shownPaymentPage: () => { send('/metrics/Payment-page-opened'); },
 

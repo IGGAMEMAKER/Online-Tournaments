@@ -15,7 +15,19 @@
   to {text-shadow: 0 0 3px black;}
 }
 
-.zoom-slight
+.appear
+  //
+  animation-name init
+  animation-delay 1s
+  animation-timing-function ease-in-out
+  animation-iteration-count 1
+
+  //-webkit-animation: shadow  2s infinite ease-in-out;
+  //animation: shadow  2s infinite ease-in-out;
+  -webkit-animation: init 1s 1 ease-in-out;
+  animation: init 1s 1 ease-in-out;
+
+.zoom-low
   transition all 0.25s
   &:hover
     zoom 1.02

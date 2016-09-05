@@ -152,7 +152,30 @@ module.exports = function(app, aux){
 	// Stats.attempt('game-drawPopup')
 	app.get('/metrics/:stat', middlewares.authenticated, (req, res) => {
 		res.end();
-		Actions.add(req.login, req.params.stat, {});
+		var method = req.params.stat;
+
+		var obj = {};
+
+		if (method == 'Cashout') {
+			obj.amount = parseInt(req.query.amount);
+		}
+
+		Actions.add(req.login, req.params.stat, obj);
+	});
+
+	app.post('/metrics/:stat', middlewares.authenticated, (req, res) => {
+		logger.debug('/metrics/stat/ post');
+
+		res.end();
+		var method = req.params.stat;
+
+		var obj = {};
+
+		if (method == 'Cashout') {
+			obj.amount = parseInt(req.body.amount);
+		}
+
+		Actions.add(req.login, req.params.stat, obj);
 	});
 
 	app.all('/mark/payment/:login/:ammount', function (req, res){

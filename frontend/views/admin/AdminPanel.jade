@@ -45,21 +45,25 @@ mixin title(text)
 	br
 
 mixin packOpenings()
-	+title("PACKS")
-	br
-	+link("/packOpenings/incomeToday", "incomeToday")
-	+link("/packOpenings/incomeAll", "incomeAll")
-	+link("/packOpenings/incomeYesterday", "incomeYesterday")
-	br
-	+link("/packOpenings/openedToday", "openedToday")
-	+link("/packOpenings/openedAll", "opened alltime")
-	+link("/packOpenings/openedYesterday", "openedYesterday")
-	br
-	+link("/packOpenings/totalToday", "total openedToday")
-	+link("/packOpenings/totalAll", "total opened alltime")
-	+link("/packOpenings/totalYesterday", "total opened yesterday")
+	div
+		+title("PACKS")
+		br
+		+link("/packOpenings/incomeToday", "incomeToday")
+		+link("/packOpenings/incomeAll", "incomeAll")
+		+link("/packOpenings/incomeYesterday", "incomeYesterday")
+		br
+		+link("/packOpenings/openedToday", "openedToday")
+		+link("/packOpenings/openedAll", "opened alltime")
+		+link("/packOpenings/openedYesterday", "openedYesterday")
+		br
+		+link("/packOpenings/totalToday", "total openedToday")
+		+link("/packOpenings/totalAll", "total opened alltime")
+		+link("/packOpenings/totalYesterday", "total opened yesterday")
+
 html
 	script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js").
+	link(href="/css/new/bootstrap.css" rel="stylesheet")
+	link(href="/css/new/index.css?0" rel="stylesheet")
 	script.
 		var msg = "#{msg}";
 	script(src="adminScripts/Running.js")

@@ -6,6 +6,8 @@ import AdvancedCard from '../components/Shared/AdvancedCard';
 import autoscroller from '../helpers/autoscroll';
 import { route } from 'preact-router';
 
+import stats from '../helpers/stats';
+
 type PropsType = {}
 
 type StateType = {
@@ -15,8 +17,6 @@ type StateType = {
 
   registeredIn: Array,
 }
-
-type ResponseType = {}
 
 export default class Profile extends Component {
   state = {
@@ -291,7 +291,9 @@ export default class Profile extends Component {
             className="btn btn-lg btn-primary button"
             onClick={() => {
               console.log('cashout');
-              actions.support(`Я хочу вывести ${state.cashout} руб`)
+              actions.support(`Я хочу вывести ${state.cashout} руб`);
+
+              stats.pressedCashoutRequest(state.cashout);
             }}
             href="/Support"
           >Вывести</a>

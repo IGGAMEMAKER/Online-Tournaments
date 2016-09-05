@@ -295,6 +295,7 @@ export default {
 
   support(text) {
     socket.emit('support', { text, login });
+
     loadSupportMessages();
   },
 

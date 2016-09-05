@@ -1241,6 +1241,13 @@ button{
     //.round-tournament-cover
     width 90vw
     height 52.5vw
+.share-container
+  //@extend .img-responsive
+  width 52vw
+  @media (max-width: desktop-size)
+    width 80vw
+  @media (max-width: mobile-size)
+    width 90vw
 .faded
   position relative
   &:after
@@ -1293,16 +1300,7 @@ round-image-size = 225px
   overflow hidden
   height round-image-size
   margin-bottom 25px
-  //
-  animation-name init
-  animation-delay 1s
-  animation-timing-function ease-in-out
-  animation-iteration-count 1
-
-  //-webkit-animation: shadow  2s infinite ease-in-out;
-  //animation: shadow  2s infinite ease-in-out;
-  -webkit-animation: init 1s 1 ease-in-out;
-  animation: init 1s 1 ease-in-out;
+  @extend .appear
 .round-image
   width round-image-size
   height round-image-size
@@ -1804,7 +1802,7 @@ a:focus {
   margin-bottom 5px
   @extend .page
   @extend .text-big
-  @extend .zoom-slight
+  @extend .zoom-low
 
 section {
   position: absolute;

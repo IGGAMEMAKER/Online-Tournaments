@@ -1,4 +1,5 @@
 var Message = require('./models/message');
+var API = require('./helpers/API');
 
 var io;
 var socket_enabled = true;

@@ -16,7 +16,7 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
   var registeredSocial = search('register-social').length;
   var registerByInvite = search('register-by-invite').length;
 
-  var selfPayments = search('MenuDeposit').length;
+  var menuDeposit = search('MenuDeposit').length;
   var forcedPayments = search('forced-payment').length;
   var shownPaymentModals = search('modal-no-money').length;
 
@@ -28,7 +28,8 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
   var pressedPaymentButtonMobiles = search('pressed-payment-mobile').length;
   var pressedPaymentButtonBankCard = search('pressed-payment-bank-card').length;
 
-  var cashoutRequests = search('cashout-request').length;
+  var menuCashout = search('MenuCashout').length;
+  var cashoutRequests = search('Cashout').length;
 
   return {
     copiedShareLink,
@@ -37,7 +38,7 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
     registerByInvite,
 
     // ---------- payments -----------
-    selfPayments,
+    menuDeposit,
     shownPaymentModals,
     forcedPayments,
 
@@ -48,6 +49,7 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
     pressedPaymentButtonBankCard,
     // -------------------------------
 
+    menuCashout,
     cashoutRequests,
 
     errors: errorCount
