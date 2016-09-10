@@ -59,7 +59,9 @@ var DailyStats = mongoose.model('DailyStats', {
 	resetPasswordOK:Number,
 	resetPasswordFail:Number,
 
-	date:Date
+	date:Date,
+
+	users: Array
 });
 
 function getDefaultDailyStats(date){
@@ -75,7 +77,8 @@ function getDefaultDailyStats(date){
 		resetPasswordOK:0,
 		resetPasswordFail:0,
 
-		date:date|| getToday()
+		date:date|| getToday(),
+		users: []
 	});
 }
 
@@ -95,16 +98,23 @@ app.post('/save-stat', respond(req => {
 
 app.post('/Mail', function (req, res){
 	OK(res);
-	console.log('Mail');
+	// console.log('Mail');
 
 	updateDaily({ $inc: { mail: 1 } }, 'Mail');
 });
 
 app.post('/MailFail', function (req, res){
 	OK(res);
-	console.log('MailFail');
+	// console.log('MailFail');
 
 	updateDaily({ $inc: { mailFail: 1 } }, 'Mail');
+});
+
+app.post('/Online-users', (req, res) => {
+	OK(res);
+	console.log('online-users', req.body);
+	var users = req.body.users;
+	updateDaily({ $set: { users } }, 'online-users')
 });
 
 
@@ -242,7 +252,7 @@ app.post('/ResetPasswordFail', function (req, res){
 	OK(res);
 	//var result = req.body.result;
 	//var login = req.body.login;
-	updateDaily({$inc : { resetPasswordFail: 1 }}, 'resetPasswordFail');
+	updateDaily({ $inc : { resetPasswordFail: 1 }}, 'resetPasswordFail');
 	// if (result==1) { Users.update({login:login}, {$inc : {resetPassword: 1 } }, stdUpdateHandler('ResetPassword ' + login)); }
 });
 
@@ -282,9 +292,11 @@ app.post('/FinishedTournament', function (req, res){ // finished in TS (or, mayb
 	updTournament(tournamentID, {$inc : { finished:1 }}, 'FinishedTournament');
 });
 
+// app.get('/users-by-date')
+
 function processStats(tournaments, dailyStats){
 	console.log('dailyStats: ');
-	// console.log(dailyStats);
+	console.log(dailyStats);
 	var obj = {
 		/*
 		started:0,
@@ -308,8 +320,11 @@ function processStats(tournaments, dailyStats){
 		mailFail:[],
 
 		resetPassword:[],
-		resetPasswordFail:[]
+		resetPasswordFail:[],
+
+		users: []
 	};
+
 	for (var i = 0; i <= tournaments.length - 1; i++) {
 		var t = tournaments[i];
 		console.log('Loaded: ' + t.loaded);
@@ -336,6 +351,8 @@ function processStats(tournaments, dailyStats){
 	obj.mailFail.push(dailyStats.mailFail||0);
 	obj.resetPassword.push(dailyStats.resetPassword||0);
 	obj.resetPasswordFail.push(dailyStats.resetPasswordFail||0);
+
+	obj.users.push(dailyStats.users.length || 0);
 
 	return obj;
 }
@@ -408,7 +425,7 @@ app.get('/', function (req, res){
 	})
 	.then(function (data){
 		// core.Answer(res, processStats(data.tournaments, data.dailyStats));
-		res.json({result:1, code:processStats(data.tournaments, data.dailyStats) })
+		res.json({ result: 1, code: processStats(data.tournaments, data.dailyStats) })
 	})
 	.catch(stdCatcher(res));
 	// res.end('OK');

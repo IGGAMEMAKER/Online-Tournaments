@@ -16,6 +16,8 @@ var Pulse = require('../models/pulse');
 
 var statistics = require('../models/statistics');
 
+var visits = require('../models/visits');
+
 module.exports = {
   users: Users,
   actions: Actions,
@@ -30,5 +32,6 @@ module.exports = {
   teams: Teams,
   statistics,
 
-  pulse: Pulse
+  pulse: Pulse,
+  visits
 };

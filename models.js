@@ -130,6 +130,7 @@ module.exports = function(dbAddress){
 			finishTime: Date
 			//tournamentServerID: String
 		})
+
 		,Marathon : db.model('Marathon', {
 			MarathonID: Number,
 			start: Date,
@@ -176,6 +177,7 @@ module.exports = function(dbAddress){
 			type: String,
 			auxillaries: Object
 		})
+
 		,Error : db.model('Error', {
 			login: String,
 			date: Date,
@@ -183,6 +185,11 @@ module.exports = function(dbAddress){
 			auxillaries: Object
 		})
 
+		,Visit: db.model('Visit', {
+			login: String,
+			date: Date,
+			registered: Date
+		})
 		,Statistic : db.model('Statistic', {
 			// 2 types of stats:
 			// personal

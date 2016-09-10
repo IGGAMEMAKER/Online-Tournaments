@@ -14,6 +14,8 @@ var sender = require('./requestSender');
 
 app.use(express.static('./frontend/public'));
 
+var fs = require('fs');
+
 // sessions and passport
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -375,27 +377,70 @@ app.get('/SpecLogs/:topic', function (req, res){
 
 app.post('/addQuestion', middlewares.authenticated, addQuestion);
 
+app.get('/save-retention', (req, res) => {
+  var users = Object.keys(players);
+
+  sender.Stats('Online-users', { users });
+
+  saveUserList(users);
+
+  fs.writeFile('retention-file (' + new Date().toDateString() + ').txt', users, (err) => {
+    if (err) {
+      res.json({ err });
+      API.errors.add('system', 'save-retention', { err });
+    } else {
+      res.json({ result: players, count: users.length });
+    }
+  });
+});
+
 // pulse
 var players = {};
 var unauthenticated = 0;
 
+var curDate;
+
+
+var saveUserList = (users) => {
+  // logger.debug('saveUserList', users);
+
+  var visitList = users.map(login => {
+    return {
+      login,
+      date: players[login].date,
+      registered: players[login].registered
+    }
+  });
+
+  logger.debug(visitList);
+
+  API.visits.saveList(visitList);
+};
+
+
 setInterval(function () {
-  var authenticated = Object.keys(players).length;
-  logger.debug('Online: ' + unauthenticated + ' unauthenticated users and' + authenticated, 'Users');
+  // var authenticated = Object.keys(players).length;
+  // logger.debug('Online: ' + unauthenticated + ' unauthenticated users and ' + authenticated, 'Users');
 
-  // API.pulse.add(parseInt(unauthenticated) + parseInt(authenticated), 'online-count');
-  // API.pulse.add(players, 'online');
+  // players = {};
+  // unauthenticated = 0;
 
-  players = {};
-  unauthenticated = 0;
+  var users = Object.keys(players);
+  sender.Stats('Online-users', { users });
+
+  // saveUserList(users);
 }, 2 * 60000);
 
-app.post('/mark/Here', function (req, res){
-  // var login = req.params.login;
-  var login = req.login;
+app.post('/mark/Here', function (req, res) {
+  var login = req.session ? req.session.login : null;
+  // logger.debug('mark/Here');
+  // logger.debug(login);
+
   if (login) {
     // logger.debug('Online: ' + login);
-    players[login] = 1;
+    // players[login] = { registered: req.body.registered, date: new Date() };
+    players[login] = { registered: new Date(2016, 3, 1), date: new Date() };
+    // players[login] = 1;
   } else {
     unauthenticated++;
   }

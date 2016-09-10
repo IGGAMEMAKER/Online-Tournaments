@@ -411,6 +411,10 @@ export default class AdminStats extends Component {
         {drawField('cashoutRequests', 'requested-money')}
 
         <br />
+        {drawField('loyalUsers', 'loyalUsers')}
+        {drawField('newUsers', 'newUsers')}
+
+        <br />
         {drawField('errors')}
       </table>
     );

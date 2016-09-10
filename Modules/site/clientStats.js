@@ -89,16 +89,22 @@ function countStatsForPeriod(date1, date2) {
 
 	var actions;
 
+	var visits;
+
 	var periods = makePeriodArray(date1, date2);
 
 	return API.actions.getAllByPeriod(date1, date2)
 		.then(list => {
 			actions = list;
+			return API.visits.getAllByPeriod(date1, date2);
+		})
+		.then(list => {
+			visits = list;
 			return API.errors.getAllByPeriod(date1, date2);
 		})
 		.then(errors => {
 			return periods.map(obj => {
-				var aggregated = aggregateStats(actions, errors, obj.d1, obj.d2);
+				var aggregated = aggregateStats(actions, errors, visits, obj.d1, obj.d2);
 
 				return Object.assign(obj, aggregated);
 			});

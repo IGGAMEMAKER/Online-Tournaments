@@ -3,49 +3,6 @@ extends layout
 block title
 	title Онлайн Турниры
 
-mixin slide(src, alt, name, text, active, url)
-	div(class="item " + active)
-		center
-			img(class="img-responsive" src=src alt=alt style="width: auto; height: 400px;")
-		// width="460" height="345")
-		div(class="carousel-caption")
-			h3 #{name}
-			p #{text}
-			if url
-				a(href=url class="btn btn-danger btn-lg") Подробнее
-
-mixin marathonCarousel()
-	#marathons.offset-bg
-		| <div id="myCarousel" class="carousel slide" data-ride="carousel">
-		|  <!-- Indicators -->
-		|  <ol class="carousel-indicators">
-		|    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-		|    <li data-target="#myCarousel" data-slide-to="1"></li>
-		|    <li data-target="#myCarousel" data-slide-to="2"></li>
-		|    <li data-target="#myCarousel" data-slide-to="3"></li>
-		|    <li data-target="#myCarousel" data-slide-to="4"></li>
-		|  </ol>
-
-		|  <div class="carousel-inner" role="listbox">
-
-		+slide("/img/topics/realmadrid.jpg", "Chania", "Chania", "The atmosphere in Chania has a touch of Florence and Venice", "active", "/Categories")
-		+slide("/img/topics/bale.jpg", "Chania", "Chania", "The atmosphere in Chania has a touch of Florence and Venice")
-		+slide("/img/topics/manutd.jpg", "Chania", "Chania", "The atmosphere in Chania has a touch of Florence and Venice")
-		+slide("/img/topics/default.jpg", "Chania", "Chania", "The atmosphere in Chania has a touch of Florence and Venice")
-
-		|  </div>
-
-		|  <!-- Left and right controls -->
-		|  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-		|    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-		|    <span class="sr-only">Previous</span>
-		|  </a>
-		|  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-		|    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-		|    <span class="sr-only">Next</span>
-		|  </a>
-		|</div>
-
 block legacy
 	script.
 		var socket = io();

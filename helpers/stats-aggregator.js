@@ -2,10 +2,34 @@ function fits(obj, d1, d2) {
   return obj.date.getTime() >= d1 && obj.date.getTime() < d2;
 }
 
-module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
+var DAY = 3600 * 24 * 1000;
+
+// date - current date
+// by default is today, but you might want to look stats for some different dates
+// f.e : what was the retention of new users three months ago. Did we hold them better than now?
+
+var isLoyalUser = (visit, date = new Date()) => {
+  return date.getTime() - visit.registered.getTime() > 21 * DAY
+};
+
+var isNewUser = (visit, date = new Date()) => {
+  // if (isLoyalUser(visit, date)) return false;
+
+  return currentDate.getTime() - visit.registered.getTime() < 7 * DAY
+};
+
+var isMiddleUser = (visit, date = new Date()) => {
+  isLoyalUser()
+};
+
+module.exports = (actions, errors, visits, d1, d2) => { // d1 and d2 in milliseconds
   var search = (tag) => {
     // && a.date.getTime() >= d1.getTime() && a.date.getTime() < d2.getTime()
     return actions.filter(a => a.type === tag && fits(a, d1, d2));
+  };
+
+  var aggregateVisits = () => {
+    return visits;
   };
 
   var errorCount = errors.filter(e => fits(e, d1, d2)).length;
@@ -30,6 +54,10 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
 
   var menuCashout = search('MenuCashout').length;
   var cashoutRequests = search('Cashout').length;
+  
+  var loyalUsers = 0;
+  var newUsers = 0;
+  
 
   return {
     copiedShareLink,
@@ -47,6 +75,11 @@ module.exports = (actions, errors, d1, d2) => { // d1 and d2 in milliseconds
     pressedPaymentButtonYandex,
     pressedPaymentButtonMobiles,
     pressedPaymentButtonBankCard,
+    // -------------------------------
+
+    // ----------- retention ---------
+    loyalUsers,
+    newUsers,
     // -------------------------------
 
     menuCashout,

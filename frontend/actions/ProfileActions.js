@@ -197,7 +197,7 @@ export default {
         .send({});
 
       // console.log(response.body);
-    }, 60000)
+    }, 10000)
   },
   initialize,
   update,

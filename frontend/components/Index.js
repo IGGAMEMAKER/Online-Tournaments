@@ -150,11 +150,7 @@ export default class Index extends Component {
                   className="btn btn-primary btn-large btn-lg offset-md"
                   onClick={this.CopyShareLink}
                 >Скопировать</a>
-                <p
-                  style={{
-                    display: state.copied ? 'block' : 'none'
-                  }}
-                >Ссылка скопирована</p>
+                <p style={{display: state.copied ? 'block' : 'none'}}>Ссылка скопирована</p>
               </center>
             </div>
           </div>
@@ -220,18 +216,13 @@ export default class Index extends Component {
     //   :
     //   '';
 
-    const realmadridTournaments = state.tournaments? state.tournaments
-      .filter(t => t.settings && t.settings.tag === 'realmadrid')
-      .map(t =>
-        <RoundTournament
-          data={{
-            tournamentID: t.tournamentID
-          }}
-        />
-      )
+    const realmadridTournaments = state.tournaments ?
+      state.tournaments
+        .filter(t => t.settings && t.settings.tag === 'realmadrid')
+        .map(t => <RoundTournament data={{tournamentID: t.tournamentID}} />)
       :
       '';
-    // {roundTournaments}
+    //hu {roundTournaments}
     //           <VKWidget />
     // Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
 
