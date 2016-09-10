@@ -118,6 +118,13 @@ html
 	a(href="/api/news/all") NEWWWWWWWWWWWS
 
 	br
+	div
+		+createPortLink("/messages/support-incoming/", 'incoming support messages')
+		p "/messages/support/:login"
+		+createPortLink("/messages/support-respond", 'respond support')
+		h1
+			+createPortLink('/admin/support', 'ADMIN SUPPORT')
+			iframe(src ="/admin/support" width="100%" height="400px;")
 	center
 		a(href="/api/tournaments/current" target="_blank") Current tournaments
 	#tournaments

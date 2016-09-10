@@ -9,6 +9,7 @@ var DAY = 3600 * 24 * 1000;
 // f.e : what was the retention of new users three months ago. Did we hold them better than now?
 
 var isLoyalUser = (visit, date = new Date()) => {
+
   return date.getTime() - visit.registered.getTime() > 21 * DAY
 };
 
@@ -19,7 +20,11 @@ var isNewUser = (visit, date = new Date()) => {
 };
 
 var isMiddleUser = (visit, date = new Date()) => {
-  isLoyalUser()
+  if (isNewUser(visit, date)) return false;
+
+  if (isLoyalUser(visit, date)) return false;
+
+  return true;
 };
 
 module.exports = (actions, errors, visits, d1, d2) => { // d1 and d2 in milliseconds
@@ -56,6 +61,7 @@ module.exports = (actions, errors, visits, d1, d2) => { // d1 and d2 in millisec
   var cashoutRequests = search('Cashout').length;
   
   var loyalUsers = 0;
+  var middleUsers = 0;
   var newUsers = 0;
   
 
@@ -79,6 +85,7 @@ module.exports = (actions, errors, visits, d1, d2) => { // d1 and d2 in millisec
 
     // ----------- retention ---------
     loyalUsers,
+    middleUsers,
     newUsers,
     // -------------------------------
 
