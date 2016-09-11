@@ -387,7 +387,7 @@ function (req, res){
 	});
 
 	app.get('/myprofile', authenticated, get_profile, function (req, res){
-		res.json({ profile : req.profile });
+		res.json({ profile: req.profile });
 	}, function (err, req, res, next){
 		res.json({ err });
 	});
@@ -421,6 +421,7 @@ function (req, res){
 
 			profile.packs = user.info.packs;
 			profile.points = user.info.points;
+			profile.registerDate = user.date;
 		})
 		.then(function (user) {
 			return TournamentReg.get(login)

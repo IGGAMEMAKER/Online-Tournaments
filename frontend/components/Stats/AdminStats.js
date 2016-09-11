@@ -386,7 +386,9 @@ export default class AdminStats extends Component {
         </tr>
       )
     };
-
+    // <br />
+    // {drawField('loyalUsers', 'loyalUsers')}
+    // {drawField('newUsers', 'newUsers')}
     const stats = (
       <table className="table-striped" width="600px">
         {drawField('copiedShareLink')}
@@ -411,10 +413,6 @@ export default class AdminStats extends Component {
         <br />
         {drawField('menuCashout', 'pressed-cashout-menu')}
         {drawField('cashoutRequests', 'requested-money')}
-
-        <br />
-        {drawField('loyalUsers', 'loyalUsers')}
-        {drawField('newUsers', 'newUsers')}
 
         <br />
         {drawField('registeredToday')}
@@ -448,6 +446,13 @@ export default class AdminStats extends Component {
       />
     };
 
+    // {
+    //   state.data.map(s => {
+    //     if (!s.visits) return '';
+    //     const visits = s.visits.map(v => <div>{v.login} {v.date}</div>);
+    //     return <div>{visits}</div>
+    //   })
+    // }
 
     return (
       <div>
@@ -465,13 +470,6 @@ export default class AdminStats extends Component {
         <br />
         <button onClick={this.LoadStats}>update stats</button>
         {stats}
-        {
-          state.data.map(s => {
-            if (!s.visits) return '';
-            const visits = s.visits.map(v => <div>{v.login} {v.date}</div>);
-            return <div>{visits}</div>
-          })
-        }
         <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart" width="400" height="400" />
         </div>

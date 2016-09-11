@@ -18,6 +18,8 @@ let _news: Array = [];
 let _chatMessages: Array = [];
 let _supportMessages: Array = [];
 
+let _registerDate: Date = undefined;
+
 let _points: number = 0;
 
 let _testValue = 0;
@@ -123,6 +125,10 @@ class ProfileStore extends EventEmitter {
   getPoints() {
     return _points || 0;
   }
+
+  getRegisterDate() {
+    return _registerDate;
+  }
 }
 
 const store = new ProfileStore();
@@ -157,6 +163,7 @@ Dispatcher.register((p: PayloadType) => {
       _money = p.money;
       _packs = p.packs;
       _points = p.points || 0;
+      _registerDate = p.registerDate;
       break;
     case c.UPDATE_TOURNAMENTS:
       _availableTournaments = p.tournaments;

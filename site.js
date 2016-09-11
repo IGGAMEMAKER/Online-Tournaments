@@ -432,18 +432,21 @@ setInterval(function () {
 }, 2 * 60000);
 
 app.post('/mark/Here', function (req, res) {
+  res.end('');
   var login = req.session ? req.session.login : null;
-  // logger.debug('mark/Here');
-  // logger.debug(login);
 
   if (login) {
-    // logger.debug('Online: ' + login);
-    // players[login] = { registered: req.body.registered, date: new Date() };
-    players[login] = { registered: new Date(2016, 3, 1), date: new Date() };
-    // players[login] = 1;
+    var registered = req.body.registered;
+
+    if (!registered) {
+      return;
+    }
+
+    players[login] = { registered, date: new Date() };
+    logger.debug('mark/Here');
+    logger.debug(login, registered);
+
   } else {
     unauthenticated++;
   }
-
-  res.end('');
 });

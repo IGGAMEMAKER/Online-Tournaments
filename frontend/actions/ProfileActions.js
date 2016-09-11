@@ -124,7 +124,7 @@ async function loadProfile() {
     const response: ResponseType = await request.get('/myProfile');
     // console.log('async initialize response...', response.body);
     const profile = response.body.profile;
-    const { tournaments, money, packs, points } = profile;
+    const { tournaments, money, packs, points, registerDate } = profile;
     
     const tRegs: Array = tournaments;
 
@@ -140,7 +140,8 @@ async function loadProfile() {
       tournaments: registeredIn,
       money,
       packs,
-      points
+      points,
+      registerDate
     });
 
     Dispatcher.dispatch({
@@ -192,9 +193,15 @@ export default {
     setInterval(async function (){
       // console.log('here');
       // request
+      const registered = store.getRegisterDate();
+
+      if (!registered) {
+        return;
+      }
+
       const response = await request
         .post('/mark/Here/')
-        .send({});
+        .send({ registered });
 
       // console.log(response.body);
     }, 10000)

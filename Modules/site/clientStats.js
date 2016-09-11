@@ -143,7 +143,7 @@ function countStatsForPeriod(date1, date2) {
 
 				var aggregated = aggregateStats(actions, errors, visits, obj.d1, obj.d2);
 
-				return Object.assign(obj, aggregated);
+				return Object.assign(obj, aggregated, { visits });
 			});
 		})
 }
