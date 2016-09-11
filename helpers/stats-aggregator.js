@@ -18,21 +18,24 @@ var registeredMoreThanN1daysButLessThanN2Days = (N1, N2, visits) => {
 // date - current date
 // by default is today, but you might want to look stats for some different dates
 // f.e : what was the retention of new users three months ago. Did we hold them better than now?
-var isLoyalUser = (visit, date = new Date()) => {
-  return date.getTime() - visit.registered.getTime() > 21 * DAY
-};
-
-var isNewUser = (visit, date = new Date()) => {
-  return currentDate.getTime() - visit.registered.getTime() < 7 * DAY
-};
-
-var isMiddleUser = (visit, date = new Date()) => {
-  if (isNewUser(visit, date)) return false;
-
-  if (isLoyalUser(visit, date)) return false;
-
-  return true;
-};
+// var isLoyalUser = (visit, date) => {
+//   if (!date)//  = new Date()
+//   return date.getTime() - visit.registered.getTime() > 21 * DAY
+// };
+//
+// var isNewUser = (visit, date) => {
+//   //  = new Date()
+//   return currentDate.getTime() - visit.registered.getTime() < 7 * DAY
+// };
+//
+// var isMiddleUser = (visit, date) => {
+//   //  = new Date()
+//   if (isNewUser(visit, date)) return false;
+//
+//   if (isLoyalUser(visit, date)) return false;
+//
+//   return true;
+// };
 
 module.exports = (actions, errors, visits, d1, d2) => { // d1 and d2 in milliseconds
   // I bet, d1 and d2 is less than 1 day difference
