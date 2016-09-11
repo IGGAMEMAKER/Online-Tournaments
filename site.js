@@ -12,6 +12,8 @@ var addQuestion = require('./middlewares/add-quiz-question');
 
 var sender = require('./requestSender');
 
+var schedule = require('node-schedule');
+
 app.use(express.static('./frontend/public'));
 
 var fs = require('fs');
@@ -394,6 +396,8 @@ app.get('/save-retention', (req, res) => {
   });
 });
 
+
+
 // pulse
 var players = {};
 var unauthenticated = 0;
@@ -417,6 +421,17 @@ var saveUserList = (users) => {
   API.visits.saveList(visitList);
 };
 
+// schedule.scheduleJob('0 15 0-23/2 * * *', () => {
+schedule.scheduleJob('0 35 0-23/2 * * *', () => {
+  // logger.debug('iiii', new Date().toDateString());
+  var users = Object.keys(players);
+
+  logger.log('CRON SAVE VISITS', users.length);
+
+  sender.Stats('Online-users', { users });
+
+  saveUserList(users);
+});
 
 setInterval(function () {
   // var authenticated = Object.keys(players).length;
