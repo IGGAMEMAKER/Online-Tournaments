@@ -204,7 +204,7 @@ export default {
         .send({ registered });
 
       // console.log(response.body);
-    }, 10000)
+    }, 30000)
   },
   initialize,
   update,
