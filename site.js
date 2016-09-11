@@ -443,8 +443,8 @@ app.post('/mark/Here', function (req, res) {
     }
 
     players[login] = { registered, date: new Date() };
-    logger.debug('mark/Here');
-    logger.debug(login, registered);
+    // logger.debug('mark/Here');
+    // logger.debug(login, registered);
 
   } else {
     unauthenticated++;
