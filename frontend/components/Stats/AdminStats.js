@@ -20,6 +20,7 @@ type StateType = {
   forcedPayments: number,
 
   errors: number,
+  visits: Array,
 
   day1: number,
   day2: number,
@@ -287,7 +288,6 @@ export default class AdminStats extends Component {
   };
 
   drawPaymentPageEfficiencyGraph = () => {
-    
     this.makeConversionDataset(array)
   };
 
@@ -323,7 +323,7 @@ export default class AdminStats extends Component {
           this.makeDataset(this.pickDataFromDataArray('registered', aggregated),
             'registeredByEmail', 2),
           this.makeDataset(this.pickDataFromDataArray('registeredSocial', aggregated),
-            'registeredSocial', 3),
+            'registeredSocial', 3)
         ]
       },
       options
@@ -375,6 +375,7 @@ export default class AdminStats extends Component {
     //     <canvas id="myChart" width="400" height="400"></canvas>
     //     {}
           // const myChart = new Chart(ctx, data);
+    console.log('render data', state.data);
 
     const drawField = (key, name) => {
       // <td>{this.state.data[0][k]}</td>
@@ -385,6 +386,7 @@ export default class AdminStats extends Component {
         </tr>
       )
     };
+
     const stats = (
       <table className="table-striped" width="600px">
         {drawField('copiedShareLink')}
@@ -415,6 +417,17 @@ export default class AdminStats extends Component {
         {drawField('newUsers', 'newUsers')}
 
         <br />
+        {drawField('registeredToday')}
+        {drawField('registeredYesterday')}
+        {drawField('registeredTwoDaysAgo')}
+        {drawField('registeredThreeDaysAgo')}
+        {drawField('registeredSevenDaysAgo', 'registered6-7 days Ago')}
+        {drawField('registered14DaysAgo', 'registered8-14 days Ago')}
+        {drawField('registered21DaysAgo', 'registered14-21 days Ago')}
+        {drawField('registeredMonthAgo', 'registered22-31 days Ago')}
+        {drawField('registeredMoreThanMonthAgo', 'loyal for month+')}
+
+        <br />
         {drawField('errors')}
       </table>
     );
@@ -435,6 +448,7 @@ export default class AdminStats extends Component {
       />
     };
 
+
     return (
       <div>
         <h1> HEEEEEEEEEEEEEEEEEEERE</h1>
@@ -451,6 +465,13 @@ export default class AdminStats extends Component {
         <br />
         <button onClick={this.LoadStats}>update stats</button>
         {stats}
+        {
+          state.data.map(s => {
+            if (!s.visits) return '';
+            const visits = s.visits.map(v => <div>{v.login} {v.date}</div>);
+            return <div>{visits}</div>
+          })
+        }
         <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart" width="400" height="400" />
         </div>
@@ -460,6 +481,7 @@ export default class AdminStats extends Component {
         <div style="width: 300px; height: 300px; display: inline-block;">
           <canvas id="myChart3" width="400" height="400" />
         </div>
+
       </div>
     );
     // <Line data={data} options={options} width="600" height="250"/>

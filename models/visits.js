@@ -7,7 +7,6 @@ module.exports = {
   },
 
   saveList: list => {
-    // [].forEach()
     list.forEach(visit => {
       Visits.save({ login: visit.login, date: visit.date, registered: visit.registered })
     })

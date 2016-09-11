@@ -75,14 +75,50 @@ function makePeriodArray(d1, d2) { // array of milliseconds
 	logger.debug('period from: ', new Date(startOfFirstDay), ' to ', new Date(endOfLastDay));
 
 	for (var time = startOfFirstDay; time < endOfLastDay; time += DAY_MS) {
-		// console.log()
 		array.push({ d1: time, d2: time + DAY_MS });
 	}
 
 	return array;
 }
 
+function makePeriodArrayByWeek() {
+
+}
+
 logger.debug('yesterday', yesterday());
+
+function rawStatsForPeriodWithDetalisation(date1, date2, detalisation = 1) {
+	logger.debug('rawStatsForPeriodWithDetalisation', date1, date2);
+
+	var actions;
+
+	var visits;
+
+	var periods = makePeriodArray(date1, date2);
+
+	return API.actions.getAllByPeriod(date1, date2)
+		.then(list => {
+			actions = list;
+			return API.visits.getAllByPeriod(date1, date2);
+		})
+		.then(list => {
+			visits = list;
+			return API.errors.getAllByPeriod(date1, date2);
+		})
+		.then(errors => {
+			return {
+				actions,
+				visits,
+				errors
+			};
+			// return periods.map(obj => {
+
+				// var aggregated = aggregateStats(actions, errors, visits, obj.d1, obj.d2);
+
+				// return Object.assign(obj, aggregated);
+			// });
+		})
+}
 
 function countStatsForPeriod(date1, date2) {
 	logger.debug('countStatsForPeriod', date1, date2);
@@ -104,6 +140,7 @@ function countStatsForPeriod(date1, date2) {
 		})
 		.then(errors => {
 			return periods.map(obj => {
+
 				var aggregated = aggregateStats(actions, errors, visits, obj.d1, obj.d2);
 
 				return Object.assign(obj, aggregated);
@@ -145,14 +182,16 @@ module.exports = function(app, aux){
 	});
 
 	app.post('/NoMoney', function (req, res){
+		res.end('');
+
 		var tournamentID = req.body.tournamentID;
 		var money = req.body.money || 0;
 
-		res.end('');
 		Stats.attempt('NO-MONEY');
-		logger.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
 
-		// console.log('No money for ' + tournamentID + ' need: ' + money, 'Money');
+		API.actions.add('no-tournament-money', 'modal-no-money', { tournamentID, money });
+
+		logger.debug('No money for ' + tournamentID + ' need: ' + money, 'Money');
 	});
 
 	// Stats.attempt('game-drawPopup')
@@ -224,9 +263,11 @@ module.exports = function(app, aux){
 
 		// Stats.attempt('game-'+ name)
 
-
 		var obj	= { type: 'game-'+ name };
-		if (name=='movement') aux.clientside(login, obj);
+
+		if (name == 'movement') {
+			aux.clientside(login, obj);
+		}
 
 		// Stats('/mark/game/'+name, {login:login, tournamentID:tournamentID });
 	});
@@ -265,9 +306,7 @@ module.exports = function(app, aux){
 		var err = req.body.err;
 		var where = req.body.where;
 
-
-
-		aux.clientsideError(login||null, { type: 'clientError', err: err, where:where })
+		aux.clientsideError(login || null, { type: 'clientError', err: err, where:where })
 	});
 	//statistics Data
 
@@ -311,18 +350,17 @@ module.exports = function(app, aux){
 	}
 
 	function render(renderPage){
-		return function(req,res, next){
+		return function(req, res, next){
 			res.render(renderPage, { msg: req.data })
 		}
 	}
 
 	app.get('/playedTop', function (req, res, next){
-		// var num = parseInt(req.query.num||1);
+		// var num = parseInt(req.query.num || 1);
 		var playedMoreThan = parseInt(req.query.num) || 1; //req.query.num || 1;
 		TournamentRegs.playedTop(playedMoreThan)
 		.then(answer(req, next))
 		.catch(next);
-
 	}, render('playedTop'), send_error); //draw_list)
 
 
@@ -350,5 +388,14 @@ module.exports = function(app, aux){
 		// logger.debug('request /full-stats', req.body);
 
 		return countStatsForPeriod(date1, date2);
+	}));
+
+	app.post('/full-stats/raw/:detalisation', respond(req => {
+		var date1 = new Date(req.body.date1) || yesterday();
+		var date2 = new Date(req.body.date2) || new Date();
+
+		// logger.debug('request /full-stats', req.body);
+
+		return rawStatsForPeriodWithDetalisation(date1, date2);
 	}));
 };
