@@ -87,7 +87,7 @@ function makePeriodArrayByWeek() {
 
 logger.debug('yesterday', yesterday());
 
-function rawStatsForPeriodWithDetalisation(date1, date2, detalisation = 1) {
+function rawStatsForPeriodWithDetalisation(date1, date2, detalisation) {
 	logger.debug('rawStatsForPeriodWithDetalisation', date1, date2);
 
 	var actions;
