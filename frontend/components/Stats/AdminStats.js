@@ -79,7 +79,19 @@ export default class AdminStats extends Component {
       date2
     };
 
-    const response = await request.post('full-stats').send(query);
+    // const response = await request
+    //   .post('http://online-tournaments.org/full-stats')
+    //   .set('Access-Control-Allow-Origin', 'true')
+    //   .set('Access-Control-Allow-Credentials', 'true')
+    //   .withCredentials()
+    //   .send(query)
+    //   .end((e, e2) => {
+    //     console.log('full stats', e, e2);
+    //   });
+
+    // Access-Control-Allow-Origin
+
+    const response = await request.post('/full-stats').send(query);
 
     console.log('LoadStats', response.body.msg);
     // const obj = Object.assign(this.state, response.body.msg);

@@ -431,6 +431,8 @@ schedule.scheduleJob('0 35 0-23/2 * * *', () => {
   sender.Stats('Online-users', { users });
 
   saveUserList(users);
+
+  players = {};
 });
 
 setInterval(function () {
