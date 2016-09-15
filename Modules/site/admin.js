@@ -5,8 +5,6 @@ var TournamentReg = require('../../models/tregs');
 
 var middlewares = require('../../middlewares');
 
-var isAdmin = middlewares.isAdmin;
-
 var logger = require('../../helpers/logger');
 
 var API = require('../../helpers/API');
@@ -14,6 +12,7 @@ var API = require('../../helpers/API');
 var mailer = require('../../sendMail');
 
 var multer  = require('multer');
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     var tournamentID = req.body.tournamentID;
@@ -23,7 +22,8 @@ var storage = multer.diskStorage({
     } else {
       folder = 'general';
     }
-    cb(null, './frontend/games/Questions/'+folder);
+
+    cb(null, './frontend/games/Questions/' + folder);
   },
   filename: function (req, file, cb) {
     var tournamentID = req.body.tournamentID;
@@ -36,6 +36,7 @@ var storage = multer.diskStorage({
     }
   }
 });
+
 var upload = multer({ storage: storage }).single('questions');
 
 var sender = require('../../requestSender');
@@ -43,7 +44,7 @@ var sender = require('../../requestSender');
 var AsyncRender = require('../../helpers/AsyncRender');
 
 module.exports = function(app) {
-  app.post('/Admin', isAdmin, (req, res) => {
+  app.post('/Admin', middlewares.isAdmin, (req, res) => {
     var command = req.body.command || '';
     switch(command) {
       case 'TournamentsRunning': TournamentsRunning(res); break;
@@ -110,15 +111,22 @@ module.exports = function(app) {
 
   const GET_TOURNAMENTS_RUNNING = 5;
   function GetTournamentsFromTS(res){
-    sender.sendRequest('GetTournaments', {purpose:GET_TOURNAMENTS_RUNNING}, 'localhost', 'DBServer', res, sender.Proxy);
+    sender.sendRequest('GetTournaments', { purpose: GET_TOURNAMENTS_RUNNING}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
   function TournamentsRunning(res) {
+    logger.debug('TournamentsRunning', 'ADMIN POST');
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
-  app.get('/Admin', isAdmin, function (req, res){
-    res.render('AdminPanel', {msg:'hola!'});
+  app.get('/admin', middlewares.isAdmin, function (req, res) {
+    logger.log('render admin panel normally');
+
+    res.render('AdminPanel', { msg: 'hola!' });
+  }, function (err, req, res, next) {
+    logger.log('ERROR IN ADMIN', err);
+
+    res.send(404);
   });
 
   app.get('/Errors', function (req, res){

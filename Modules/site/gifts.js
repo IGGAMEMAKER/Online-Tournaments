@@ -269,7 +269,7 @@ module.exports = function setApp(app, aux){
     var rarity = parseInt(data.rarity);
     // console.log('addCard', data)
 
-    if (isNaN(rarity)) return next(null);
+    if (isNaN(rarity)) return next('rarity is not numeric');
 
     Gifts.addCard(name, description, photoURL, price, rarity, {})
       .then(aux.result(req, next))

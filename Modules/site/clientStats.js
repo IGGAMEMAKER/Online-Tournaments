@@ -72,7 +72,7 @@ function makePeriodArray(d1, d2) { // array of milliseconds
 	var startOfFirstDay = dayStartMS(d1);
 	var endOfLastDay = nextDayStartMS(d2);
 
-	logger.debug('period from: ', new Date(startOfFirstDay), ' to ', new Date(endOfLastDay));
+	// logger.debug('period from: ', new Date(startOfFirstDay), ' to ', new Date(endOfLastDay));
 
 	for (var time = startOfFirstDay; time < endOfLastDay; time += DAY_MS) {
 		array.push({ d1: time, d2: time + DAY_MS });
@@ -121,7 +121,7 @@ function rawStatsForPeriodWithDetalisation(date1, date2, detalisation) {
 }
 
 function countStatsForPeriod(date1, date2) {
-	logger.debug('countStatsForPeriod', date1, date2);
+	// logger.debug('countStatsForPeriod', date1, date2);
 
 	var actions;
 

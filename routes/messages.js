@@ -92,7 +92,7 @@ module.exports = (app, aux) => {
     //var targetType = typeof(target);
 
     if (!target) {
-      return next(null);
+      return next('no target');
     }
 
     var obj = {

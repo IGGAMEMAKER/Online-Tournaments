@@ -632,7 +632,7 @@ function StopTournament(data, res){
 	Log('RETURN MONEY TO USERS, WHO TOOK PART IN STOPPED TOURNAMENT', STREAM_SHIT);
 
 	if (data && data.tournamentID){
-		Log('DBServer starts tournament '+ data.tournamentID, STREAM_TOURNAMENTS);
+		Log('DBServer starts tournament ' + data.tournamentID, STREAM_TOURNAMENTS);
 		setTournStatus(data.tournamentID, TOURN_STATUS_FINISHED);
 		ClearRegistersInTournament([data.tournamentID]);
 		ReturnBuyInsToPlayers(data.tournamentID);

@@ -8,11 +8,20 @@ var authenticated = function(req, res, next){
 	}
 };
 
-var isAdmin = function (req, res, next){
-	if (req.session.login=='23i03g'|| req.session.login=='g.iosebashvili') {
+var isAdmin = function (req, res, next) {
+	// console.log('middlewares isAdmin', req.session.login);
+	// next(null);
+	// return;
+
+	// if (!req.session) {
+	// 	next(null);
+	// 	return;
+	// }
+
+	if (req.session.login == '23i03g' || req.session.login == 'g.iosebashvili') {
 		next()
 	} else {
-		next(null);
+		next(1);
 	}
 };
 
@@ -95,6 +104,7 @@ module.exports = {
 	moderator: [authenticated, isModerator],
 	contentManager: [authenticated, isContentManager],
 	isAdmin: [authenticated, isAdmin],
+	// isAdmin,
 
 	drawList: draw_list,
 	send_error,
