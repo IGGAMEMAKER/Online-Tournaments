@@ -99,9 +99,9 @@ module.exports = function(app) {
     logger.log('stopTournament', 'Admin.js', tournamentID);
     sender.sendRequest('StopTournament', { tournamentID: tournamentID }, 'localhost', 'DBServer', res, sender.Proxy);
 
-    logger.log('FrontendServer StopTournament :::' + tournamentID, 'Manual');
     sender.sendRequest("StopTournament", { tournamentID: tournamentID }, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
 
+    logger.log('FrontendServer StopTournament :::' + tournamentID, 'Manual');
     sender.sendRequest("tellToFinishTournament", { tournamentID: tournamentID }, '127.0.0.1', 'site');
   }
 

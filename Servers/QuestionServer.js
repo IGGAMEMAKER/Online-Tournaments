@@ -51,8 +51,6 @@ var Question = mongoose.model('Question', s);
 
 var Question2 = modelWrapper(Question);
 
-var lg = console.log;
-
 var isModerator = (req, res, next) => {
 	next();
 };
@@ -67,7 +65,7 @@ var isModeratorOrAdmin = (req, res, next) => {
 
 var isPlayer = (req, res, next) => {
 	next();
-}
+};
 
 app.get('/updateQuestions', function (req, res){
 	initializeQuestions();
@@ -132,7 +130,7 @@ app.get('/questions/topic/:topic', function (req, res){
 		if (err) return res.json(err);
 
 		//res.end(JSON.stringify(questions));
-		res.render('newQuestions', {msg:questions});
+		res.render('newQuestions', { msg: questions });
 	})
 });
 
@@ -218,7 +216,6 @@ app.post('/editQuestion', function (req, res){
 		correct: data.correct
 	};
 	
-	//AddQuestion(obj, res);
 	Question.update({'_id':id}, {$set: obj}, function (err, count){
 		if (err) return res.json(err);
 
@@ -321,18 +318,11 @@ app.get('/questionBase', function (req, res){
 });
 
 app.get('/switchToDefault', function (req, res){
-	// return new Promise(function (resolve, reject){
-		Question.update({ topic: { $exists: false } }, {$set: { topic: 'default'} }, { multi: true }, function (err, count){
-			if (err) return res.json({ err: err});
+	Question.update({ topic: { $exists: false } }, {$set: { topic: 'default'} }, { multi: true }, function (err, count){
+		if (err) return res.json({ err: err});
 
-			return res.json({ count: count })
-		});
-		// Question.find({ topic: { $exists: false } }, function (err, count){
-		// 	if (err) return res.json({ err: err});
-
-		// 	return res.json({ count: count })
-		// })
-	// })
+		return res.json({ count: count })
+	});
 });
 
 function loadQuestions(query, params, hard){
@@ -355,6 +345,7 @@ function AddQuestion(data, res){
 			if (res) res.json({ result:'error', msg: err });
 			return;
 		}
+
 		if (res) res.json({ result: 'ok', msg: 'question saved' });
 		strLog('question saved!', 'Games');
 	})
@@ -401,13 +392,13 @@ function find_random_question(gameID, left, count, attempts){
 	//if (!attempts) attempts={};
 
 	var offset = parseInt(Math.random()*count);
-	lg('offset = ' + offset, 'left: ' , left, 'attempts', attempts);
-	Question.findOne({},'', { skip: offset}, function (err, question){
+	logger.debug('offset = ' + offset, 'left: ' , left, 'attempts', attempts);
+	Question.findOne({},'', { skip: offset }, function (err, question){
 		if (err) return strLog('find_random_question Err ' + JSON.stringify(err), 'Err');
 
 		// check if it is not prepared for special tournament;
 		// and we did not add this question before
-		lg('tryToLoadQuestion: ', question.question);
+		logger.debug('tryToLoadQuestion: ', question.question);
 
 		if (is_not_special(question) && !attempts[offset] && isModerated(question) ) { //!question_was_added(offset, attempts)
 			add_question_to_list(gameID, question); //attempts.push(offset);
@@ -421,8 +412,8 @@ function find_random_question(gameID, left, count, attempts){
 }
 
 function isModerated(question){
-	if (question){
-		return question.moderation==MODERATION_MODIFIED || question.moderation==MODERATION_OK || question.moderation==null;
+	if (question) {
+		return question.moderation == MODERATION_MODIFIED || question.moderation == MODERATION_OK || question.moderation == null;
 	} else {
 		return null;
 	}
@@ -434,19 +425,21 @@ function is_not_special(question){
 
 function loadRandomQuestions(gameID){
 	Question.count(function (err, count){
-		if (err) return lg('err while count', err);
-		else {
-			lg('count= ' + count);
-			games[gameID].questions=[];
+		if (err) {
+			logger.error('err while count', err);
+		} else {
+			logger.debug('count= ' + count);
+			games[gameID].questions = [];
 
 			find_random_question(gameID, NUMBER_OF_QUESTIONS, count, {});
 		}
 	})
 }
 
-function load_questions_fromDB(gameID){
-	Question.find({tournamentID:gameID}, '', function (err, questions){
-		lg('load_questions_fromDB ' + gameID);
+function load_questions_fromDB(gameID) {
+	Question.find({ tournamentID: gameID }, '', function (err, questions){
+		logger.log('load_questions_fromDB ' + gameID);
+
 		if (err) {
 			strLog('err in special questions for ' + gameID, 'Err');
 		}
@@ -462,7 +455,7 @@ function load_topic_questions(gameID){
 	var topic = games[gameID].settings.topic;
 	// strLog("searching questions for newbies... Topic:"+ topic, "Games");
 
-	loadQuestions({topic:topic},'', true)
+	loadQuestions({ topic: topic },'', true)
 	.then(function (questions){
 		set_questions(questions, gameID)
 	})
@@ -471,10 +464,6 @@ function load_topic_questions(gameID){
 
 		loadRandomQuestions(gameID);
 	})
-}
-
-function isTopicTournament(gameID){
-	return games[gameID].settings && games[gameID].settings.topic;
 }
 
 function getTopic(gameID){
@@ -491,17 +480,17 @@ function setQuestions(gameID, topic){
 	var already = {}; // questionIndex=> 1
 	var count = questionBase[topic].length;
 
-	games[gameID].questions=[];
+	games[gameID].questions = [];
+
 	while (games[gameID].questions.length < NUMBER_OF_QUESTIONS){
 		var index = parseInt(Math.random() * count);
-		if (!already[index]){
+
+		if (!already[index]) {
 			add_question_to_list(gameID, questionBase[topic][index]);
 			already[index] = 1;
 		}
 	}
 }
-
-
 
 function loadByTopic(topic){
 	var query = {
@@ -526,8 +515,6 @@ function loadByTopic(topic){
 }
 
 function Init(gameID, playerID){
-	strLog('custom init works! gameID:' + gameID + ' playerID:' + playerID);
-
 	if (playerID == 0) {
 		games[gameID].questIndex = -1;
 		logger.debug(games[gameID].settings);
@@ -550,7 +537,7 @@ function AsyncUpdate(gameID){
 	// strLog('AsyncUpdate. be aware of  questions length!!! it must be games[gameID].questions' );
 
 	if (games[gameID].questIndex < games[gameID].questions.length - 1){ // NUMBER_OF_QUESTIONS - 1){
-		if (games[gameID].questIndex>=0) {
+		if (games[gameID].questIndex >= 0) {
 			checkAnswers(gameID);
 		}
 
@@ -558,7 +545,7 @@ function AsyncUpdate(gameID){
 		send(gameID, 'update', getQuestions(gameID));
 	} else {
 		checkAnswers(gameID);
-		FinishGame(gameID, FindWinner(gameID) );
+		FinishGame(gameID, FindWinner(gameID));
 	}
 
 }

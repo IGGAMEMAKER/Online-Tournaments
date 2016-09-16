@@ -8,15 +8,12 @@ var logger = require('./helpers/logger');
 var API = require('./helpers/API');
 
 var middlewares = require('./middlewares');
-var addQuestion = require('./middlewares/add-quiz-question');
 
 var sender = require('./requestSender');
 
-var schedule = require('node-schedule');
 
 app.use(express.static('./frontend/public'));
 
-var fs = require('fs');
 
 // sessions and passport
 var session = require('express-session');
@@ -76,8 +73,9 @@ passport.use(
 ));
 
 var bodyParser = require('body-parser');
+
 app.use(cookieParser());
-app.use(bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
@@ -227,11 +225,6 @@ require('./Modules/site/clientStats')(app, aux);
 require('./routes/mailchimp')(app, aux);
 require('./routes/messages')(app, aux);
 
-// function Log(data, topic){
-//   JSLog({ msg: data }, topic);
-// }
-
-
 //Error: Failed to serialize user into session
 /*app.get('/vk-auth', function (req, res){
  var uid = req.query.uid;
@@ -348,22 +341,12 @@ function Send(tag, message, force) {
   }
 }
 
-// etc
-app.get('/counter', function (req, res){ res.json({ requests: requestCounter }); });
-
-app.get('/Alive', function (req, res){ res.render('Alive'); });
-
-app.get('/realtime/update', middlewares.isAdmin, function(req, res){
-  realtime().UPDATE_ALL();
-  res.end('OK');
-});
-
+// logs
 app.post('/Log', function (req, res){
-  //res.end('sended');
   res.end('');
   var msg = req.body;
   var topic = req.body.topic || 'Logs';
-  //console.log(topic);
+
   Send(topic, JSON.stringify(msg));
 });
 
@@ -376,94 +359,18 @@ app.get('/SpecLogs/:topic', function (req, res){
   var topic = req.params.topic || 'Forever';
   res.render('SpecLogs', { topic });
 });
+/// logs end
 
-app.post('/addQuestion', middlewares.authenticated, addQuestion);
+// etc
+app.get('/counter', function (req, res){ res.json({ requests: requestCounter }); });
 
-app.get('/save-retention', (req, res) => {
-  var users = Object.keys(players);
+app.get('/Alive', function (req, res){ res.render('Alive'); });
 
-  sender.Stats('Online-users', { users });
-
-  saveUserList(users);
-
-  fs.writeFile('retention-file (' + new Date().toDateString() + ').txt', users, (err) => {
-    if (err) {
-      res.json({ err });
-      API.errors.add('system', 'save-retention', { err });
-    } else {
-      res.json({ result: players, count: users.length });
-    }
-  });
+app.get('/realtime/update', middlewares.isAdmin, function(req, res){
+  realtime().UPDATE_ALL();
+  res.end('OK');
 });
 
+app.post('/addQuestion', middlewares.authenticated, require('./middlewares/add-quiz-question'));
 
-
-// pulse
-var players = {};
-var unauthenticated = 0;
-
-var curDate;
-
-
-var saveUserList = (users) => {
-  // logger.debug('saveUserList', users);
-
-  var visitList = users.map(login => {
-    return {
-      login,
-      date: players[login].date,
-      registered: players[login].registered
-    }
-  });
-
-  logger.debug(visitList);
-
-  API.visits.saveList(visitList);
-};
-
-// schedule.scheduleJob('0 15 0-23/2 * * *', () => {
-schedule.scheduleJob('0 35 0-23/2 * * *', () => {
-  // logger.debug('iiii', new Date().toDateString());
-  var users = Object.keys(players);
-
-  logger.log('CRON SAVE VISITS', users.length);
-
-  sender.Stats('Online-users', { users });
-
-  saveUserList(users);
-
-  players = {};
-});
-
-// setInterval(function () {
-//   // var authenticated = Object.keys(players).length;
-//   // logger.debug('Online: ' + unauthenticated + ' unauthenticated users and ' + authenticated, 'Users');
-//
-//   // players = {};
-//   // unauthenticated = 0;
-//
-//   var users = Object.keys(players);
-//   sender.Stats('Online-users', { users });
-//
-//   // saveUserList(users);
-// }, 2 * 60000);
-
-app.post('/mark/Here', function (req, res) {
-  res.end('');
-  var login = req.session ? req.session.login : null;
-
-  if (login) {
-    var registered = req.body.registered;
-
-    if (!registered) {
-      return;
-    }
-
-    players[login] = { registered, date: new Date() };
-    // logger.debug('mark/Here');
-    // logger.debug(login, registered);
-
-  } else {
-    unauthenticated++;
-  }
-});
+require('./routes/retention')(app);
