@@ -30,6 +30,8 @@ mixin question(q,i)
 			br
 			a(href="/moderate/"+q._id+"/"+MODERATION_MODIFIED target="_blank") MODERATION_MODIFIED
 			br
+			a(href="/questions/set-tournament-id/" + q._id + "/0" target="_blank") Set/Unset tournamentID
+			br
 			a(href="/editQuestion/?question="+q.question +"&answer1="+q.answers[0] +"&answer2="+q.answers[1] +"&answer3="+q.answers[2] +"&answer4="+q.answers[3]+"&correct="+q.correct +"&id="+q._id target="_blank") modify
 	//p!= q
 

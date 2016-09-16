@@ -435,18 +435,18 @@ schedule.scheduleJob('0 35 0-23/2 * * *', () => {
   players = {};
 });
 
-setInterval(function () {
-  // var authenticated = Object.keys(players).length;
-  // logger.debug('Online: ' + unauthenticated + ' unauthenticated users and ' + authenticated, 'Users');
-
-  // players = {};
-  // unauthenticated = 0;
-
-  var users = Object.keys(players);
-  sender.Stats('Online-users', { users });
-
-  // saveUserList(users);
-}, 2 * 60000);
+// setInterval(function () {
+//   // var authenticated = Object.keys(players).length;
+//   // logger.debug('Online: ' + unauthenticated + ' unauthenticated users and ' + authenticated, 'Users');
+//
+//   // players = {};
+//   // unauthenticated = 0;
+//
+//   var users = Object.keys(players);
+//   sender.Stats('Online-users', { users });
+//
+//   // saveUserList(users);
+// }, 2 * 60000);
 
 app.post('/mark/Here', function (req, res) {
   res.end('');
