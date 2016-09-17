@@ -908,10 +908,10 @@ function CancelRegister(data, res){
 		return clearRegister(tournamentID, login);
 	})
 	.then(function (cleared){
-		return incrMoney1(login, buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
+		return incrMoney1(login, buyIn, { type: SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID });
 	})
 	.then(function (saved){
-		return pSaveTransfer(login, buyIn, {type:SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID});
+		return pSaveTransfer(login, buyIn, { type: SOURCE_TYPE_CANCEL_REG, tournamentID: tournamentID });
 	})
 	.then(function (increased){
 		return changePlayersCount(tournamentID, -1);
@@ -1038,7 +1038,7 @@ function getUnRegistrableTournament(tournamentID){
 			if (err) { Error(err); reject(err); }
 			else{
 				if (tournament && tournament.players>0) { 
-					console.log('getUnRegistrableTournament', tournament);
+					// console.log('getUnRegistrableTournament', tournament);
 					resolve(tournament);
 				} else {
 					reject(null);

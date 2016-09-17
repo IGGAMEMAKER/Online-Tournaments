@@ -504,7 +504,7 @@ function moneyIncrease(login, money){
 	return User2.update({ login }, {$inc: { money }})
 		.catch(err => {
 			logger.log(err);
-			return Fail
+			return Fail;
 		});
 	// return new Promise(function(resolve, reject){
 	// 	User.update({login:login}, {$inc: { money: ammount }} , function (err, count) {

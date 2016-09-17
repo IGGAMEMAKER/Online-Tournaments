@@ -72,7 +72,7 @@ export default class ClassNameSpecial extends Component {
         <td>{id}</td>
         <td>{props.data.players}/{props.data.goNext[0]}</td>
         <td>{props.data.goNext[1]}</td>
-        <td>{props.data.Prizes[0]}</td>
+        <td>{JSON.stringify(props.data.Prizes[0])}</td>
         <td>{props.data.buyIn}</td>
         <td>{props.data.status}</td>
         <td>{props.data.settings.regularity}</td>

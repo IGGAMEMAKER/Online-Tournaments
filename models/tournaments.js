@@ -315,6 +315,10 @@ function addNewTournament(tournament){
 	});
 }
 
+function saveResults(results, tournamentID) {
+	return Tournament2.update({ tournamentID }, { $set: { results }})
+}
+
 function edit(tournamentID, changes){
 	console.log('edit', tournamentID, changes);
 	return Tournament2.update({tournamentID:tournamentID}, {$set: changes})
@@ -478,7 +482,8 @@ module.exports = {
 	all,
 
 	getByTopic,
-	addTopicStreamTournament
+	addTopicStreamTournament,
+	saveResults
 };
 
 

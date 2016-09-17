@@ -127,7 +127,9 @@ module.exports = function(dbAddress){
 
 			startedTime: 		Date,
 			playTime: Date,
-			finishTime: Date
+			finishTime: Date,
+
+			results: Array
 			//tournamentServerID: String
 		})
 

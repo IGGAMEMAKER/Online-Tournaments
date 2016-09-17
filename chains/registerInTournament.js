@@ -7,6 +7,7 @@ var Users = require('../models/users');
 var c = require('../constants');
 var getPortAndHostOfGame = require('../helpers/GameHostAndPort').getPortAndHostOfGame;
 
+var tournamentChecker = require('../helpers/tournament-type-checker');
 
 var fs = require('fs');
 
@@ -111,10 +112,9 @@ function reg(tournamentID, login, force) {
 
 	return new Promise(function (resolve, reject) {
 		if (!queue[tournamentID]) {
-			logger.log(tournamentID, 'is empty');
-			queue[tournamentID] = { };
+			queue[tournamentID] = {};
 		} else {
-			logger.log(tournamentID, login, queue[tournamentID])
+			logger.log('is already trying to join', tournamentID, login, queue[tournamentID])
 		}
 
 		if (queue[tournamentID][login]) return reject('many requests ' + login);
@@ -188,7 +188,7 @@ function register(tournamentID, login, res) {
 
 			join_if_stream(tournament, login);
 
-			needsStart(tournament);
+			startTournamentIfNecessary(tournament);
 		})
 		.catch(function (err) {
 			// queue[tournamentID][login]=null;
@@ -228,14 +228,24 @@ function join_if_stream(tournament, login) {
 	}
 }
 
-function needsStart(tournament) {
+function startTournamentIfNecessary(tournament) {
 	var playerCount = tournament.players;
 	var maxPlayers = tournament.goNext[0];
 	var tournamentID = tournament.tournamentID;
 
+	if (tournamentChecker.isRunning(tournament)) {
+		return;
+	}
+
 	if (playerCount == maxPlayers - 1) {
-		var start_imediately = !tournament.settings || !tournament.settings.hold;
-		if (start_imediately) StartTournament(tournamentID);
+		if (!tournamentChecker.isNeedsToHoldTournament(tournament)) {
+			StartTournament(tournamentID);
+			return;
+		}
+	}
+
+	if (tournamentChecker.isStreamTournament(tournament)) {
+		StartTournament(tournamentID);
 	}
 }
 

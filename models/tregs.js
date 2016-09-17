@@ -145,7 +145,7 @@ function userRegistered(login, tournamentID){
 function leaderboard(){//time_function
 	return new Promise(function (resolve, reject){
 		TournamentReg.aggregate([
-		{ $match: { date:time.happened_this_week(), status :TOURN_STATUS_FINISHED } },
+		{ $match: { date: time.happened_this_week(), status: TOURN_STATUS_FINISHED } },
 		{
 			$group: {
 				_id: "$userID",
@@ -153,7 +153,7 @@ function leaderboard(){//time_function
 			}
 		},
 		{
-			$sort: {count:-1}
+			$sort: { count: -1 }
 		}
 		], function (err, leaderboard){
 			if (err) return reject(err);

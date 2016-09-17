@@ -458,14 +458,6 @@ export default class AdminStats extends Component {
       />
     };
 
-    // {
-    //   state.data.map(s => {
-    //     if (!s.visits) return '';
-    //     const visits = s.visits.map(v => <div>{v.login} {v.date}</div>);
-    //     return <div>{visits}</div>
-    //   })
-    // }
-
     return (
       <div>
         <h1> HEEEEEEEEEEEEEEEEEEERE</h1>

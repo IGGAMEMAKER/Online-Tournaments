@@ -115,13 +115,11 @@ module.exports = function(app) {
   }
 
   function TournamentsRunning(res) {
-    logger.debug('TournamentsRunning', 'ADMIN POST');
+    // logger.debug('TournamentsRunning', 'ADMIN POST');
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
   app.get('/admin', middlewares.isAdmin, function (req, res) {
-    logger.log('render admin panel normally');
-
     res.render('AdminPanel', { msg: 'hola!' });
   }, function (err, req, res, next) {
     logger.log('ERROR IN ADMIN', err);
@@ -201,7 +199,7 @@ module.exports = function(app) {
         res.json({msg:'err', text:err});
       })*/
     } else {
-      res.json({msg:'no login'})
+      res.json({ msg:'no login' })
     }
   });
 
@@ -258,16 +256,7 @@ module.exports = function(app) {
 
   function render(res, page){
     return function(data){
-      res.render(page, {msg:data});
-    }
-  }
-
-  function sendJSON(res){
-    return function (data){
-      res.json({
-        msg:'OK'
-        , result: data||null
-      })
+      res.render(page, { msg: data });
     }
   }
 
@@ -277,4 +266,4 @@ module.exports = function(app) {
     }
   }
 
-}
+};

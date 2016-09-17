@@ -24,6 +24,9 @@ export default {
   willRunTomorrow: (t: TournamentType) => {
     return t.startDate && isTomorrow(t.startDate);
   },
+  isNeedsToHoldTournament: (t) => {
+    return t.settings && t.settings.hold;
+  },
 
   isEliteTournament: (t: TournamentType) => {
     return t.buyIn >= 100;

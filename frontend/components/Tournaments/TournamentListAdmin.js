@@ -82,14 +82,6 @@ export default class TournamentListAdmin extends Component{
         tournaments: store.getTournaments()
       })
     });
-    // request
-    //   .get('/api/tournaments/available')
-    //   .end((err, res: ResponseType) => {
-    //     if (err) throw err;
-    //
-    //     // console.log('availables...', res.body.msg);
-    //     this.setState({ tournaments: res.body.msg });
-    //   });
   };
 
   hideTournament = (id) => {

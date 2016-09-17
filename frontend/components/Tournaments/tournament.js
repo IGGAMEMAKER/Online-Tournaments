@@ -1,6 +1,9 @@
 import { h, Component } from 'preact';
 import { TournamentType } from '../types';
 import TournamentChecker from '../../helpers/tournamentTypeChecker';
+import constants from '../../constants/constants';
+
+import prizeChecker from '../../helpers/prizes/prize-type-checker';
 
 type PropsType = {
   authenticated: boolean,
@@ -74,7 +77,7 @@ function roman(number) {
 }
 
 export default class Tournament extends Component {
-  getActionButtons = (props: PropsType) => {
+  renderActionButtons = (props: PropsType) => {
     let actionButtons = '';
     const { buyIn, tournamentID } = props.data;
 
@@ -99,7 +102,7 @@ export default class Tournament extends Component {
     return actionButtons;
   };
 
-  getStartConditions = (props: PropsType) => {
+  renderStartConditions = (props: PropsType) => {
     const date = props.data.startDate;// || new Date();
     const formattedDate = formatDate(date);
     const frees = props.data.goNext[0] - props.data.players;
@@ -132,7 +135,7 @@ export default class Tournament extends Component {
     }
   };
 
-  getPrizeText = (t: TournamentType) => {
+  renderPrizeText = (t: TournamentType) => {
     if (TournamentChecker.isRma(t)) {
       // на раунд {t.settings.round}
       let phrase = 'в финал';
@@ -150,30 +153,55 @@ export default class Tournament extends Component {
       )
     }
 
+    const moneyEquivalent = t.Prizes
+      .filter(p => p.type === constants.PRIZE_TYPE_MONEY)
+      .map(p => parseInt(p.info, 10));
+
     return (
       <div>
         <div>Призовой фонд</div>
-        <span>{t.Prizes.reduce((p, c) => p + c, 0)} Р</span>
+        <span>{moneyEquivalent.reduce((p, c) => p + c, 0)} Р</span>
       </div>
     )
   };
 
-  // onSelect = (index) => {
-  //   const props: PropsType = this.props;
-  //   if (props.onSelected) {
-  //     return () => {
-  //       props.onSelected(index);
-  //     }
-  //   }
-  //
-  //
-  // };
+  renderPrizeList = (prizes) => {
+    return prizes.map(this.renderPrize);
+  };
+
+  renderPrize = (p, i: number) => {
+    if (prizeChecker.isMoneyPrize(p)) {
+      return <p>{i + 1}-е место: {p.info} РУБ</p>;
+    }
+
+    if (prizeChecker.isTicketPrize(p)) {
+      return <p>{i + 1}-е место: билет на турнир №{p.info}</p>
+    }
+
+    if (prizeChecker.isPointPrize(p)) {
+      return <p>{i + 1}-е место: {p.info} баллов</p>
+    }
+
+    if (prizeChecker.isGiftPrize(p)) {
+      return <p>{i + 1}-е место: ПРИЗ</p>
+    }
+
+    if (prizeChecker.isCustomPrize(p)) {
+      return <p>{i + 1}-е место: {p.info}</p>
+    }
+
+    if (prizeChecker.hasNoTypeSpecified(p)) {
+      return <p>{i + 1}-е место: {p} РУБ</p>;
+    }
+
+    return <p>Ошибка: {JSON.stringify(p)}</p>
+  };
 
   render(props: PropsType) {
     const id = props.data.tournamentID;
 
     const prizes = props.data.Prizes || [100, 20, 20, 5]; //
-    const prizeList = prizes.map((p: number, i: number) => <p>{i + 1}-е место: {p} РУБ</p>);
+    const prizeList = this.renderPrizeList(prizes);
     const buyIn = props.data.buyIn;
 
     const maxPlayers = props.data.goNext[0];
@@ -182,7 +210,6 @@ export default class Tournament extends Component {
     const coverUrl = `/img/logo.png`;
     const color = 'white';
     const coverColor = this.pickTournamentCoverColour(id);
-    // console.log(coverColor);
 
     const easiest = 'Проще простого';
     const easy = 'Вполне по силам';
@@ -257,7 +284,7 @@ export default class Tournament extends Component {
         <div className={`tournament-cover-container ${coverColor}`}>
           <div className="tournament-centerize">
             <div className="white tournament-cover-text">
-              {this.getPrizeText(props.data)}
+              {this.renderPrizeText(props.data)}
             </div>
           </div>
         </div>
@@ -268,6 +295,7 @@ export default class Tournament extends Component {
     //   style="background-color: rgba(0,0,0,0.05); position: absolute; left: 0; right: 0; top: 0; bottom: 0;"
     // ></div>
     // #303030
+
     let tournamentSpecialID = '';
     if (prizes[0] === 50) {
       tournamentSpecialID = 'daily';
@@ -288,9 +316,9 @@ export default class Tournament extends Component {
               <div className="clearfix"></div>
             </div>
             <div className="collapse"></div>
-            <div className="info text-center">{this.getStartConditions(props)}</div>
+            <div className="info text-center">{this.renderStartConditions(props)}</div>
             <br />
-            <div className="footer" id={`footer${id}`}>{this.getActionButtons(props)}</div>
+            <div className="footer" id={`footer${id}`}>{this.renderActionButtons(props)}</div>
           </div>
         </div>
       </div>

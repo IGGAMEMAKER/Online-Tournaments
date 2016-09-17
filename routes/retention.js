@@ -11,8 +11,6 @@ var players = {};
 var unauthenticated = 0;
 
 var saveUserList = (users) => {
-  // logger.debug('saveUserList', users);
-
   var visitList = users.map(login => {
     return {
       login,
@@ -21,7 +19,7 @@ var saveUserList = (users) => {
     }
   });
 
-  logger.debug(visitList);
+  // logger.debug(visitList);
 
   API.visits.saveList(visitList);
 };
@@ -30,7 +28,7 @@ var saveUserList = (users) => {
 schedule.scheduleJob('0 35 0-23/2 * * *', () => {
   var users = Object.keys(players);
 
-  logger.log('CRON SAVE VISITS', users.length);
+  logger.log('CRON SAVE VISITS', new Date(), users.length);
 
   sender.Stats('Online-users', { users });
 
@@ -40,7 +38,6 @@ schedule.scheduleJob('0 35 0-23/2 * * *', () => {
 });
 
 module.exports = (app) => {
-
   app.get('/save-retention', (req, res) => {
     var users = Object.keys(players);
 

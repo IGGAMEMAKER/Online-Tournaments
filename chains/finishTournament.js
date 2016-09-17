@@ -20,7 +20,8 @@ var prizeTypes = {
 	PRIZE_TYPE_MONEY: 1,
 	PRIZE_TYPE_GIFT: 2,
 	PRIZE_TYPE_POINTS: 3,
-	PRIZE_TYPE_TICKETS: 4
+	PRIZE_TYPE_TICKETS: 4,
+	PRIZE_TYPE_CUSTOM: 5
 };
 
 console.log('chain finishTournament');
@@ -69,6 +70,9 @@ function dataBaseChanges(data) {
 	var tournamentID = data.tournamentID;
 	var scores = data.scores;
 	var winners = sort.winners(scores);
+
+	API.tournaments.saveResults(scores, tournamentID)
+		.catch(logger.report('dataBaseChanges save-results', { winners, tournamentID, gameID, scores }));
 
 	var winnerLogins = winners.map((p, i) => p.value.login);
 	var winnerRegs = [];
@@ -153,7 +157,6 @@ function dataBaseChanges(data) {
 		}
 	})
 	.catch(logger.report('dataBaseChanges', { info }))
-	
 }
 
 function singlePromo(player, promoter, amount, tournament) {
