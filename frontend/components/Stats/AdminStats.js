@@ -467,7 +467,7 @@ export default class AdminStats extends Component {
     // }
 
     return (
-      <div>
+      <div style="margin-top: 100px;">
         <h1> HEEEEEEEEEEEEEEEEEEERE</h1>
         <p>Today</p>
         <div>date1</div>
