@@ -65,9 +65,9 @@ function Log() {
 function dataBaseChanges(data) {
 	console.log('dataBaseChanges');
 
-	var gameID = data['gameID'];
-	var tournamentID = data['tournamentID'];
-	var scores = data['scores'];
+	var gameID = data.gameID;
+	var tournamentID = data.tournamentID;
+	var scores = data.scores;
 	var winners = sort.winners(scores);
 
 	var winnerLogins = winners.map((p, i) => p.value.login);
