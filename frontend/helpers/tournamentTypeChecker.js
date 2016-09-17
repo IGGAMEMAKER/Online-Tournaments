@@ -2,12 +2,18 @@ import constants from '../constants/constants';
 import { TournamentType } from '../components/types';
 import { isToday, isTomorrow } from './date';
 
+import prizeChecker from './prizes/prize-type-checker';
+
 function isStreamTournament(t: TournamentType) {
   return t.settings && t.settings.regularity === constants.REGULARITY_STREAM;
 }
 
 function isRma(t: TournamentType) {
   return t.settings && t.settings.tag === 'rma';
+}
+
+function hasPrizes(t: TournamentType) {
+  return t.Prizes.length;
 }
 
 export default {
@@ -33,6 +39,9 @@ export default {
   },
   isCrowdTournament: (t: TournamentType) => {
     return t.goNext[0] >= 20;
+  },
+  isPrizeTournament: (t: TournamentType) => {
+    return hasPrizes(t) && !prizeChecker.isMoneyPrize(t.Prizes[0]);
   },
   isRma,
   isRmaRound: (t: TournamentType, i) => {

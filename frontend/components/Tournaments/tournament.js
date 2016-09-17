@@ -221,6 +221,15 @@ export default class Tournament extends Component {
       )
     }
 
+    if (TournamentChecker.isPrizeTournament(t)) {
+      return (
+        <div>
+          <div>Главный приз</div>
+          <div>{this.renderPrize(t.Prizes[0])}</div>
+        </div>
+      );
+    }
+
     const moneyEquivalent = t.Prizes
       .filter(p => p.type === constants.PRIZE_TYPE_MONEY)
       .map(p => parseInt(p.info, 10));
@@ -231,10 +240,6 @@ export default class Tournament extends Component {
         <span>{moneyEquivalent.reduce((p, c) => p + c, 0)} Р</span>
       </div>
     )
-  };
-
-  renderPrizeList = (prizes) => {
-    return prizes.map(this.renderPrize);
   };
 
   renderCover = (props: PropsType, id) => {
@@ -305,31 +310,35 @@ export default class Tournament extends Component {
     )
   };
 
-  renderPrize = (p, i: number) => {
+  renderPrizeList = (prizes) => {
+    return prizes.map((p, i) => <p>{i + 1}-е место: {this.renderPrize(p)}</p>);
+  };
+
+  renderPrize = (p) => {
     if (prizeChecker.isMoneyPrize(p)) {
-      return <p>{i + 1}-е место: {p.info} РУБ</p>;
+      return `${p.info} РУБ`;
     }
 
     if (prizeChecker.isTicketPrize(p)) {
-      return <p>{i + 1}-е место: билет на турнир №{p.info}</p>
+      return `билет на турнир №${p.info}`;
     }
 
     if (prizeChecker.isPointPrize(p)) {
-      return <p>{i + 1}-е место: {p.info} баллов</p>
+      return `${p.info} баллов`;
     }
 
     if (prizeChecker.isGiftPrize(p)) {
-      return <p>{i + 1}-е место: ПРИЗ</p>
+      return `ПРИЗ`;
     }
 
     if (prizeChecker.isCustomPrize(p)) {
-      return <p>{i + 1}-е место: {p.info}</p>
+      return `${p.info}`;
     }
 
     if (prizeChecker.hasNoTypeSpecified(p)) {
-      return <p>{i + 1}-е место: {p} РУБ</p>;
+      return `${p} РУБ`;
     }
 
-    return <p>Ошибка: {JSON.stringify(p)}</p>
+    return `Ошибка: ${JSON.stringify(p)}`;
   };
 }
