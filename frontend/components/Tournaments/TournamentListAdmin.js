@@ -185,7 +185,7 @@ export default class TournamentListAdmin extends Component{
     );
 
     return (
-      <div>
+      <div style="margin-top: 100px;">
         <table border="1">
           <tr>
             <td>
