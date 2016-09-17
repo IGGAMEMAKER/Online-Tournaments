@@ -224,7 +224,7 @@ export default class Tournament extends Component {
     if (TournamentChecker.isPrizeTournament(t)) {
       return (
         <div>
-          <div>Главный приз</div>
+          <div style="text-transform: uppercase">Главный приз</div>
           <div>{this.renderPrize(t.Prizes[0])}</div>
         </div>
       );

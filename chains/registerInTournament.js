@@ -245,7 +245,10 @@ function startTournamentIfNecessary(tournament) {
 	}
 
 	if (tournamentChecker.isStreamTournament(tournament)) {
+		logger.log('tournamentChecker.isStreamTournament', tournamentID);
 		StartTournament(tournamentID);
+	} else {
+		logger.debug('tournamentChecker.isStreamTournament', 'is not stream tournament');
 	}
 }
 

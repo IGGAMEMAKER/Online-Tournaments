@@ -183,15 +183,16 @@ export default class Tournaments extends Component {
     if (!props.filter) {
       tournaments = (
         <div>
+          {TodayTournaments}
+
+          {TomorrowTournaments}
+
           {frees}
           {elites}
           {crowds}
 
           {RegularTournaments}
 
-          {TodayTournaments}
-
-          {TomorrowTournaments}
 
           {RichestTournaments}
         </div>
