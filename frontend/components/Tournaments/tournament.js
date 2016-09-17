@@ -40,6 +40,24 @@ function sphrase(num, word) { // именит падеж: игрок
   return phrase(num, word, `${word}а`, `${word}ов`);
 }
 
+function roman(number) {
+  switch (number) {
+    case 1: return 'I';
+    case 2: return 'II';
+    case 3: return 'III';
+    case 4: return 'IV';
+    case 5: return 'V';
+    case 6: return 'VI';
+    case 7: return 'VII';
+    case 8: return 'VIII';
+    case 9: return 'IX';
+    case 10: return 'X';
+    default: return number;
+  }
+}
+
+
+
 function formatDate(date1) {
   if (!date1) return '';
   const date = new Date(date1);
@@ -60,23 +78,73 @@ function formatDate(date1) {
   return localed;
 }
 
-function roman(number) {
-  switch (number) {
-    case 1: return 'I';
-    case 2: return 'II';
-    case 3: return 'III';
-    case 4: return 'IV';
-    case 5: return 'V';
-    case 6: return 'VI';
-    case 7: return 'VII';
-    case 8: return 'VIII';
-    case 9: return 'IX';
-    case 10: return 'X';
-    default: return number;
-  }
-}
-
 export default class Tournament extends Component {
+  render(props: PropsType) {
+    const id = props.data.tournamentID;
+
+    const prizes = props.data.Prizes || [];
+    const prizeList = this.renderPrizeList(prizes);
+
+    // let participants = (
+    //   <div>
+    //     <div className="going" id={`plrs-${id}`}>
+    //       <i className="fa fa-group fa-lg" />
+    //       Игроки : {props.data.players}/{props.data.goNext[0]}
+    //     </div>
+    //     <div className="tickets-left">№{id}</div>
+    //   </div>
+    // );
+
+    const participating = props.registeredInTournament ? 'participating' : '';
+    const ticketCardClassName = `ticket-card ${participating} light-blue bounceIn`;
+
+    // killPaddings
+    //   <div className="col-sm-6 col-md-4">
+    //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
+    // style="width: 300px; display: inline-block;"
+    // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
+    // <div className="from">Призы</div>
+    // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
+
+    // <div>Главный приз</div>
+    // <span>+{prizes[0]} Р</span>
+
+    // <div
+    //   className="tournament-cover-container"
+    //   style="background-color: rgba(0,0,0,0.05); position: absolute; left: 0; right: 0; top: 0; bottom: 0;"
+    // ></div>
+    // #303030
+
+    // let tournamentSpecialID = '';
+    // if (prizes[0] === 50) {
+    //   tournamentSpecialID = 'daily';
+    // }
+
+    // <div className="col-sm-6 col-md-4" id={tournamentSpecialID}>
+    return (
+      <div className="col-sm-6 col-md-4">
+        <div className={ticketCardClassName} id={`bgd${id}`}>
+          {this.renderCover(props, id)}
+          <div className={`tournament-body ${participating} ${props.isSelected ? '' : 'hide'}`}>
+            <div className="body">
+              <div className="">Турнир №{id}</div>
+              <br />
+              <div className="price text-center">
+                <div className="value">{prizeList}</div>
+              </div>
+              <div className="clearfix"></div>
+              <div className="clearfix"></div>
+            </div>
+            <div className="collapse"></div>
+            <div className="info text-center">{this.renderStartConditions(props)}</div>
+            <br />
+            <div className="footer" id={`footer${id}`}>{this.renderActionButtons(props)}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderActionButtons = (props: PropsType) => {
     let actionButtons = '';
     const { buyIn, tournamentID } = props.data;
@@ -169,47 +237,16 @@ export default class Tournament extends Component {
     return prizes.map(this.renderPrize);
   };
 
-  renderPrize = (p, i: number) => {
-    if (prizeChecker.isMoneyPrize(p)) {
-      return <p>{i + 1}-е место: {p.info} РУБ</p>;
-    }
-
-    if (prizeChecker.isTicketPrize(p)) {
-      return <p>{i + 1}-е место: билет на турнир №{p.info}</p>
-    }
-
-    if (prizeChecker.isPointPrize(p)) {
-      return <p>{i + 1}-е место: {p.info} баллов</p>
-    }
-
-    if (prizeChecker.isGiftPrize(p)) {
-      return <p>{i + 1}-е место: ПРИЗ</p>
-    }
-
-    if (prizeChecker.isCustomPrize(p)) {
-      return <p>{i + 1}-е место: {p.info}</p>
-    }
-
-    if (prizeChecker.hasNoTypeSpecified(p)) {
-      return <p>{i + 1}-е место: {p} РУБ</p>;
-    }
-
-    return <p>Ошибка: {JSON.stringify(p)}</p>
-  };
-
-  render(props: PropsType) {
-    const id = props.data.tournamentID;
-
-    const prizes = props.data.Prizes || [100, 20, 20, 5]; //
-    const prizeList = this.renderPrizeList(prizes);
-    const buyIn = props.data.buyIn;
-
-    const maxPlayers = props.data.goNext[0];
-
+  renderCover = (props: PropsType, id) => {
+    const prizes = props.data.Prizes || [];
     // const coverUrl = `/img/topics/default.jpg`;
     const coverUrl = `/img/logo.png`;
     const color = 'white';
     const coverColor = this.pickTournamentCoverColour(id);
+
+    const buyIn = props.data.buyIn;
+
+    const maxPlayers = props.data.goNext[0];
 
     const easiest = 'Проще простого';
     const easy = 'Вполне по силам';
@@ -238,32 +275,8 @@ export default class Tournament extends Component {
     }
 
     const cost = buyIn === 0 ? 'БЕСПЛАТНО' : `Стоимость: ${buyIn} руб`;
-        // <img src={coverUrl} alt="" />
-    let participants = (
-      <div>
-        <div className="going" id={`plrs-${id}`}>
-          <i className="fa fa-group fa-lg" />
-          Игроки : {props.data.players}/{props.data.goNext[0]}
-        </div>
-        <div className="tickets-left">№{id}</div>
-      </div>
-    );
 
-    const participating = props.registeredInTournament ? 'participating' : '';
-    const ticketCardClassName = `ticket-card ${participating} light-blue bounceIn`;
-
-    // killPaddings
-    //   <div className="col-sm-6 col-md-4">
-    //   <div className="" style="width: 305px; display: inline-block; margin: 7px;">
-    // style="width: 300px; display: inline-block;"
-    // box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
-    // <div className="from">Призы</div>
-    // box-shadow: -5px -5px 9px 5px rgba(0,0,0,0.4);
-
-    // <div>Главный приз</div>
-    // <span>+{prizes[0]} Р</span>
-
-    const cover = (
+    return (
       <div className="cover" onClick={() => props.onSelected(id)}>
         <div className="tournament-cover">
           <p style={{ color }} className="fa fa-user fa-lg fa-1x" aria-hidden="true" >
@@ -289,39 +302,34 @@ export default class Tournament extends Component {
           </div>
         </div>
       </div>
-    );
-    // <div
-    //   className="tournament-cover-container"
-    //   style="background-color: rgba(0,0,0,0.05); position: absolute; left: 0; right: 0; top: 0; bottom: 0;"
-    // ></div>
-    // #303030
+    )
+  };
 
-    let tournamentSpecialID = '';
-    if (prizes[0] === 50) {
-      tournamentSpecialID = 'daily';
+  renderPrize = (p, i: number) => {
+    if (prizeChecker.isMoneyPrize(p)) {
+      return <p>{i + 1}-е место: {p.info} РУБ</p>;
     }
 
-    return (
-      <div className="col-sm-6 col-md-4" id={tournamentSpecialID}>
-        <div className={ticketCardClassName} id={`bgd${id}`}>
-          {cover}
-          <div className={`tournament-body ${participating} ${props.isSelected ? '' : 'hide'}`}>
-            <div className="body">
-              <div className="">Турнир №{id}</div>
-              <br />
-              <div className="price text-center">
-                <div className="value">{prizeList}</div>
-              </div>
-              <div className="clearfix"></div>
-              <div className="clearfix"></div>
-            </div>
-            <div className="collapse"></div>
-            <div className="info text-center">{this.renderStartConditions(props)}</div>
-            <br />
-            <div className="footer" id={`footer${id}`}>{this.renderActionButtons(props)}</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    if (prizeChecker.isTicketPrize(p)) {
+      return <p>{i + 1}-е место: билет на турнир №{p.info}</p>
+    }
+
+    if (prizeChecker.isPointPrize(p)) {
+      return <p>{i + 1}-е место: {p.info} баллов</p>
+    }
+
+    if (prizeChecker.isGiftPrize(p)) {
+      return <p>{i + 1}-е место: ПРИЗ</p>
+    }
+
+    if (prizeChecker.isCustomPrize(p)) {
+      return <p>{i + 1}-е место: {p.info}</p>
+    }
+
+    if (prizeChecker.hasNoTypeSpecified(p)) {
+      return <p>{i + 1}-е место: {p} РУБ</p>;
+    }
+
+    return <p>Ошибка: {JSON.stringify(p)}</p>
+  };
 }
