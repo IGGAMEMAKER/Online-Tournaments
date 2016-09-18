@@ -1573,8 +1573,8 @@ function saveTransfer(login, cash, source){
 function setTournStatus(tournamentID, status){
 	Log('Set tourn status of ' + tournamentID + ' to ' + status);
 	var updateObj = {
-		status:status
-	}
+		status: status
+	};
 
 	switch(status){
 		case TOURN_STATUS_RUNNING:
@@ -1589,7 +1589,7 @@ function setTournStatus(tournamentID, status){
 		break;
 	}
 	// { status: status, startedTime: new Date() }
-	Tournament.update({tournamentID:tournamentID}, {$set: updateObj}, function (err,count){
+	Tournament.update({ tournamentID:tournamentID }, {$set: updateObj}, { multi: true }, function (err, count){
 		if(err) return Log('Tournament status update Error: ' + JSON.stringify(err));
 
 		/*if (status==TOURN_STATUS_REGISTER){

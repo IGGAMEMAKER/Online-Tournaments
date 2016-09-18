@@ -102,6 +102,8 @@ module.exports = function(app) {
     sender.sendRequest("StopTournament", { tournamentID: tournamentID }, '127.0.0.1', 'GameFrontendServer', null, sender.printer);
 
     logger.log('FrontendServer StopTournament :::' + tournamentID, 'Manual');
+
+    // notify users about tournament finish
     sender.sendRequest("tellToFinishTournament", { tournamentID: tournamentID }, '127.0.0.1', 'site');
   }
 
@@ -114,7 +116,7 @@ module.exports = function(app) {
     sender.sendRequest('GetTournaments', { purpose: GET_TOURNAMENTS_RUNNING}, 'localhost', 'DBServer', res, sender.Proxy);
   }
 
-  function TournamentsRunning(res) {
+  function TournamentsRunning(res){
     // logger.debug('TournamentsRunning', 'ADMIN POST');
     sender.sendRequest('RunningTournaments', {}, 'localhost', 'DBServer', res, sender.Proxy);
   }
