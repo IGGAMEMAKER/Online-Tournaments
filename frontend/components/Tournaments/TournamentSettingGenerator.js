@@ -118,9 +118,9 @@ export default class TournamentSettingGenerator extends Component {
             value={regularity}
             onChange={this.onInputChange('regularity', props)}
           >
-            <option value="0">none</option>
-            <option value="1">regular</option>
-            <option value="2">stream</option>
+            <option value={0}>none</option>
+            <option value={1}>regular</option>
+            <option value={2}>stream</option>
           </select>
         </div>
 

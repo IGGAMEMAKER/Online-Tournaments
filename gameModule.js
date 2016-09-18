@@ -5,6 +5,8 @@ var app = express();
 var gameServerType = 'ASync';
 var serverName = "GameServer"; //CHANGE SERVERNAME HERE. IF YOU ADD A NEW TYPE OF SERVER, EDIT THE HARDCODED ./TEST FILE
 
+var API = require('./helpers/API');
+
 var jade = require('jade');
 app.use(express.static('./frontend/public'));
 //app.use(express.static('games'));
@@ -15,11 +17,11 @@ app.use(express.static('./frontend/games/Questions'));
 app.use(express.static('./frontend/games/Battle'));
 
 
-var gameList = [];
-gameList.push('./frontend/views');
-gameList.push('./frontend/games/PingPong');
-gameList.push('./frontend/games/Questions');
-gameList.push('./frontend/games/Battle');
+var views = [];
+views.push('./frontend/views');
+views.push('./frontend/games/PingPong');
+views.push('./frontend/games/Questions');
+views.push('./frontend/games/Battle');
 
 
 //var gameModule = require('./gameModule');
@@ -36,7 +38,7 @@ const PREPARED = "PREPARED";
 
 var UPDATE_TIME = 3000;
 
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
@@ -63,7 +65,7 @@ var handler = require('./errHandler')(app, strLog, serverName);
 });*/
 
 
-app.set('views', gameList);
+app.set('views', views);
 
 app.set('view engine', 'jade');
 
@@ -265,7 +267,14 @@ var gameHost = configs.gameHost || '127.0.0.1';
 var gamePort = configs.gamePort || '5010';
 var BEFORE_TOURNAMENT_START_DELAY = configs.delay || STANDARD_PREPARE_TICK_COUNT;
 
+function drawErrorPage(res, tID) {
+	res.render('TournamentErrorView', { msg: { tID }});
+	console.error('drawErrorPage', tID, games[tID]);
+	console.error('------------------');
+	console.error(games);
 
+	API.errors.add('game-module', 'drawErrorPage', { games, game: games[tID], error: tID });
+}
 
 function RenderGame (req, res){
 	console.log(__dirname);
@@ -276,12 +285,13 @@ function RenderGame (req, res){
 
 	// console.log(req.query.tournamentID);
 
-	if ( isNaN(tID)){// || !games[tID] 
-		res.status(404);
-		res.type('txt').send('Игра не найдена');
+	if (isNaN(tID)){// || !games[tID]
+		// res.status(404);
+		// res.type('txt').send('Игра не найдена');
+		drawErrorPage(res, tID);
 	}	else {
 		if (isRunning(tID)){
-			res.render(getOption('gameTemplate') , {//'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
+			res.render(getOption('gameTemplate'), { //'qst_game'  ///  OPTIONS.gameTemplate: ? OPTIONS.gameTemplate : gameTemplate
 				tournamentID:tID,
 				gameHost:gameHost,
 				gamePort:port,
@@ -291,8 +301,10 @@ function RenderGame (req, res){
 
 			sendStatistic('sended', { login:login, tournamentID:tID });
 		} else {
-			res.status(404);
-			res.type('txt').send('Турнир #'+ tID + ' завершён или не был начат. ');
+			drawErrorPage(res, tID);
+			// res.render('TournamentErrorView', { msg: { tID }});
+			// res.status(404);
+			// res.type('txt').send('Турнир #'+ tID + ' завершён или не был начат. ');
 
 			sendStatistic('sendedFail', { login:login, tournamentID:tID });
 		}
@@ -445,7 +457,7 @@ app.post('/Join', function (req, res){
 	}
 
 	sender.Answer(res, OK);
-})
+});
 
 // app.get('/JoinPlayer/:login/:count/:id', function (req, res){
 // 	var id = parseInt(req.params.id);
@@ -483,7 +495,7 @@ function JoinPlayer(ID, login){
 
 function PrepareAndStart(ID, userIDs, res){
 	strLog('PrepareAndStart tournament ' + ID, 'Games');
-	games[ID].status=PREPARED;
+	games[ID].status = PREPARED;
 	//games[ID].players = {};
 	games[ID].players.UIDtoGID = {};
 
@@ -515,7 +527,7 @@ function PrepareAndStart(ID, userIDs, res){
 
 
 	//strLog('Players ' + JSON.stringify(games[ID].players), 'Tournaments');
-	sender.Answer(res, {result:'success', message:"Starting game:" + ID });
+	sender.Answer(res, { result:'success', message: "Starting game:" + ID });
 }
 
 function StopTMR(TMR_ID){

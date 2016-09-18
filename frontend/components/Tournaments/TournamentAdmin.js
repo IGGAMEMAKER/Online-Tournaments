@@ -67,8 +67,15 @@ export default class ClassNameSpecial extends Component {
       );
     }
     // <td>{props.data.settings.hidden}</td>
+
+    const style = {};
+
+    if (props.data.status === 2) {
+      style['background-image'] = 'green';
+    }
+
     return (
-      <tr>
+      <tr style={style}>
         <td>{id}</td>
         <td>{props.data.players}/{props.data.goNext[0]}</td>
         <td>{props.data.goNext[1]}</td>

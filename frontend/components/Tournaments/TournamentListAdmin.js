@@ -4,7 +4,7 @@ import request from 'superagent';
 import constants from '../../constants/constants';
 
 import TournamentAdmin from './TournamentAdmin';
-import TournamentEditor from './TournamentAdder';
+import TournamentAdder from './TournamentAdder';
 import TournamentSettingGenerator from './TournamentSettingGenerator';
 import TournamentPrizeGenerator from './TournamentPrizeGenerator';
 
@@ -195,7 +195,7 @@ export default class TournamentListAdmin extends Component{
               />
             </td>
             <td>
-              <TournamentEditor
+              <TournamentAdder
                 action="/AddTournament"
                 phrase="Add tournament"
                 tournament={state.newTournament}

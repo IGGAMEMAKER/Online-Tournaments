@@ -18,6 +18,10 @@ var tournamentValidator = require('../../helpers/tournament-validator');
 
 var sender = require('../../requestSender');
 
+// function notifyGameFrontendServerAboutNewTournament(res, cb) {
+//   sender.sendRequest("ServeTournament", data, '127.0.0.1', 'GameFrontendServer', res, proxy);
+// }
+
 function proxy(error, response, body, res){
   res.end(JSON.stringify(body))
 }
@@ -120,7 +124,12 @@ module.exports = function(app, aux) {
     }
 
     // return servers.TS('add-tournament', tournament);
-    return API.tournaments.add(tournament);
+    return API.tournaments.add(tournament)
+      .then(result => {
+        logger.log('API.tournament.add(tournament)', result);
+        sender.sendRequest("ServeTournament", result, '127.0.0.1', 'GameFrontendServer', null, null);
+        return result;
+      })
   }));
 
   app.get('/api/tournaments/all', middlewares.isAdmin, function (req, res, next){

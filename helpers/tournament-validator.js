@@ -1,8 +1,10 @@
 // return error if it has it.
 module.exports = (t) => {
+  // var mask = {};
   if (isNaN(t.buyIn)) {
     return 'buyIn';
   }
+  // mask.buyIn = parseInt(t.buyIn, 10);
 
   if (!t.goNext || !Array.isArray(t.goNext)) {
     return 'goNext';

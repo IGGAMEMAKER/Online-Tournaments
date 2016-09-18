@@ -26,13 +26,16 @@ export default class TournamentEditor extends Component {
   onBuyInChange = (e: KeyboardEvent) => {
     const buyIn = e.target.value;
 
-    if (!isNaN(buyIn)) this.onChange('buyIn', buyIn);
+    if (!isNaN(buyIn)) this.onChange('buyIn', parseInt(buyIn));
   };
 
   onGoNextChange = (e: KeyboardEvent) => {
+    console.log('onGoNextChange', e);
     const data = e.target.value;
-    if (Array.isArray(data)) {
-      this.onChange('goNext', Array.from(data));
+
+    const arr = JSON.parse(data); //data.split().map(str => parseInt(str, 10));
+    if (Array.isArray(arr)) {
+      this.onChange('goNext', Array.from(arr));
     }
   };
 
@@ -53,6 +56,13 @@ export default class TournamentEditor extends Component {
     }
   };
 
+  onSettingsChangeByField = (field, value) => {
+    const settings = this.props.tournament.settings || {};
+
+    settings[field] = value;
+    this.onChange('settings', settings);
+  };
+
   onDateChange = (e: KeyboardEvent) => {
     const data = e.target.value;
     console.log('onDateChange', data);
@@ -64,6 +74,10 @@ export default class TournamentEditor extends Component {
     } catch (err) {
       sendError(err, 'onDateChange');
     }
+  };
+
+  onRegularityChange = (e: KeyboardEvent) => {
+    this.onSettingsChangeByField('regularity', parseInt(e.target.value));
   };
 
   doubleDigit(value) {
@@ -133,9 +147,9 @@ export default class TournamentEditor extends Component {
               <td>Game Name</td>
               <td>
                 <select name="gameNameID" value={gameNameID}>
-                  <option value="2">Questions</option>
-                  <option value="3">Battle</option>
-                  <option value="1">Ping Pong</option>
+                  <option value={2}>Questions</option>
+                  <option value={3}>Battle</option>
+                  <option value={1}>Ping Pong</option>
                 </select>
               </td>
             </tr>
@@ -143,12 +157,22 @@ export default class TournamentEditor extends Component {
               <td>Rounds</td>
               <td>
                 <select name="rounds" value={rounds} onChange={this.onRoundChange}>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                  <option value={5}>5</option>
+                  <option value={6}>6</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Regularity</td>
+              <td>
+                <select name="regularity" value={regularity} onChange={this.onRegularityChange}>
+                  <option value={0}>none</option>
+                  <option value={1}>regular</option>
+                  <option value={2}>stream</option>
                 </select>
               </td>
             </tr>

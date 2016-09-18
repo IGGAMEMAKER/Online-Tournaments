@@ -20,41 +20,42 @@ type PrizeType = {
 type StateType = {
   Prizes: Array<PrizeType>,
 
-  current: number
+  currentPrizeType: number
 }
 
 export default class TournamentPrizeGenerator extends Component {
   state = {
-    current: PRIZE_TYPE_MONEY,
+    currentPrizeType: PRIZE_TYPE_MONEY,
 
     Prizes: []
   };
 
   onChangeCurrentPrizeType = (e: KeyboardEvent) => {
-    const current = parseInt(e.target.value);
-    console.log('onChangeCurrentPrizeType', current);
+    const currentPrizeType = parseInt(e.target.value);
 
-    this.setState({ current });
+    this.setState({ currentPrizeType });
   };
 
-  addGiftToList = () => {
+  addPrizeToList = () => {
     const { Prizes } = this.state;
+    const prizeType = this.state.currentPrizeType;
 
-    Prizes.push({
-      type: this.state.current,
-      info: document.getElementById('data').value
-    });
+    const value = document.getElementById('data').value;
+    let info = value;
 
-    this.setState({
-      Prizes
-    })
+    if (prizeType === PRIZE_TYPE_MONEY || prizeType === PRIZE_TYPE_POINTS || prizeType === PRIZE_TYPE_TICKETS) {
+      info = parseInt(value, 10);
+    }
+
+    Prizes.push({ type: prizeType, info });
+    this.setState({ Prizes })
   };
 
   render(props: PropsType, state: StateType) {
     let inputType = "number", value = 0;
     let helper;
 
-    switch (state.current) {
+    switch (state.currentPrizeType) {
       case PRIZE_TYPE_MONEY:
         break;
       case PRIZE_TYPE_GIFT:
@@ -77,7 +78,7 @@ export default class TournamentPrizeGenerator extends Component {
         {helper}
         <br />
         <br />
-        <select value={state.current} onChange={this.onChangeCurrentPrizeType}>
+        <select value={state.currentPrizeType} onChange={this.onChangeCurrentPrizeType}>
           <option value={PRIZE_TYPE_MONEY}>money</option>
           <option value={PRIZE_TYPE_GIFT}>Gift</option>
           <option value={PRIZE_TYPE_POINTS}>Points</option>
@@ -89,7 +90,7 @@ export default class TournamentPrizeGenerator extends Component {
 
         <br />
         <br />
-        <button onClick={this.addGiftToList}>Add prize</button>
+        <button onClick={this.addPrizeToList}>Add prize</button>
         <div></div>
         <br />
         <br />
