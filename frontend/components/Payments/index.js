@@ -62,7 +62,7 @@ export default class Payment extends Component {
     };
   };
 
-  getPaymentImage = (chosen, alt, src, width, height) => {
+  renderPaymentImage = (chosen, alt, src, width, height) => {
     return (
       // <div style="background-color: white;">
       <img
@@ -84,7 +84,7 @@ export default class Payment extends Component {
     );
   };
 
-  drawChosenPaymentForm = (chosen, ammount) => {
+  renderChosenPaymentForm = (chosen, ammount) => {
 
     // const qiwi = '1) QIWI: +79648847260';
     // const mobile = '2) С мобильного';
@@ -142,7 +142,7 @@ export default class Payment extends Component {
   };
   // <h2 className="page">Вы собираетесь пополнить счёт на {props.ammount} руб</h2>
   render(props: PropsType, state) {
-    const paymentForm = this.drawChosenPaymentForm(state.chosen, props.ammount);
+    const paymentForm = this.renderChosenPaymentForm(state.chosen, props.ammount);
     const width = 50;
     const height = 50;
     // Если у вас возникли какие-то трудности, напишите в
@@ -162,9 +162,9 @@ export default class Payment extends Component {
     if (state.chosen === PAY_BANK) {
       choseText = 'Оплата банковской картой';
     }
-    // {this.getPaymentImage(2, 'Оплата с мобильного', 'http://s1.iconbird.com/ico/2013/9/452/w352h5121380477012phone.png', width, height)}
-    // {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/28577/EkehfwEF_l/orig', width, height)}
-    // {this.getPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
+    // {this.renderPaymentImage(2, 'Оплата с мобильного', 'http://s1.iconbird.com/ico/2013/9/452/w352h5121380477012phone.png', width, height)}
+    // {this.renderPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/28577/EkehfwEF_l/orig', width, height)}
+    // {this.renderPaymentImage(3, 'Яндекс.Деньги', '/img/yandex.png', width, height)}
 
     return (
       <div>
@@ -173,14 +173,16 @@ export default class Payment extends Component {
           <i className="fa fa-icon-ya-money" />
           <i className="fa fa-yandex" />
           <h2 className="text-micro page" >{choseText}</h2>
-          <div className="payment-button light-blue">Яндекс.Деньги</div>
-          <div className="payment-button light-blue">Оплата картой</div>
-          <div className="payment-button light-blue">Оплата с мобильного</div>
-          <br />
-          <br />
-          <div className="payment-button light-blue">QIWI</div>
-          {this.getPaymentImage(1, 'QIWI', 'http://qiwi.by/uploads/files/logo_qiwi_rgb.png', width, height)}
-          {this.getPaymentImage(2, 'Оплата с мобильного', '/img/mobile.png', width, height)}
+          <div style="display: none;">
+            <div className="payment-button light-blue">Яндекс.Деньги</div>
+            <div className="payment-button light-blue">Оплата картой</div>
+            <div className="payment-button light-blue">Оплата с мобильного</div>
+            <br />
+            <br />
+            <div className="payment-button light-blue">QIWI</div>
+          </div>
+          {this.renderPaymentImage(1, 'QIWI', 'http://qiwi.by/uploads/files/logo_qiwi_rgb.png', width, height)}
+          {this.renderPaymentImage(2, 'Оплата с мобильного', '/img/mobile.png', width, height)}
           <div
             style={{
               'background-color': 'white',
@@ -191,9 +193,9 @@ export default class Payment extends Component {
               'margin-right': '35px'
             }}
           >
-            {this.getPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/114306/VyZTMD4F_g/orig', width, height)}
+            {this.renderPaymentImage(3, 'Яндекс.Деньги', 'http://avatars.mds.yandex.net/get-yablogs/114306/VyZTMD4F_g/orig', width, height)}
           </div>
-          {this.getPaymentImage(4, 'Оплата картой', 'http://learnthat.com/files/2010/02/credit-cards1.png', width, height)}
+          {this.renderPaymentImage(4, 'Оплата картой', 'http://learnthat.com/files/2010/02/credit-cards1.png', width, height)}
 
           <div style="height: 150px;">{paymentForm}</div>
         </div>
@@ -202,10 +204,7 @@ export default class Payment extends Component {
         <div className="white text-center full">
           Что-то не так? Пишите в &nbsp;
           <span>
-            <a
-              href="https://vk.com/topic-111187123_33419618"
-              target="_blank"
-            >техподдержку</a>
+            <a href="https://vk.com/topic-111187123_33419618" target="_blank">техподдержку</a>
           </span>
         </div>
       </div>

@@ -16,6 +16,8 @@ var Pulse = require('../models/pulse');
 
 var statistics = require('../models/statistics');
 
+var Tests = require('../models/tests');
+
 var visits = require('../models/visits');
 
 module.exports = {
@@ -33,5 +35,6 @@ module.exports = {
   statistics,
 
   pulse: Pulse,
-  visits
+  visits,
+  tests: Tests,
 };

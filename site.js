@@ -201,6 +201,7 @@ app.get('/Elite', application_page);
 app.get('/Crowd', application_page);
 app.get('/Chat', application_page);
 app.get('/Demo', application_page);
+app.get('/Tests', application_page);
 
 app.get('/Packs', middlewares.authenticated, application_page);
 app.get('/Support', middlewares.authenticated, application_page);
@@ -224,6 +225,10 @@ require('./Modules/site/clientStats')(app, aux);
 
 require('./routes/mailchimp')(app, aux);
 require('./routes/messages')(app, aux);
+
+require('./routes/retention')(app);
+require('./routes/tests')(app);
+
 
 //Error: Failed to serialize user into session
 /*app.get('/vk-auth', function (req, res){
@@ -249,15 +254,14 @@ function session_save(req, res, next){
 
   req.session.save(function (err){
     if (err) {
-      API.errors.add(login, 'session_save', { err:err });
-      // res.render(inviterUrl,{msg:err});
+      API.errors.add(login, 'session_save', { err: err });
+      // res.render(inviterUrl, { msg: err });
       return next(err);
     }
 
     req.session.login = login;
 
     res.redirect('/');// AUTH_SUCCESS_REDIRECT_PAGE
-    // next();
   })
 }
 
@@ -266,11 +270,10 @@ var vkAuth = passport.authenticate('vkontakte', { failureRedirect: '/', display:
 app.get('/vk-auth', vkAuth, vkAuthSuccess, session_save);
 
 
-function isAuthenticated(req){ return (req.session && req.session.login); } // || req.user;
-
 function Landing(landing, picture) {
   return function (req, res) {
-    if (isAuthenticated(req)) {
+    // if (isAuthenticated(req)) {
+    if (req.session && req.session.login) {
       res.redirect('/');
       return;
     }
@@ -283,10 +286,9 @@ app.get('/realmadrid', Landing('realmadrid', 'realmadrid.jpg'));
 app.get('/b.gareth', Landing('bgareth', 'realmadrid.jpg'));
 
 // tournaments ....
-
 var tournament_finisher = require('./chains/finishTournament')(aux);
 
-app.post('/FinishGame', function (req, res){
+app.post('/FinishGame', function (req, res) {
   res.json({ result:'OK', message: 'FinishGame' });
 
   var data = req.body;
@@ -372,5 +374,3 @@ app.get('/realtime/update', middlewares.isAdmin, function(req, res){
 });
 
 app.post('/addQuestion', middlewares.authenticated, require('./middlewares/add-quiz-question'));
-
-require('./routes/retention')(app);

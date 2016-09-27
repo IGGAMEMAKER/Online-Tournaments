@@ -23,7 +23,7 @@ export default class Profile extends Component {
     deposit: 200,
     cashout: 500,
 
-    money: 0,
+    money: 'XXX',
     registeredIn: []
   };
 

@@ -1,4 +1,4 @@
-
+//background-color: #22284f;
 
 .page-title
 {
@@ -1013,7 +1013,8 @@ button{
   background-position: center;
   background-size: cover;
 }
-
+.light-blue
+  opacity 1
 .light-blue:hover {
   box-shadow: 0 0 18px #2793C7;
   /*box-shadow: 0 0 28px #2793C7;*/
@@ -1257,10 +1258,13 @@ button{
     right 0
     bottom 0
     //opacity 0.3
-    z-index 500
+    z-index 100
     background-color rgba(0,0,0,0.7)
     opacity 1
     content ''
+  &:hover:after
+    background-color rgba(0,0,0,0.5)
+    transition background-color 0.5s
   //&:hover:after
   //  //background-color white
   //  //display none
@@ -1440,7 +1444,7 @@ round-image-size = 225px
   left: 0;
   right: 0;
   color: white;
-  z-index: 100;
+  z-index: 1000;
   padding-top: 5px;
   /*margin-top: 3px;*/
 }
@@ -1654,7 +1658,7 @@ a:focus {
   right: 0;
   /*background-color: #111111;*/
   background-color menu-background
-  z-index: 200;
+  z-index: 1000;
 }
 
 .menu-item:hover {
@@ -1788,7 +1792,18 @@ a:focus {
     width: 100% !important;
     margin: auto;
 }*/
-
+//
+.demo-tournament-container
+  width calc(33% - 10px)
+  height 300px
+  float left
+  margin 0 5px
+  position relative
+  @extend .img-responsive
+  @extend .darkened-centered-container
+  @media (max-width mobile-size)
+    width 100%
+    height 200px
 .payment-button
   width 280px
   height 70px

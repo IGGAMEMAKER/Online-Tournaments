@@ -3,7 +3,14 @@ import * as topics from './topics';
 
 type PropsType = {
   next: Function,
-  topic: string
+  topic: string,
+
+  id: String,
+  data: {
+    questions: Array,
+    answers: Array,
+    correct: Array,
+  }
 }
 
 type StateType = {
@@ -40,7 +47,7 @@ export default class DemoTest extends Component {
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
-    const source = topics[props.topic];
+    const source = topics[props.topic]; // replace this by props.data
     const index = state.question;
 
     const question = source.questions[index];
@@ -48,7 +55,7 @@ export default class DemoTest extends Component {
     const answers = source.answers[index].map((a, i) => {
       return (
         <div
-          className="demo-answer pointer"
+          className="demo-answer"
           onClick={() => { this.answer(i, props.topic, correct, props.next)}}
         >
           <div className="btn btn-primary full-mobile">{a}</div>

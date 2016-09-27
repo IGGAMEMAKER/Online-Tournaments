@@ -100,9 +100,9 @@ module.exports = function(dbAddress){
 			*/
 		}),
 
-		Configs : db.model('Configs', {name:String, value: String}),
+		Configs: db.model('Configs', { name: String, value: String }),
 
-		Tournament : db.model('Tournament', { 
+		Tournament: db.model('Tournament', {
 			buyIn: 			Number,
 			initFund: 		Number,
 			gameNameID: 	Number,
@@ -133,7 +133,34 @@ module.exports = function(dbAddress){
 			//tournamentServerID: String
 		})
 
-		,Marathon : db.model('Marathon', {
+		,Test: db.model('Test', {
+			tags: Object,
+			description: String,
+			link: String,
+			questions: Array,
+
+
+			openedByInvite: Number, // user copied link and sended to his/her friends. When they open
+			opened: Number, // test was opened N times
+
+			solvedByInvite: Number, // played (was finished) by invite N * k times
+			solved: Number, // played (was finished) 300 times
+
+			likes: Number,
+			shares: Number, // how many times link on this tournament was copied
+			rating: Number // f(likes and solved and SolvedByInvite(virality)
+			// formula uses likes (retention-contentQuality)
+			// and virality(shares) metrics.
+			// We also include "solved" metrics
+			// to be sure, that test was interesting
+		})
+		,TestResult: db.model('TestResult', {
+			testID: String,
+			login: String,
+			result: Number,
+			liked: Boolean,
+		})
+		,Marathon: db.model('Marathon', {
 			MarathonID: Number,
 			start: Date,
 			finish: Date,

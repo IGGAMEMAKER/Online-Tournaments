@@ -2,17 +2,22 @@ import { h, Component } from 'preact';
 import DemoTest from './Demo/DemoTest';
 import DemoResult from './Demo/DemoResult';
 import DemoTournamentSelector from './Demo/DemoTournamentSelector';
+import request from 'superagent';
 
+const DEMO_STAGE_LOADING_TEST = 'DEMO_STAGE_LOADING_TEST';
 const DEMO_STAGE_TEST = 'DEMO_STAGE_TEST';
 const DEMO_STAGE_RESULT = 'DEMO_STAGE_RESULT';
 const DEMO_STAGE_PACK_RECEIVED = 'DEMO_STAGE_PACK_RECEIVED';
 const DEMO_STAGE_PACK_OPENED = 'DEMO_STAGE_PACK_OPENED';
 const DEMO_STAGE_TOURNAMENT_SELECTOR = 'DEMO_STAGE_TOURNAMENT_SELECTOR';
 
-type PropsType = {}
+type PropsType = {
+  id: string,
+}
 
 type StateType = {
   stage: string,
+  testData: Object,
 
   result: number,
 }
@@ -20,13 +25,8 @@ type StateType = {
 export default class Demo extends Component {
   state = {
     stage: DEMO_STAGE_TEST,
-    // stage: DEMO_STAGE_RESULT,
 
     result: 0
-  };
-
-  setStage = (stage) => {
-    this.setState({ stage })
   };
 
   goToResultPage = (result) => {
@@ -35,14 +35,34 @@ export default class Demo extends Component {
 
   goToTournamentSelectorPage = () => {
     // this.setState({ result: this.state.result + 1 });
-    this.setStage(DEMO_STAGE_TOURNAMENT_SELECTOR);
+    this.setState({ stage: DEMO_STAGE_TOURNAMENT_SELECTOR })
   };
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.loadData(this.props);
+  }
+
+  loadData = async (props: PropsType) => {
+    const response = await request.get(`/api/tests/${props.id}`);
+
+    console.log('loadData in Demo.js', response.body);
+
+    this.setState({ stage: DEMO_STAGE_TEST, testData: response.body });
+  };
 
   render(props: PropsType, state: StateType) {
+    if (state.stage === DEMO_STAGE_LOADING_TEST) {
+      return <div>загрузка вопросов...</div>
+    }
+
     if (state.stage === DEMO_STAGE_TEST) {
-      return <DemoTest next={this.goToResultPage} topic="realmadrid" />;
+      return (
+        <DemoTest
+          next={this.goToResultPage}
+          topic="realmadrid"
+          data={state.testData}
+        />
+      );
     }
 
     if (state.stage === DEMO_STAGE_RESULT) {
@@ -55,7 +75,7 @@ export default class Demo extends Component {
 
     return (
       <div>
-        stage error
+        stage error. Report to admin
       </div>
     );
   }

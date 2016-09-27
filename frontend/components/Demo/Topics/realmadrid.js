@@ -1,28 +1,17 @@
 export default {
   image: (result) => {
-    switch (result) {
-      case 0:
-        return 'http://www.ronaldo7.net/news/2012/cristiano-ronaldo-551-very-sad-face-in-real-madrid-2012-13.jpg';
-        break;
-      case 1:
-        return 'http://english.ahram.org.eg/Media/News/2012/9/16/2012-634834021971526885-152.jpg';
-        break;
-      case 2:
-        return 'http://www.guncelfutbol.com/images/haberler/illaramendi-kiymete-bindi.jpg';
-        break;
-      case 3:
-        return 'http://img.bleacherreport.net/img/images/photos/003/500/157/hi-res-c784c930098a0a9fbd4ba097d0366897_crop_north.jpg?w=630&h=420&q=75';
-        break;
-      case 4:
-        return 'http://www2.pictures.gi.zimbio.com/Raul+Gonzalez+Real+Madrid+v+Betis+t5ZDLSaUHRRl.jpg';
-        break;
-      case 5:
-        return 'http://www.abc.es/Media/201407/08/di-stefano-bernabeu--644x362.jpg';
-        break;
-      default:
-        return '';
-        break;
-    }
+    const images = [
+      'http://www.ronaldo7.net/news/2012/cristiano-ronaldo-551-very-sad-face-in-real-madrid-2012-13.jpg',
+      'http://english.ahram.org.eg/Media/News/2012/9/16/2012-634834021971526885-152.jpg',
+      'http://www.guncelfutbol.com/images/haberler/illaramendi-kiymete-bindi.jpg',
+      'http://img.bleacherreport.net/img/images/photos/003/500/157/hi-res-c784c930098a0a9fbd4ba097d0366897_crop_north.jpg?w=630&h=420&q=75',
+      'http://www2.pictures.gi.zimbio.com/Raul+Gonzalez+Real+Madrid+v+Betis+t5ZDLSaUHRRl.jpg',
+      'http://www.abc.es/Media/201407/08/di-stefano-bernabeu--644x362.jpg'
+    ];
+
+    if (result >= 0 && result < images.length) return images[result];
+
+    return '';
   },
 
   result: (result, share) => {

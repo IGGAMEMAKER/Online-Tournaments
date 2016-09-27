@@ -15,6 +15,8 @@ import RoundTournament from './Tournaments/RoundTournament';
 
 import stats from '../helpers/stats';
 
+import DemoTournamentsContainer from './Tournaments/DemoTournamentsContainer';
+
 type StateType = {}
 
 export default class Index extends Component {
@@ -74,19 +76,67 @@ export default class Index extends Component {
     );
   };
 
-  render(props: PropsType, state: StateType) {
-    /*
-     <hr width="40%" />
-     <p>Если вы (или ваш друг) выиграете в ежедневном бесплатном турнире,</p>
-     <p>то вся команда получит вплоть до 150 рублей</p>
-     <p>(в зависимости от размера команды)</p>
-     */
+  renderRealMadridAdvert = () => {
+    return (
+      <div>
+        <h2 className="content-title">Выиграй футболку Реал Мадрид 2016/2017!</h2>
+        <div className="round-tournament-cover" style={`background-image: url('/img/rounds/Benzema.jpg'); position: relative`}>
+          <div style="position: absolute; top: 60%; left: 0; right: 0">
+            <a className="link" href="/realmadrid">Подробнее</a>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderDemoTournaments = () => {
+    return (
+      <div>
+        <h2 className="content-title"> Проверь свои знания</h2>
+        <DemoTournamentsContainer />
+      </div>
+    );
+  };
+
+  renderSharingCard = (state: StateType) => {
     let link = 'http://online-tournaments.org/register';
 
     if (login) {
       link += `?inviter=${login}`;
     }
 
+    return (
+      <div className="col-lg-12 killPaddings">
+        <div className="freeroll ctr purple share-container">
+          <div className="white">
+            <h1 className="fadeText">Побеждай с друзьями</h1>
+            <p className="center">
+              <div>Отправь ссылку друзьям и участвуй с ними в турнирах!</div>
+            </p>
+            <div>
+              <center>
+                <input
+                  id="invite-link"
+                  type="text"
+                  className="black circle-input offset-md"
+                  value={link}
+                  onClick={this.CopyShareLink}
+                  style="min-width: 200px; max-width: 350px; width: 100%"
+                >{link}</input>
+                <a
+                  className="btn btn-primary btn-large btn-lg offset-md"
+                  onClick={this.CopyShareLink}
+                >Скопировать</a>
+                <p style={{display: state.copied ? 'block' : 'none'}}>Ссылка скопирована</p>
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  render(props: PropsType, state: StateType) {
     // <a className="btn btn-primary btn-large btn-lg" href="/Team">Создать команду</a>
     // http://online-tournaments.org/register
     // style={{
@@ -128,35 +178,6 @@ export default class Index extends Component {
     //     </div>
     //   </div>
     // );
-    const shareCard = (
-      <div>
-        <div className="freeroll ctr purple share-container">
-          <div className="white">
-            <h1 className="fadeText">Побеждай с друзьями</h1>
-            <p className="center">
-              <div>Отправь ссылку друзьям и участвуй с ними в турнирах!</div>
-            </p>
-            <div>
-              <center>
-                <input
-                  id="invite-link"
-                  type="text"
-                  className="black circle-input offset-md"
-                  value={link}
-                  onClick={this.CopyShareLink}
-                  style="min-width: 200px; max-width: 350px; width: 100%"
-                >{link}</input>
-                <a
-                  className="btn btn-primary btn-large btn-lg offset-md"
-                  onClick={this.CopyShareLink}
-                >Скопировать</a>
-                <p style={{display: state.copied ? 'block' : 'none'}}>Ссылка скопирована</p>
-              </center>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
 
     // <div id="WeeklyFreeroll" className="row" style="height: inherit;">{weeklyFreeroll}</div>
     // <div id="Freeroll" className="row" style="height: inherit;">{dailyFreeroll}</div>
@@ -222,28 +243,23 @@ export default class Index extends Component {
         .map(t => <RoundTournament data={{tournamentID: t.tournamentID}} />)
       :
       '';
-    //hu {roundTournaments}
-    //           <VKWidget />
-    // Турниры для наших <a href="https://vk.com/o_tournaments" target="_blank">подписчиков</a>
 
-    // <div className="center height-fix offset">
-    //   <h2 className="content-title">Ежедневно</h2>
-    //   {pointTournaments}
-    // </div>
+    const realMadridAdvert = this.renderRealMadridAdvert();
+    const demoTournaments = this.renderDemoTournaments();
+    const shareCard = this.renderSharingCard(state);
 
+
+    // <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
     return (
       <div>
-        <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
         <div className="center height-fix offset">
-          <h2 className="content-title">Выиграй футболку Реал Мадрид 2016/2017!</h2>
-          <div className="round-tournament-cover" style={`background-image: url('/img/rounds/Benzema.jpg'); position: relative`}>
-            <div style="position: absolute; top: 60%; left: 0; right: 0">
-              <a className="link" href="/realmadrid">Подробнее</a>
-            </div>
-          </div>
+          {realMadridAdvert}
+        </div>
+        <div>
+          {demoTournaments}
         </div>
         <div className="center height-fix offset">
-          <div className="col-lg-12 killPaddings">{shareCard}</div>
+          {shareCard}
         </div>
       </div>
     );
