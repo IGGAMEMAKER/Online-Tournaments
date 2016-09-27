@@ -69,11 +69,11 @@ export default class DemoTournamentsContainer extends Component {
       );
     }
 
+        // <h1>Тест</h1>
     return (
       <div>
-        <h1>Тест</h1>
+        <label className="text-small test-description">{tournament.description}</label>
         <br />
-        <h2>{tournament.description}</h2>
         <br />
         <Button text="Пройти тест" />
       </div>

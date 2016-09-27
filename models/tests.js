@@ -11,6 +11,11 @@ var tests = [
     description: 'Second Best Test In the world',
     link: 'second-best-test-in-the-world',
     cover: '/img/covers/dRrHUwfggxs.jpg'
+  }, {
+    id: 'qweqweqwe3',
+    description: 'Насколько ты ботан?',
+    link: 'are-you-botan',
+    cover: 'http://risovach.ru/thumb/upload/240c240/2012/04/templ_1335682813_orig_Botan.jpg?bl0ge'
   }
 ];
 
