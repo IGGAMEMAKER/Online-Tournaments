@@ -69,13 +69,23 @@ export default class DemoTournamentsContainer extends Component {
       );
     }
 
+    const link = `/Tests?test=${tournament.link}&id=${tournament.id}`;
         // <h1>Тест</h1>
     return (
       <div>
         <label className="text-small test-description">{tournament.description}</label>
         <br />
         <br />
-        <Button text="Пройти тест" />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <a className="link" href={link} text="Пройти тест" />
+        <br />
+        <br />
+        <br />
       </div>
     );
   };

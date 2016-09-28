@@ -13,6 +13,7 @@ const DEMO_STAGE_TOURNAMENT_SELECTOR = 'DEMO_STAGE_TOURNAMENT_SELECTOR';
 
 type PropsType = {
   id: string,
+  link: string,
 }
 
 type StateType = {
@@ -45,9 +46,9 @@ export default class Demo extends Component {
   loadData = async (props: PropsType) => {
     const response = await request.get(`/api/tests/${props.id}`);
 
-    console.log('loadData in Demo.js', response.body);
+    console.log('loadData in Demo.js', response.body.msg);
 
-    this.setState({ stage: DEMO_STAGE_TEST, testData: response.body });
+    this.setState({ stage: DEMO_STAGE_TEST, testData: response.body.msg });
   };
 
   render(props: PropsType, state: StateType) {
