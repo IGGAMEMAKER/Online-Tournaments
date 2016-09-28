@@ -47,7 +47,9 @@ export default class DemoTest extends Component {
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
-    const source = topics[props.topic]; // replace this by props.data
+    // const source = topics[props.topic]; // replace this by props.data
+    const source = props.data; // replace this by props.data
+    console.log('render DemoTest.js', props.data);
     const index = state.question;
 
     const question = source.questions[index];

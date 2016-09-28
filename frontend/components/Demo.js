@@ -25,7 +25,7 @@ type StateType = {
 
 export default class Demo extends Component {
   state = {
-    stage: DEMO_STAGE_TEST,
+    stage: DEMO_STAGE_LOADING_TEST,
 
     result: 0
   };
@@ -46,17 +46,21 @@ export default class Demo extends Component {
   loadData = async (props: PropsType) => {
     const response = await request.get(`/api/tests/${props.id}`);
 
-    console.log('loadData in Demo.js', response.body.msg);
+    const testData = response.body.msg;
+    console.log('loadData in Demo.js', testData);
 
-    this.setState({ stage: DEMO_STAGE_TEST, testData: response.body.msg });
+    this.setState({ stage: DEMO_STAGE_TEST, testData });
   };
 
   render(props: PropsType, state: StateType) {
+    // load questions
     if (state.stage === DEMO_STAGE_LOADING_TEST) {
       return <div>загрузка вопросов...</div>
     }
 
+    // run test...
     if (state.stage === DEMO_STAGE_TEST) {
+      console.log('demo stage test', state);
       return (
         <DemoTest
           next={this.goToResultPage}
@@ -66,18 +70,18 @@ export default class Demo extends Component {
       );
     }
 
+    // show result picture and share/like button
     if (state.stage === DEMO_STAGE_RESULT) {
       return <DemoResult next={this.goToTournamentSelectorPage} result={state.result} />;
     }
 
+    // select another tournaments
     if (state.stage === DEMO_STAGE_TOURNAMENT_SELECTOR) {
       return <DemoTournamentSelector next={this.goToTournamentSelectorPage} />;
     }
 
     return (
-      <div>
-        stage error. Report to admin
-      </div>
+      <div>stage error. Report to admin</div>
     );
   }
 }

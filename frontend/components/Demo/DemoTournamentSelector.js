@@ -15,6 +15,9 @@ export default class DemoTest extends Component {
     return (
       <div>
         DemoResult
+        <div className="white">
+          <h1>Другие турниры</h1>
+        </div>
         <br />
         <button
           className="btn btn-primary"
