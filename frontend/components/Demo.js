@@ -36,7 +36,9 @@ export default class Demo extends Component {
 
   goToTournamentSelectorPage = () => {
     // this.setState({ result: this.state.result + 1 });
-    this.setState({ stage: DEMO_STAGE_TOURNAMENT_SELECTOR })
+    // this.setState({ stage: DEMO_STAGE_TOURNAMENT_SELECTOR })
+    this.setState({ stage: DEMO_STAGE_LOADING_TEST, result: 0 });
+    this.loadData(this.props);
   };
 
   componentWillMount() {

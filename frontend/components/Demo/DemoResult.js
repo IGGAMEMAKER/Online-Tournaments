@@ -82,7 +82,9 @@ export default class DemoTest extends Component {
 
     // const skip = <button className="btn btn-success btn-lg" onClick={props.next}>Дальше</button>;
     //
-    const skip = <a href="/" className="btn btn-success btn-lg">Дальше</a>;
+    const skip = (
+      <a href="/" className="btn btn-success btn-lg" onClick={props.next}>Дальше</a>
+    );
 
 
     const link = `http://online-tournaments.org/Tests?test=${props.link}&id=${props.id}`;
