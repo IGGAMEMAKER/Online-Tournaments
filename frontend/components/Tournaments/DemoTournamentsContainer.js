@@ -86,7 +86,12 @@ export default class DemoTournamentsContainer extends Component {
         <a className="link" href={link}>Пройти тест</a>
         <br />
         <br />
-        <input id={tournament.id} type="text" style="color: black; opacity: 0" value={`http://online-tournaments.org${link}`} />
+        <input
+          id={tournament.id}
+          type="text"
+          style="color: black; opacity: 0;"
+          value={`http://online-tournaments.org${link}`}
+        />
         <Button onClick={() => clipboard(tournament.id)} text="Скопировать ссылку на тест" />
         <br />
         <br />
