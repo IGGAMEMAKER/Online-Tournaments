@@ -55,40 +55,34 @@ export default class DemoTournamentsContainer extends Component {
   }
 
   copyTestLink = (id) => {
-    console.log('copyTestLink');
     clipboard(id);
+
     this.setState({ copiedTestId: id });
   };
 
+  renderUserResult = (tournament: DemoTournament) => {
+    return (
+      <div>
+        <h2>Ваш результат</h2>
+        <h1>{tournament.points} / 6</h1>
+        <br />
+        <Button text="Пройти ещё раз" />
+      </div>
+    );
+  };
+
   renderTestCardContent = (tournament: DemoTournament) => {
-    if (tournament.played) {
-      return (
-        <div>
-          <h2>Ваш результат</h2>
-          <h1>{tournament.points} / 6</h1>
-          <br />
-          <Button text="Пройти ещё раз" />
-        </div>
-      );
-    }
     const id = tournament.id;
-
-    const { copiedTestId } = this.state;
-
     const link = `/Tests?test=${tournament.link}&id=${id}`;
 
-    const linkTest = copiedTestId === id ? 'Ссылка скопирована. Отправьте её друзьям!' : 'Скопировать ссылку на тест';
+    const copiedTest = this.state.copiedTestId === id;
+    const linkTest = copiedTest ?
+      'Ссылка скопирована. Отправьте её друзьям!' : 'Скопировать ссылку на тест';
 
     return (
       <div>
         <label className="text-small test-description">{tournament.description}</label>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
+        <div style="height: 95px;"></div>
         <a className="link" href={link}>Пройти тест</a>
         <br />
         <br />
@@ -101,7 +95,7 @@ export default class DemoTournamentsContainer extends Component {
           />
         </div>
         <a
-          className={`pointer ${copiedTestId === id ? 'white' : '' }`}
+          className={`pointer ${copiedTest ? 'white' : ''}`}
           style="text-decoration: none;"
           onClick={() => this.copyTestLink(id) }
         >{linkTest}</a>
@@ -113,15 +107,17 @@ export default class DemoTournamentsContainer extends Component {
 
   renderTest = (tournament: DemoTournament) => {
     const fadingStatus = 'faded'; // if played ... this might change
-
-    const style = { 'background-image': `url("${tournament.cover}")` };
     // const className = `demo-tournament-container light-blue ${fadingStatus} lighter`;
     const className = `demo-tournament-container ${fadingStatus} lighter`;
 
+
+    const testCardContent = tournament.played ?
+      this.renderUserResult(tournament) : this.renderTestCardContent(tournament);
+
     return (
-      <div className={className} style={style}>
+      <div className={className} style={{'background-image': `url("${tournament.cover}")`}}>
         <div className="white tournament-centerize" style="z-index: 101">
-          {this.renderTestCardContent(tournament)}
+          {testCardContent}
         </div>
       </div>
     );

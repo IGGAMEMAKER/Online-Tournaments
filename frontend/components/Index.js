@@ -16,6 +16,19 @@ import clipboard from '../helpers/copy-to-clipboard';
 type StateType = {}
 
 export default class Index extends Component {
+  render(props: PropsType, state: StateType) {
+    return (
+      <div>
+        <div className="center height-fix offset">
+          {this.renderRealMadridAdvert()}
+        </div>
+        <div className="center height-fix offset">
+          {this.renderDemoTournaments()}
+        </div>
+      </div>
+    );
+  }
+
   state = {
     copied: false
   };
@@ -29,63 +42,13 @@ export default class Index extends Component {
         tournaments: store.getAvailableTournaments()
       });
     });
-
-    // actions.initialize();
   }
-
-  render(props: PropsType, state: StateType) {
-    // <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
-    //     <div className="center height-fix offset hide">
-    //       {this.renderSharingCard(state)}
-    //     </div>
-    return (
-      <div>
-        <div className="center height-fix offset">
-          {this.renderRealMadridAdvert()}
-        </div>
-        <div>
-          {this.renderDemoTournaments()}
-        </div>
-      </div>
-    );
-  }
-
-  CopyShareLink = () => {
-    clipboard('invite-link');
-
-    this.setState({ copied: true });
-    stats.shareLinkCopied();
-  };
-
-  categoryButton = (url, onClick, text) => {
-    return (
-      <a
-        className="btn btn-primary btn-large btn-lg btn-fixed"
-        href={url}
-        onClick={onClick}
-      >{text ? text : 'Перейти'}</a>
-    );
-  };
-
-  category = (title, info, color = 'green', button) => {
-    return (
-      <div className={`freeroll ctr ${color}`}>
-        <div className="white">
-          <h1 className="fadeText">{title}</h1>
-          <p>
-            {info.map(t => <div>{t}</div>)}
-          </p>
-          <center>{button}</center>
-        </div>
-      </div>
-    );
-  };
 
   renderRealMadridAdvert = () => {
     return (
       <div>
         <h2 className="content-title">Выиграй футболку Реал Мадрид 2016/2017!</h2>
-        <div className="round-tournament-cover" style={`background-image: url('/img/rounds/Benzema.jpg'); position: relative`}>
+        <div className="round-tournament-cover relative" style={`background-image: url('/img/rounds/Benzema.jpg');`}>
           <div style="position: absolute; top: 60%; left: 0; right: 0">
             <a className="link" href="/realmadrid">Подробнее</a>
           </div>
@@ -110,6 +73,13 @@ export default class Index extends Component {
       link += `?inviter=${login}`;
     }
 
+    const copyShareLink = () => {
+      clipboard('invite-link');
+
+      this.setState({ copied: true });
+      stats.shareLinkCopied();
+    };
+
     return (
       <div className="col-lg-12 killPaddings">
         <div className="freeroll ctr purple share-container">
@@ -125,12 +95,12 @@ export default class Index extends Component {
                   type="text"
                   className="black circle-input offset-md"
                   value={link}
-                  onClick={this.CopyShareLink}
+                  onClick={copyShareLink}
                   style="min-width: 200px; max-width: 350px; width: 100%"
                 >{link}</input>
                 <a
                   className="btn btn-primary btn-large btn-lg offset-md"
-                  onClick={this.CopyShareLink}
+                  onClick={copyShareLink}
                 >Скопировать</a>
                 <p style={{display: state.copied ? 'block' : 'none'}}>Ссылка скопирована</p>
               </center>

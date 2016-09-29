@@ -52,7 +52,6 @@ export default class DemoTest extends Component {
     // console.log('shareResultUrl', shareUrl);
 
     return shareUrl;
-    // return this.makeShareUrl(null, null, null, null);
   };
 
 
@@ -96,7 +95,7 @@ export default class DemoTest extends Component {
     // );
 
     const skip = (
-      <div>
+      <div style="box-styling: border-box; height: auto;">
         <a href="/" className="link">Другие турниры</a>
       </div>
     );
@@ -105,11 +104,16 @@ export default class DemoTest extends Component {
         <h2 className="white">{resultMessage}</h2>
         <h3 className="white">{result} из 5</h3>
         <div
-          className="img-responsive img-demo"
+          className="img-responsive img-demo relative faded lighter"
           style={`background-image: url(${image});`}
-        ></div>
+        >
+          <div className="center-absolute white" style="color: white">
+            <div className="text-big">{result} из 5</div>
+          </div>
+          <div style="position: absolute; left: 0; bottom: 0; color: white; z-index: 101">{share}</div>
+        </div>
         <br />
-        <div className="pull-left">{share}</div>
+        <div className="pull-left hide">{share}</div>
         <div className="pull-right">{skip}</div>
       </div>
     );
