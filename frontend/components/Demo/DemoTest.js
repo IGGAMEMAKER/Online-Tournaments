@@ -77,9 +77,7 @@ export default class DemoTest extends Component {
         <div className="white">
           <h3 className="white">Вопрос: {index + 1} из 5</h3>
           <h3 className="white demo-question-tab">{question}</h3>
-          <div>
-            {answers}
-          </div>
+          <div>{answers}</div>
         </div>
       </div>
     );

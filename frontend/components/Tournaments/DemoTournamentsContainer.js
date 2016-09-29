@@ -6,7 +6,9 @@ import clipboard from '../../helpers/copy-to-clipboard';
 
 type PropsType = {}
 
-type StateType = {}
+type StateType = {
+  copiedTestId: string,
+}
 
 type ResponseType = {
   body: {
@@ -27,29 +29,15 @@ type DemoTournament = {
 
 export default class DemoTournamentsContainer extends Component {
   state = {
-    tournaments: [
-      {
-        description: 'Тест: На сколько ты ботан',
-      },
-      {
-        description: 'Тест: Откуда берутся дети',
-      },
-      {
-        description: 'TEXT',
-        played: true,
-        points: 5
-      },
-    ]
+    copiedTestId: '0',
+    tests: []
   };
-  //
+
   getDemoTournaments = async () => {
     try {
-      // const response: ResponseType = await request.get('/api/tournaments/demo');
       const response: ResponseType = await request.get('/api/tests/');
 
-      console.log('getDemoTournaments', response.body);
-
-      this.setState({ tournaments: response.body.msg });
+      this.setState({ tests: response.body.msg });
     } catch (err) {
       console.error('getDemoTournaments', err);
     }
@@ -59,7 +47,20 @@ export default class DemoTournamentsContainer extends Component {
     this.getDemoTournaments();
   }
 
-  getComponentContent = (tournament: DemoTournament) => {
+  shouldComponentUpdate(newProps: PropsType, newState: StateType) {
+    const props: PropsType = this.props;
+    const state: StateType = this.state;
+
+    return true;
+  }
+
+  copyTestLink = (id) => {
+    console.log('copyTestLink');
+    clipboard(id);
+    this.setState({ copiedTestId: id });
+  };
+
+  renderTestCardContent = (tournament: DemoTournament) => {
     if (tournament.played) {
       return (
         <div>
@@ -70,9 +71,14 @@ export default class DemoTournamentsContainer extends Component {
         </div>
       );
     }
+    const id = tournament.id;
 
-    const link = `/Tests?test=${tournament.link}&id=${tournament.id}`;
-        // <h1>Тест</h1>
+    const { copiedTestId } = this.state;
+
+    const link = `/Tests?test=${tournament.link}&id=${id}`;
+
+    const linkTest = copiedTestId === id ? 'Ссылка скопирована. Отправьте её друзьям!' : 'Скопировать ссылку на тест';
+
     return (
       <div>
         <label className="text-small test-description">{tournament.description}</label>
@@ -86,47 +92,47 @@ export default class DemoTournamentsContainer extends Component {
         <a className="link" href={link}>Пройти тест</a>
         <br />
         <br />
-        <input
-          id={tournament.id}
-          type="text"
-          style="color: black; opacity: 0;"
-          value={`http://online-tournaments.org${link}`}
-        />
-        <Button onClick={() => clipboard(tournament.id)} text="Скопировать ссылку на тест" />
+        <div>
+          <input
+            id={id}
+            type="text"
+            style="color: black; opacity: 0;"
+            value={`http://online-tournaments.org${link}`}
+          />
+        </div>
+        <a
+          className={`pointer ${copiedTestId === id ? 'white' : '' }`}
+          style="text-decoration: none;"
+          onClick={() => this.copyTestLink(id) }
+        >{linkTest}</a>
         <br />
         <br />
       </div>
     );
   };
 
-  // static renderDemoTournament(tournament: DemoTournament) {
-  renderDemoTournament = (tournament: DemoTournament) => {
-    // const fadingStatus = tournament.played ? '' : 'faded';
-    const fadingStatus = 'faded';
-    // const cover = `url("/img/rounds/Benzema.jpg")`;
-    const cover = `url("${tournament.cover}")`;
-    const demoCardContent = this.getComponentContent(tournament);
+  renderTest = (tournament: DemoTournament) => {
+    const fadingStatus = 'faded'; // if played ... this might change
 
-        // className={`demo-tournament-container light-blue img-responsive darkened-centered-container ${fadingStatus}`}
+    const style = { 'background-image': `url("${tournament.cover}")` };
+    // const className = `demo-tournament-container light-blue ${fadingStatus} lighter`;
+    const className = `demo-tournament-container ${fadingStatus} lighter`;
+
     return (
-      <div
-        className={`demo-tournament-container light-blue ${fadingStatus} lighter`}
-        style={{ 'background-image': cover }}
-      >
+      <div className={className} style={style}>
         <div className="white tournament-centerize" style="z-index: 101">
-          {demoCardContent}
+          {this.renderTestCardContent(tournament)}
         </div>
       </div>
     );
+    // className={`demo-tournament-container light-blue img-responsive darkened-centered-container ${fadingStatus}`}
   };
 
   render(props: PropsType, state: StateType) {
-    const tournaments = state.tournaments.map(this.renderDemoTournament);
+    const tests = state.tests.map(this.renderTest);
 
     return (
-      <div style="margin-bottom: 35px">
-        {tournaments}
-      </div>
+      <div style="margin-bottom: 35px">{tests}</div>
     );
   }
 }

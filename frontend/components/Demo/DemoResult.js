@@ -14,10 +14,12 @@ export default class DemoTest extends Component {
 
   componentWillMount() {}
 
-  getResult = (result, topic, share) => {
-    return topics[topic].result(result, share);
-    return share ? 'Я - верный Мадридист. А ты? Пройди тест и узнай!' : 'Ты - верный Мадридист';
-    return share ? 'Я - легенда! А ты? Пройди тест и узнай!' : 'Ты - легенда!';
+  getResultMessage = (result, topic) => {
+    return topics[topic].getResultPhrase(result);
+  };
+
+  getResultDescriptionForShareLink = (result, topic) => {
+    return topics[topic].getResultPhraseForShareDescription(result);
   };
 
   // makeShareUrl = (url, title, description, image, noparse) => {
@@ -41,7 +43,7 @@ export default class DemoTest extends Component {
 
     const title = 'Онлайн турниры';
 
-    const description = this.getResult(result, topic, true);
+    const description = this.getResultDescriptionForShareLink(result, topic);
 
     const image = this.getImage(result, topic);
 
@@ -55,12 +57,13 @@ export default class DemoTest extends Component {
 
 
   shareLink = (text, className, obj) => {
-    var url = makeShareUrl(obj.url||null, obj.title||null, obj.description||null, obj.image||null);
+    var url = makeShareUrl(obj.url || null, obj.title || null, obj.description || null, obj.image || null);
     return '<a href="'+ url + '" target="_blank" class="'+className+'" >' + text + '</a>';
   };
 
   getImage = (result, topic) => {
     return topics[topic].image(result);
+
     return 'http://www.abc.es/Media/201407/08/di-stefano-bernabeu--644x362.jpg';
     return 'http://www2.pictures.gi.zimbio.com/Raul+Gonzalez+Real+Madrid+v+Betis+t5ZDLSaUHRRl.jpg';
     return '/img/CR2.jpg';
@@ -70,13 +73,13 @@ export default class DemoTest extends Component {
     const topic = props.topic || 'realmadrid';
     const result = props.result;
 
-    const resultMessage = this.getResult(result, topic);
+    const resultMessage = this.getResultMessage(result, topic);
     const image = this.getImage(result, topic);
 
     const share = (
       <a
         onClick={() => { console.log('share'); }}
-        className="btn btn-primary btn-lg"
+        className="link"
         href={this.shareResultUrl(result, topic)}
         target="_blank"
       >
@@ -85,11 +88,17 @@ export default class DemoTest extends Component {
       </a>
     );
 
+    // const skip = (
+    //   <button
+    //     className="btn btn-success btn-lg"
+    //     onClick={props.next}
+    //   >Дальше</button>
+    // );
+
     const skip = (
-      <button
-        className="btn btn-success btn-lg"
-        onClick={props.next}
-      >Дальше</button>
+      <div>
+        <a href="/" className="link">Другие турниры</a>
+      </div>
     );
     return (
       <div className="demo-container">

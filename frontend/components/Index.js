@@ -1,14 +1,8 @@
 import { h, Component } from 'preact';
 import store from '../stores/ProfileStore';
 import actions from '../actions/ProfileActions';
-import Card from '../components/Shared/Card';
-
-import Carousel from '../components/Shared/Carousel';
 
 import VKWidget from './Widgets/VKWidget';
-
-
-import RMAPage from '../components/Tournaments/Specials/Realmadrid';
 
 import PointTournament from './Tournaments/PointTournament';
 import RoundTournament from './Tournaments/RoundTournament';
@@ -16,6 +10,8 @@ import RoundTournament from './Tournaments/RoundTournament';
 import stats from '../helpers/stats';
 
 import DemoTournamentsContainer from './Tournaments/DemoTournamentsContainer';
+
+import clipboard from '../helpers/copy-to-clipboard';
 
 type StateType = {}
 
@@ -37,16 +33,25 @@ export default class Index extends Component {
     // actions.initialize();
   }
 
-  CopyLink = (id) => {
-    const node = document.getElementById(id);
-    node.select();
-    document.execCommand('copy');
-    node.blur();
-  };
+  render(props: PropsType, state: StateType) {
+    // <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
+    //     <div className="center height-fix offset hide">
+    //       {this.renderSharingCard(state)}
+    //     </div>
+    return (
+      <div>
+        <div className="center height-fix offset">
+          {this.renderRealMadridAdvert()}
+        </div>
+        <div>
+          {this.renderDemoTournaments()}
+        </div>
+      </div>
+    );
+  }
 
   CopyShareLink = () => {
-    const id = 'invite-link';
-    this.CopyLink(id);
+    clipboard('invite-link');
 
     this.setState({ copied: true });
     stats.shareLinkCopied();
@@ -105,7 +110,6 @@ export default class Index extends Component {
       link += `?inviter=${login}`;
     }
 
-    return '';
     return (
       <div className="col-lg-12 killPaddings">
         <div className="freeroll ctr purple share-container">
@@ -137,72 +141,8 @@ export default class Index extends Component {
     );
   };
 
-  render(props: PropsType, state: StateType) {
-    // <a className="btn btn-primary btn-large btn-lg" href="/Team">Создать команду</a>
-    // http://online-tournaments.org/register
-    // style={{
-    //   display: login ? 'block' : 'none'
-    // }}
-
-    // const shareCard = (
-    //   <div>
-    //     <div className="freeroll ctr purple glass">
-    //       <div className="white">
-    //         <h1 className="fadeText">Побеждай с друзьями</h1>
-    //         <p className="center">
-    //           <div>Отправь ссылку друзьям и участвуй с ними в турнирах</div>
-    //           <div>Если они займут призовое место в бесплатном турнире</div>
-    //           <div>ты получишь дополнительные 50% от их выигрыша!</div>
-    //         </p>
-    //         <div>
-    //           <center>
-    //             <input
-    //               id="invite-link"
-    //               type="text"
-    //               className="black circle-input offset-md"
-    //               value={link}
-    //               onClick={this.CopyShareLink}
-    //               style="min-width: 200px; max-width: 350px; width: 100%"
-    //             >{link}</input>
-    //             <a
-    //               className="btn btn-primary btn-large btn-lg offset-md"
-    //               onClick={this.CopyShareLink}
-    //             >Скопировать</a>
-    //             <p
-    //               style={{
-    //                 display: state.copied ? 'block' : 'none'
-    //               }}
-    //             >Ссылка скопирована</p>
-    //           </center>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // );
-
-    // <div id="WeeklyFreeroll" className="row" style="height: inherit;">{weeklyFreeroll}</div>
-    // <div id="Freeroll" className="row" style="height: inherit;">{dailyFreeroll}</div>
-
-    // <div className="row">{teamTab}</div>
-
-    // <div className="big-cards-container">
-    //   <ul style="display: table-row;">
-    //     <li style="display: table-cell; width: 320px; float: left">
-    //       <div className="card-container-semi">
-    //       </div>
-    //     </li>
-    //     <li style="display: table-cell; width: 320px; float: right;">
-    //       <div className="card-container-semi">
-    //       </div>
-    //     </li>
-    //   </ul>
-    // </div>
-
-    // <Card content={freerolls} style="" />
-    // <Card content={middleTournaments} style="" />
-    //   <Card content={eliteTournaments} style="" />
-
-    const pointTournaments = state.tournaments ? state.tournaments
+  renderPointTournament = (state: StateType) => {
+    return state.tournaments ? state.tournaments
       .filter(t => t.settings && t.settings.tag === 'point' && t.settings.points)
       .map(t =>
         <PointTournament
@@ -216,53 +156,14 @@ export default class Index extends Component {
       )
       :
       '';
+  };
 
-    // <PointTournament
-    //   points={t.settings.points}
-    //   cover={t.settings.cover}
-    //   time={20}
-    //   isRegistered={store.isRegisteredIn(t.tournamentID)}
-    //   onRegister={() => { actions.registerOnSubscribeTournament(t.tournamentID) }}
-    //   players={t.players}
-    // />
-
-    // const roundTournaments = state.tournaments? state.tournaments
-    //   .filter(t => t.settings && t.settings.tag === 'subs')
-    //   .map(t =>
-    //     <RoundTournament
-    //       data={{
-    //         tournamentID: t.tournamentID
-    //       }}
-    //     />
-    //   )
-    //   :
-    //   '';
-
-    const realmadridTournaments = state.tournaments ?
+  renderRealMadridTournaments = (state: StateType) => {
+    return state.tournaments ?
       state.tournaments
         .filter(t => t.settings && t.settings.tag === 'realmadrid')
         .map(t => <RoundTournament data={{tournamentID: t.tournamentID}} />)
       :
       '';
-
-    const realMadridAdvert = this.renderRealMadridAdvert();
-    const demoTournaments = this.renderDemoTournaments();
-    const shareCard = this.renderSharingCard(state);
-
-
-    // <div className="col-lg-12 col-sm-12 col-md-12 col-xs-12"></div>
-    return (
-      <div>
-        <div className="center height-fix offset">
-          {realMadridAdvert}
-        </div>
-        <div>
-          {demoTournaments}
-        </div>
-        <div className="center height-fix offset">
-          {shareCard}
-        </div>
-      </div>
-    );
-  }
+  };
 }
