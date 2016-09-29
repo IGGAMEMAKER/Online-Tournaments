@@ -22,7 +22,7 @@ type StateType = {
 
   result: number,
 }
-
+//
 export default class Demo extends Component {
   state = {
     stage: DEMO_STAGE_LOADING_TEST,
@@ -76,6 +76,7 @@ export default class Demo extends Component {
   };
 
   render(props: PropsType, state: StateType) {
+    console.log('render components/Demo.js', props);
     // load questions
     if (state.stage === DEMO_STAGE_LOADING_TEST) {
       return <div>загрузка вопросов...</div>

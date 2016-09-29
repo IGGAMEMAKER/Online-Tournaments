@@ -7,7 +7,7 @@ export default class DemoPage extends Component {
     console.log('DemoPage', props);
     return (
       <div style="margin-top: -80px;">
-        <Layout content={<Demo name={props.link} id={props.id} />} noheader nofooter nochat />
+        <Layout content={<Demo link={props.test} id={props.id} />} noheader nofooter nochat />
       </div>
     );
   }

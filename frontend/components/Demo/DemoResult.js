@@ -60,6 +60,7 @@ export default class DemoTest extends Component {
   };
 
   render(props: PropsType) {
+    console.log('render DemoResult.js', props);
     const topic  = props.topic || 'realmadrid';
     const result = props.result;
 
