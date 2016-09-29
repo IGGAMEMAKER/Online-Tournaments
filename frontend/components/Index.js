@@ -105,6 +105,7 @@ export default class Index extends Component {
       link += `?inviter=${login}`;
     }
 
+    return '';
     return (
       <div className="col-lg-12 killPaddings">
         <div className="freeroll ctr purple share-container">

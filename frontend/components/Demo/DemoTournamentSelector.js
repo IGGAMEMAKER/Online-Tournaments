@@ -12,6 +12,10 @@ export default class DemoTest extends Component {
   componentWillMount() {}
 
   render(props: PropsType, state: StateType) {
+    // <button
+    //   className="btn btn-primary"
+    //   onClick={props.next}
+    // >Дальше</button>
     return (
       <div>
         DemoResult
@@ -19,10 +23,14 @@ export default class DemoTest extends Component {
           <h1>Другие турниры</h1>
         </div>
         <br />
-        <button
-          className="btn btn-primary"
-          onClick={props.next}
-        >Дальше</button>
+        <div>
+          <a href="/" className="link">Другие турниры</a>
+        </div>
+
+        <div>Вам также может быть интересно</div>
+        <div>Турнир1</div>
+        <div>Турнир2</div>
+        <div>Турнир3</div>
       </div>
     );
   }

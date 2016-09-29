@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 import request from 'superagent';
 import Button from '../Shared/Button';
 
+import clipboard from '../../helpers/copy-to-clipboard';
+
 type PropsType = {}
 
 type StateType = {}
@@ -81,9 +83,11 @@ export default class DemoTournamentsContainer extends Component {
         <br />
         <br />
         <br />
+        <a className="link" href={link}>Пройти тест</a>
         <br />
-        <a className="link" href={link} text="Пройти тест" />
         <br />
+        <input id={tournament.id} type="text" style="color: black; opacity: 0" value={`http://online-tournaments.org${link}`} />
+        <Button onClick={() => clipboard(tournament.id)} text="Скопировать ссылку на тест" />
         <br />
         <br />
       </div>
@@ -115,7 +119,7 @@ export default class DemoTournamentsContainer extends Component {
     const tournaments = state.tournaments.map(this.renderDemoTournament);
 
     return (
-      <div>
+      <div style="margin-bottom: 35px">
         {tournaments}
       </div>
     );
