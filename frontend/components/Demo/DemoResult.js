@@ -2,17 +2,23 @@ import { h, Component } from 'preact';
 import * as topics from './topics';
 
 import getShareLink from '../../helpers/vk-share-link';
+import clipboard from '../../helpers/copy-to-clipboard';
 
 type PropsType = {
   next: Function,
   result: number,
-  topic: string
+  topic: string,
+  id: string,
+  link: string,
 }
 
-type StateType = {}
+type StateType = {
+  copied: boolean
+}
 
 export default class DemoTest extends Component {
-  state = {};
+  state = { copied: false };
+
   getResultMessage = (result, topic) => {
     return topics[topic].getResultPhrase(result);
   };
@@ -20,17 +26,6 @@ export default class DemoTest extends Component {
   getResultDescriptionForShareLink = (result, topic) => {
     return topics[topic].getResultPhraseForShareDescription(result);
   };
-
-  // makeShareUrl = (url, title, description, image, noparse) => {
-  //   if (!url) url = "http://online-tournaments.org/";
-  //
-  //   if (!title) title = "Онлайн турниры";
-  //   if (!description) description = "Участвуй в викторинах и выигрывай призы!";
-  //   if (!image) image = "http://theartmad.com/wp-content/uploads/2015/08/Football-Stars-Wallpaper-1.jpg";
-  //   noparse = true;
-  //
-  //   return "http://vk.com/share.php?url="+url+"&title="+title+"&description="+description+"&image="+image+"&noparse=true";
-  // };
 
   shareResultUrl = (result, topic) => {
     const url = `http://online-tournaments.org/realmadrid`;
@@ -52,8 +47,20 @@ export default class DemoTest extends Component {
     return '/img/CR2.jpg';
   };
 
-  render(props: PropsType, state: StateType) {
-    const topic = props.topic || 'realmadrid';
+  renderCopyTestUrlButton = (id) => {
+    const copyLink = () => {
+      clipboard(id);
+
+      this.setState({ copied: true });
+    };
+
+    const copyText = this.state.copied ? 'Ссылка скопирована' : 'Отправить друзьям';
+
+    return <a className="link" onClick={copyLink}>{copyText}</a>;
+  };
+
+  render(props: PropsType) {
+    const topic  = props.topic || 'realmadrid';
     const result = props.result;
 
     const resultMessage = this.getResultMessage(result, topic);
@@ -65,25 +72,19 @@ export default class DemoTest extends Component {
         className="link"
         href={this.shareResultUrl(result, topic)}
         target="_blank"
+        style="border-radius: 25px"
       >
         <span class="fa fa-vk" />
         &nbsp;Поделиться
       </a>
     );
 
-    const skip = (
-      <button
-        className="btn btn-success btn-lg"
-        onClick={props.next}
-      >Дальше</button>
-    );
+    // const skip = <button className="btn btn-success btn-lg" onClick={props.next}>Дальше</button>;
     //
-    // const skip = (
-    //   <div style="box-styling: border-box; height: auto;">
-    //     <a href="/" className="link">Другие турниры</a>
-    //   </div>
-    // );
-    //
+    const skip = <a href="/" className="btn btn-success btn-lg">Дальше</a>;
+
+
+    const link = `http://online-tournaments.org/Tests?test=${props.link}&id=${props.id}`;
     return (
       <div className="demo-container">
         <h2 className="test-result-description white">{resultMessage}</h2>
@@ -92,12 +93,16 @@ export default class DemoTest extends Component {
           style={`background-image: url(${image});`}
         >
           <div className="center-absolute white upper-layer">
-            <div className="text-humongous">{result}/5</div>
+            <div className="text-humongous">{result}/6</div>
           </div>
           <div className="white upper-layer" style="left: 20px; bottom: 35px;">{share}</div>
+          <div className="white upper-layer" style="right: 20px; bottom: 35px;">
+            {this.renderCopyTestUrlButton(props.id)}
+          </div>
         </div>
         <br />
         <div>{skip}</div>
+        <input id={props.id} style="opacity: 0" value={link} />
       </div>
     );
   }

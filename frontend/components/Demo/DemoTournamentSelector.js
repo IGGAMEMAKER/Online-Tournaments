@@ -7,10 +7,6 @@ type PropsType = {
 type StateType = {}
 
 export default class DemoTest extends Component {
-  state = {};
-
-  componentWillMount() {}
-
   render(props: PropsType, state: StateType) {
     // <button
     //   className="btn btn-primary"
@@ -18,13 +14,12 @@ export default class DemoTest extends Component {
     // >Дальше</button>
     return (
       <div>
-        DemoResult
         <div className="white">
-          <h1>Другие турниры</h1>
+          <h1>Вам также может быть интересно</h1>
         </div>
         <br />
         <div>
-          <a href="/" className="link">Другие турниры</a>
+          <a href="/" className="link">Вернуться в главное меню</a>
         </div>
 
         <div>Вам также может быть интересно</div>

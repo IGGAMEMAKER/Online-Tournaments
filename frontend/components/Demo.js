@@ -25,9 +25,9 @@ type StateType = {
 
 export default class Demo extends Component {
   state = {
-    stage: DEMO_STAGE_RESULT,
+    stage: DEMO_STAGE_LOADING_TEST,
 
-    result: 5
+    result: 0
   };
 
   goToResultPage = (result) => {
@@ -50,13 +50,32 @@ export default class Demo extends Component {
     console.log('loadData in Demo.js', testData);
 
     this.setState({
-      // stage: DEMO_STAGE_TEST,
+      stage: DEMO_STAGE_TEST,
+      // stage: DEMO_STAGE_TOURNAMENT_SELECTOR,
       testData
     });
   };
 
-  render(props: PropsType, state: StateType) {
+  renderStageTest = (state: StateType) => {
+    return (
+      <DemoTest
+        next={this.goToResultPage}
+        topic="realmadrid"
+        data={state.testData}
+      />
+    );
+  };
 
+  renderStageResult = (props: PropsType, state: StateType) => {
+    return <DemoResult
+      next={this.goToTournamentSelectorPage}
+      result={state.result}
+      id={props.id}
+      link={props.link}
+    />;
+  };
+
+  render(props: PropsType, state: StateType) {
     // load questions
     if (state.stage === DEMO_STAGE_LOADING_TEST) {
       return <div>загрузка вопросов...</div>
@@ -64,18 +83,12 @@ export default class Demo extends Component {
 
     // run test...
     if (state.stage === DEMO_STAGE_TEST) {
-      return (
-        <DemoTest
-          next={this.goToResultPage}
-          topic="realmadrid"
-          data={state.testData}
-        />
-      );
+      return this.renderStageTest(state);
     }
 
     // show result picture and share/like button
     if (state.stage === DEMO_STAGE_RESULT) {
-      return <DemoResult next={this.goToTournamentSelectorPage} result={state.result} />;
+      return this.renderStageResult(props, state);
     }
 
     // show another tournaments
