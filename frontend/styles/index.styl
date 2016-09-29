@@ -370,6 +370,9 @@ desktop-size = 960px
   text-align left
 .red
   background-color: #e74c3c;
+.text-humongous
+  color main-text-color
+  font-size 72px
 .text-big
   color main-text-color
   font-size 42px
@@ -952,7 +955,9 @@ button{
 }
 
 .demo-container {
-  width: 600px;
+  //width: 600px;
+  max-width: 600px;
+  width 100%
 }
 
 .img-demo {
@@ -966,9 +971,23 @@ button{
   }
   .demo-container {
     /*width: 100%;*/
-    max-width: 280px;
+    width 100%
   }
 }
+@media (max-width: mobile-size) {
+  .demo-container {
+    max-width: 280px;
+    width 100%
+  }
+}
+
+
+.test-result-description
+  font-size 36px
+  @media (max-width desktop-size)
+    font-size 24px
+  @media (max-width mobile-size)
+    font-size 18px
 
 .img-responsive {
   background-repeat: no-repeat;
@@ -1253,6 +1272,9 @@ button{
     width 80vw
   @media (max-width: mobile-size)
     width 90vw
+.upper-layer
+  position absolute
+  z-index 101
 .faded
   position relative
   &:after

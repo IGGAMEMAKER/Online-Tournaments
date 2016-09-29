@@ -1,6 +1,8 @@
 import { h, Component } from 'preact';
 import * as topics from './topics';
 
+import getShareLink from '../../helpers/vk-share-link';
+
 type PropsType = {
   next: Function,
   result: number,
@@ -11,9 +13,6 @@ type StateType = {}
 
 export default class DemoTest extends Component {
   state = {};
-
-  componentWillMount() {}
-
   getResultMessage = (result, topic) => {
     return topics[topic].getResultPhrase(result);
   };
@@ -33,11 +32,6 @@ export default class DemoTest extends Component {
   //   return "http://vk.com/share.php?url="+url+"&title="+title+"&description="+description+"&image="+image+"&noparse=true";
   // };
 
-  makeShareUrl = (url, title, description, image) => {
-    const shareParameters = `url=${url}&title=${title}&description=${description}&image=${image}&noparse=true`;
-    return `http://vk.com/share.php?${shareParameters}`;
-  };
-
   shareResultUrl = (result, topic) => {
     const url = `http://online-tournaments.org/realmadrid`;
 
@@ -47,17 +41,7 @@ export default class DemoTest extends Component {
 
     const image = this.getImage(result, topic);
 
-    const shareUrl = this.makeShareUrl(url, title, description, image);
-
-    // console.log('shareResultUrl', shareUrl);
-
-    return shareUrl;
-  };
-
-
-  shareLink = (text, className, obj) => {
-    var url = makeShareUrl(obj.url || null, obj.title || null, obj.description || null, obj.image || null);
-    return '<a href="'+ url + '" target="_blank" class="'+className+'" >' + text + '</a>';
+    return getShareLink(url, title, description, image);
   };
 
   getImage = (result, topic) => {
@@ -87,34 +71,33 @@ export default class DemoTest extends Component {
       </a>
     );
 
-    // const skip = (
-    //   <button
-    //     className="btn btn-success btn-lg"
-    //     onClick={props.next}
-    //   >Дальше</button>
-    // );
-
     const skip = (
-      <div style="box-styling: border-box; height: auto;">
-        <a href="/" className="link">Другие турниры</a>
-      </div>
+      <button
+        className="btn btn-success btn-lg"
+        onClick={props.next}
+      >Дальше</button>
     );
+    //
+    // const skip = (
+    //   <div style="box-styling: border-box; height: auto;">
+    //     <a href="/" className="link">Другие турниры</a>
+    //   </div>
+    // );
+    //
     return (
       <div className="demo-container">
-        <h2 className="white">{resultMessage}</h2>
-        <h3 className="white">{result} из 5</h3>
+        <h2 className="test-result-description white">{resultMessage}</h2>
         <div
           className="img-responsive img-demo relative faded lighter"
           style={`background-image: url(${image});`}
         >
-          <div className="center-absolute white" style="color: white">
-            <div className="text-big">{result} из 5</div>
+          <div className="center-absolute white upper-layer">
+            <div className="text-humongous">{result}/5</div>
           </div>
-          <div style="position: absolute; left: 0; bottom: 0; color: white; z-index: 101">{share}</div>
+          <div className="white upper-layer" style="left: 20px; bottom: 35px;">{share}</div>
         </div>
         <br />
-        <div className="pull-left hide">{share}</div>
-        <div className="pull-right">{skip}</div>
+        <div>{skip}</div>
       </div>
     );
   }

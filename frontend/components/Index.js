@@ -16,7 +16,7 @@ import clipboard from '../helpers/copy-to-clipboard';
 type StateType = {}
 
 export default class Index extends Component {
-  render(props: PropsType, state: StateType) {
+  render() {
     return (
       <div>
         <div className="center height-fix offset">
