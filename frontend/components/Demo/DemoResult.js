@@ -10,6 +10,7 @@ type PropsType = {
   topic: string,
   id: string,
   link: string,
+  description: string
 }
 
 type StateType = {
@@ -27,10 +28,10 @@ export default class DemoTest extends Component {
     return topics[topic].getResultPhraseForShareDescription(result);
   };
 
-  shareResultUrl = (result, topic) => {
-    const url = `http://online-tournaments.org/realmadrid`;
+  shareResultUrl = (result, topic, id, link, testTitle) => {
+    const url = `http://online-tournaments.org/Tests?test=${link}&id=${id}`;
 
-    const title = 'Онлайн турниры';
+    const title = testTitle || 'Онлайн турниры';
 
     const description = this.getResultDescriptionForShareLink(result, topic);
 
@@ -62,7 +63,7 @@ export default class DemoTest extends Component {
   render(props: PropsType) {
     console.log('render DemoResult.js', props);
     const topic  = props.topic || 'realmadrid';
-    const result = props.result;
+    const { result, id, description } = props;
 
     const resultMessage = this.getResultMessage(result, topic);
     const image = this.getImage(result, topic);
@@ -71,7 +72,7 @@ export default class DemoTest extends Component {
       <a
         onClick={() => { console.log('share'); }}
         className="link"
-        href={this.shareResultUrl(result, topic)}
+        href={this.shareResultUrl(result, topic, id, props.link, description)}
         target="_blank"
         style="border-radius: 25px"
       >
@@ -86,7 +87,7 @@ export default class DemoTest extends Component {
       <a href="/" className="btn btn-success btn-lg" onClick={props.next}>Дальше</a>
     );
 
-
+    //
     const link = `http://online-tournaments.org/Tests?test=${props.link}&id=${props.id}`;
     return (
       <div className="demo-container">

@@ -37,7 +37,7 @@ export default class Demo extends Component {
   goToTournamentSelectorPage = () => {
     // this.setState({ result: this.state.result + 1 });
     // this.setState({ stage: DEMO_STAGE_TOURNAMENT_SELECTOR })
-    this.setState({ stage: DEMO_STAGE_LOADING_TEST, result: 0 });
+    this.setState({ stage: DEMO_STAGE_LOADING_TEST, result: 0, testData: {} });
     this.loadData(this.props);
   };
 
@@ -74,6 +74,7 @@ export default class Demo extends Component {
       result={state.result}
       id={props.id}
       link={props.link}
+      description={state.testData.description}
     />;
   };
 
